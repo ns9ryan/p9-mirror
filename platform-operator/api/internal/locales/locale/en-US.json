@@ -1,0 +1,29 @@
+{
+	"common": {
+		"success": "Success",
+		"invalid_request": "Invalid request",
+		"data_not_found": "Data not found",
+		"constraint_error": "Data constraint conflict",
+		"validation_error": "Validation failed",
+		"database_error": "Database operation failed",
+		"already_exists": "Data already exists",
+		"internal_error": "Internal server error",
+		"too_many_requests": "Too many requests",
+		"service_unavailable": "Service unavailable",
+		"request_timeout": "Request timeout",
+		"invalidParam": "invalid request parameter",
+		"paramRequired": "required parameter missing: {{.Field}}",
+		"paramTypeMismatch": "parameter type mismatch: {{.Field}}",
+		"paramValueInvalid": "invalid parameter value",
+		"paramValueInvalidField": "invalid parameter value: {{.Field}}"
+	},
+
+	"operator": {
+		"timezone_unavailable": "Timezone unavailable",
+		"settlement_currency_unavailable": "Settlement currency unavailable",
+		"language_unavailable": "Language unavailable",
+		"region_unavailable": "Region unavailable",
+		"admin_already_exists": "Admin already exists",
+		"forbidden_upd_op_has_published": "Forbidden update, operator has published"
+	}
+}

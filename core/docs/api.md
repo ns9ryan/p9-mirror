@@ -1,0 +1,2532 @@
+# p9 core 说明文档
+
+## 一、HTTP API
+
+core-api 默认 `http://192.168.0.15:18000`，前缀 `/admin`。JSON 字段以 `[api/desc](../api/desc)` 为准。
+
+`PartnerMode` 在 `rpc/etc/core.yaml`：`"on"` 分分站，`"off"` 平台。`on` 时 `operator_code` 只信 JWT，忽略请求体里的分站字段。
+
+## 接口索引
+
+- [约定](#约定)
+- [公开（无 JWT）](#公开无-jwt)
+  - [POST /admin/login](#post-adminlogin)
+  - [POST /admin/refresh](#post-adminrefresh)
+  - [GET /admin/i18n/lang/enabled](#get-admini18nlangenabled)
+  - [GET /admin/i18n/dict](#get-admini18ndict)
+- [仅 JWT](#仅-jwt)
+  - [POST /admin/logout](#post-adminlogout)
+  - [POST /admin/logout/all](#post-adminlogoutall)
+  - [GET /admin/user/info](#get-adminuserinfo)
+  - [GET /admin/user/perm](#get-adminuserperm)
+  - [GET /admin/menu/role](#get-adminmenurole)
+  - [POST /admin/user/password/self](#post-adminuserpasswordself)
+  - [JWT + Casbin](#jwt--casbin)
+  - [用户](#用户)
+    - [POST /admin/user/create](#post-adminusercreate)
+    - [POST /admin/user/update](#post-adminuserupdate)
+    - [POST /admin/user/delete](#post-adminuserdelete)
+    - [POST /admin/user/list](#post-adminuserlist)
+    - [GET /admin/user/detail](#get-adminuserdetail)
+    - [POST /admin/user/password](#post-adminuserpassword)
+    - [POST /admin/user/roles](#post-adminuserroles)
+    - [POST /admin/user/ipWhitelist](#post-adminuseripwhitelist)
+  - [角色](#角色)
+    - [POST /admin/role/create](#post-adminrolecreate)
+    - [POST /admin/role/update](#post-adminroleupdate)
+    - [POST /admin/role/delete](#post-adminroledelete)
+    - [POST /admin/role/list](#post-adminrolelist)
+    - [GET /admin/role/detail](#get-adminroledetail)
+  - [菜单（全局，不分分站）](#菜单全局不分分站)
+    - [POST /admin/menu/create](#post-adminmenucreate)
+    - [POST /admin/menu/update](#post-adminmenuupdate)
+    - [POST /admin/menu/delete](#post-adminmenudelete)
+    - [POST /admin/menu/list](#post-adminmenulist)
+  - [API（全局，不分分站）](#api全局不分分站)
+    - [POST /admin/api/create](#post-adminapicreate)
+    - [POST /admin/api/update](#post-adminapiupdate)
+    - [POST /admin/api/delete](#post-adminapidelete)
+    - [POST /admin/api/list](#post-adminapilist)
+  - [多语言（按站点隔离词条，语言表全局）](#多语言按站点隔离词条语言表全局)
+    - [POST /admin/i18n/create](#post-admini18ncreate)
+    - [POST /admin/i18n/update](#post-admini18nupdate)
+    - [POST /admin/i18n/updateByKey](#post-admini18nupdatebykey)
+    - [POST /admin/i18n/delete](#post-admini18ndelete)
+    - [POST /admin/i18n/deleteByKey](#post-admini18ndeletebykey)
+    - [POST /admin/i18n/list](#post-admini18nlist)
+    - [POST /admin/i18n/export](#post-admini18nexport)
+    - [POST /admin/i18n/import](#post-admini18nimport)
+    - [POST /admin/i18n/lang/create](#post-admini18nlangcreate)
+    - [POST /admin/i18n/lang/update](#post-admini18nlangupdate)
+    - [POST /admin/i18n/lang/reorder](#post-admini18nlangreorder)
+    - [POST /admin/i18n/lang/delete](#post-admini18nlangdelete)
+    - [POST /admin/i18n/lang/list](#post-admini18nlanglist)
+  - [日志](#日志)
+    - [POST /admin/log/login/list](#post-adminlogloginlist)
+    - [POST /admin/log/action/list](#post-adminlogactionlist)
+    - [POST /admin/log/error/list](#post-adminlogerrorlist)
+  - [授权](#授权)
+    - [POST /admin/authority/menu/update](#post-adminauthoritymenuupdate)
+    - [POST /admin/authority/menu/role](#post-adminauthoritymenurole)
+    - [POST /admin/authority/api/update](#post-adminauthorityapiupdate)
+    - [POST /admin/authority/api/role](#post-adminauthorityapirole)
+- [二、RPC 初始化](#二rpc-初始化)
+  - [CreatePlatformAdmin / bootstrapAdmin](#1-createplatformadmin--bootstrapadmin-创建总网超级管理员账号)
+  - [CreateOperatorAdmin / bootstrapOperator](#2-createoperatoradmin--bootstrapoperator-创建分站超级管理员账号)
+- [三、菜单 / API 自动迁移（RegisterCatalog）](#三菜单--api-自动迁移registercatalog)
+  - [示例：promo-api](#示例promo-api)
+
+---
+
+
+
+## 约定
+
+
+
+### 响应结构体
+
+成功：
+
+```json
+{ "code": 0, "msg": "ok", "data": {} }
+```
+
+失败时 HTTP 状态码与 `code` 相同，无 `data`：
+
+```json
+{ "code": 401, "msg": "未登录" }
+```
+
+access 过期（前端用 refresh 后续请求）：
+
+```json
+{ "code": 498, "msg": "登录已过期" }
+```
+
+无 `returns` 的接口成功时 `data` 为 `null`。时间字段为 Unix 秒。下文示例均为完整 HTTP body。例外：[POST /admin/i18n/export](#post-admini18nexport) 成功时直接下载 JSON 文件，不套信封；失败仍走信封。[POST /admin/i18n/import](#post-admini18nimport) 请求为 `multipart/form-data`，不是 JSON。
+
+### 鉴权
+
+登录后请求头：`Authorization: Bearer <access_token>`。
+
+access / refresh / preview token 都会写入签发时的客户端 IP（已规范化，含 IPv4-mapped）。后续请求的客户端 IP 须与 token 内一致，否则 **401**（`auth.ipMismatch`），需重新登录。不要用 498。发版前签发、没有 `client_ip` 的旧 token 同样失效。`POST /admin/refresh` 也会比对 refresh token 内的 IP，新 token 仍绑定当前请求 IP。
+
+
+| 分组           | 中间件                        |
+| ------------ | -------------------------- |
+| 公开           | 无                          |
+| 仅 JWT        | JWT（`CheckToken`）          |
+| JWT + Casbin | JWT + Authority（`Enforce`） |
+
+
+
+
+### 多语言
+
+请求头：`X-Lang: zh-CN`（缺省）或 `en-US`，也可传其它语言码（如 `ja-JP`）。`zh*` 归一为 `zh-CN`，`en*` 为 `en-US`，其余原样保留。
+
+菜单 `title`、接口 `description` 在库中存 i18n key（如 `menu.route.dashboard`、`api.userCreate`），词条按分组存在 `sys_i18n`（菜单 `menu`、接口 `api`、前端 `front`），HTTP 出参按当前语言翻译（进程内缓存 2 分钟）。前端公共文案用 [GET /admin/i18n/dict](#get-admini18ndict) 按下发。角色 `role_name`、信封 `msg` 仍走内置 JSON。自定义名称没有对应词条时原样返回。下文示例默认 `zh-CN`。
+
+### 分页
+
+
+| 字段          | 说明                              |
+| ----------- | ------------------------------- |
+| `page`      | 从 1 起，缺省 1                      |
+| `page_size` | 用户 / 日志列表缺省 20，角色列表缺省 50，上限 100 |
+
+
+
+
+### 枚举
+
+
+| 字段                                       | 值                    |
+| ---------------------------------------- | -------------------- |
+| `status`                                 | `1` 启用，`2` 停用        |
+| `menu_type`                              | `0` 目录，`1` 菜单，`2` 按钮 |
+| `hide_menu` / `disabled` / `is_required` | `0` 否，`1` 是          |
+| `login_result` / `action_result`（请求过滤）   | `1` 成功，`2` 失败        |
+
+
+
+
+### 错误码
+
+
+| code | 含义                                                               |
+| ---- | ---------------------------------------------------------------- |
+| 400  | 参数错误                                                             |
+| 401  | 未登录 / token 无效 / 登录 IP 已变化需重新登录                                  |
+| 403  | 无权限或资源被禁用                                                        |
+| 404  | 不存在                                                              |
+| 498  | access token 过期：用 `refresh_token` 调 `POST /admin/refresh` 后重试原请求 |
+| 500  | 内部错误                                                             |
+
+
+refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环。客户端 IP 与 token 内不一致同样返回 **401**，需重新登录，不要走 refresh。
+
+### 响应字段说明
+
+信封：
+
+
+| 字段     | 类型                    | 说明                   |
+| ------ | --------------------- | -------------------- |
+| `code` | int                   | `0` 成功，失败为 HTTP 状态码  |
+| `msg`  | string                | 提示文案                 |
+| `data` | object / array / null | 业务数据；无返回体的接口为 `null` |
+
+
+`data.token`（登录 / 刷新）：
+
+
+| 字段               | 类型     | 说明                              |
+| ---------------- | ------ | ------------------------------- |
+| `access_token`   | string | 业务请求 Bearer，过期返回 498            |
+| `refresh_token`  | string | 仅用于 refresh / logout，不能当 Bearer |
+| `expire`         | int64  | access 过期时间，Unix 秒              |
+| `refresh_expire` | int64  | refresh 过期时间，Unix 秒             |
+
+
+`UserPublic`：
+
+
+| 字段                     | 类型       | 说明                                     |
+| ---------------------- | -------- | -------------------------------------- |
+| `id`                   | int64    | 用户主键                                   |
+| `user_code`            | string   | 用户对外编码                                 |
+| `username`             | string   | 登录名                                    |
+| `display_name`         | string   | 显示名                                    |
+| `operator_code`        | string   | 所属分站编码；平台用户可省略或为空                      |
+| `is_super_admin`       | bool     | 是否超管；创建用户接口不可设为 true                   |
+| `status`               | int32    | `1` 启用，`2` 停用                          |
+| `role_codes`           | string[] | 角色编码列表；与 `role_names` 同序、同长度，无角色为 `[]` |
+| `role_names`           | string[] | 角色名称；内置为 i18n key，响应已按语言翻译；无角色为 `[]`   |
+| `home_path`            | string   | 登录后首页，默认 `/dashboard`                  |
+| `created_at`           | int64    | 创建时间，Unix 秒                            |
+| `last_login_at`        | int64    | 最后登录时间，Unix 秒；从未登录可省略或为 0              |
+| `mobile`               | string   | 手机号；未填写可省略或为空                          |
+| `email`                | string   | 邮箱；未填写可省略或为空                           |
+| `ip_whitelist_enabled` | int32    | `0` 关闭登录 IP 白名单（默认），`1` 开启             |
+| `ip_whitelist`         | string[] | 允许登录的 IP 或 CIDR；未配置为 `[]`              |
+
+
+`RoleInfo`：
+
+
+| 字段              | 类型     | 说明                             |
+| --------------- | ------ | ------------------------------ |
+| `id`            | int64  | 角色主键                           |
+| `operator_code` | string | 所属分站编码；平台角色可省略或为空              |
+| `role_code`     | string | 角色编码，分站内唯一                     |
+| `role_name`     | string | 角色名称；内置为 i18n key，响应已按语言翻译     |
+| `description`   | string | 备注                             |
+| `status`        | int32  | `1` 启用，`2` 停用；停用会清 Casbin      |
+| `is_system`     | bool   | 内置角色（如 `super_admin`）不可删、不可改编码 |
+| `sort_no`       | int32  | 排序，越小越前                        |
+| `created_at`    | int64  | 创建时间，Unix 秒                    |
+| `updated_at`    | int64  | 更新时间，Unix 秒                    |
+
+
+`MenuInfo` / `MenuNode`：
+
+
+| 字段           | 类型         | 说明                                 |
+| ------------ | ---------- | ---------------------------------- |
+| `id`         | int64      | 菜单主键                               |
+| `parent_id`  | int64      | 父菜单 id，根为 `0`                      |
+| `menu_type`  | int32      | `0` 目录，`1` 菜单，`2` 按钮               |
+| `path`       | string     | 前端路由 path                          |
+| `name`       | string     | 全局唯一标识；`RegisterCatalog` 首次按此 upsert，已初始化后只插入缺失 |
+| `component`  | string     | 前端组件路径                             |
+| `redirect`   | string     | 重定向                                |
+| `title`      | string     | 显示标题；内置为 i18n key，响应已按语言翻译         |
+| `icon`       | string     | 图标                                 |
+| `permission` | string     | 按钮权限码；动态菜单只含空字符串项                  |
+| `hide_menu`  | int32      | `1` 侧栏隐藏                           |
+| `sort`       | int32      | 排序，越小越前                            |
+| `disabled`   | int32      | `1` 停用（仅 MenuInfo）                 |
+| `created_at` | int64      | 创建时间，Unix 秒（仅 MenuInfo）            |
+| `updated_at` | int64      | 更新时间，Unix 秒（仅 MenuInfo）            |
+| `children`   | MenuNode[] | 子节点（仅 MenuNode）                    |
+
+
+`ApiInfo`：
+
+
+| 字段             | 类型     | 说明                                                         |
+| -------------- | ------ | ---------------------------------------------------------- |
+| `id`           | int64  | 接口主键                                                       |
+| `description`  | string | 接口说明；库中存 i18n key（如 `api.userCreate`，group=`api`），响应已按语言翻译 |
+| `api_group`    | string | 分组，如 `user`                                                |
+| `method`       | string | HTTP 方法，限 GET/POST/PUT/PATCH/DELETE                        |
+| `path`         | string | 以 `/` 开头；与 method 组成唯一键                                    |
+| `is_required`  | int32  | `1` 分配 API 权限时强制带上                                         |
+| `service_name` | string | 所属服务，如 `core-api`                                          |
+| `created_at`   | int64  | 创建时间，Unix 秒                                                |
+| `updated_at`   | int64  | 更新时间，Unix 秒                                                |
+
+
+列表类 `data`：
+
+
+| 字段      | 类型    | 说明              |
+| ------- | ----- | --------------- |
+| `list`  | array | 当前页数据，元素见上面对应类型 |
+| `total` | int64 | 总条数             |
+
+
+其它 `data`：
+
+
+| 字段            | 类型       | 说明                                      |
+| ------------- | -------- | --------------------------------------- |
+| `permissions` | string[] | 当前用户按钮权限码（`GET /user/perm`）             |
+| `menu_ids`    | int64[]  | 角色已分配菜单 id（`POST /authority/menu/role`） |
+| `path`        | string   | 接口路径（API 授权项）                           |
+| `method`      | string   | HTTP 方法（API 授权项）                        |
+
+
+---
+
+
+
+## 公开（无 JWT）
+
+
+
+### POST /admin/login
+
+`off`：`username` + `password`。`on`：再加 `operator_code`。
+
+**请求**
+
+
+| 字段              | 位置   | 必填   | 类型     | 说明                                 |
+| --------------- | ---- | ---- | ------ | ---------------------------------- |
+| `username`      | json | 是    | string | 登录用户名                              |
+| `password`      | json | 是    | string | 登录密码                               |
+| `operator_code` | json | on 是 | string | 分站代码；`PartnerMode=on` 必填，`off` 不要传 |
+
+
+```json
+{
+  "username": "admin",
+  "password": "Admin@123",
+  "operator_code": "demo"
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "token": {
+      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "expire": 1710000000,
+      "refresh_expire": 1710600000
+    },
+    "user": {
+      "id": 1,
+      "user_code": "a1b2c3d4e5f6",
+      "username": "admin",
+      "display_name": "分站超管",
+      "operator_code": "demo",
+      "is_super_admin": true,
+      "status": 1,
+      "role_codes": ["super_admin"],
+      "role_names": ["超级管理员"],
+      "home_path": "/dashboard",
+      "ip_whitelist_enabled": 0,
+      "ip_whitelist": []
+    }
+  }
+}
+```
+
+
+
+### POST /admin/refresh
+
+校验 refresh 密钥 + 用户 salt + 客户端 IP，下发新 token 对并拉黑旧 refresh。过期或 IP 不一致返回 401。
+
+**请求**
+
+
+| 字段              | 位置   | 必填  | 类型     | 说明                           |
+| --------------- | ---- | --- | ------ | ---------------------------- |
+| `refresh_token` | json | 是   | string | 登录下发的 refresh；过期返回 401 需重新登录 |
+
+
+```json
+{
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "token": {
+      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "expire": 1710086400,
+      "refresh_expire": 1710686400
+    },
+    "user": {
+      "id": 1,
+      "user_code": "a1b2c3d4e5f6",
+      "username": "admin",
+      "display_name": "分站超管",
+      "operator_code": "demo",
+      "is_super_admin": true,
+      "status": 1,
+      "role_codes": ["super_admin"],
+      "role_names": ["超级管理员"],
+      "home_path": "/dashboard"
+    }
+  }
+}
+```
+
+---
+
+
+
+## 仅 JWT
+
+需 Header：`Authorization: Bearer <access_token>`。
+
+### POST /admin/logout
+
+拉黑当前 access 与该 refresh（需 Redis）。不改 salt。
+
+**请求**
+
+
+| 字段              | 位置   | 必填  | 类型     | 说明                                        |
+| --------------- | ---- | --- | ------ | ----------------------------------------- |
+| `refresh_token` | json | 是   | string | 要拉黑的 refresh；当前 access 从 Authorization 读取 |
+
+
+```json
+{
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+### POST /admin/logout/all
+
+轮换该用户 `salt`，全部 access / refresh 失效。无请求体。
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+### GET /admin/user/info
+
+当前用户。无请求参数。
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 1,
+    "user_code": "a1b2c3d4e5f6",
+    "username": "admin",
+    "display_name": "分站超管",
+    "operator_code": "demo",
+    "is_super_admin": true,
+    "status": 1,
+    "role_codes": ["super_admin"],
+    "role_names": ["超级管理员"],
+    "home_path": "/dashboard"
+  }
+}
+```
+
+
+
+### GET /admin/user/perm
+
+本角色菜单中 `permission != ""` 的按钮码。
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "permissions": ["user:create", "role:create", "menu:create", "api:create"]
+  }
+}
+```
+
+
+
+### GET /admin/menu/role
+
+动态菜单：`permission == ""` 的项组树。
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": [
+    {
+      "id": 1,
+      "parent_id": 0,
+      "menu_type": 1,
+      "path": "/dashboard",
+      "name": "Dashboard",
+      "component": "dashboard/index",
+      "redirect": "",
+      "title": "工作台",
+      "icon": "",
+      "permission": "",
+      "hide_menu": 0,
+      "sort": 1,
+      "children": []
+    },
+    {
+      "id": 10,
+      "parent_id": 0,
+      "menu_type": 0,
+      "path": "/system",
+      "name": "System",
+      "component": "",
+      "redirect": "",
+      "title": "系统管理",
+      "icon": "",
+      "permission": "",
+      "hide_menu": 0,
+      "sort": 10,
+      "children": [
+        {
+          "id": 11,
+          "parent_id": 10,
+          "menu_type": 1,
+          "path": "/system/user",
+          "name": "User",
+          "component": "system/user/index",
+          "redirect": "",
+          "title": "用户管理",
+          "icon": "",
+          "permission": "",
+          "hide_menu": 0,
+          "sort": 11,
+          "children": []
+        }
+      ]
+    }
+  ]
+}
+```
+
+
+
+### POST /admin/user/password/self
+
+改自己密码并轮换自己 salt。
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型     | 说明                          |
+| -------------- | ---- | --- | ------ | --------------------------- |
+| `old_password` | json | 是   | string | 当前密码                        |
+| `password`     | json | 是   | string | 新密码；成功后轮换 salt，旧 token 全部失效 |
+
+
+```json
+{
+  "old_password": "Admin@123",
+  "password": "Admin@456"
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+### GET /admin/i18n/lang/enabled
+
+已开启语言（`disabled=0`），无分页。按 `sort_no`、`lang`、`id` 升序。登录后切语言用。无请求参数。`i18n_name` 已按请求 `X-Lang` 翻译，`i18n_key` 仍是词条 key，`name` 是库里的回退原文。
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "lang": "zh-CN",
+        "name": "简体中文",
+        "i18n_key": "lang.zh-CN",
+        "i18n_name": "简体中文",
+        "disabled": 0,
+        "sort_no": 1,
+        "created_at": 1700000000,
+        "updated_at": 1700000000
+      },
+      {
+        "id": 2,
+        "lang": "zh-HK",
+        "name": "繁體中文",
+        "i18n_key": "lang.zh-HK",
+        "i18n_name": "繁体中文",
+        "disabled": 0,
+        "sort_no": 2,
+        "created_at": 1700000000,
+        "updated_at": 1700000000
+      },
+      {
+        "id": 3,
+        "lang": "en-US",
+        "name": "English",
+        "i18n_key": "lang.en-US",
+        "i18n_name": "英语",
+        "disabled": 0,
+        "sort_no": 3,
+        "created_at": 1700000000,
+        "updated_at": 1700000000
+      }
+    ],
+    "total": 3
+  }
+}
+```
+
+
+
+### GET /admin/i18n/dict
+
+按 `i18n_code` + `lang` 下发词条，无分页。`data` 为 `trans_key -> value`。登录后拉前端/菜单等文案用。不进 Casbin 目录。
+
+`i18n_code` 必传，只下发该业务站点（如 `platform` / `promo`）。进程内菜单/接口翻译不走本接口，RPC 不传 code 时仍按 lang 合并全部站点。
+
+`i18n_group` 可选：有值只下发该组；不传则下发该语言全部组。
+
+Query：`/admin/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
+
+**请求**
+
+
+| 字段           | 位置    | 必填  | 类型     | 说明                                                   |
+| ------------ | ----- | --- | ------ | ---------------------------------------------------- |
+| `i18n_code`  | query | 是   | string | 站点编码，如 `platform` / `promo`                          |
+| `i18n_group` | query | 否   | string | 分组，如 login/`front` / `menu` / `api` / `lang`；空则下发全部组 |
+| `lang`       | query | 否   | string | 语言码，如 `zh-CN，空则从ctx取`                                |
+
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "common.column.operations": "操作",
+    "common.search.reset": "重置",
+    "common.search.search": "搜索"
+  }
+}
+```
+
+---
+
+
+
+## JWT + Casbin
+
+需 JWT + Casbin。Header：`Authorization: Bearer <access_token>`。
+
+### 用户
+
+`off` 写 `operator_code=NULL`；`on` 写 JWT 分站编码。禁止设 `is_super_admin`。
+
+#### POST /admin/user/create
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型      | 说明                     |
+| -------------- | ---- | --- | ------- | ---------------------- |
+| `username`     | json | 是   | string  | 登录名，同分站内唯一             |
+| `password`     | json | 是   | string  | 初始密码                   |
+| `display_name` | json | 是   | string  | 显示名                    |
+| `mobile`       | json | 否   | string  | 手机号                    |
+| `email`        | json | 否   | string  | 邮箱                     |
+| `status`       | json | 否   | int32   | `1` 启用 / `2` 停用，缺省 `1` |
+| `role_ids`     | json | 否   | int64[] | 绑定角色 id，须与用户同分站        |
+
+
+```json
+{
+  "username": "alice",
+  "password": "Alice@123",
+  "display_name": "运营",
+  "mobile": "13800000000",
+  "email": "alice@example.com",
+  "status": 1,
+  "role_ids": [2]
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 2,
+    "user_code": "f6e5d4c3b2a1",
+    "username": "alice",
+    "display_name": "运营",
+    "operator_code": "demo",
+    "is_super_admin": false,
+    "status": 1,
+    "role_codes": ["editor"],
+    "role_names": ["运营"],
+    "home_path": "/dashboard",
+    "ip_whitelist_enabled": 0,
+    "ip_whitelist": []
+  }
+}
+```
+
+
+
+#### POST /admin/user/update
+
+不可改 `operator_code` / `is_super_admin` / `salt`。
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型     | 说明              |
+| -------------- | ---- | --- | ------ | --------------- |
+| `id`           | json | 是   | int64  | 要更新的用户主键        |
+| `display_name` | json | 否   | string | 显示名             |
+| `mobile`       | json | 否   | string | 手机号             |
+| `email`        | json | 否   | string | 邮箱              |
+| `status`       | json | 否   | int32  | `1` 启用 / `2` 停用 |
+
+
+```json
+{
+  "id": 2,
+  "display_name": "运营主管",
+  "mobile": "13900000000",
+  "email": "alice2@example.com",
+  "status": 1
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/user/delete
+
+软删。不可删自己、不可删 root。`id` 与 `ids` 至少一个，`ids` 优先。
+
+**请求**
+
+
+| 字段    | 位置   | 必填  | 类型      | 说明                        |
+| ----- | ---- | --- | ------- | ------------------------- |
+| `id`  | json | 否   | int64   | 单个用户 id；与 `ids` 同时传时忽略本字段 |
+| `ids` | json | 否   | int64[] | 批量用户 id，优先于 `id`          |
+
+
+```json
+{ "ids": [2, 3] }
+```
+
+或：
+
+```json
+{ "id": 2 }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/user/list
+
+`off` 全量；`on` 仅本分站。
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型      | 说明                                   |
+| -------------- | ---- | --- | ------- | ------------------------------------ |
+| `page`         | json | 否   | int32   | 页码，从 1 起，缺省 1                        |
+| `page_size`    | json | 否   | int32   | 每页条数，缺省 20，上限 100                    |
+| `username`     | json | 否   | string  | 用户名，模糊匹配；空则忽略                        |
+| `mobile`       | json | 否   | string  | 手机号，模糊匹配；空则忽略                        |
+| `email`        | json | 否   | string  | 邮箱，模糊匹配；空则忽略                         |
+| `display_name` | json | 否   | string  | 显示名称，模糊匹配；空则忽略                       |
+| `role_ids`     | json | 否   | []int64 | 角色多选，命中任一角色即可；空则忽略。多条件与其它字段同时生效（AND） |
+
+
+```json
+{
+  "page": 1,
+  "page_size": 20,
+  "username": "ali",
+  "mobile": "138",
+  "email": "@example.com",
+  "display_name": "运营",
+  "role_ids": [2, 3]
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "user_code": "a1b2c3d4e5f6",
+        "username": "admin",
+        "display_name": "分站超管",
+        "operator_code": "demo",
+        "is_super_admin": true,
+        "status": 1,
+        "role_codes": ["super_admin"],
+        "role_names": ["超级管理员"],
+        "home_path": "/dashboard",
+        "created_at": 1710000000,
+        "last_login_at": 1710003600
+      },
+      {
+        "id": 2,
+        "user_code": "f6e5d4c3b2a1",
+        "username": "alice",
+        "display_name": "运营",
+        "operator_code": "demo",
+        "is_super_admin": false,
+        "status": 1,
+        "role_codes": ["editor"],
+        "role_names": ["运营"],
+        "home_path": "/dashboard",
+        "created_at": 1710001200,
+        "last_login_at": 0
+      }
+    ],
+    "total": 2
+  }
+}
+```
+
+
+
+#### GET /admin/user/detail
+
+Query：`/admin/user/detail?id=2`
+
+**请求**
+
+
+| 字段   | 位置    | 必填  | 类型    | 说明                               |
+| ---- | ----- | --- | ----- | -------------------------------- |
+| `id` | query | 是   | int64 | 用户主键，如 `/admin/user/detail?id=2` |
+
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 2,
+    "user_code": "f6e5d4c3b2a1",
+    "username": "alice",
+    "display_name": "运营",
+    "operator_code": "demo",
+    "is_super_admin": false,
+    "status": 1,
+    "role_codes": ["editor"],
+    "role_names": ["运营"],
+    "home_path": "/dashboard",
+    "created_at": 1710001200,
+    "last_login_at": 1710003600,
+    "mobile": "13800000000",
+    "email": "alice@example.com"
+  }
+}
+```
+
+
+
+#### POST /admin/user/password
+
+改他人密码并轮换对方 salt。
+
+**请求**
+
+
+| 字段         | 位置   | 必填  | 类型     | 说明               |
+| ---------- | ---- | --- | ------ | ---------------- |
+| `user_id`  | json | 是   | int64  | 被改密的用户主键         |
+| `password` | json | 是   | string | 新密码；成功后轮换对方 salt |
+
+
+```json
+{
+  "user_id": 2,
+  "password": "Alice@456"
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/user/roles
+
+用户与角色的 `operator_code` 必须同为空或同值。
+
+**请求**
+
+
+| 字段         | 位置   | 必填  | 类型      | 说明                  |
+| ---------- | ---- | --- | ------- | ------------------- |
+| `user_id`  | json | 是   | int64   | 用户主键                |
+| `role_ids` | json | 是   | int64[] | 全量替换该用户角色；角色须与用户同分站 |
+
+
+```json
+{
+  "user_id": 2,
+  "role_ids": [2, 3]
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/user/ipWhitelist
+
+单独修改登录 IP 白名单，不并入 `POST /admin/user/update`。JWT + Casbin。超管不豁免登录校验。只拦登录，不拦 refresh / 已有会话。
+
+开启后客户端 IP（已规范化，含 IPv4-mapped）须命中列表中的精确 IP 或 CIDR；开启且列表为空会拒绝登录，因此开启时列表不能为空。
+
+**请求**
+
+
+| 字段                     | 位置   | 必填  | 类型       | 说明                               |
+| ---------------------- | ---- | --- | -------- | -------------------------------- |
+| `id`                   | json | 是   | int64    | 用户主键                             |
+| `ip_whitelist_enabled` | json | 是   | int32    | `0` 关闭 / `1` 开启                  |
+| `ip_whitelist`         | json | 是   | string[] | IP 或 CIDR；保存前规范化单 IP 并去重。开启时不能为空 |
+
+
+```json
+{
+  "id": 2,
+  "ip_whitelist_enabled": 1,
+  "ip_whitelist": ["192.168.0.6", "10.0.0.0/8"]
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+### 角色
+
+接口不能把 `is_system` 设为 true。停用角色会清掉该 `(role_code, v1)` 的 Casbin 策略。`v1`：`off` 为 `""`，`on` 为 `operator_code`。
+
+#### POST /admin/role/create
+
+**请求**
+
+
+| 字段            | 位置   | 必填  | 类型     | 说明                       |
+| ------------- | ---- | --- | ------ | ------------------------ |
+| `role_code`   | json | 是   | string | 角色编码，分站内唯一；不可设为系统保留码冒充超管 |
+| `role_name`   | json | 是   | string | 角色名称                     |
+| `description` | json | 否   | string | 备注                       |
+| `status`      | json | 否   | int32  | `1` 启用 / `2` 停用，缺省 `1`   |
+| `sort_no`     | json | 否   | int32  | 排序，越小越前                  |
+
+
+```json
+{
+  "role_code": "editor",
+  "role_name": "运营",
+  "description": "运营角色",
+  "status": 1,
+  "sort_no": 10
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 2,
+    "operator_code": "demo",
+    "role_code": "editor",
+    "role_name": "运营",
+    "description": "运营角色",
+    "status": 1,
+    "is_system": false,
+    "sort_no": 10,
+    "created_at": 1700000100,
+    "updated_at": 1700000100
+  }
+}
+```
+
+
+
+#### POST /admin/role/update
+
+内置角色的 `role_code` / `is_system` 不可改。
+
+**请求**
+
+
+| 字段            | 位置   | 必填  | 类型     | 说明                                       |
+| ------------- | ---- | --- | ------ | ---------------------------------------- |
+| `id`          | json | 是   | int64  | 要更新的角色主键                                 |
+| `role_name`   | json | 否   | string | 角色名称；内置角色的 `role_code` / `is_system` 不可改 |
+| `description` | json | 否   | string | 备注                                       |
+| `status`      | json | 否   | int32  | `1` 启用 / `2` 停用；停用会清 Casbin              |
+| `sort_no`     | json | 否   | int32  | 排序，越小越前                                  |
+
+
+```json
+{
+  "id": 2,
+  "role_name": "高级运营",
+  "description": "可看用户列表",
+  "status": 1,
+  "sort_no": 20
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/role/delete
+
+`is_system` 不可删；有用户绑定则拒绝；按 `(role_code, v1)` 清 Casbin。
+
+**请求**
+
+
+| 字段    | 位置   | 必填  | 类型      | 说明                        |
+| ----- | ---- | --- | ------- | ------------------------- |
+| `id`  | json | 否   | int64   | 单个角色 id；与 `ids` 同时传时忽略本字段 |
+| `ids` | json | 否   | int64[] | 批量角色 id，优先于 `id`          |
+
+
+```json
+{ "ids": [2] }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/role/list
+
+**请求**
+
+
+| 字段          | 位置   | 必填  | 类型     | 说明                                      |
+| ----------- | ---- | --- | ------ | --------------------------------------- |
+| `page`      | json | 否   | int32  | 页码，从 1 起，缺省 1                           |
+| `page_size` | json | 否   | int32  | 每页条数，缺省 50，上限 100                       |
+| `role_name` | json | 否   | string | 模糊匹配 `role_name` **或** `role_code`；空则忽略 |
+
+
+```json
+{ "page": 1, "page_size": 50, "role_name": "admin" }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "operator_code": "demo",
+        "role_code": "super_admin",
+        "role_name": "超级管理员",
+        "description": "",
+        "status": 1,
+        "is_system": true,
+        "sort_no": 0,
+        "created_at": 1700000000,
+        "updated_at": 1700000000
+      },
+      {
+        "id": 2,
+        "operator_code": "demo",
+        "role_code": "editor",
+        "role_name": "运营",
+        "description": "运营角色",
+        "status": 1,
+        "is_system": false,
+        "sort_no": 10,
+        "created_at": 1700000100,
+        "updated_at": 1700000100
+      }
+    ],
+    "total": 2
+  }
+}
+```
+
+
+
+#### GET /admin/role/detail
+
+Query：`/admin/role/detail?id=2`
+
+**请求**
+
+
+| 字段   | 位置    | 必填  | 类型    | 说明                               |
+| ---- | ----- | --- | ----- | -------------------------------- |
+| `id` | query | 是   | int64 | 角色主键，如 `/admin/role/detail?id=2` |
+
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 2,
+    "operator_code": "demo",
+    "role_code": "editor",
+    "role_name": "运营",
+    "description": "运营角色",
+    "status": 1,
+    "is_system": false,
+    "sort_no": 10,
+    "created_at": 1700000100,
+    "updated_at": 1700000100
+  }
+}
+```
+
+
+
+### 菜单（全局，不分分站）
+
+`name` 唯一。创建后补授权给各分站 `super_admin`。超管角色不可减菜单。
+
+#### POST /admin/menu/create
+
+**请求**
+
+
+| 字段           | 位置   | 必填  | 类型     | 说明                                    |
+| ------------ | ---- | --- | ------ | ------------------------------------- |
+| `name`       | json | 是   | string | 全局唯一标识；后续 `RegisterCatalog` 首次按此 upsert，已初始化后只插入缺失 |
+| `title`      | json | 是   | string | 显示标题                                  |
+| `menu_type`  | json | 是   | int32  | `0` 目录，`1` 菜单，`2` 按钮                  |
+| `parent_id`  | json | 否   | int64  | 父菜单 id，须已存在；根省略为 `0`                  |
+| `path`       | json | 否   | string | 前端路由 path                             |
+| `component`  | json | 否   | string | 前端组件路径                                |
+| `redirect`   | json | 否   | string | 重定向地址                                 |
+| `icon`       | json | 否   | string | 图标                                    |
+| `permission` | json | 否   | string | 按钮权限码，如 `user:export`；菜单/目录留空         |
+| `hide_menu`  | json | 否   | int32  | `1` 侧栏隐藏，缺省 `0`                       |
+| `sort`       | json | 否   | int32  | 排序，越小越前                               |
+| `disabled`   | json | 否   | int32  | `1` 停用，缺省 `0`                         |
+
+
+```json
+{
+  "parent_id": 11,
+  "menu_type": 2,
+  "name": "UserExport",
+  "title": "导出用户",
+  "permission": "user:export",
+  "sort": 112
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 1112,
+    "parent_id": 11,
+    "menu_type": 2,
+    "path": "",
+    "name": "UserExport",
+    "component": "",
+    "redirect": "",
+    "title": "导出用户",
+    "icon": "",
+    "permission": "user:export",
+    "hide_menu": 0,
+    "sort": 112,
+    "disabled": 0,
+    "created_at": 1700000200,
+    "updated_at": 1700000200
+  }
+}
+```
+
+
+
+#### POST /admin/menu/update
+
+按 `id` 部分更新；禁止挂到自己的子孙。
+
+**请求**
+
+
+| 字段           | 位置   | 必填  | 类型     | 说明                   |
+| ------------ | ---- | --- | ------ | -------------------- |
+| `id`         | json | 是   | int64  | 要更新的菜单主键             |
+| `parent_id`  | json | 否   | int64  | 新父菜单 id，不可挂到自己的子孙    |
+| `menu_type`  | json | 否   | int32  | `0` 目录，`1` 菜单，`2` 按钮 |
+| `path`       | json | 否   | string | 前端路由 path            |
+| `name`       | json | 否   | string | 全局唯一标识               |
+| `component`  | json | 否   | string | 前端组件路径               |
+| `redirect`   | json | 否   | string | 重定向地址                |
+| `title`      | json | 否   | string | 显示标题                 |
+| `icon`       | json | 否   | string | 图标                   |
+| `permission` | json | 否   | string | 按钮权限码                |
+| `hide_menu`  | json | 否   | int32  | `1` 侧栏隐藏             |
+| `sort`       | json | 否   | int32  | 排序，越小越前              |
+| `disabled`   | json | 否   | int32  | `1` 停用               |
+
+
+```json
+{
+  "id": 1112,
+  "title": "导出用户 Excel",
+  "sort": 113,
+  "hide_menu": 0
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/menu/delete
+
+有子节点则拒绝；先清 `sys_role_menu`。
+
+**请求**
+
+
+| 字段    | 位置   | 必填  | 类型      | 说明                        |
+| ----- | ---- | --- | ------- | ------------------------- |
+| `id`  | json | 否   | int64   | 单个菜单 id；与 `ids` 同时传时忽略本字段 |
+| `ids` | json | 否   | int64[] | 批量菜单 id，优先于 `id`          |
+
+
+```json
+{ "id": 1112 }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/menu/list
+
+授权页勾选，全量未停用菜单。无请求体。
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": [
+    {
+      "id": 10,
+      "parent_id": 0,
+      "menu_type": 0,
+      "path": "/system",
+      "name": "System",
+      "component": "",
+      "redirect": "",
+      "title": "route.system",
+      "trans_title": "系统管理",
+      "icon": "",
+      "permission": "",
+      "hide_menu": 0,
+      "sort": 10,
+      "disabled": 0,
+      "created_at": 1700000000,
+      "updated_at": 1700000000
+    },
+    {
+      "id": 11,
+      "parent_id": 10,
+      "menu_type": 1,
+      "path": "/system/user",
+      "name": "User",
+      "component": "system/user/index",
+      "redirect": "",
+      "title": "route.user",
+      "trans_title": "用户管理",
+      "icon": "",
+      "permission": "",
+      "hide_menu": 0,
+      "sort": 11,
+      "disabled": 0,
+      "created_at": 1700000000,
+      "updated_at": 1700000000
+    }
+  ]
+}
+```
+
+
+
+### API（全局，不分分站）
+
+`(method, path)` 唯一。改 path/method 或删除会同步 Casbin。创建后补授权给各分站 `super_admin`。
+
+#### POST /admin/api/create
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型     | 说明                                      |
+| -------------- | ---- | --- | ------ | --------------------------------------- |
+| `method`       | json | 是   | string | HTTP 方法，限 GET/POST/PUT/PATCH/DELETE     |
+| `path`         | json | 是   | string | 接口路径，须以 `/` 开头；与 method 组成唯一键           |
+| `description`  | json | 否   | string | 接口说明；内置接口存 i18n key（如 `api.userCreate`） |
+| `api_group`    | json | 否   | string | 分组名，如 `user`                            |
+| `is_required`  | json | 否   | int32  | `1` 表示分配 API 权限时强制带上，缺省 `0`             |
+| `service_name` | json | 否   | string | 所属服务，如 `core-api`                       |
+
+
+```json
+{
+  "description": "导出用户",
+  "api_group": "user",
+  "method": "POST",
+  "path": "/admin/user/export",
+  "is_required": 0,
+  "service_name": "core-api"
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 30,
+    "description": "导出用户",
+    "api_group": "user",
+    "method": "POST",
+    "path": "/admin/user/export",
+    "is_required": 0,
+    "service_name": "core-api",
+    "created_at": 1700000300,
+    "updated_at": 1700000300
+  }
+}
+```
+
+
+
+#### POST /admin/api/update
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型     | 说明                               |
+| -------------- | ---- | --- | ------ | -------------------------------- |
+| `id`           | json | 是   | int64  | 要更新的接口主键                         |
+| `description`  | json | 否   | string | 接口说明                             |
+| `api_group`    | json | 否   | string | 分组名                              |
+| `method`       | json | 否   | string | HTTP 方法；改 method/path 会同步 Casbin |
+| `path`         | json | 否   | string | 接口路径，须以 `/` 开头                   |
+| `is_required`  | json | 否   | int32  | `1` 分配权限时强制带上                    |
+| `service_name` | json | 否   | string | 所属服务                             |
+
+
+```json
+{
+  "id": 30,
+  "description": "导出用户 Excel",
+  "api_group": "user"
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/api/delete
+
+同时删除对应 Casbin 策略。
+
+**请求**
+
+
+| 字段    | 位置   | 必填  | 类型      | 说明                        |
+| ----- | ---- | --- | ------- | ------------------------- |
+| `id`  | json | 否   | int64   | 单个接口 id；与 `ids` 同时传时忽略本字段 |
+| `ids` | json | 否   | int64[] | 批量接口 id，优先于 `id`          |
+
+
+```json
+{ "ids": [30] }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/api/list
+
+无请求体。
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": [
+    {
+      "id": 5,
+      "description": "api.userList",
+      "trans_description": "后台用户列表",
+      "api_group": "user",
+      "method": "POST",
+      "path": "/admin/user/list",
+      "is_required": 0,
+      "service_name": "core-api",
+      "created_at": 1700000000,
+      "updated_at": 1700000000
+    },
+    {
+      "id": 6,
+      "description": "api.userDetail",
+      "trans_description": "后台用户详情",
+      "api_group": "user",
+      "method": "GET",
+      "path": "/admin/user/detail",
+      "is_required": 0,
+      "service_name": "core-api",
+      "created_at": 1700000000,
+      "updated_at": 1700000000
+    }
+  ]
+}
+```
+
+
+
+### 多语言（按站点隔离词条，语言表全局）
+
+词条按 `(i18n_code, trans_key, lang)` 唯一。`i18n_code` 区分业务站点/服务（`core`、`promo` 等），**不是**分站租户；空则服务端当作 `core`。同一 `trans_key`+`lang` 可在不同站点各有一条。`trans_key` 为业务标识，形如 `menu.route.dashboard`（group 拼进 key）。`i18n_group` 仍保留，供列表过滤和按组分发。创建/目录注册仍可传短 key（如 `route.dashboard`），服务端会拼成完整 key。菜单 `title` 仍存短 key。新增词条（含按 key 更新时新建、目录 upsert 新建）的 `lang` 必须已在 `sys_i18n_lang`。
+
+支持的语言存在 `sys_i18n_lang`（全局，不分站点）。core-api 启动时随 `RegisterCatalog` 种子 `zh-CN` / 简体中文 / `i18n_key=lang.zh-CN`（`sort_no=1`）、`zh-HK` / 繁體中文 / `lang.zh-HK`（`sort_no=2`）、`en-US` / English / `lang.en-US`（`sort_no=3`）。首次写入后 `sys_init` 记下 `i18n_langs`，之后只插入缺失语言；首次尚未打标时已存在不改 `disabled` / `sort_no`，仅当 `name` 或 `i18n_key` 为空时回填。HTTP 出参 `name` 是库里的回退原文，`i18n_key` 是词条 key，`i18n_name` 按当前 `X-Lang` 用 `i18n.TG`（`i18n_group=lang`）翻译，无词条则回退 `name`。该语言在 `sys_i18n` 已有词条时，不能改 `lang`、不能删除。拖拽排序见 [POST /admin/i18n/lang/reorder](#post-admini18nlangreorder)，按当前 `sort_no` 序列把 `id` 挪到 `target_id` 的位置后重写全表 `sort_no` 为 `1..n`。管理 CRUD（含 reorder、导出、导入）走 JWT + Casbin；已开启列表和词条下发仅 JWT（登录后切语言 / 拉文案），不进 Casbin 目录，见 [GET /admin/i18n/lang/enabled](#get-admini18nlangenabled)、[GET /admin/i18n/dict](#get-admini18ndict)。一种语言一个 JSON 文件的导入导出见 [POST /admin/i18n/export](#post-admini18nexport)、[POST /admin/i18n/import](#post-admini18nimport)。
+
+#### POST /admin/i18n/create
+
+**请求**
+
+
+| 字段           | 位置   | 必填  | 类型     | 说明                                          |
+| ------------ | ---- | --- | ------ | ------------------------------------------- |
+| `i18n_code`  | json | 否   | string | 站点编码，如 `core` / `promo`；空则 `core`           |
+| `i18n_group` | json | 是   | string | 分组，如 `menu`                                 |
+| `trans_key`  | json | 是   | string | 词条 key；可传短 key，服务端拼成 `menu.route.dashboard` |
+| `lang`       | json | 是   | string | 语言码，须已在支持的语言列表中                             |
+| `value`      | json | 否   | string | 译文                                          |
+
+
+```json
+{
+  "i18n_code": "core",
+  "i18n_group": "menu",
+  "trans_key": "route.dashboard",
+  "lang": "zh-CN",
+  "value": "工作台"
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 1,
+    "i18n_code": "core",
+    "i18n_group": "menu",
+    "trans_key": "menu.route.dashboard",
+    "lang": "zh-CN",
+    "value": "工作台",
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  }
+}
+```
+
+
+
+#### POST /admin/i18n/update
+
+**请求**
+
+
+| 字段           | 位置   | 必填  | 类型     | 说明                 |
+| ------------ | ---- | --- | ------ | ------------------ |
+| `id`         | json | 是   | int64  | 词条主键               |
+| `i18n_code`  | json | 否   | string | 站点编码               |
+| `i18n_group` | json | 否   | string | 分组                 |
+| `trans_key`  | json | 否   | string | 词条 key             |
+| `lang`       | json | 否   | string | 语言码；改到新语言时须已在支持列表中 |
+| `value`      | json | 否   | string | 译文                 |
+
+
+```json
+{ "id": 1, "value": "工作台首页" }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/i18n/updateByKey
+
+按完整 `trans_key` 一次更新多语言。`i18n_code` / `i18n_group` 可选：有值才加入查询条件；不传则不按站点/分组过滤。已有匹配行则更新译文；没有则新建（空 code 落到 `platform`，空 group 从 `trans_key` 第一段推断，如 `menu.route.dashboard` → `menu`）。新建某语言的词条时，该语言码须已在支持列表中。
+
+**请求**
+
+
+| 字段           | 位置   | 必填  | 类型                | 说明                                |
+| ------------ | ---- | --- | ----------------- | --------------------------------- |
+| `i18n_code`  | json | 否   | string            | 站点编码；空则不按站点过滤                     |
+| `i18n_group` | json | 否   | string            | 分组；空则不按分组过滤                       |
+| `trans_key`  | json | 是   | string            | 完整词条 key，如 `menu.route.dashboard` |
+| `data`       | json | 是   | map[string]string | 语言码 → 译文；新建时语言码须已在支持列表中           |
+
+
+```json
+{
+  "i18n_code": "platform",
+  "i18n_group": "menu",
+  "trans_key": "menu.route.dashboard",
+  "data": {
+    "zh-CN": "工作台",
+    "zh-HK": "工作台",
+    "en-US": "Dashboard"
+  }
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/i18n/delete
+
+**请求**
+
+
+| 字段    | 位置   | 必填  | 类型      | 说明                        |
+| ----- | ---- | --- | ------- | ------------------------- |
+| `id`  | json | 否   | int64   | 单个词条 id；与 `ids` 同时传时忽略本字段 |
+| `ids` | json | 否   | int64[] | 批量词条 id，优先于 `id`          |
+
+
+```json
+{ "id": 1 }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/i18n/deleteByKey
+
+按 `i18n_code` + `i18n_group` + `trans_key` 删除该词条的**全部语言**。不删其它站点或其它 key。短 key 会拼上 group（如 `menu` + `route.dashboard` → `menu.route.dashboard`）。无匹配行返回 404。
+
+**请求**
+
+
+| 字段           | 位置   | 必填  | 类型     | 说明                                          |
+| ------------ | ---- | --- | ------ | ------------------------------------------- |
+| `i18n_code`  | json | 是    | string | 站点编码，如 `platform`                          |
+| `i18n_group` | json | 是    | string | 分组，如 `menu`                                 |
+| `trans_key`  | json | 是    | string | 词条 key；可传短 key 或完整 key                      |
+
+
+```json
+{
+  "i18n_code": "platform",
+  "i18n_group": "menu",
+  "trans_key": "menu.route.dashboard"
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/i18n/list
+
+**请求(卡片**`i18n_code:` platform总网,  operator分站, agent代理, user会员端**)**
+
+
+| 字段           | 位置   | 必填  | 类型     | 说明         |
+| ------------ | ---- | --- | ------ | ---------- |
+| `page`       | json | 否   | int32  | 页码，缺省 1    |
+| `page_size`  | json | 否   | int32  | 每页条数，缺省 50 |
+| `i18n_code`  | json | 否   | string | 站点精确过滤     |
+| `i18n_group` | json | 否   | string | 分组模糊过滤     |
+| `trans_key`  | json | 否   | string | key 模糊过滤   |
+| `lang`       | json | 否   | string | 语言精确过滤     |
+
+
+```json
+{ "i18n_code": "platform", "i18n_group": "menu", "lang": "zh-CN", "page": 1, "page_size": 50 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "i18n_code": "core",
+        "i18n_group": "menu",
+        "trans_key": "menu.route.dashboard",
+        "lang": "zh-CN",
+        "value": "工作台",
+        "created_at": 1700000000,
+        "updated_at": 1700000000
+      }
+    ],
+    "total": 1
+  }
+}
+```
+
+
+
+#### POST /admin/i18n/export
+
+按一种语言导出全部（或按站点/分组过滤）词条，下载 JSON 文件。JWT + Casbin。按钮权限 `i18n:export`。必须 POST 并带 `Authorization`，不能用 `window.open` / GET（会 401）。
+
+成功时**不套信封**：`Content-Type: application/json; charset=utf-8`，`Content-Disposition: attachment; filename="i18n-{lang}.json"`。失败仍返回信封。文件内 `i18n_key` 为库里的完整 `trans_key`。
+
+**请求**
+
+
+| 字段           | 位置   | 必填  | 类型     | 说明                         |
+| ------------ | ---- | --- | ------ | -------------------------- |
+| `lang`       | json | 是   | string | 语言码，如 `zh-CN`              |
+| `i18n_code`  | json | 否   | string | 站点精确过滤；空则导出该语言全部站点         |
+| `i18n_group` | json | 否   | string | 分组精确过滤；空则导出该语言（及站点）全部组     |
+
+
+```json
+{ "lang": "zh-CN", "i18n_code": "platform" }
+```
+
+**响应**（文件正文，非信封）
+
+```json
+{
+  "lang": "zh-CN",
+  "i18n_items": [
+    {
+      "i18n_code": "platform",
+      "i18n_group": "menu",
+      "i18n_key": "menu.route.dashboard",
+      "i18n_value": "工作台"
+    },
+    {
+      "i18n_code": "platform",
+      "i18n_group": "front",
+      "i18n_key": "common.search.search",
+      "i18n_value": "搜索"
+    }
+  ]
+}
+```
+
+
+
+#### POST /admin/i18n/import
+
+上传与导出同格式的 JSON 文件，按文件内 `lang` upsert 到该语言。JWT + Casbin。按钮权限 `i18n:import`。不删除文件里没有的词条，也不改其它语言。
+
+`Content-Type` 必须是 `multipart/form-data`（由客户端自动带 boundary，不要手动改成 `application/json`）。字段名 `file`，类型为文件。可选字段 `lang`：空则用文件内 `lang`；非空必须与文件 `lang` 完全相等，否则 400。整包上限 8MB。目标 `lang` 必须已在 `sys_i18n_lang`。空 `i18n_key` 计入 `skipped`；空 `i18n_code` 当作 `platform`；空 `i18n_group` 从 key 第一段推断（如 `menu.route.dashboard` → `menu`）。短 key 会拼成完整 `trans_key`。全部条目无效则 400。
+
+**请求**
+
+
+| 字段     | 位置        | 必填  | 类型    | 说明                                      |
+| ------ | --------- | --- | ----- | --------------------------------------- |
+| `file` | form-data | 是   | file  | JSON 文件，结构同导出；字段名必须是 `file` |
+| `lang` | form-data | 否   | string | 指定语言；空则取文件 `lang`，非空必须与文件 `lang` 相等 |
+
+
+文件示例：
+
+```json
+{
+  "lang": "ja-JP",
+  "i18n_items": [
+    {
+      "i18n_code": "platform",
+      "i18n_group": "menu",
+      "i18n_key": "menu.route.dashboard",
+      "i18n_value": "ダッシュボード"
+    }
+  ]
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "created": 10,
+    "updated": 2,
+    "skipped": 0
+  }
+}
+```
+
+
+
+#### POST /admin/i18n/lang/create
+
+**请求**
+
+
+| 字段          | 位置   | 必填  | 类型     | 说明                                        |
+| ----------- | ---- | --- | ------ | ----------------------------------------- |
+| `lang`      | json | 是   | string | 语言码，trim 后全局唯一，如 `ja-JP` |
+| `name`      | json | 是   | string | 显示名回退值，trim 后非空，如 `日本語` |
+| `i18n_key`  | json | 否   | string | 多语言 key，如 `lang.ja-JP`；空则 HTTP `i18n_name` 回退 `name` |
+| `disabled`  | json | 否   | int32  | 0 开启 / 1 停用，缺省 0         |
+| `sort_no`   | json | 否   | int32  | 排序，越小越前，缺省 0             |
+
+
+```json
+{ "lang": "ja-JP", "name": "日本語", "i18n_key": "lang.ja-JP", "disabled": 0, "sort_no": 10 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "id": 4,
+    "lang": "ja-JP",
+    "name": "日本語",
+    "i18n_key": "lang.ja-JP",
+    "i18n_name": "日本語",
+    "disabled": 0,
+    "sort_no": 10,
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  }
+}
+```
+
+
+
+#### POST /admin/i18n/lang/update
+
+**请求**
+
+
+| 字段          | 位置   | 必填  | 类型     | 说明                    |
+| ----------- | ---- | --- | ------ | --------------------- |
+| `id`        | json | 是   | int64  | 语言主键                  |
+| `lang`      | json | 否   | string | 语言码；该语言已有词条时不能改       |
+| `name`      | json | 否   | string | 显示名回退值；传了则 trim 后不能为空 |
+| `i18n_key`  | json | 否   | string | 多语言 key；不传不改          |
+| `disabled`  | json | 否   | int32  | 0 / 1；不传表示不改          |
+| `sort_no`   | json | 否   | int32  | 排序，越小越前；不传不改。0 有效     |
+
+
+```json
+{ "id": 4, "disabled": 1 }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/i18n/lang/reorder
+
+按当前列表顺序（`sort_no`、`lang`、`id` 升序）把 `id` 挪到 `target_id` 所在位置：往前拖插到目标前面，往后拖落到目标原下标（目标前移后相当于插在目标后），然后事务内重写全表 `sort_no` 为 `1..n`。`id` 与 `target_id` 相同视为成功空操作。任一方不存在返回语言不存在。
+
+**请求**
+
+
+| 字段          | 位置   | 必填  | 类型    | 说明       |
+| ----------- | ---- | --- | ----- | -------- |
+| `id`        | json | 是   | int64 | 被移动的语言主键 |
+| `target_id` | json | 是   | int64 | 目标位置语言主键 |
+
+
+```json
+{ "id": 8, "target_id": 2 }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/i18n/lang/delete
+
+该语言在 `sys_i18n` 已有词条时不能删除。
+
+**请求**
+
+
+| 字段    | 位置   | 必填  | 类型      | 说明                      |
+| ----- | ---- | --- | ------- | ----------------------- |
+| `id`  | json | 否   | int64   | 单个 id；与 `ids` 同时传时忽略本字段 |
+| `ids` | json | 否   | int64[] | 批量 id，优先于 `id`          |
+
+
+```json
+{ "id": 4 }
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/i18n/lang/list
+
+无排序参数，固定按 `sort_no`、`lang`、`id` 升序。已开启列表同样按该顺序，且只含 `disabled=0`。`i18n_name` 已按请求 `X-Lang` 翻译。
+
+**请求**
+
+
+| 字段          | 位置   | 必填  | 类型     | 说明          |
+| ----------- | ---- | --- | ------ | ----------- |
+| `page`      | json | 否   | int32  | 页码，缺省 1     |
+| `page_size` | json | 否   | int32  | 每页条数，缺省 50  |
+| `lang`      | json | 否   | string | 语言码模糊过滤     |
+| `disabled`  | json | 否   | int32  | 0 / 1；不传不过滤 |
+
+
+```json
+{ "page": 1, "page_size": 50 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "lang": "zh-CN",
+        "name": "简体中文",
+        "i18n_key": "lang.zh-CN",
+        "i18n_name": "简体中文",
+        "disabled": 0,
+        "sort_no": 1,
+        "created_at": 1700000000,
+        "updated_at": 1700000000
+      }
+    ],
+    "total": 3
+  }
+}
+```
+
+
+
+### 日志
+
+需 JWT + Casbin。`off` 全量；`on` 仅本分站。列表按时间倒序，`page_size` 缺省 20。请求里的 `login_result` / `action_result` 用数字过滤；响应里的同名字段已按语言翻译为「成功 / 失败」。
+
+#### POST /admin/log/login/list
+
+**请求**
+
+
+| 字段              | 位置   | 必填  | 类型     | 说明                |
+| --------------- | ---- | --- | ------ | ----------------- |
+| `page`          | json | 否   | int32  | 页码，缺省 1           |
+| `page_size`     | json | 否   | int32  | 每页条数，缺省 20，上限 100 |
+| `username`      | json | 否   | string | 用户名模糊过滤           |
+| `login_result`  | json | 否   | int32  | `1` 成功，`2` 失败     |
+| `user_id`       | json | 否   | int64  | 用户主键              |
+| `login_at_from` | json | 否   | int64  | 登录时间起，Unix 秒      |
+| `login_at_to`   | json | 否   | int64  | 登录时间止，Unix 秒      |
+
+
+```json
+{ "username": "admin", "login_result": 2, "page": 1, "page_size": 20 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "user_id": 1,
+        "username": "admin",
+        "login_result": "失败",
+        "failure_reason": "用户名或密码错误",
+        "login_ip": "127.0.0.1",
+        "device_id": 0,
+        "user_agent": "Mozilla/5.0",
+        "login_at": 1700000000
+      }
+    ],
+    "total": 1
+  }
+}
+```
+
+
+
+#### POST /admin/log/action/list
+
+**请求**
+
+
+| 字段                | 位置   | 必填  | 类型     | 说明                 |
+| ----------------- | ---- | --- | ------ | ------------------ |
+| `page`            | json | 否   | int32  | 页码，缺省 1            |
+| `page_size`       | json | 否   | int32  | 每页条数，缺省 20，上限 100  |
+| `user_id`         | json | 否   | int64  | 用户主键               |
+| `username`        | json | 否   | string | 用户名模糊过滤            |
+| `request_method`  | json | 否   | string | HTTP 方法，精确匹配（会转大写） |
+| `request_path`    | json | 否   | string | 请求路径模糊过滤           |
+| `action_result`   | json | 否   | int32  | `1` 成功，`2` 失败      |
+| `created_at_from` | json | 否   | int64  | 操作时间起，Unix 秒       |
+| `created_at_to`   | json | 否   | int64  | 操作时间止，Unix 秒       |
+
+
+```json
+{ "request_path": "/admin/user", "action_result": 1, "page": 1, "page_size": 20 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "user_id": 1,
+        "username": "admin",
+        "request_method": "POST",
+        "request_path": "/admin/user/update",
+        "request_query": "",
+        "request_body": "{\"id\":2}",
+        "action_result": "成功",
+        "response_status": 200,
+        "response_body": "{\"code\":0}",
+        "duration_ms": 12,
+        "client_ip": "127.0.0.1",
+        "user_agent": "Mozilla/5.0",
+        "created_at": 1700000000
+      }
+    ],
+    "total": 1
+  }
+}
+```
+
+
+
+#### POST /admin/log/error/list
+
+**请求**
+
+
+| 字段                | 位置   | 必填  | 类型     | 说明                |
+| ----------------- | ---- | --- | ------ | ----------------- |
+| `page`            | json | 否   | int32  | 页码，缺省 1           |
+| `page_size`       | json | 否   | int32  | 每页条数，缺省 20，上限 100 |
+| `user_id`         | json | 否   | int64  | 用户主键              |
+| `request_path`    | json | 否   | string | 请求路径模糊过滤          |
+| `service_name`    | json | 否   | string | 服务名精确匹配           |
+| `response_status` | json | 否   | int32  | HTTP 状态码          |
+| `created_at_from` | json | 否   | int64  | 发生时间起，Unix 秒      |
+| `created_at_to`   | json | 否   | int64  | 发生时间止，Unix 秒      |
+
+
+```json
+{ "service_name": "core-api", "page": 1, "page_size": 20 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "user_id": 1,
+        "username": "admin",
+        "request_method": "POST",
+        "request_path": "/admin/user/create",
+        "request_query": "",
+        "request_body": "",
+        "service_name": "core-api",
+        "response_status": 500,
+        "response_body": "",
+        "subject": "panic",
+        "detail": "",
+        "duration_ms": 8,
+        "client_ip": "127.0.0.1",
+        "user_agent": "Mozilla/5.0",
+        "operator_code": "demo",
+        "created_at": 1700000000
+      }
+    ],
+    "total": 1
+  }
+}
+```
+
+
+
+### 授权
+
+`role_id` 与 `id` 二选一（`role_id` 优先）。角色必须本租户。
+
+#### POST /admin/authority/menu/update
+
+`is_system` 超管角色禁止减菜单。
+
+**请求**
+
+
+| 字段         | 位置   | 必填  | 类型      | 说明                  |
+| ---------- | ---- | --- | ------- | ------------------- |
+| `role_id`  | json | 是   | int64   | 角色主键，必须本租户          |
+| `menu_ids` | json | 否   | int64[] | 全量替换该角色菜单；超管角色禁止减菜单 |
+
+
+```json
+{
+  "role_id": 2,
+  "menu_ids": [1, 10, 11]
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/authority/menu/role
+
+**请求**
+
+
+| 字段        | 位置   | 必填  | 类型    | 说明                     |
+| --------- | ---- | --- | ----- | ---------------------- |
+| `role_id` | json | 否   | int64 | 角色主键，与 `id` 二选一，优先本字段  |
+| `id`      | json | 否   | int64 | 角色主键别名，`role_id` 未传时使用 |
+
+
+```json
+{ "role_id": 2 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "menu_ids": [1, 10, 11]
+  }
+}
+```
+
+
+
+#### POST /admin/authority/api/update
+
+按 `(role_code, v1)` 替换；合并 `is_required`；超管角色禁止减 API。
+
+**请求**
+
+
+| 字段              | 位置   | 必填  | 类型       | 说明                     |
+| --------------- | ---- | --- | -------- | ---------------------- |
+| `role_id`       | json | 是   | int64    | 角色主键，必须本租户             |
+| `data`          | json | 否   | object[] | 全量替换该角色 API；超管禁止减 API  |
+| `data[].path`   | json | 是   | string   | 接口 path，须已在 sys_api 登记 |
+| `data[].method` | json | 是   | string   | HTTP 方法                |
+
+
+```json
+{
+  "role_id": 2,
+  "data": [
+    { "path": "/admin/user/list", "method": "POST" },
+    { "path": "/admin/user/detail", "method": "GET" }
+  ]
+}
+```
+
+**响应**
+
+```json
+{ "code": 0, "msg": "ok", "data": { "result": "success" } }
+```
+
+
+
+#### POST /admin/authority/api/role
+
+**请求**
+
+
+| 字段        | 位置   | 必填  | 类型    | 说明                     |
+| --------- | ---- | --- | ----- | ---------------------- |
+| `role_id` | json | 否   | int64 | 角色主键，与 `id` 二选一，优先本字段  |
+| `id`      | json | 否   | int64 | 角色主键别名，`role_id` 未传时使用 |
+
+
+```json
+{ "role_id": 2 }
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": [
+    { "path": "/admin/user/list", "method": "POST" },
+    { "path": "/admin/user/detail", "method": "GET" }
+  ]
+}
+```
+
+---
+
+
+
+## 二、RPC 初始化
+
+
+
+### 1. CreatePlatformAdmin / `bootstrapAdmin` 创建总网超级管理员账号
+
+`PartnerMode=off`。实现：`[rpc/bootstrap/bootstrap.go](../rpc/bootstrap/bootstrap.go)` `CreatePlatformAdmin`。
+
+**请求**（RPC `BootstrapAdminReq`）
+
+
+| 字段             | 位置  | 必填  | 类型     | 说明                           |
+| -------------- | --- | --- | ------ | ---------------------------- |
+| `init_token`   | rpc | 是   | string | 初始化口令，须与 yaml `InitToken` 一致 |
+| `username`     | rpc | 是   | string | 平台超管登录名                      |
+| `password`     | rpc | 是   | string | 平台超管密码                       |
+| `display_name` | rpc | 否   | string | 显示名，缺省为 username             |
+
+
+```json
+{
+  "init_token": "change-me-init-token",
+  "username": "admin",
+  "password": "Admin@123",
+  "display_name": "平台超管"
+}
+```
+
+**响应**
+
+```json
+{
+  "id": 1,
+  "user_code": "a1b2c3d4e5f6",
+  "username": "admin",
+  "display_name": "平台超管",
+  "is_super_admin": true,
+  "status": 1,
+  "role_codes": ["super_admin"],
+  "role_names": ["超级管理员"],
+  "home_path": "/dashboard"
+}
+```
+
+
+
+### 2. CreateOperatorAdmin / `bootstrapOperator` 创建分站超级管理员账号
+
+`PartnerMode=on`。实现：`CreateOperatorAdmin`。只创建该 `operator_code` 下的分站超管用户、`super_admin` 角色，以及 Casbin domain=`operator_code`。已存在超管则拒绝。不再写分站表。
+
+**请求**（RPC `BootstrapOperatorReq`）
+
+
+| 字段              | 位置  | 必填  | 类型     | 说明                           |
+| --------------- | --- | --- | ------ | ---------------------------- |
+| `init_token`    | rpc | 是   | string | 初始化口令，须与 yaml `InitToken` 一致 |
+| `operator_code` | rpc | 是   | string | 分站编码                         |
+| `username`      | rpc | 是   | string | 本分站超管登录名                     |
+| `password`      | rpc | 是   | string | 本分站超管密码                      |
+| `display_name`  | rpc | 否   | string | 显示名，缺省为 username             |
+
+
+```json
+{
+  "init_token": "change-me-init-token",
+  "operator_code": "demo",
+  "username": "admin",
+  "password": "Admin@123",
+  "display_name": "分站超管"
+}
+```
+
+**响应**
+
+```json
+{
+  "id": 1,
+  "user_code": "a1b2c3d4e5f6",
+  "username": "admin",
+  "display_name": "分站超管",
+  "operator_code": "demo",
+  "is_super_admin": true,
+  "status": 1,
+  "role_codes": ["super_admin"],
+  "role_names": ["超级管理员"],
+  "home_path": "/dashboard"
+}
+```
+
+HTTP 对应：`POST /admin/bootstrap/admin`、`POST /admin/bootstrap/operator`（`init_token` 走 Header `X-Init-Token`）。
+
+---
+
+
+
+## 三、菜单 / API 自动迁移（RegisterCatalog）
+
+业务服务**不要**在 core-rpc 里写死 path。各 HTTP 进程启动时调 RPC `registerCatalog`。四类数据（`menu` / `api` / `i18n_langs` / `i18n_dict`）首次成功写入后记入 `sys_init`；**尚未打标**时按下面规则 upsert（存量库升级会再同步一次），**已打标**后只插入缺失行，不覆盖运营改过的字段。已有记录仍会给各分站 `super_admin` 补菜单与 Casbin（增量，不替换已有授权）。
+
+- 菜单按 `name`：首次 upsert；已初始化后只插入新 `name`。`parent_name` 在本批写入后再挂父子；已初始化后只给**本批新建**的菜单设父节点
+- API 按 `(method, path)`：首次 upsert；已初始化后只插入新接口
+- 多语言按 `(i18n_code, trans_key, lang)`：首次 upsert；已初始化后只插入新词条。短 key 会拼上 `i18n_group`（如 `menu` + `route.dashboard` → `menu.route.dashboard`）。站点编码写在每条 `I18nItem.i18n_code`（core-api 为 `platform`，promo-api 为 `promo`）；空则 `platform`
+- 支持的语言按 `lang`：首次幂等插入（已存在不改 `disabled` / `sort_no`，仅当 `name` 为空时回填）；已初始化后只插入新语言
+
+core-api 启动时注册系统管理菜单、`/admin/user|role|menu|api|authority|operator|i18n/*`，以及默认语言 `zh-CN` / `zh-HK` / `en-US`（见 `[api/internal/catalog/catalog.go](../api/internal/catalog/catalog.go)`）。若先 bootstrap 再启 HTTP，重启一次即可写入。
+
+### 示例：promo-api
+
+`[example/promo-api/main.go](../example/promo-api/main.go)` 等价请求：
+
+`RegisterCatalogReq`：
+
+
+| 字段           | 必填  | 类型       | 说明                                              |
+| ------------ | --- | -------- | ----------------------------------------------- |
+| `menus`      | 否   | object[] | 要注册的菜单；首次按 `name` upsert，已初始化后只插入缺失 |
+| `apis`       | 否   | object[] | 要注册的 API；首次按 method+path upsert，已初始化后只插入缺失 |
+| `i18n`       | 否   | object[] | 要注册的多语言；首次按 `(i18n_code, trans_key, lang)` upsert，已初始化后只插入缺失 |
+| `i18n_langs` | 否   | object[] | 要注册的支持语言；首次按 `lang` 幂等插入，已初始化后只插入缺失 |
+
+
+`menus[]`（`RegisterMenuReq`）：
+
+
+| 字段            | 必填  | 类型     | 说明                    |
+| ------------- | --- | ------ | --------------------- |
+| `name`        | 是   | string | 全局唯一标识                |
+| `title`       | 是   | string | 显示标题                  |
+| `menu_type`   | 是   | int32  | `0` 目录，`1` 菜单，`2` 按钮  |
+| `path`        | 否   | string | 前端路由 path             |
+| `component`   | 否   | string | 前端组件路径                |
+| `redirect`    | 否   | string | 重定向                   |
+| `icon`        | 否   | string | 图标                    |
+| `permission`  | 否   | string | 按钮权限码                 |
+| `hide_menu`   | 否   | int32  | `1` 侧栏隐藏              |
+| `sort`        | 否   | int32  | 排序，越小越前               |
+| `disabled`    | 否   | int32  | `1` 停用                |
+| `parent_name` | 否   | string | 父菜单的 `name`，本批写入后再挂父子 |
+
+
+`apis[]`（`CreateApiReq`）：
+
+
+| 字段             | 必填  | 类型     | 说明                 |
+| -------------- | --- | ------ | ------------------ |
+| `method`       | 是   | string | HTTP 方法            |
+| `path`         | 是   | string | 以 `/` 开头           |
+| `description`  | 否   | string | 接口说明               |
+| `api_group`    | 否   | string | 分组                 |
+| `is_required`  | 否   | int32  | `1` 分配权限时强制带上      |
+| `service_name` | 否   | string | 所属服务，如 `promo-api` |
+
+
+`i18n[]`（`I18nItem`）：
+
+
+| 字段           | 必填  | 类型     | 说明                                        |
+| ------------ | --- | ------ | ----------------------------------------- |
+| `i18n_code`  | 否   | string | 站点编码，如 `platform` / `promo`；空则 `platform` |
+| `i18n_group` | 是   | string | 分组，菜单用 `menu`，接口说明用 `api`                 |
+| `trans_key`  | 是   | string | 词条 key；可传短 key（对应菜单 `title`），服务端拼成完整 key  |
+| `lang`       | 是   | string | 语言码；新建词条时须已在 `i18n_langs` / 语言列表中         |
+| `value`      | 否   | string | 译文                                        |
+
+
+`i18n_langs[]`（`CreateI18nLangReq`）：
+
+
+| 字段          | 必填  | 类型     | 说明                  |
+| ----------- | --- | ------ | ------------------- |
+| `lang`      | 是   | string | 语言码，全局唯一            |
+| `name`      | 是   | string | 显示名回退值；已存在且当前名为空时回填 |
+| `i18n_key`  | 否   | string | 多语言 key；已存在且当前为空时回填 |
+| `disabled`  | 否   | int32  | 仅新建时生效，缺省 0         |
+| `sort_no`   | 否   | int32  | 仅新建时写入，已存在不改        |
+
+
+```json
+{
+  "menus": [
+    {
+      "name": "PromoCenter",
+      "title": "route.promoCenter",
+      "menu_type": 0,
+      "path": "/promo",
+      "sort": 20
+    },
+    {
+      "name": "PromoActivityList",
+      "title": "route.promoActivityList",
+      "menu_type": 1,
+      "path": "/promo/activity/list",
+      "component": "promo/activity/list",
+      "parent_name": "PromoCenter",
+      "sort": 21
+    }
+  ],
+  "apis": [
+    {
+      "description": "api.promoList",
+      "api_group": "promo",
+      "method": "GET",
+      "path": "/admin/promo/list",
+      "service_name": "promo-api"
+    }
+  ],
+  "i18n": [
+    {
+      "i18n_code": "promo",
+      "i18n_group": "menu",
+      "trans_key": "route.promoCenter",
+      "lang": "zh-CN",
+      "value": "优惠中心"
+    },
+    {
+      "i18n_code": "promo",
+      "i18n_group": "menu",
+      "trans_key": "route.promoCenter",
+      "lang": "en-US",
+      "value": "Promotions"
+    },
+    {
+      "i18n_code": "promo",
+      "i18n_group": "api",
+      "trans_key": "api.promoList",
+      "lang": "zh-CN",
+      "value": "活动列表"
+    },
+    {
+      "i18n_code": "promo",
+      "i18n_group": "api",
+      "trans_key": "api.promoList",
+      "lang": "en-US",
+      "value": "Promotion list"
+    }
+  ]
+}
+```
+
+```go
+_, err := cli.RegisterCatalog(ctx, req)
+```
+
+仍可单独调 `RegisterApi`。

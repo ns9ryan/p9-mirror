@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+message I18nInfo {
+  int64 id = 1;
+  string i18n_group = 2;
+  string trans_key = 3;
+  string lang = 4;
+  string value = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
+  string i18n_code = 8;
+}
+
+message CreateI18nReq {
+  string i18n_group = 1;
+  string trans_key = 2;
+  string lang = 3;
+  string value = 4;
+  string i18n_code = 5;
+}
+
+message UpdateI18nReq {
+  int64 id = 1;
+  optional string i18n_group = 2;
+  optional string trans_key = 3;
+  optional string lang = 4;
+  optional string value = 5;
+  optional string i18n_code = 6;
+}
+
+message I18nListReq {
+  int32 page = 1;
+  int32 page_size = 2;
+  string i18n_group = 3;
+  string trans_key = 4;
+  string lang = 5;
+  string i18n_code = 6;
+}
+
+message I18nListResp {
+  repeated I18nInfo list = 1;
+  int64 total = 2;
+}
+
+message GetI18nDictReq {
+  string i18n_group = 1; // 空则下发全部组
+  string lang = 2;
+  string i18n_code = 3;
+}
+
+message I18nDictResp {
+  map<string, string> items = 1;
+}
+
+message I18nFileItem {
+  string i18n_code = 1;
+  string i18n_group = 2;
+  string i18n_key = 3;
+  string i18n_value = 4;
+}
+
+message ExportI18nReq {
+  string lang = 1;
+  string i18n_code = 2;
+  string i18n_group = 3;
+}
+
+message ExportI18nResp {
+  string lang = 1;
+  repeated I18nFileItem i18n_items = 2;
+}
+
+message ImportI18nReq {
+  string lang = 1;
+  repeated I18nFileItem i18n_items = 2;
+}
+
+message ImportI18nResp {
+  int32 created = 1;
+  int32 updated = 2;
+  int32 skipped = 3;
+}
+
+message I18nItem {
+  string i18n_group = 1;
+  string trans_key = 2;
+  string lang = 3;
+  string value = 4;
+  string i18n_code = 5;
+}
+
+message UpdateI18nByKeyReq {
+  string trans_key = 1;
+  map<string, string> data = 2;
+  string i18n_code = 3;
+  string i18n_group = 4;
+}
+
+message DeleteI18nByKeyReq {
+  string i18n_code = 1;
+  string i18n_group = 2;
+  string trans_key = 3;
+}
+
+message I18nLangInfo {
+  int64 id = 1;
+  string lang = 2;
+  int32 disabled = 3;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+  string name = 7;
+  int32 sort_no = 8;
+  string i18n_key = 9;
+}
+
+message CreateI18nLangReq {
+  string lang = 1;
+  int32 disabled = 2;
+  string name = 4;
+  int32 sort_no = 5;
+  string i18n_key = 6;
+}
+
+message UpdateI18nLangReq {
+  int64 id = 1;
+  optional string lang = 2;
+  optional int32 disabled = 3;
+  optional string name = 5;
+  optional int32 sort_no = 6;
+  optional string i18n_key = 7;
+}
+
+message I18nLangListReq {
+  int32 page = 1;
+  int32 page_size = 2;
+  string lang = 3;
+  optional int32 disabled = 4;
+}
+
+message I18nLangListResp {
+  repeated I18nLangInfo list = 1;
+  int64 total = 2;
+}
+
+message ReorderI18nLangReq {
+  int64 id = 1;
+  int64 target_id = 2;
+}
+
+service Core {
+  // I18n management
+  // group: i18n
+  rpc createI18n (CreateI18nReq) returns (I18nInfo);
+  // group: i18n
+  rpc updateI18n (UpdateI18nReq) returns (Empty);
+  // group: i18n
+  rpc updateI18nByKey (UpdateI18nByKeyReq) returns (Empty);
+  // group: i18n
+  rpc deleteI18n (IDsReq) returns (Empty);
+  // group: i18n
+  rpc deleteI18nByKey (DeleteI18nByKeyReq) returns (Empty);
+  // group: i18n
+  rpc getI18nList (I18nListReq) returns (I18nListResp);
+  // group: i18n
+  rpc getI18nDict (GetI18nDictReq) returns (I18nDictResp);
+  // group: i18n
+  rpc exportI18n (ExportI18nReq) returns (ExportI18nResp);
+  // group: i18n
+  rpc importI18n (ImportI18nReq) returns (ImportI18nResp);
+  // group: i18n
+  rpc createI18nLang (CreateI18nLangReq) returns (I18nLangInfo);
+  // group: i18n
+  rpc updateI18nLang (UpdateI18nLangReq) returns (Empty);
+  // group: i18n
+  rpc deleteI18nLang (IDsReq) returns (Empty);
+  // group: i18n
+  rpc getI18nLangList (I18nLangListReq) returns (I18nLangListResp);
+  // group: i18n
+  rpc reorderI18nLang (ReorderI18nLangReq) returns (Empty);
+  // group: i18n
+  rpc getEnabledI18nLangs (Empty) returns (I18nLangListResp);
+}

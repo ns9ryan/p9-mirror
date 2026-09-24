@@ -1,0 +1,46 @@
+syntax = "v1"
+
+type (
+	// 分站经营地区分配信息
+	RegionAllocationInfo {
+		// 国家地区编码
+		RegionCode string `json:"region_code"`
+		// 分配时间, Unix毫秒时间戳
+		AllocatedAt int64 `json:"allocated_at"`
+	}
+	// 获取经营地区分配列表请求
+	ListRegionAllocationsRequest {
+		// 分站ID
+		OperatorId int64 `form:"operator_id" validate:"required,gt=0"`
+	}
+	// 获取经营地区分配列表响应
+	ListRegionAllocationsResponse {
+		// 已分配经营地区列表
+		List []RegionAllocationInfo `json:"list"`
+	}
+	// 保存经营地区分配请求
+	SaveRegionAllocationsRequest {
+		// 分站ID
+		OperatorId int64 `json:"operator_id" validate:"required,gt=0"`
+		// 当前分配的国家地区编码
+		RegionCodes []string `json:"region_codes" validate:"omitempty,dive,required,notblank,len=2"`
+	}
+	// 保存经营地区分配响应
+	SaveRegionAllocationsResponse  {}
+)
+
+@server (
+	group:      region_allocation
+	prefix:     /admin/operator/region-allocation
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取经营地区分配列表
+	@handler ListRegionAllocations
+	get /list (ListRegionAllocationsRequest) returns (ListRegionAllocationsResponse)
+
+	// 保存经营地区分配
+	@handler SaveRegionAllocations
+	post /save (SaveRegionAllocationsRequest) returns (SaveRegionAllocationsResponse)
+}
+

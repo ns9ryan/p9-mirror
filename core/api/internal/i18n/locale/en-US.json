@@ -1,0 +1,101 @@
+{
+  "common": {
+    "success": "Success",
+    "unauthorized": "unauthorized",
+    "forbidden": "forbidden",
+    "notFound": "not found",
+    "tokenExpired": "token expired",
+    "internalError": "internal error",
+    "invalidParam": "invalid request parameter",
+    "paramRequired": "required parameter missing: {{.Field}}",
+    "paramTypeMismatch": "parameter type mismatch: {{.Field}}",
+    "paramValueInvalid": "invalid parameter value",
+    "paramValueInvalidField": "invalid parameter value: {{.Field}}"
+  },
+  "auth": {
+    "usernamePasswordRequired": "username and password required",
+    "userDisabled": "user disabled",
+    "passwordIncorrect": "incorrect username or password",
+    "noActiveRole": "no active role",
+    "invalidCredentials": "invalid credentials",
+    "operatorCodeRequired": "operator_code required",
+    "operatorDisabled": "operator disabled",
+    "invalidInitToken": "invalid init token",
+    "refreshTokenRequired": "refresh_token required",
+    "partnerModeMismatch": "partner mode mismatch",
+    "rootUserExists": "root user already exists",
+    "bootstrapFieldsRequired": "operator_code, username and password required",
+    "previewReadOnly": "preview token is read-only",
+    "ipNotAllowed": "current IP is not in the whitelist",
+    "ipMismatch": "login IP has changed, please sign in again"
+  },
+  "user": {
+    "createFieldsRequired": "username, password and display_name required",
+    "createFailed": "create user failed",
+    "cannotDeleteSelf": "cannot delete self",
+    "cannotDeleteRoot": "cannot delete root user",
+    "passwordRequired": "password required",
+    "oldPasswordMismatch": "old password mismatch",
+    "notFound": "user not found",
+    "roleNotFound": "role not found",
+    "invalidIpWhitelist": "invalid IP whitelist"
+  },
+  "role": {
+    "codeNameRequired": "role_code and role_name required",
+    "createFailed": "create role failed",
+    "cannotDisableSystem": "cannot disable system role",
+    "cannotDeleteSystem": "cannot delete system role",
+    "stillBoundToUsers": "role still bound to users",
+    "notFound": "role not found",
+    "superAdmin": "Super Admin"
+  },
+  "menu": {
+    "nameTitleRequired": "name and title required",
+    "invalidType": "invalid menu_type",
+    "nameExists": "menu name exists",
+    "createFailed": "create menu failed",
+    "nameRequired": "name required",
+    "hasChildren": "menu has children",
+    "notFound": "menu not found",
+    "invalidParentId": "invalid parent_id",
+    "parentNotFound": "parent menu not found"
+  },
+  "api": {
+    "exists": "api exists",
+    "createFailed": "create api failed",
+    "notFound": "api not found",
+    "registerFailed": "register api failed",
+    "invalidMethod": "invalid method",
+    "pathMustStartWithSlash": "path must start with /",
+    "invalidIsRequired": "invalid is_required"
+  },
+  "i18n": {
+    "groupKeyLangRequired": "i18n_group, trans_key and lang required",
+    "transKeyRequired": "trans_key required",
+    "dataRequired": "translation data required",
+    "exists": "i18n entry exists",
+    "createFailed": "create i18n failed",
+    "notFound": "i18n entry not found",
+    "langRequired": "lang required",
+    "langMismatch": "request lang does not match file lang",
+    "nameRequired": "language name required",
+    "langExists": "language exists",
+    "langNotFound": "language not found",
+    "langNotSupported": "language is not in the supported list",
+    "langCreateFailed": "create language failed",
+    "cannotChangeLangWithEntries": "cannot change lang while translations exist",
+    "cannotDeleteLangWithEntries": "cannot delete language while translations exist"
+  },
+  "loginLog": {
+    "resultSuccess": "Success",
+    "resultFail": "Failed"
+  },
+  "operator": {
+    "apiOnlyOnMode": "operator API is only available in on mode",
+    "notFound": "operator not found"
+  },
+  "authority": {
+    "cannotChangeSystemMenus": "cannot change system role menus",
+    "cannotChangeSystemApis": "cannot change system role APIs"
+  }
+}

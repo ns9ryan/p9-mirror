@@ -1,0 +1,46 @@
+syntax = "v1"
+
+type (
+	// 分站语言分配信息
+	LanguageAllocationInfo {
+		// 语言编码
+		LanguageCode string `json:"language_code"`
+		// 分配时间, Unix毫秒时间戳
+		AllocatedAt int64 `json:"allocated_at"`
+	}
+	// 获取语言分配列表请求
+	ListLanguageAllocationsRequest {
+		// 分站ID
+		OperatorId int64 `form:"operator_id" validate:"required,gt=0"`
+	}
+	// 获取语言分配列表响应
+	ListLanguageAllocationsResponse {
+		// 已分配语言列表
+		List []LanguageAllocationInfo `json:"list"`
+	}
+	// 保存语言分配请求
+	SaveLanguageAllocationsRequest {
+		// 分站ID
+		OperatorId int64 `json:"operator_id" validate:"required,gt=0"`
+		// 当前分配的语言编码
+		LanguageCodes []string `json:"language_codes" validate:"omitempty,dive,required,notblank,max=16"`
+	}
+	// 保存语言分配响应
+	SaveLanguageAllocationsResponse  {}
+)
+
+@server (
+	group:      language_allocation
+	prefix:     /admin/operator/language-allocation
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取语言分配列表
+	@handler ListLanguageAllocations
+	get /list (ListLanguageAllocationsRequest) returns (ListLanguageAllocationsResponse)
+
+	// 保存语言分配
+	@handler SaveLanguageAllocations
+	post /save (SaveLanguageAllocationsRequest) returns (SaveLanguageAllocationsResponse)
+}
+

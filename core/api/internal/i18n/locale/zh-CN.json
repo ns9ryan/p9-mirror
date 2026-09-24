@@ -1,0 +1,101 @@
+{
+  "common": {
+    "success": "成功",
+    "unauthorized": "未登录",
+    "forbidden": "无权限",
+    "notFound": "不存在",
+    "tokenExpired": "登录已过期",
+    "internalError": "内部错误",
+    "invalidParam": "请求参数错误",
+    "paramRequired": "缺少必填参数: {{.Field}}",
+    "paramTypeMismatch": "参数类型错误: {{.Field}}",
+    "paramValueInvalid": "参数值错误",
+    "paramValueInvalidField": "参数值错误: {{.Field}}"
+  },
+  "auth": {
+    "usernamePasswordRequired": "用户名和密码必填",
+    "userDisabled": "账号已停用",
+    "passwordIncorrect": "用户名或密码错误",
+    "noActiveRole": "没有可用角色",
+    "invalidCredentials": "凭证无效",
+    "operatorCodeRequired": "分站编码必填",
+    "operatorDisabled": "分站已停用",
+    "invalidInitToken": "初始化口令无效",
+    "refreshTokenRequired": "refresh_token 必填",
+    "partnerModeMismatch": "分站模式不匹配",
+    "rootUserExists": "平台超管已存在",
+    "bootstrapFieldsRequired": "分站编码、用户名和密码必填",
+    "previewReadOnly": "预览模式仅允许查看",
+    "ipNotAllowed": "当前 IP 不在白名单内",
+    "ipMismatch": "登录 IP 已变化，请重新登录"
+  },
+  "user": {
+    "createFieldsRequired": "用户名、密码和显示名必填",
+    "createFailed": "创建用户失败",
+    "cannotDeleteSelf": "不能删除自己",
+    "cannotDeleteRoot": "不能删除平台超管",
+    "passwordRequired": "密码必填",
+    "oldPasswordMismatch": "原密码不正确",
+    "notFound": "用户不存在",
+    "roleNotFound": "角色不存在",
+    "invalidIpWhitelist": "IP 白名单无效"
+  },
+  "role": {
+    "codeNameRequired": "角色编码和名称必填",
+    "createFailed": "创建角色失败",
+    "cannotDisableSystem": "不能停用系统角色",
+    "cannotDeleteSystem": "不能删除系统角色",
+    "stillBoundToUsers": "角色仍绑定用户",
+    "notFound": "角色不存在",
+    "superAdmin": "超级管理员"
+  },
+  "menu": {
+    "nameTitleRequired": "菜单标识和标题必填",
+    "invalidType": "菜单类型无效",
+    "nameExists": "菜单标识已存在",
+    "createFailed": "创建菜单失败",
+    "nameRequired": "菜单标识必填",
+    "hasChildren": "菜单下仍有子菜单",
+    "notFound": "菜单不存在",
+    "invalidParentId": "父菜单无效",
+    "parentNotFound": "父菜单不存在"
+  },
+  "api": {
+    "exists": "接口已存在",
+    "createFailed": "创建接口失败",
+    "notFound": "接口不存在",
+    "registerFailed": "注册接口失败",
+    "invalidMethod": "HTTP 方法无效",
+    "pathMustStartWithSlash": "路径必须以 / 开头",
+    "invalidIsRequired": "is_required 无效"
+  },
+  "i18n": {
+    "groupKeyLangRequired": "分组、词条key和语言必填",
+    "transKeyRequired": "词条key必填",
+    "dataRequired": "译文数据必填",
+    "exists": "多语言词条已存在",
+    "createFailed": "创建多语言失败",
+    "notFound": "多语言词条不存在",
+    "langRequired": "语言码必填",
+    "langMismatch": "请求语言与文件语言不一致",
+    "nameRequired": "语言名称必填",
+    "langExists": "语言已存在",
+    "langNotFound": "语言不存在",
+    "langNotSupported": "语言不在支持列表中",
+    "langCreateFailed": "创建语言失败",
+    "cannotChangeLangWithEntries": "该语言已有词条，不能修改语言码",
+    "cannotDeleteLangWithEntries": "该语言已有词条，不能删除"
+  },
+  "loginLog": {
+    "resultSuccess": "成功",
+    "resultFail": "失败"
+  },
+  "operator": {
+    "apiOnlyOnMode": "仅分站模式可调用",
+    "notFound": "分站不存在"
+  },
+  "authority": {
+    "cannotChangeSystemMenus": "不能修改系统角色菜单",
+    "cannotChangeSystemApis": "不能修改系统角色接口"
+  }
+}

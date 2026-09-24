@@ -1,0 +1,42 @@
+package i18n
+
+import (
+	"context"
+
+	"oa.98ent.com/p9/common/xerr"
+	"oa.98ent.com/p9/core/rpc/internal/logic"
+	"oa.98ent.com/p9/core/rpc/internal/svc"
+	"oa.98ent.com/p9/core/rpc/service"
+	"oa.98ent.com/p9/core/rpc/types/core"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type UpdateI18nLangLogic struct {
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
+}
+
+func NewUpdateI18nLangLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateI18nLangLogic {
+	return &UpdateI18nLangLogic{
+		ctx:    ctx,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctx),
+	}
+}
+
+func (l *UpdateI18nLangLogic) UpdateI18NLang(in *core.UpdateI18NLangReq) (*core.Empty, error) {
+	err := l.svcCtx.Deps.UpdateI18nLang(l.ctx, service.UpdateI18nLangReq{
+		ID:       in.GetId(),
+		Lang:     in.Lang,
+		Name:     in.Name,
+		I18nKey:  in.I18NKey,
+		Disabled: logic.ToInt16Ptr(in.Disabled),
+		SortNo:   logic.ToIntPtr(in.SortNo),
+	})
+	if err != nil {
+		return nil, xerr.RpcErr(err)
+	}
+	return &core.Empty{}, nil
+}

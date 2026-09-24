@@ -1,0 +1,371 @@
+syntax = "v1"
+
+type (
+	// ==================== 游戏分配 ====================
+	// OperatorGameAllocationInfo 分站游戏信息
+	OperatorGameAllocationInfo {
+		Id                  int64  `json:"id"`
+		OpCode              string `json:"op_code"`
+		OpName              string `json:"op_name"`
+		GameCount           int32  `json:"game_count"`
+		GameCategoryCount   int32  `json:"game_category_count"`
+		GameProviderCount   int32  `json:"game_provider_count"`
+		GameChannelCount    int32  `json:"game_channel_count"`
+		UpdatedAt           int64  `json:"updated_at"`
+	}
+
+	// 获取游戏资源分配列表请求
+	ListGameAllocationsRequest {
+		Page     int32  `form:"page,default=1"`
+		PageSize int32  `form:"page_size,default=10"`
+		OpCode   string `form:"op_code,optional"`
+		Status   int32  `form:"status,optional"`
+	}
+	// 获取游戏资源分配列表响应
+	ListGameAllocationsResponse {
+		Code     int32                          `json:"code"`
+		Message  string                         `json:"message"`
+		Items    []OperatorGameAllocationInfo   `json:"items"`
+		Total    int64                          `json:"total"`
+		Page     int32                          `json:"page"`
+		PageSize int32                          `json:"page_size"`
+	}
+
+	// ==================== 游戏分类 ====================
+	// OperatorGameCategoryInfo 分站游戏分类信息
+	OperatorGameCategoryInfo {
+		Id           int64  `json:"id"`
+		Name         string `json:"name"` 
+		OpCode       string `json:"op_code"`
+		CategoryCode string `json:"category_code"`
+		Status       int32  `json:"status"`
+		CheckStatus  int32  `json:"check_status"`
+		CreatedAt    int64  `json:"created_at"`
+		UpdatedAt    int64  `json:"updated_at"`
+	}
+
+	// 获取分站游戏分类列表请求
+	GetOperatorGameCategoryListRequest {
+		Page         int32  `form:"page,default=1"`
+		PageSize     int32  `form:"page_size,default=10"`
+		OpCode       string `form:"op_code" validate:"required"`
+		CategoryCode string `form:"category_code,optional"`
+		CheckStatus   int32  `form:"check_status,optional"`
+	}
+	// 获取分站游戏分类列表响应
+	GetOperatorGameCategoryListResponse {
+		Items    []OperatorGameCategoryInfo    `json:"items"`
+		Total    int64                         `json:"total"`
+		Page     int32                         `json:"page"`
+		PageSize int32                         `json:"page_size"`
+	}
+
+	// 批量修改分站游戏分类状态请求
+	BatchUpdateOperatorGameCategoryStatusRequest {
+		Ids    []int64 `json:"ids"`
+		Status int32  `json:"status"`
+	}
+	// 批量修改分站游戏分类状态响应
+	BatchUpdateOperatorGameCategoryStatusResponse {
+		Total   int64  `json:"total"`
+		Success int64  `json:"success"`
+		Failed  int64  `json:"failed"`
+	}
+
+	SaveOperatorGameCategoryAllocationItem {
+		Code        string `json:"code"`
+		CheckStatus int32  `json:"check_status"`
+	}
+	SaveOperatorGameCategoryAllocationRequest {
+		OpCode string                                   `json:"op_code" validate:"required"`
+		Items  []SaveOperatorGameCategoryAllocationItem `json:"items"`
+	}
+	SaveOperatorGameCategoryAllocationResponse {
+		Total   int64 `json:"total"`
+		Created int64 `json:"created"`
+		Deleted int64 `json:"deleted"`
+		Exist   int64 `json:"exist"`
+		Failed  int64 `json:"failed"`
+	}
+
+	// ==================== 游戏渠道 ====================
+	// OperatorGameChannelInfo 分站游戏渠道信息
+	OperatorGameChannelInfo {
+		Id        int64  `json:"id"`
+		Name      string `json:"name"` 
+		OpCode    string `json:"op_code"`
+		ChannelCode string `json:"channel_code"`
+		Status    int32  `json:"status"`
+		CheckStatus int32  `json:"check_status"`
+		CreatedAt int64  `json:"created_at"`
+		UpdatedAt int64  `json:"updated_at"`
+	}
+
+	// 获取分站游戏渠道列表请求
+	GetOperatorGameChannelListRequest {
+		Page        int32  `form:"page,default=1"`
+		PageSize    int32  `form:"page_size,default=10"`
+		OpCode      string `form:"op_code" validate:"required"`
+		ChannelCode string `form:"channel_code,optional"`
+		CheckStatus   int32  `form:"check_status,optional"`
+	}
+	// 获取分站游戏渠道列表响应
+	GetOperatorGameChannelListResponse {
+		Items    []OperatorGameChannelInfo    `json:"items"`
+		Total    int64                        `json:"total"`
+		Page     int32                        `json:"page"`
+		PageSize int32                        `json:"page_size"`
+	}
+
+	// 批量修改分站游戏渠道状态请求
+	BatchUpdateOperatorGameChannelStatusRequest {
+		Ids    []int64 `json:"ids"`
+		Status int32  `json:"status"`
+	}
+	// 批量修改分站游戏渠道状态响应
+	BatchUpdateOperatorGameChannelStatusResponse {
+		Total   int64  `json:"total"`
+		Success int64  `json:"success"`
+		Failed  int64  `json:"failed"`
+	}
+
+	SaveOperatorGameChannelAllocationItem {
+		Code        string `json:"code"`
+		CheckStatus int32  `json:"check_status"`
+	}
+	SaveOperatorGameChannelAllocationRequest {
+		OpCode string                                 `json:"op_code" validate:"required"`
+		Items  []SaveOperatorGameChannelAllocationItem `json:"items"`
+	}
+	SaveOperatorGameChannelAllocationResponse {
+		Total   int64 `json:"total"`
+		Created int64 `json:"created"`
+		Deleted int64 `json:"deleted"`
+		Exist   int64 `json:"exist"`
+		Failed  int64 `json:"failed"`
+	}
+
+	// ==================== 游戏提供商 ====================
+	// OperatorGameProviderInfo 分站游戏提供商信息
+	OperatorGameProviderInfo {
+		Id           int64  `json:"id"`
+		Name         string `json:"name"` 
+		OpCode       string `json:"op_code"`
+		ProviderCode string `json:"provider_code"`
+		Status       int32  `json:"status"`
+		CheckStatus  int32  `json:"check_status"`
+		CreatedAt    int64  `json:"created_at"`
+		UpdatedAt    int64  `json:"updated_at"`
+	}
+
+	// 获取分站游戏提供商列表请求
+	GetOperatorGameProviderListRequest {
+		Page         int32  `form:"page,default=1"`
+		PageSize     int32  `form:"page_size,default=10"`
+		OpCode       string `form:"op_code" validate:"required"`
+		ProviderCode string `form:"provider_code,optional"`
+		CheckStatus   int32  `form:"check_status,optional"`
+	}
+	// 获取分站游戏提供商列表响应
+	GetOperatorGameProviderListResponse {
+		Items    []OperatorGameProviderInfo   `json:"items"`
+		Total    int64                        `json:"total"`
+		Page     int32                        `json:"page"`
+		PageSize int32                        `json:"page_size"`
+	}
+
+	// 批量修改分站游戏提供商状态请求
+	BatchUpdateOperatorGameProviderStatusRequest {
+		Ids    []int64 `json:"ids"`
+		Status int32  `json:"status"`
+	}
+	// 批量修改分站游戏提供商状态响应
+	BatchUpdateOperatorGameProviderStatusResponse {
+		Total   int64  `json:"total"`
+		Success int64  `json:"success"`
+		Failed  int64  `json:"failed"`
+	}
+
+	SaveOperatorGameProviderAllocationItem {
+		Code        string `json:"code"`
+		CheckStatus int32  `json:"check_status"`
+	}
+	SaveOperatorGameProviderAllocationRequest {
+		OpCode string                                  `json:"op_code" validate:"required"`
+		Items  []SaveOperatorGameProviderAllocationItem `json:"items"`
+	}
+	SaveOperatorGameProviderAllocationResponse {
+		Total   int64 `json:"total"`
+		Created int64 `json:"created"`
+		Deleted int64 `json:"deleted"`
+		Exist   int64 `json:"exist"`
+		Failed  int64 `json:"failed"`
+	}
+
+	// ==================== 游戏 ====================
+	// OperatorGameInfo 分站游戏信息
+	OperatorGameInfo {
+		Id        int64  `json:"id"`
+		OpCode    string `json:"op_code"`
+		GameCode  string `json:"game_code"`
+		Name      string `json:"name"`
+		Status    int32  `json:"status"`
+		CheckStatus int32  `json:"check_status"`
+		CreatedAt int64  `json:"created_at"`
+		UpdatedAt int64  `json:"updated_at"`
+	}
+
+	// 获取分站游戏列表请求
+	GetOperatorGameListRequest {
+		Page     int32  `form:"page,default=1"`
+		PageSize int32  `form:"page_size,default=10"`
+		OpCode   string `form:"op_code" validate:"required"`
+		GameCode string `form:"game_code,optional"`
+		CheckStatus   int32  `form:"check_status,optional"`
+	}
+	// 获取分站游戏列表响应
+	GetOperatorGameListResponse {
+		Items    []OperatorGameInfo  `json:"items"`
+		Total    int64               `json:"total"`
+		Page     int32               `json:"page"`
+		PageSize int32               `json:"page_size"`
+	}
+
+	// 批量修改分站游戏状态请求
+	BatchUpdateOperatorGameStatusRequest {
+		Ids    []int64 `json:"ids"`
+		Status int32  `json:"status"`
+	}
+	// 批量修改分站游戏状态响应
+	BatchUpdateOperatorGameStatusResponse {
+		Total   int64  `json:"total"`
+		Success int64  `json:"success"`
+		Failed  int64  `json:"failed"`
+	}
+
+	SaveOperatorGameAllocationItem {
+		Code        string `json:"code"`
+		CheckStatus int32  `json:"check_status"`
+	}
+	SaveOperatorGameAllocationRequest {
+		OpCode string                         `json:"op_code" validate:"required"`
+		Items  []SaveOperatorGameAllocationItem `json:"items"`
+	}
+	SaveOperatorGameAllocationResponse {
+		Total   int64 `json:"total"`
+		Created int64 `json:"created"`
+		Deleted int64 `json:"deleted"`
+		Exist   int64 `json:"exist"`
+		Failed  int64 `json:"failed"`
+	}
+)
+
+// ==================== 游戏分配 ====================
+@server (
+	group:      operator_game_allocation
+	prefix:     /admin/operator/game-allocation
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取游戏资源分配列表
+	@doc "获取游戏资源分配列表"
+	@handler ListGameAllocations
+	get /list (ListGameAllocationsRequest) returns (ListGameAllocationsResponse)
+}
+
+// ==================== 游戏分类 ====================
+@server (
+	group:      operator_game_category
+	prefix:     /admin/operator/game-category
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取分站游戏分类列表
+	@doc "获取分站游戏分类列表"
+	@handler GetOperatorGameCategoryList
+	get /list (GetOperatorGameCategoryListRequest) returns (GetOperatorGameCategoryListResponse)
+
+	// 保存分站游戏分类分配
+	@doc "保存分站游戏分类分配"
+	@handler SaveOperatorGameCategoryAllocation
+	post /save-allocation (SaveOperatorGameCategoryAllocationRequest) returns (SaveOperatorGameCategoryAllocationResponse)
+
+	// 批量修改分站游戏分类状态
+	@doc "批量修改分站游戏分类状态"
+	@handler BatchUpdateOperatorGameCategoryStatus
+	post /batch-update-status (BatchUpdateOperatorGameCategoryStatusRequest) returns (BatchUpdateOperatorGameCategoryStatusResponse)
+
+}
+
+// ==================== 游戏渠道 ====================
+@server (
+	group:      operator_game_channel
+	prefix:     /admin/operator/game-channel
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取分站游戏渠道列表
+	@doc "获取分站游戏渠道列表"
+	@handler GetOperatorGameChannelList
+	get /list (GetOperatorGameChannelListRequest) returns (GetOperatorGameChannelListResponse)
+
+	// 保存分站游戏渠道分配
+	@doc "保存分站游戏渠道分配"
+	@handler SaveOperatorGameChannelAllocation
+	post /save-allocation (SaveOperatorGameChannelAllocationRequest) returns (SaveOperatorGameChannelAllocationResponse)
+
+	// 批量修改分站游戏渠道状态
+	@doc "批量修改分站游戏渠道状态"
+	@handler BatchUpdateOperatorGameChannelStatus
+	post /batch-update-status (BatchUpdateOperatorGameChannelStatusRequest) returns (BatchUpdateOperatorGameChannelStatusResponse)
+
+}
+
+// ==================== 游戏提供商 ====================
+@server (
+	group:      operator_game_provider
+	prefix:     /admin/operator/game-provider
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取分站游戏提供商列表
+	@doc "获取分站游戏提供商列表"
+	@handler GetOperatorGameProviderList
+	get /list (GetOperatorGameProviderListRequest) returns (GetOperatorGameProviderListResponse)
+
+	// 保存分站游戏提供商分配
+	@doc "保存分站游戏提供商分配"
+	@handler SaveOperatorGameProviderAllocation
+	post /save-allocation (SaveOperatorGameProviderAllocationRequest) returns (SaveOperatorGameProviderAllocationResponse)
+
+	// 批量修改分站游戏提供商状态
+	@doc "批量修改分站游戏提供商状态"
+	@handler BatchUpdateOperatorGameProviderStatus
+	post /batch-update-status (BatchUpdateOperatorGameProviderStatusRequest) returns (BatchUpdateOperatorGameProviderStatusResponse)
+
+}
+
+// ==================== 游戏 ====================
+@server (
+	group:      operator_game
+	prefix:     /admin/operator/game
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取分站游戏列表
+	@doc "获取分站游戏列表"
+	@handler GetOperatorGameList
+	get /list (GetOperatorGameListRequest) returns (GetOperatorGameListResponse)
+
+	// 保存分站游戏分配
+	@doc "保存分站游戏分配"
+	@handler SaveOperatorGameAllocation
+	post /save-allocation (SaveOperatorGameAllocationRequest) returns (SaveOperatorGameAllocationResponse)
+
+	// 批量修改分站游戏状态
+	@doc "批量修改分站游戏状态"
+	@handler BatchUpdateOperatorGameStatus
+	post /batch-update-status (BatchUpdateOperatorGameStatusRequest) returns (BatchUpdateOperatorGameStatusResponse)
+
+}
+

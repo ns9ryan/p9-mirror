@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package platform_game;
+
+option go_package = "oa.98ent.com/p9/platform-game/rpc/pb/platform_game";
+
+// OperatorGameInfo 分站游戏信息
+message OperatorGameInfo {
+    int64 id = 1;
+    string name = 2;
+    string op_code = 3;
+    string game_code = 4;
+    int32 status = 5;
+    int32 check_status = 6;
+    int64 created_at = 7;
+    int64 updated_at = 8;
+}
+
+// GetOperatorGameListRequest 获取分站游戏列表请求
+message GetOperatorGameListRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+    string op_code = 3;
+    string game_code = 4;
+    int32 check_status = 5;
+}
+
+// GetOperatorGameListResp 分站游戏列表响应
+message GetOperatorGameListResp {
+    repeated OperatorGameInfo items = 1;
+    int64 total = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+}
+
+// BatchUpdateOperatorGameStatusRequest 批量修改分站游戏状态请求
+message BatchUpdateOperatorGameStatusRequest {
+    repeated int64 ids = 1;
+    int32 status = 2;
+}
+
+// BatchUpdateOperatorGameStatusResp 批量修改分站游戏状态响应
+message BatchUpdateOperatorGameStatusResp {
+    int64 total = 1;
+    int64 success = 2;
+    int64 failed = 3;
+}
+
+message SaveOperatorGameAllocationInfo {
+    string code = 1;
+    int32 check_status = 2;
+}
+
+// SaveOperatorGameAllocationRequest 保存分站游戏分配请求项
+message SaveOperatorGameAllocationRequest {
+    string op_code = 1;
+    repeated SaveOperatorGameAllocationInfo items = 2;
+}
+
+// SaveOperatorGameAllocationResp 保存分站游戏分配响应
+message SaveOperatorGameAllocationResp {
+    int64 total = 1;
+    int64 created = 2;
+    int64 deleted = 3;
+    int64 exist = 4;
+    int64 failed = 5;
+}

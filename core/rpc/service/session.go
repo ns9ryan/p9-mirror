@@ -1,0 +1,242 @@
+package service
+
+import (
+	"context"
+
+	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/common/utils"
+	"oa.98ent.com/p9/common/xerr"
+	coreI18n "oa.98ent.com/p9/core/common/i18n"
+	"oa.98ent.com/p9/core/common/jwt"
+	"oa.98ent.com/p9/core/rpc/model"
+)
+
+func (d *Deps) Logout(ctx context.Context, refreshToken string) error {
+	claims := ctxdata.ClaimsFromCtx(ctx)
+	if claims == nil {
+		return xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	raw, exp, err := d.parseOwnRefresh(claims, refreshToken)
+	if err != nil {
+		return err
+	}
+	if err := d.BlacklistToken(ctx, ctxdata.RawTokenFromCtx(ctx), claims.ExpiresAt); err != nil {
+		return err
+	}
+	return d.BlacklistToken(ctx, raw, exp)
+}
+
+func (d *Deps) parseOwnRefresh(claims *ctxdata.Claims, refreshToken string) (string, int64, error) {
+	raw := jwt.StripBearer(refreshToken)
+	if raw == "" {
+		return "", 0, xerr.BadRequest(coreI18n.AuthRefreshTokenRequired)
+	}
+	c, err := jwt.ParseTyped(d.JWTRefreshSecret, raw, jwt.TokenRefresh)
+	if err != nil || c.UserID != claims.UserID || c.Salt != claims.Salt {
+		return "", 0, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	exp := int64(0)
+	if c.ExpiresAt != nil {
+		exp = c.ExpiresAt.Unix()
+	}
+	return raw, exp, nil
+}
+
+func (d *Deps) LogoutAll(ctx context.Context) error {
+	claims := ctxdata.ClaimsFromCtx(ctx)
+	if claims == nil {
+		return xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	return d.RotateSalt(ctx, claims.UserID)
+}
+
+func (d *Deps) CurrentUser(ctx context.Context) (UserPublic, error) {
+	claims := ctxdata.ClaimsFromCtx(ctx)
+	if claims == nil {
+		return UserPublic{}, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	u, err := d.ActiveUserByID(ctx, claims.UserID)
+	if err != nil {
+		return UserPublic{}, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	roles, err := d.RolesOfUser(ctx, u.ID)
+	if err != nil {
+		return UserPublic{}, err
+	}
+	return toPublic(u, roles), nil
+}
+
+func (d *Deps) CheckToken(ctx context.Context, raw string) (*ctxdata.Claims, error) {
+	raw = jwt.StripBearer(raw)
+	claims, err := jwt.Parse(d.JWTSecret, raw)
+	if err != nil {
+		if jwt.IsExpired(err) {
+			return nil, xerr.TokenExpired(coreI18n.TokenExpired)
+		}
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if claims.TokenType == jwt.TokenRefresh {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if err := d.checkTokenClientIP(ctx, claims); err != nil {
+		return nil, err
+	}
+	if d.TokenBlacklisted(ctx, raw) {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	// if claims.TokenType == jwt.TokenPreview {
+	// 	return d.checkPreviewToken(ctx, claims)
+	// }
+	u, err := d.ActiveUserByID(ctx, claims.UserID)
+	if err != nil {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if u.Status != model.StatusNormal || u.Salt != claims.Salt {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if err := d.checkTokenTenant(ctx, u, claims); err != nil {
+		return nil, err
+	}
+	codes, err := d.RoleCodesOfUser(ctx, u.ID)
+	if err != nil {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	exp := int64(0)
+	if claims.ExpiresAt != nil {
+		exp = claims.ExpiresAt.Unix()
+	}
+	return &ctxdata.Claims{
+		UserID:       u.ID,
+		UserCode:     u.UserCode,
+		Username:     u.Username,
+		OperatorCode: claims.OperatorCode,
+		RoleCodes:    codes,
+		Salt:         u.Salt,
+		ExpiresAt:    exp,
+		TokenType:    claims.TokenType,
+		IsPlatform:   claims.IsPlatform,
+		ClientIP:     claims.ClientIP,
+	}, nil
+}
+
+func (d *Deps) checkPreviewToken(ctx context.Context, claims *jwt.Claims) (*ctxdata.Claims, error) {
+	if claims.OperatorCode == "" {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if claims.UserID == 0 {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	u, err := d.ActiveUserByID(ctxdata.SkipTenant(ctx), claims.UserID)
+	if err != nil {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if u.Status != model.StatusNormal || u.Salt != claims.Salt {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if u.OperatorCode == nil || *u.OperatorCode != claims.OperatorCode {
+		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	codes := claims.RoleCodes
+	if codes == nil {
+		codes = []string{}
+	}
+	exp := int64(0)
+	if claims.ExpiresAt != nil {
+		exp = claims.ExpiresAt.Unix()
+	}
+	return &ctxdata.Claims{
+		UserID:       u.ID,
+		UserCode:     u.UserCode,
+		Username:     u.Username,
+		OperatorCode: claims.OperatorCode,
+		RoleCodes:    codes,
+		Salt:         u.Salt,
+		ExpiresAt:    exp,
+		IsPlatform:   true,
+		TokenType:    jwt.TokenPreview,
+		ClientIP:     claims.ClientIP,
+	}, nil
+}
+
+func (d *Deps) checkTokenClientIP(ctx context.Context, claims *jwt.Claims) error {
+	got := utils.NormalizeIP(claims.ClientIP)
+	want := utils.NormalizeIP(ctxdata.ClientIPFromCtx(ctx))
+	if got == "" || got != want {
+		return xerr.Unauthorized(coreI18n.AuthIPMismatch)
+	}
+	return nil
+}
+
+func (d *Deps) Enforce(ctx context.Context, claims *ctxdata.Claims, path, method string) (bool, error) {
+	if claims == nil || len(claims.RoleCodes) == 0 {
+		return false, nil
+	}
+	dom := d.DomainFromClaims(claims)
+	reqs := make([][]any, 0, len(claims.RoleCodes))
+	for _, code := range claims.RoleCodes {
+		reqs = append(reqs, []any{code, dom, path, method})
+	}
+	okList, err := d.Enforcer.BatchEnforce(reqs)
+	if err != nil {
+		return false, err
+	}
+	for _, ok := range okList {
+		if ok {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (d *Deps) sessionFromClaims(ctx context.Context, c *jwt.Claims) (*model.User, UserRoles, error) {
+	u, err := d.ActiveUserByID(ctx, c.UserID)
+	if err != nil {
+		return nil, UserRoles{}, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if u.Status != model.StatusNormal || u.Salt != c.Salt {
+		return nil, UserRoles{}, xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	if err := d.checkTokenTenant(ctx, u, c); err != nil {
+		return nil, UserRoles{}, err
+	}
+	roles, err := d.RolesOfUser(ctx, u.ID)
+	if err != nil {
+		return nil, UserRoles{}, err
+	}
+	if len(roles.Codes) == 0 {
+		return nil, UserRoles{}, xerr.Forbidden(coreI18n.AuthNoActiveRole)
+	}
+	return u, roles, nil
+}
+
+func (d *Deps) checkTokenTenant(ctx context.Context, u *model.User, c *jwt.Claims) error {
+	if d.Mode != ModeOn {
+		if strVal(u.OperatorCode) != "" || c.OperatorCode != "" {
+			return xerr.Unauthorized(coreI18n.Unauthorized)
+		}
+		return nil
+	}
+	if strVal(u.OperatorCode) == "" || c.OperatorCode == "" || strVal(u.OperatorCode) != c.OperatorCode {
+		return xerr.Unauthorized(coreI18n.Unauthorized)
+	}
+	return nil
+}
+
+func strVal(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+func PublicUser(u *model.User, roles UserRoles) UserPublic {
+	return toPublic(u, roles)
+}
+
+func PublicUsers(list []model.User) []UserPublic {
+	out := make([]UserPublic, 0, len(list))
+	for i := range list {
+		out = append(out, toPublic(&list[i], emptyUserRoles()))
+	}
+	return out
+}

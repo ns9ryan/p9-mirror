@@ -1,0 +1,22 @@
+Name: operator.node01.core.api
+Host: 0.0.0.0
+Port: 38000
+
+Log:
+  Mode: console
+  Level: info
+
+# 开发模式
+Mode: dev
+# 模式 on分站，off总网
+PartnerMode: "on"
+  
+CROSConf:
+  Address: '*'
+
+CoreRpc:
+  Endpoints:
+    - operator-node01-core-rpc:39000
+  NonBlock: true
+  Timeout: 10000
+

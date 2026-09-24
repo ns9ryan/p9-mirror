@@ -1,0 +1,241 @@
+package service
+
+import (
+	"context"
+	"fmt"
+	"testing"
+	"time"
+
+	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/core/common/entmixin"
+	coreI18n "oa.98ent.com/p9/core/common/i18n"
+	"oa.98ent.com/p9/core/rpc/ent"
+	"oa.98ent.com/p9/core/rpc/ent/enttest"
+	"oa.98ent.com/p9/core/rpc/ent/intercept"
+	"oa.98ent.com/p9/core/rpc/ent/loginlog"
+	"oa.98ent.com/p9/core/rpc/model"
+
+	"entgo.io/ent/dialect"
+	_ "github.com/mattn/go-sqlite3"
+)
+
+func testClient(t *testing.T) *ent.Client {
+	t.Helper()
+	dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", t.Name())
+	client := enttest.Open(t, dialect.SQLite, dsn)
+	fOperatorCode := intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+		entmixin.FilterOperatorCode(ctx, q)
+		return nil
+	})
+	client.LoginLog.Intercept(fOperatorCode)
+	client.AdminActionLog.Intercept(fOperatorCode)
+	client.ErrorLog.Intercept(fOperatorCode)
+	t.Cleanup(func() { _ = client.Close() })
+	return client
+}
+
+func testDeps(t *testing.T, mode string) *Deps {
+	t.Helper()
+	return &Deps{
+		Client:           testClient(t),
+		Mode:             mode,
+		JWTSecret:        "secret",
+		JWTExpire:        60,
+		JWTRefreshSecret: "refresh",
+		JWTRefreshExpire: 120,
+	}
+}
+
+func createUserWithRole(t *testing.T, d *Deps, username, password string, operatorCode *string) *ent.User {
+	t.Helper()
+	ctx := context.Background()
+	hash, err := HashPassword(password)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rb := d.Client.Role.Create().
+		SetRoleCode("admin_" + username).
+		SetRoleName("Admin").
+		SetStatus(model.StatusNormal)
+	if operatorCode != nil {
+		rb.SetOperatorCode(*operatorCode)
+	}
+	role, err := rb.Save(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ub := d.Client.User.Create().
+		SetUserCode(NewUserCode()).
+		SetUsername(username).
+		SetPasswordHash(hash).
+		SetSalt("salt").
+		SetDisplayName(username).
+		SetStatus(model.StatusNormal).
+		AddRoleIDs(role.ID)
+	if operatorCode != nil {
+		ub.SetOperatorCode(*operatorCode)
+	}
+	u, err := ub.Save(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return u
+}
+
+func TestLoginWritesSuccessAndFailLogs(t *testing.T) {
+	d := testDeps(t, ModeOff)
+	ctx := context.Background()
+	u := createUserWithRole(t, d, "admin", "pass", nil)
+
+	if _, err := d.Login(ctx, LoginReq{Username: "admin", Password: "pass", ClientIP: "127.0.0.1", UserAgent: "ua"}); err != nil {
+		t.Fatalf("login: %v", err)
+	}
+	_, err := d.Login(ctx, LoginReq{Username: "admin", Password: "wrong", ClientIP: "10.0.0.1"})
+	if err == nil {
+		t.Fatal("expected fail")
+	}
+	_, err = d.Login(ctx, LoginReq{Username: "nobody", Password: "x", ClientIP: "1.1.1.1"})
+	if err == nil {
+		t.Fatal("expected unknown user fail")
+	}
+
+	rows, err := d.Client.LoginLog.Query().Order(ent.Asc(loginlog.FieldID)).All(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rows) != 3 {
+		t.Fatalf("got %d logs", len(rows))
+	}
+	if rows[0].LoginResult != model.LoginResultSuccess || rows[0].UserID == nil || *rows[0].UserID != u.ID {
+		t.Fatalf("success log %+v", rows[0])
+	}
+	if rows[0].UserAgent == nil || *rows[0].UserAgent != "ua" {
+		t.Fatalf("user agent %+v", rows[0].UserAgent)
+	}
+	if rows[1].LoginResult != model.LoginResultFail || rows[1].UserID == nil || *rows[1].UserID != u.ID {
+		t.Fatalf("wrong password log %+v", rows[1])
+	}
+	if rows[1].FailureReason == nil || *rows[1].FailureReason != coreI18n.AuthPasswordIncorrect {
+		t.Fatalf("reason %+v", rows[1].FailureReason)
+	}
+	if rows[2].LoginResult != model.LoginResultFail || rows[2].UserID != nil {
+		t.Fatalf("unknown user log %+v", rows[2])
+	}
+	for i, row := range rows {
+		if row.OperatorCode != nil {
+			t.Fatalf("mode off log %d operator_code=%v", i, row.OperatorCode)
+		}
+	}
+}
+
+func TestLoginWritesOperatorCodeModeOn(t *testing.T) {
+	d := testDeps(t, ModeOn)
+	ctx := context.Background()
+	code := "op1"
+	u := createUserWithRole(t, d, "admin", "pass", &code)
+
+	if _, err := d.Login(ctx, LoginReq{Username: "admin", Password: "pass", OperatorCode: "op1", ClientIP: "127.0.0.1"}); err != nil {
+		t.Fatalf("login: %v", err)
+	}
+	if _, err := d.Login(ctx, LoginReq{Username: "admin", Password: "wrong", OperatorCode: "op1", ClientIP: "10.0.0.1"}); err == nil {
+		t.Fatal("expected fail")
+	}
+	if _, err := d.Login(ctx, LoginReq{Username: "nobody", Password: "x", OperatorCode: "op1", ClientIP: "1.1.1.1"}); err == nil {
+		t.Fatal("expected unknown user fail")
+	}
+
+	rows, err := d.Client.LoginLog.Query().Order(ent.Asc(loginlog.FieldID)).All(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rows) != 3 {
+		t.Fatalf("got %d logs", len(rows))
+	}
+	if rows[0].LoginResult != model.LoginResultSuccess || rows[0].UserID == nil || *rows[0].UserID != u.ID {
+		t.Fatalf("success log %+v", rows[0])
+	}
+	if rows[1].LoginResult != model.LoginResultFail || rows[1].UserID == nil || *rows[1].UserID != u.ID {
+		t.Fatalf("wrong password log %+v", rows[1])
+	}
+	if rows[2].LoginResult != model.LoginResultFail || rows[2].UserID != nil {
+		t.Fatalf("unknown user log %+v", rows[2])
+	}
+	for i, row := range rows {
+		if row.OperatorCode == nil || *row.OperatorCode != "op1" {
+			t.Fatalf("log %d operator_code=%v want op1", i, row.OperatorCode)
+		}
+	}
+}
+
+func TestWriteLoginLogNilClient(t *testing.T) {
+	d := &Deps{}
+	d.writeLoginLog(context.Background(), LoginReq{Username: "a"}, nil, false, coreI18n.AuthPasswordIncorrect)
+}
+
+func TestListLoginLogsFilterAndTenant(t *testing.T) {
+	d := testDeps(t, ModeOn)
+	ctx := context.Background()
+	code1, code2 := "op1", "op2"
+	u1 := createUserWithRole(t, d, "alice", "pass", &code1)
+	u2 := createUserWithRole(t, d, "bob", "pass", &code2)
+	now := time.Now()
+	if err := d.Client.LoginLog.Create().SetUsername("alice").SetLoginResult(model.LoginResultSuccess).SetLoginIP("1.1.1.1").SetUserID(u1.ID).SetOperatorCode(code1).SetLoginAt(now).Exec(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if err := d.Client.LoginLog.Create().SetUsername("bob").SetLoginResult(model.LoginResultFail).SetLoginIP("2.2.2.2").SetUserID(u2.ID).SetOperatorCode(code2).SetFailureReason(coreI18n.AuthPasswordIncorrect).SetLoginAt(now).Exec(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if err := d.Client.LoginLog.Create().SetUsername("ghost").SetLoginResult(model.LoginResultFail).SetLoginIP("3.3.3.3").SetOperatorCode(code1).SetLoginAt(now).Exec(ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	claims := &ctxdata.Claims{OperatorCode: code1}
+	list, total, err := d.ListLoginLogs(ctx, claims, LoginLogListReq{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if total != 2 || len(list) != 2 {
+		t.Fatalf("tenant list total=%d list=%+v", total, list)
+	}
+	got := map[string]bool{}
+	for _, row := range list {
+		got[row.Username] = true
+		if row.OperatorCode == nil || *row.OperatorCode != code1 {
+			t.Fatalf("tenant row operator_code=%v want %s", row.OperatorCode, code1)
+		}
+	}
+	if !got["alice"] || !got["ghost"] || got["bob"] {
+		t.Fatalf("tenant names %+v", got)
+	}
+
+	d.Mode = ModeOff
+	if err := d.Client.LoginLog.Create().SetUsername("bob").SetLoginResult(model.LoginResultFail).SetLoginIP("4.4.4.4").SetLoginAt(now).Exec(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if err := d.Client.LoginLog.Create().SetUsername("plat").SetLoginResult(model.LoginResultFail).SetLoginIP("5.5.5.5").SetLoginAt(now).Exec(ctx); err != nil {
+		t.Fatal(err)
+	}
+	all, total, err := d.ListLoginLogs(ctx, &ctxdata.Claims{}, LoginLogListReq{Username: "bob"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if total != 1 || all[0].Username != "bob" || all[0].OperatorCode != nil {
+		t.Fatalf("filter username total=%d list=%+v", total, all)
+	}
+	fails, total, err := d.ListLoginLogs(ctx, &ctxdata.Claims{}, LoginLogListReq{LoginResult: model.LoginResultFail})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if total != 2 {
+		t.Fatalf("fail filter total=%d list=%+v", total, fails)
+	}
+}
+
+func TestClip(t *testing.T) {
+	if got := clip("abc", 2); got != "ab" {
+		t.Fatalf("got %q", got)
+	}
+	if got := clip("ab", 2); got != "ab" {
+		t.Fatalf("got %q", got)
+	}
+}

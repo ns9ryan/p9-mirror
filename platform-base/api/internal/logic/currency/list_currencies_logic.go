@@ -1,0 +1,70 @@
+// Code scaffolded by goctl. Safe to edit.
+// goctl 1.10.2
+
+package currency
+
+import (
+	"context"
+
+	"oa.98ent.com/p9/common/i18n"
+	"oa.98ent.com/p9/platform-base/api/internal/svc"
+	"oa.98ent.com/p9/platform-base/api/internal/types"
+	"oa.98ent.com/p9/platform-base/rpc/pb/platformbaserpc/currencypb"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type ListCurrenciesLogic struct {
+	logx.Logger
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+}
+
+func NewListCurrenciesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListCurrenciesLogic {
+	return &ListCurrenciesLogic{
+		Logger: logx.WithContext(ctx),
+		ctx:    ctx,
+		svcCtx: svcCtx,
+	}
+}
+
+// ListCurrencies 获取货币管理列表
+func (l *ListCurrenciesLogic) ListCurrencies(req *types.ListCurrenciesRequest) (resp *types.ListCurrenciesResponse, err error) {
+	// 调用获取货币管理列表RPC
+	result, err := l.svcCtx.CurrencyRpc.List(
+		l.ctx,
+		&currencypb.ListCurrenciesRequest{
+			Page:     req.Page,     // 页码
+			PageSize: req.PageSize, // 每页数量
+			Status:   req.Status,   // 状态: 1启用, 2停用
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// 转换货币列表
+	list := make([]types.CurrencyInfo, 0, len(result.List))
+	for _, item := range result.List {
+		// 获取当前语言的货币名称
+		name := i18n.TG(l.ctx, i18n.CodePlatform, "base", item.NameKey)
+
+		list = append(list, types.CurrencyInfo{
+			Id:           item.Id,           // 货币ID
+			Code:         item.Code,         // 货币编码
+			NameKey:      item.NameKey,      // 名称翻译Key
+			Name:         name,              // 当前语言名称
+			CurrencyType: item.CurrencyType, // 货币类型: 1法定货币, 2虚拟货币
+			Symbol:       item.Symbol,       // 货币符号
+			AmountFactor: item.AmountFactor, // 金额换算倍率, 如 USD=100, VND=1
+			Status:       item.Status,       // 状态: 1启用, 2停用
+			SortNo:       item.SortNo,       // 排序值, 数值越小越靠前
+		})
+	}
+
+	// 返回货币管理列表
+	return &types.ListCurrenciesResponse{
+		Total: result.Total, // 数据总数
+		List:  list,         // 货币列表
+	}, nil
+}

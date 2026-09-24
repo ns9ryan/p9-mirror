@@ -1,0 +1,68 @@
+package middleware
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"oa.98ent.com/p9/common/ctxdata"
+)
+
+func TestPreviewWriteDenied(t *testing.T) {
+	allow := [][2]string{
+		{http.MethodGet, "/admin/user/info"},
+		{http.MethodGet, "/admin/user/perm"},
+		{http.MethodGet, "/admin/menu/role"},
+		{http.MethodHead, "/admin/user/detail"},
+		{http.MethodOptions, "/admin/role/detail"},
+		{http.MethodPost, "/admin/user/list"},
+		{http.MethodPost, "/admin/role/list"},
+		{http.MethodPost, "/admin/menu/list"},
+		{http.MethodPost, "/admin/api/list"},
+		{http.MethodPost, "/admin/authority/menu/role"},
+		{http.MethodPost, "/admin/authority/api/role"},
+		{http.MethodPost, "/admin/menu/update"},
+		{http.MethodPost, "/admin/authority/menu/update"},
+	}
+	deny := [][2]string{
+		{http.MethodPost, "/admin/user/create"},
+		{http.MethodPost, "/admin/user/update"},
+		{http.MethodPost, "/admin/user/delete"},
+		{http.MethodPost, "/admin/user/password"},
+		{http.MethodPost, "/admin/user/password/self"},
+		{http.MethodPost, "/admin/user/roles"},
+		{http.MethodPost, "/admin/user/ipWhitelist"},
+		{http.MethodPost, "/admin/logout"},
+		{http.MethodPost, "/admin/logout/all"},
+		{http.MethodPost, "/admin/role/create"},
+		{http.MethodPost, "/admin/authority/api/update"},
+		{http.MethodPut, "/admin/user/list"},
+		{http.MethodDelete, "/admin/user/info"},
+	}
+	for _, c := range allow {
+		if previewWriteDenied(c[0], c[1]) {
+			t.Fatalf("allow %s %s", c[0], c[1])
+		}
+	}
+	for _, c := range deny {
+		if !previewWriteDenied(c[0], c[1]) {
+			t.Fatalf("deny %s %s", c[0], c[1])
+		}
+	}
+}
+
+func TestClientIPMiddleware(t *testing.T) {
+	called := false
+	h := ClientIP(func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		if got := ctxdata.ClientIPFromCtx(r.Context()); got != "10.0.0.1" {
+			t.Fatalf("ip %q", got)
+		}
+	})
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("X-Forwarded-For", "10.0.0.1")
+	h(httptest.NewRecorder(), req)
+	if !called {
+		t.Fatal("next not called")
+	}
+}

@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package platform_game;
+
+option go_package = "oa.98ent.com/p9/platform-game/rpc/pb/platform_game";
+
+import "types/game.proto";
+import "types/game_category.proto";
+import "types/game_provider.proto";
+import "types/game_channel.proto";
+import "types/game_currency.proto";
+import "types/game_sync_checkpoint.proto";
+import "types/sync.proto";
+import "types/operator_game_category.proto";
+import "types/operator_game_channel.proto";
+import "types/operator_game_provider.proto";
+import "types/operator_game.proto";
+import "types/operator_game_allocation.proto";
+
+// ========== Game Service ==========
+
+// GameService - 游戏服务
+service GameService {
+    // 获取游戏列表
+    rpc GetGameList(platform_game.GetGameListRequest) returns (platform_game.GetGameListResp);
+    
+    // 获取单个游戏详情
+    rpc GetGame(platform_game.GetGameRequest) returns (platform_game.GetGameResp);
+
+    // 更新游戏
+    rpc UpdateGame(platform_game.UpdateGameRequest) returns (platform_game.UpdateGameResp);
+}
+
+// ========== GameCategory Service ==========
+
+// GameCategoryService - 游戏分类服务
+service GameCategoryService {
+    // 获取游戏分类列表
+    rpc GetGameCategoryList(platform_game.GetGameCategoryListRequest) returns (platform_game.GetGameCategoryListResp);
+    
+    // 获取单个游戏分类
+    rpc GetGameCategory(platform_game.GetGameCategoryRequest) returns (platform_game.GetGameCategoryResp);
+
+    // 更新游戏分类
+    rpc UpdateGameCategory(platform_game.UpdateGameCategoryRequest) returns (platform_game.UpdateGameCategoryResp);
+}
+
+// ========== GameProvider Service ==========
+
+// GameProviderService - 游戏供应商服务
+service GameProviderService {
+    // 获取游戏供应商列表
+    rpc GetGameProviderList(platform_game.GetGameProviderListRequest) returns (platform_game.GetGameProviderListResp);
+    
+    // 获取单个游戏供应商
+    rpc GetGameProvider(platform_game.GetGameProviderRequest) returns (platform_game.GetGameProviderResp);
+
+    // 更新游戏供应商
+    rpc UpdateGameProvider(platform_game.UpdateGameProviderRequest) returns (platform_game.UpdateGameProviderResp);
+}
+
+// ========== GameChannel Service ==========
+
+// GameChannelService - 游戏渠道服务
+service GameChannelService {
+    // 获取单个游戏渠道
+    rpc GetGameChannel(platform_game.GetGameChannelRequest) returns (platform_game.GetGameChannelResp);
+    
+    // 获取游戏渠道列表
+    rpc GetGameChannelList(platform_game.GetGameChannelListRequest) returns (platform_game.GetGameChannelListResp);
+
+    // 更新游戏渠道
+    rpc UpdateGameChannel(platform_game.UpdateGameChannelRequest) returns (platform_game.UpdateGameChannelResp);
+}
+
+// ========== GameCurrency Service ==========
+
+// GameCurrencyService - 游戏货币服务
+service GameCurrencyService {
+    // 获取游戏货币列表
+    rpc GetGameCurrencyList(platform_game.GetGameCurrencyListRequest) returns (platform_game.GetGameCurrencyListResp);
+    
+    // 获取单个游戏货币
+    rpc GetGameCurrency(platform_game.GetGameCurrencyRequest) returns (platform_game.GetGameCurrencyResp);
+
+    // 更新游戏货币
+    rpc UpdateGameCurrency(platform_game.UpdateGameCurrencyRequest) returns (platform_game.UpdateGameCurrencyResp);
+}
+
+// ========== GameSyncCheckpoint Service ==========
+
+// GameSyncCheckpointService - 游戏同步检查点服务
+service GameSyncCheckpointService {
+    // 获取单个同步检查点
+    rpc GetGameSyncCheckpoint(platform_game.GetGameSyncCheckpointRequest) returns (platform_game.GetGameSyncCheckpointResp);
+
+    // 获取同步检查点列表
+    rpc GetGameSyncCheckpointList(platform_game.GetGameSyncCheckpointListRequest) returns (platform_game.GetGameSyncCheckpointListResp);
+
+    // 获取多语言映射文件name_map
+    rpc GetI18nNameMap(platform_game.GetI18nNameMapRequest) returns (platform_game.GetI18nNameMapResp);
+}
+
+// ========== Sync Service ==========
+
+// SyncService - 数据同步服务
+service SyncService {
+    // 同步预检查（查看差异，不修改数据）
+    rpc SyncPreview(platform_game.SyncPreviewRequest) returns (platform_game.SyncPreviewResp);
+
+    // 同步执行（执行同步操作）
+    rpc SyncRun(platform_game.SyncRunRequest) returns (platform_game.SyncRunResp);
+
+    // 执行 v2sql 下的 SQL 初始化脚本（供运维/初始化使用）
+    rpc ExecuteV2Sql(platform_game.ExecuteV2SqlRequest) returns (platform_game.ExecuteV2SqlResp);
+}
+
+service OperatorGameCategoryService {
+    // 获取分站游戏分类列表
+    rpc GetOperatorGameCategoryList(platform_game.GetOperatorGameCategoryListRequest) returns (platform_game.GetOperatorGameCategoryListResp);
+
+    // 批量修改分站游戏分类状态
+    rpc BatchUpdateOperatorGameCategoryStatus(platform_game.BatchUpdateOperatorGameCategoryStatusRequest) returns (platform_game.BatchUpdateOperatorGameCategoryStatusResp);
+
+    // 保存分站游戏分类分配
+    rpc SaveOperatorGameCategoryAllocation(platform_game.SaveOperatorGameCategoryAllocationRequest) returns (platform_game.SaveOperatorGameCategoryAllocationResp);
+}
+
+service OperatorGameChannelService {
+    // 获取分站游戏渠道列表
+    rpc GetOperatorGameChannelList(platform_game.GetOperatorGameChannelListRequest) returns (platform_game.GetOperatorGameChannelListResp);
+
+    // 批量修改分站游戏渠道状态
+    rpc BatchUpdateOperatorGameChannelStatus(platform_game.BatchUpdateOperatorGameChannelStatusRequest) returns (platform_game.BatchUpdateOperatorGameChannelStatusResp);
+
+    // 保存分站游戏渠道分配
+    rpc SaveOperatorGameChannelAllocation(platform_game.SaveOperatorGameChannelAllocationRequest) returns (platform_game.SaveOperatorGameChannelAllocationResp);
+}
+
+service OperatorGameProviderService {
+    // 获取分站游戏提供商列表
+    rpc GetOperatorGameProviderList(platform_game.GetOperatorGameProviderListRequest) returns (platform_game.GetOperatorGameProviderListResp);
+
+    // 批量修改分站游戏提供商状态
+    rpc BatchUpdateOperatorGameProviderStatus(platform_game.BatchUpdateOperatorGameProviderStatusRequest) returns (platform_game.BatchUpdateOperatorGameProviderStatusResp);
+
+    // 保存分站游戏提供商分配
+    rpc SaveOperatorGameProviderAllocation(platform_game.SaveOperatorGameProviderAllocationRequest) returns (platform_game.SaveOperatorGameProviderAllocationResp);
+}
+
+service OperatorGameService {
+    // 获取分站游戏列表
+    rpc GetOperatorGameList(platform_game.GetOperatorGameListRequest) returns (platform_game.GetOperatorGameListResp);
+
+    // 批量修改分站游戏状态
+    rpc BatchUpdateOperatorGameStatus(platform_game.BatchUpdateOperatorGameStatusRequest) returns (platform_game.BatchUpdateOperatorGameStatusResp);
+
+    // 保存分站游戏分配
+    rpc SaveOperatorGameAllocation(platform_game.SaveOperatorGameAllocationRequest) returns (platform_game.SaveOperatorGameAllocationResp);
+}
+
+service OperatorGameAllocationService {
+    // 获取分站游戏分配列表
+    rpc GetOperatorGameAllocationList(platform_game.GetOperatorGameAllocationListRequest) returns (platform_game.GetOperatorGameAllocationListResp);
+}
