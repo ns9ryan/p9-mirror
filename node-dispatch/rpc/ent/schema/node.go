@@ -57,7 +57,7 @@ func (Node) Fields() []ent.Field {
 func (Node) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("operator_nodes", OperatorNode.Type),
-		edge.To("task_runs", DispatchTaskRun.Type),
+		edge.To("dispatch_tasks", DispatchTask.Type),
 	}
 }
 

@@ -9,9 +9,6 @@ import (
 // DispatchTask is the predicate function for dispatchtask builders.
 type DispatchTask func(*sql.Selector)
 
-// DispatchTaskRun is the predicate function for dispatchtaskrun builders.
-type DispatchTaskRun func(*sql.Selector)
-
 // Node is the predicate function for node builders.
 type Node func(*sql.Selector)
 

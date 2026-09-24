@@ -4,15 +4,16 @@ package ent
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/predicate"
 )
 
@@ -56,45 +57,87 @@ func (_u *DispatchTaskUpdate) AddStatus(v int64) *DispatchTaskUpdate {
 	return _u
 }
 
-// AddRunIDs adds the "runs" edge to the DispatchTaskRun entity by IDs.
-func (_u *DispatchTaskUpdate) AddRunIDs(ids ...int64) *DispatchTaskUpdate {
-	_u.mutation.AddRunIDs(ids...)
+// SetResult sets the "result" field.
+func (_u *DispatchTaskUpdate) SetResult(v json.RawMessage) *DispatchTaskUpdate {
+	_u.mutation.SetResult(v)
 	return _u
 }
 
-// AddRuns adds the "runs" edges to the DispatchTaskRun entity.
-func (_u *DispatchTaskUpdate) AddRuns(v ...*DispatchTaskRun) *DispatchTaskUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
+// AppendResult appends value to the "result" field.
+func (_u *DispatchTaskUpdate) AppendResult(v json.RawMessage) *DispatchTaskUpdate {
+	_u.mutation.AppendResult(v)
+	return _u
+}
+
+// ClearResult clears the value of the "result" field.
+func (_u *DispatchTaskUpdate) ClearResult() *DispatchTaskUpdate {
+	_u.mutation.ClearResult()
+	return _u
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (_u *DispatchTaskUpdate) SetErrorMessage(v string) *DispatchTaskUpdate {
+	_u.mutation.SetErrorMessage(v)
+	return _u
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (_u *DispatchTaskUpdate) SetNillableErrorMessage(v *string) *DispatchTaskUpdate {
+	if v != nil {
+		_u.SetErrorMessage(*v)
 	}
-	return _u.AddRunIDs(ids...)
+	return _u
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (_u *DispatchTaskUpdate) ClearErrorMessage() *DispatchTaskUpdate {
+	_u.mutation.ClearErrorMessage()
+	return _u
+}
+
+// SetStartedAt sets the "started_at" field.
+func (_u *DispatchTaskUpdate) SetStartedAt(v time.Time) *DispatchTaskUpdate {
+	_u.mutation.SetStartedAt(v)
+	return _u
+}
+
+// SetNillableStartedAt sets the "started_at" field if the given value is not nil.
+func (_u *DispatchTaskUpdate) SetNillableStartedAt(v *time.Time) *DispatchTaskUpdate {
+	if v != nil {
+		_u.SetStartedAt(*v)
+	}
+	return _u
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (_u *DispatchTaskUpdate) ClearStartedAt() *DispatchTaskUpdate {
+	_u.mutation.ClearStartedAt()
+	return _u
+}
+
+// SetFinishedAt sets the "finished_at" field.
+func (_u *DispatchTaskUpdate) SetFinishedAt(v time.Time) *DispatchTaskUpdate {
+	_u.mutation.SetFinishedAt(v)
+	return _u
+}
+
+// SetNillableFinishedAt sets the "finished_at" field if the given value is not nil.
+func (_u *DispatchTaskUpdate) SetNillableFinishedAt(v *time.Time) *DispatchTaskUpdate {
+	if v != nil {
+		_u.SetFinishedAt(*v)
+	}
+	return _u
+}
+
+// ClearFinishedAt clears the value of the "finished_at" field.
+func (_u *DispatchTaskUpdate) ClearFinishedAt() *DispatchTaskUpdate {
+	_u.mutation.ClearFinishedAt()
+	return _u
 }
 
 // Mutation returns the DispatchTaskMutation object of the builder.
 func (_u *DispatchTaskUpdate) Mutation() *DispatchTaskMutation {
 	return _u.mutation
-}
-
-// ClearRuns clears all "runs" edges to the DispatchTaskRun entity.
-func (_u *DispatchTaskUpdate) ClearRuns() *DispatchTaskUpdate {
-	_u.mutation.ClearRuns()
-	return _u
-}
-
-// RemoveRunIDs removes the "runs" edge to DispatchTaskRun entities by IDs.
-func (_u *DispatchTaskUpdate) RemoveRunIDs(ids ...int64) *DispatchTaskUpdate {
-	_u.mutation.RemoveRunIDs(ids...)
-	return _u
-}
-
-// RemoveRuns removes "runs" edges to DispatchTaskRun entities.
-func (_u *DispatchTaskUpdate) RemoveRuns(v ...*DispatchTaskRun) *DispatchTaskUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveRunIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -140,6 +183,14 @@ func (_u *DispatchTaskUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "DispatchTask.status": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.ErrorMessage(); ok {
+		if err := dispatchtask.ErrorMessageValidator(v); err != nil {
+			return &ValidationError{Name: "error_message", err: fmt.Errorf(`ent: validator failed for field "DispatchTask.error_message": %w`, err)}
+		}
+	}
+	if _u.mutation.NodeCleared() && len(_u.mutation.NodeIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DispatchTask.node"`)
+	}
 	return nil
 }
 
@@ -164,50 +215,34 @@ func (_u *DispatchTaskUpdate) sqlSave(ctx context.Context) (_node int, err error
 	if value, ok := _u.mutation.AddedStatus(); ok {
 		_spec.AddField(dispatchtask.FieldStatus, field.TypeInt64, value)
 	}
-	if _u.mutation.RunsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dispatchtask.RunsTable,
-			Columns: []string{dispatchtask.RunsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	if value, ok := _u.mutation.Result(); ok {
+		_spec.SetField(dispatchtask.FieldResult, field.TypeJSON, value)
 	}
-	if nodes := _u.mutation.RemovedRunsIDs(); len(nodes) > 0 && !_u.mutation.RunsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dispatchtask.RunsTable,
-			Columns: []string{dispatchtask.RunsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	if value, ok := _u.mutation.AppendedResult(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, dispatchtask.FieldResult, value)
+		})
 	}
-	if nodes := _u.mutation.RunsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dispatchtask.RunsTable,
-			Columns: []string{dispatchtask.RunsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	if _u.mutation.ResultCleared() {
+		_spec.ClearField(dispatchtask.FieldResult, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.ErrorMessage(); ok {
+		_spec.SetField(dispatchtask.FieldErrorMessage, field.TypeString, value)
+	}
+	if _u.mutation.ErrorMessageCleared() {
+		_spec.ClearField(dispatchtask.FieldErrorMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.StartedAt(); ok {
+		_spec.SetField(dispatchtask.FieldStartedAt, field.TypeTime, value)
+	}
+	if _u.mutation.StartedAtCleared() {
+		_spec.ClearField(dispatchtask.FieldStartedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.FinishedAt(); ok {
+		_spec.SetField(dispatchtask.FieldFinishedAt, field.TypeTime, value)
+	}
+	if _u.mutation.FinishedAtCleared() {
+		_spec.ClearField(dispatchtask.FieldFinishedAt, field.TypeTime)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -256,45 +291,87 @@ func (_u *DispatchTaskUpdateOne) AddStatus(v int64) *DispatchTaskUpdateOne {
 	return _u
 }
 
-// AddRunIDs adds the "runs" edge to the DispatchTaskRun entity by IDs.
-func (_u *DispatchTaskUpdateOne) AddRunIDs(ids ...int64) *DispatchTaskUpdateOne {
-	_u.mutation.AddRunIDs(ids...)
+// SetResult sets the "result" field.
+func (_u *DispatchTaskUpdateOne) SetResult(v json.RawMessage) *DispatchTaskUpdateOne {
+	_u.mutation.SetResult(v)
 	return _u
 }
 
-// AddRuns adds the "runs" edges to the DispatchTaskRun entity.
-func (_u *DispatchTaskUpdateOne) AddRuns(v ...*DispatchTaskRun) *DispatchTaskUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
+// AppendResult appends value to the "result" field.
+func (_u *DispatchTaskUpdateOne) AppendResult(v json.RawMessage) *DispatchTaskUpdateOne {
+	_u.mutation.AppendResult(v)
+	return _u
+}
+
+// ClearResult clears the value of the "result" field.
+func (_u *DispatchTaskUpdateOne) ClearResult() *DispatchTaskUpdateOne {
+	_u.mutation.ClearResult()
+	return _u
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (_u *DispatchTaskUpdateOne) SetErrorMessage(v string) *DispatchTaskUpdateOne {
+	_u.mutation.SetErrorMessage(v)
+	return _u
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (_u *DispatchTaskUpdateOne) SetNillableErrorMessage(v *string) *DispatchTaskUpdateOne {
+	if v != nil {
+		_u.SetErrorMessage(*v)
 	}
-	return _u.AddRunIDs(ids...)
+	return _u
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (_u *DispatchTaskUpdateOne) ClearErrorMessage() *DispatchTaskUpdateOne {
+	_u.mutation.ClearErrorMessage()
+	return _u
+}
+
+// SetStartedAt sets the "started_at" field.
+func (_u *DispatchTaskUpdateOne) SetStartedAt(v time.Time) *DispatchTaskUpdateOne {
+	_u.mutation.SetStartedAt(v)
+	return _u
+}
+
+// SetNillableStartedAt sets the "started_at" field if the given value is not nil.
+func (_u *DispatchTaskUpdateOne) SetNillableStartedAt(v *time.Time) *DispatchTaskUpdateOne {
+	if v != nil {
+		_u.SetStartedAt(*v)
+	}
+	return _u
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (_u *DispatchTaskUpdateOne) ClearStartedAt() *DispatchTaskUpdateOne {
+	_u.mutation.ClearStartedAt()
+	return _u
+}
+
+// SetFinishedAt sets the "finished_at" field.
+func (_u *DispatchTaskUpdateOne) SetFinishedAt(v time.Time) *DispatchTaskUpdateOne {
+	_u.mutation.SetFinishedAt(v)
+	return _u
+}
+
+// SetNillableFinishedAt sets the "finished_at" field if the given value is not nil.
+func (_u *DispatchTaskUpdateOne) SetNillableFinishedAt(v *time.Time) *DispatchTaskUpdateOne {
+	if v != nil {
+		_u.SetFinishedAt(*v)
+	}
+	return _u
+}
+
+// ClearFinishedAt clears the value of the "finished_at" field.
+func (_u *DispatchTaskUpdateOne) ClearFinishedAt() *DispatchTaskUpdateOne {
+	_u.mutation.ClearFinishedAt()
+	return _u
 }
 
 // Mutation returns the DispatchTaskMutation object of the builder.
 func (_u *DispatchTaskUpdateOne) Mutation() *DispatchTaskMutation {
 	return _u.mutation
-}
-
-// ClearRuns clears all "runs" edges to the DispatchTaskRun entity.
-func (_u *DispatchTaskUpdateOne) ClearRuns() *DispatchTaskUpdateOne {
-	_u.mutation.ClearRuns()
-	return _u
-}
-
-// RemoveRunIDs removes the "runs" edge to DispatchTaskRun entities by IDs.
-func (_u *DispatchTaskUpdateOne) RemoveRunIDs(ids ...int64) *DispatchTaskUpdateOne {
-	_u.mutation.RemoveRunIDs(ids...)
-	return _u
-}
-
-// RemoveRuns removes "runs" edges to DispatchTaskRun entities.
-func (_u *DispatchTaskUpdateOne) RemoveRuns(v ...*DispatchTaskRun) *DispatchTaskUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveRunIDs(ids...)
 }
 
 // Where appends a list predicates to the DispatchTaskUpdate builder.
@@ -353,6 +430,14 @@ func (_u *DispatchTaskUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "DispatchTask.status": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.ErrorMessage(); ok {
+		if err := dispatchtask.ErrorMessageValidator(v); err != nil {
+			return &ValidationError{Name: "error_message", err: fmt.Errorf(`ent: validator failed for field "DispatchTask.error_message": %w`, err)}
+		}
+	}
+	if _u.mutation.NodeCleared() && len(_u.mutation.NodeIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "DispatchTask.node"`)
+	}
 	return nil
 }
 
@@ -394,50 +479,34 @@ func (_u *DispatchTaskUpdateOne) sqlSave(ctx context.Context) (_node *DispatchTa
 	if value, ok := _u.mutation.AddedStatus(); ok {
 		_spec.AddField(dispatchtask.FieldStatus, field.TypeInt64, value)
 	}
-	if _u.mutation.RunsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dispatchtask.RunsTable,
-			Columns: []string{dispatchtask.RunsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	if value, ok := _u.mutation.Result(); ok {
+		_spec.SetField(dispatchtask.FieldResult, field.TypeJSON, value)
 	}
-	if nodes := _u.mutation.RemovedRunsIDs(); len(nodes) > 0 && !_u.mutation.RunsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dispatchtask.RunsTable,
-			Columns: []string{dispatchtask.RunsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	if value, ok := _u.mutation.AppendedResult(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, dispatchtask.FieldResult, value)
+		})
 	}
-	if nodes := _u.mutation.RunsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dispatchtask.RunsTable,
-			Columns: []string{dispatchtask.RunsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	if _u.mutation.ResultCleared() {
+		_spec.ClearField(dispatchtask.FieldResult, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.ErrorMessage(); ok {
+		_spec.SetField(dispatchtask.FieldErrorMessage, field.TypeString, value)
+	}
+	if _u.mutation.ErrorMessageCleared() {
+		_spec.ClearField(dispatchtask.FieldErrorMessage, field.TypeString)
+	}
+	if value, ok := _u.mutation.StartedAt(); ok {
+		_spec.SetField(dispatchtask.FieldStartedAt, field.TypeTime, value)
+	}
+	if _u.mutation.StartedAtCleared() {
+		_spec.ClearField(dispatchtask.FieldStartedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.FinishedAt(); ok {
+		_spec.SetField(dispatchtask.FieldFinishedAt, field.TypeTime, value)
+	}
+	if _u.mutation.FinishedAtCleared() {
+		_spec.ClearField(dispatchtask.FieldFinishedAt, field.TypeTime)
 	}
 	_node = &DispatchTask{config: _u.config}
 	_spec.Assign = _node.assignValues

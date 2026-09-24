@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/operatornode"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/schema"
@@ -104,42 +103,15 @@ func init() {
 		}
 	}()
 	// dispatchtaskDescStatus is the schema descriptor for status field.
-	dispatchtaskDescStatus := dispatchtaskFields[5].Descriptor()
+	dispatchtaskDescStatus := dispatchtaskFields[6].Descriptor()
 	// dispatchtask.DefaultStatus holds the default value on creation for the status field.
 	dispatchtask.DefaultStatus = dispatchtaskDescStatus.Default.(int64)
 	// dispatchtask.StatusValidator is a validator for the "status" field. It is called by the builders before save.
 	dispatchtask.StatusValidator = dispatchtaskDescStatus.Validators[0].(func(int64) error)
-	dispatchtaskrunMixin := schema.DispatchTaskRun{}.Mixin()
-	dispatchtaskrunMixinFields1 := dispatchtaskrunMixin[1].Fields()
-	_ = dispatchtaskrunMixinFields1
-	dispatchtaskrunFields := schema.DispatchTaskRun{}.Fields()
-	_ = dispatchtaskrunFields
-	// dispatchtaskrunDescCreatedAt is the schema descriptor for created_at field.
-	dispatchtaskrunDescCreatedAt := dispatchtaskrunMixinFields1[0].Descriptor()
-	// dispatchtaskrun.DefaultCreatedAt holds the default value on creation for the created_at field.
-	dispatchtaskrun.DefaultCreatedAt = dispatchtaskrunDescCreatedAt.Default.(func() time.Time)
-	// dispatchtaskrunDescUpdatedAt is the schema descriptor for updated_at field.
-	dispatchtaskrunDescUpdatedAt := dispatchtaskrunMixinFields1[1].Descriptor()
-	// dispatchtaskrun.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	dispatchtaskrun.DefaultUpdatedAt = dispatchtaskrunDescUpdatedAt.Default.(func() time.Time)
-	// dispatchtaskrun.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	dispatchtaskrun.UpdateDefaultUpdatedAt = dispatchtaskrunDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// dispatchtaskrunDescRunNo is the schema descriptor for run_no field.
-	dispatchtaskrunDescRunNo := dispatchtaskrunFields[2].Descriptor()
-	// dispatchtaskrun.DefaultRunNo holds the default value on creation for the run_no field.
-	dispatchtaskrun.DefaultRunNo = dispatchtaskrunDescRunNo.Default.(int64)
-	// dispatchtaskrun.RunNoValidator is a validator for the "run_no" field. It is called by the builders before save.
-	dispatchtaskrun.RunNoValidator = dispatchtaskrunDescRunNo.Validators[0].(func(int64) error)
-	// dispatchtaskrunDescStatus is the schema descriptor for status field.
-	dispatchtaskrunDescStatus := dispatchtaskrunFields[3].Descriptor()
-	// dispatchtaskrun.DefaultStatus holds the default value on creation for the status field.
-	dispatchtaskrun.DefaultStatus = dispatchtaskrunDescStatus.Default.(int64)
-	// dispatchtaskrun.StatusValidator is a validator for the "status" field. It is called by the builders before save.
-	dispatchtaskrun.StatusValidator = dispatchtaskrunDescStatus.Validators[0].(func(int64) error)
-	// dispatchtaskrunDescErrorMessage is the schema descriptor for error_message field.
-	dispatchtaskrunDescErrorMessage := dispatchtaskrunFields[5].Descriptor()
-	// dispatchtaskrun.ErrorMessageValidator is a validator for the "error_message" field. It is called by the builders before save.
-	dispatchtaskrun.ErrorMessageValidator = dispatchtaskrunDescErrorMessage.Validators[0].(func(string) error)
+	// dispatchtaskDescErrorMessage is the schema descriptor for error_message field.
+	dispatchtaskDescErrorMessage := dispatchtaskFields[8].Descriptor()
+	// dispatchtask.ErrorMessageValidator is a validator for the "error_message" field. It is called by the builders before save.
+	dispatchtask.ErrorMessageValidator = dispatchtaskDescErrorMessage.Validators[0].(func(string) error)
 	nodeMixin := schema.Node{}.Mixin()
 	nodeMixinFields1 := nodeMixin[1].Fields()
 	_ = nodeMixinFields1

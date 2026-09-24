@@ -28,19 +28,29 @@ const (
 	FieldTaskType = "task_type"
 	// FieldParams holds the string denoting the params field in the database.
 	FieldParams = "params"
+	// FieldNodeID holds the string denoting the node_id field in the database.
+	FieldNodeID = "node_id"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
-	// EdgeRuns holds the string denoting the runs edge name in mutations.
-	EdgeRuns = "runs"
+	// FieldResult holds the string denoting the result field in the database.
+	FieldResult = "result"
+	// FieldErrorMessage holds the string denoting the error_message field in the database.
+	FieldErrorMessage = "error_message"
+	// FieldStartedAt holds the string denoting the started_at field in the database.
+	FieldStartedAt = "started_at"
+	// FieldFinishedAt holds the string denoting the finished_at field in the database.
+	FieldFinishedAt = "finished_at"
+	// EdgeNode holds the string denoting the node edge name in mutations.
+	EdgeNode = "node"
 	// Table holds the table name of the dispatchtask in the database.
 	Table = "dispatch_task"
-	// RunsTable is the table that holds the runs relation/edge.
-	RunsTable = "dispatch_task_run"
-	// RunsInverseTable is the table name for the DispatchTaskRun entity.
-	// It exists in this package in order to avoid circular dependency with the "dispatchtaskrun" package.
-	RunsInverseTable = "dispatch_task_run"
-	// RunsColumn is the table column denoting the runs relation/edge.
-	RunsColumn = "task_id"
+	// NodeTable is the table that holds the node relation/edge.
+	NodeTable = "dispatch_task"
+	// NodeInverseTable is the table name for the Node entity.
+	// It exists in this package in order to avoid circular dependency with the "node" package.
+	NodeInverseTable = "node"
+	// NodeColumn is the table column denoting the node relation/edge.
+	NodeColumn = "node_id"
 )
 
 // Columns holds all SQL columns for dispatchtask fields.
@@ -53,7 +63,12 @@ var Columns = []string{
 	FieldTarget,
 	FieldTaskType,
 	FieldParams,
+	FieldNodeID,
 	FieldStatus,
+	FieldResult,
+	FieldErrorMessage,
+	FieldStartedAt,
+	FieldFinishedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -85,6 +100,8 @@ var (
 	DefaultStatus int64
 	// StatusValidator is a validator for the "status" field. It is called by the builders before save.
 	StatusValidator func(int64) error
+	// ErrorMessageValidator is a validator for the "error_message" field. It is called by the builders before save.
+	ErrorMessageValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the DispatchTask queries.
@@ -125,28 +142,41 @@ func ByTaskType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTaskType, opts...).ToFunc()
 }
 
+// ByNodeID orders the results by the node_id field.
+func ByNodeID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNodeID, opts...).ToFunc()
+}
+
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
-// ByRunsCount orders the results by runs count.
-func ByRunsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newRunsStep(), opts...)
-	}
+// ByErrorMessage orders the results by the error_message field.
+func ByErrorMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldErrorMessage, opts...).ToFunc()
 }
 
-// ByRuns orders the results by runs terms.
-func ByRuns(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByStartedAt orders the results by the started_at field.
+func ByStartedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStartedAt, opts...).ToFunc()
+}
+
+// ByFinishedAt orders the results by the finished_at field.
+func ByFinishedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFinishedAt, opts...).ToFunc()
+}
+
+// ByNodeField orders the results by node field.
+func ByNodeField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newRunsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newNodeStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newRunsStep() *sqlgraph.Step {
+func newNodeStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(RunsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, RunsTable, RunsColumn),
+		sqlgraph.To(NodeInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, NodeTable, NodeColumn),
 	)
 }

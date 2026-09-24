@@ -18,8 +18,13 @@ var (
 		{Name: "request_no", Type: field.TypeString, Unique: true, Size: 64, Comment: "调用方生成的请求编号"},
 		{Name: "target", Type: field.TypeString, Size: 64, Comment: "任务目标服务"},
 		{Name: "task_type", Type: field.TypeString, Size: 64, Comment: "任务类型"},
-		{Name: "params", Type: field.TypeJSON, Comment: "任务参数", SchemaType: map[string]string{"postgres": "jsonb"}},
+		{Name: "params", Type: field.TypeJSON, Comment: "任务执行所需的最小参数", SchemaType: map[string]string{"postgres": "jsonb"}},
 		{Name: "status", Type: field.TypeInt64, Comment: "任务状态: 1待执行, 2执行中, 3成功, 4失败", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "result", Type: field.TypeJSON, Nullable: true, Comment: "任务执行结果", SchemaType: map[string]string{"postgres": "jsonb"}},
+		{Name: "error_message", Type: field.TypeString, Nullable: true, Size: 2000, Comment: "任务执行失败原因"},
+		{Name: "started_at", Type: field.TypeTime, Nullable: true, Comment: "开始执行时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "finished_at", Type: field.TypeTime, Nullable: true, Comment: "执行结束时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "node_id", Type: field.TypeInt64, Comment: "执行节点本地主键", SchemaType: map[string]string{"postgres": "bigint"}},
 	}
 	// DispatchTaskTable holds the schema information for the "dispatch_task" table.
 	DispatchTaskTable = &schema.Table{
@@ -27,46 +32,19 @@ var (
 		Comment:    "调度任务表",
 		Columns:    DispatchTaskColumns,
 		PrimaryKey: []*schema.Column{DispatchTaskColumns[0]},
-	}
-	// DispatchTaskRunColumns holds the columns for the "dispatch_task_run" table.
-	DispatchTaskRunColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
-		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "run_no", Type: field.TypeInt64, Comment: "任务执行序号, 从1开始", Default: 1},
-		{Name: "status", Type: field.TypeInt64, Comment: "执行状态: 1待执行, 2执行中, 3成功, 4失败", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
-		{Name: "result", Type: field.TypeJSON, Nullable: true, Comment: "执行结果", SchemaType: map[string]string{"postgres": "jsonb"}},
-		{Name: "error_message", Type: field.TypeString, Nullable: true, Size: 2000, Comment: "执行失败原因"},
-		{Name: "started_at", Type: field.TypeTime, Nullable: true, Comment: "开始执行时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "finished_at", Type: field.TypeTime, Nullable: true, Comment: "执行结束时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "task_id", Type: field.TypeInt64, Comment: "所属调度任务本地主键", SchemaType: map[string]string{"postgres": "bigint"}},
-		{Name: "node_id", Type: field.TypeInt64, Comment: "执行节点本地主键", SchemaType: map[string]string{"postgres": "bigint"}},
-	}
-	// DispatchTaskRunTable holds the schema information for the "dispatch_task_run" table.
-	DispatchTaskRunTable = &schema.Table{
-		Name:       "dispatch_task_run",
-		Comment:    "调度任务执行表",
-		Columns:    DispatchTaskRunColumns,
-		PrimaryKey: []*schema.Column{DispatchTaskRunColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "dispatch_task_run_dispatch_task_runs",
-				Columns:    []*schema.Column{DispatchTaskRunColumns[9]},
-				RefColumns: []*schema.Column{DispatchTaskColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "dispatch_task_run_node_task_runs",
-				Columns:    []*schema.Column{DispatchTaskRunColumns[10]},
+				Symbol:     "dispatch_task_node_dispatch_tasks",
+				Columns:    []*schema.Column{DispatchTaskColumns[13]},
 				RefColumns: []*schema.Column{NodeColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "dispatchtaskrun_task_id_run_no",
-				Unique:  true,
-				Columns: []*schema.Column{DispatchTaskRunColumns[9], DispatchTaskRunColumns[3]},
+				Name:    "dispatchtask_node_id",
+				Unique:  false,
+				Columns: []*schema.Column{DispatchTaskColumns[13]},
 			},
 		},
 	}
@@ -111,24 +89,26 @@ var (
 				OnDelete:   schema.NoAction,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "operatornode_node_id",
+				Unique:  false,
+				Columns: []*schema.Column{OperatorNodeColumns[4]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		DispatchTaskTable,
-		DispatchTaskRunTable,
 		NodeTable,
 		OperatorNodeTable,
 	}
 )
 
 func init() {
+	DispatchTaskTable.ForeignKeys[0].RefTable = NodeTable
 	DispatchTaskTable.Annotation = &entsql.Annotation{
 		Table: "dispatch_task",
-	}
-	DispatchTaskRunTable.ForeignKeys[0].RefTable = DispatchTaskTable
-	DispatchTaskRunTable.ForeignKeys[1].RefTable = NodeTable
-	DispatchTaskRunTable.Annotation = &entsql.Annotation{
-		Table: "dispatch_task_run",
 	}
 	NodeTable.Annotation = &entsql.Annotation{
 		Table: "node",

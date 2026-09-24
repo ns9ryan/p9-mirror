@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
+	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/operatornode"
 )
@@ -133,19 +133,19 @@ func (_c *NodeCreate) AddOperatorNodes(v ...*OperatorNode) *NodeCreate {
 	return _c.AddOperatorNodeIDs(ids...)
 }
 
-// AddTaskRunIDs adds the "task_runs" edge to the DispatchTaskRun entity by IDs.
-func (_c *NodeCreate) AddTaskRunIDs(ids ...int64) *NodeCreate {
-	_c.mutation.AddTaskRunIDs(ids...)
+// AddDispatchTaskIDs adds the "dispatch_tasks" edge to the DispatchTask entity by IDs.
+func (_c *NodeCreate) AddDispatchTaskIDs(ids ...int64) *NodeCreate {
+	_c.mutation.AddDispatchTaskIDs(ids...)
 	return _c
 }
 
-// AddTaskRuns adds the "task_runs" edges to the DispatchTaskRun entity.
-func (_c *NodeCreate) AddTaskRuns(v ...*DispatchTaskRun) *NodeCreate {
+// AddDispatchTasks adds the "dispatch_tasks" edges to the DispatchTask entity.
+func (_c *NodeCreate) AddDispatchTasks(v ...*DispatchTask) *NodeCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddTaskRunIDs(ids...)
+	return _c.AddDispatchTaskIDs(ids...)
 }
 
 // Mutation returns the NodeMutation object of the builder.
@@ -323,15 +323,15 @@ func (_c *NodeCreate) createSpec() (*Node, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.TaskRunsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.DispatchTasksIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   node.TaskRunsTable,
-			Columns: []string{node.TaskRunsColumn},
+			Table:   node.DispatchTasksTable,
+			Columns: []string{node.DispatchTasksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(dispatchtask.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

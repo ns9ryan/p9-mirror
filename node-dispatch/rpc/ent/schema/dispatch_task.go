@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // DispatchTask 定义调度任务表结构
@@ -52,7 +53,11 @@ func (DispatchTask) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "jsonb",
 			}).
-			Comment("任务参数"),
+			Comment("任务执行所需的最小参数"),
+
+		field.Int64("node_id").
+			Immutable().
+			Comment("执行节点本地主键"),
 
 		field.Int64("status").
 			Default(1).
@@ -61,13 +66,54 @@ func (DispatchTask) Fields() []ent.Field {
 				dialect.Postgres: "smallint",
 			}).
 			Comment("任务状态: 1待执行, 2执行中, 3成功, 4失败"),
+
+		field.JSON("result", json.RawMessage{}).
+			Optional().
+			SchemaType(map[string]string{
+				dialect.Postgres: "jsonb",
+			}).
+			Comment("任务执行结果"),
+
+		field.String("error_message").
+			MaxLen(2000).
+			Optional().
+			Nillable().
+			Comment("任务执行失败原因"),
+
+		field.Time("started_at").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{
+				dialect.Postgres: "timestamptz(3)",
+			}).
+			Comment("开始执行时间"),
+
+		field.Time("finished_at").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{
+				dialect.Postgres: "timestamptz(3)",
+			}).
+			Comment("执行结束时间"),
 	}
 }
 
 // Edges 定义调度任务表关联关系
 func (DispatchTask) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("runs", DispatchTaskRun.Type),
+		edge.From("node", Node.Type).
+			Ref("dispatch_tasks").
+			Field("node_id").
+			Unique().
+			Required().
+			Immutable(),
+	}
+}
+
+// Indexes 定义调度任务表索引
+func (DispatchTask) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("node_id"),
 	}
 }
 

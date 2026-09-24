@@ -9,7 +9,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/operatornode"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/predicate"
@@ -98,33 +97,6 @@ func (f TraverseDispatchTask) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.DispatchTaskQuery", q)
 }
 
-// The DispatchTaskRunFunc type is an adapter to allow the use of ordinary function as a Querier.
-type DispatchTaskRunFunc func(context.Context, *ent.DispatchTaskRunQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f DispatchTaskRunFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.DispatchTaskRunQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.DispatchTaskRunQuery", q)
-}
-
-// The TraverseDispatchTaskRun type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseDispatchTaskRun func(context.Context, *ent.DispatchTaskRunQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseDispatchTaskRun) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseDispatchTaskRun) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.DispatchTaskRunQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.DispatchTaskRunQuery", q)
-}
-
 // The NodeFunc type is an adapter to allow the use of ordinary function as a Querier.
 type NodeFunc func(context.Context, *ent.NodeQuery) (ent.Value, error)
 
@@ -184,8 +156,6 @@ func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
 	case *ent.DispatchTaskQuery:
 		return &query[*ent.DispatchTaskQuery, predicate.DispatchTask, dispatchtask.OrderOption]{typ: ent.TypeDispatchTask, tq: q}, nil
-	case *ent.DispatchTaskRunQuery:
-		return &query[*ent.DispatchTaskRunQuery, predicate.DispatchTaskRun, dispatchtaskrun.OrderOption]{typ: ent.TypeDispatchTaskRun, tq: q}, nil
 	case *ent.NodeQuery:
 		return &query[*ent.NodeQuery, predicate.Node, node.OrderOption]{typ: ent.TypeNode, tq: q}, nil
 	case *ent.OperatorNodeQuery:

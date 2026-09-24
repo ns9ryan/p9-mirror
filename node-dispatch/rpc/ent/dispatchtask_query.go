@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -13,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
+	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/predicate"
 )
 
@@ -24,7 +23,7 @@ type DispatchTaskQuery struct {
 	order      []dispatchtask.OrderOption
 	inters     []Interceptor
 	predicates []predicate.DispatchTask
-	withRuns   *DispatchTaskRunQuery
+	withNode   *NodeQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -61,9 +60,9 @@ func (_q *DispatchTaskQuery) Order(o ...dispatchtask.OrderOption) *DispatchTaskQ
 	return _q
 }
 
-// QueryRuns chains the current query on the "runs" edge.
-func (_q *DispatchTaskQuery) QueryRuns() *DispatchTaskRunQuery {
-	query := (&DispatchTaskRunClient{config: _q.config}).Query()
+// QueryNode chains the current query on the "node" edge.
+func (_q *DispatchTaskQuery) QueryNode() *NodeQuery {
+	query := (&NodeClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -74,8 +73,8 @@ func (_q *DispatchTaskQuery) QueryRuns() *DispatchTaskRunQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dispatchtask.Table, dispatchtask.FieldID, selector),
-			sqlgraph.To(dispatchtaskrun.Table, dispatchtaskrun.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, dispatchtask.RunsTable, dispatchtask.RunsColumn),
+			sqlgraph.To(node.Table, node.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dispatchtask.NodeTable, dispatchtask.NodeColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -275,21 +274,21 @@ func (_q *DispatchTaskQuery) Clone() *DispatchTaskQuery {
 		order:      append([]dispatchtask.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
 		predicates: append([]predicate.DispatchTask{}, _q.predicates...),
-		withRuns:   _q.withRuns.Clone(),
+		withNode:   _q.withNode.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithRuns tells the query-builder to eager-load the nodes that are connected to
-// the "runs" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *DispatchTaskQuery) WithRuns(opts ...func(*DispatchTaskRunQuery)) *DispatchTaskQuery {
-	query := (&DispatchTaskRunClient{config: _q.config}).Query()
+// WithNode tells the query-builder to eager-load the nodes that are connected to
+// the "node" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DispatchTaskQuery) WithNode(opts ...func(*NodeQuery)) *DispatchTaskQuery {
+	query := (&NodeClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withRuns = query
+	_q.withNode = query
 	return _q
 }
 
@@ -372,7 +371,7 @@ func (_q *DispatchTaskQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		nodes       = []*DispatchTask{}
 		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			_q.withRuns != nil,
+			_q.withNode != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -393,43 +392,41 @@ func (_q *DispatchTaskQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withRuns; query != nil {
-		if err := _q.loadRuns(ctx, query, nodes,
-			func(n *DispatchTask) { n.Edges.Runs = []*DispatchTaskRun{} },
-			func(n *DispatchTask, e *DispatchTaskRun) { n.Edges.Runs = append(n.Edges.Runs, e) }); err != nil {
+	if query := _q.withNode; query != nil {
+		if err := _q.loadNode(ctx, query, nodes, nil,
+			func(n *DispatchTask, e *Node) { n.Edges.Node = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *DispatchTaskQuery) loadRuns(ctx context.Context, query *DispatchTaskRunQuery, nodes []*DispatchTask, init func(*DispatchTask), assign func(*DispatchTask, *DispatchTaskRun)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*DispatchTask)
+func (_q *DispatchTaskQuery) loadNode(ctx context.Context, query *NodeQuery, nodes []*DispatchTask, init func(*DispatchTask), assign func(*DispatchTask, *Node)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*DispatchTask)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		fk := nodes[i].NodeID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
 		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(dispatchtaskrun.FieldTaskID)
+	if len(ids) == 0 {
+		return nil
 	}
-	query.Where(predicate.DispatchTaskRun(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(dispatchtask.RunsColumn), fks...))
-	}))
+	query.Where(node.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.TaskID
-		node, ok := nodeids[fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "task_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "node_id" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
@@ -458,6 +455,9 @@ func (_q *DispatchTaskQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != dispatchtask.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withNode != nil {
+			_spec.Node.AddColumnOnce(dispatchtask.FieldNodeID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

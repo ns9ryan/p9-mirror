@@ -14,8 +14,6 @@ type Tx struct {
 	config
 	// DispatchTask is the client for interacting with the DispatchTask builders.
 	DispatchTask *DispatchTaskClient
-	// DispatchTaskRun is the client for interacting with the DispatchTaskRun builders.
-	DispatchTaskRun *DispatchTaskRunClient
 	// Node is the client for interacting with the Node builders.
 	Node *NodeClient
 	// OperatorNode is the client for interacting with the OperatorNode builders.
@@ -152,7 +150,6 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.DispatchTask = NewDispatchTaskClient(tx.config)
-	tx.DispatchTaskRun = NewDispatchTaskRunClient(tx.config)
 	tx.Node = NewNodeClient(tx.config)
 	tx.OperatorNode = NewOperatorNodeClient(tx.config)
 }

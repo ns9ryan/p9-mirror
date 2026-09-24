@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
+	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 )
 
 // DispatchTaskCreate is the builder for creating a DispatchTask entity.
@@ -82,6 +82,12 @@ func (_c *DispatchTaskCreate) SetParams(v json.RawMessage) *DispatchTaskCreate {
 	return _c
 }
 
+// SetNodeID sets the "node_id" field.
+func (_c *DispatchTaskCreate) SetNodeID(v int64) *DispatchTaskCreate {
+	_c.mutation.SetNodeID(v)
+	return _c
+}
+
 // SetStatus sets the "status" field.
 func (_c *DispatchTaskCreate) SetStatus(v int64) *DispatchTaskCreate {
 	_c.mutation.SetStatus(v)
@@ -96,25 +102,63 @@ func (_c *DispatchTaskCreate) SetNillableStatus(v *int64) *DispatchTaskCreate {
 	return _c
 }
 
+// SetResult sets the "result" field.
+func (_c *DispatchTaskCreate) SetResult(v json.RawMessage) *DispatchTaskCreate {
+	_c.mutation.SetResult(v)
+	return _c
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (_c *DispatchTaskCreate) SetErrorMessage(v string) *DispatchTaskCreate {
+	_c.mutation.SetErrorMessage(v)
+	return _c
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (_c *DispatchTaskCreate) SetNillableErrorMessage(v *string) *DispatchTaskCreate {
+	if v != nil {
+		_c.SetErrorMessage(*v)
+	}
+	return _c
+}
+
+// SetStartedAt sets the "started_at" field.
+func (_c *DispatchTaskCreate) SetStartedAt(v time.Time) *DispatchTaskCreate {
+	_c.mutation.SetStartedAt(v)
+	return _c
+}
+
+// SetNillableStartedAt sets the "started_at" field if the given value is not nil.
+func (_c *DispatchTaskCreate) SetNillableStartedAt(v *time.Time) *DispatchTaskCreate {
+	if v != nil {
+		_c.SetStartedAt(*v)
+	}
+	return _c
+}
+
+// SetFinishedAt sets the "finished_at" field.
+func (_c *DispatchTaskCreate) SetFinishedAt(v time.Time) *DispatchTaskCreate {
+	_c.mutation.SetFinishedAt(v)
+	return _c
+}
+
+// SetNillableFinishedAt sets the "finished_at" field if the given value is not nil.
+func (_c *DispatchTaskCreate) SetNillableFinishedAt(v *time.Time) *DispatchTaskCreate {
+	if v != nil {
+		_c.SetFinishedAt(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *DispatchTaskCreate) SetID(v int64) *DispatchTaskCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
 
-// AddRunIDs adds the "runs" edge to the DispatchTaskRun entity by IDs.
-func (_c *DispatchTaskCreate) AddRunIDs(ids ...int64) *DispatchTaskCreate {
-	_c.mutation.AddRunIDs(ids...)
-	return _c
-}
-
-// AddRuns adds the "runs" edges to the DispatchTaskRun entity.
-func (_c *DispatchTaskCreate) AddRuns(v ...*DispatchTaskRun) *DispatchTaskCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddRunIDs(ids...)
+// SetNode sets the "node" edge to the Node entity.
+func (_c *DispatchTaskCreate) SetNode(v *Node) *DispatchTaskCreate {
+	return _c.SetNodeID(v.ID)
 }
 
 // Mutation returns the DispatchTaskMutation object of the builder.
@@ -209,6 +253,9 @@ func (_c *DispatchTaskCreate) check() error {
 	if _, ok := _c.mutation.Params(); !ok {
 		return &ValidationError{Name: "params", err: errors.New(`ent: missing required field "DispatchTask.params"`)}
 	}
+	if _, ok := _c.mutation.NodeID(); !ok {
+		return &ValidationError{Name: "node_id", err: errors.New(`ent: missing required field "DispatchTask.node_id"`)}
+	}
 	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "DispatchTask.status"`)}
 	}
@@ -216,6 +263,14 @@ func (_c *DispatchTaskCreate) check() error {
 		if err := dispatchtask.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "DispatchTask.status": %w`, err)}
 		}
+	}
+	if v, ok := _c.mutation.ErrorMessage(); ok {
+		if err := dispatchtask.ErrorMessageValidator(v); err != nil {
+			return &ValidationError{Name: "error_message", err: fmt.Errorf(`ent: validator failed for field "DispatchTask.error_message": %w`, err)}
+		}
+	}
+	if len(_c.mutation.NodeIDs()) == 0 {
+		return &ValidationError{Name: "node", err: errors.New(`ent: missing required edge "DispatchTask.node"`)}
 	}
 	return nil
 }
@@ -282,20 +337,37 @@ func (_c *DispatchTaskCreate) createSpec() (*DispatchTask, *sqlgraph.CreateSpec)
 		_spec.SetField(dispatchtask.FieldStatus, field.TypeInt64, value)
 		_node.Status = value
 	}
-	if nodes := _c.mutation.RunsIDs(); len(nodes) > 0 {
+	if value, ok := _c.mutation.Result(); ok {
+		_spec.SetField(dispatchtask.FieldResult, field.TypeJSON, value)
+		_node.Result = value
+	}
+	if value, ok := _c.mutation.ErrorMessage(); ok {
+		_spec.SetField(dispatchtask.FieldErrorMessage, field.TypeString, value)
+		_node.ErrorMessage = &value
+	}
+	if value, ok := _c.mutation.StartedAt(); ok {
+		_spec.SetField(dispatchtask.FieldStartedAt, field.TypeTime, value)
+		_node.StartedAt = &value
+	}
+	if value, ok := _c.mutation.FinishedAt(); ok {
+		_spec.SetField(dispatchtask.FieldFinishedAt, field.TypeTime, value)
+		_node.FinishedAt = &value
+	}
+	if nodes := _c.mutation.NodeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   dispatchtask.RunsTable,
-			Columns: []string{dispatchtask.RunsColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   dispatchtask.NodeTable,
+			Columns: []string{dispatchtask.NodeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(node.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.NodeID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -380,6 +452,78 @@ func (u *DispatchTaskUpsert) AddStatus(v int64) *DispatchTaskUpsert {
 	return u
 }
 
+// SetResult sets the "result" field.
+func (u *DispatchTaskUpsert) SetResult(v json.RawMessage) *DispatchTaskUpsert {
+	u.Set(dispatchtask.FieldResult, v)
+	return u
+}
+
+// UpdateResult sets the "result" field to the value that was provided on create.
+func (u *DispatchTaskUpsert) UpdateResult() *DispatchTaskUpsert {
+	u.SetExcluded(dispatchtask.FieldResult)
+	return u
+}
+
+// ClearResult clears the value of the "result" field.
+func (u *DispatchTaskUpsert) ClearResult() *DispatchTaskUpsert {
+	u.SetNull(dispatchtask.FieldResult)
+	return u
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *DispatchTaskUpsert) SetErrorMessage(v string) *DispatchTaskUpsert {
+	u.Set(dispatchtask.FieldErrorMessage, v)
+	return u
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *DispatchTaskUpsert) UpdateErrorMessage() *DispatchTaskUpsert {
+	u.SetExcluded(dispatchtask.FieldErrorMessage)
+	return u
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *DispatchTaskUpsert) ClearErrorMessage() *DispatchTaskUpsert {
+	u.SetNull(dispatchtask.FieldErrorMessage)
+	return u
+}
+
+// SetStartedAt sets the "started_at" field.
+func (u *DispatchTaskUpsert) SetStartedAt(v time.Time) *DispatchTaskUpsert {
+	u.Set(dispatchtask.FieldStartedAt, v)
+	return u
+}
+
+// UpdateStartedAt sets the "started_at" field to the value that was provided on create.
+func (u *DispatchTaskUpsert) UpdateStartedAt() *DispatchTaskUpsert {
+	u.SetExcluded(dispatchtask.FieldStartedAt)
+	return u
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (u *DispatchTaskUpsert) ClearStartedAt() *DispatchTaskUpsert {
+	u.SetNull(dispatchtask.FieldStartedAt)
+	return u
+}
+
+// SetFinishedAt sets the "finished_at" field.
+func (u *DispatchTaskUpsert) SetFinishedAt(v time.Time) *DispatchTaskUpsert {
+	u.Set(dispatchtask.FieldFinishedAt, v)
+	return u
+}
+
+// UpdateFinishedAt sets the "finished_at" field to the value that was provided on create.
+func (u *DispatchTaskUpsert) UpdateFinishedAt() *DispatchTaskUpsert {
+	u.SetExcluded(dispatchtask.FieldFinishedAt)
+	return u
+}
+
+// ClearFinishedAt clears the value of the "finished_at" field.
+func (u *DispatchTaskUpsert) ClearFinishedAt() *DispatchTaskUpsert {
+	u.SetNull(dispatchtask.FieldFinishedAt)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -414,6 +558,9 @@ func (u *DispatchTaskUpsertOne) UpdateNewValues() *DispatchTaskUpsertOne {
 		}
 		if _, exists := u.create.mutation.Params(); exists {
 			s.SetIgnore(dispatchtask.FieldParams)
+		}
+		if _, exists := u.create.mutation.NodeID(); exists {
+			s.SetIgnore(dispatchtask.FieldNodeID)
 		}
 	}))
 	return u
@@ -478,6 +625,90 @@ func (u *DispatchTaskUpsertOne) AddStatus(v int64) *DispatchTaskUpsertOne {
 func (u *DispatchTaskUpsertOne) UpdateStatus() *DispatchTaskUpsertOne {
 	return u.Update(func(s *DispatchTaskUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetResult sets the "result" field.
+func (u *DispatchTaskUpsertOne) SetResult(v json.RawMessage) *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetResult(v)
+	})
+}
+
+// UpdateResult sets the "result" field to the value that was provided on create.
+func (u *DispatchTaskUpsertOne) UpdateResult() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateResult()
+	})
+}
+
+// ClearResult clears the value of the "result" field.
+func (u *DispatchTaskUpsertOne) ClearResult() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearResult()
+	})
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *DispatchTaskUpsertOne) SetErrorMessage(v string) *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetErrorMessage(v)
+	})
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *DispatchTaskUpsertOne) UpdateErrorMessage() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateErrorMessage()
+	})
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *DispatchTaskUpsertOne) ClearErrorMessage() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearErrorMessage()
+	})
+}
+
+// SetStartedAt sets the "started_at" field.
+func (u *DispatchTaskUpsertOne) SetStartedAt(v time.Time) *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetStartedAt(v)
+	})
+}
+
+// UpdateStartedAt sets the "started_at" field to the value that was provided on create.
+func (u *DispatchTaskUpsertOne) UpdateStartedAt() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateStartedAt()
+	})
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (u *DispatchTaskUpsertOne) ClearStartedAt() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearStartedAt()
+	})
+}
+
+// SetFinishedAt sets the "finished_at" field.
+func (u *DispatchTaskUpsertOne) SetFinishedAt(v time.Time) *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetFinishedAt(v)
+	})
+}
+
+// UpdateFinishedAt sets the "finished_at" field to the value that was provided on create.
+func (u *DispatchTaskUpsertOne) UpdateFinishedAt() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateFinishedAt()
+	})
+}
+
+// ClearFinishedAt clears the value of the "finished_at" field.
+func (u *DispatchTaskUpsertOne) ClearFinishedAt() *DispatchTaskUpsertOne {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearFinishedAt()
 	})
 }
 
@@ -681,6 +912,9 @@ func (u *DispatchTaskUpsertBulk) UpdateNewValues() *DispatchTaskUpsertBulk {
 			if _, exists := b.mutation.Params(); exists {
 				s.SetIgnore(dispatchtask.FieldParams)
 			}
+			if _, exists := b.mutation.NodeID(); exists {
+				s.SetIgnore(dispatchtask.FieldNodeID)
+			}
 		}
 	}))
 	return u
@@ -745,6 +979,90 @@ func (u *DispatchTaskUpsertBulk) AddStatus(v int64) *DispatchTaskUpsertBulk {
 func (u *DispatchTaskUpsertBulk) UpdateStatus() *DispatchTaskUpsertBulk {
 	return u.Update(func(s *DispatchTaskUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetResult sets the "result" field.
+func (u *DispatchTaskUpsertBulk) SetResult(v json.RawMessage) *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetResult(v)
+	})
+}
+
+// UpdateResult sets the "result" field to the value that was provided on create.
+func (u *DispatchTaskUpsertBulk) UpdateResult() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateResult()
+	})
+}
+
+// ClearResult clears the value of the "result" field.
+func (u *DispatchTaskUpsertBulk) ClearResult() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearResult()
+	})
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *DispatchTaskUpsertBulk) SetErrorMessage(v string) *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetErrorMessage(v)
+	})
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *DispatchTaskUpsertBulk) UpdateErrorMessage() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateErrorMessage()
+	})
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *DispatchTaskUpsertBulk) ClearErrorMessage() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearErrorMessage()
+	})
+}
+
+// SetStartedAt sets the "started_at" field.
+func (u *DispatchTaskUpsertBulk) SetStartedAt(v time.Time) *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetStartedAt(v)
+	})
+}
+
+// UpdateStartedAt sets the "started_at" field to the value that was provided on create.
+func (u *DispatchTaskUpsertBulk) UpdateStartedAt() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateStartedAt()
+	})
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (u *DispatchTaskUpsertBulk) ClearStartedAt() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearStartedAt()
+	})
+}
+
+// SetFinishedAt sets the "finished_at" field.
+func (u *DispatchTaskUpsertBulk) SetFinishedAt(v time.Time) *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.SetFinishedAt(v)
+	})
+}
+
+// UpdateFinishedAt sets the "finished_at" field to the value that was provided on create.
+func (u *DispatchTaskUpsertBulk) UpdateFinishedAt() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.UpdateFinishedAt()
+	})
+}
+
+// ClearFinishedAt clears the value of the "finished_at" field.
+func (u *DispatchTaskUpsertBulk) ClearFinishedAt() *DispatchTaskUpsertBulk {
+	return u.Update(func(s *DispatchTaskUpsert) {
+		s.ClearFinishedAt()
 	})
 }
 

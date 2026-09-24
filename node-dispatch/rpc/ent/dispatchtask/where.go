@@ -85,9 +85,29 @@ func TaskType(v string) predicate.DispatchTask {
 	return predicate.DispatchTask(sql.FieldEQ(FieldTaskType, v))
 }
 
+// NodeID applies equality check predicate on the "node_id" field. It's identical to NodeIDEQ.
+func NodeID(v int64) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldNodeID, v))
+}
+
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
 func Status(v int64) predicate.DispatchTask {
 	return predicate.DispatchTask(sql.FieldEQ(FieldStatus, v))
+}
+
+// ErrorMessage applies equality check predicate on the "error_message" field. It's identical to ErrorMessageEQ.
+func ErrorMessage(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldErrorMessage, v))
+}
+
+// StartedAt applies equality check predicate on the "started_at" field. It's identical to StartedAtEQ.
+func StartedAt(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldStartedAt, v))
+}
+
+// FinishedAt applies equality check predicate on the "finished_at" field. It's identical to FinishedAtEQ.
+func FinishedAt(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldFinishedAt, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -430,6 +450,26 @@ func TaskTypeContainsFold(v string) predicate.DispatchTask {
 	return predicate.DispatchTask(sql.FieldContainsFold(FieldTaskType, v))
 }
 
+// NodeIDEQ applies the EQ predicate on the "node_id" field.
+func NodeIDEQ(v int64) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldNodeID, v))
+}
+
+// NodeIDNEQ applies the NEQ predicate on the "node_id" field.
+func NodeIDNEQ(v int64) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNEQ(FieldNodeID, v))
+}
+
+// NodeIDIn applies the In predicate on the "node_id" field.
+func NodeIDIn(vs ...int64) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIn(FieldNodeID, vs...))
+}
+
+// NodeIDNotIn applies the NotIn predicate on the "node_id" field.
+func NodeIDNotIn(vs ...int64) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotIn(FieldNodeID, vs...))
+}
+
 // StatusEQ applies the EQ predicate on the "status" field.
 func StatusEQ(v int64) predicate.DispatchTask {
 	return predicate.DispatchTask(sql.FieldEQ(FieldStatus, v))
@@ -470,21 +510,206 @@ func StatusLTE(v int64) predicate.DispatchTask {
 	return predicate.DispatchTask(sql.FieldLTE(FieldStatus, v))
 }
 
-// HasRuns applies the HasEdge predicate on the "runs" edge.
-func HasRuns() predicate.DispatchTask {
+// ResultIsNil applies the IsNil predicate on the "result" field.
+func ResultIsNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIsNull(FieldResult))
+}
+
+// ResultNotNil applies the NotNil predicate on the "result" field.
+func ResultNotNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotNull(FieldResult))
+}
+
+// ErrorMessageEQ applies the EQ predicate on the "error_message" field.
+func ErrorMessageEQ(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldErrorMessage, v))
+}
+
+// ErrorMessageNEQ applies the NEQ predicate on the "error_message" field.
+func ErrorMessageNEQ(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNEQ(FieldErrorMessage, v))
+}
+
+// ErrorMessageIn applies the In predicate on the "error_message" field.
+func ErrorMessageIn(vs ...string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIn(FieldErrorMessage, vs...))
+}
+
+// ErrorMessageNotIn applies the NotIn predicate on the "error_message" field.
+func ErrorMessageNotIn(vs ...string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotIn(FieldErrorMessage, vs...))
+}
+
+// ErrorMessageGT applies the GT predicate on the "error_message" field.
+func ErrorMessageGT(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldGT(FieldErrorMessage, v))
+}
+
+// ErrorMessageGTE applies the GTE predicate on the "error_message" field.
+func ErrorMessageGTE(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldGTE(FieldErrorMessage, v))
+}
+
+// ErrorMessageLT applies the LT predicate on the "error_message" field.
+func ErrorMessageLT(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldLT(FieldErrorMessage, v))
+}
+
+// ErrorMessageLTE applies the LTE predicate on the "error_message" field.
+func ErrorMessageLTE(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldLTE(FieldErrorMessage, v))
+}
+
+// ErrorMessageContains applies the Contains predicate on the "error_message" field.
+func ErrorMessageContains(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldContains(FieldErrorMessage, v))
+}
+
+// ErrorMessageHasPrefix applies the HasPrefix predicate on the "error_message" field.
+func ErrorMessageHasPrefix(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldHasPrefix(FieldErrorMessage, v))
+}
+
+// ErrorMessageHasSuffix applies the HasSuffix predicate on the "error_message" field.
+func ErrorMessageHasSuffix(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldHasSuffix(FieldErrorMessage, v))
+}
+
+// ErrorMessageIsNil applies the IsNil predicate on the "error_message" field.
+func ErrorMessageIsNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIsNull(FieldErrorMessage))
+}
+
+// ErrorMessageNotNil applies the NotNil predicate on the "error_message" field.
+func ErrorMessageNotNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotNull(FieldErrorMessage))
+}
+
+// ErrorMessageEqualFold applies the EqualFold predicate on the "error_message" field.
+func ErrorMessageEqualFold(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEqualFold(FieldErrorMessage, v))
+}
+
+// ErrorMessageContainsFold applies the ContainsFold predicate on the "error_message" field.
+func ErrorMessageContainsFold(v string) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldContainsFold(FieldErrorMessage, v))
+}
+
+// StartedAtEQ applies the EQ predicate on the "started_at" field.
+func StartedAtEQ(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldStartedAt, v))
+}
+
+// StartedAtNEQ applies the NEQ predicate on the "started_at" field.
+func StartedAtNEQ(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNEQ(FieldStartedAt, v))
+}
+
+// StartedAtIn applies the In predicate on the "started_at" field.
+func StartedAtIn(vs ...time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIn(FieldStartedAt, vs...))
+}
+
+// StartedAtNotIn applies the NotIn predicate on the "started_at" field.
+func StartedAtNotIn(vs ...time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotIn(FieldStartedAt, vs...))
+}
+
+// StartedAtGT applies the GT predicate on the "started_at" field.
+func StartedAtGT(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldGT(FieldStartedAt, v))
+}
+
+// StartedAtGTE applies the GTE predicate on the "started_at" field.
+func StartedAtGTE(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldGTE(FieldStartedAt, v))
+}
+
+// StartedAtLT applies the LT predicate on the "started_at" field.
+func StartedAtLT(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldLT(FieldStartedAt, v))
+}
+
+// StartedAtLTE applies the LTE predicate on the "started_at" field.
+func StartedAtLTE(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldLTE(FieldStartedAt, v))
+}
+
+// StartedAtIsNil applies the IsNil predicate on the "started_at" field.
+func StartedAtIsNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIsNull(FieldStartedAt))
+}
+
+// StartedAtNotNil applies the NotNil predicate on the "started_at" field.
+func StartedAtNotNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotNull(FieldStartedAt))
+}
+
+// FinishedAtEQ applies the EQ predicate on the "finished_at" field.
+func FinishedAtEQ(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldEQ(FieldFinishedAt, v))
+}
+
+// FinishedAtNEQ applies the NEQ predicate on the "finished_at" field.
+func FinishedAtNEQ(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNEQ(FieldFinishedAt, v))
+}
+
+// FinishedAtIn applies the In predicate on the "finished_at" field.
+func FinishedAtIn(vs ...time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIn(FieldFinishedAt, vs...))
+}
+
+// FinishedAtNotIn applies the NotIn predicate on the "finished_at" field.
+func FinishedAtNotIn(vs ...time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotIn(FieldFinishedAt, vs...))
+}
+
+// FinishedAtGT applies the GT predicate on the "finished_at" field.
+func FinishedAtGT(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldGT(FieldFinishedAt, v))
+}
+
+// FinishedAtGTE applies the GTE predicate on the "finished_at" field.
+func FinishedAtGTE(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldGTE(FieldFinishedAt, v))
+}
+
+// FinishedAtLT applies the LT predicate on the "finished_at" field.
+func FinishedAtLT(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldLT(FieldFinishedAt, v))
+}
+
+// FinishedAtLTE applies the LTE predicate on the "finished_at" field.
+func FinishedAtLTE(v time.Time) predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldLTE(FieldFinishedAt, v))
+}
+
+// FinishedAtIsNil applies the IsNil predicate on the "finished_at" field.
+func FinishedAtIsNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldIsNull(FieldFinishedAt))
+}
+
+// FinishedAtNotNil applies the NotNil predicate on the "finished_at" field.
+func FinishedAtNotNil() predicate.DispatchTask {
+	return predicate.DispatchTask(sql.FieldNotNull(FieldFinishedAt))
+}
+
+// HasNode applies the HasEdge predicate on the "node" edge.
+func HasNode() predicate.DispatchTask {
 	return predicate.DispatchTask(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, RunsTable, RunsColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, NodeTable, NodeColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasRunsWith applies the HasEdge predicate on the "runs" edge with a given conditions (other predicates).
-func HasRunsWith(preds ...predicate.DispatchTaskRun) predicate.DispatchTask {
+// HasNodeWith applies the HasEdge predicate on the "node" edge with a given conditions (other predicates).
+func HasNodeWith(preds ...predicate.Node) predicate.DispatchTask {
 	return predicate.DispatchTask(func(s *sql.Selector) {
-		step := newRunsStep()
+		step := newNodeStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

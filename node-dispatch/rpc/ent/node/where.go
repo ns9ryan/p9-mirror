@@ -558,21 +558,21 @@ func HasOperatorNodesWith(preds ...predicate.OperatorNode) predicate.Node {
 	})
 }
 
-// HasTaskRuns applies the HasEdge predicate on the "task_runs" edge.
-func HasTaskRuns() predicate.Node {
+// HasDispatchTasks applies the HasEdge predicate on the "dispatch_tasks" edge.
+func HasDispatchTasks() predicate.Node {
 	return predicate.Node(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TaskRunsTable, TaskRunsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, DispatchTasksTable, DispatchTasksColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasTaskRunsWith applies the HasEdge predicate on the "task_runs" edge with a given conditions (other predicates).
-func HasTaskRunsWith(preds ...predicate.DispatchTaskRun) predicate.Node {
+// HasDispatchTasksWith applies the HasEdge predicate on the "dispatch_tasks" edge with a given conditions (other predicates).
+func HasDispatchTasksWith(preds ...predicate.DispatchTask) predicate.Node {
 	return predicate.Node(func(s *sql.Selector) {
-		step := newTaskRunsStep()
+		step := newDispatchTasksStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

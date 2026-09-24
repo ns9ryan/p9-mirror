@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
+	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 )
 
 // 调度任务表
@@ -31,10 +32,20 @@ type DispatchTask struct {
 	Target string `json:"target,omitempty"`
 	// 任务类型
 	TaskType string `json:"task_type,omitempty"`
-	// 任务参数
+	// 任务执行所需的最小参数
 	Params json.RawMessage `json:"params,omitempty"`
+	// 执行节点本地主键
+	NodeID int64 `json:"node_id,omitempty"`
 	// 任务状态: 1待执行, 2执行中, 3成功, 4失败
 	Status int64 `json:"status,omitempty"`
+	// 任务执行结果
+	Result json.RawMessage `json:"result,omitempty"`
+	// 任务执行失败原因
+	ErrorMessage *string `json:"error_message,omitempty"`
+	// 开始执行时间
+	StartedAt *time.Time `json:"started_at,omitempty"`
+	// 执行结束时间
+	FinishedAt *time.Time `json:"finished_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DispatchTaskQuery when eager-loading is set.
 	Edges        DispatchTaskEdges `json:"edges"`
@@ -43,20 +54,22 @@ type DispatchTask struct {
 
 // DispatchTaskEdges holds the relations/edges for other nodes in the graph.
 type DispatchTaskEdges struct {
-	// Runs holds the value of the runs edge.
-	Runs []*DispatchTaskRun `json:"runs,omitempty"`
+	// Node holds the value of the node edge.
+	Node *Node `json:"node,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// RunsOrErr returns the Runs value or an error if the edge
-// was not loaded in eager-loading.
-func (e DispatchTaskEdges) RunsOrErr() ([]*DispatchTaskRun, error) {
-	if e.loadedTypes[0] {
-		return e.Runs, nil
+// NodeOrErr returns the Node value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DispatchTaskEdges) NodeOrErr() (*Node, error) {
+	if e.Node != nil {
+		return e.Node, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: node.Label}
 	}
-	return nil, &NotLoadedError{edge: "runs"}
+	return nil, &NotLoadedError{edge: "node"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -64,13 +77,13 @@ func (*DispatchTask) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case dispatchtask.FieldParams:
+		case dispatchtask.FieldParams, dispatchtask.FieldResult:
 			values[i] = new([]byte)
-		case dispatchtask.FieldID, dispatchtask.FieldStatus:
+		case dispatchtask.FieldID, dispatchtask.FieldNodeID, dispatchtask.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case dispatchtask.FieldTaskNo, dispatchtask.FieldRequestNo, dispatchtask.FieldTarget, dispatchtask.FieldTaskType:
+		case dispatchtask.FieldTaskNo, dispatchtask.FieldRequestNo, dispatchtask.FieldTarget, dispatchtask.FieldTaskType, dispatchtask.FieldErrorMessage:
 			values[i] = new(sql.NullString)
-		case dispatchtask.FieldCreatedAt, dispatchtask.FieldUpdatedAt:
+		case dispatchtask.FieldCreatedAt, dispatchtask.FieldUpdatedAt, dispatchtask.FieldStartedAt, dispatchtask.FieldFinishedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -137,11 +150,46 @@ func (_m *DispatchTask) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field params: %w", err)
 				}
 			}
+		case dispatchtask.FieldNodeID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field node_id", values[i])
+			} else if value.Valid {
+				_m.NodeID = value.Int64
+			}
 		case dispatchtask.FieldStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				_m.Status = value.Int64
+			}
+		case dispatchtask.FieldResult:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field result", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.Result); err != nil {
+					return fmt.Errorf("unmarshal field result: %w", err)
+				}
+			}
+		case dispatchtask.FieldErrorMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field error_message", values[i])
+			} else if value.Valid {
+				_m.ErrorMessage = new(string)
+				*_m.ErrorMessage = value.String
+			}
+		case dispatchtask.FieldStartedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field started_at", values[i])
+			} else if value.Valid {
+				_m.StartedAt = new(time.Time)
+				*_m.StartedAt = value.Time
+			}
+		case dispatchtask.FieldFinishedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field finished_at", values[i])
+			} else if value.Valid {
+				_m.FinishedAt = new(time.Time)
+				*_m.FinishedAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -156,9 +204,9 @@ func (_m *DispatchTask) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryRuns queries the "runs" edge of the DispatchTask entity.
-func (_m *DispatchTask) QueryRuns() *DispatchTaskRunQuery {
-	return NewDispatchTaskClient(_m.config).QueryRuns(_m)
+// QueryNode queries the "node" edge of the DispatchTask entity.
+func (_m *DispatchTask) QueryNode() *NodeQuery {
+	return NewDispatchTaskClient(_m.config).QueryNode(_m)
 }
 
 // Update returns a builder for updating this DispatchTask.
@@ -205,8 +253,29 @@ func (_m *DispatchTask) String() string {
 	builder.WriteString("params=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Params))
 	builder.WriteString(", ")
+	builder.WriteString("node_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.NodeID))
+	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
+	builder.WriteString(", ")
+	builder.WriteString("result=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Result))
+	builder.WriteString(", ")
+	if v := _m.ErrorMessage; v != nil {
+		builder.WriteString("error_message=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.StartedAt; v != nil {
+		builder.WriteString("started_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
+	if v := _m.FinishedAt; v != nil {
+		builder.WriteString("finished_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

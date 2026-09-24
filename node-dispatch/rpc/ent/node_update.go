@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
+	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/operatornode"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/predicate"
@@ -140,19 +140,19 @@ func (_u *NodeUpdate) AddOperatorNodes(v ...*OperatorNode) *NodeUpdate {
 	return _u.AddOperatorNodeIDs(ids...)
 }
 
-// AddTaskRunIDs adds the "task_runs" edge to the DispatchTaskRun entity by IDs.
-func (_u *NodeUpdate) AddTaskRunIDs(ids ...int64) *NodeUpdate {
-	_u.mutation.AddTaskRunIDs(ids...)
+// AddDispatchTaskIDs adds the "dispatch_tasks" edge to the DispatchTask entity by IDs.
+func (_u *NodeUpdate) AddDispatchTaskIDs(ids ...int64) *NodeUpdate {
+	_u.mutation.AddDispatchTaskIDs(ids...)
 	return _u
 }
 
-// AddTaskRuns adds the "task_runs" edges to the DispatchTaskRun entity.
-func (_u *NodeUpdate) AddTaskRuns(v ...*DispatchTaskRun) *NodeUpdate {
+// AddDispatchTasks adds the "dispatch_tasks" edges to the DispatchTask entity.
+func (_u *NodeUpdate) AddDispatchTasks(v ...*DispatchTask) *NodeUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddTaskRunIDs(ids...)
+	return _u.AddDispatchTaskIDs(ids...)
 }
 
 // Mutation returns the NodeMutation object of the builder.
@@ -181,25 +181,25 @@ func (_u *NodeUpdate) RemoveOperatorNodes(v ...*OperatorNode) *NodeUpdate {
 	return _u.RemoveOperatorNodeIDs(ids...)
 }
 
-// ClearTaskRuns clears all "task_runs" edges to the DispatchTaskRun entity.
-func (_u *NodeUpdate) ClearTaskRuns() *NodeUpdate {
-	_u.mutation.ClearTaskRuns()
+// ClearDispatchTasks clears all "dispatch_tasks" edges to the DispatchTask entity.
+func (_u *NodeUpdate) ClearDispatchTasks() *NodeUpdate {
+	_u.mutation.ClearDispatchTasks()
 	return _u
 }
 
-// RemoveTaskRunIDs removes the "task_runs" edge to DispatchTaskRun entities by IDs.
-func (_u *NodeUpdate) RemoveTaskRunIDs(ids ...int64) *NodeUpdate {
-	_u.mutation.RemoveTaskRunIDs(ids...)
+// RemoveDispatchTaskIDs removes the "dispatch_tasks" edge to DispatchTask entities by IDs.
+func (_u *NodeUpdate) RemoveDispatchTaskIDs(ids ...int64) *NodeUpdate {
+	_u.mutation.RemoveDispatchTaskIDs(ids...)
 	return _u
 }
 
-// RemoveTaskRuns removes "task_runs" edges to DispatchTaskRun entities.
-func (_u *NodeUpdate) RemoveTaskRuns(v ...*DispatchTaskRun) *NodeUpdate {
+// RemoveDispatchTasks removes "dispatch_tasks" edges to DispatchTask entities.
+func (_u *NodeUpdate) RemoveDispatchTasks(v ...*DispatchTask) *NodeUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveTaskRunIDs(ids...)
+	return _u.RemoveDispatchTaskIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -347,28 +347,28 @@ func (_u *NodeUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.TaskRunsCleared() {
+	if _u.mutation.DispatchTasksCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   node.TaskRunsTable,
-			Columns: []string{node.TaskRunsColumn},
+			Table:   node.DispatchTasksTable,
+			Columns: []string{node.DispatchTasksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(dispatchtask.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedTaskRunsIDs(); len(nodes) > 0 && !_u.mutation.TaskRunsCleared() {
+	if nodes := _u.mutation.RemovedDispatchTasksIDs(); len(nodes) > 0 && !_u.mutation.DispatchTasksCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   node.TaskRunsTable,
-			Columns: []string{node.TaskRunsColumn},
+			Table:   node.DispatchTasksTable,
+			Columns: []string{node.DispatchTasksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(dispatchtask.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -376,15 +376,15 @@ func (_u *NodeUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.TaskRunsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.DispatchTasksIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   node.TaskRunsTable,
-			Columns: []string{node.TaskRunsColumn},
+			Table:   node.DispatchTasksTable,
+			Columns: []string{node.DispatchTasksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(dispatchtask.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -522,19 +522,19 @@ func (_u *NodeUpdateOne) AddOperatorNodes(v ...*OperatorNode) *NodeUpdateOne {
 	return _u.AddOperatorNodeIDs(ids...)
 }
 
-// AddTaskRunIDs adds the "task_runs" edge to the DispatchTaskRun entity by IDs.
-func (_u *NodeUpdateOne) AddTaskRunIDs(ids ...int64) *NodeUpdateOne {
-	_u.mutation.AddTaskRunIDs(ids...)
+// AddDispatchTaskIDs adds the "dispatch_tasks" edge to the DispatchTask entity by IDs.
+func (_u *NodeUpdateOne) AddDispatchTaskIDs(ids ...int64) *NodeUpdateOne {
+	_u.mutation.AddDispatchTaskIDs(ids...)
 	return _u
 }
 
-// AddTaskRuns adds the "task_runs" edges to the DispatchTaskRun entity.
-func (_u *NodeUpdateOne) AddTaskRuns(v ...*DispatchTaskRun) *NodeUpdateOne {
+// AddDispatchTasks adds the "dispatch_tasks" edges to the DispatchTask entity.
+func (_u *NodeUpdateOne) AddDispatchTasks(v ...*DispatchTask) *NodeUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddTaskRunIDs(ids...)
+	return _u.AddDispatchTaskIDs(ids...)
 }
 
 // Mutation returns the NodeMutation object of the builder.
@@ -563,25 +563,25 @@ func (_u *NodeUpdateOne) RemoveOperatorNodes(v ...*OperatorNode) *NodeUpdateOne 
 	return _u.RemoveOperatorNodeIDs(ids...)
 }
 
-// ClearTaskRuns clears all "task_runs" edges to the DispatchTaskRun entity.
-func (_u *NodeUpdateOne) ClearTaskRuns() *NodeUpdateOne {
-	_u.mutation.ClearTaskRuns()
+// ClearDispatchTasks clears all "dispatch_tasks" edges to the DispatchTask entity.
+func (_u *NodeUpdateOne) ClearDispatchTasks() *NodeUpdateOne {
+	_u.mutation.ClearDispatchTasks()
 	return _u
 }
 
-// RemoveTaskRunIDs removes the "task_runs" edge to DispatchTaskRun entities by IDs.
-func (_u *NodeUpdateOne) RemoveTaskRunIDs(ids ...int64) *NodeUpdateOne {
-	_u.mutation.RemoveTaskRunIDs(ids...)
+// RemoveDispatchTaskIDs removes the "dispatch_tasks" edge to DispatchTask entities by IDs.
+func (_u *NodeUpdateOne) RemoveDispatchTaskIDs(ids ...int64) *NodeUpdateOne {
+	_u.mutation.RemoveDispatchTaskIDs(ids...)
 	return _u
 }
 
-// RemoveTaskRuns removes "task_runs" edges to DispatchTaskRun entities.
-func (_u *NodeUpdateOne) RemoveTaskRuns(v ...*DispatchTaskRun) *NodeUpdateOne {
+// RemoveDispatchTasks removes "dispatch_tasks" edges to DispatchTask entities.
+func (_u *NodeUpdateOne) RemoveDispatchTasks(v ...*DispatchTask) *NodeUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveTaskRunIDs(ids...)
+	return _u.RemoveDispatchTaskIDs(ids...)
 }
 
 // Where appends a list predicates to the NodeUpdate builder.
@@ -759,28 +759,28 @@ func (_u *NodeUpdateOne) sqlSave(ctx context.Context) (_node *Node, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.TaskRunsCleared() {
+	if _u.mutation.DispatchTasksCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   node.TaskRunsTable,
-			Columns: []string{node.TaskRunsColumn},
+			Table:   node.DispatchTasksTable,
+			Columns: []string{node.DispatchTasksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(dispatchtask.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedTaskRunsIDs(); len(nodes) > 0 && !_u.mutation.TaskRunsCleared() {
+	if nodes := _u.mutation.RemovedDispatchTasksIDs(); len(nodes) > 0 && !_u.mutation.DispatchTasksCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   node.TaskRunsTable,
-			Columns: []string{node.TaskRunsColumn},
+			Table:   node.DispatchTasksTable,
+			Columns: []string{node.DispatchTasksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(dispatchtask.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -788,15 +788,15 @@ func (_u *NodeUpdateOne) sqlSave(ctx context.Context) (_node *Node, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.TaskRunsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.DispatchTasksIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   node.TaskRunsTable,
-			Columns: []string{node.TaskRunsColumn},
+			Table:   node.DispatchTasksTable,
+			Columns: []string{node.DispatchTasksColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dispatchtaskrun.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(dispatchtask.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

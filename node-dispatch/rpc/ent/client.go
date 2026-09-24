@@ -16,7 +16,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/operatornode"
 )
@@ -28,8 +27,6 @@ type Client struct {
 	Schema *migrate.Schema
 	// DispatchTask is the client for interacting with the DispatchTask builders.
 	DispatchTask *DispatchTaskClient
-	// DispatchTaskRun is the client for interacting with the DispatchTaskRun builders.
-	DispatchTaskRun *DispatchTaskRunClient
 	// Node is the client for interacting with the Node builders.
 	Node *NodeClient
 	// OperatorNode is the client for interacting with the OperatorNode builders.
@@ -46,7 +43,6 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.DispatchTask = NewDispatchTaskClient(c.config)
-	c.DispatchTaskRun = NewDispatchTaskRunClient(c.config)
 	c.Node = NewNodeClient(c.config)
 	c.OperatorNode = NewOperatorNodeClient(c.config)
 }
@@ -139,12 +135,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:             ctx,
-		config:          cfg,
-		DispatchTask:    NewDispatchTaskClient(cfg),
-		DispatchTaskRun: NewDispatchTaskRunClient(cfg),
-		Node:            NewNodeClient(cfg),
-		OperatorNode:    NewOperatorNodeClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		DispatchTask: NewDispatchTaskClient(cfg),
+		Node:         NewNodeClient(cfg),
+		OperatorNode: NewOperatorNodeClient(cfg),
 	}, nil
 }
 
@@ -162,12 +157,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:             ctx,
-		config:          cfg,
-		DispatchTask:    NewDispatchTaskClient(cfg),
-		DispatchTaskRun: NewDispatchTaskRunClient(cfg),
-		Node:            NewNodeClient(cfg),
-		OperatorNode:    NewOperatorNodeClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		DispatchTask: NewDispatchTaskClient(cfg),
+		Node:         NewNodeClient(cfg),
+		OperatorNode: NewOperatorNodeClient(cfg),
 	}, nil
 }
 
@@ -197,7 +191,6 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.DispatchTask.Use(hooks...)
-	c.DispatchTaskRun.Use(hooks...)
 	c.Node.Use(hooks...)
 	c.OperatorNode.Use(hooks...)
 }
@@ -206,7 +199,6 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.DispatchTask.Intercept(interceptors...)
-	c.DispatchTaskRun.Intercept(interceptors...)
 	c.Node.Intercept(interceptors...)
 	c.OperatorNode.Intercept(interceptors...)
 }
@@ -216,8 +208,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *DispatchTaskMutation:
 		return c.DispatchTask.mutate(ctx, m)
-	case *DispatchTaskRunMutation:
-		return c.DispatchTaskRun.mutate(ctx, m)
 	case *NodeMutation:
 		return c.Node.mutate(ctx, m)
 	case *OperatorNodeMutation:
@@ -335,15 +325,15 @@ func (c *DispatchTaskClient) GetX(ctx context.Context, id int64) *DispatchTask {
 	return obj
 }
 
-// QueryRuns queries the runs edge of a DispatchTask.
-func (c *DispatchTaskClient) QueryRuns(_m *DispatchTask) *DispatchTaskRunQuery {
-	query := (&DispatchTaskRunClient{config: c.config}).Query()
+// QueryNode queries the node edge of a DispatchTask.
+func (c *DispatchTaskClient) QueryNode(_m *DispatchTask) *NodeQuery {
+	query := (&NodeClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dispatchtask.Table, dispatchtask.FieldID, id),
-			sqlgraph.To(dispatchtaskrun.Table, dispatchtaskrun.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, dispatchtask.RunsTable, dispatchtask.RunsColumn),
+			sqlgraph.To(node.Table, node.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, dispatchtask.NodeTable, dispatchtask.NodeColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -373,171 +363,6 @@ func (c *DispatchTaskClient) mutate(ctx context.Context, m *DispatchTaskMutation
 		return (&DispatchTaskDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown DispatchTask mutation op: %q", m.Op())
-	}
-}
-
-// DispatchTaskRunClient is a client for the DispatchTaskRun schema.
-type DispatchTaskRunClient struct {
-	config
-}
-
-// NewDispatchTaskRunClient returns a client for the DispatchTaskRun from the given config.
-func NewDispatchTaskRunClient(c config) *DispatchTaskRunClient {
-	return &DispatchTaskRunClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `dispatchtaskrun.Hooks(f(g(h())))`.
-func (c *DispatchTaskRunClient) Use(hooks ...Hook) {
-	c.hooks.DispatchTaskRun = append(c.hooks.DispatchTaskRun, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `dispatchtaskrun.Intercept(f(g(h())))`.
-func (c *DispatchTaskRunClient) Intercept(interceptors ...Interceptor) {
-	c.inters.DispatchTaskRun = append(c.inters.DispatchTaskRun, interceptors...)
-}
-
-// Create returns a builder for creating a DispatchTaskRun entity.
-func (c *DispatchTaskRunClient) Create() *DispatchTaskRunCreate {
-	mutation := newDispatchTaskRunMutation(c.config, OpCreate)
-	return &DispatchTaskRunCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of DispatchTaskRun entities.
-func (c *DispatchTaskRunClient) CreateBulk(builders ...*DispatchTaskRunCreate) *DispatchTaskRunCreateBulk {
-	return &DispatchTaskRunCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *DispatchTaskRunClient) MapCreateBulk(slice any, setFunc func(*DispatchTaskRunCreate, int)) *DispatchTaskRunCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &DispatchTaskRunCreateBulk{err: fmt.Errorf("calling to DispatchTaskRunClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*DispatchTaskRunCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &DispatchTaskRunCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for DispatchTaskRun.
-func (c *DispatchTaskRunClient) Update() *DispatchTaskRunUpdate {
-	mutation := newDispatchTaskRunMutation(c.config, OpUpdate)
-	return &DispatchTaskRunUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *DispatchTaskRunClient) UpdateOne(_m *DispatchTaskRun) *DispatchTaskRunUpdateOne {
-	mutation := newDispatchTaskRunMutation(c.config, OpUpdateOne, withDispatchTaskRun(_m))
-	return &DispatchTaskRunUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *DispatchTaskRunClient) UpdateOneID(id int64) *DispatchTaskRunUpdateOne {
-	mutation := newDispatchTaskRunMutation(c.config, OpUpdateOne, withDispatchTaskRunID(id))
-	return &DispatchTaskRunUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for DispatchTaskRun.
-func (c *DispatchTaskRunClient) Delete() *DispatchTaskRunDelete {
-	mutation := newDispatchTaskRunMutation(c.config, OpDelete)
-	return &DispatchTaskRunDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *DispatchTaskRunClient) DeleteOne(_m *DispatchTaskRun) *DispatchTaskRunDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *DispatchTaskRunClient) DeleteOneID(id int64) *DispatchTaskRunDeleteOne {
-	builder := c.Delete().Where(dispatchtaskrun.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &DispatchTaskRunDeleteOne{builder}
-}
-
-// Query returns a query builder for DispatchTaskRun.
-func (c *DispatchTaskRunClient) Query() *DispatchTaskRunQuery {
-	return &DispatchTaskRunQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeDispatchTaskRun},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a DispatchTaskRun entity by its id.
-func (c *DispatchTaskRunClient) Get(ctx context.Context, id int64) (*DispatchTaskRun, error) {
-	return c.Query().Where(dispatchtaskrun.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *DispatchTaskRunClient) GetX(ctx context.Context, id int64) *DispatchTaskRun {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryTask queries the task edge of a DispatchTaskRun.
-func (c *DispatchTaskRunClient) QueryTask(_m *DispatchTaskRun) *DispatchTaskQuery {
-	query := (&DispatchTaskClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(dispatchtaskrun.Table, dispatchtaskrun.FieldID, id),
-			sqlgraph.To(dispatchtask.Table, dispatchtask.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, dispatchtaskrun.TaskTable, dispatchtaskrun.TaskColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryNode queries the node edge of a DispatchTaskRun.
-func (c *DispatchTaskRunClient) QueryNode(_m *DispatchTaskRun) *NodeQuery {
-	query := (&NodeClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(dispatchtaskrun.Table, dispatchtaskrun.FieldID, id),
-			sqlgraph.To(node.Table, node.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, dispatchtaskrun.NodeTable, dispatchtaskrun.NodeColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *DispatchTaskRunClient) Hooks() []Hook {
-	return c.hooks.DispatchTaskRun
-}
-
-// Interceptors returns the client interceptors.
-func (c *DispatchTaskRunClient) Interceptors() []Interceptor {
-	return c.inters.DispatchTaskRun
-}
-
-func (c *DispatchTaskRunClient) mutate(ctx context.Context, m *DispatchTaskRunMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&DispatchTaskRunCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&DispatchTaskRunUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&DispatchTaskRunUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&DispatchTaskRunDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown DispatchTaskRun mutation op: %q", m.Op())
 	}
 }
 
@@ -665,15 +490,15 @@ func (c *NodeClient) QueryOperatorNodes(_m *Node) *OperatorNodeQuery {
 	return query
 }
 
-// QueryTaskRuns queries the task_runs edge of a Node.
-func (c *NodeClient) QueryTaskRuns(_m *Node) *DispatchTaskRunQuery {
-	query := (&DispatchTaskRunClient{config: c.config}).Query()
+// QueryDispatchTasks queries the dispatch_tasks edge of a Node.
+func (c *NodeClient) QueryDispatchTasks(_m *Node) *DispatchTaskQuery {
+	query := (&DispatchTaskClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(node.Table, node.FieldID, id),
-			sqlgraph.To(dispatchtaskrun.Table, dispatchtaskrun.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, node.TaskRunsTable, node.TaskRunsColumn),
+			sqlgraph.To(dispatchtask.Table, dispatchtask.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, node.DispatchTasksTable, node.DispatchTasksColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -858,9 +683,9 @@ func (c *OperatorNodeClient) mutate(ctx context.Context, m *OperatorNodeMutation
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		DispatchTask, DispatchTaskRun, Node, OperatorNode []ent.Hook
+		DispatchTask, Node, OperatorNode []ent.Hook
 	}
 	inters struct {
-		DispatchTask, DispatchTaskRun, Node, OperatorNode []ent.Interceptor
+		DispatchTask, Node, OperatorNode []ent.Interceptor
 	}
 )

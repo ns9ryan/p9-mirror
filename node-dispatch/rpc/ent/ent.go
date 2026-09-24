@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/operatornode"
 )
@@ -76,10 +75,9 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			dispatchtask.Table:    dispatchtask.ValidColumn,
-			dispatchtaskrun.Table: dispatchtaskrun.ValidColumn,
-			node.Table:            node.ValidColumn,
-			operatornode.Table:    operatornode.ValidColumn,
+			dispatchtask.Table: dispatchtask.ValidColumn,
+			node.Table:         node.ValidColumn,
+			operatornode.Table: operatornode.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

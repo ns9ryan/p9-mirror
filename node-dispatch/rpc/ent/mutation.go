@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/node"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/operatornode"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/predicate"
@@ -28,10 +27,9 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeDispatchTask    = "DispatchTask"
-	TypeDispatchTaskRun = "DispatchTaskRun"
-	TypeNode            = "Node"
-	TypeOperatorNode    = "OperatorNode"
+	TypeDispatchTask = "DispatchTask"
+	TypeNode         = "Node"
+	TypeOperatorNode = "OperatorNode"
 )
 
 // DispatchTaskMutation represents an operation that mutates the DispatchTask nodes in the graph.
@@ -50,10 +48,14 @@ type DispatchTaskMutation struct {
 	appendparams  json.RawMessage
 	status        *int64
 	addstatus     *int64
+	result        *json.RawMessage
+	appendresult  json.RawMessage
+	error_message *string
+	started_at    *time.Time
+	finished_at   *time.Time
 	clearedFields map[string]struct{}
-	runs          map[int64]struct{}
-	removedruns   map[int64]struct{}
-	clearedruns   bool
+	node          *int64
+	clearednode   bool
 	done          bool
 	oldValue      func(context.Context) (*DispatchTask, error)
 	predicates    []predicate.DispatchTask
@@ -430,6 +432,42 @@ func (m *DispatchTaskMutation) ResetParams() {
 	m.appendparams = nil
 }
 
+// SetNodeID sets the "node_id" field.
+func (m *DispatchTaskMutation) SetNodeID(i int64) {
+	m.node = &i
+}
+
+// NodeID returns the value of the "node_id" field in the mutation.
+func (m *DispatchTaskMutation) NodeID() (r int64, exists bool) {
+	v := m.node
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNodeID returns the old "node_id" field's value of the DispatchTask entity.
+// If the DispatchTask object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DispatchTaskMutation) OldNodeID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNodeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNodeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNodeID: %w", err)
+	}
+	return oldValue.NodeID, nil
+}
+
+// ResetNodeID resets all changes to the "node_id" field.
+func (m *DispatchTaskMutation) ResetNodeID() {
+	m.node = nil
+}
+
 // SetStatus sets the "status" field.
 func (m *DispatchTaskMutation) SetStatus(i int64) {
 	m.status = &i
@@ -486,58 +524,243 @@ func (m *DispatchTaskMutation) ResetStatus() {
 	m.addstatus = nil
 }
 
-// AddRunIDs adds the "runs" edge to the DispatchTaskRun entity by ids.
-func (m *DispatchTaskMutation) AddRunIDs(ids ...int64) {
-	if m.runs == nil {
-		m.runs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.runs[ids[i]] = struct{}{}
-	}
+// SetResult sets the "result" field.
+func (m *DispatchTaskMutation) SetResult(jm json.RawMessage) {
+	m.result = &jm
+	m.appendresult = nil
 }
 
-// ClearRuns clears the "runs" edge to the DispatchTaskRun entity.
-func (m *DispatchTaskMutation) ClearRuns() {
-	m.clearedruns = true
-}
-
-// RunsCleared reports if the "runs" edge to the DispatchTaskRun entity was cleared.
-func (m *DispatchTaskMutation) RunsCleared() bool {
-	return m.clearedruns
-}
-
-// RemoveRunIDs removes the "runs" edge to the DispatchTaskRun entity by IDs.
-func (m *DispatchTaskMutation) RemoveRunIDs(ids ...int64) {
-	if m.removedruns == nil {
-		m.removedruns = make(map[int64]struct{})
+// Result returns the value of the "result" field in the mutation.
+func (m *DispatchTaskMutation) Result() (r json.RawMessage, exists bool) {
+	v := m.result
+	if v == nil {
+		return
 	}
-	for i := range ids {
-		delete(m.runs, ids[i])
-		m.removedruns[ids[i]] = struct{}{}
-	}
+	return *v, true
 }
 
-// RemovedRuns returns the removed IDs of the "runs" edge to the DispatchTaskRun entity.
-func (m *DispatchTaskMutation) RemovedRunsIDs() (ids []int64) {
-	for id := range m.removedruns {
-		ids = append(ids, id)
+// OldResult returns the old "result" field's value of the DispatchTask entity.
+// If the DispatchTask object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DispatchTaskMutation) OldResult(ctx context.Context) (v json.RawMessage, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldResult is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldResult requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldResult: %w", err)
+	}
+	return oldValue.Result, nil
+}
+
+// AppendResult adds jm to the "result" field.
+func (m *DispatchTaskMutation) AppendResult(jm json.RawMessage) {
+	m.appendresult = append(m.appendresult, jm...)
+}
+
+// AppendedResult returns the list of values that were appended to the "result" field in this mutation.
+func (m *DispatchTaskMutation) AppendedResult() (json.RawMessage, bool) {
+	if len(m.appendresult) == 0 {
+		return nil, false
+	}
+	return m.appendresult, true
+}
+
+// ClearResult clears the value of the "result" field.
+func (m *DispatchTaskMutation) ClearResult() {
+	m.result = nil
+	m.appendresult = nil
+	m.clearedFields[dispatchtask.FieldResult] = struct{}{}
+}
+
+// ResultCleared returns if the "result" field was cleared in this mutation.
+func (m *DispatchTaskMutation) ResultCleared() bool {
+	_, ok := m.clearedFields[dispatchtask.FieldResult]
+	return ok
+}
+
+// ResetResult resets all changes to the "result" field.
+func (m *DispatchTaskMutation) ResetResult() {
+	m.result = nil
+	m.appendresult = nil
+	delete(m.clearedFields, dispatchtask.FieldResult)
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (m *DispatchTaskMutation) SetErrorMessage(s string) {
+	m.error_message = &s
+}
+
+// ErrorMessage returns the value of the "error_message" field in the mutation.
+func (m *DispatchTaskMutation) ErrorMessage() (r string, exists bool) {
+	v := m.error_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldErrorMessage returns the old "error_message" field's value of the DispatchTask entity.
+// If the DispatchTask object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DispatchTaskMutation) OldErrorMessage(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldErrorMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldErrorMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldErrorMessage: %w", err)
+	}
+	return oldValue.ErrorMessage, nil
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (m *DispatchTaskMutation) ClearErrorMessage() {
+	m.error_message = nil
+	m.clearedFields[dispatchtask.FieldErrorMessage] = struct{}{}
+}
+
+// ErrorMessageCleared returns if the "error_message" field was cleared in this mutation.
+func (m *DispatchTaskMutation) ErrorMessageCleared() bool {
+	_, ok := m.clearedFields[dispatchtask.FieldErrorMessage]
+	return ok
+}
+
+// ResetErrorMessage resets all changes to the "error_message" field.
+func (m *DispatchTaskMutation) ResetErrorMessage() {
+	m.error_message = nil
+	delete(m.clearedFields, dispatchtask.FieldErrorMessage)
+}
+
+// SetStartedAt sets the "started_at" field.
+func (m *DispatchTaskMutation) SetStartedAt(t time.Time) {
+	m.started_at = &t
+}
+
+// StartedAt returns the value of the "started_at" field in the mutation.
+func (m *DispatchTaskMutation) StartedAt() (r time.Time, exists bool) {
+	v := m.started_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartedAt returns the old "started_at" field's value of the DispatchTask entity.
+// If the DispatchTask object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DispatchTaskMutation) OldStartedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStartedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStartedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartedAt: %w", err)
+	}
+	return oldValue.StartedAt, nil
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (m *DispatchTaskMutation) ClearStartedAt() {
+	m.started_at = nil
+	m.clearedFields[dispatchtask.FieldStartedAt] = struct{}{}
+}
+
+// StartedAtCleared returns if the "started_at" field was cleared in this mutation.
+func (m *DispatchTaskMutation) StartedAtCleared() bool {
+	_, ok := m.clearedFields[dispatchtask.FieldStartedAt]
+	return ok
+}
+
+// ResetStartedAt resets all changes to the "started_at" field.
+func (m *DispatchTaskMutation) ResetStartedAt() {
+	m.started_at = nil
+	delete(m.clearedFields, dispatchtask.FieldStartedAt)
+}
+
+// SetFinishedAt sets the "finished_at" field.
+func (m *DispatchTaskMutation) SetFinishedAt(t time.Time) {
+	m.finished_at = &t
+}
+
+// FinishedAt returns the value of the "finished_at" field in the mutation.
+func (m *DispatchTaskMutation) FinishedAt() (r time.Time, exists bool) {
+	v := m.finished_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFinishedAt returns the old "finished_at" field's value of the DispatchTask entity.
+// If the DispatchTask object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DispatchTaskMutation) OldFinishedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFinishedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFinishedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFinishedAt: %w", err)
+	}
+	return oldValue.FinishedAt, nil
+}
+
+// ClearFinishedAt clears the value of the "finished_at" field.
+func (m *DispatchTaskMutation) ClearFinishedAt() {
+	m.finished_at = nil
+	m.clearedFields[dispatchtask.FieldFinishedAt] = struct{}{}
+}
+
+// FinishedAtCleared returns if the "finished_at" field was cleared in this mutation.
+func (m *DispatchTaskMutation) FinishedAtCleared() bool {
+	_, ok := m.clearedFields[dispatchtask.FieldFinishedAt]
+	return ok
+}
+
+// ResetFinishedAt resets all changes to the "finished_at" field.
+func (m *DispatchTaskMutation) ResetFinishedAt() {
+	m.finished_at = nil
+	delete(m.clearedFields, dispatchtask.FieldFinishedAt)
+}
+
+// ClearNode clears the "node" edge to the Node entity.
+func (m *DispatchTaskMutation) ClearNode() {
+	m.clearednode = true
+	m.clearedFields[dispatchtask.FieldNodeID] = struct{}{}
+}
+
+// NodeCleared reports if the "node" edge to the Node entity was cleared.
+func (m *DispatchTaskMutation) NodeCleared() bool {
+	return m.clearednode
+}
+
+// NodeIDs returns the "node" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// NodeID instead. It exists only for internal usage by the builders.
+func (m *DispatchTaskMutation) NodeIDs() (ids []int64) {
+	if id := m.node; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
 
-// RunsIDs returns the "runs" edge IDs in the mutation.
-func (m *DispatchTaskMutation) RunsIDs() (ids []int64) {
-	for id := range m.runs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetRuns resets all changes to the "runs" edge.
-func (m *DispatchTaskMutation) ResetRuns() {
-	m.runs = nil
-	m.clearedruns = false
-	m.removedruns = nil
+// ResetNode resets all changes to the "node" edge.
+func (m *DispatchTaskMutation) ResetNode() {
+	m.node = nil
+	m.clearednode = false
 }
 
 // Where appends a list predicates to the DispatchTaskMutation builder.
@@ -574,7 +797,7 @@ func (m *DispatchTaskMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DispatchTaskMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, dispatchtask.FieldCreatedAt)
 	}
@@ -596,8 +819,23 @@ func (m *DispatchTaskMutation) Fields() []string {
 	if m.params != nil {
 		fields = append(fields, dispatchtask.FieldParams)
 	}
+	if m.node != nil {
+		fields = append(fields, dispatchtask.FieldNodeID)
+	}
 	if m.status != nil {
 		fields = append(fields, dispatchtask.FieldStatus)
+	}
+	if m.result != nil {
+		fields = append(fields, dispatchtask.FieldResult)
+	}
+	if m.error_message != nil {
+		fields = append(fields, dispatchtask.FieldErrorMessage)
+	}
+	if m.started_at != nil {
+		fields = append(fields, dispatchtask.FieldStartedAt)
+	}
+	if m.finished_at != nil {
+		fields = append(fields, dispatchtask.FieldFinishedAt)
 	}
 	return fields
 }
@@ -621,8 +859,18 @@ func (m *DispatchTaskMutation) Field(name string) (ent.Value, bool) {
 		return m.TaskType()
 	case dispatchtask.FieldParams:
 		return m.Params()
+	case dispatchtask.FieldNodeID:
+		return m.NodeID()
 	case dispatchtask.FieldStatus:
 		return m.Status()
+	case dispatchtask.FieldResult:
+		return m.Result()
+	case dispatchtask.FieldErrorMessage:
+		return m.ErrorMessage()
+	case dispatchtask.FieldStartedAt:
+		return m.StartedAt()
+	case dispatchtask.FieldFinishedAt:
+		return m.FinishedAt()
 	}
 	return nil, false
 }
@@ -646,8 +894,18 @@ func (m *DispatchTaskMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldTaskType(ctx)
 	case dispatchtask.FieldParams:
 		return m.OldParams(ctx)
+	case dispatchtask.FieldNodeID:
+		return m.OldNodeID(ctx)
 	case dispatchtask.FieldStatus:
 		return m.OldStatus(ctx)
+	case dispatchtask.FieldResult:
+		return m.OldResult(ctx)
+	case dispatchtask.FieldErrorMessage:
+		return m.OldErrorMessage(ctx)
+	case dispatchtask.FieldStartedAt:
+		return m.OldStartedAt(ctx)
+	case dispatchtask.FieldFinishedAt:
+		return m.OldFinishedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown DispatchTask field %s", name)
 }
@@ -706,12 +964,47 @@ func (m *DispatchTaskMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetParams(v)
 		return nil
+	case dispatchtask.FieldNodeID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNodeID(v)
+		return nil
 	case dispatchtask.FieldStatus:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case dispatchtask.FieldResult:
+		v, ok := value.(json.RawMessage)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetResult(v)
+		return nil
+	case dispatchtask.FieldErrorMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetErrorMessage(v)
+		return nil
+	case dispatchtask.FieldStartedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartedAt(v)
+		return nil
+	case dispatchtask.FieldFinishedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFinishedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown DispatchTask field %s", name)
@@ -757,7 +1050,20 @@ func (m *DispatchTaskMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DispatchTaskMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(dispatchtask.FieldResult) {
+		fields = append(fields, dispatchtask.FieldResult)
+	}
+	if m.FieldCleared(dispatchtask.FieldErrorMessage) {
+		fields = append(fields, dispatchtask.FieldErrorMessage)
+	}
+	if m.FieldCleared(dispatchtask.FieldStartedAt) {
+		fields = append(fields, dispatchtask.FieldStartedAt)
+	}
+	if m.FieldCleared(dispatchtask.FieldFinishedAt) {
+		fields = append(fields, dispatchtask.FieldFinishedAt)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -770,6 +1076,20 @@ func (m *DispatchTaskMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DispatchTaskMutation) ClearField(name string) error {
+	switch name {
+	case dispatchtask.FieldResult:
+		m.ClearResult()
+		return nil
+	case dispatchtask.FieldErrorMessage:
+		m.ClearErrorMessage()
+		return nil
+	case dispatchtask.FieldStartedAt:
+		m.ClearStartedAt()
+		return nil
+	case dispatchtask.FieldFinishedAt:
+		m.ClearFinishedAt()
+		return nil
+	}
 	return fmt.Errorf("unknown DispatchTask nullable field %s", name)
 }
 
@@ -798,8 +1118,23 @@ func (m *DispatchTaskMutation) ResetField(name string) error {
 	case dispatchtask.FieldParams:
 		m.ResetParams()
 		return nil
+	case dispatchtask.FieldNodeID:
+		m.ResetNodeID()
+		return nil
 	case dispatchtask.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case dispatchtask.FieldResult:
+		m.ResetResult()
+		return nil
+	case dispatchtask.FieldErrorMessage:
+		m.ResetErrorMessage()
+		return nil
+	case dispatchtask.FieldStartedAt:
+		m.ResetStartedAt()
+		return nil
+	case dispatchtask.FieldFinishedAt:
+		m.ResetFinishedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown DispatchTask field %s", name)
@@ -808,8 +1143,8 @@ func (m *DispatchTaskMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DispatchTaskMutation) AddedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.runs != nil {
-		edges = append(edges, dispatchtask.EdgeRuns)
+	if m.node != nil {
+		edges = append(edges, dispatchtask.EdgeNode)
 	}
 	return edges
 }
@@ -818,1089 +1153,7 @@ func (m *DispatchTaskMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *DispatchTaskMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case dispatchtask.EdgeRuns:
-		ids := make([]ent.Value, 0, len(m.runs))
-		for id := range m.runs {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *DispatchTaskMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedruns != nil {
-		edges = append(edges, dispatchtask.EdgeRuns)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *DispatchTaskMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case dispatchtask.EdgeRuns:
-		ids := make([]ent.Value, 0, len(m.removedruns))
-		for id := range m.removedruns {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *DispatchTaskMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedruns {
-		edges = append(edges, dispatchtask.EdgeRuns)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *DispatchTaskMutation) EdgeCleared(name string) bool {
-	switch name {
-	case dispatchtask.EdgeRuns:
-		return m.clearedruns
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *DispatchTaskMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown DispatchTask unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *DispatchTaskMutation) ResetEdge(name string) error {
-	switch name {
-	case dispatchtask.EdgeRuns:
-		m.ResetRuns()
-		return nil
-	}
-	return fmt.Errorf("unknown DispatchTask edge %s", name)
-}
-
-// DispatchTaskRunMutation represents an operation that mutates the DispatchTaskRun nodes in the graph.
-type DispatchTaskRunMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *int64
-	created_at    *time.Time
-	updated_at    *time.Time
-	run_no        *int64
-	addrun_no     *int64
-	status        *int64
-	addstatus     *int64
-	result        *json.RawMessage
-	appendresult  json.RawMessage
-	error_message *string
-	started_at    *time.Time
-	finished_at   *time.Time
-	clearedFields map[string]struct{}
-	task          *int64
-	clearedtask   bool
-	node          *int64
-	clearednode   bool
-	done          bool
-	oldValue      func(context.Context) (*DispatchTaskRun, error)
-	predicates    []predicate.DispatchTaskRun
-}
-
-var _ ent.Mutation = (*DispatchTaskRunMutation)(nil)
-
-// dispatchtaskrunOption allows management of the mutation configuration using functional options.
-type dispatchtaskrunOption func(*DispatchTaskRunMutation)
-
-// newDispatchTaskRunMutation creates new mutation for the DispatchTaskRun entity.
-func newDispatchTaskRunMutation(c config, op Op, opts ...dispatchtaskrunOption) *DispatchTaskRunMutation {
-	m := &DispatchTaskRunMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeDispatchTaskRun,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withDispatchTaskRunID sets the ID field of the mutation.
-func withDispatchTaskRunID(id int64) dispatchtaskrunOption {
-	return func(m *DispatchTaskRunMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *DispatchTaskRun
-		)
-		m.oldValue = func(ctx context.Context) (*DispatchTaskRun, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().DispatchTaskRun.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withDispatchTaskRun sets the old DispatchTaskRun of the mutation.
-func withDispatchTaskRun(node *DispatchTaskRun) dispatchtaskrunOption {
-	return func(m *DispatchTaskRunMutation) {
-		m.oldValue = func(context.Context) (*DispatchTaskRun, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m DispatchTaskRunMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m DispatchTaskRunMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of DispatchTaskRun entities.
-func (m *DispatchTaskRunMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *DispatchTaskRunMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *DispatchTaskRunMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().DispatchTaskRun.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *DispatchTaskRunMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *DispatchTaskRunMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *DispatchTaskRunMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *DispatchTaskRunMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *DispatchTaskRunMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *DispatchTaskRunMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
-// SetTaskID sets the "task_id" field.
-func (m *DispatchTaskRunMutation) SetTaskID(i int64) {
-	m.task = &i
-}
-
-// TaskID returns the value of the "task_id" field in the mutation.
-func (m *DispatchTaskRunMutation) TaskID() (r int64, exists bool) {
-	v := m.task
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTaskID returns the old "task_id" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldTaskID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTaskID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTaskID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTaskID: %w", err)
-	}
-	return oldValue.TaskID, nil
-}
-
-// ResetTaskID resets all changes to the "task_id" field.
-func (m *DispatchTaskRunMutation) ResetTaskID() {
-	m.task = nil
-}
-
-// SetNodeID sets the "node_id" field.
-func (m *DispatchTaskRunMutation) SetNodeID(i int64) {
-	m.node = &i
-}
-
-// NodeID returns the value of the "node_id" field in the mutation.
-func (m *DispatchTaskRunMutation) NodeID() (r int64, exists bool) {
-	v := m.node
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldNodeID returns the old "node_id" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldNodeID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNodeID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNodeID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNodeID: %w", err)
-	}
-	return oldValue.NodeID, nil
-}
-
-// ResetNodeID resets all changes to the "node_id" field.
-func (m *DispatchTaskRunMutation) ResetNodeID() {
-	m.node = nil
-}
-
-// SetRunNo sets the "run_no" field.
-func (m *DispatchTaskRunMutation) SetRunNo(i int64) {
-	m.run_no = &i
-	m.addrun_no = nil
-}
-
-// RunNo returns the value of the "run_no" field in the mutation.
-func (m *DispatchTaskRunMutation) RunNo() (r int64, exists bool) {
-	v := m.run_no
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRunNo returns the old "run_no" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldRunNo(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRunNo is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRunNo requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRunNo: %w", err)
-	}
-	return oldValue.RunNo, nil
-}
-
-// AddRunNo adds i to the "run_no" field.
-func (m *DispatchTaskRunMutation) AddRunNo(i int64) {
-	if m.addrun_no != nil {
-		*m.addrun_no += i
-	} else {
-		m.addrun_no = &i
-	}
-}
-
-// AddedRunNo returns the value that was added to the "run_no" field in this mutation.
-func (m *DispatchTaskRunMutation) AddedRunNo() (r int64, exists bool) {
-	v := m.addrun_no
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetRunNo resets all changes to the "run_no" field.
-func (m *DispatchTaskRunMutation) ResetRunNo() {
-	m.run_no = nil
-	m.addrun_no = nil
-}
-
-// SetStatus sets the "status" field.
-func (m *DispatchTaskRunMutation) SetStatus(i int64) {
-	m.status = &i
-	m.addstatus = nil
-}
-
-// Status returns the value of the "status" field in the mutation.
-func (m *DispatchTaskRunMutation) Status() (r int64, exists bool) {
-	v := m.status
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStatus returns the old "status" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldStatus(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStatus requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
-	}
-	return oldValue.Status, nil
-}
-
-// AddStatus adds i to the "status" field.
-func (m *DispatchTaskRunMutation) AddStatus(i int64) {
-	if m.addstatus != nil {
-		*m.addstatus += i
-	} else {
-		m.addstatus = &i
-	}
-}
-
-// AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *DispatchTaskRunMutation) AddedStatus() (r int64, exists bool) {
-	v := m.addstatus
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetStatus resets all changes to the "status" field.
-func (m *DispatchTaskRunMutation) ResetStatus() {
-	m.status = nil
-	m.addstatus = nil
-}
-
-// SetResult sets the "result" field.
-func (m *DispatchTaskRunMutation) SetResult(jm json.RawMessage) {
-	m.result = &jm
-	m.appendresult = nil
-}
-
-// Result returns the value of the "result" field in the mutation.
-func (m *DispatchTaskRunMutation) Result() (r json.RawMessage, exists bool) {
-	v := m.result
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldResult returns the old "result" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldResult(ctx context.Context) (v json.RawMessage, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldResult is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldResult requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldResult: %w", err)
-	}
-	return oldValue.Result, nil
-}
-
-// AppendResult adds jm to the "result" field.
-func (m *DispatchTaskRunMutation) AppendResult(jm json.RawMessage) {
-	m.appendresult = append(m.appendresult, jm...)
-}
-
-// AppendedResult returns the list of values that were appended to the "result" field in this mutation.
-func (m *DispatchTaskRunMutation) AppendedResult() (json.RawMessage, bool) {
-	if len(m.appendresult) == 0 {
-		return nil, false
-	}
-	return m.appendresult, true
-}
-
-// ClearResult clears the value of the "result" field.
-func (m *DispatchTaskRunMutation) ClearResult() {
-	m.result = nil
-	m.appendresult = nil
-	m.clearedFields[dispatchtaskrun.FieldResult] = struct{}{}
-}
-
-// ResultCleared returns if the "result" field was cleared in this mutation.
-func (m *DispatchTaskRunMutation) ResultCleared() bool {
-	_, ok := m.clearedFields[dispatchtaskrun.FieldResult]
-	return ok
-}
-
-// ResetResult resets all changes to the "result" field.
-func (m *DispatchTaskRunMutation) ResetResult() {
-	m.result = nil
-	m.appendresult = nil
-	delete(m.clearedFields, dispatchtaskrun.FieldResult)
-}
-
-// SetErrorMessage sets the "error_message" field.
-func (m *DispatchTaskRunMutation) SetErrorMessage(s string) {
-	m.error_message = &s
-}
-
-// ErrorMessage returns the value of the "error_message" field in the mutation.
-func (m *DispatchTaskRunMutation) ErrorMessage() (r string, exists bool) {
-	v := m.error_message
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldErrorMessage returns the old "error_message" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldErrorMessage(ctx context.Context) (v *string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldErrorMessage is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldErrorMessage requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldErrorMessage: %w", err)
-	}
-	return oldValue.ErrorMessage, nil
-}
-
-// ClearErrorMessage clears the value of the "error_message" field.
-func (m *DispatchTaskRunMutation) ClearErrorMessage() {
-	m.error_message = nil
-	m.clearedFields[dispatchtaskrun.FieldErrorMessage] = struct{}{}
-}
-
-// ErrorMessageCleared returns if the "error_message" field was cleared in this mutation.
-func (m *DispatchTaskRunMutation) ErrorMessageCleared() bool {
-	_, ok := m.clearedFields[dispatchtaskrun.FieldErrorMessage]
-	return ok
-}
-
-// ResetErrorMessage resets all changes to the "error_message" field.
-func (m *DispatchTaskRunMutation) ResetErrorMessage() {
-	m.error_message = nil
-	delete(m.clearedFields, dispatchtaskrun.FieldErrorMessage)
-}
-
-// SetStartedAt sets the "started_at" field.
-func (m *DispatchTaskRunMutation) SetStartedAt(t time.Time) {
-	m.started_at = &t
-}
-
-// StartedAt returns the value of the "started_at" field in the mutation.
-func (m *DispatchTaskRunMutation) StartedAt() (r time.Time, exists bool) {
-	v := m.started_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStartedAt returns the old "started_at" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldStartedAt(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartedAt: %w", err)
-	}
-	return oldValue.StartedAt, nil
-}
-
-// ClearStartedAt clears the value of the "started_at" field.
-func (m *DispatchTaskRunMutation) ClearStartedAt() {
-	m.started_at = nil
-	m.clearedFields[dispatchtaskrun.FieldStartedAt] = struct{}{}
-}
-
-// StartedAtCleared returns if the "started_at" field was cleared in this mutation.
-func (m *DispatchTaskRunMutation) StartedAtCleared() bool {
-	_, ok := m.clearedFields[dispatchtaskrun.FieldStartedAt]
-	return ok
-}
-
-// ResetStartedAt resets all changes to the "started_at" field.
-func (m *DispatchTaskRunMutation) ResetStartedAt() {
-	m.started_at = nil
-	delete(m.clearedFields, dispatchtaskrun.FieldStartedAt)
-}
-
-// SetFinishedAt sets the "finished_at" field.
-func (m *DispatchTaskRunMutation) SetFinishedAt(t time.Time) {
-	m.finished_at = &t
-}
-
-// FinishedAt returns the value of the "finished_at" field in the mutation.
-func (m *DispatchTaskRunMutation) FinishedAt() (r time.Time, exists bool) {
-	v := m.finished_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFinishedAt returns the old "finished_at" field's value of the DispatchTaskRun entity.
-// If the DispatchTaskRun object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DispatchTaskRunMutation) OldFinishedAt(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFinishedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFinishedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFinishedAt: %w", err)
-	}
-	return oldValue.FinishedAt, nil
-}
-
-// ClearFinishedAt clears the value of the "finished_at" field.
-func (m *DispatchTaskRunMutation) ClearFinishedAt() {
-	m.finished_at = nil
-	m.clearedFields[dispatchtaskrun.FieldFinishedAt] = struct{}{}
-}
-
-// FinishedAtCleared returns if the "finished_at" field was cleared in this mutation.
-func (m *DispatchTaskRunMutation) FinishedAtCleared() bool {
-	_, ok := m.clearedFields[dispatchtaskrun.FieldFinishedAt]
-	return ok
-}
-
-// ResetFinishedAt resets all changes to the "finished_at" field.
-func (m *DispatchTaskRunMutation) ResetFinishedAt() {
-	m.finished_at = nil
-	delete(m.clearedFields, dispatchtaskrun.FieldFinishedAt)
-}
-
-// ClearTask clears the "task" edge to the DispatchTask entity.
-func (m *DispatchTaskRunMutation) ClearTask() {
-	m.clearedtask = true
-	m.clearedFields[dispatchtaskrun.FieldTaskID] = struct{}{}
-}
-
-// TaskCleared reports if the "task" edge to the DispatchTask entity was cleared.
-func (m *DispatchTaskRunMutation) TaskCleared() bool {
-	return m.clearedtask
-}
-
-// TaskIDs returns the "task" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TaskID instead. It exists only for internal usage by the builders.
-func (m *DispatchTaskRunMutation) TaskIDs() (ids []int64) {
-	if id := m.task; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetTask resets all changes to the "task" edge.
-func (m *DispatchTaskRunMutation) ResetTask() {
-	m.task = nil
-	m.clearedtask = false
-}
-
-// ClearNode clears the "node" edge to the Node entity.
-func (m *DispatchTaskRunMutation) ClearNode() {
-	m.clearednode = true
-	m.clearedFields[dispatchtaskrun.FieldNodeID] = struct{}{}
-}
-
-// NodeCleared reports if the "node" edge to the Node entity was cleared.
-func (m *DispatchTaskRunMutation) NodeCleared() bool {
-	return m.clearednode
-}
-
-// NodeIDs returns the "node" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// NodeID instead. It exists only for internal usage by the builders.
-func (m *DispatchTaskRunMutation) NodeIDs() (ids []int64) {
-	if id := m.node; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetNode resets all changes to the "node" edge.
-func (m *DispatchTaskRunMutation) ResetNode() {
-	m.node = nil
-	m.clearednode = false
-}
-
-// Where appends a list predicates to the DispatchTaskRunMutation builder.
-func (m *DispatchTaskRunMutation) Where(ps ...predicate.DispatchTaskRun) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the DispatchTaskRunMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *DispatchTaskRunMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.DispatchTaskRun, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *DispatchTaskRunMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *DispatchTaskRunMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (DispatchTaskRun).
-func (m *DispatchTaskRunMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *DispatchTaskRunMutation) Fields() []string {
-	fields := make([]string, 0, 10)
-	if m.created_at != nil {
-		fields = append(fields, dispatchtaskrun.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, dispatchtaskrun.FieldUpdatedAt)
-	}
-	if m.task != nil {
-		fields = append(fields, dispatchtaskrun.FieldTaskID)
-	}
-	if m.node != nil {
-		fields = append(fields, dispatchtaskrun.FieldNodeID)
-	}
-	if m.run_no != nil {
-		fields = append(fields, dispatchtaskrun.FieldRunNo)
-	}
-	if m.status != nil {
-		fields = append(fields, dispatchtaskrun.FieldStatus)
-	}
-	if m.result != nil {
-		fields = append(fields, dispatchtaskrun.FieldResult)
-	}
-	if m.error_message != nil {
-		fields = append(fields, dispatchtaskrun.FieldErrorMessage)
-	}
-	if m.started_at != nil {
-		fields = append(fields, dispatchtaskrun.FieldStartedAt)
-	}
-	if m.finished_at != nil {
-		fields = append(fields, dispatchtaskrun.FieldFinishedAt)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *DispatchTaskRunMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case dispatchtaskrun.FieldCreatedAt:
-		return m.CreatedAt()
-	case dispatchtaskrun.FieldUpdatedAt:
-		return m.UpdatedAt()
-	case dispatchtaskrun.FieldTaskID:
-		return m.TaskID()
-	case dispatchtaskrun.FieldNodeID:
-		return m.NodeID()
-	case dispatchtaskrun.FieldRunNo:
-		return m.RunNo()
-	case dispatchtaskrun.FieldStatus:
-		return m.Status()
-	case dispatchtaskrun.FieldResult:
-		return m.Result()
-	case dispatchtaskrun.FieldErrorMessage:
-		return m.ErrorMessage()
-	case dispatchtaskrun.FieldStartedAt:
-		return m.StartedAt()
-	case dispatchtaskrun.FieldFinishedAt:
-		return m.FinishedAt()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *DispatchTaskRunMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case dispatchtaskrun.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case dispatchtaskrun.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	case dispatchtaskrun.FieldTaskID:
-		return m.OldTaskID(ctx)
-	case dispatchtaskrun.FieldNodeID:
-		return m.OldNodeID(ctx)
-	case dispatchtaskrun.FieldRunNo:
-		return m.OldRunNo(ctx)
-	case dispatchtaskrun.FieldStatus:
-		return m.OldStatus(ctx)
-	case dispatchtaskrun.FieldResult:
-		return m.OldResult(ctx)
-	case dispatchtaskrun.FieldErrorMessage:
-		return m.OldErrorMessage(ctx)
-	case dispatchtaskrun.FieldStartedAt:
-		return m.OldStartedAt(ctx)
-	case dispatchtaskrun.FieldFinishedAt:
-		return m.OldFinishedAt(ctx)
-	}
-	return nil, fmt.Errorf("unknown DispatchTaskRun field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *DispatchTaskRunMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case dispatchtaskrun.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case dispatchtaskrun.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	case dispatchtaskrun.FieldTaskID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTaskID(v)
-		return nil
-	case dispatchtaskrun.FieldNodeID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetNodeID(v)
-		return nil
-	case dispatchtaskrun.FieldRunNo:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRunNo(v)
-		return nil
-	case dispatchtaskrun.FieldStatus:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStatus(v)
-		return nil
-	case dispatchtaskrun.FieldResult:
-		v, ok := value.(json.RawMessage)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetResult(v)
-		return nil
-	case dispatchtaskrun.FieldErrorMessage:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetErrorMessage(v)
-		return nil
-	case dispatchtaskrun.FieldStartedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStartedAt(v)
-		return nil
-	case dispatchtaskrun.FieldFinishedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFinishedAt(v)
-		return nil
-	}
-	return fmt.Errorf("unknown DispatchTaskRun field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *DispatchTaskRunMutation) AddedFields() []string {
-	var fields []string
-	if m.addrun_no != nil {
-		fields = append(fields, dispatchtaskrun.FieldRunNo)
-	}
-	if m.addstatus != nil {
-		fields = append(fields, dispatchtaskrun.FieldStatus)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *DispatchTaskRunMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case dispatchtaskrun.FieldRunNo:
-		return m.AddedRunNo()
-	case dispatchtaskrun.FieldStatus:
-		return m.AddedStatus()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *DispatchTaskRunMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case dispatchtaskrun.FieldRunNo:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddRunNo(v)
-		return nil
-	case dispatchtaskrun.FieldStatus:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStatus(v)
-		return nil
-	}
-	return fmt.Errorf("unknown DispatchTaskRun numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *DispatchTaskRunMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(dispatchtaskrun.FieldResult) {
-		fields = append(fields, dispatchtaskrun.FieldResult)
-	}
-	if m.FieldCleared(dispatchtaskrun.FieldErrorMessage) {
-		fields = append(fields, dispatchtaskrun.FieldErrorMessage)
-	}
-	if m.FieldCleared(dispatchtaskrun.FieldStartedAt) {
-		fields = append(fields, dispatchtaskrun.FieldStartedAt)
-	}
-	if m.FieldCleared(dispatchtaskrun.FieldFinishedAt) {
-		fields = append(fields, dispatchtaskrun.FieldFinishedAt)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *DispatchTaskRunMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *DispatchTaskRunMutation) ClearField(name string) error {
-	switch name {
-	case dispatchtaskrun.FieldResult:
-		m.ClearResult()
-		return nil
-	case dispatchtaskrun.FieldErrorMessage:
-		m.ClearErrorMessage()
-		return nil
-	case dispatchtaskrun.FieldStartedAt:
-		m.ClearStartedAt()
-		return nil
-	case dispatchtaskrun.FieldFinishedAt:
-		m.ClearFinishedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown DispatchTaskRun nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *DispatchTaskRunMutation) ResetField(name string) error {
-	switch name {
-	case dispatchtaskrun.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case dispatchtaskrun.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	case dispatchtaskrun.FieldTaskID:
-		m.ResetTaskID()
-		return nil
-	case dispatchtaskrun.FieldNodeID:
-		m.ResetNodeID()
-		return nil
-	case dispatchtaskrun.FieldRunNo:
-		m.ResetRunNo()
-		return nil
-	case dispatchtaskrun.FieldStatus:
-		m.ResetStatus()
-		return nil
-	case dispatchtaskrun.FieldResult:
-		m.ResetResult()
-		return nil
-	case dispatchtaskrun.FieldErrorMessage:
-		m.ResetErrorMessage()
-		return nil
-	case dispatchtaskrun.FieldStartedAt:
-		m.ResetStartedAt()
-		return nil
-	case dispatchtaskrun.FieldFinishedAt:
-		m.ResetFinishedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown DispatchTaskRun field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *DispatchTaskRunMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.task != nil {
-		edges = append(edges, dispatchtaskrun.EdgeTask)
-	}
-	if m.node != nil {
-		edges = append(edges, dispatchtaskrun.EdgeNode)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *DispatchTaskRunMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case dispatchtaskrun.EdgeTask:
-		if id := m.task; id != nil {
-			return []ent.Value{*id}
-		}
-	case dispatchtaskrun.EdgeNode:
+	case dispatchtask.EdgeNode:
 		if id := m.node; id != nil {
 			return []ent.Value{*id}
 		}
@@ -1909,36 +1162,31 @@ func (m *DispatchTaskRunMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *DispatchTaskRunMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+func (m *DispatchTaskMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *DispatchTaskRunMutation) RemovedIDs(name string) []ent.Value {
+func (m *DispatchTaskMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *DispatchTaskRunMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedtask {
-		edges = append(edges, dispatchtaskrun.EdgeTask)
-	}
+func (m *DispatchTaskMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
 	if m.clearednode {
-		edges = append(edges, dispatchtaskrun.EdgeNode)
+		edges = append(edges, dispatchtask.EdgeNode)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *DispatchTaskRunMutation) EdgeCleared(name string) bool {
+func (m *DispatchTaskMutation) EdgeCleared(name string) bool {
 	switch name {
-	case dispatchtaskrun.EdgeTask:
-		return m.clearedtask
-	case dispatchtaskrun.EdgeNode:
+	case dispatchtask.EdgeNode:
 		return m.clearednode
 	}
 	return false
@@ -1946,30 +1194,24 @@ func (m *DispatchTaskRunMutation) EdgeCleared(name string) bool {
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *DispatchTaskRunMutation) ClearEdge(name string) error {
+func (m *DispatchTaskMutation) ClearEdge(name string) error {
 	switch name {
-	case dispatchtaskrun.EdgeTask:
-		m.ClearTask()
-		return nil
-	case dispatchtaskrun.EdgeNode:
+	case dispatchtask.EdgeNode:
 		m.ClearNode()
 		return nil
 	}
-	return fmt.Errorf("unknown DispatchTaskRun unique edge %s", name)
+	return fmt.Errorf("unknown DispatchTask unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *DispatchTaskRunMutation) ResetEdge(name string) error {
+func (m *DispatchTaskMutation) ResetEdge(name string) error {
 	switch name {
-	case dispatchtaskrun.EdgeTask:
-		m.ResetTask()
-		return nil
-	case dispatchtaskrun.EdgeNode:
+	case dispatchtask.EdgeNode:
 		m.ResetNode()
 		return nil
 	}
-	return fmt.Errorf("unknown DispatchTaskRun edge %s", name)
+	return fmt.Errorf("unknown DispatchTask edge %s", name)
 }
 
 // NodeMutation represents an operation that mutates the Node nodes in the graph.
@@ -1991,9 +1233,9 @@ type NodeMutation struct {
 	operator_nodes        map[int64]struct{}
 	removedoperator_nodes map[int64]struct{}
 	clearedoperator_nodes bool
-	task_runs             map[int64]struct{}
-	removedtask_runs      map[int64]struct{}
-	clearedtask_runs      bool
+	dispatch_tasks        map[int64]struct{}
+	removeddispatch_tasks map[int64]struct{}
+	cleareddispatch_tasks bool
 	done                  bool
 	oldValue              func(context.Context) (*Node, error)
 	predicates            []predicate.Node
@@ -2491,58 +1733,58 @@ func (m *NodeMutation) ResetOperatorNodes() {
 	m.removedoperator_nodes = nil
 }
 
-// AddTaskRunIDs adds the "task_runs" edge to the DispatchTaskRun entity by ids.
-func (m *NodeMutation) AddTaskRunIDs(ids ...int64) {
-	if m.task_runs == nil {
-		m.task_runs = make(map[int64]struct{})
+// AddDispatchTaskIDs adds the "dispatch_tasks" edge to the DispatchTask entity by ids.
+func (m *NodeMutation) AddDispatchTaskIDs(ids ...int64) {
+	if m.dispatch_tasks == nil {
+		m.dispatch_tasks = make(map[int64]struct{})
 	}
 	for i := range ids {
-		m.task_runs[ids[i]] = struct{}{}
+		m.dispatch_tasks[ids[i]] = struct{}{}
 	}
 }
 
-// ClearTaskRuns clears the "task_runs" edge to the DispatchTaskRun entity.
-func (m *NodeMutation) ClearTaskRuns() {
-	m.clearedtask_runs = true
+// ClearDispatchTasks clears the "dispatch_tasks" edge to the DispatchTask entity.
+func (m *NodeMutation) ClearDispatchTasks() {
+	m.cleareddispatch_tasks = true
 }
 
-// TaskRunsCleared reports if the "task_runs" edge to the DispatchTaskRun entity was cleared.
-func (m *NodeMutation) TaskRunsCleared() bool {
-	return m.clearedtask_runs
+// DispatchTasksCleared reports if the "dispatch_tasks" edge to the DispatchTask entity was cleared.
+func (m *NodeMutation) DispatchTasksCleared() bool {
+	return m.cleareddispatch_tasks
 }
 
-// RemoveTaskRunIDs removes the "task_runs" edge to the DispatchTaskRun entity by IDs.
-func (m *NodeMutation) RemoveTaskRunIDs(ids ...int64) {
-	if m.removedtask_runs == nil {
-		m.removedtask_runs = make(map[int64]struct{})
+// RemoveDispatchTaskIDs removes the "dispatch_tasks" edge to the DispatchTask entity by IDs.
+func (m *NodeMutation) RemoveDispatchTaskIDs(ids ...int64) {
+	if m.removeddispatch_tasks == nil {
+		m.removeddispatch_tasks = make(map[int64]struct{})
 	}
 	for i := range ids {
-		delete(m.task_runs, ids[i])
-		m.removedtask_runs[ids[i]] = struct{}{}
+		delete(m.dispatch_tasks, ids[i])
+		m.removeddispatch_tasks[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedTaskRuns returns the removed IDs of the "task_runs" edge to the DispatchTaskRun entity.
-func (m *NodeMutation) RemovedTaskRunsIDs() (ids []int64) {
-	for id := range m.removedtask_runs {
+// RemovedDispatchTasks returns the removed IDs of the "dispatch_tasks" edge to the DispatchTask entity.
+func (m *NodeMutation) RemovedDispatchTasksIDs() (ids []int64) {
+	for id := range m.removeddispatch_tasks {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// TaskRunsIDs returns the "task_runs" edge IDs in the mutation.
-func (m *NodeMutation) TaskRunsIDs() (ids []int64) {
-	for id := range m.task_runs {
+// DispatchTasksIDs returns the "dispatch_tasks" edge IDs in the mutation.
+func (m *NodeMutation) DispatchTasksIDs() (ids []int64) {
+	for id := range m.dispatch_tasks {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetTaskRuns resets all changes to the "task_runs" edge.
-func (m *NodeMutation) ResetTaskRuns() {
-	m.task_runs = nil
-	m.clearedtask_runs = false
-	m.removedtask_runs = nil
+// ResetDispatchTasks resets all changes to the "dispatch_tasks" edge.
+func (m *NodeMutation) ResetDispatchTasks() {
+	m.dispatch_tasks = nil
+	m.cleareddispatch_tasks = false
+	m.removeddispatch_tasks = nil
 }
 
 // Where appends a list predicates to the NodeMutation builder.
@@ -2831,8 +2073,8 @@ func (m *NodeMutation) AddedEdges() []string {
 	if m.operator_nodes != nil {
 		edges = append(edges, node.EdgeOperatorNodes)
 	}
-	if m.task_runs != nil {
-		edges = append(edges, node.EdgeTaskRuns)
+	if m.dispatch_tasks != nil {
+		edges = append(edges, node.EdgeDispatchTasks)
 	}
 	return edges
 }
@@ -2847,9 +2089,9 @@ func (m *NodeMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case node.EdgeTaskRuns:
-		ids := make([]ent.Value, 0, len(m.task_runs))
-		for id := range m.task_runs {
+	case node.EdgeDispatchTasks:
+		ids := make([]ent.Value, 0, len(m.dispatch_tasks))
+		for id := range m.dispatch_tasks {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2863,8 +2105,8 @@ func (m *NodeMutation) RemovedEdges() []string {
 	if m.removedoperator_nodes != nil {
 		edges = append(edges, node.EdgeOperatorNodes)
 	}
-	if m.removedtask_runs != nil {
-		edges = append(edges, node.EdgeTaskRuns)
+	if m.removeddispatch_tasks != nil {
+		edges = append(edges, node.EdgeDispatchTasks)
 	}
 	return edges
 }
@@ -2879,9 +2121,9 @@ func (m *NodeMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case node.EdgeTaskRuns:
-		ids := make([]ent.Value, 0, len(m.removedtask_runs))
-		for id := range m.removedtask_runs {
+	case node.EdgeDispatchTasks:
+		ids := make([]ent.Value, 0, len(m.removeddispatch_tasks))
+		for id := range m.removeddispatch_tasks {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2895,8 +2137,8 @@ func (m *NodeMutation) ClearedEdges() []string {
 	if m.clearedoperator_nodes {
 		edges = append(edges, node.EdgeOperatorNodes)
 	}
-	if m.clearedtask_runs {
-		edges = append(edges, node.EdgeTaskRuns)
+	if m.cleareddispatch_tasks {
+		edges = append(edges, node.EdgeDispatchTasks)
 	}
 	return edges
 }
@@ -2907,8 +2149,8 @@ func (m *NodeMutation) EdgeCleared(name string) bool {
 	switch name {
 	case node.EdgeOperatorNodes:
 		return m.clearedoperator_nodes
-	case node.EdgeTaskRuns:
-		return m.clearedtask_runs
+	case node.EdgeDispatchTasks:
+		return m.cleareddispatch_tasks
 	}
 	return false
 }
@@ -2928,8 +2170,8 @@ func (m *NodeMutation) ResetEdge(name string) error {
 	case node.EdgeOperatorNodes:
 		m.ResetOperatorNodes()
 		return nil
-	case node.EdgeTaskRuns:
-		m.ResetTaskRuns()
+	case node.EdgeDispatchTasks:
+		m.ResetDispatchTasks()
 		return nil
 	}
 	return fmt.Errorf("unknown Node edge %s", name)

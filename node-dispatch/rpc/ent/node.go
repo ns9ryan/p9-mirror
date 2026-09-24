@@ -44,8 +44,8 @@ type Node struct {
 type NodeEdges struct {
 	// OperatorNodes holds the value of the operator_nodes edge.
 	OperatorNodes []*OperatorNode `json:"operator_nodes,omitempty"`
-	// TaskRuns holds the value of the task_runs edge.
-	TaskRuns []*DispatchTaskRun `json:"task_runs,omitempty"`
+	// DispatchTasks holds the value of the dispatch_tasks edge.
+	DispatchTasks []*DispatchTask `json:"dispatch_tasks,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -60,13 +60,13 @@ func (e NodeEdges) OperatorNodesOrErr() ([]*OperatorNode, error) {
 	return nil, &NotLoadedError{edge: "operator_nodes"}
 }
 
-// TaskRunsOrErr returns the TaskRuns value or an error if the edge
+// DispatchTasksOrErr returns the DispatchTasks value or an error if the edge
 // was not loaded in eager-loading.
-func (e NodeEdges) TaskRunsOrErr() ([]*DispatchTaskRun, error) {
+func (e NodeEdges) DispatchTasksOrErr() ([]*DispatchTask, error) {
 	if e.loadedTypes[1] {
-		return e.TaskRuns, nil
+		return e.DispatchTasks, nil
 	}
-	return nil, &NotLoadedError{edge: "task_runs"}
+	return nil, &NotLoadedError{edge: "dispatch_tasks"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -169,9 +169,9 @@ func (_m *Node) QueryOperatorNodes() *OperatorNodeQuery {
 	return NewNodeClient(_m.config).QueryOperatorNodes(_m)
 }
 
-// QueryTaskRuns queries the "task_runs" edge of the Node entity.
-func (_m *Node) QueryTaskRuns() *DispatchTaskRunQuery {
-	return NewNodeClient(_m.config).QueryTaskRuns(_m)
+// QueryDispatchTasks queries the "dispatch_tasks" edge of the Node entity.
+func (_m *Node) QueryDispatchTasks() *DispatchTaskQuery {
+	return NewNodeClient(_m.config).QueryDispatchTasks(_m)
 }
 
 // Update returns a builder for updating this Node.

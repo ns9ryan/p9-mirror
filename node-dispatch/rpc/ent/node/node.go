@@ -32,8 +32,8 @@ const (
 	FieldRemark = "remark"
 	// EdgeOperatorNodes holds the string denoting the operator_nodes edge name in mutations.
 	EdgeOperatorNodes = "operator_nodes"
-	// EdgeTaskRuns holds the string denoting the task_runs edge name in mutations.
-	EdgeTaskRuns = "task_runs"
+	// EdgeDispatchTasks holds the string denoting the dispatch_tasks edge name in mutations.
+	EdgeDispatchTasks = "dispatch_tasks"
 	// Table holds the table name of the node in the database.
 	Table = "node"
 	// OperatorNodesTable is the table that holds the operator_nodes relation/edge.
@@ -43,13 +43,13 @@ const (
 	OperatorNodesInverseTable = "operator_node"
 	// OperatorNodesColumn is the table column denoting the operator_nodes relation/edge.
 	OperatorNodesColumn = "node_id"
-	// TaskRunsTable is the table that holds the task_runs relation/edge.
-	TaskRunsTable = "dispatch_task_run"
-	// TaskRunsInverseTable is the table name for the DispatchTaskRun entity.
-	// It exists in this package in order to avoid circular dependency with the "dispatchtaskrun" package.
-	TaskRunsInverseTable = "dispatch_task_run"
-	// TaskRunsColumn is the table column denoting the task_runs relation/edge.
-	TaskRunsColumn = "node_id"
+	// DispatchTasksTable is the table that holds the dispatch_tasks relation/edge.
+	DispatchTasksTable = "dispatch_task"
+	// DispatchTasksInverseTable is the table name for the DispatchTask entity.
+	// It exists in this package in order to avoid circular dependency with the "dispatchtask" package.
+	DispatchTasksInverseTable = "dispatch_task"
+	// DispatchTasksColumn is the table column denoting the dispatch_tasks relation/edge.
+	DispatchTasksColumn = "node_id"
 )
 
 // Columns holds all SQL columns for node fields.
@@ -158,17 +158,17 @@ func ByOperatorNodes(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByTaskRunsCount orders the results by task_runs count.
-func ByTaskRunsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByDispatchTasksCount orders the results by dispatch_tasks count.
+func ByDispatchTasksCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTaskRunsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newDispatchTasksStep(), opts...)
 	}
 }
 
-// ByTaskRuns orders the results by task_runs terms.
-func ByTaskRuns(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByDispatchTasks orders the results by dispatch_tasks terms.
+func ByDispatchTasks(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTaskRunsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newDispatchTasksStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newOperatorNodesStep() *sqlgraph.Step {
@@ -178,10 +178,10 @@ func newOperatorNodesStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, OperatorNodesTable, OperatorNodesColumn),
 	)
 }
-func newTaskRunsStep() *sqlgraph.Step {
+func newDispatchTasksStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TaskRunsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, TaskRunsTable, TaskRunsColumn),
+		sqlgraph.To(DispatchTasksInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DispatchTasksTable, DispatchTasksColumn),
 	)
 }
