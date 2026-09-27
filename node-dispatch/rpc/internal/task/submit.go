@@ -66,17 +66,9 @@ func (s *Service) Submit(ctx context.Context, req SubmitRequest) (*SubmitRespons
 		return nil, status.Error(codes.Unavailable, "node is offline")
 	}
 
-	// 开启事务
-	tx, err := s.db.Tx(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("开启事务失败: %w", err)
-	}
-
 	// 创建调度任务
-	taskData, err = s.createTask(ctx, tx, req)
+	taskData, err = s.createTask(ctx, req, nodeData.ID)
 	if err != nil {
-		_ = tx.Rollback()
-
 		// 并发提交相同request_no时, 由数据库唯一约束完成最终幂等保护
 		if ent.IsConstraintError(err) {
 			existingTask, existing, idempotentErr := s.checkIdempotent(ctx, req)
@@ -93,22 +85,10 @@ func (s *Service) Submit(ctx context.Context, req SubmitRequest) (*SubmitRespons
 		return nil, err
 	}
 
-	// 创建首次执行记录
-	runData, err := s.createRun(ctx, tx, taskData.ID, nodeData.ID, 1)
-	if err != nil {
-		_ = tx.Rollback()
-		return nil, err
-	}
-
-	// 提交事务
-	if err = tx.Commit(); err != nil {
-		return nil, fmt.Errorf("提交事务失败: %w", err)
-	}
-
 	// 下发任务
-	if err = s.dispatch(ctx, taskData.TaskNo, runData.RunNo, req); err != nil {
+	if err = s.dispatch(ctx, taskData.TaskNo, req); err != nil {
 		// 标记任务下发失败
-		s.markDispatchFailed(ctx, taskData.ID, runData.ID, err.Error())
+		s.markDispatchFailed(ctx, taskData.ID, err.Error())
 
 		// 节点在任务创建后断开连接
 		if errors.Is(err, connection.ErrNodeOffline) {
@@ -125,14 +105,15 @@ func (s *Service) Submit(ctx context.Context, req SubmitRequest) (*SubmitRespons
 }
 
 // createTask 创建调度任务
-func (s *Service) createTask(ctx context.Context, tx *ent.Tx, req SubmitRequest) (*ent.DispatchTask, error) {
-	taskData, err := tx.DispatchTask.
+func (s *Service) createTask(ctx context.Context, req SubmitRequest, nodeID int64) (*ent.DispatchTask, error) {
+	taskData, err := s.db.DispatchTask.
 		Create().
 		SetTaskNo(uuid.NewString()). // 调度任务编号
 		SetRequestNo(req.RequestNo). // 调用方请求编号
 		SetTarget(req.Target).       // 目标服务
 		SetTaskType(req.TaskType).   // 任务类型
 		SetParams(req.Params).       // 任务参数
+		SetNodeID(nodeID).           // 执行节点ID
 		Save(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("创建调度任务失败: %w", err)
@@ -141,27 +122,11 @@ func (s *Service) createTask(ctx context.Context, tx *ent.Tx, req SubmitRequest)
 	return taskData, nil
 }
 
-// createRun 创建任务执行记录
-func (s *Service) createRun(ctx context.Context, tx *ent.Tx, taskID int64, nodeID int64, runNo int64) (*ent.DispatchTaskRun, error) {
-	runData, err := tx.DispatchTaskRun.
-		Create().
-		SetTaskID(taskID). // 调度任务ID
-		SetNodeID(nodeID). // 执行节点ID
-		SetRunNo(runNo).   // 执行序号
-		Save(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("创建任务执行记录失败: %w", err)
-	}
-
-	return runData, nil
-}
-
 // dispatch 下发调度任务
-func (s *Service) dispatch(ctx context.Context, taskNo string, runNo int64, req SubmitRequest) error {
+func (s *Service) dispatch(ctx context.Context, taskNo string, req SubmitRequest) error {
 	// 编码任务数据
 	data, err := json.Marshal(protocol.TaskDispatchData{
 		TaskNo:   taskNo,       // 调度任务编号
-		RunNo:    runNo,        // 执行序号
 		Target:   req.Target,   // 目标服务
 		TaskType: req.TaskType, // 任务类型
 		Params:   req.Params,   // 任务参数

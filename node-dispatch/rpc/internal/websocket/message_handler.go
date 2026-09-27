@@ -47,7 +47,7 @@ func (s *Server) handleTaskAck(ctx context.Context, nodeCode string, data json.R
 	}
 
 	// 标记任务执行中
-	if err := s.svcCtx.Task.MarkRunning(ctx, ack.TaskNo, ack.RunNo, nodeCode); err != nil {
+	if err := s.svcCtx.Task.MarkRunning(ctx, ack.TaskNo, nodeCode); err != nil {
 		return fmt.Errorf("更新任务执行状态失败: %w", err)
 	}
 
@@ -55,7 +55,6 @@ func (s *Server) handleTaskAck(ctx context.Context, nodeCode string, data json.R
 	logx.WithContext(ctx).Infow(
 		"节点已确认调度任务",
 		logx.Field("task_no", ack.TaskNo),
-		logx.Field("run_no", ack.RunNo),
 		logx.Field("node_code", nodeCode),
 	)
 
@@ -73,7 +72,6 @@ func (s *Server) handleTaskResult(ctx context.Context, nodeCode string, data jso
 	// 标记任务执行结果
 	if err := s.svcCtx.Task.MarkResult(ctx, task.MarkResultRequest{
 		TaskNo:       result.TaskNo,       // 任务编号
-		RunNo:        result.RunNo,        // 执行序号
 		NodeCode:     nodeCode,            // 节点编码
 		Success:      result.Success,      // 是否执行成功
 		Result:       result.Result,       // 执行结果
@@ -86,7 +84,6 @@ func (s *Server) handleTaskResult(ctx context.Context, nodeCode string, data jso
 	logx.WithContext(ctx).Infow(
 		"节点已返回调度任务结果",
 		logx.Field("task_no", result.TaskNo),
-		logx.Field("run_no", result.RunNo),
 		logx.Field("node_code", nodeCode),
 		logx.Field("success", result.Success),
 	)

@@ -14,32 +14,24 @@ message TaskInfo {
   string target = 3;
   // 任务类型
   string task_type = 4;
-  // 任务状态: 1待执行, 2执行中, 3成功, 4失败
-  int64 status = 5;
+  // 任务参数, JSON数据
+  string params = 5;
   // 执行节点编码
   string node_code = 6;
-  // 创建时间, Unix毫秒时间戳
-  int64 created_at = 7;
-  // 更新时间, Unix毫秒时间戳
-  int64 updated_at = 8;
-}
-
-// 调度任务执行信息
-message TaskRunInfo {
-  // 执行序号
-  int64 run_no = 1;
-  // 执行节点编码
-  string node_code = 2;
-  // 执行状态: 1待执行, 2执行中, 3成功, 4失败
-  int64 status = 3;
-  // 执行结果, JSON数据
-  optional string result = 4;
-  // 执行失败原因
-  optional string error_message = 5;
+  // 任务状态: 1待执行, 2执行中, 3成功, 4失败
+  int64 status = 7;
+  // 任务执行结果, JSON数据
+  optional string result = 8;
+  // 任务执行失败原因
+  optional string error_message = 9;
   // 开始执行时间, Unix毫秒时间戳
-  optional int64 started_at = 6;
+  optional int64 started_at = 10;
   // 执行结束时间, Unix毫秒时间戳
-  optional int64 finished_at = 7;
+  optional int64 finished_at = 11;
+  // 创建时间, Unix毫秒时间戳
+  int64 created_at = 12;
+  // 更新时间, Unix毫秒时间戳
+  int64 updated_at = 13;
 }
 
 // 提交调度任务请求
@@ -74,10 +66,6 @@ message GetTaskRequest {
 message GetTaskResponse {
   // 调度任务信息
   TaskInfo task = 1;
-  // 任务参数, JSON数据
-  string params = 2;
-  // 执行记录
-  repeated TaskRunInfo runs = 3;
 }
 
 // 获取调度任务列表请求

@@ -6,7 +6,6 @@ import (
 
 	"oa.98ent.com/p9/node-dispatch/rpc/ent"
 	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtask"
-	"oa.98ent.com/p9/node-dispatch/rpc/ent/dispatchtaskrun"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -20,8 +19,8 @@ type GetRequest struct {
 
 // GetResult 获取调度任务结果
 type GetResult struct {
-	Task *ent.DispatchTask      // 调度任务
-	Runs []*ent.DispatchTaskRun // 执行记录
+	Task     *ent.DispatchTask // 调度任务
+	NodeCode string            // 执行节点编码
 }
 
 // Get 获取调度任务
@@ -31,13 +30,15 @@ func (s *Service) Get(ctx context.Context, req GetRequest) (*GetResult, error) {
 
 	// 根据指定编号查询任务
 	if req.TaskNo != "" {
-		query = query.Where(dispatchtask.TaskNoEQ(req.TaskNo))
+		query = query.Where(dispatchtask.TaskNoEQ(req.TaskNo)) // 调度中心生成的全局唯一任务编号
 	} else {
-		query = query.Where(dispatchtask.RequestNoEQ(req.RequestNo))
+		query = query.Where(dispatchtask.RequestNoEQ(req.RequestNo)) // 调用方生成的请求编号
 	}
 
-	// 获取调度任务
-	taskData, err := query.Only(ctx)
+	// 获取调度任务及执行节点
+	taskData, err := query.
+		WithNode().
+		Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, status.Error(codes.NotFound, "task not found")
@@ -46,25 +47,15 @@ func (s *Service) Get(ctx context.Context, req GetRequest) (*GetResult, error) {
 		return nil, fmt.Errorf("查询调度任务失败: %w", err)
 	}
 
-	// 获取全部执行记录及执行节点
-	runList, err := s.db.DispatchTaskRun.
-		Query().
-		Where(dispatchtaskrun.TaskIDEQ(taskData.ID)).
-		WithNode().
-		Order(ent.Asc(dispatchtaskrun.FieldRunNo)).
-		All(ctx)
+	// 获取执行节点
+	nodeData, err := taskData.Edges.NodeOrErr()
 	if err != nil {
-		return nil, fmt.Errorf("查询任务执行记录失败: %w", err)
-	}
-
-	// 调度任务必须至少存在一条执行记录
-	if len(runList) == 0 {
-		return nil, fmt.Errorf("调度任务执行记录不存在: %s", taskData.TaskNo)
+		return nil, fmt.Errorf("获取任务执行节点失败: %w", err)
 	}
 
 	// 返回任务详情
 	return &GetResult{
-		Task: taskData, // 调度任务
-		Runs: runList,  // 执行记录
+		Task:     taskData,      // 调度任务
+		NodeCode: nodeData.Code, // 执行节点编码
 	}, nil
 }

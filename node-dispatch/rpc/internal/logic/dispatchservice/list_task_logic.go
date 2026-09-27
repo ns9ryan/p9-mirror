@@ -46,8 +46,7 @@ func (l *ListTaskLogic) ListTask(in *dispatchpb.ListTasksRequest) (*dispatchpb.L
 
 	var taskStatus *int64
 	if in.Status != nil {
-		value := in.GetStatus()
-		taskStatus = &value
+		taskStatus = new(in.GetStatus())
 	}
 
 	// 查询任务列表
@@ -67,20 +66,10 @@ func (l *ListTaskLogic) ListTask(in *dispatchpb.ListTasksRequest) (*dispatchpb.L
 	// 转换任务列表
 	list := make([]*dispatchpb.TaskInfo, 0, len(result.List))
 	for _, item := range result.List {
-		taskData := item.Task
-
-		list = append(list, &dispatchpb.TaskInfo{
-			TaskNo:    taskData.TaskNo,                // 调度任务编号
-			RequestNo: taskData.RequestNo,             // 调用方请求编号
-			Target:    taskData.Target,                // 目标服务
-			TaskType:  taskData.TaskType,              // 任务类型
-			Status:    taskData.Status,                // 任务状态
-			NodeCode:  item.NodeCode,                  // 当前执行节点编码
-			CreatedAt: taskData.CreatedAt.UnixMilli(), // 创建时间
-			UpdatedAt: taskData.UpdatedAt.UnixMilli(), // 更新时间
-		})
+		list = append(list, toTaskInfo(item.Task, item.NodeCode))
 	}
 
+	// 返回任务列表
 	return &dispatchpb.ListTasksResponse{
 		Total: result.Total, // 数据总数
 		List:  list,         // 调度任务列表
