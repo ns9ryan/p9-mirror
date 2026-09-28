@@ -149,6 +149,7 @@ func (l *SyncPublishStatusLogic) SyncPublishStatus(in *operatorpb.SyncPublishSta
 				operator.IDEQ(current.ID),
 				operator.PublishRequestNoEQ(requestNo),
 				operator.PublishStatusEQ(2),
+				operator.PublishTaskNoIsNil(),
 			).
 			SetPublishTaskNo(taskNo). // 当前发布任务编号
 			Save(l.ctx)
@@ -157,13 +158,25 @@ func (l *SyncPublishStatusLogic) SyncPublishStatus(in *operatorpb.SyncPublishSta
 			return nil, enterror.Handle(l.Logger, updateErr)
 		}
 
-		// 状态已被其他流程修改时返回最新状态
+		// 状态已被其他流程修改时读取最新状态
 		if affected == 0 {
 			latest, getErr := l.svcCtx.DB.Operator.Get(l.ctx, current.ID)
 			if getErr != nil {
+				// 转换Ent错误为gRPC错误
 				return nil, enterror.Handle(l.Logger, getErr)
 			}
 
+			// 当前已经不是本次发布请求
+			if latest.PublishRequestNo == nil || *latest.PublishRequestNo != requestNo {
+				return nil, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+			}
+
+			// 已绑定其他调度任务时拒绝当前任务
+			if latest.PublishTaskNo != nil && *latest.PublishTaskNo != taskNo {
+				return nil, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+			}
+
+			// 返回最新发布状
 			return &operatorpb.SyncPublishStatusResponse{
 				OperatorId:    latest.ID,            // 分站ID
 				OperatorCode:  latest.Code,          // 分站业务编码
@@ -171,6 +184,7 @@ func (l *SyncPublishStatusLogic) SyncPublishStatus(in *operatorpb.SyncPublishSta
 			}, nil
 		}
 
+		// 返回最新发布状
 		return &operatorpb.SyncPublishStatusResponse{
 			OperatorId:    current.ID,   // 分站ID
 			OperatorCode:  current.Code, // 分站业务编码
