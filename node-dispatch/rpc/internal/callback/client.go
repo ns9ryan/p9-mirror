@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/zeromicro/go-zero/rest/httpc"
+
 	"oa.98ent.com/p9/node-dispatch/rpc/internal/config"
 )
 
@@ -36,12 +37,12 @@ type TaskResultRequest struct {
 
 // taskResultHTTPRequest HTTP任务结果回调请求
 type taskResultHTTPRequest struct {
-	TaskNo        string          `json:"task_no"`                 // 调度任务编号
-	Status        int64           `json:"status"`                  // 任务最终状态: 3成功, 4失败
-	Result        json.RawMessage `json:"result,omitempty"`        // 执行结果
-	ErrorMessage  string          `json:"error_message,omitempty"` // 执行失败原因
-	FinishedAt    int64           `json:"finished_at"`             // 执行结束时间, Unix毫秒时间戳
-	Authorization string          `header:"Authorization"`         // 回调认证信息
+	TaskNo        string          `json:"task_no"`                // 调度任务编号
+	Status        int64           `json:"status"`                 // 任务最终状态: 3成功, 4失败
+	Result        json.RawMessage `json:"result,optional"`        // 执行结果
+	ErrorMessage  string          `json:"error_message,optional"` // 执行失败原因
+	FinishedAt    int64           `json:"finished_at"`            // 执行结束时间, Unix毫秒时间戳
+	Authorization string          `header:"Authorization"`        // 回调认证信息
 }
 
 // NewClient 创建HTTP回调客户端
