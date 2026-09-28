@@ -194,3 +194,90 @@ func applyFinalPublishTask(
 
 	return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
 }
+
+// bindPublishTask 绑定分站当前发布任务
+func bindPublishTask(
+	ctx context.Context,
+	svcCtx *svc.ServiceContext,
+	logger logx.Logger,
+	current *ent.Operator,
+	taskNo string,
+	requestNo string,
+) (*ent.Operator, bool, error) {
+	// 分站信息不能为空
+	if current == nil {
+		return nil, false, xerr.RpcErr(xerr.InternalServerError(i18nkey.InternalError))
+	}
+
+	// 整理任务编号
+	taskNo = strings.TrimSpace(taskNo)
+	requestNo = strings.TrimSpace(requestNo)
+	if taskNo == "" || requestNo == "" {
+		return nil, false, xerr.RpcErr(xerr.InternalServerError(i18nkey.InternalError))
+	}
+
+	// 任务必须属于分站当前发布轮次
+	if current.PublishRequestNo == nil || strings.TrimSpace(*current.PublishRequestNo) != requestNo {
+		return current, false, nil
+	}
+
+	// 已绑定任务时校验任务编号
+	if current.PublishTaskNo != nil {
+		currentTaskNo := strings.TrimSpace(*current.PublishTaskNo)
+
+		if currentTaskNo == taskNo {
+			return current, true, nil
+		}
+
+		return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+	}
+
+	// 只有发布中的分站允许绑定任务
+	if current.PublishStatus != 2 {
+		return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+	}
+
+	// 原子绑定当前发布任务
+	affected, err := svcCtx.DB.Operator.
+		Update().
+		Where(
+			operator.IDEQ(current.ID),
+			operator.PublishRequestNoEQ(requestNo),
+			operator.PublishStatusEQ(2),
+			operator.PublishTaskNoIsNil(),
+		).
+		SetPublishTaskNo(taskNo). // 当前发布任务编号
+		Save(ctx)
+	if err != nil {
+		return nil, false, enterror.Handle(logger, err)
+	}
+
+	// 更新成功后同步当前内存数据
+	if affected == 1 {
+		current.PublishTaskNo = new(taskNo)
+		return current, true, nil
+	}
+
+	// 获取并发更新后的最新分站状态
+	latest, err := svcCtx.DB.Operator.Get(ctx, current.ID)
+	if err != nil {
+		return nil, false, enterror.Handle(logger, err)
+	}
+
+	// 当前已经进入其他发布轮次
+	if latest.PublishRequestNo == nil || strings.TrimSpace(*latest.PublishRequestNo) != requestNo {
+		return latest, false, nil
+	}
+
+	// 相同任务已被其他流程先一步绑定
+	if latest.PublishTaskNo != nil && strings.TrimSpace(*latest.PublishTaskNo) == taskNo {
+		return latest, true, nil
+	}
+
+	// 当前发布轮次已经绑定其他任务
+	if latest.PublishTaskNo != nil {
+		return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+	}
+
+	return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+}
