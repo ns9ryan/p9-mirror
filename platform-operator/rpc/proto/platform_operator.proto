@@ -6,6 +6,7 @@ option go_package = "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrp
 
 import "types/platform_operator_ping.proto";
 import "types/platform_operator_operator.proto";
+import "types/platform_operator_operator_node.proto";
 import "types/platform_operator_profile.proto";
 import "types/platform_operator_domain.proto";
 import "types/platform_operator_admin.proto";
@@ -45,6 +46,15 @@ service OperatorService {
 
   // 删除分站
   rpc Delete(platform_operator_operator.DeleteOperatorRequest) returns (platform_operator_operator.DeleteOperatorResponse);
+}
+
+// 分站部署节点服务
+service OperatorNodeService {
+  // 保存分站部署节点
+  rpc Save(platform_operator_operator_node.SaveOperatorNodeRequest) returns (platform_operator_operator_node.SaveOperatorNodeResponse);
+
+  // 获取分站部署节点
+  rpc Get(platform_operator_operator_node.GetOperatorNodeRequest) returns (platform_operator_operator_node.GetOperatorNodeResponse);
 }
 
 // 分站档案服务

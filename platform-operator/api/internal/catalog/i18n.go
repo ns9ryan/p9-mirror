@@ -99,6 +99,17 @@ func apiI18n() []*coreclient.I18NItem {
 	addI18n(&out, i18n.GroupAPI, "api.agentLineAllocationList", "代理子线路分配列表", "代理子線路分配列表", "Agent line allocation list")
 	addI18n(&out, i18n.GroupAPI, "api.agentLineAllocationSave", "保存代理子线路分配", "儲存代理子線路分配", "Save agent line allocation")
 
+	// 接口组多语言翻译
+	addI18n(&out, i18n.GroupAPI, "api.group.operator", "分站", "分站", "Operator")
+	addI18n(&out, i18n.GroupAPI, "api.group.operator_profile", "分站档案", "分站檔案", "Operator profile")
+	addI18n(&out, i18n.GroupAPI, "api.group.operator_domain", "分站域名", "分站網域", "Operator domain")
+	addI18n(&out, i18n.GroupAPI, "api.group.operator_admin", "分站管理员", "分站管理員", "Operator administrator")
+	addI18n(&out, i18n.GroupAPI, "api.group.basic_resource_allocation", "基础资源分配", "基礎資源分配", "Basic resource allocation")
+	addI18n(&out, i18n.GroupAPI, "api.group.language_allocation", "语言分配", "語言分配", "Language allocation")
+	addI18n(&out, i18n.GroupAPI, "api.group.region_allocation", "经营地区分配", "經營地區分配", "Region allocation")
+	addI18n(&out, i18n.GroupAPI, "api.group.agent_line_allocation", "代理子线路分配", "代理子線路分配", "Agent line allocation")
+	addI18n(&out, i18n.GroupAPI, "api.group.game_allocation", "游戏分配", "遊戲分配", "Game allocation")
+
 	return out
 }
 

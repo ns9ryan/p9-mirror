@@ -60,62 +60,62 @@ func menus() []*coreclient.RegisterMenuReq {
 func apis() []*coreclient.CreateApiReq {
 	return []*coreclient.CreateApiReq{
 		// 分站
-		{Path: "/admin/operator/create", Method: http.MethodPost, Description: "api.operatorCreate", ApiGroup: "operator", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/update", Method: http.MethodPost, Description: "api.operatorUpdate", ApiGroup: "operator", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/get", Method: http.MethodGet, Description: "api.operatorGet", ApiGroup: "operator", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/list", Method: http.MethodGet, Description: "api.operatorList", ApiGroup: "operator", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/complete", Method: http.MethodPost, Description: "api.operatorComplete", ApiGroup: "operator", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/publish", Method: http.MethodPost, Description: "api.operatorPublish", ApiGroup: "operator", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/delete", Method: http.MethodPost, Description: "api.operatorDelete", ApiGroup: "operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/create", Method: http.MethodPost, Description: "api.operatorCreate", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/update", Method: http.MethodPost, Description: "api.operatorUpdate", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/get", Method: http.MethodGet, Description: "api.operatorGet", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/list", Method: http.MethodGet, Description: "api.operatorList", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/complete", Method: http.MethodPost, Description: "api.operatorComplete", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/publish", Method: http.MethodPost, Description: "api.operatorPublish", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/delete", Method: http.MethodPost, Description: "api.operatorDelete", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
 
 		// 分站档案
-		{Path: "/admin/operator/profile/create", Method: http.MethodPost, Description: "api.operatorProfileCreate", ApiGroup: "operator_profile", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/profile/update", Method: http.MethodPost, Description: "api.operatorProfileUpdate", ApiGroup: "operator_profile", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/profile/get", Method: http.MethodGet, Description: "api.operatorProfileGet", ApiGroup: "operator_profile", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/profile/create", Method: http.MethodPost, Description: "api.operatorProfileCreate", ApiGroup: "api.group.operator_profile", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/profile/update", Method: http.MethodPost, Description: "api.operatorProfileUpdate", ApiGroup: "api.group.operator_profile", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/profile/get", Method: http.MethodGet, Description: "api.operatorProfileGet", ApiGroup: "api.group.operator_profile", ServiceName: "platform-operator-api"},
 
 		// 分站域名
-		{Path: "/admin/operator/domain/create", Method: http.MethodPost, Description: "api.operatorDomainCreate", ApiGroup: "operator_domain", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/domain/update", Method: http.MethodPost, Description: "api.operatorDomainUpdate", ApiGroup: "operator_domain", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/domain/get", Method: http.MethodGet, Description: "api.operatorDomainGet", ApiGroup: "operator_domain", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/domain/list", Method: http.MethodGet, Description: "api.operatorDomainList", ApiGroup: "operator_domain", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/domain/delete", Method: http.MethodPost, Description: "api.operatorDomainDelete", ApiGroup: "operator_domain", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/domain/create", Method: http.MethodPost, Description: "api.operatorDomainCreate", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/domain/update", Method: http.MethodPost, Description: "api.operatorDomainUpdate", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/domain/get", Method: http.MethodGet, Description: "api.operatorDomainGet", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/domain/list", Method: http.MethodGet, Description: "api.operatorDomainList", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/domain/delete", Method: http.MethodPost, Description: "api.operatorDomainDelete", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
 
 		// 分站管理员
-		{Path: "/admin/operator/admin/list", Method: http.MethodGet, Description: "api.operatorAdminList", ApiGroup: "operator_admin", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/admin/create", Method: http.MethodPost, Description: "api.operatorAdminCreate", ApiGroup: "operator_admin", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/admin/update", Method: http.MethodPost, Description: "api.operatorAdminUpdate", ApiGroup: "operator_admin", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/admin/resetPassword", Method: http.MethodPost, Description: "api.operatorAdminResetPassword", ApiGroup: "operator_admin", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/admin/updateStatus", Method: http.MethodPost, Description: "api.operatorAdminUpdateStatus", ApiGroup: "operator_admin", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/admin/list", Method: http.MethodGet, Description: "api.operatorAdminList", ApiGroup: "api.group.operator_admin", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/admin/create", Method: http.MethodPost, Description: "api.operatorAdminCreate", ApiGroup: "api.group.operator_admin", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/admin/update", Method: http.MethodPost, Description: "api.operatorAdminUpdate", ApiGroup: "api.group.operator_admin", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/admin/resetPassword", Method: http.MethodPost, Description: "api.operatorAdminResetPassword", ApiGroup: "api.group.operator_admin", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/admin/updateStatus", Method: http.MethodPost, Description: "api.operatorAdminUpdateStatus", ApiGroup: "api.group.operator_admin", ServiceName: "platform-operator-api"},
 
 		// 基础资源分配
-		{Path: "/admin/operator/basic-resource-allocation/list", Method: http.MethodGet, Description: "api.basicResourceAllocationList", ApiGroup: "basic_resource_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/basic-resource-allocation/list", Method: http.MethodGet, Description: "api.basicResourceAllocationList", ApiGroup: "api.group.basic_resource_allocation", ServiceName: "platform-operator-api"},
 
 		// 语言分配
-		{Path: "/admin/operator/language-allocation/list", Method: http.MethodGet, Description: "api.languageAllocationList", ApiGroup: "language_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/language-allocation/save", Method: http.MethodPost, Description: "api.languageAllocationSave", ApiGroup: "language_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/language-allocation/list", Method: http.MethodGet, Description: "api.languageAllocationList", ApiGroup: "api.group.language_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/language-allocation/save", Method: http.MethodPost, Description: "api.languageAllocationSave", ApiGroup: "api.group.language_allocation", ServiceName: "platform-operator-api"},
 
 		// 经营地区分配
-		{Path: "/admin/operator/region-allocation/list", Method: http.MethodGet, Description: "api.regionAllocationList", ApiGroup: "region_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/region-allocation/save", Method: http.MethodPost, Description: "api.regionAllocationSave", ApiGroup: "region_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/region-allocation/list", Method: http.MethodGet, Description: "api.regionAllocationList", ApiGroup: "api.group.region_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/region-allocation/save", Method: http.MethodPost, Description: "api.regionAllocationSave", ApiGroup: "api.group.region_allocation", ServiceName: "platform-operator-api"},
 
 		// 代理子线路分配
-		{Path: "/admin/operator/agent-line-allocation/list", Method: http.MethodGet, Description: "api.agentLineAllocationList", ApiGroup: "agent_line_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/agent-line-allocation/save", Method: http.MethodPost, Description: "api.agentLineAllocationSave", ApiGroup: "agent_line_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/agent-line-allocation/list", Method: http.MethodGet, Description: "api.agentLineAllocationList", ApiGroup: "api.group.agent_line_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/agent-line-allocation/save", Method: http.MethodPost, Description: "api.agentLineAllocationSave", ApiGroup: "api.group.agent_line_allocation", ServiceName: "platform-operator-api"},
 
 		// 分站游戏分配
-		{Path: "/admin/operator/game-allocation/list", Method: http.MethodGet, Description: "api.operatorGameAllocationList", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game/list", Method: http.MethodGet, Description: "api.operatorGameList", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameBatchUpdateStatus", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-category/list", Method: http.MethodGet, Description: "api.operatorGameCategoryList", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-category/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameCategoryBatchUpdateStatus", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-provider/list", Method: http.MethodGet, Description: "api.operatorGameProviderList", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-provider/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameProviderBatchUpdateStatus", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-channel/list", Method: http.MethodGet, Description: "api.operatorGameChannelList", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-channel/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameChannelBatchUpdateStatus", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-allocation/list", Method: http.MethodGet, Description: "api.operatorGameAllocationList", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game/list", Method: http.MethodGet, Description: "api.operatorGameList", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameBatchUpdateStatus", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-category/list", Method: http.MethodGet, Description: "api.operatorGameCategoryList", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-category/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameCategoryBatchUpdateStatus", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-provider/list", Method: http.MethodGet, Description: "api.operatorGameProviderList", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-provider/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameProviderBatchUpdateStatus", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-channel/list", Method: http.MethodGet, Description: "api.operatorGameChannelList", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-channel/batch-update-status", Method: http.MethodPost, Description: "api.operatorGameChannelBatchUpdateStatus", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
 
-		{Path: "/admin/operator/game/save-allocation", Method: http.MethodPost, Description: "api.operatorGameSaveAllocation", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-category/save-allocation", Method: http.MethodPost, Description: "api.operatorGameCategorySaveAllocation", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-provider/save-allocation", Method: http.MethodPost, Description: "api.operatorGameProviderSaveAllocation", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
-		{Path: "/admin/operator/game-channel/save-allocation", Method: http.MethodPost, Description: "api.operatorGameChannelSaveAllocation", ApiGroup: "game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game/save-allocation", Method: http.MethodPost, Description: "api.operatorGameSaveAllocation", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-category/save-allocation", Method: http.MethodPost, Description: "api.operatorGameCategorySaveAllocation", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-provider/save-allocation", Method: http.MethodPost, Description: "api.operatorGameProviderSaveAllocation", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/game-channel/save-allocation", Method: http.MethodPost, Description: "api.operatorGameChannelSaveAllocation", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
 	}
 }

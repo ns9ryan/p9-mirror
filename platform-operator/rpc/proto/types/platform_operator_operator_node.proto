@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package platform_operator_operator_node;
+
+option go_package = "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/operatornodepb";
+
+// 分站部署节点信息
+message OperatorNodeInfo {
+  // 分站ID
+  int64 operator_id = 1;
+  // 分站全局唯一业务编码
+  string operator_code = 2;
+  // 节点业务编码
+  string node_code = 3;
+  // 节点名称
+  string node_name = 4;
+  // 节点状态: 1启用, 2停用
+  int64 node_status = 5;
+  // 节点是否在线
+  bool node_online = 6;
+  // 节点最近一次活动时间, Unix毫秒时间戳
+  optional int64 node_last_seen_at = 7;
+  // 节点运维备注
+  optional string node_remark = 8;
+  // 部署节点关系创建时间, Unix毫秒时间戳
+  int64 created_at = 9;
+  // 部署节点关系更新时间, Unix毫秒时间戳
+  int64 updated_at = 10;
+}
+
+// 保存分站部署节点请求
+message SaveOperatorNodeRequest {
+  // 分站ID
+  int64 operator_id = 1;
+  // 节点业务编码
+  string node_code = 2;
+}
+
+// 保存分站部署节点响应
+message SaveOperatorNodeResponse {}
+
+// 获取分站部署节点请求
+message GetOperatorNodeRequest {
+  // 分站ID
+  int64 operator_id = 1;
+}
+
+// 获取分站部署节点响应
+message GetOperatorNodeResponse {
+  // 分站部署节点信息, 尚未选择节点时为空
+  OperatorNodeInfo operator_node = 1;
+}

@@ -16,6 +16,7 @@ import (
 	basicresourceallocationpb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/basicresourceallocationpb"
 	domainpb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/domainpb"
 	languageallocationpb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/languageallocationpb"
+	operatornodepb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/operatornodepb"
 	operatorpb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/operatorpb"
 	pingpb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/pingpb"
 	profilepb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/profilepb"
@@ -517,6 +518,154 @@ var OperatorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _OperatorService_Delete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "platform_operator.proto",
+}
+
+const (
+	OperatorNodeService_Save_FullMethodName = "/platform_operator.OperatorNodeService/Save"
+	OperatorNodeService_Get_FullMethodName  = "/platform_operator.OperatorNodeService/Get"
+)
+
+// OperatorNodeServiceClient is the client API for OperatorNodeService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// 分站部署节点服务
+type OperatorNodeServiceClient interface {
+	// 保存分站部署节点
+	Save(ctx context.Context, in *operatornodepb.SaveOperatorNodeRequest, opts ...grpc.CallOption) (*operatornodepb.SaveOperatorNodeResponse, error)
+	// 获取分站部署节点
+	Get(ctx context.Context, in *operatornodepb.GetOperatorNodeRequest, opts ...grpc.CallOption) (*operatornodepb.GetOperatorNodeResponse, error)
+}
+
+type operatorNodeServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewOperatorNodeServiceClient(cc grpc.ClientConnInterface) OperatorNodeServiceClient {
+	return &operatorNodeServiceClient{cc}
+}
+
+func (c *operatorNodeServiceClient) Save(ctx context.Context, in *operatornodepb.SaveOperatorNodeRequest, opts ...grpc.CallOption) (*operatornodepb.SaveOperatorNodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(operatornodepb.SaveOperatorNodeResponse)
+	err := c.cc.Invoke(ctx, OperatorNodeService_Save_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *operatorNodeServiceClient) Get(ctx context.Context, in *operatornodepb.GetOperatorNodeRequest, opts ...grpc.CallOption) (*operatornodepb.GetOperatorNodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(operatornodepb.GetOperatorNodeResponse)
+	err := c.cc.Invoke(ctx, OperatorNodeService_Get_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// OperatorNodeServiceServer is the server API for OperatorNodeService service.
+// All implementations must embed UnimplementedOperatorNodeServiceServer
+// for forward compatibility.
+//
+// 分站部署节点服务
+type OperatorNodeServiceServer interface {
+	// 保存分站部署节点
+	Save(context.Context, *operatornodepb.SaveOperatorNodeRequest) (*operatornodepb.SaveOperatorNodeResponse, error)
+	// 获取分站部署节点
+	Get(context.Context, *operatornodepb.GetOperatorNodeRequest) (*operatornodepb.GetOperatorNodeResponse, error)
+	mustEmbedUnimplementedOperatorNodeServiceServer()
+}
+
+// UnimplementedOperatorNodeServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedOperatorNodeServiceServer struct{}
+
+func (UnimplementedOperatorNodeServiceServer) Save(context.Context, *operatornodepb.SaveOperatorNodeRequest) (*operatornodepb.SaveOperatorNodeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Save not implemented")
+}
+func (UnimplementedOperatorNodeServiceServer) Get(context.Context, *operatornodepb.GetOperatorNodeRequest) (*operatornodepb.GetOperatorNodeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedOperatorNodeServiceServer) mustEmbedUnimplementedOperatorNodeServiceServer() {}
+func (UnimplementedOperatorNodeServiceServer) testEmbeddedByValue()                             {}
+
+// UnsafeOperatorNodeServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to OperatorNodeServiceServer will
+// result in compilation errors.
+type UnsafeOperatorNodeServiceServer interface {
+	mustEmbedUnimplementedOperatorNodeServiceServer()
+}
+
+func RegisterOperatorNodeServiceServer(s grpc.ServiceRegistrar, srv OperatorNodeServiceServer) {
+	// If the following call panics, it indicates UnimplementedOperatorNodeServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&OperatorNodeService_ServiceDesc, srv)
+}
+
+func _OperatorNodeService_Save_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(operatornodepb.SaveOperatorNodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorNodeServiceServer).Save(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorNodeService_Save_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorNodeServiceServer).Save(ctx, req.(*operatornodepb.SaveOperatorNodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OperatorNodeService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(operatornodepb.GetOperatorNodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorNodeServiceServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorNodeService_Get_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorNodeServiceServer).Get(ctx, req.(*operatornodepb.GetOperatorNodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// OperatorNodeService_ServiceDesc is the grpc.ServiceDesc for OperatorNodeService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var OperatorNodeService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "platform_operator.OperatorNodeService",
+	HandlerType: (*OperatorNodeServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Save",
+			Handler:    _OperatorNodeService_Save_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _OperatorNodeService_Get_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

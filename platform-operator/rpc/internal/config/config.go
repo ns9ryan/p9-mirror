@@ -8,6 +8,9 @@ import (
 type Config struct {
 	zrpc.RpcServerConf
 
+	// Node Dispatch RPC配置
+	NodeDispatchRpc zrpc.RpcClientConf
+
 	// 数据库配置
 	DatabaseConf database.DatabaseConf
 }
