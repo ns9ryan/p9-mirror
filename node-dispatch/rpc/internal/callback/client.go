@@ -105,7 +105,7 @@ func (c *Client) TaskResult(ctx context.Context, data TaskResultRequest) error {
 	}
 	defer resp.Body.Close()
 
-	// 2xx状态码表示回调成功
+	// [200,300)状态码表示回调成功
 	if resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices {
 		_, _ = io.Copy(io.Discard, resp.Body)
 		return nil
