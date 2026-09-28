@@ -108,6 +108,20 @@ func (_c *OperatorCreate) SetNillablePublishStatus(v *int64) *OperatorCreate {
 	return _c
 }
 
+// SetPublishRequestNo sets the "publish_request_no" field.
+func (_c *OperatorCreate) SetPublishRequestNo(v string) *OperatorCreate {
+	_c.mutation.SetPublishRequestNo(v)
+	return _c
+}
+
+// SetNillablePublishRequestNo sets the "publish_request_no" field if the given value is not nil.
+func (_c *OperatorCreate) SetNillablePublishRequestNo(v *string) *OperatorCreate {
+	if v != nil {
+		_c.SetPublishRequestNo(*v)
+	}
+	return _c
+}
+
 // SetPublishTaskNo sets the "publish_task_no" field.
 func (_c *OperatorCreate) SetPublishTaskNo(v string) *OperatorCreate {
 	_c.mutation.SetPublishTaskNo(v)
@@ -377,6 +391,11 @@ func (_c *OperatorCreate) check() error {
 			return &ValidationError{Name: "publish_status", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_status": %w`, err)}
 		}
 	}
+	if v, ok := _c.mutation.PublishRequestNo(); ok {
+		if err := operator.PublishRequestNoValidator(v); err != nil {
+			return &ValidationError{Name: "publish_request_no", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_request_no": %w`, err)}
+		}
+	}
 	if v, ok := _c.mutation.PublishTaskNo(); ok {
 		if err := operator.PublishTaskNoValidator(v); err != nil {
 			return &ValidationError{Name: "publish_task_no", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_task_no": %w`, err)}
@@ -459,6 +478,10 @@ func (_c *OperatorCreate) createSpec() (*Operator, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.PublishStatus(); ok {
 		_spec.SetField(operator.FieldPublishStatus, field.TypeInt64, value)
 		_node.PublishStatus = value
+	}
+	if value, ok := _c.mutation.PublishRequestNo(); ok {
+		_spec.SetField(operator.FieldPublishRequestNo, field.TypeString, value)
+		_node.PublishRequestNo = &value
 	}
 	if value, ok := _c.mutation.PublishTaskNo(); ok {
 		_spec.SetField(operator.FieldPublishTaskNo, field.TypeString, value)
@@ -708,6 +731,24 @@ func (u *OperatorUpsert) AddPublishStatus(v int64) *OperatorUpsert {
 	return u
 }
 
+// SetPublishRequestNo sets the "publish_request_no" field.
+func (u *OperatorUpsert) SetPublishRequestNo(v string) *OperatorUpsert {
+	u.Set(operator.FieldPublishRequestNo, v)
+	return u
+}
+
+// UpdatePublishRequestNo sets the "publish_request_no" field to the value that was provided on create.
+func (u *OperatorUpsert) UpdatePublishRequestNo() *OperatorUpsert {
+	u.SetExcluded(operator.FieldPublishRequestNo)
+	return u
+}
+
+// ClearPublishRequestNo clears the value of the "publish_request_no" field.
+func (u *OperatorUpsert) ClearPublishRequestNo() *OperatorUpsert {
+	u.SetNull(operator.FieldPublishRequestNo)
+	return u
+}
+
 // SetPublishTaskNo sets the "publish_task_no" field.
 func (u *OperatorUpsert) SetPublishTaskNo(v string) *OperatorUpsert {
 	u.Set(operator.FieldPublishTaskNo, v)
@@ -929,6 +970,27 @@ func (u *OperatorUpsertOne) AddPublishStatus(v int64) *OperatorUpsertOne {
 func (u *OperatorUpsertOne) UpdatePublishStatus() *OperatorUpsertOne {
 	return u.Update(func(s *OperatorUpsert) {
 		s.UpdatePublishStatus()
+	})
+}
+
+// SetPublishRequestNo sets the "publish_request_no" field.
+func (u *OperatorUpsertOne) SetPublishRequestNo(v string) *OperatorUpsertOne {
+	return u.Update(func(s *OperatorUpsert) {
+		s.SetPublishRequestNo(v)
+	})
+}
+
+// UpdatePublishRequestNo sets the "publish_request_no" field to the value that was provided on create.
+func (u *OperatorUpsertOne) UpdatePublishRequestNo() *OperatorUpsertOne {
+	return u.Update(func(s *OperatorUpsert) {
+		s.UpdatePublishRequestNo()
+	})
+}
+
+// ClearPublishRequestNo clears the value of the "publish_request_no" field.
+func (u *OperatorUpsertOne) ClearPublishRequestNo() *OperatorUpsertOne {
+	return u.Update(func(s *OperatorUpsert) {
+		s.ClearPublishRequestNo()
 	})
 }
 
@@ -1331,6 +1393,27 @@ func (u *OperatorUpsertBulk) AddPublishStatus(v int64) *OperatorUpsertBulk {
 func (u *OperatorUpsertBulk) UpdatePublishStatus() *OperatorUpsertBulk {
 	return u.Update(func(s *OperatorUpsert) {
 		s.UpdatePublishStatus()
+	})
+}
+
+// SetPublishRequestNo sets the "publish_request_no" field.
+func (u *OperatorUpsertBulk) SetPublishRequestNo(v string) *OperatorUpsertBulk {
+	return u.Update(func(s *OperatorUpsert) {
+		s.SetPublishRequestNo(v)
+	})
+}
+
+// UpdatePublishRequestNo sets the "publish_request_no" field to the value that was provided on create.
+func (u *OperatorUpsertBulk) UpdatePublishRequestNo() *OperatorUpsertBulk {
+	return u.Update(func(s *OperatorUpsert) {
+		s.UpdatePublishRequestNo()
+	})
+}
+
+// ClearPublishRequestNo clears the value of the "publish_request_no" field.
+func (u *OperatorUpsertBulk) ClearPublishRequestNo() *OperatorUpsertBulk {
+	return u.Update(func(s *OperatorUpsert) {
+		s.ClearPublishRequestNo()
 	})
 }
 

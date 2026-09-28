@@ -55,6 +55,7 @@ type OperatorMutation struct {
 	addcreation_status            *int64
 	publish_status                *int64
 	addpublish_status             *int64
+	publish_request_no            *string
 	publish_task_no               *string
 	published_at                  *time.Time
 	status                        *int64
@@ -513,6 +514,55 @@ func (m *OperatorMutation) AddedPublishStatus() (r int64, exists bool) {
 func (m *OperatorMutation) ResetPublishStatus() {
 	m.publish_status = nil
 	m.addpublish_status = nil
+}
+
+// SetPublishRequestNo sets the "publish_request_no" field.
+func (m *OperatorMutation) SetPublishRequestNo(s string) {
+	m.publish_request_no = &s
+}
+
+// PublishRequestNo returns the value of the "publish_request_no" field in the mutation.
+func (m *OperatorMutation) PublishRequestNo() (r string, exists bool) {
+	v := m.publish_request_no
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublishRequestNo returns the old "publish_request_no" field's value of the Operator entity.
+// If the Operator object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OperatorMutation) OldPublishRequestNo(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublishRequestNo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublishRequestNo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublishRequestNo: %w", err)
+	}
+	return oldValue.PublishRequestNo, nil
+}
+
+// ClearPublishRequestNo clears the value of the "publish_request_no" field.
+func (m *OperatorMutation) ClearPublishRequestNo() {
+	m.publish_request_no = nil
+	m.clearedFields[operator.FieldPublishRequestNo] = struct{}{}
+}
+
+// PublishRequestNoCleared returns if the "publish_request_no" field was cleared in this mutation.
+func (m *OperatorMutation) PublishRequestNoCleared() bool {
+	_, ok := m.clearedFields[operator.FieldPublishRequestNo]
+	return ok
+}
+
+// ResetPublishRequestNo resets all changes to the "publish_request_no" field.
+func (m *OperatorMutation) ResetPublishRequestNo() {
+	m.publish_request_no = nil
+	delete(m.clearedFields, operator.FieldPublishRequestNo)
 }
 
 // SetPublishTaskNo sets the "publish_task_no" field.
@@ -1061,7 +1111,7 @@ func (m *OperatorMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OperatorMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, operator.FieldCreatedAt)
 	}
@@ -1085,6 +1135,9 @@ func (m *OperatorMutation) Fields() []string {
 	}
 	if m.publish_status != nil {
 		fields = append(fields, operator.FieldPublishStatus)
+	}
+	if m.publish_request_no != nil {
+		fields = append(fields, operator.FieldPublishRequestNo)
 	}
 	if m.publish_task_no != nil {
 		fields = append(fields, operator.FieldPublishTaskNo)
@@ -1122,6 +1175,8 @@ func (m *OperatorMutation) Field(name string) (ent.Value, bool) {
 		return m.CreationStatus()
 	case operator.FieldPublishStatus:
 		return m.PublishStatus()
+	case operator.FieldPublishRequestNo:
+		return m.PublishRequestNo()
 	case operator.FieldPublishTaskNo:
 		return m.PublishTaskNo()
 	case operator.FieldPublishedAt:
@@ -1155,6 +1210,8 @@ func (m *OperatorMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreationStatus(ctx)
 	case operator.FieldPublishStatus:
 		return m.OldPublishStatus(ctx)
+	case operator.FieldPublishRequestNo:
+		return m.OldPublishRequestNo(ctx)
 	case operator.FieldPublishTaskNo:
 		return m.OldPublishTaskNo(ctx)
 	case operator.FieldPublishedAt:
@@ -1227,6 +1284,13 @@ func (m *OperatorMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPublishStatus(v)
+		return nil
+	case operator.FieldPublishRequestNo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublishRequestNo(v)
 		return nil
 	case operator.FieldPublishTaskNo:
 		v, ok := value.(string)
@@ -1325,6 +1389,9 @@ func (m *OperatorMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *OperatorMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(operator.FieldPublishRequestNo) {
+		fields = append(fields, operator.FieldPublishRequestNo)
+	}
 	if m.FieldCleared(operator.FieldPublishTaskNo) {
 		fields = append(fields, operator.FieldPublishTaskNo)
 	}
@@ -1348,6 +1415,9 @@ func (m *OperatorMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *OperatorMutation) ClearField(name string) error {
 	switch name {
+	case operator.FieldPublishRequestNo:
+		m.ClearPublishRequestNo()
+		return nil
 	case operator.FieldPublishTaskNo:
 		m.ClearPublishTaskNo()
 		return nil
@@ -1388,6 +1458,9 @@ func (m *OperatorMutation) ResetField(name string) error {
 		return nil
 	case operator.FieldPublishStatus:
 		m.ResetPublishStatus()
+		return nil
+	case operator.FieldPublishRequestNo:
+		m.ResetPublishRequestNo()
 		return nil
 	case operator.FieldPublishTaskNo:
 		m.ResetPublishTaskNo()

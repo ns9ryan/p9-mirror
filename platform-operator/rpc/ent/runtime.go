@@ -118,18 +118,22 @@ func init() {
 	operator.DefaultPublishStatus = operatorDescPublishStatus.Default.(int64)
 	// operator.PublishStatusValidator is a validator for the "publish_status" field. It is called by the builders before save.
 	operator.PublishStatusValidator = operatorDescPublishStatus.Validators[0].(func(int64) error)
+	// operatorDescPublishRequestNo is the schema descriptor for publish_request_no field.
+	operatorDescPublishRequestNo := operatorFields[6].Descriptor()
+	// operator.PublishRequestNoValidator is a validator for the "publish_request_no" field. It is called by the builders before save.
+	operator.PublishRequestNoValidator = operatorDescPublishRequestNo.Validators[0].(func(string) error)
 	// operatorDescPublishTaskNo is the schema descriptor for publish_task_no field.
-	operatorDescPublishTaskNo := operatorFields[6].Descriptor()
+	operatorDescPublishTaskNo := operatorFields[7].Descriptor()
 	// operator.PublishTaskNoValidator is a validator for the "publish_task_no" field. It is called by the builders before save.
 	operator.PublishTaskNoValidator = operatorDescPublishTaskNo.Validators[0].(func(string) error)
 	// operatorDescStatus is the schema descriptor for status field.
-	operatorDescStatus := operatorFields[8].Descriptor()
+	operatorDescStatus := operatorFields[9].Descriptor()
 	// operator.DefaultStatus holds the default value on creation for the status field.
 	operator.DefaultStatus = operatorDescStatus.Default.(int64)
 	// operator.StatusValidator is a validator for the "status" field. It is called by the builders before save.
 	operator.StatusValidator = operatorDescStatus.Validators[0].(func(int64) error)
 	// operatorDescRemark is the schema descriptor for remark field.
-	operatorDescRemark := operatorFields[9].Descriptor()
+	operatorDescRemark := operatorFields[10].Descriptor()
 	// operator.RemarkValidator is a validator for the "remark" field. It is called by the builders before save.
 	operator.RemarkValidator = operatorDescRemark.Validators[0].(func(string) error)
 	operatoradminMixin := schema.OperatorAdmin{}.Mixin()

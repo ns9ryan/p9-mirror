@@ -30,6 +30,8 @@ const (
 	FieldCreationStatus = "creation_status"
 	// FieldPublishStatus holds the string denoting the publish_status field in the database.
 	FieldPublishStatus = "publish_status"
+	// FieldPublishRequestNo holds the string denoting the publish_request_no field in the database.
+	FieldPublishRequestNo = "publish_request_no"
 	// FieldPublishTaskNo holds the string denoting the publish_task_no field in the database.
 	FieldPublishTaskNo = "publish_task_no"
 	// FieldPublishedAt holds the string denoting the published_at field in the database.
@@ -107,6 +109,7 @@ var Columns = []string{
 	FieldSettlementCurrencyCode,
 	FieldCreationStatus,
 	FieldPublishStatus,
+	FieldPublishRequestNo,
 	FieldPublishTaskNo,
 	FieldPublishedAt,
 	FieldStatus,
@@ -146,6 +149,8 @@ var (
 	DefaultPublishStatus int64
 	// PublishStatusValidator is a validator for the "publish_status" field. It is called by the builders before save.
 	PublishStatusValidator func(int64) error
+	// PublishRequestNoValidator is a validator for the "publish_request_no" field. It is called by the builders before save.
+	PublishRequestNoValidator func(string) error
 	// PublishTaskNoValidator is a validator for the "publish_task_no" field. It is called by the builders before save.
 	PublishTaskNoValidator func(string) error
 	// DefaultStatus holds the default value on creation for the "status" field.
@@ -202,6 +207,11 @@ func ByCreationStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByPublishStatus orders the results by the publish_status field.
 func ByPublishStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPublishStatus, opts...).ToFunc()
+}
+
+// ByPublishRequestNo orders the results by the publish_request_no field.
+func ByPublishRequestNo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublishRequestNo, opts...).ToFunc()
 }
 
 // ByPublishTaskNo orders the results by the publish_task_no field.

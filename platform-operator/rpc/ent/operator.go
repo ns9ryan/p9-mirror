@@ -35,6 +35,8 @@ type Operator struct {
 	CreationStatus int64 `json:"creation_status,omitempty"`
 	// 发布状态: 1未发布, 2发布中, 3已发布, 4发布失败
 	PublishStatus int64 `json:"publish_status,omitempty"`
+	// 最近一次发布请求编号
+	PublishRequestNo *string `json:"publish_request_no,omitempty"`
 	// 最近一次发布任务编号
 	PublishTaskNo *string `json:"publish_task_no,omitempty"`
 	// 首次发布成功时间
@@ -131,7 +133,7 @@ func (*Operator) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case operator.FieldID, operator.FieldCreationStatus, operator.FieldPublishStatus, operator.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case operator.FieldCode, operator.FieldName, operator.FieldTimezoneCode, operator.FieldSettlementCurrencyCode, operator.FieldPublishTaskNo, operator.FieldRemark:
+		case operator.FieldCode, operator.FieldName, operator.FieldTimezoneCode, operator.FieldSettlementCurrencyCode, operator.FieldPublishRequestNo, operator.FieldPublishTaskNo, operator.FieldRemark:
 			values[i] = new(sql.NullString)
 		case operator.FieldCreatedAt, operator.FieldUpdatedAt, operator.FieldPublishedAt:
 			values[i] = new(sql.NullTime)
@@ -203,6 +205,13 @@ func (_m *Operator) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field publish_status", values[i])
 			} else if value.Valid {
 				_m.PublishStatus = value.Int64
+			}
+		case operator.FieldPublishRequestNo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field publish_request_no", values[i])
+			} else if value.Valid {
+				_m.PublishRequestNo = new(string)
+				*_m.PublishRequestNo = value.String
 			}
 		case operator.FieldPublishTaskNo:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -320,6 +329,11 @@ func (_m *Operator) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("publish_status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.PublishStatus))
+	builder.WriteString(", ")
+	if v := _m.PublishRequestNo; v != nil {
+		builder.WriteString("publish_request_no=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	if v := _m.PublishTaskNo; v != nil {
 		builder.WriteString("publish_task_no=")

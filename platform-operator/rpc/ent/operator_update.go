@@ -124,6 +124,26 @@ func (_u *OperatorUpdate) AddPublishStatus(v int64) *OperatorUpdate {
 	return _u
 }
 
+// SetPublishRequestNo sets the "publish_request_no" field.
+func (_u *OperatorUpdate) SetPublishRequestNo(v string) *OperatorUpdate {
+	_u.mutation.SetPublishRequestNo(v)
+	return _u
+}
+
+// SetNillablePublishRequestNo sets the "publish_request_no" field if the given value is not nil.
+func (_u *OperatorUpdate) SetNillablePublishRequestNo(v *string) *OperatorUpdate {
+	if v != nil {
+		_u.SetPublishRequestNo(*v)
+	}
+	return _u
+}
+
+// ClearPublishRequestNo clears the value of the "publish_request_no" field.
+func (_u *OperatorUpdate) ClearPublishRequestNo() *OperatorUpdate {
+	_u.mutation.ClearPublishRequestNo()
+	return _u
+}
+
 // SetPublishTaskNo sets the "publish_task_no" field.
 func (_u *OperatorUpdate) SetPublishTaskNo(v string) *OperatorUpdate {
 	_u.mutation.SetPublishTaskNo(v)
@@ -478,6 +498,11 @@ func (_u *OperatorUpdate) check() error {
 			return &ValidationError{Name: "publish_status", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_status": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.PublishRequestNo(); ok {
+		if err := operator.PublishRequestNoValidator(v); err != nil {
+			return &ValidationError{Name: "publish_request_no", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_request_no": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.PublishTaskNo(); ok {
 		if err := operator.PublishTaskNoValidator(v); err != nil {
 			return &ValidationError{Name: "publish_task_no", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_task_no": %w`, err)}
@@ -531,6 +556,12 @@ func (_u *OperatorUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.AddedPublishStatus(); ok {
 		_spec.AddField(operator.FieldPublishStatus, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.PublishRequestNo(); ok {
+		_spec.SetField(operator.FieldPublishRequestNo, field.TypeString, value)
+	}
+	if _u.mutation.PublishRequestNoCleared() {
+		_spec.ClearField(operator.FieldPublishRequestNo, field.TypeString)
 	}
 	if value, ok := _u.mutation.PublishTaskNo(); ok {
 		_spec.SetField(operator.FieldPublishTaskNo, field.TypeString, value)
@@ -920,6 +951,26 @@ func (_u *OperatorUpdateOne) AddPublishStatus(v int64) *OperatorUpdateOne {
 	return _u
 }
 
+// SetPublishRequestNo sets the "publish_request_no" field.
+func (_u *OperatorUpdateOne) SetPublishRequestNo(v string) *OperatorUpdateOne {
+	_u.mutation.SetPublishRequestNo(v)
+	return _u
+}
+
+// SetNillablePublishRequestNo sets the "publish_request_no" field if the given value is not nil.
+func (_u *OperatorUpdateOne) SetNillablePublishRequestNo(v *string) *OperatorUpdateOne {
+	if v != nil {
+		_u.SetPublishRequestNo(*v)
+	}
+	return _u
+}
+
+// ClearPublishRequestNo clears the value of the "publish_request_no" field.
+func (_u *OperatorUpdateOne) ClearPublishRequestNo() *OperatorUpdateOne {
+	_u.mutation.ClearPublishRequestNo()
+	return _u
+}
+
 // SetPublishTaskNo sets the "publish_task_no" field.
 func (_u *OperatorUpdateOne) SetPublishTaskNo(v string) *OperatorUpdateOne {
 	_u.mutation.SetPublishTaskNo(v)
@@ -1287,6 +1338,11 @@ func (_u *OperatorUpdateOne) check() error {
 			return &ValidationError{Name: "publish_status", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_status": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.PublishRequestNo(); ok {
+		if err := operator.PublishRequestNoValidator(v); err != nil {
+			return &ValidationError{Name: "publish_request_no", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_request_no": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.PublishTaskNo(); ok {
 		if err := operator.PublishTaskNoValidator(v); err != nil {
 			return &ValidationError{Name: "publish_task_no", err: fmt.Errorf(`ent: validator failed for field "Operator.publish_task_no": %w`, err)}
@@ -1357,6 +1413,12 @@ func (_u *OperatorUpdateOne) sqlSave(ctx context.Context) (_node *Operator, err 
 	}
 	if value, ok := _u.mutation.AddedPublishStatus(); ok {
 		_spec.AddField(operator.FieldPublishStatus, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.PublishRequestNo(); ok {
+		_spec.SetField(operator.FieldPublishRequestNo, field.TypeString, value)
+	}
+	if _u.mutation.PublishRequestNoCleared() {
+		_spec.ClearField(operator.FieldPublishRequestNo, field.TypeString)
 	}
 	if value, ok := _u.mutation.PublishTaskNo(); ok {
 		_spec.SetField(operator.FieldPublishTaskNo, field.TypeString, value)

@@ -57,6 +57,13 @@ func (Operator) Fields() []ent.Field {
 			}).
 			Comment("发布状态: 1未发布, 2发布中, 3已发布, 4发布失败"),
 
+		field.String("publish_request_no").
+			MaxLen(64).
+			Optional().
+			Nillable().
+			Unique().
+			Comment("最近一次发布请求编号"),
+
 		field.String("publish_task_no").
 			MaxLen(64).
 			Optional().

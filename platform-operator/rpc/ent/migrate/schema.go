@@ -20,6 +20,7 @@ var (
 		{Name: "settlement_currency_code", Type: field.TypeString, Size: 16, Comment: "结算货币编码"},
 		{Name: "creation_status", Type: field.TypeInt64, Comment: "创建状态: 1草稿, 2已完成", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "publish_status", Type: field.TypeInt64, Comment: "发布状态: 1未发布, 2发布中, 3已发布, 4发布失败", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "publish_request_no", Type: field.TypeString, Unique: true, Nullable: true, Size: 64, Comment: "最近一次发布请求编号"},
 		{Name: "publish_task_no", Type: field.TypeString, Unique: true, Nullable: true, Size: 64, Comment: "最近一次发布任务编号"},
 		{Name: "published_at", Type: field.TypeTime, Nullable: true, Comment: "首次发布成功时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "status", Type: field.TypeInt64, Comment: "operator 状态: 1正常, 2暂停, 3关闭", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},

@@ -95,6 +95,11 @@ func PublishStatus(v int64) predicate.Operator {
 	return predicate.Operator(sql.FieldEQ(FieldPublishStatus, v))
 }
 
+// PublishRequestNo applies equality check predicate on the "publish_request_no" field. It's identical to PublishRequestNoEQ.
+func PublishRequestNo(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldEQ(FieldPublishRequestNo, v))
+}
+
 // PublishTaskNo applies equality check predicate on the "publish_task_no" field. It's identical to PublishTaskNoEQ.
 func PublishTaskNo(v string) predicate.Operator {
 	return predicate.Operator(sql.FieldEQ(FieldPublishTaskNo, v))
@@ -533,6 +538,81 @@ func PublishStatusLT(v int64) predicate.Operator {
 // PublishStatusLTE applies the LTE predicate on the "publish_status" field.
 func PublishStatusLTE(v int64) predicate.Operator {
 	return predicate.Operator(sql.FieldLTE(FieldPublishStatus, v))
+}
+
+// PublishRequestNoEQ applies the EQ predicate on the "publish_request_no" field.
+func PublishRequestNoEQ(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldEQ(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoNEQ applies the NEQ predicate on the "publish_request_no" field.
+func PublishRequestNoNEQ(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldNEQ(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoIn applies the In predicate on the "publish_request_no" field.
+func PublishRequestNoIn(vs ...string) predicate.Operator {
+	return predicate.Operator(sql.FieldIn(FieldPublishRequestNo, vs...))
+}
+
+// PublishRequestNoNotIn applies the NotIn predicate on the "publish_request_no" field.
+func PublishRequestNoNotIn(vs ...string) predicate.Operator {
+	return predicate.Operator(sql.FieldNotIn(FieldPublishRequestNo, vs...))
+}
+
+// PublishRequestNoGT applies the GT predicate on the "publish_request_no" field.
+func PublishRequestNoGT(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldGT(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoGTE applies the GTE predicate on the "publish_request_no" field.
+func PublishRequestNoGTE(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldGTE(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoLT applies the LT predicate on the "publish_request_no" field.
+func PublishRequestNoLT(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldLT(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoLTE applies the LTE predicate on the "publish_request_no" field.
+func PublishRequestNoLTE(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldLTE(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoContains applies the Contains predicate on the "publish_request_no" field.
+func PublishRequestNoContains(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldContains(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoHasPrefix applies the HasPrefix predicate on the "publish_request_no" field.
+func PublishRequestNoHasPrefix(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldHasPrefix(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoHasSuffix applies the HasSuffix predicate on the "publish_request_no" field.
+func PublishRequestNoHasSuffix(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldHasSuffix(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoIsNil applies the IsNil predicate on the "publish_request_no" field.
+func PublishRequestNoIsNil() predicate.Operator {
+	return predicate.Operator(sql.FieldIsNull(FieldPublishRequestNo))
+}
+
+// PublishRequestNoNotNil applies the NotNil predicate on the "publish_request_no" field.
+func PublishRequestNoNotNil() predicate.Operator {
+	return predicate.Operator(sql.FieldNotNull(FieldPublishRequestNo))
+}
+
+// PublishRequestNoEqualFold applies the EqualFold predicate on the "publish_request_no" field.
+func PublishRequestNoEqualFold(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldEqualFold(FieldPublishRequestNo, v))
+}
+
+// PublishRequestNoContainsFold applies the ContainsFold predicate on the "publish_request_no" field.
+func PublishRequestNoContainsFold(v string) predicate.Operator {
+	return predicate.Operator(sql.FieldContainsFold(FieldPublishRequestNo, v))
 }
 
 // PublishTaskNoEQ applies the EQ predicate on the "publish_task_no" field.
