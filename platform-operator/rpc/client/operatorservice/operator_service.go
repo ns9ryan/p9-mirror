@@ -31,6 +31,8 @@ type (
 		Complete(ctx context.Context, in *operatorpb.CompleteOperatorRequest, opts ...grpc.CallOption) (*operatorpb.CompleteOperatorResponse, error)
 		// 发布分站
 		Publish(ctx context.Context, in *operatorpb.PublishOperatorRequest, opts ...grpc.CallOption) (*operatorpb.PublishOperatorResponse, error)
+		// 同步分站发布状态
+		SyncPublishStatus(ctx context.Context, in *operatorpb.SyncPublishStatusRequest, opts ...grpc.CallOption) (*operatorpb.SyncPublishStatusResponse, error)
 		// 处理分站发布结果
 		HandlePublishResult(ctx context.Context, in *operatorpb.HandlePublishResultRequest, opts ...grpc.CallOption) (*operatorpb.HandlePublishResultResponse, error)
 		// 删除分站
@@ -88,6 +90,12 @@ func (m *defaultOperatorService) Complete(ctx context.Context, in *operatorpb.Co
 func (m *defaultOperatorService) Publish(ctx context.Context, in *operatorpb.PublishOperatorRequest, opts ...grpc.CallOption) (*operatorpb.PublishOperatorResponse, error) {
 	client := platformoperatorrpc.NewOperatorServiceClient(m.cli.Conn())
 	return client.Publish(ctx, in, opts...)
+}
+
+// 同步分站发布状态
+func (m *defaultOperatorService) SyncPublishStatus(ctx context.Context, in *operatorpb.SyncPublishStatusRequest, opts ...grpc.CallOption) (*operatorpb.SyncPublishStatusResponse, error) {
+	client := platformoperatorrpc.NewOperatorServiceClient(m.cli.Conn())
+	return client.SyncPublishStatus(ctx, in, opts...)
 }
 
 // 处理分站发布结果

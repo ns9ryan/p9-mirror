@@ -66,6 +66,12 @@ func (s *OperatorServiceServer) Publish(ctx context.Context, in *operatorpb.Publ
 	return l.Publish(in)
 }
 
+// 同步分站发布状态
+func (s *OperatorServiceServer) SyncPublishStatus(ctx context.Context, in *operatorpb.SyncPublishStatusRequest) (*operatorpb.SyncPublishStatusResponse, error) {
+	l := operatorservicelogic.NewSyncPublishStatusLogic(ctx, s.svcCtx)
+	return l.SyncPublishStatus(in)
+}
+
 // 处理分站发布结果
 func (s *OperatorServiceServer) HandlePublishResult(ctx context.Context, in *operatorpb.HandlePublishResultRequest) (*operatorpb.HandlePublishResultResponse, error) {
 	l := operatorservicelogic.NewHandlePublishResultLogic(ctx, s.svcCtx)

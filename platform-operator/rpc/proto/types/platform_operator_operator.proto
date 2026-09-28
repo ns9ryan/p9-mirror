@@ -127,6 +127,22 @@ message PublishOperatorRequest {
 // 发布分站响应
 message PublishOperatorResponse {}
 
+// 同步分站发布状态请求
+message SyncPublishStatusRequest {
+  // 分站ID
+  int64 id = 1;
+}
+
+// 同步分站发布状态响应
+message SyncPublishStatusResponse {
+  // 分站ID
+  int64 operator_id = 1;
+  // 分站业务编码
+  string operator_code = 2;
+  // 发布状态: 2发布中, 3已发布, 4发布失败
+  int64 publish_status = 3;
+}
+
 // 处理分站发布结果请求
 message HandlePublishResultRequest {
   // 调度任务编号

@@ -44,6 +44,9 @@ service OperatorService {
   // 发布分站
   rpc Publish(platform_operator_operator.PublishOperatorRequest) returns (platform_operator_operator.PublishOperatorResponse);
 
+  // 同步分站发布状态
+  rpc SyncPublishStatus(platform_operator_operator.SyncPublishStatusRequest) returns (platform_operator_operator.SyncPublishStatusResponse);
+
   // 处理分站发布结果
   rpc HandlePublishResult(platform_operator_operator.HandlePublishResultRequest) returns (platform_operator_operator.HandlePublishResultResponse);
 
