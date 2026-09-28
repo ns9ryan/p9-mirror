@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strings"
 
-	"oa.98ent.com/p9/node-agent/internal/protocol"
-
 	coderws "github.com/coder/websocket"
 	"github.com/zeromicro/go-zero/core/logx"
+
+	"oa.98ent.com/p9/node-agent/internal/protocol"
 )
 
 // handleMessage 处理调度中心WebSocket消息
@@ -47,9 +47,6 @@ func (c *Client) handleTaskDispatch(ctx context.Context, conn *coderws.Conn, dat
 	if strings.TrimSpace(taskData.TaskNo) == "" {
 		return fmt.Errorf("任务编号不能为空")
 	}
-	if taskData.RunNo <= 0 {
-		return fmt.Errorf("任务执行序号必须大于0")
-	}
 	if strings.TrimSpace(taskData.Target) == "" {
 		return fmt.Errorf("任务目标不能为空")
 	}
@@ -61,7 +58,6 @@ func (c *Client) handleTaskDispatch(ctx context.Context, conn *coderws.Conn, dat
 	logger.Infow(
 		"收到调度任务",
 		logx.Field("task_no", taskData.TaskNo),
-		logx.Field("run_no", taskData.RunNo),
 		logx.Field("target", taskData.Target),
 		logx.Field("task_type", taskData.TaskType),
 	)
@@ -82,7 +78,6 @@ func (c *Client) handleTaskDispatch(ctx context.Context, conn *coderws.Conn, dat
 		logger.Errorw(
 			"调度任务执行失败",
 			logx.Field("task_no", taskData.TaskNo),
-			logx.Field("run_no", taskData.RunNo),
 			logx.Field("error", err.Error()),
 		)
 		return nil
@@ -93,7 +88,7 @@ func (c *Client) handleTaskDispatch(ctx context.Context, conn *coderws.Conn, dat
 		return err
 	}
 
-	logger.Infow("调度任务执行成功", logx.Field("task_no", taskData.TaskNo), logx.Field("run_no", taskData.RunNo))
+	logger.Infow("调度任务执行成功", logx.Field("task_no", taskData.TaskNo))
 
 	return nil
 }
@@ -103,7 +98,6 @@ func (c *Client) sendTaskAck(ctx context.Context, conn *coderws.Conn, taskData p
 	// 编码任务接收确认数据
 	data, err := json.Marshal(protocol.TaskAckData{
 		TaskNo: taskData.TaskNo, // 任务编号
-		RunNo:  taskData.RunNo,  // 执行序号
 	})
 	if err != nil {
 		return fmt.Errorf("编码任务接收确认数据失败: %w", err)
@@ -132,7 +126,6 @@ func (c *Client) sendTaskResult(
 	// 编码任务执行结果
 	data, err := json.Marshal(protocol.TaskResultData{
 		TaskNo:       taskData.TaskNo, // 任务编号
-		RunNo:        taskData.RunNo,  // 执行序号
 		Success:      success,         // 是否执行成功
 		Result:       result,          // 执行结果
 		ErrorMessage: errorMessage,    // 失败原因
