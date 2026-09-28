@@ -8,6 +8,7 @@ import (
 
 	"oa.98ent.com/p9/platform-operator/api/internal/svc"
 	"oa.98ent.com/p9/platform-operator/api/internal/types"
+	"oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/operatorpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,8 +27,19 @@ func NewPublishOperatorLogic(ctx context.Context, svcCtx *svc.ServiceContext) *P
 	}
 }
 
+// PublishOperator 发布分站
 func (l *PublishOperatorLogic) PublishOperator(req *types.PublishOperatorRequest) (resp *types.PublishOperatorResponse, err error) {
-	// todo: add your logic here and delete this line
+	// 发布分站
+	_, err = l.svcCtx.OperatorRpc.Publish(
+		l.ctx,
+		&operatorpb.PublishOperatorRequest{
+			Id: req.Id, // 分站ID
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	// 返回发布结果
+	return &types.PublishOperatorResponse{}, nil
 }
