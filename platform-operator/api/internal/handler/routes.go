@@ -8,6 +8,7 @@ import (
 
 	agent_line_allocation "oa.98ent.com/p9/platform-operator/api/internal/handler/agent_line_allocation"
 	basic_resource_allocation "oa.98ent.com/p9/platform-operator/api/internal/handler/basic_resource_allocation"
+	dispatch_callback "oa.98ent.com/p9/platform-operator/api/internal/handler/dispatch_callback"
 	language_allocation "oa.98ent.com/p9/platform-operator/api/internal/handler/language_allocation"
 	operator "oa.98ent.com/p9/platform-operator/api/internal/handler/operator"
 	operator_admin "oa.98ent.com/p9/platform-operator/api/internal/handler/operator_admin"
@@ -58,6 +59,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/admin/operator"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CallbackAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/task-result",
+					Handler: dispatch_callback.HandleDispatchTaskResultHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/internal/dispatch"),
 	)
 
 	server.AddRoutes(

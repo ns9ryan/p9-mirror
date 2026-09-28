@@ -1,6 +1,7 @@
 syntax = "v1"
 
 import "ping.api"
+import "dispatch_callback.api"
 import "operator.api"
 import "operator_node.api"
 import "profile.api"

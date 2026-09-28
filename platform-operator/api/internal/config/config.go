@@ -11,6 +11,11 @@ import (
 	"oa.98ent.com/p9/common/i18n"
 )
 
+// DispatchCallbackConf 调度回调配置
+type DispatchCallbackConf struct {
+	Secret string // 回调认证密钥
+}
+
 type Config struct {
 	rest.RestConf
 
@@ -19,6 +24,9 @@ type Config struct {
 
 	// Node Dispatch RPC配置
 	NodeDispatchRpc zrpc.RpcClientConf
+
+	// 调度回调配置
+	DispatchCallback DispatchCallbackConf
 
 	// Platform Base RPC配置
 	PlatformBaseRpc zrpc.RpcClientConf

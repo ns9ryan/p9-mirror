@@ -6,6 +6,10 @@ package svc
 import (
 	"net/http"
 
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/zrpc"
+
 	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/core/common/coreadapt"
 	coremiddleware "oa.98ent.com/p9/core/common/middleware"
@@ -17,6 +21,7 @@ import (
 	game_grpc_client "oa.98ent.com/p9/platform-game/pkg/grpc_client"
 	"oa.98ent.com/p9/platform-operator/api/internal/config"
 	"oa.98ent.com/p9/platform-operator/api/internal/locales"
+	"oa.98ent.com/p9/platform-operator/api/internal/middleware"
 	"oa.98ent.com/p9/platform-operator/rpc/client/agentlineallocationservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/basicresourceallocationservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/languageallocationservice"
@@ -27,10 +32,6 @@ import (
 	"oa.98ent.com/p9/platform-operator/rpc/client/operatorservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/pingservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/regionallocationservice"
-
-	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/zrpc"
 )
 
 // ServiceContext 服务上下文
@@ -67,6 +68,9 @@ type ServiceContext struct {
 	// 多语言
 	Trans    *i18n.Translator // API翻译器
 	I18nLang rest.Middleware  // Core多语言中间件
+
+	// 调度回调
+	CallbackAuth rest.Middleware // 调度回调认证中间件
 
 	// 认证权限
 	Jwt       rest.Middleware // JWT认证中间件
@@ -139,6 +143,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}
 
+	// ============================== Dispatch Callback ==============================
+
+	// 创建调度回调认证中间件
+	callbackAuth, err := middleware.NewCallbackAuthMiddleware(c.DispatchCallback.Secret)
+	logx.Must(err)
+
 	// ============================== Service Context ==============================
 
 	return &ServiceContext{
@@ -174,6 +184,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		// 多语言
 		Trans:    trans,                                                     // API翻译器
 		I18nLang: i18n.NewI18nLangMiddleware(c.I18n.DefaultLanguage).Handle, // Core多语言中间件
+
+		// 调度回调
+		CallbackAuth: callbackAuth.Handle, // 调度回调认证中间件
 
 		// 认证权限
 		Jwt:       jwt,       // JWT认证中间件

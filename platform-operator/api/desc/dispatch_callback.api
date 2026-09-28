@@ -1,0 +1,31 @@
+syntax = "v1"
+
+type (
+	// 调度任务结果回调请求
+	HandleDispatchTaskResultRequest {
+		// 调度任务编号
+		TaskNo string `json:"task_no" validate:"required,notblank,max=64"`
+		// 任务最终状态: 3成功, 4失败
+		Status int64 `json:"status" validate:"required,oneof=3 4"`
+		// 任务执行结果
+		Result interface{} `json:"result,optional"`
+		// 任务执行失败原因
+		ErrorMessage string `json:"error_message,optional" validate:"omitempty,max=2000"`
+		// 任务执行结束时间, Unix毫秒时间戳
+		FinishedAt int64 `json:"finished_at" validate:"required,gt=0"`
+	}
+	// 调度任务结果回调响应
+	HandleDispatchTaskResultResponse  {}
+)
+
+@server (
+	group:      dispatch_callback
+	prefix:     /internal/dispatch
+	middleware: CallbackAuth
+)
+service platform_operator {
+	// 处理调度任务结果回调
+	@handler HandleDispatchTaskResult
+	post /task-result (HandleDispatchTaskResultRequest) returns (HandleDispatchTaskResultResponse)
+}
+

@@ -216,6 +216,17 @@ type GetOperatorResponse struct {
 	OperatorInfo
 }
 
+type HandleDispatchTaskResultRequest struct {
+	TaskNo       string      `json:"task_no" validate:"required,notblank,max=64"`
+	Status       int64       `json:"status" validate:"required,oneof=3 4"`
+	Result       interface{} `json:"result,optional"`
+	ErrorMessage string      `json:"error_message,optional" validate:"omitempty,max=2000"`
+	FinishedAt   int64       `json:"finished_at" validate:"required,gt=0"`
+}
+
+type HandleDispatchTaskResultResponse struct {
+}
+
 type LanguageAllocationInfo struct {
 	LanguageCode string `json:"language_code"`
 	AllocatedAt  int64  `json:"allocated_at"`
