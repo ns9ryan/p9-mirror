@@ -74,30 +74,21 @@ func (l *SyncPublishStatusLogic) SyncPublishStatus(in *operatorpb.SyncPublishSta
 
 	// ==================== 查询调度任务 ====================
 
-	// 优先使用已记录任务编号查询
-	var currentTaskNo string
-	if current.PublishTaskNo != nil {
-		currentTaskNo = strings.TrimSpace(*current.PublishTaskNo)
-	}
-
-	taskRequest := &nodedispatchdispatchpb.GetTaskRequest{}
-	if currentTaskNo != "" {
-		taskRequest.TaskNo = new(currentTaskNo)
-	} else {
-		taskRequest.RequestNo = new(requestNo)
-	}
-
-	// 从调度中心获取实际任务状态
-	taskResult, err := l.svcCtx.NodeDispatchDispatchRpc.GetTask(l.ctx, taskRequest)
+	// 根据当前发布请求编号获取实际任务状态
+	taskResult, err := l.svcCtx.NodeDispatchDispatchRpc.GetTask(
+		l.ctx,
+		&nodedispatchdispatchpb.GetTaskRequest{
+			RequestNo: new(requestNo), // 当前发布请求编号
+		},
+	)
 	if err != nil {
-		// 未找到任务时保持发布中状态，避免误判仍在提交中的任务
+		// 未找到任务时保持发布中状态
 		if status.Code(err) == codes.NotFound {
 			l.Logger.Infow(
 				"同步分站发布状态未找到调度任务",
 				logx.Field("operator_id", current.ID),
 				logx.Field("operator_code", current.Code),
 				logx.Field("request_no", requestNo),
-				logx.Field("task_no", currentTaskNo),
 			)
 			return nil, err
 		}
@@ -107,7 +98,6 @@ func (l *SyncPublishStatusLogic) SyncPublishStatus(in *operatorpb.SyncPublishSta
 			logx.Field("operator_id", current.ID),
 			logx.Field("operator_code", current.Code),
 			logx.Field("request_no", requestNo),
-			logx.Field("task_no", currentTaskNo),
 			logx.Field("error", err.Error()),
 		)
 		return nil, err
@@ -127,9 +117,9 @@ func (l *SyncPublishStatusLogic) SyncPublishStatus(in *operatorpb.SyncPublishSta
 	}
 
 	// 校验当前发布任务
-	taskNo, _, err := validatePublishTask(
+	_, _, err = validatePublishTask(
 		taskResult.Task,
-		currentTaskNo,
+		"",
 		requestNo,
 	)
 	if err != nil {
@@ -138,25 +128,12 @@ func (l *SyncPublishStatusLogic) SyncPublishStatus(in *operatorpb.SyncPublishSta
 
 	// ==================== 同步发布状态 ====================
 
-	// 待执行或执行中时只补充实际任务编号
+	// 待执行或执行中时保持当前发布状态
 	if taskResult.Task.Status == 1 || taskResult.Task.Status == 2 {
-		updated, _, err := bindPublishTask(
-			l.ctx,
-			l.svcCtx,
-			l.Logger,
-			current,
-			taskNo,
-			requestNo,
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		// 返回当前发布状态
 		return &operatorpb.SyncPublishStatusResponse{
-			OperatorId:    updated.ID,            // 分站ID
-			OperatorCode:  updated.Code,          // 分站业务编码
-			PublishStatus: updated.PublishStatus, // 当前发布状态
+			OperatorId:    current.ID,   // 分站ID
+			OperatorCode:  current.Code, // 分站业务编码
+			PublishStatus: 2,            // 发布状态: 2发布中
 		}, nil
 	}
 
