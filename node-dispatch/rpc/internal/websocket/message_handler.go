@@ -81,59 +81,22 @@ func (s *Server) handleTaskResult(ctx context.Context, nodeCode string, data jso
 		return fmt.Errorf("更新任务执行结果失败: %w", err)
 	}
 
-	// 获取任务最终状态
-	taskResult, err := s.svcCtx.Task.Get(ctx, task.GetRequest{
+	// 回调任务完成通知
+	err := s.svcCtx.Callback.TaskResult(ctx, callback.TaskResultRequest{
 		TaskNo: result.TaskNo, // 调度任务编号
-	})
-	if err != nil {
-		return fmt.Errorf("获取任务最终状态失败: %w", err)
-	}
-
-	// 校验任务查询结果
-	if taskResult == nil || taskResult.Task == nil {
-		return fmt.Errorf("获取任务最终状态失败: task result is empty")
-	}
-
-	taskData := taskResult.Task
-
-	// 校验任务最终状态
-	if taskData.Status != task.StatusSuccess && taskData.Status != task.StatusFailed {
-		return fmt.Errorf(
-			"调度任务尚未结束: task_no=%s status=%d",
-			taskData.TaskNo,
-			taskData.Status,
-		)
-	}
-	if taskData.FinishedAt == nil {
-		return fmt.Errorf("调度任务结束时间为空: task_no=%s", taskData.TaskNo)
-	}
-
-	// 获取任务失败原因
-	var errorMessage string
-	if taskData.ErrorMessage != nil {
-		errorMessage = *taskData.ErrorMessage
-	}
-
-	// 回调任务最终结果
-	err = s.svcCtx.Callback.TaskResult(ctx, callback.TaskResultRequest{
-		TaskNo:       taskData.TaskNo,                 // 调度任务编号
-		Status:       taskData.Status,                 // 任务最终状态: 3成功, 4失败
-		Result:       taskData.Result,                 // 任务执行结果
-		ErrorMessage: errorMessage,                    // 任务执行失败原因
-		FinishedAt:   taskData.FinishedAt.UnixMilli(), // 任务执行结束时间
 	})
 	if err != nil {
 		// 回调失败不影响已经完成的调度任务状态
 		logx.WithContext(ctx).Errorw(
 			"回调调度任务结果失败",
-			logx.Field("task_no", taskData.TaskNo),
+			logx.Field("task_no", result.TaskNo),
 			logx.Field("error", err.Error()),
 		)
 	} else {
 		// 记录回调成功日志
 		logx.WithContext(ctx).Infow(
 			"调度任务结果回调成功",
-			logx.Field("task_no", taskData.TaskNo),
+			logx.Field("task_no", result.TaskNo),
 		)
 	}
 

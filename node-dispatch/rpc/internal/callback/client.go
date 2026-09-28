@@ -2,7 +2,6 @@ package callback
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -28,21 +27,13 @@ type Client struct {
 
 // TaskResultRequest 任务结果回调请求
 type TaskResultRequest struct {
-	TaskNo       string          // 调度任务编号
-	Status       int64           // 任务最终状态: 3成功, 4失败
-	Result       json.RawMessage // 执行结果
-	ErrorMessage string          // 执行失败原因
-	FinishedAt   int64           // 执行结束时间, Unix毫秒时间戳
+	TaskNo string // 调度任务编号
 }
 
 // taskResultHTTPRequest HTTP任务结果回调请求
 type taskResultHTTPRequest struct {
-	TaskNo        string          `json:"task_no"`                // 调度任务编号
-	Status        int64           `json:"status"`                 // 任务最终状态: 3成功, 4失败
-	Result        json.RawMessage `json:"result,optional"`        // 执行结果
-	ErrorMessage  string          `json:"error_message,optional"` // 执行失败原因
-	FinishedAt    int64           `json:"finished_at"`            // 执行结束时间, Unix毫秒时间戳
-	Authorization string          `header:"Authorization"`        // 回调认证信息
+	TaskNo        string `json:"task_no"`         // 调度任务编号
+	Authorization string `header:"Authorization"` // 回调认证信息
 }
 
 // NewClient 创建HTTP回调客户端
@@ -86,10 +77,6 @@ func (c *Client) TaskResult(ctx context.Context, data TaskResultRequest) error {
 	// 创建HTTP回调请求
 	request := taskResultHTTPRequest{
 		TaskNo:        data.TaskNo,          // 调度任务编号
-		Status:        data.Status,          // 任务最终状态
-		Result:        data.Result,          // 执行结果
-		ErrorMessage:  data.ErrorMessage,    // 执行失败原因
-		FinishedAt:    data.FinishedAt,      // 执行结束时间
 		Authorization: "Bearer " + c.secret, // 回调认证信息
 	}
 
