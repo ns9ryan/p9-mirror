@@ -99,11 +99,6 @@ func applyFinalPublishTask(
 	current *ent.Operator,
 	taskData *nodedispatchdispatchpb.TaskInfo,
 ) (*ent.Operator, bool, error) {
-	// 分站信息不能为空
-	if current == nil {
-		return nil, false, xerr.RpcErr(xerr.InternalServerError(i18nkey.InternalError))
-	}
-
 	// 校验发布任务
 	taskNo, requestNo, err := validatePublishTask(taskData, "", "")
 	if err != nil {
