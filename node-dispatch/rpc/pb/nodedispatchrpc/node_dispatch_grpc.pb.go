@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	callbackpb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/callbackpb"
 	dispatchpb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/dispatchpb"
 	nodepb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/nodepb"
 	operatornodepb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/operatornodepb"
@@ -729,115 +728,6 @@ var DispatchService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTask",
 			Handler:    _DispatchService_ListTask_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "node_dispatch.proto",
-}
-
-const (
-	DispatchCallbackService_TaskResult_FullMethodName = "/node_dispatch.DispatchCallbackService/TaskResult"
-)
-
-// DispatchCallbackServiceClient is the client API for DispatchCallbackService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// 调度回调服务
-type DispatchCallbackServiceClient interface {
-	// 回调任务结果
-	TaskResult(ctx context.Context, in *callbackpb.TaskResultRequest, opts ...grpc.CallOption) (*callbackpb.TaskResultResponse, error)
-}
-
-type dispatchCallbackServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewDispatchCallbackServiceClient(cc grpc.ClientConnInterface) DispatchCallbackServiceClient {
-	return &dispatchCallbackServiceClient{cc}
-}
-
-func (c *dispatchCallbackServiceClient) TaskResult(ctx context.Context, in *callbackpb.TaskResultRequest, opts ...grpc.CallOption) (*callbackpb.TaskResultResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(callbackpb.TaskResultResponse)
-	err := c.cc.Invoke(ctx, DispatchCallbackService_TaskResult_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// DispatchCallbackServiceServer is the server API for DispatchCallbackService service.
-// All implementations must embed UnimplementedDispatchCallbackServiceServer
-// for forward compatibility.
-//
-// 调度回调服务
-type DispatchCallbackServiceServer interface {
-	// 回调任务结果
-	TaskResult(context.Context, *callbackpb.TaskResultRequest) (*callbackpb.TaskResultResponse, error)
-	mustEmbedUnimplementedDispatchCallbackServiceServer()
-}
-
-// UnimplementedDispatchCallbackServiceServer must be embedded to have
-// forward compatible implementations.
-//
-// NOTE: this should be embedded by value instead of pointer to avoid a nil
-// pointer dereference when methods are called.
-type UnimplementedDispatchCallbackServiceServer struct{}
-
-func (UnimplementedDispatchCallbackServiceServer) TaskResult(context.Context, *callbackpb.TaskResultRequest) (*callbackpb.TaskResultResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method TaskResult not implemented")
-}
-func (UnimplementedDispatchCallbackServiceServer) mustEmbedUnimplementedDispatchCallbackServiceServer() {
-}
-func (UnimplementedDispatchCallbackServiceServer) testEmbeddedByValue() {}
-
-// UnsafeDispatchCallbackServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to DispatchCallbackServiceServer will
-// result in compilation errors.
-type UnsafeDispatchCallbackServiceServer interface {
-	mustEmbedUnimplementedDispatchCallbackServiceServer()
-}
-
-func RegisterDispatchCallbackServiceServer(s grpc.ServiceRegistrar, srv DispatchCallbackServiceServer) {
-	// If the following call panics, it indicates UnimplementedDispatchCallbackServiceServer was
-	// embedded by pointer and is nil.  This will cause panics if an
-	// unimplemented method is ever invoked, so we test this at initialization
-	// time to prevent it from happening at runtime later due to I/O.
-	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
-		t.testEmbeddedByValue()
-	}
-	s.RegisterService(&DispatchCallbackService_ServiceDesc, srv)
-}
-
-func _DispatchCallbackService_TaskResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(callbackpb.TaskResultRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DispatchCallbackServiceServer).TaskResult(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DispatchCallbackService_TaskResult_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DispatchCallbackServiceServer).TaskResult(ctx, req.(*callbackpb.TaskResultRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// DispatchCallbackService_ServiceDesc is the grpc.ServiceDesc for DispatchCallbackService service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var DispatchCallbackService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "node_dispatch.DispatchCallbackService",
-	HandlerType: (*DispatchCallbackServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "TaskResult",
-			Handler:    _DispatchCallbackService_TaskResult_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

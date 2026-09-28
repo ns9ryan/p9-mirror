@@ -3,6 +3,7 @@ package svc
 import (
 	"oa.98ent.com/p9/node-dispatch/rpc/ent"
 	_ "oa.98ent.com/p9/node-dispatch/rpc/ent/runtime"
+	"oa.98ent.com/p9/node-dispatch/rpc/internal/callback"
 	"oa.98ent.com/p9/node-dispatch/rpc/internal/config"
 	"oa.98ent.com/p9/node-dispatch/rpc/internal/connection"
 	"oa.98ent.com/p9/node-dispatch/rpc/internal/task"
@@ -17,6 +18,7 @@ type ServiceContext struct {
 	DB          *ent.Client         // Ent数据库客户端
 	Connections *connection.Manager // 节点连接管理器
 	Task        *task.Service       // 调度任务服务
+	Callback    *callback.Client    // HTTP回调客户端
 }
 
 // NewServiceContext 创建服务上下文
@@ -45,11 +47,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// 创建调度任务服务
 	taskService := task.NewService(db, connections)
 
+	// 创建HTTP回调客户端
+	callbackClient, err := callback.NewClient(c.Callback)
+	logx.Must(err)
+
 	// 返回服务上下文
 	return &ServiceContext{
 		Config:      c,
 		DB:          db,
 		Connections: connections,
 		Task:        taskService,
+		Callback:    callbackClient,
 	}
 }

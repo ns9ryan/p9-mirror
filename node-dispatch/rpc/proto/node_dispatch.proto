@@ -8,7 +8,6 @@ import "types/node_dispatch_ping.proto";
 import "types/node_dispatch_node.proto";
 import "types/node_dispatch_operator_node.proto";
 import "types/node_dispatch_dispatch.proto";
-import "types/node_dispatch_callback.proto";
 
 // Ping 服务
 service PingService {
@@ -53,10 +52,4 @@ service DispatchService {
 
   // 获取调度任务列表
   rpc ListTask(node_dispatch_dispatch.ListTasksRequest) returns (node_dispatch_dispatch.ListTasksResponse);
-}
-
-// 调度回调服务
-service DispatchCallbackService {
-  // 回调任务结果
-  rpc TaskResult(node_dispatch_callback.TaskResultRequest) returns (node_dispatch_callback.TaskResultResponse);
 }

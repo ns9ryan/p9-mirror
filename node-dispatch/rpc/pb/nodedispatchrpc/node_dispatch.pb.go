@@ -9,7 +9,6 @@ package nodedispatchrpc
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	callbackpb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/callbackpb"
 	dispatchpb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/dispatchpb"
 	nodepb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/nodepb"
 	operatornodepb "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/operatornodepb"
@@ -29,7 +28,7 @@ var File_node_dispatch_proto protoreflect.FileDescriptor
 
 const file_node_dispatch_proto_rawDesc = "" +
 	"\n" +
-	"\x13node_dispatch.proto\x12\rnode_dispatch\x1a\x1etypes/node_dispatch_ping.proto\x1a\x1etypes/node_dispatch_node.proto\x1a'types/node_dispatch_operator_node.proto\x1a\"types/node_dispatch_dispatch.proto\x1a\"types/node_dispatch_callback.proto2X\n" +
+	"\x13node_dispatch.proto\x12\rnode_dispatch\x1a\x1etypes/node_dispatch_ping.proto\x1a\x1etypes/node_dispatch_node.proto\x1a'types/node_dispatch_operator_node.proto\x1a\"types/node_dispatch_dispatch.proto2X\n" +
 	"\vPingService\x12I\n" +
 	"\x04Ping\x12\x1f.node_dispatch_ping.PingRequest\x1a .node_dispatch_ping.PingResponse2\xd8\x03\n" +
 	"\vNodeService\x12W\n" +
@@ -45,10 +44,7 @@ const file_node_dispatch_proto_rawDesc = "" +
 	"\n" +
 	"SubmitTask\x12).node_dispatch_dispatch.SubmitTaskRequest\x1a*.node_dispatch_dispatch.SubmitTaskResponse\x12Z\n" +
 	"\aGetTask\x12&.node_dispatch_dispatch.GetTaskRequest\x1a'.node_dispatch_dispatch.GetTaskResponse\x12_\n" +
-	"\bListTask\x12(.node_dispatch_dispatch.ListTasksRequest\x1a).node_dispatch_dispatch.ListTasksResponse2~\n" +
-	"\x17DispatchCallbackService\x12c\n" +
-	"\n" +
-	"TaskResult\x12).node_dispatch_callback.TaskResultRequest\x1a*.node_dispatch_callback.TaskResultResponseB6Z4oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpcb\x06proto3"
+	"\bListTask\x12(.node_dispatch_dispatch.ListTasksRequest\x1a).node_dispatch_dispatch.ListTasksResponseB6Z4oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpcb\x06proto3"
 
 var file_node_dispatch_proto_goTypes = []any{
 	(*pingpb.PingRequest)(nil),                      // 0: node_dispatch_ping.PingRequest
@@ -62,19 +58,17 @@ var file_node_dispatch_proto_goTypes = []any{
 	(*dispatchpb.SubmitTaskRequest)(nil),            // 8: node_dispatch_dispatch.SubmitTaskRequest
 	(*dispatchpb.GetTaskRequest)(nil),               // 9: node_dispatch_dispatch.GetTaskRequest
 	(*dispatchpb.ListTasksRequest)(nil),             // 10: node_dispatch_dispatch.ListTasksRequest
-	(*callbackpb.TaskResultRequest)(nil),            // 11: node_dispatch_callback.TaskResultRequest
-	(*pingpb.PingResponse)(nil),                     // 12: node_dispatch_ping.PingResponse
-	(*nodepb.CreateNodeResponse)(nil),               // 13: node_dispatch_node.CreateNodeResponse
-	(*nodepb.UpdateNodeResponse)(nil),               // 14: node_dispatch_node.UpdateNodeResponse
-	(*nodepb.GetNodeResponse)(nil),                  // 15: node_dispatch_node.GetNodeResponse
-	(*nodepb.ListNodesResponse)(nil),                // 16: node_dispatch_node.ListNodesResponse
-	(*nodepb.ResetNodeAuthSecretResponse)(nil),      // 17: node_dispatch_node.ResetNodeAuthSecretResponse
-	(*operatornodepb.SaveOperatorNodeResponse)(nil), // 18: node_dispatch_operator_node.SaveOperatorNodeResponse
-	(*operatornodepb.GetOperatorNodeResponse)(nil),  // 19: node_dispatch_operator_node.GetOperatorNodeResponse
-	(*dispatchpb.SubmitTaskResponse)(nil),           // 20: node_dispatch_dispatch.SubmitTaskResponse
-	(*dispatchpb.GetTaskResponse)(nil),              // 21: node_dispatch_dispatch.GetTaskResponse
-	(*dispatchpb.ListTasksResponse)(nil),            // 22: node_dispatch_dispatch.ListTasksResponse
-	(*callbackpb.TaskResultResponse)(nil),           // 23: node_dispatch_callback.TaskResultResponse
+	(*pingpb.PingResponse)(nil),                     // 11: node_dispatch_ping.PingResponse
+	(*nodepb.CreateNodeResponse)(nil),               // 12: node_dispatch_node.CreateNodeResponse
+	(*nodepb.UpdateNodeResponse)(nil),               // 13: node_dispatch_node.UpdateNodeResponse
+	(*nodepb.GetNodeResponse)(nil),                  // 14: node_dispatch_node.GetNodeResponse
+	(*nodepb.ListNodesResponse)(nil),                // 15: node_dispatch_node.ListNodesResponse
+	(*nodepb.ResetNodeAuthSecretResponse)(nil),      // 16: node_dispatch_node.ResetNodeAuthSecretResponse
+	(*operatornodepb.SaveOperatorNodeResponse)(nil), // 17: node_dispatch_operator_node.SaveOperatorNodeResponse
+	(*operatornodepb.GetOperatorNodeResponse)(nil),  // 18: node_dispatch_operator_node.GetOperatorNodeResponse
+	(*dispatchpb.SubmitTaskResponse)(nil),           // 19: node_dispatch_dispatch.SubmitTaskResponse
+	(*dispatchpb.GetTaskResponse)(nil),              // 20: node_dispatch_dispatch.GetTaskResponse
+	(*dispatchpb.ListTasksResponse)(nil),            // 21: node_dispatch_dispatch.ListTasksResponse
 }
 var file_node_dispatch_proto_depIdxs = []int32{
 	0,  // 0: node_dispatch.PingService.Ping:input_type -> node_dispatch_ping.PingRequest
@@ -88,21 +82,19 @@ var file_node_dispatch_proto_depIdxs = []int32{
 	8,  // 8: node_dispatch.DispatchService.SubmitTask:input_type -> node_dispatch_dispatch.SubmitTaskRequest
 	9,  // 9: node_dispatch.DispatchService.GetTask:input_type -> node_dispatch_dispatch.GetTaskRequest
 	10, // 10: node_dispatch.DispatchService.ListTask:input_type -> node_dispatch_dispatch.ListTasksRequest
-	11, // 11: node_dispatch.DispatchCallbackService.TaskResult:input_type -> node_dispatch_callback.TaskResultRequest
-	12, // 12: node_dispatch.PingService.Ping:output_type -> node_dispatch_ping.PingResponse
-	13, // 13: node_dispatch.NodeService.Create:output_type -> node_dispatch_node.CreateNodeResponse
-	14, // 14: node_dispatch.NodeService.Update:output_type -> node_dispatch_node.UpdateNodeResponse
-	15, // 15: node_dispatch.NodeService.Get:output_type -> node_dispatch_node.GetNodeResponse
-	16, // 16: node_dispatch.NodeService.List:output_type -> node_dispatch_node.ListNodesResponse
-	17, // 17: node_dispatch.NodeService.ResetAuthSecret:output_type -> node_dispatch_node.ResetNodeAuthSecretResponse
-	18, // 18: node_dispatch.OperatorNodeService.Save:output_type -> node_dispatch_operator_node.SaveOperatorNodeResponse
-	19, // 19: node_dispatch.OperatorNodeService.Get:output_type -> node_dispatch_operator_node.GetOperatorNodeResponse
-	20, // 20: node_dispatch.DispatchService.SubmitTask:output_type -> node_dispatch_dispatch.SubmitTaskResponse
-	21, // 21: node_dispatch.DispatchService.GetTask:output_type -> node_dispatch_dispatch.GetTaskResponse
-	22, // 22: node_dispatch.DispatchService.ListTask:output_type -> node_dispatch_dispatch.ListTasksResponse
-	23, // 23: node_dispatch.DispatchCallbackService.TaskResult:output_type -> node_dispatch_callback.TaskResultResponse
-	12, // [12:24] is the sub-list for method output_type
-	0,  // [0:12] is the sub-list for method input_type
+	11, // 11: node_dispatch.PingService.Ping:output_type -> node_dispatch_ping.PingResponse
+	12, // 12: node_dispatch.NodeService.Create:output_type -> node_dispatch_node.CreateNodeResponse
+	13, // 13: node_dispatch.NodeService.Update:output_type -> node_dispatch_node.UpdateNodeResponse
+	14, // 14: node_dispatch.NodeService.Get:output_type -> node_dispatch_node.GetNodeResponse
+	15, // 15: node_dispatch.NodeService.List:output_type -> node_dispatch_node.ListNodesResponse
+	16, // 16: node_dispatch.NodeService.ResetAuthSecret:output_type -> node_dispatch_node.ResetNodeAuthSecretResponse
+	17, // 17: node_dispatch.OperatorNodeService.Save:output_type -> node_dispatch_operator_node.SaveOperatorNodeResponse
+	18, // 18: node_dispatch.OperatorNodeService.Get:output_type -> node_dispatch_operator_node.GetOperatorNodeResponse
+	19, // 19: node_dispatch.DispatchService.SubmitTask:output_type -> node_dispatch_dispatch.SubmitTaskResponse
+	20, // 20: node_dispatch.DispatchService.GetTask:output_type -> node_dispatch_dispatch.GetTaskResponse
+	21, // 21: node_dispatch.DispatchService.ListTask:output_type -> node_dispatch_dispatch.ListTasksResponse
+	11, // [11:22] is the sub-list for method output_type
+	0,  // [0:11] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -121,7 +113,7 @@ func file_node_dispatch_proto_init() {
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
-			NumServices:   5,
+			NumServices:   4,
 		},
 		GoTypes:           file_node_dispatch_proto_goTypes,
 		DependencyIndexes: file_node_dispatch_proto_depIdxs,

@@ -12,6 +12,12 @@ Etcd:
 # WebSocket服务配置
 WebSocketListenOn: 0.0.0.0:28002  # WebSocket监听地址
 
+# HTTP回调配置
+Callback:
+  TaskResultURL: http://127.0.0.1:18002/internal/dispatch/task-result # 任务结果回调地址
+  Secret: p9-node-dispatch-callback                                   # 回调认证密钥
+  Timeout: 5000                                                       # HTTP请求超时时间, 毫秒
+
 # 数据库配置
 DatabaseConf:
   Host:     127.0.0.1             # 数据库地址
