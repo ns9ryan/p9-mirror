@@ -66,6 +66,12 @@ func (s *OperatorServiceServer) Publish(ctx context.Context, in *operatorpb.Publ
 	return l.Publish(in)
 }
 
+// 处理分站发布结果
+func (s *OperatorServiceServer) HandlePublishResult(ctx context.Context, in *operatorpb.HandlePublishResultRequest) (*operatorpb.HandlePublishResultResponse, error) {
+	l := operatorservicelogic.NewHandlePublishResultLogic(ctx, s.svcCtx)
+	return l.HandlePublishResult(in)
+}
+
 // 删除分站
 func (s *OperatorServiceServer) Delete(ctx context.Context, in *operatorpb.DeleteOperatorRequest) (*operatorpb.DeleteOperatorResponse, error) {
 	l := operatorservicelogic.NewDeleteLogic(ctx, s.svcCtx)

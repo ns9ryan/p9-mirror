@@ -36,7 +36,7 @@ const file_platform_operator_proto_rawDesc = "" +
 	"\n" +
 	"\x17platform_operator.proto\x12\x11platform_operator\x1a\"types/platform_operator_ping.proto\x1a&types/platform_operator_operator.proto\x1a+types/platform_operator_operator_node.proto\x1a%types/platform_operator_profile.proto\x1a$types/platform_operator_domain.proto\x1a#types/platform_operator_admin.proto\x1a7types/platform_operator_basic_resource_allocation.proto\x1a1types/platform_operator_language_allocation.proto\x1a/types/platform_operator_region_allocation.proto\x1a3types/platform_operator_agent_line_allocation.proto2`\n" +
 	"\vPingService\x12Q\n" +
-	"\x04Ping\x12#.platform_operator_ping.PingRequest\x1a$.platform_operator_ping.PingResponse2\xb3\a\n" +
+	"\x04Ping\x12#.platform_operator_ping.PingRequest\x1a$.platform_operator_ping.PingResponse2\xbc\b\n" +
 	"\x0fOperatorService\x12o\n" +
 	"\x06Create\x121.platform_operator_operator.CreateOperatorRequest\x1a2.platform_operator_operator.CreateOperatorResponse\x12o\n" +
 	"\x06Update\x121.platform_operator_operator.UpdateOperatorRequest\x1a2.platform_operator_operator.UpdateOperatorResponse\x12f\n" +
@@ -44,7 +44,8 @@ const file_platform_operator_proto_rawDesc = "" +
 	"\x15GetInitializationData\x128.platform_operator_operator.GetInitializationDataRequest\x1a9.platform_operator_operator.GetInitializationDataResponse\x12k\n" +
 	"\x04List\x120.platform_operator_operator.ListOperatorsRequest\x1a1.platform_operator_operator.ListOperatorsResponse\x12u\n" +
 	"\bComplete\x123.platform_operator_operator.CompleteOperatorRequest\x1a4.platform_operator_operator.CompleteOperatorResponse\x12r\n" +
-	"\aPublish\x122.platform_operator_operator.PublishOperatorRequest\x1a3.platform_operator_operator.PublishOperatorResponse\x12o\n" +
+	"\aPublish\x122.platform_operator_operator.PublishOperatorRequest\x1a3.platform_operator_operator.PublishOperatorResponse\x12\x86\x01\n" +
+	"\x13HandlePublishResult\x126.platform_operator_operator.HandlePublishResultRequest\x1a7.platform_operator_operator.HandlePublishResultResponse\x12o\n" +
 	"\x06Delete\x121.platform_operator_operator.DeleteOperatorRequest\x1a2.platform_operator_operator.DeleteOperatorResponse2\x8c\x02\n" +
 	"\x13OperatorNodeService\x12{\n" +
 	"\x04Save\x128.platform_operator_operator_node.SaveOperatorNodeRequest\x1a9.platform_operator_operator_node.SaveOperatorNodeResponse\x12x\n" +
@@ -89,66 +90,68 @@ var file_platform_operator_proto_goTypes = []any{
 	(*operatorpb.ListOperatorsRequest)(nil),                                // 5: platform_operator_operator.ListOperatorsRequest
 	(*operatorpb.CompleteOperatorRequest)(nil),                             // 6: platform_operator_operator.CompleteOperatorRequest
 	(*operatorpb.PublishOperatorRequest)(nil),                              // 7: platform_operator_operator.PublishOperatorRequest
-	(*operatorpb.DeleteOperatorRequest)(nil),                               // 8: platform_operator_operator.DeleteOperatorRequest
-	(*operatornodepb.SaveOperatorNodeRequest)(nil),                         // 9: platform_operator_operator_node.SaveOperatorNodeRequest
-	(*operatornodepb.GetOperatorNodeRequest)(nil),                          // 10: platform_operator_operator_node.GetOperatorNodeRequest
-	(*profilepb.CreateOperatorProfileRequest)(nil),                         // 11: platform_operator_profile.CreateOperatorProfileRequest
-	(*profilepb.UpdateOperatorProfileRequest)(nil),                         // 12: platform_operator_profile.UpdateOperatorProfileRequest
-	(*profilepb.GetOperatorProfileRequest)(nil),                            // 13: platform_operator_profile.GetOperatorProfileRequest
-	(*domainpb.CreateDomainRequest)(nil),                                   // 14: platform_operator_domain.CreateDomainRequest
-	(*domainpb.UpdateDomainRequest)(nil),                                   // 15: platform_operator_domain.UpdateDomainRequest
-	(*domainpb.GetDomainRequest)(nil),                                      // 16: platform_operator_domain.GetDomainRequest
-	(*domainpb.ListDomainsRequest)(nil),                                    // 17: platform_operator_domain.ListDomainsRequest
-	(*domainpb.DeleteDomainRequest)(nil),                                   // 18: platform_operator_domain.DeleteDomainRequest
-	(*adminpb.CreateAdminRequest)(nil),                                     // 19: platform_operator_admin.CreateAdminRequest
-	(*adminpb.ListAdminsRequest)(nil),                                      // 20: platform_operator_admin.ListAdminsRequest
-	(*adminpb.ResetAdminPasswordRequest)(nil),                              // 21: platform_operator_admin.ResetAdminPasswordRequest
-	(*adminpb.UpdateAdminRequest)(nil),                                     // 22: platform_operator_admin.UpdateAdminRequest
-	(*adminpb.UpdateAdminStatusRequest)(nil),                               // 23: platform_operator_admin.UpdateAdminStatusRequest
-	(*adminpb.DeleteAdminsByOperatorIdRequest)(nil),                        // 24: platform_operator_admin.DeleteAdminsByOperatorIdRequest
-	(*adminpb.ExistsAdminByOperatorIdRequest)(nil),                         // 25: platform_operator_admin.ExistsAdminByOperatorIdRequest
-	(*adminpb.GetAdminRequest)(nil),                                        // 26: platform_operator_admin.GetAdminRequest
-	(*basicresourceallocationpb.ListBasicResourceAllocationsRequest)(nil),  // 27: platform_operator_basic_resource_allocation.ListBasicResourceAllocationsRequest
-	(*languageallocationpb.ListLanguageAllocationsRequest)(nil),            // 28: platform_operator_language_allocation.ListLanguageAllocationsRequest
-	(*languageallocationpb.SaveLanguageAllocationsRequest)(nil),            // 29: platform_operator_language_allocation.SaveLanguageAllocationsRequest
-	(*regionallocationpb.ListRegionAllocationsRequest)(nil),                // 30: platform_operator_region_allocation.ListRegionAllocationsRequest
-	(*regionallocationpb.SaveRegionAllocationsRequest)(nil),                // 31: platform_operator_region_allocation.SaveRegionAllocationsRequest
-	(*agentlineallocationpb.ListAgentLineAllocationsRequest)(nil),          // 32: platform_operator_agent_line_allocation.ListAgentLineAllocationsRequest
-	(*agentlineallocationpb.SaveAgentLineAllocationsRequest)(nil),          // 33: platform_operator_agent_line_allocation.SaveAgentLineAllocationsRequest
-	(*pingpb.PingResponse)(nil),                                            // 34: platform_operator_ping.PingResponse
-	(*operatorpb.CreateOperatorResponse)(nil),                              // 35: platform_operator_operator.CreateOperatorResponse
-	(*operatorpb.UpdateOperatorResponse)(nil),                              // 36: platform_operator_operator.UpdateOperatorResponse
-	(*operatorpb.GetOperatorResponse)(nil),                                 // 37: platform_operator_operator.GetOperatorResponse
-	(*operatorpb.GetInitializationDataResponse)(nil),                       // 38: platform_operator_operator.GetInitializationDataResponse
-	(*operatorpb.ListOperatorsResponse)(nil),                               // 39: platform_operator_operator.ListOperatorsResponse
-	(*operatorpb.CompleteOperatorResponse)(nil),                            // 40: platform_operator_operator.CompleteOperatorResponse
-	(*operatorpb.PublishOperatorResponse)(nil),                             // 41: platform_operator_operator.PublishOperatorResponse
-	(*operatorpb.DeleteOperatorResponse)(nil),                              // 42: platform_operator_operator.DeleteOperatorResponse
-	(*operatornodepb.SaveOperatorNodeResponse)(nil),                        // 43: platform_operator_operator_node.SaveOperatorNodeResponse
-	(*operatornodepb.GetOperatorNodeResponse)(nil),                         // 44: platform_operator_operator_node.GetOperatorNodeResponse
-	(*profilepb.CreateOperatorProfileResponse)(nil),                        // 45: platform_operator_profile.CreateOperatorProfileResponse
-	(*profilepb.UpdateOperatorProfileResponse)(nil),                        // 46: platform_operator_profile.UpdateOperatorProfileResponse
-	(*profilepb.GetOperatorProfileResponse)(nil),                           // 47: platform_operator_profile.GetOperatorProfileResponse
-	(*domainpb.CreateDomainResponse)(nil),                                  // 48: platform_operator_domain.CreateDomainResponse
-	(*domainpb.UpdateDomainResponse)(nil),                                  // 49: platform_operator_domain.UpdateDomainResponse
-	(*domainpb.GetDomainResponse)(nil),                                     // 50: platform_operator_domain.GetDomainResponse
-	(*domainpb.ListDomainsResponse)(nil),                                   // 51: platform_operator_domain.ListDomainsResponse
-	(*domainpb.DeleteDomainResponse)(nil),                                  // 52: platform_operator_domain.DeleteDomainResponse
-	(*adminpb.CreateAdminResponse)(nil),                                    // 53: platform_operator_admin.CreateAdminResponse
-	(*adminpb.ListAdminsResponse)(nil),                                     // 54: platform_operator_admin.ListAdminsResponse
-	(*adminpb.ResetAdminPasswordResponse)(nil),                             // 55: platform_operator_admin.ResetAdminPasswordResponse
-	(*adminpb.UpdateAdminResponse)(nil),                                    // 56: platform_operator_admin.UpdateAdminResponse
-	(*adminpb.UpdateAdminStatusResponse)(nil),                              // 57: platform_operator_admin.UpdateAdminStatusResponse
-	(*adminpb.DeleteAdminsByOperatorIdResponse)(nil),                       // 58: platform_operator_admin.DeleteAdminsByOperatorIdResponse
-	(*adminpb.ExistsAdminByOperatorIdResponse)(nil),                        // 59: platform_operator_admin.ExistsAdminByOperatorIdResponse
-	(*adminpb.GetAdminResponse)(nil),                                       // 60: platform_operator_admin.GetAdminResponse
-	(*basicresourceallocationpb.ListBasicResourceAllocationsResponse)(nil), // 61: platform_operator_basic_resource_allocation.ListBasicResourceAllocationsResponse
-	(*languageallocationpb.ListLanguageAllocationsResponse)(nil),           // 62: platform_operator_language_allocation.ListLanguageAllocationsResponse
-	(*languageallocationpb.SaveLanguageAllocationsResponse)(nil),           // 63: platform_operator_language_allocation.SaveLanguageAllocationsResponse
-	(*regionallocationpb.ListRegionAllocationsResponse)(nil),               // 64: platform_operator_region_allocation.ListRegionAllocationsResponse
-	(*regionallocationpb.SaveRegionAllocationsResponse)(nil),               // 65: platform_operator_region_allocation.SaveRegionAllocationsResponse
-	(*agentlineallocationpb.ListAgentLineAllocationsResponse)(nil),         // 66: platform_operator_agent_line_allocation.ListAgentLineAllocationsResponse
-	(*agentlineallocationpb.SaveAgentLineAllocationsResponse)(nil),         // 67: platform_operator_agent_line_allocation.SaveAgentLineAllocationsResponse
+	(*operatorpb.HandlePublishResultRequest)(nil),                          // 8: platform_operator_operator.HandlePublishResultRequest
+	(*operatorpb.DeleteOperatorRequest)(nil),                               // 9: platform_operator_operator.DeleteOperatorRequest
+	(*operatornodepb.SaveOperatorNodeRequest)(nil),                         // 10: platform_operator_operator_node.SaveOperatorNodeRequest
+	(*operatornodepb.GetOperatorNodeRequest)(nil),                          // 11: platform_operator_operator_node.GetOperatorNodeRequest
+	(*profilepb.CreateOperatorProfileRequest)(nil),                         // 12: platform_operator_profile.CreateOperatorProfileRequest
+	(*profilepb.UpdateOperatorProfileRequest)(nil),                         // 13: platform_operator_profile.UpdateOperatorProfileRequest
+	(*profilepb.GetOperatorProfileRequest)(nil),                            // 14: platform_operator_profile.GetOperatorProfileRequest
+	(*domainpb.CreateDomainRequest)(nil),                                   // 15: platform_operator_domain.CreateDomainRequest
+	(*domainpb.UpdateDomainRequest)(nil),                                   // 16: platform_operator_domain.UpdateDomainRequest
+	(*domainpb.GetDomainRequest)(nil),                                      // 17: platform_operator_domain.GetDomainRequest
+	(*domainpb.ListDomainsRequest)(nil),                                    // 18: platform_operator_domain.ListDomainsRequest
+	(*domainpb.DeleteDomainRequest)(nil),                                   // 19: platform_operator_domain.DeleteDomainRequest
+	(*adminpb.CreateAdminRequest)(nil),                                     // 20: platform_operator_admin.CreateAdminRequest
+	(*adminpb.ListAdminsRequest)(nil),                                      // 21: platform_operator_admin.ListAdminsRequest
+	(*adminpb.ResetAdminPasswordRequest)(nil),                              // 22: platform_operator_admin.ResetAdminPasswordRequest
+	(*adminpb.UpdateAdminRequest)(nil),                                     // 23: platform_operator_admin.UpdateAdminRequest
+	(*adminpb.UpdateAdminStatusRequest)(nil),                               // 24: platform_operator_admin.UpdateAdminStatusRequest
+	(*adminpb.DeleteAdminsByOperatorIdRequest)(nil),                        // 25: platform_operator_admin.DeleteAdminsByOperatorIdRequest
+	(*adminpb.ExistsAdminByOperatorIdRequest)(nil),                         // 26: platform_operator_admin.ExistsAdminByOperatorIdRequest
+	(*adminpb.GetAdminRequest)(nil),                                        // 27: platform_operator_admin.GetAdminRequest
+	(*basicresourceallocationpb.ListBasicResourceAllocationsRequest)(nil),  // 28: platform_operator_basic_resource_allocation.ListBasicResourceAllocationsRequest
+	(*languageallocationpb.ListLanguageAllocationsRequest)(nil),            // 29: platform_operator_language_allocation.ListLanguageAllocationsRequest
+	(*languageallocationpb.SaveLanguageAllocationsRequest)(nil),            // 30: platform_operator_language_allocation.SaveLanguageAllocationsRequest
+	(*regionallocationpb.ListRegionAllocationsRequest)(nil),                // 31: platform_operator_region_allocation.ListRegionAllocationsRequest
+	(*regionallocationpb.SaveRegionAllocationsRequest)(nil),                // 32: platform_operator_region_allocation.SaveRegionAllocationsRequest
+	(*agentlineallocationpb.ListAgentLineAllocationsRequest)(nil),          // 33: platform_operator_agent_line_allocation.ListAgentLineAllocationsRequest
+	(*agentlineallocationpb.SaveAgentLineAllocationsRequest)(nil),          // 34: platform_operator_agent_line_allocation.SaveAgentLineAllocationsRequest
+	(*pingpb.PingResponse)(nil),                                            // 35: platform_operator_ping.PingResponse
+	(*operatorpb.CreateOperatorResponse)(nil),                              // 36: platform_operator_operator.CreateOperatorResponse
+	(*operatorpb.UpdateOperatorResponse)(nil),                              // 37: platform_operator_operator.UpdateOperatorResponse
+	(*operatorpb.GetOperatorResponse)(nil),                                 // 38: platform_operator_operator.GetOperatorResponse
+	(*operatorpb.GetInitializationDataResponse)(nil),                       // 39: platform_operator_operator.GetInitializationDataResponse
+	(*operatorpb.ListOperatorsResponse)(nil),                               // 40: platform_operator_operator.ListOperatorsResponse
+	(*operatorpb.CompleteOperatorResponse)(nil),                            // 41: platform_operator_operator.CompleteOperatorResponse
+	(*operatorpb.PublishOperatorResponse)(nil),                             // 42: platform_operator_operator.PublishOperatorResponse
+	(*operatorpb.HandlePublishResultResponse)(nil),                         // 43: platform_operator_operator.HandlePublishResultResponse
+	(*operatorpb.DeleteOperatorResponse)(nil),                              // 44: platform_operator_operator.DeleteOperatorResponse
+	(*operatornodepb.SaveOperatorNodeResponse)(nil),                        // 45: platform_operator_operator_node.SaveOperatorNodeResponse
+	(*operatornodepb.GetOperatorNodeResponse)(nil),                         // 46: platform_operator_operator_node.GetOperatorNodeResponse
+	(*profilepb.CreateOperatorProfileResponse)(nil),                        // 47: platform_operator_profile.CreateOperatorProfileResponse
+	(*profilepb.UpdateOperatorProfileResponse)(nil),                        // 48: platform_operator_profile.UpdateOperatorProfileResponse
+	(*profilepb.GetOperatorProfileResponse)(nil),                           // 49: platform_operator_profile.GetOperatorProfileResponse
+	(*domainpb.CreateDomainResponse)(nil),                                  // 50: platform_operator_domain.CreateDomainResponse
+	(*domainpb.UpdateDomainResponse)(nil),                                  // 51: platform_operator_domain.UpdateDomainResponse
+	(*domainpb.GetDomainResponse)(nil),                                     // 52: platform_operator_domain.GetDomainResponse
+	(*domainpb.ListDomainsResponse)(nil),                                   // 53: platform_operator_domain.ListDomainsResponse
+	(*domainpb.DeleteDomainResponse)(nil),                                  // 54: platform_operator_domain.DeleteDomainResponse
+	(*adminpb.CreateAdminResponse)(nil),                                    // 55: platform_operator_admin.CreateAdminResponse
+	(*adminpb.ListAdminsResponse)(nil),                                     // 56: platform_operator_admin.ListAdminsResponse
+	(*adminpb.ResetAdminPasswordResponse)(nil),                             // 57: platform_operator_admin.ResetAdminPasswordResponse
+	(*adminpb.UpdateAdminResponse)(nil),                                    // 58: platform_operator_admin.UpdateAdminResponse
+	(*adminpb.UpdateAdminStatusResponse)(nil),                              // 59: platform_operator_admin.UpdateAdminStatusResponse
+	(*adminpb.DeleteAdminsByOperatorIdResponse)(nil),                       // 60: platform_operator_admin.DeleteAdminsByOperatorIdResponse
+	(*adminpb.ExistsAdminByOperatorIdResponse)(nil),                        // 61: platform_operator_admin.ExistsAdminByOperatorIdResponse
+	(*adminpb.GetAdminResponse)(nil),                                       // 62: platform_operator_admin.GetAdminResponse
+	(*basicresourceallocationpb.ListBasicResourceAllocationsResponse)(nil), // 63: platform_operator_basic_resource_allocation.ListBasicResourceAllocationsResponse
+	(*languageallocationpb.ListLanguageAllocationsResponse)(nil),           // 64: platform_operator_language_allocation.ListLanguageAllocationsResponse
+	(*languageallocationpb.SaveLanguageAllocationsResponse)(nil),           // 65: platform_operator_language_allocation.SaveLanguageAllocationsResponse
+	(*regionallocationpb.ListRegionAllocationsResponse)(nil),               // 66: platform_operator_region_allocation.ListRegionAllocationsResponse
+	(*regionallocationpb.SaveRegionAllocationsResponse)(nil),               // 67: platform_operator_region_allocation.SaveRegionAllocationsResponse
+	(*agentlineallocationpb.ListAgentLineAllocationsResponse)(nil),         // 68: platform_operator_agent_line_allocation.ListAgentLineAllocationsResponse
+	(*agentlineallocationpb.SaveAgentLineAllocationsResponse)(nil),         // 69: platform_operator_agent_line_allocation.SaveAgentLineAllocationsResponse
 }
 var file_platform_operator_proto_depIdxs = []int32{
 	0,  // 0: platform_operator.PingService.Ping:input_type -> platform_operator_ping.PingRequest
@@ -159,68 +162,70 @@ var file_platform_operator_proto_depIdxs = []int32{
 	5,  // 5: platform_operator.OperatorService.List:input_type -> platform_operator_operator.ListOperatorsRequest
 	6,  // 6: platform_operator.OperatorService.Complete:input_type -> platform_operator_operator.CompleteOperatorRequest
 	7,  // 7: platform_operator.OperatorService.Publish:input_type -> platform_operator_operator.PublishOperatorRequest
-	8,  // 8: platform_operator.OperatorService.Delete:input_type -> platform_operator_operator.DeleteOperatorRequest
-	9,  // 9: platform_operator.OperatorNodeService.Save:input_type -> platform_operator_operator_node.SaveOperatorNodeRequest
-	10, // 10: platform_operator.OperatorNodeService.Get:input_type -> platform_operator_operator_node.GetOperatorNodeRequest
-	11, // 11: platform_operator.OperatorProfileService.Create:input_type -> platform_operator_profile.CreateOperatorProfileRequest
-	12, // 12: platform_operator.OperatorProfileService.Update:input_type -> platform_operator_profile.UpdateOperatorProfileRequest
-	13, // 13: platform_operator.OperatorProfileService.Get:input_type -> platform_operator_profile.GetOperatorProfileRequest
-	14, // 14: platform_operator.OperatorDomainService.Create:input_type -> platform_operator_domain.CreateDomainRequest
-	15, // 15: platform_operator.OperatorDomainService.Update:input_type -> platform_operator_domain.UpdateDomainRequest
-	16, // 16: platform_operator.OperatorDomainService.Get:input_type -> platform_operator_domain.GetDomainRequest
-	17, // 17: platform_operator.OperatorDomainService.List:input_type -> platform_operator_domain.ListDomainsRequest
-	18, // 18: platform_operator.OperatorDomainService.Delete:input_type -> platform_operator_domain.DeleteDomainRequest
-	19, // 19: platform_operator.OperatorAdminService.Create:input_type -> platform_operator_admin.CreateAdminRequest
-	20, // 20: platform_operator.OperatorAdminService.List:input_type -> platform_operator_admin.ListAdminsRequest
-	21, // 21: platform_operator.OperatorAdminService.ResetPassword:input_type -> platform_operator_admin.ResetAdminPasswordRequest
-	22, // 22: platform_operator.OperatorAdminService.Update:input_type -> platform_operator_admin.UpdateAdminRequest
-	23, // 23: platform_operator.OperatorAdminService.UpdateStatus:input_type -> platform_operator_admin.UpdateAdminStatusRequest
-	24, // 24: platform_operator.OperatorAdminService.DeleteByOperatorId:input_type -> platform_operator_admin.DeleteAdminsByOperatorIdRequest
-	25, // 25: platform_operator.OperatorAdminService.ExistsByOperatorId:input_type -> platform_operator_admin.ExistsAdminByOperatorIdRequest
-	26, // 26: platform_operator.OperatorAdminService.Get:input_type -> platform_operator_admin.GetAdminRequest
-	27, // 27: platform_operator.BasicResourceAllocationService.List:input_type -> platform_operator_basic_resource_allocation.ListBasicResourceAllocationsRequest
-	28, // 28: platform_operator.LanguageAllocationService.List:input_type -> platform_operator_language_allocation.ListLanguageAllocationsRequest
-	29, // 29: platform_operator.LanguageAllocationService.Save:input_type -> platform_operator_language_allocation.SaveLanguageAllocationsRequest
-	30, // 30: platform_operator.RegionAllocationService.List:input_type -> platform_operator_region_allocation.ListRegionAllocationsRequest
-	31, // 31: platform_operator.RegionAllocationService.Save:input_type -> platform_operator_region_allocation.SaveRegionAllocationsRequest
-	32, // 32: platform_operator.AgentLineAllocationService.List:input_type -> platform_operator_agent_line_allocation.ListAgentLineAllocationsRequest
-	33, // 33: platform_operator.AgentLineAllocationService.Save:input_type -> platform_operator_agent_line_allocation.SaveAgentLineAllocationsRequest
-	34, // 34: platform_operator.PingService.Ping:output_type -> platform_operator_ping.PingResponse
-	35, // 35: platform_operator.OperatorService.Create:output_type -> platform_operator_operator.CreateOperatorResponse
-	36, // 36: platform_operator.OperatorService.Update:output_type -> platform_operator_operator.UpdateOperatorResponse
-	37, // 37: platform_operator.OperatorService.Get:output_type -> platform_operator_operator.GetOperatorResponse
-	38, // 38: platform_operator.OperatorService.GetInitializationData:output_type -> platform_operator_operator.GetInitializationDataResponse
-	39, // 39: platform_operator.OperatorService.List:output_type -> platform_operator_operator.ListOperatorsResponse
-	40, // 40: platform_operator.OperatorService.Complete:output_type -> platform_operator_operator.CompleteOperatorResponse
-	41, // 41: platform_operator.OperatorService.Publish:output_type -> platform_operator_operator.PublishOperatorResponse
-	42, // 42: platform_operator.OperatorService.Delete:output_type -> platform_operator_operator.DeleteOperatorResponse
-	43, // 43: platform_operator.OperatorNodeService.Save:output_type -> platform_operator_operator_node.SaveOperatorNodeResponse
-	44, // 44: platform_operator.OperatorNodeService.Get:output_type -> platform_operator_operator_node.GetOperatorNodeResponse
-	45, // 45: platform_operator.OperatorProfileService.Create:output_type -> platform_operator_profile.CreateOperatorProfileResponse
-	46, // 46: platform_operator.OperatorProfileService.Update:output_type -> platform_operator_profile.UpdateOperatorProfileResponse
-	47, // 47: platform_operator.OperatorProfileService.Get:output_type -> platform_operator_profile.GetOperatorProfileResponse
-	48, // 48: platform_operator.OperatorDomainService.Create:output_type -> platform_operator_domain.CreateDomainResponse
-	49, // 49: platform_operator.OperatorDomainService.Update:output_type -> platform_operator_domain.UpdateDomainResponse
-	50, // 50: platform_operator.OperatorDomainService.Get:output_type -> platform_operator_domain.GetDomainResponse
-	51, // 51: platform_operator.OperatorDomainService.List:output_type -> platform_operator_domain.ListDomainsResponse
-	52, // 52: platform_operator.OperatorDomainService.Delete:output_type -> platform_operator_domain.DeleteDomainResponse
-	53, // 53: platform_operator.OperatorAdminService.Create:output_type -> platform_operator_admin.CreateAdminResponse
-	54, // 54: platform_operator.OperatorAdminService.List:output_type -> platform_operator_admin.ListAdminsResponse
-	55, // 55: platform_operator.OperatorAdminService.ResetPassword:output_type -> platform_operator_admin.ResetAdminPasswordResponse
-	56, // 56: platform_operator.OperatorAdminService.Update:output_type -> platform_operator_admin.UpdateAdminResponse
-	57, // 57: platform_operator.OperatorAdminService.UpdateStatus:output_type -> platform_operator_admin.UpdateAdminStatusResponse
-	58, // 58: platform_operator.OperatorAdminService.DeleteByOperatorId:output_type -> platform_operator_admin.DeleteAdminsByOperatorIdResponse
-	59, // 59: platform_operator.OperatorAdminService.ExistsByOperatorId:output_type -> platform_operator_admin.ExistsAdminByOperatorIdResponse
-	60, // 60: platform_operator.OperatorAdminService.Get:output_type -> platform_operator_admin.GetAdminResponse
-	61, // 61: platform_operator.BasicResourceAllocationService.List:output_type -> platform_operator_basic_resource_allocation.ListBasicResourceAllocationsResponse
-	62, // 62: platform_operator.LanguageAllocationService.List:output_type -> platform_operator_language_allocation.ListLanguageAllocationsResponse
-	63, // 63: platform_operator.LanguageAllocationService.Save:output_type -> platform_operator_language_allocation.SaveLanguageAllocationsResponse
-	64, // 64: platform_operator.RegionAllocationService.List:output_type -> platform_operator_region_allocation.ListRegionAllocationsResponse
-	65, // 65: platform_operator.RegionAllocationService.Save:output_type -> platform_operator_region_allocation.SaveRegionAllocationsResponse
-	66, // 66: platform_operator.AgentLineAllocationService.List:output_type -> platform_operator_agent_line_allocation.ListAgentLineAllocationsResponse
-	67, // 67: platform_operator.AgentLineAllocationService.Save:output_type -> platform_operator_agent_line_allocation.SaveAgentLineAllocationsResponse
-	34, // [34:68] is the sub-list for method output_type
-	0,  // [0:34] is the sub-list for method input_type
+	8,  // 8: platform_operator.OperatorService.HandlePublishResult:input_type -> platform_operator_operator.HandlePublishResultRequest
+	9,  // 9: platform_operator.OperatorService.Delete:input_type -> platform_operator_operator.DeleteOperatorRequest
+	10, // 10: platform_operator.OperatorNodeService.Save:input_type -> platform_operator_operator_node.SaveOperatorNodeRequest
+	11, // 11: platform_operator.OperatorNodeService.Get:input_type -> platform_operator_operator_node.GetOperatorNodeRequest
+	12, // 12: platform_operator.OperatorProfileService.Create:input_type -> platform_operator_profile.CreateOperatorProfileRequest
+	13, // 13: platform_operator.OperatorProfileService.Update:input_type -> platform_operator_profile.UpdateOperatorProfileRequest
+	14, // 14: platform_operator.OperatorProfileService.Get:input_type -> platform_operator_profile.GetOperatorProfileRequest
+	15, // 15: platform_operator.OperatorDomainService.Create:input_type -> platform_operator_domain.CreateDomainRequest
+	16, // 16: platform_operator.OperatorDomainService.Update:input_type -> platform_operator_domain.UpdateDomainRequest
+	17, // 17: platform_operator.OperatorDomainService.Get:input_type -> platform_operator_domain.GetDomainRequest
+	18, // 18: platform_operator.OperatorDomainService.List:input_type -> platform_operator_domain.ListDomainsRequest
+	19, // 19: platform_operator.OperatorDomainService.Delete:input_type -> platform_operator_domain.DeleteDomainRequest
+	20, // 20: platform_operator.OperatorAdminService.Create:input_type -> platform_operator_admin.CreateAdminRequest
+	21, // 21: platform_operator.OperatorAdminService.List:input_type -> platform_operator_admin.ListAdminsRequest
+	22, // 22: platform_operator.OperatorAdminService.ResetPassword:input_type -> platform_operator_admin.ResetAdminPasswordRequest
+	23, // 23: platform_operator.OperatorAdminService.Update:input_type -> platform_operator_admin.UpdateAdminRequest
+	24, // 24: platform_operator.OperatorAdminService.UpdateStatus:input_type -> platform_operator_admin.UpdateAdminStatusRequest
+	25, // 25: platform_operator.OperatorAdminService.DeleteByOperatorId:input_type -> platform_operator_admin.DeleteAdminsByOperatorIdRequest
+	26, // 26: platform_operator.OperatorAdminService.ExistsByOperatorId:input_type -> platform_operator_admin.ExistsAdminByOperatorIdRequest
+	27, // 27: platform_operator.OperatorAdminService.Get:input_type -> platform_operator_admin.GetAdminRequest
+	28, // 28: platform_operator.BasicResourceAllocationService.List:input_type -> platform_operator_basic_resource_allocation.ListBasicResourceAllocationsRequest
+	29, // 29: platform_operator.LanguageAllocationService.List:input_type -> platform_operator_language_allocation.ListLanguageAllocationsRequest
+	30, // 30: platform_operator.LanguageAllocationService.Save:input_type -> platform_operator_language_allocation.SaveLanguageAllocationsRequest
+	31, // 31: platform_operator.RegionAllocationService.List:input_type -> platform_operator_region_allocation.ListRegionAllocationsRequest
+	32, // 32: platform_operator.RegionAllocationService.Save:input_type -> platform_operator_region_allocation.SaveRegionAllocationsRequest
+	33, // 33: platform_operator.AgentLineAllocationService.List:input_type -> platform_operator_agent_line_allocation.ListAgentLineAllocationsRequest
+	34, // 34: platform_operator.AgentLineAllocationService.Save:input_type -> platform_operator_agent_line_allocation.SaveAgentLineAllocationsRequest
+	35, // 35: platform_operator.PingService.Ping:output_type -> platform_operator_ping.PingResponse
+	36, // 36: platform_operator.OperatorService.Create:output_type -> platform_operator_operator.CreateOperatorResponse
+	37, // 37: platform_operator.OperatorService.Update:output_type -> platform_operator_operator.UpdateOperatorResponse
+	38, // 38: platform_operator.OperatorService.Get:output_type -> platform_operator_operator.GetOperatorResponse
+	39, // 39: platform_operator.OperatorService.GetInitializationData:output_type -> platform_operator_operator.GetInitializationDataResponse
+	40, // 40: platform_operator.OperatorService.List:output_type -> platform_operator_operator.ListOperatorsResponse
+	41, // 41: platform_operator.OperatorService.Complete:output_type -> platform_operator_operator.CompleteOperatorResponse
+	42, // 42: platform_operator.OperatorService.Publish:output_type -> platform_operator_operator.PublishOperatorResponse
+	43, // 43: platform_operator.OperatorService.HandlePublishResult:output_type -> platform_operator_operator.HandlePublishResultResponse
+	44, // 44: platform_operator.OperatorService.Delete:output_type -> platform_operator_operator.DeleteOperatorResponse
+	45, // 45: platform_operator.OperatorNodeService.Save:output_type -> platform_operator_operator_node.SaveOperatorNodeResponse
+	46, // 46: platform_operator.OperatorNodeService.Get:output_type -> platform_operator_operator_node.GetOperatorNodeResponse
+	47, // 47: platform_operator.OperatorProfileService.Create:output_type -> platform_operator_profile.CreateOperatorProfileResponse
+	48, // 48: platform_operator.OperatorProfileService.Update:output_type -> platform_operator_profile.UpdateOperatorProfileResponse
+	49, // 49: platform_operator.OperatorProfileService.Get:output_type -> platform_operator_profile.GetOperatorProfileResponse
+	50, // 50: platform_operator.OperatorDomainService.Create:output_type -> platform_operator_domain.CreateDomainResponse
+	51, // 51: platform_operator.OperatorDomainService.Update:output_type -> platform_operator_domain.UpdateDomainResponse
+	52, // 52: platform_operator.OperatorDomainService.Get:output_type -> platform_operator_domain.GetDomainResponse
+	53, // 53: platform_operator.OperatorDomainService.List:output_type -> platform_operator_domain.ListDomainsResponse
+	54, // 54: platform_operator.OperatorDomainService.Delete:output_type -> platform_operator_domain.DeleteDomainResponse
+	55, // 55: platform_operator.OperatorAdminService.Create:output_type -> platform_operator_admin.CreateAdminResponse
+	56, // 56: platform_operator.OperatorAdminService.List:output_type -> platform_operator_admin.ListAdminsResponse
+	57, // 57: platform_operator.OperatorAdminService.ResetPassword:output_type -> platform_operator_admin.ResetAdminPasswordResponse
+	58, // 58: platform_operator.OperatorAdminService.Update:output_type -> platform_operator_admin.UpdateAdminResponse
+	59, // 59: platform_operator.OperatorAdminService.UpdateStatus:output_type -> platform_operator_admin.UpdateAdminStatusResponse
+	60, // 60: platform_operator.OperatorAdminService.DeleteByOperatorId:output_type -> platform_operator_admin.DeleteAdminsByOperatorIdResponse
+	61, // 61: platform_operator.OperatorAdminService.ExistsByOperatorId:output_type -> platform_operator_admin.ExistsAdminByOperatorIdResponse
+	62, // 62: platform_operator.OperatorAdminService.Get:output_type -> platform_operator_admin.GetAdminResponse
+	63, // 63: platform_operator.BasicResourceAllocationService.List:output_type -> platform_operator_basic_resource_allocation.ListBasicResourceAllocationsResponse
+	64, // 64: platform_operator.LanguageAllocationService.List:output_type -> platform_operator_language_allocation.ListLanguageAllocationsResponse
+	65, // 65: platform_operator.LanguageAllocationService.Save:output_type -> platform_operator_language_allocation.SaveLanguageAllocationsResponse
+	66, // 66: platform_operator.RegionAllocationService.List:output_type -> platform_operator_region_allocation.ListRegionAllocationsResponse
+	67, // 67: platform_operator.RegionAllocationService.Save:output_type -> platform_operator_region_allocation.SaveRegionAllocationsResponse
+	68, // 68: platform_operator.AgentLineAllocationService.List:output_type -> platform_operator_agent_line_allocation.ListAgentLineAllocationsResponse
+	69, // 69: platform_operator.AgentLineAllocationService.Save:output_type -> platform_operator_agent_line_allocation.SaveAgentLineAllocationsResponse
+	35, // [35:70] is the sub-list for method output_type
+	0,  // [0:35] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

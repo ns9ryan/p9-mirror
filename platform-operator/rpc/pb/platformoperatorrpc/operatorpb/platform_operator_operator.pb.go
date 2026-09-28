@@ -835,6 +835,134 @@ func (*PublishOperatorResponse) Descriptor() ([]byte, []int) {
 	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{12}
 }
 
+// 处理分站发布结果请求
+type HandlePublishResultRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 调度任务编号
+	TaskNo string `protobuf:"bytes,1,opt,name=task_no,json=taskNo,proto3" json:"task_no,omitempty"`
+	// 任务最终状态: 3成功, 4失败
+	Status int64 `protobuf:"varint,2,opt,name=status,proto3" json:"status,omitempty"`
+	// 任务执行结束时间, Unix毫秒时间戳
+	FinishedAt    int64 `protobuf:"varint,3,opt,name=finished_at,json=finishedAt,proto3" json:"finished_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HandlePublishResultRequest) Reset() {
+	*x = HandlePublishResultRequest{}
+	mi := &file_types_platform_operator_operator_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HandlePublishResultRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HandlePublishResultRequest) ProtoMessage() {}
+
+func (x *HandlePublishResultRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_platform_operator_operator_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HandlePublishResultRequest.ProtoReflect.Descriptor instead.
+func (*HandlePublishResultRequest) Descriptor() ([]byte, []int) {
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *HandlePublishResultRequest) GetTaskNo() string {
+	if x != nil {
+		return x.TaskNo
+	}
+	return ""
+}
+
+func (x *HandlePublishResultRequest) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
+func (x *HandlePublishResultRequest) GetFinishedAt() int64 {
+	if x != nil {
+		return x.FinishedAt
+	}
+	return 0
+}
+
+// 处理分站发布结果响应
+type HandlePublishResultResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分站ID
+	OperatorId int64 `protobuf:"varint,1,opt,name=operator_id,json=operatorId,proto3" json:"operator_id,omitempty"`
+	// 分站业务编码
+	OperatorCode string `protobuf:"bytes,2,opt,name=operator_code,json=operatorCode,proto3" json:"operator_code,omitempty"`
+	// 发布状态: 3已发布, 4发布失败
+	PublishStatus int64 `protobuf:"varint,3,opt,name=publish_status,json=publishStatus,proto3" json:"publish_status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HandlePublishResultResponse) Reset() {
+	*x = HandlePublishResultResponse{}
+	mi := &file_types_platform_operator_operator_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HandlePublishResultResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HandlePublishResultResponse) ProtoMessage() {}
+
+func (x *HandlePublishResultResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_platform_operator_operator_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HandlePublishResultResponse.ProtoReflect.Descriptor instead.
+func (*HandlePublishResultResponse) Descriptor() ([]byte, []int) {
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *HandlePublishResultResponse) GetOperatorId() int64 {
+	if x != nil {
+		return x.OperatorId
+	}
+	return 0
+}
+
+func (x *HandlePublishResultResponse) GetOperatorCode() string {
+	if x != nil {
+		return x.OperatorCode
+	}
+	return ""
+}
+
+func (x *HandlePublishResultResponse) GetPublishStatus() int64 {
+	if x != nil {
+		return x.PublishStatus
+	}
+	return 0
+}
+
 // 删除分站请求
 type DeleteOperatorRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -846,7 +974,7 @@ type DeleteOperatorRequest struct {
 
 func (x *DeleteOperatorRequest) Reset() {
 	*x = DeleteOperatorRequest{}
-	mi := &file_types_platform_operator_operator_proto_msgTypes[13]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -858,7 +986,7 @@ func (x *DeleteOperatorRequest) String() string {
 func (*DeleteOperatorRequest) ProtoMessage() {}
 
 func (x *DeleteOperatorRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_types_platform_operator_operator_proto_msgTypes[13]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -871,7 +999,7 @@ func (x *DeleteOperatorRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteOperatorRequest.ProtoReflect.Descriptor instead.
 func (*DeleteOperatorRequest) Descriptor() ([]byte, []int) {
-	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{13}
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *DeleteOperatorRequest) GetId() int64 {
@@ -890,7 +1018,7 @@ type DeleteOperatorResponse struct {
 
 func (x *DeleteOperatorResponse) Reset() {
 	*x = DeleteOperatorResponse{}
-	mi := &file_types_platform_operator_operator_proto_msgTypes[14]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -902,7 +1030,7 @@ func (x *DeleteOperatorResponse) String() string {
 func (*DeleteOperatorResponse) ProtoMessage() {}
 
 func (x *DeleteOperatorResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_types_platform_operator_operator_proto_msgTypes[14]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -915,7 +1043,7 @@ func (x *DeleteOperatorResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteOperatorResponse.ProtoReflect.Descriptor instead.
 func (*DeleteOperatorResponse) Descriptor() ([]byte, []int) {
-	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{14}
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{16}
 }
 
 // 分站初始化基础信息
@@ -937,7 +1065,7 @@ type InitializationInfo struct {
 
 func (x *InitializationInfo) Reset() {
 	*x = InitializationInfo{}
-	mi := &file_types_platform_operator_operator_proto_msgTypes[15]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -949,7 +1077,7 @@ func (x *InitializationInfo) String() string {
 func (*InitializationInfo) ProtoMessage() {}
 
 func (x *InitializationInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_types_platform_operator_operator_proto_msgTypes[15]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -962,7 +1090,7 @@ func (x *InitializationInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitializationInfo.ProtoReflect.Descriptor instead.
 func (*InitializationInfo) Descriptor() ([]byte, []int) {
-	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{15}
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *InitializationInfo) GetCode() string {
@@ -1013,7 +1141,7 @@ type DomainInitializationInfo struct {
 
 func (x *DomainInitializationInfo) Reset() {
 	*x = DomainInitializationInfo{}
-	mi := &file_types_platform_operator_operator_proto_msgTypes[16]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1025,7 +1153,7 @@ func (x *DomainInitializationInfo) String() string {
 func (*DomainInitializationInfo) ProtoMessage() {}
 
 func (x *DomainInitializationInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_types_platform_operator_operator_proto_msgTypes[16]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1038,7 +1166,7 @@ func (x *DomainInitializationInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DomainInitializationInfo.ProtoReflect.Descriptor instead.
 func (*DomainInitializationInfo) Descriptor() ([]byte, []int) {
-	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{16}
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *DomainInitializationInfo) GetDomainName() string {
@@ -1066,7 +1194,7 @@ type GetInitializationDataRequest struct {
 
 func (x *GetInitializationDataRequest) Reset() {
 	*x = GetInitializationDataRequest{}
-	mi := &file_types_platform_operator_operator_proto_msgTypes[17]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1078,7 +1206,7 @@ func (x *GetInitializationDataRequest) String() string {
 func (*GetInitializationDataRequest) ProtoMessage() {}
 
 func (x *GetInitializationDataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_types_platform_operator_operator_proto_msgTypes[17]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1091,7 +1219,7 @@ func (x *GetInitializationDataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetInitializationDataRequest.ProtoReflect.Descriptor instead.
 func (*GetInitializationDataRequest) Descriptor() ([]byte, []int) {
-	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{17}
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetInitializationDataRequest) GetOperatorCode() string {
@@ -1120,7 +1248,7 @@ type GetInitializationDataResponse struct {
 
 func (x *GetInitializationDataResponse) Reset() {
 	*x = GetInitializationDataResponse{}
-	mi := &file_types_platform_operator_operator_proto_msgTypes[18]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1132,7 +1260,7 @@ func (x *GetInitializationDataResponse) String() string {
 func (*GetInitializationDataResponse) ProtoMessage() {}
 
 func (x *GetInitializationDataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_types_platform_operator_operator_proto_msgTypes[18]
+	mi := &file_types_platform_operator_operator_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1145,7 +1273,7 @@ func (x *GetInitializationDataResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetInitializationDataResponse.ProtoReflect.Descriptor instead.
 func (*GetInitializationDataResponse) Descriptor() ([]byte, []int) {
-	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{18}
+	return file_types_platform_operator_operator_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GetInitializationDataResponse) GetOperator() *InitializationInfo {
@@ -1254,7 +1382,17 @@ const file_types_platform_operator_operator_proto_rawDesc = "" +
 	"\x18CompleteOperatorResponse\"(\n" +
 	"\x16PublishOperatorRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"\x19\n" +
-	"\x17PublishOperatorResponse\"'\n" +
+	"\x17PublishOperatorResponse\"n\n" +
+	"\x1aHandlePublishResultRequest\x12\x17\n" +
+	"\atask_no\x18\x01 \x01(\tR\x06taskNo\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\x03R\x06status\x12\x1f\n" +
+	"\vfinished_at\x18\x03 \x01(\x03R\n" +
+	"finishedAt\"\x8a\x01\n" +
+	"\x1bHandlePublishResultResponse\x12\x1f\n" +
+	"\voperator_id\x18\x01 \x01(\x03R\n" +
+	"operatorId\x12#\n" +
+	"\roperator_code\x18\x02 \x01(\tR\foperatorCode\x12%\n" +
+	"\x0epublish_status\x18\x03 \x01(\x03R\rpublishStatus\"'\n" +
 	"\x15DeleteOperatorRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"\x18\n" +
 	"\x16DeleteOperatorResponse\"\xb3\x01\n" +
@@ -1290,7 +1428,7 @@ func file_types_platform_operator_operator_proto_rawDescGZIP() []byte {
 	return file_types_platform_operator_operator_proto_rawDescData
 }
 
-var file_types_platform_operator_operator_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_types_platform_operator_operator_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_types_platform_operator_operator_proto_goTypes = []any{
 	(*OperatorInfo)(nil),                  // 0: platform_operator_operator.OperatorInfo
 	(*CreateOperatorRequest)(nil),         // 1: platform_operator_operator.CreateOperatorRequest
@@ -1305,18 +1443,20 @@ var file_types_platform_operator_operator_proto_goTypes = []any{
 	(*CompleteOperatorResponse)(nil),      // 10: platform_operator_operator.CompleteOperatorResponse
 	(*PublishOperatorRequest)(nil),        // 11: platform_operator_operator.PublishOperatorRequest
 	(*PublishOperatorResponse)(nil),       // 12: platform_operator_operator.PublishOperatorResponse
-	(*DeleteOperatorRequest)(nil),         // 13: platform_operator_operator.DeleteOperatorRequest
-	(*DeleteOperatorResponse)(nil),        // 14: platform_operator_operator.DeleteOperatorResponse
-	(*InitializationInfo)(nil),            // 15: platform_operator_operator.InitializationInfo
-	(*DomainInitializationInfo)(nil),      // 16: platform_operator_operator.DomainInitializationInfo
-	(*GetInitializationDataRequest)(nil),  // 17: platform_operator_operator.GetInitializationDataRequest
-	(*GetInitializationDataResponse)(nil), // 18: platform_operator_operator.GetInitializationDataResponse
+	(*HandlePublishResultRequest)(nil),    // 13: platform_operator_operator.HandlePublishResultRequest
+	(*HandlePublishResultResponse)(nil),   // 14: platform_operator_operator.HandlePublishResultResponse
+	(*DeleteOperatorRequest)(nil),         // 15: platform_operator_operator.DeleteOperatorRequest
+	(*DeleteOperatorResponse)(nil),        // 16: platform_operator_operator.DeleteOperatorResponse
+	(*InitializationInfo)(nil),            // 17: platform_operator_operator.InitializationInfo
+	(*DomainInitializationInfo)(nil),      // 18: platform_operator_operator.DomainInitializationInfo
+	(*GetInitializationDataRequest)(nil),  // 19: platform_operator_operator.GetInitializationDataRequest
+	(*GetInitializationDataResponse)(nil), // 20: platform_operator_operator.GetInitializationDataResponse
 }
 var file_types_platform_operator_operator_proto_depIdxs = []int32{
 	0,  // 0: platform_operator_operator.GetOperatorResponse.operator:type_name -> platform_operator_operator.OperatorInfo
 	0,  // 1: platform_operator_operator.ListOperatorsResponse.list:type_name -> platform_operator_operator.OperatorInfo
-	15, // 2: platform_operator_operator.GetInitializationDataResponse.operator:type_name -> platform_operator_operator.InitializationInfo
-	16, // 3: platform_operator_operator.GetInitializationDataResponse.domains:type_name -> platform_operator_operator.DomainInitializationInfo
+	17, // 2: platform_operator_operator.GetInitializationDataResponse.operator:type_name -> platform_operator_operator.InitializationInfo
+	18, // 3: platform_operator_operator.GetInitializationDataResponse.domains:type_name -> platform_operator_operator.DomainInitializationInfo
 	4,  // [4:4] is the sub-list for method output_type
 	4,  // [4:4] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
@@ -1339,7 +1479,7 @@ func file_types_platform_operator_operator_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_platform_operator_operator_proto_rawDesc), len(file_types_platform_operator_operator_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   19,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

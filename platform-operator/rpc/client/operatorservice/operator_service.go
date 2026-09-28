@@ -31,6 +31,8 @@ type (
 		Complete(ctx context.Context, in *operatorpb.CompleteOperatorRequest, opts ...grpc.CallOption) (*operatorpb.CompleteOperatorResponse, error)
 		// 发布分站
 		Publish(ctx context.Context, in *operatorpb.PublishOperatorRequest, opts ...grpc.CallOption) (*operatorpb.PublishOperatorResponse, error)
+		// 处理分站发布结果
+		HandlePublishResult(ctx context.Context, in *operatorpb.HandlePublishResultRequest, opts ...grpc.CallOption) (*operatorpb.HandlePublishResultResponse, error)
 		// 删除分站
 		Delete(ctx context.Context, in *operatorpb.DeleteOperatorRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorResponse, error)
 	}
@@ -86,6 +88,12 @@ func (m *defaultOperatorService) Complete(ctx context.Context, in *operatorpb.Co
 func (m *defaultOperatorService) Publish(ctx context.Context, in *operatorpb.PublishOperatorRequest, opts ...grpc.CallOption) (*operatorpb.PublishOperatorResponse, error) {
 	client := platformoperatorrpc.NewOperatorServiceClient(m.cli.Conn())
 	return client.Publish(ctx, in, opts...)
+}
+
+// 处理分站发布结果
+func (m *defaultOperatorService) HandlePublishResult(ctx context.Context, in *operatorpb.HandlePublishResultRequest, opts ...grpc.CallOption) (*operatorpb.HandlePublishResultResponse, error) {
+	client := platformoperatorrpc.NewOperatorServiceClient(m.cli.Conn())
+	return client.HandlePublishResult(ctx, in, opts...)
 }
 
 // 删除分站

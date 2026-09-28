@@ -127,6 +127,26 @@ message PublishOperatorRequest {
 // 发布分站响应
 message PublishOperatorResponse {}
 
+// 处理分站发布结果请求
+message HandlePublishResultRequest {
+  // 调度任务编号
+  string task_no = 1;
+  // 任务最终状态: 3成功, 4失败
+  int64 status = 2;
+  // 任务执行结束时间, Unix毫秒时间戳
+  int64 finished_at = 3;
+}
+
+// 处理分站发布结果响应
+message HandlePublishResultResponse {
+  // 分站ID
+  int64 operator_id = 1;
+  // 分站业务编码
+  string operator_code = 2;
+  // 发布状态: 3已发布, 4发布失败
+  int64 publish_status = 3;
+}
+
 // 删除分站请求
 message DeleteOperatorRequest {
   // 分站ID

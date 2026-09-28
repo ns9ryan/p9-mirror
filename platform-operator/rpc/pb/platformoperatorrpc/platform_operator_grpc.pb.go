@@ -144,6 +144,7 @@ const (
 	OperatorService_List_FullMethodName                  = "/platform_operator.OperatorService/List"
 	OperatorService_Complete_FullMethodName              = "/platform_operator.OperatorService/Complete"
 	OperatorService_Publish_FullMethodName               = "/platform_operator.OperatorService/Publish"
+	OperatorService_HandlePublishResult_FullMethodName   = "/platform_operator.OperatorService/HandlePublishResult"
 	OperatorService_Delete_FullMethodName                = "/platform_operator.OperatorService/Delete"
 )
 
@@ -167,6 +168,8 @@ type OperatorServiceClient interface {
 	Complete(ctx context.Context, in *operatorpb.CompleteOperatorRequest, opts ...grpc.CallOption) (*operatorpb.CompleteOperatorResponse, error)
 	// 发布分站
 	Publish(ctx context.Context, in *operatorpb.PublishOperatorRequest, opts ...grpc.CallOption) (*operatorpb.PublishOperatorResponse, error)
+	// 处理分站发布结果
+	HandlePublishResult(ctx context.Context, in *operatorpb.HandlePublishResultRequest, opts ...grpc.CallOption) (*operatorpb.HandlePublishResultResponse, error)
 	// 删除分站
 	Delete(ctx context.Context, in *operatorpb.DeleteOperatorRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorResponse, error)
 }
@@ -249,6 +252,16 @@ func (c *operatorServiceClient) Publish(ctx context.Context, in *operatorpb.Publ
 	return out, nil
 }
 
+func (c *operatorServiceClient) HandlePublishResult(ctx context.Context, in *operatorpb.HandlePublishResultRequest, opts ...grpc.CallOption) (*operatorpb.HandlePublishResultResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(operatorpb.HandlePublishResultResponse)
+	err := c.cc.Invoke(ctx, OperatorService_HandlePublishResult_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *operatorServiceClient) Delete(ctx context.Context, in *operatorpb.DeleteOperatorRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(operatorpb.DeleteOperatorResponse)
@@ -279,6 +292,8 @@ type OperatorServiceServer interface {
 	Complete(context.Context, *operatorpb.CompleteOperatorRequest) (*operatorpb.CompleteOperatorResponse, error)
 	// 发布分站
 	Publish(context.Context, *operatorpb.PublishOperatorRequest) (*operatorpb.PublishOperatorResponse, error)
+	// 处理分站发布结果
+	HandlePublishResult(context.Context, *operatorpb.HandlePublishResultRequest) (*operatorpb.HandlePublishResultResponse, error)
 	// 删除分站
 	Delete(context.Context, *operatorpb.DeleteOperatorRequest) (*operatorpb.DeleteOperatorResponse, error)
 	mustEmbedUnimplementedOperatorServiceServer()
@@ -311,6 +326,9 @@ func (UnimplementedOperatorServiceServer) Complete(context.Context, *operatorpb.
 }
 func (UnimplementedOperatorServiceServer) Publish(context.Context, *operatorpb.PublishOperatorRequest) (*operatorpb.PublishOperatorResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Publish not implemented")
+}
+func (UnimplementedOperatorServiceServer) HandlePublishResult(context.Context, *operatorpb.HandlePublishResultRequest) (*operatorpb.HandlePublishResultResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method HandlePublishResult not implemented")
 }
 func (UnimplementedOperatorServiceServer) Delete(context.Context, *operatorpb.DeleteOperatorRequest) (*operatorpb.DeleteOperatorResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Delete not implemented")
@@ -462,6 +480,24 @@ func _OperatorService_Publish_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OperatorService_HandlePublishResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(operatorpb.HandlePublishResultRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorServiceServer).HandlePublishResult(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorService_HandlePublishResult_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorServiceServer).HandlePublishResult(ctx, req.(*operatorpb.HandlePublishResultRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _OperatorService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(operatorpb.DeleteOperatorRequest)
 	if err := dec(in); err != nil {
@@ -514,6 +550,10 @@ var OperatorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Publish",
 			Handler:    _OperatorService_Publish_Handler,
+		},
+		{
+			MethodName: "HandlePublishResult",
+			Handler:    _OperatorService_HandlePublishResult_Handler,
 		},
 		{
 			MethodName: "Delete",
