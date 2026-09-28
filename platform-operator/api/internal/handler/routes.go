@@ -130,6 +130,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/sync-publish-status",
+					Handler: operator.SyncPublishStatusHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/update",
 					Handler: operator.UpdateOperatorHandler(serverCtx),
 				},

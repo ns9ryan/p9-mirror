@@ -111,6 +111,20 @@ type (
 	}
 	// 发布分站响应
 	PublishOperatorResponse  {}
+	// 同步分站发布状态请求
+	SyncPublishStatusRequest {
+		// 分站ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+	}
+	// 同步分站发布状态响应
+	SyncPublishStatusResponse {
+		// 分站ID
+		OperatorId int64 `json:"operator_id"`
+		// 分站业务编码
+		OperatorCode string `json:"operator_code"`
+		// 发布状态: 2发布中, 3已发布, 4发布失败
+		PublishStatus int64 `json:"publish_status"`
+	}
 	// 删除分站请求
 	DeleteOperatorRequest {
 		// 分站ID
@@ -149,6 +163,10 @@ service platform_operator {
 	// 发布分站
 	@handler PublishOperator
 	post /publish (PublishOperatorRequest) returns (PublishOperatorResponse)
+
+	// 同步分站发布状态
+	@handler SyncPublishStatus
+	post /sync-publish-status (SyncPublishStatusRequest) returns (SyncPublishStatusResponse)
 
 	// 删除分站
 	@handler DeleteOperator

@@ -572,6 +572,16 @@ type SaveRegionAllocationsRequest struct {
 type SaveRegionAllocationsResponse struct {
 }
 
+type SyncPublishStatusRequest struct {
+	Id int64 `json:"id" validate:"required,gt=0"`
+}
+
+type SyncPublishStatusResponse struct {
+	OperatorId    int64  `json:"operator_id"`
+	OperatorCode  string `json:"operator_code"`
+	PublishStatus int64  `json:"publish_status"`
+}
+
 type UpdateOperatorAdminRequest struct {
 	Id          int64   `json:"id" validate:"required,gt=0"`
 	Username    *string `json:"username,optional" validate:"omitempty,notblank,max=64"`
