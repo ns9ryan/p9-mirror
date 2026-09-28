@@ -1,0 +1,64 @@
+syntax = "v1"
+
+import "types/common.api"
+
+type (
+	// 分站部署节点候选信息
+	OperatorNodeInfo {
+		// 节点业务编码
+		NodeCode string `json:"node_code"`
+		// 节点名称
+		NodeName string `json:"node_name"`
+		// 节点状态: 1启用, 2停用
+		NodeStatus int64 `json:"node_status"`
+		// 节点是否在线
+		NodeOnline bool `json:"node_online"`
+		// 节点最近一次活动时间, Unix毫秒时间戳
+		NodeLastSeenAt *int64 `json:"node_last_seen_at,optional"`
+		// 节点运维备注
+		NodeRemark *string `json:"node_remark,optional"`
+		// 是否为当前分站已选择的部署节点
+		Selected bool `json:"selected"`
+	}
+	// 获取分站部署节点列表请求
+	ListOperatorNodesRequest {
+		// 分页参数
+		PageRequest
+		// 分站ID
+		OperatorId int64 `form:"operator_id" validate:"required,gt=0"`
+		// 搜索关键字, 匹配节点编码或名称
+		Keyword *string `form:"keyword,optional" validate:"omitempty,max=100"`
+	}
+	// 获取分站部署节点列表响应
+	ListOperatorNodesResponse {
+		// 数据总数
+		Total int64 `json:"total"`
+		// 部署节点列表
+		List []OperatorNodeInfo `json:"list"`
+	}
+	// 保存分站部署节点请求
+	SaveOperatorNodeRequest {
+		// 分站ID
+		OperatorId int64 `json:"operator_id" validate:"required,gt=0"`
+		// 节点业务编码
+		NodeCode string `json:"node_code" validate:"required,notblank,max=64"`
+	}
+	// 保存分站部署节点响应
+	SaveOperatorNodeResponse  {}
+)
+
+@server (
+	group:      operator_node
+	prefix:     /admin/operator/node
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取分站部署节点列表
+	@handler ListOperatorNodes
+	get /list (ListOperatorNodesRequest) returns (ListOperatorNodesResponse)
+
+	// 保存分站部署节点
+	@handler SaveOperatorNode
+	post /save (SaveOperatorNodeRequest) returns (SaveOperatorNodeResponse)
+}
+

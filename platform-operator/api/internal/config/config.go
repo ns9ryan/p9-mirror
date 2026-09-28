@@ -17,6 +17,9 @@ type Config struct {
 	// Platform Operator RPC配置
 	PlatformOperatorRpc zrpc.RpcClientConf
 
+	// Node Dispatch RPC配置
+	NodeDispatchRpc zrpc.RpcClientConf
+
 	// Platform Base RPC配置
 	PlatformBaseRpc zrpc.RpcClientConf
 

@@ -119,3 +119,4 @@ service platform_operator {
 	@handler UpdateOperatorAdminStatus
 	post /updateStatus (UpdateOperatorAdminStatusRequest) returns (UpdateOperatorAdminStatusResponse)
 }
+

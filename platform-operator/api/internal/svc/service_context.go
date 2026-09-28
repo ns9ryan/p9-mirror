@@ -6,14 +6,14 @@ package svc
 import (
 	"net/http"
 
+	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/core/common/coreadapt"
 	coremiddleware "oa.98ent.com/p9/core/common/middleware"
 	"oa.98ent.com/p9/core/rpc/coreclient"
+	nodedispatchnodeservice "oa.98ent.com/p9/node-dispatch/rpc/client/nodeservice"
 	"oa.98ent.com/p9/platform-base/rpc/client/currencyservice"
 	"oa.98ent.com/p9/platform-base/rpc/client/regionservice"
 	"oa.98ent.com/p9/platform-base/rpc/client/timezoneservice"
-
-	"oa.98ent.com/p9/common/i18n"
 	game_grpc_client "oa.98ent.com/p9/platform-game/pkg/grpc_client"
 	"oa.98ent.com/p9/platform-operator/api/internal/config"
 	"oa.98ent.com/p9/platform-operator/api/internal/locales"
@@ -22,6 +22,7 @@ import (
 	"oa.98ent.com/p9/platform-operator/rpc/client/languageallocationservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/operatoradminservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/operatordomainservice"
+	"oa.98ent.com/p9/platform-operator/rpc/client/operatornodeservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/operatorprofileservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/operatorservice"
 	"oa.98ent.com/p9/platform-operator/rpc/client/pingservice"
@@ -43,6 +44,7 @@ type ServiceContext struct {
 	// Platform Operator RPC
 	PingRpc                    pingservice.PingService                                       // Ping RPC
 	OperatorRpc                operatorservice.OperatorService                               // 分站RPC
+	OperatorNodeRpc            operatornodeservice.OperatorNodeService                       // 分站部署节点RPC
 	OperatorProfileRpc         operatorprofileservice.OperatorProfileService                 // 分站档案RPC
 	OperatorDomainRpc          operatordomainservice.OperatorDomainService                   // 分站域名RPC
 	OperatorAdminRpc           operatoradminservice.OperatorAdminService                     // 分站管理员RPC
@@ -50,6 +52,9 @@ type ServiceContext struct {
 	LanguageAllocationRpc      languageallocationservice.LanguageAllocationService           // 语言分配RPC
 	RegionAllocationRpc        regionallocationservice.RegionAllocationService               // 经营地区分配RPC
 	AgentLineAllocationRpc     agentlineallocationservice.AgentLineAllocationService         // 代理子线路分配RPC
+
+	// Node Dispatch RPC
+	NodeDispatchNodeRpc nodedispatchnodeservice.NodeService // 节点RPC
 
 	// Platform Base RPC
 	TimezoneRpc timezoneservice.TimezoneService // 时区RPC
@@ -84,6 +89,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	platformOperatorClient := zrpc.MustNewClient(
 		c.PlatformOperatorRpc,
 	)
+
+	// ============================== Node Dispatch RPC ==============================
+
+	// 创建Node Dispatch RPC客户端
+	nodeDispatchClient := zrpc.MustNewClient(c.NodeDispatchRpc)
 
 	// ============================== Platform Base RPC ==============================
 
@@ -141,6 +151,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		// Platform Operator RPC
 		PingRpc:                    pingservice.NewPingService(platformOperatorClient),                                       // Ping RPC
 		OperatorRpc:                operatorservice.NewOperatorService(platformOperatorClient),                               // 分站RPC
+		OperatorNodeRpc:            operatornodeservice.NewOperatorNodeService(platformOperatorClient),                       // 分站部署节点RPC
 		OperatorProfileRpc:         operatorprofileservice.NewOperatorProfileService(platformOperatorClient),                 // 分站档案RPC
 		OperatorDomainRpc:          operatordomainservice.NewOperatorDomainService(platformOperatorClient),                   // 分站域名RPC
 		OperatorAdminRpc:           operatoradminservice.NewOperatorAdminService(platformOperatorClient),                     // 分站管理员RPC
@@ -148,6 +159,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		LanguageAllocationRpc:      languageallocationservice.NewLanguageAllocationService(platformOperatorClient),           // 语言分配RPC
 		RegionAllocationRpc:        regionallocationservice.NewRegionAllocationService(platformOperatorClient),               // 经营地区分配RPC
 		AgentLineAllocationRpc:     agentlineallocationservice.NewAgentLineAllocationService(platformOperatorClient),         // 代理子线路分配RPC
+
+		// Node Dispatch RPC
+		NodeDispatchNodeRpc: nodedispatchnodeservice.NewNodeService(nodeDispatchClient), // 节点RPC
 
 		// Platform Base RPC
 		TimezoneRpc: timezoneservice.NewTimezoneService(platformBaseClient), // 时区RPC

@@ -11,6 +11,13 @@ PlatformOperatorRpc:
       - 127.0.0.1:12379         # Etcd地址
     Key: platform-operator-rpc  # RPC服务注册Key
 
+# Node Dispatch RPC配置
+NodeDispatchRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379         # Etcd地址
+    Key: node-dispatch-rpc      # RPC服务注册Key
+
 # Platform Base RPC配置
 PlatformBaseRpc:
   Etcd:

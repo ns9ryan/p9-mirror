@@ -17,6 +17,7 @@ import (
 	operator_game_category "oa.98ent.com/p9/platform-operator/api/internal/handler/operator_game_category"
 	operator_game_channel "oa.98ent.com/p9/platform-operator/api/internal/handler/operator_game_channel"
 	operator_game_provider "oa.98ent.com/p9/platform-operator/api/internal/handler/operator_game_provider"
+	operator_node "oa.98ent.com/p9/platform-operator/api/internal/handler/operator_node"
 	operator_profile "oa.98ent.com/p9/platform-operator/api/internal/handler/operator_profile"
 	ping "oa.98ent.com/p9/platform-operator/api/internal/handler/ping"
 	region_allocation "oa.98ent.com/p9/platform-operator/api/internal/handler/region_allocation"
@@ -311,6 +312,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/admin/operator/game-provider"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/list",
+					Handler: operator_node.ListOperatorNodesHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/save",
+					Handler: operator_node.SaveOperatorNodeHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/admin/operator/node"),
 	)
 
 	server.AddRoutes(

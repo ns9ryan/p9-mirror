@@ -288,6 +288,17 @@ type ListOperatorDomainsResponse struct {
 	List  []OperatorDomainInfo `json:"list"`
 }
 
+type ListOperatorNodesRequest struct {
+	PageRequest
+	OperatorId int64   `form:"operator_id" validate:"required,gt=0"`
+	Keyword    *string `form:"keyword,optional" validate:"omitempty,max=100"`
+}
+
+type ListOperatorNodesResponse struct {
+	Total int64              `json:"total"`
+	List  []OperatorNodeInfo `json:"list"`
+}
+
 type ListOperatorsRequest struct {
 	PageRequest
 	Keyword        *string `form:"keyword,optional" validate:"omitempty,max=100"`
@@ -399,6 +410,16 @@ type OperatorInfo struct {
 	PublishedAt            *int64  `json:"published_at,optional"`
 	CreatedAt              int64   `json:"created_at"`
 	UpdatedAt              int64   `json:"updated_at"`
+}
+
+type OperatorNodeInfo struct {
+	NodeCode       string  `json:"node_code"`
+	NodeName       string  `json:"node_name"`
+	NodeStatus     int64   `json:"node_status"`
+	NodeOnline     bool    `json:"node_online"`
+	NodeLastSeenAt *int64  `json:"node_last_seen_at,optional"`
+	NodeRemark     *string `json:"node_remark,optional"`
+	Selected       bool    `json:"selected"`
 }
 
 type OperatorProfileInfo struct {
@@ -526,6 +547,14 @@ type SaveOperatorGameProviderAllocationResponse struct {
 	Deleted int64 `json:"deleted"`
 	Exist   int64 `json:"exist"`
 	Failed  int64 `json:"failed"`
+}
+
+type SaveOperatorNodeRequest struct {
+	OperatorId int64  `json:"operator_id" validate:"required,gt=0"`
+	NodeCode   string `json:"node_code" validate:"required,notblank,max=64"`
+}
+
+type SaveOperatorNodeResponse struct {
 }
 
 type SaveRegionAllocationsRequest struct {
