@@ -1,6 +1,7 @@
 package svc
 
 import (
+	nodedispatchdispatchservice "oa.98ent.com/p9/node-dispatch/rpc/client/dispatchservice"
 	nodedispatchoperatornodeservice "oa.98ent.com/p9/node-dispatch/rpc/client/operatornodeservice"
 	"oa.98ent.com/p9/platform-operator/rpc/ent"
 	_ "oa.98ent.com/p9/platform-operator/rpc/ent/runtime"
@@ -16,6 +17,7 @@ type ServiceContext struct {
 	DB     *ent.Client // Ent数据库客户端
 
 	// Node Dispatch RPC
+	NodeDispatchDispatchRpc     nodedispatchdispatchservice.DispatchService         // 调度任务RPC
 	NodeDispatchOperatorNodeRpc nodedispatchoperatornodeservice.OperatorNodeService // 分站部署节点RPC
 }
 
@@ -50,6 +52,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DB:     db,
 
 		// Node Dispatch RPC
+		NodeDispatchDispatchRpc:     nodedispatchdispatchservice.NewDispatchService(nodeDispatchClient),         // 调度任务RPC
 		NodeDispatchOperatorNodeRpc: nodedispatchoperatornodeservice.NewOperatorNodeService(nodeDispatchClient), // 分站部署节点RPC
 	}
 }

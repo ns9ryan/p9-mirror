@@ -74,6 +74,18 @@ func (l *SubmitTaskLogic) SubmitTask(in *dispatchpb.SubmitTaskRequest) (*dispatc
 		return nil, err
 	}
 
+	// 提交结果不能为空
+	if result == nil {
+		l.Logger.Errorw(
+			"提交调度任务结果为空",
+			logx.Field("request_no", requestNo),
+			logx.Field("target", target),
+			logx.Field("task_type", taskType),
+			logx.Field("node_code", nodeCode),
+		)
+		return nil, status.Error(codes.Internal, "task result is empty")
+	}
+
 	return &dispatchpb.SubmitTaskResponse{
 		TaskNo: result.TaskNo, // 调度任务编号
 	}, nil
