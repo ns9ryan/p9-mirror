@@ -10,6 +10,7 @@ import (
 	languageallocationserviceServer "oa.98ent.com/p9/platform-operator/rpc/internal/server/languageallocationservice"
 	operatoradminserviceServer "oa.98ent.com/p9/platform-operator/rpc/internal/server/operatoradminservice"
 	operatordomainserviceServer "oa.98ent.com/p9/platform-operator/rpc/internal/server/operatordomainservice"
+	operatornodeserviceServer "oa.98ent.com/p9/platform-operator/rpc/internal/server/operatornodeservice"
 	operatorprofileserviceServer "oa.98ent.com/p9/platform-operator/rpc/internal/server/operatorprofileservice"
 	operatorserviceServer "oa.98ent.com/p9/platform-operator/rpc/internal/server/operatorservice"
 	pingserviceServer "oa.98ent.com/p9/platform-operator/rpc/internal/server/pingservice"
@@ -44,6 +45,9 @@ func main() {
 
 		// 分站服务
 		platformoperatorrpc.RegisterOperatorServiceServer(grpcServer, operatorserviceServer.NewOperatorServiceServer(ctx))
+
+		// 分站部署节点服务
+		platformoperatorrpc.RegisterOperatorNodeServiceServer(grpcServer, operatornodeserviceServer.NewOperatorNodeServiceServer(ctx))
 
 		// 分站档案服务
 		platformoperatorrpc.RegisterOperatorProfileServiceServer(grpcServer, operatorprofileserviceServer.NewOperatorProfileServiceServer(ctx))
