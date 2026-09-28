@@ -6,6 +6,7 @@ option go_package = "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc";
 
 import "types/node_dispatch_ping.proto";
 import "types/node_dispatch_node.proto";
+import "types/node_dispatch_operator_node.proto";
 import "types/node_dispatch_dispatch.proto";
 import "types/node_dispatch_callback.proto";
 
@@ -31,6 +32,15 @@ service NodeService {
 
   // 重置节点认证密钥
   rpc ResetAuthSecret(node_dispatch_node.ResetNodeAuthSecretRequest) returns (node_dispatch_node.ResetNodeAuthSecretResponse);
+}
+
+// 分站部署节点服务
+service OperatorNodeService {
+  // 保存分站部署节点
+  rpc Save(node_dispatch_operator_node.SaveOperatorNodeRequest) returns (node_dispatch_operator_node.SaveOperatorNodeResponse);
+
+  // 获取分站部署节点
+  rpc Get(node_dispatch_operator_node.GetOperatorNodeRequest) returns (node_dispatch_operator_node.GetOperatorNodeResponse);
 }
 
 // 调度服务
