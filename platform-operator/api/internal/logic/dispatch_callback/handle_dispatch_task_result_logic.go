@@ -29,11 +29,9 @@ func NewHandleDispatchTaskResultLogic(ctx context.Context, svcCtx *svc.ServiceCo
 
 // HandleDispatchTaskResult 处理调度任务结果回调
 func (l *HandleDispatchTaskResultLogic) HandleDispatchTaskResult(req *types.HandleDispatchTaskResultRequest) (resp *types.HandleDispatchTaskResultResponse, err error) {
-	// 更新分站发布结果
+	// 根据调度任务编号同步分站发布结果
 	_, err = l.svcCtx.OperatorRpc.HandlePublishResult(l.ctx, &operatorpb.HandlePublishResultRequest{
-		TaskNo:     req.TaskNo,     // 调度任务编号
-		Status:     req.Status,     // 任务最终状态: 3成功, 4失败
-		FinishedAt: req.FinishedAt, // 任务执行结束时间
+		TaskNo: req.TaskNo, // 调度任务编号
 	})
 	if err != nil {
 		return nil, err
