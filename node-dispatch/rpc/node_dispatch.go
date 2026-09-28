@@ -9,6 +9,7 @@ import (
 	"oa.98ent.com/p9/node-dispatch/rpc/internal/config"
 	dispatchserviceServer "oa.98ent.com/p9/node-dispatch/rpc/internal/server/dispatchservice"
 	nodeserviceServer "oa.98ent.com/p9/node-dispatch/rpc/internal/server/nodeservice"
+	operatornodeserviceServer "oa.98ent.com/p9/node-dispatch/rpc/internal/server/operatornodeservice"
 	pingserviceServer "oa.98ent.com/p9/node-dispatch/rpc/internal/server/pingservice"
 	"oa.98ent.com/p9/node-dispatch/rpc/internal/svc"
 	"oa.98ent.com/p9/node-dispatch/rpc/internal/websocket"
@@ -46,6 +47,9 @@ func main() {
 
 		// 节点服务
 		nodedispatchrpc.RegisterNodeServiceServer(grpcServer, nodeserviceServer.NewNodeServiceServer(ctx))
+
+		// 分站部署节点服务
+		nodedispatchrpc.RegisterOperatorNodeServiceServer(grpcServer, operatornodeserviceServer.NewOperatorNodeServiceServer(ctx))
 
 		// 调度服务
 		nodedispatchrpc.RegisterDispatchServiceServer(grpcServer, dispatchserviceServer.NewDispatchServiceServer(ctx))
