@@ -70,7 +70,7 @@ func (Operator) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "timestamptz(3)",
 			}).
-			Comment("发布时间"),
+			Comment("首次发布成功时间"),
 
 		field.Int64("status").
 			Default(1).

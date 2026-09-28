@@ -37,7 +37,7 @@ type Operator struct {
 	PublishStatus int64 `json:"publish_status,omitempty"`
 	// 最近一次发布任务编号
 	PublishTaskNo *string `json:"publish_task_no,omitempty"`
-	// 发布时间
+	// 首次发布成功时间
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 	// operator 状态: 1正常, 2暂停, 3关闭
 	Status int64 `json:"status,omitempty"`
