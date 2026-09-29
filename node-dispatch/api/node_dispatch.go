@@ -15,6 +15,7 @@ import (
 	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/common/response"
 	"oa.98ent.com/p9/common/validate"
+	"oa.98ent.com/p9/node-dispatch/api/internal/catalog"
 	"oa.98ent.com/p9/node-dispatch/api/internal/config"
 	"oa.98ent.com/p9/node-dispatch/api/internal/handler"
 	"oa.98ent.com/p9/node-dispatch/api/internal/svc"
@@ -42,6 +43,9 @@ func main() {
 
 	// 创建服务上下文
 	ctx := svc.NewServiceContext(c)
+
+	// 注册菜单和API目录
+	logx.Must(catalog.Register(ctx.Core))
 
 	// 设置HTTP响应格式
 	response.SetupHTTPX(ctx.Trans, i18n.CodePlatform, c.IsDebug())

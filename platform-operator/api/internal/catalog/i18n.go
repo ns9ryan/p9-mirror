@@ -65,6 +65,10 @@ func apiI18n() []*coreclient.I18NItem {
 	addI18n(&out, i18n.GroupAPI, "api.operatorPublish", "发布分站", "發布分站", "Publish operator")
 	addI18n(&out, i18n.GroupAPI, "api.operatorDelete", "删除分站", "刪除分站", "Delete operator")
 
+	// 分站部署节点
+	addI18n(&out, i18n.GroupAPI, "api.operatorNodeGet", "分站部署节点详情", "分站部署節點詳情", "Operator deployment node details")
+	addI18n(&out, i18n.GroupAPI, "api.operatorNodeSave", "保存分站部署节点", "儲存分站部署節點", "Save operator deployment node")
+
 	// 分站档案
 	addI18n(&out, i18n.GroupAPI, "api.operatorProfileCreate", "创建分站档案", "建立分站檔案", "Create operator profile")
 	addI18n(&out, i18n.GroupAPI, "api.operatorProfileUpdate", "修改分站档案", "修改分站檔案", "Update operator profile")
@@ -101,6 +105,7 @@ func apiI18n() []*coreclient.I18NItem {
 
 	// 接口组多语言翻译
 	addI18n(&out, i18n.GroupAPI, "api.group.operator", "分站", "分站", "Operator")
+	addI18n(&out, i18n.GroupAPI, "api.group.operator_node", "分站部署节点", "分站部署節點", "Operator deployment node")
 	addI18n(&out, i18n.GroupAPI, "api.group.operator_profile", "分站档案", "分站檔案", "Operator profile")
 	addI18n(&out, i18n.GroupAPI, "api.group.operator_domain", "分站域名", "分站網域", "Operator domain")
 	addI18n(&out, i18n.GroupAPI, "api.group.operator_admin", "分站管理员", "分站管理員", "Operator administrator")

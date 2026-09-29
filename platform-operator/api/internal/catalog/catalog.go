@@ -68,6 +68,10 @@ func apis() []*coreclient.CreateApiReq {
 		{Path: "/admin/operator/publish", Method: http.MethodPost, Description: "api.operatorPublish", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/delete", Method: http.MethodPost, Description: "api.operatorDelete", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
 
+		// 分站部署节点
+		{Path: "/admin/operator/node/get", Method: http.MethodGet, Description: "api.operatorNodeGet", ApiGroup: "api.group.operator_node", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/node/save", Method: http.MethodPost, Description: "api.operatorNodeSave", ApiGroup: "api.group.operator_node", ServiceName: "platform-operator-api"},
+
 		// 分站档案
 		{Path: "/admin/operator/profile/create", Method: http.MethodPost, Description: "api.operatorProfileCreate", ApiGroup: "api.group.operator_profile", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/profile/update", Method: http.MethodPost, Description: "api.operatorProfileUpdate", ApiGroup: "api.group.operator_profile", ServiceName: "platform-operator-api"},

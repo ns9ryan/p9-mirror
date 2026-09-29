@@ -8,6 +8,7 @@ import (
 
 	"oa.98ent.com/p9/node-dispatch/api/internal/svc"
 	"oa.98ent.com/p9/node-dispatch/api/internal/types"
+	"oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/dispatchpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
