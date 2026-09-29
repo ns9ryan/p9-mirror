@@ -68,6 +68,44 @@ services:
     networks:
       - p9-operator-node02-network
 
+  operator-base-rpc:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-base-rpc:${VERSION:-1.0.0}
+    container_name: operator-node02-base-rpc
+    restart: always
+    ports:
+      - "39201:39201"
+    volumes:
+      - ./etc/base/rpc/operator_base.yaml:/app/etc/operator_base.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - p9-operator-node02-network
+
+    operator-base-api:
+      image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-base-api:${VERSION:-1.0.0}
+      container_name: operator-node02-base-api
+      restart: always
+      ports:
+        - "38201:38201"
+      volumes:
+        - ./etc/base/api/operator_base.yaml:/app/etc/operator_base.yaml:ro
+      depends_on:
+        - operator-base-rpc
+      networks:
+        - p9-operator-node02-network
+
+    node-agent:
+      image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/node-agent:${VERSION:-1.0.0}
+      container_name: operator-node02-agent
+      restart: always
+      volumes:
+        - ./etc/node-agent/node_agent.yaml:/app/etc/node_agent.yaml:ro
+      depends_on:
+        - operator-base-rpc
+      networks:
+        - p9-operator-node02-network
+
 volumes:
   postgres_operator_node02_data:
   redis_operator_node02_data:
