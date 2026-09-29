@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"oa.98ent.com/p9/platform-base/api/internal/logic/ping"
-	"oa.98ent.com/p9/platform-base/api/internal/svc"
+	"oa.98ent.com/p9/operator-base/api/internal/logic/ping"
+	"oa.98ent.com/p9/operator-base/api/internal/svc"
 )
 
 func PingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

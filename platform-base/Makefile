@@ -1,8 +1,8 @@
 # ---- 仓库独立配置，新建仓库时需要修改 ----
 
-MODULE := oa.98ent.com/p9/platform-base
-RPC_PROTO := platform_base.proto
-BUILD_NAME := platform_base
+MODULE := oa.98ent.com/p9/operator-base
+RPC_PROTO := operator_base.proto
+BUILD_NAME := operator_base
 
 # 镜像版本
 VERSION ?= 1.0.0

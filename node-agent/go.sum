@@ -278,10 +278,10 @@ k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b h1:MloQ9/bdJyIu9lb1PzujOP
 k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b/go.mod h1:UZ2yyWbFTpuhSbFhv24aGNOdoRdJZgsIObGBUaYVsts=
 k8s.io/utils v0.0.0-20260319190234-28399d86e0b5 h1:kBawHLSnx/mYHmRnNUf9d4CpjREbeZuxoSGOX/J+aYM=
 k8s.io/utils v0.0.0-20260319190234-28399d86e0b5/go.mod h1:xDxuJ0whA3d0I4mf/C4ppKHxXynQ+fxnkmQH0vTHnuk=
-oa.98ent.com/p9/operator-base v0.0.0-20260923082758-e7ccf5aa3fdd h1:ZafSCBC1Lnn0plq/MWLHdQI0rB6KtccDAmzv7oaoOR8=
-oa.98ent.com/p9/operator-base v0.0.0-20260923082758-e7ccf5aa3fdd/go.mod h1:bAMDof5mjaUQwlSBwk5rjZZgvtH+29l9tzuLV68RcJw=
-oa.98ent.com/p9/platform-operator v0.0.0-20260924023144-fbb91594ccf4 h1:4Nz6ADax3D2KNzbeKl4mcCPkNxA5QZRLvuvdw9KV8gI=
-oa.98ent.com/p9/platform-operator v0.0.0-20260924023144-fbb91594ccf4/go.mod h1:ImFFIUOrDB4sF6/9Q/B/v8Pb+bdHYN2+mrUT6NGOsXc=
+oa.98ent.com/p9/operator-base v0.1.0 h1:Ed//b8uefGqBjclJWVIQ9CXNbLN6DwvTdPD4re7jgGA=
+oa.98ent.com/p9/operator-base v0.1.0/go.mod h1:PRnx+pg/hgX9c6t20XQZxSEgHFVRO2YFg4QuTMctIZc=
+oa.98ent.com/p9/platform-operator v0.1.0 h1:NeA54Xug71RN9tphsb+pwYGF7yMpzXYrfIq9QO3Sw78=
+oa.98ent.com/p9/platform-operator v0.1.0/go.mod h1:/LOVHh3MuAOnEcJJ0rs9yzbEI/GuT/4WhAOTYV6emVQ=
 sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 h1:gBQPwqORJ8d8/YNZWEjoZs7npUVDpVXUUOFfW6CgAqE=
 sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8/go.mod h1:mdzfpAEoE6DHQEN0uh9ZbOCuHbLK5wOm7dK4ctXE9Tg=
 sigs.k8s.io/randfill v1.0.0 h1:JfjMILfT8A6RbawdsK2JXGBR5AQVfd+9TbzrlneTyrU=

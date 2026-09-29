@@ -12,7 +12,7 @@ require (
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
 	oa.98ent.com/p9/common v1.0.2
-	oa.98ent.com/p9/core v1.2.0
+	oa.98ent.com/p9/core v1.2.1
 )
 
 require (

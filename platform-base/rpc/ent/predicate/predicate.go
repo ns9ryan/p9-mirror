@@ -6,11 +6,17 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Currency is the predicate function for currency builders.
-type Currency func(*sql.Selector)
+// Operator is the predicate function for operator builders.
+type Operator func(*sql.Selector)
 
-// Region is the predicate function for region builders.
-type Region func(*sql.Selector)
+// OperatorAgentLine is the predicate function for operatoragentline builders.
+type OperatorAgentLine func(*sql.Selector)
 
-// Timezone is the predicate function for timezone builders.
-type Timezone func(*sql.Selector)
+// OperatorDomain is the predicate function for operatordomain builders.
+type OperatorDomain func(*sql.Selector)
+
+// OperatorLanguage is the predicate function for operatorlanguage builders.
+type OperatorLanguage func(*sql.Selector)
+
+// OperatorRegion is the predicate function for operatorregion builders.
+type OperatorRegion func(*sql.Selector)

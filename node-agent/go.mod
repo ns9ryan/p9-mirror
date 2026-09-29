@@ -5,8 +5,8 @@ go 1.26.0
 require (
 	github.com/coder/websocket v1.8.15
 	github.com/zeromicro/go-zero v1.10.3
-	oa.98ent.com/p9/operator-base v0.0.0-20260923082758-e7ccf5aa3fdd
-	oa.98ent.com/p9/platform-operator v0.0.0-20260924023144-fbb91594ccf4
+	oa.98ent.com/p9/operator-base v0.1.0
+	oa.98ent.com/p9/platform-operator v0.1.0
 )
 
 require (

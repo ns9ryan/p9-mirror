@@ -3,8 +3,8 @@ package pingservicelogic
 import (
 	"context"
 
-	"oa.98ent.com/p9/platform-base/rpc/internal/svc"
-	"oa.98ent.com/p9/platform-base/rpc/pb/platformbaserpc/pingpb"
+	"oa.98ent.com/p9/operator-base/rpc/internal/svc"
+	"oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/pingpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

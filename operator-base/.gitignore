@@ -23,5 +23,5 @@ go.work.sum
 .vscode/
 
 # Build binaries
-/platform_base_api
-/platform_base_rpc
+/operator_base_api
+/operator_base_rpc

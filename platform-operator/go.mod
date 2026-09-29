@@ -6,14 +6,15 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/duke-git/lancet/v2 v2.3.9
 	github.com/google/uuid v1.6.0
-	github.com/jackc/pgx/v5 v5.10.0
+	github.com/jackc/pgx/v5 v5.11.0
 	github.com/zeromicro/go-zero v1.10.3
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
 	oa.98ent.com/p9/common v1.0.2
-	oa.98ent.com/p9/core v1.2.0
-	oa.98ent.com/p9/platform-base v0.1.0
-	oa.98ent.com/p9/platform-game v1.0.0
+	oa.98ent.com/p9/core v1.2.1
+	oa.98ent.com/p9/node-dispatch v0.1.0
+	oa.98ent.com/p9/platform-base v0.1.1
+	oa.98ent.com/p9/platform-game v1.0.1
 )
 
 require (

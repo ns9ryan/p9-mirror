@@ -7,11 +7,13 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
-	"oa.98ent.com/p9/platform-base/rpc/ent"
-	"oa.98ent.com/p9/platform-base/rpc/ent/currency"
-	"oa.98ent.com/p9/platform-base/rpc/ent/predicate"
-	"oa.98ent.com/p9/platform-base/rpc/ent/region"
-	"oa.98ent.com/p9/platform-base/rpc/ent/timezone"
+	"oa.98ent.com/p9/operator-base/rpc/ent"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operator"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatoragentline"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatordomain"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatorlanguage"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatorregion"
+	"oa.98ent.com/p9/operator-base/rpc/ent/predicate"
 )
 
 // The Query interface represents an operation that queries a graph.
@@ -70,96 +72,154 @@ func (f TraverseFunc) Traverse(ctx context.Context, q ent.Query) error {
 	return f(ctx, query)
 }
 
-// The CurrencyFunc type is an adapter to allow the use of ordinary function as a Querier.
-type CurrencyFunc func(context.Context, *ent.CurrencyQuery) (ent.Value, error)
+// The OperatorFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OperatorFunc func(context.Context, *ent.OperatorQuery) (ent.Value, error)
 
 // Query calls f(ctx, q).
-func (f CurrencyFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.CurrencyQuery); ok {
+func (f OperatorFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OperatorQuery); ok {
 		return f(ctx, q)
 	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.CurrencyQuery", q)
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OperatorQuery", q)
 }
 
-// The TraverseCurrency type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseCurrency func(context.Context, *ent.CurrencyQuery) error
+// The TraverseOperator type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOperator func(context.Context, *ent.OperatorQuery) error
 
 // Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseCurrency) Intercept(next ent.Querier) ent.Querier {
+func (f TraverseOperator) Intercept(next ent.Querier) ent.Querier {
 	return next
 }
 
 // Traverse calls f(ctx, q).
-func (f TraverseCurrency) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.CurrencyQuery); ok {
+func (f TraverseOperator) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OperatorQuery); ok {
 		return f(ctx, q)
 	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.CurrencyQuery", q)
+	return fmt.Errorf("unexpected query type %T. expect *ent.OperatorQuery", q)
 }
 
-// The RegionFunc type is an adapter to allow the use of ordinary function as a Querier.
-type RegionFunc func(context.Context, *ent.RegionQuery) (ent.Value, error)
+// The OperatorAgentLineFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OperatorAgentLineFunc func(context.Context, *ent.OperatorAgentLineQuery) (ent.Value, error)
 
 // Query calls f(ctx, q).
-func (f RegionFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.RegionQuery); ok {
+func (f OperatorAgentLineFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OperatorAgentLineQuery); ok {
 		return f(ctx, q)
 	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.RegionQuery", q)
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OperatorAgentLineQuery", q)
 }
 
-// The TraverseRegion type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseRegion func(context.Context, *ent.RegionQuery) error
+// The TraverseOperatorAgentLine type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOperatorAgentLine func(context.Context, *ent.OperatorAgentLineQuery) error
 
 // Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseRegion) Intercept(next ent.Querier) ent.Querier {
+func (f TraverseOperatorAgentLine) Intercept(next ent.Querier) ent.Querier {
 	return next
 }
 
 // Traverse calls f(ctx, q).
-func (f TraverseRegion) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.RegionQuery); ok {
+func (f TraverseOperatorAgentLine) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OperatorAgentLineQuery); ok {
 		return f(ctx, q)
 	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.RegionQuery", q)
+	return fmt.Errorf("unexpected query type %T. expect *ent.OperatorAgentLineQuery", q)
 }
 
-// The TimezoneFunc type is an adapter to allow the use of ordinary function as a Querier.
-type TimezoneFunc func(context.Context, *ent.TimezoneQuery) (ent.Value, error)
+// The OperatorDomainFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OperatorDomainFunc func(context.Context, *ent.OperatorDomainQuery) (ent.Value, error)
 
 // Query calls f(ctx, q).
-func (f TimezoneFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.TimezoneQuery); ok {
+func (f OperatorDomainFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OperatorDomainQuery); ok {
 		return f(ctx, q)
 	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TimezoneQuery", q)
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OperatorDomainQuery", q)
 }
 
-// The TraverseTimezone type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseTimezone func(context.Context, *ent.TimezoneQuery) error
+// The TraverseOperatorDomain type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOperatorDomain func(context.Context, *ent.OperatorDomainQuery) error
 
 // Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseTimezone) Intercept(next ent.Querier) ent.Querier {
+func (f TraverseOperatorDomain) Intercept(next ent.Querier) ent.Querier {
 	return next
 }
 
 // Traverse calls f(ctx, q).
-func (f TraverseTimezone) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TimezoneQuery); ok {
+func (f TraverseOperatorDomain) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OperatorDomainQuery); ok {
 		return f(ctx, q)
 	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.TimezoneQuery", q)
+	return fmt.Errorf("unexpected query type %T. expect *ent.OperatorDomainQuery", q)
+}
+
+// The OperatorLanguageFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OperatorLanguageFunc func(context.Context, *ent.OperatorLanguageQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f OperatorLanguageFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OperatorLanguageQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OperatorLanguageQuery", q)
+}
+
+// The TraverseOperatorLanguage type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOperatorLanguage func(context.Context, *ent.OperatorLanguageQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseOperatorLanguage) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseOperatorLanguage) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OperatorLanguageQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.OperatorLanguageQuery", q)
+}
+
+// The OperatorRegionFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OperatorRegionFunc func(context.Context, *ent.OperatorRegionQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f OperatorRegionFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OperatorRegionQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OperatorRegionQuery", q)
+}
+
+// The TraverseOperatorRegion type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOperatorRegion func(context.Context, *ent.OperatorRegionQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseOperatorRegion) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseOperatorRegion) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OperatorRegionQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.OperatorRegionQuery", q)
 }
 
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
-	case *ent.CurrencyQuery:
-		return &query[*ent.CurrencyQuery, predicate.Currency, currency.OrderOption]{typ: ent.TypeCurrency, tq: q}, nil
-	case *ent.RegionQuery:
-		return &query[*ent.RegionQuery, predicate.Region, region.OrderOption]{typ: ent.TypeRegion, tq: q}, nil
-	case *ent.TimezoneQuery:
-		return &query[*ent.TimezoneQuery, predicate.Timezone, timezone.OrderOption]{typ: ent.TypeTimezone, tq: q}, nil
+	case *ent.OperatorQuery:
+		return &query[*ent.OperatorQuery, predicate.Operator, operator.OrderOption]{typ: ent.TypeOperator, tq: q}, nil
+	case *ent.OperatorAgentLineQuery:
+		return &query[*ent.OperatorAgentLineQuery, predicate.OperatorAgentLine, operatoragentline.OrderOption]{typ: ent.TypeOperatorAgentLine, tq: q}, nil
+	case *ent.OperatorDomainQuery:
+		return &query[*ent.OperatorDomainQuery, predicate.OperatorDomain, operatordomain.OrderOption]{typ: ent.TypeOperatorDomain, tq: q}, nil
+	case *ent.OperatorLanguageQuery:
+		return &query[*ent.OperatorLanguageQuery, predicate.OperatorLanguage, operatorlanguage.OrderOption]{typ: ent.TypeOperatorLanguage, tq: q}, nil
+	case *ent.OperatorRegionQuery:
+		return &query[*ent.OperatorRegionQuery, predicate.OperatorRegion, operatorregion.OrderOption]{typ: ent.TypeOperatorRegion, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

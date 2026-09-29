@@ -12,9 +12,11 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"oa.98ent.com/p9/platform-base/rpc/ent/currency"
-	"oa.98ent.com/p9/platform-base/rpc/ent/region"
-	"oa.98ent.com/p9/platform-base/rpc/ent/timezone"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operator"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatoragentline"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatordomain"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatorlanguage"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatorregion"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -75,9 +77,11 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			currency.Table: currency.ValidColumn,
-			region.Table:   region.ValidColumn,
-			timezone.Table: timezone.ValidColumn,
+			operator.Table:          operator.ValidColumn,
+			operatoragentline.Table: operatoragentline.ValidColumn,
+			operatordomain.Table:    operatordomain.ValidColumn,
+			operatorlanguage.Table:  operatorlanguage.ValidColumn,
+			operatorregion.Table:    operatorregion.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)
