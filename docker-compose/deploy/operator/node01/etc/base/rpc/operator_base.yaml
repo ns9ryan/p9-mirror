@@ -1,0 +1,13 @@
+# RPC服务配置
+Name:     operator-base-rpc      # RPC服务名称
+ListenOn: 0.0.0.0:39001          # RPC监听地址
+Mode:     dev                    # 运行模式
+
+# 数据库配置
+DatabaseConf:
+  Host:     postgres             # 当前节点数据库地址
+  Port:     5432                 # PostgreSQL容器端口
+  DBName:   p9_operator          # 厅数据库名称
+  Username: root                 # 数据库用户名
+  Password: root                 # 数据库密码
+  SSLMode:  disable              # SSL模式
