@@ -129,7 +129,7 @@ func (d *Deps) RolesOfUsers(ctx context.Context, userIDs []int64) (map[int64]Use
 	users, err := d.Client.User.Query().
 		Where(user.IDIn(userIDs...)).
 		WithRoles(func(q *ent.RoleQuery) {
-			q.Where(role.DeletedAtIsNil(), role.StatusEQ(model.StatusNormal)).
+			q.Where(role.StatusEQ(model.StatusNormal)).
 				Order(ent.Asc(role.FieldSortNo), ent.Asc(role.FieldID))
 		}).
 		All(ctx)

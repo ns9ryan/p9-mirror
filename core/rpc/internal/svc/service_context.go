@@ -93,7 +93,7 @@ func attachTenant(c *ent.Client) {
 		return nil
 	})
 	c.User.Intercept(fOperatorCode, fSoftDelete)
-	c.Role.Intercept(fOperatorCode, fSoftDelete)
+	c.Role.Intercept(fOperatorCode)
 	c.LoginLog.Intercept(fOperatorCode)
 	c.AdminActionLog.Intercept(fOperatorCode)
 	c.ErrorLog.Intercept(fOperatorCode)

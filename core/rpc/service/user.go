@@ -79,6 +79,15 @@ func (d *Deps) CreateUser(ctx context.Context, claims *ctxdata.Claims, req Creat
 			return nil, xerr.Unauthorized(coreI18n.Unauthorized)
 		}
 	}
+	// 检查用户是否已存在
+	oldUser, err := d.GetUserByUsername(ctx, req.Username)
+	if err != nil && !ent.IsNotFound(err) {
+		return nil, xerr.EntInternalServerError(coreI18n.UserCreateFailed, err)
+	}
+	if oldUser != nil {
+		return nil, xerr.BadRequest(coreI18n.UserAlreadyExists)
+	}
+	// 生成密码哈希和盐值
 	hash, err := HashPassword(req.Password)
 	if err != nil {
 		return nil, err
@@ -100,7 +109,7 @@ func (d *Deps) CreateUser(ctx context.Context, claims *ctxdata.Claims, req Creat
 		Save(ctx)
 	if err != nil {
 		logx.Errorw(coreI18n.UserCreateFailed, logx.Field("error", err))
-		return nil, xerr.BadRequest(coreI18n.UserCreateFailed)
+		return nil, xerr.EntInternalServerError(coreI18n.UserCreateFailed, err)
 	}
 	u := userFromEnt(row)
 	if len(req.RoleIDs) > 0 {
@@ -181,6 +190,7 @@ func (d *Deps) DeleteUsers(ctx context.Context, claims *ctxdata.Claims, ids []in
 	return nil
 }
 
+// GetUser 根据用户ID获取用户
 func (d *Deps) GetUser(ctx context.Context, claims *ctxdata.Claims, id int64) (*model.User, UserRoles, error) {
 	u, err := d.mustTenantUser(ctx, claims, id)
 	if err != nil {
@@ -188,6 +198,16 @@ func (d *Deps) GetUser(ctx context.Context, claims *ctxdata.Claims, id int64) (*
 	}
 	roles, err := d.RolesOfUser(ctx, u.ID)
 	return u, roles, err
+}
+
+// GetUserByUsername 根据用户名获取用户
+func (d *Deps) GetUserByUsername(ctx context.Context, username string) (*model.User, error) {
+	userInfo, err := d.Client.User.Query().Where(user.Username(username)).First(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return userFromEnt(userInfo), nil
 }
 
 func (d *Deps) ListUsers(ctx context.Context, claims *ctxdata.Claims, req UserListReq) ([]model.User, int64, error) {
@@ -208,7 +228,7 @@ func (d *Deps) ListUsers(ctx context.Context, claims *ctxdata.Claims, req UserLi
 		q.Where(user.DisplayNameContains(s))
 	}
 	if len(req.RoleIDs) > 0 {
-		q.Where(user.HasRolesWith(role.IDIn(req.RoleIDs...), role.DeletedAtIsNil()))
+		q.Where(user.HasRolesWith(role.IDIn(req.RoleIDs...)))
 	}
 	total, err := q.Clone().Count(ctx)
 	if err != nil {
@@ -234,7 +254,7 @@ func (d *Deps) bindRoles(ctx context.Context, u *model.User, roleIDs []int64) er
 	if len(roleIDs) == 0 {
 		return d.Client.User.UpdateOneID(u.ID).ClearRoles().Exec(ctx)
 	}
-	roles, err := d.Client.Role.Query().Where(role.IDIn(roleIDs...), role.DeletedAtIsNil()).All(ctx)
+	roles, err := d.Client.Role.Query().Where(role.IDIn(roleIDs...)).All(ctx)
 	if err != nil {
 		return err
 	}
@@ -268,7 +288,10 @@ func (d *Deps) ChangeOwnPassword(ctx context.Context, claims *ctxdata.Claims, ol
 	}
 	u, err := d.ActiveUserByID(ctx, claims.UserID)
 	if err != nil {
-		return xerr.Unauthorized(coreI18n.Unauthorized)
+		if ent.IsNotFound(err) {
+			return xerr.NotFound(coreI18n.UserNotFound)
+		}
+		return err
 	}
 	if !CheckPassword(u.PasswordHash, oldPw) {
 		return xerr.BadRequest(coreI18n.UserOldPasswordMismatch)

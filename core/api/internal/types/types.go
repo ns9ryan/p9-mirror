@@ -727,6 +727,8 @@ type ApiInfo struct {
 	TransDescription string `json:"trans_description"`
 	// API group | 分组
 	ApiGroup string `json:"api_group"`
+	// TransApiGroup | 翻译接口组
+	TransApiGroup string `json:"trans_api_group"`
 	// Method | HTTP 方法
 	Method string `json:"method"`
 	// Path | 路径

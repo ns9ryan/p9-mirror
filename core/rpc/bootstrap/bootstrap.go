@@ -189,7 +189,6 @@ func ensureSuperRole(ctx context.Context, c *ent.Client, operatorCode *string) (
 		SetRoleName("role.superAdmin").
 		SetIsSystem(true).
 		SetStatus(model.StatusNormal).
-		ClearDeletedAt().
 		Save(ctx)
 }
 

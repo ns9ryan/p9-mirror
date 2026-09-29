@@ -17,7 +17,10 @@ const (
 	AuthUserDisabled             = "auth.userDisabled"
 	AuthPasswordIncorrect        = "auth.passwordIncorrect"
 	AuthNoActiveRole             = "auth.noActiveRole"
+	AuthInvalidToken             = "auth.invalidToken"
+	AuthUserSaltMismatch         = "auth.userSaltMismatch"
 	AuthInvalidCredentials       = "auth.invalidCredentials"
+	AuthUserNotFound             = "auth.userNotFound"
 	AuthOperatorCodeRequired     = "auth.operatorCodeRequired"
 	AuthOperatorDisabled         = "auth.operatorDisabled"
 	AuthInvalidInitToken         = "auth.invalidInitToken"
@@ -38,6 +41,7 @@ const (
 	UserNotFound             = "user.notFound"
 	UserRoleNotFound         = "user.roleNotFound"
 	UserInvalidIpWhitelist   = "user.invalidIpWhitelist"
+	UserAlreadyExists        = "user.alreadyExists"
 
 	RoleCodeNameRequired    = "role.codeNameRequired"
 	RoleCreateFailed        = "role.createFailed"
@@ -46,6 +50,8 @@ const (
 	RoleStillBoundToUsers   = "role.stillBoundToUsers"
 	RoleNotFound            = "role.notFound"
 	RoleSuperAdmin          = "role.superAdmin"
+	RoleNameAlreadyExists   = "role.nameAlreadyExists"
+	RoleCodeAlreadyExists   = "role.codeAlreadyExists"
 
 	MenuNameTitleRequired = "menu.nameTitleRequired"
 	MenuInvalidType       = "menu.invalidType"

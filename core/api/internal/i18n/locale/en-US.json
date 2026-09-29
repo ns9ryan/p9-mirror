@@ -17,7 +17,10 @@
     "userDisabled": "user disabled",
     "passwordIncorrect": "incorrect username or password",
     "noActiveRole": "no active role",
-    "invalidCredentials": "invalid credentials",
+    "invalidToken": "invalid token",
+    "userSaltMismatch": "user salt mismatch",
+    "invalidCredentials": "invalid login credentials",
+    "userNotFound": "invalid login credentials, user not found",
     "operatorCodeRequired": "operator_code required",
     "operatorDisabled": "operator disabled",
     "invalidInitToken": "invalid init token",
@@ -38,7 +41,8 @@
     "oldPasswordMismatch": "old password mismatch",
     "notFound": "user not found",
     "roleNotFound": "role not found",
-    "invalidIpWhitelist": "invalid IP whitelist"
+    "invalidIpWhitelist": "invalid IP whitelist",
+    "alreadyExists": "login account already exists"
   },
   "role": {
     "codeNameRequired": "role_code and role_name required",
@@ -47,7 +51,9 @@
     "cannotDeleteSystem": "cannot delete system role",
     "stillBoundToUsers": "role still bound to users",
     "notFound": "role not found",
-    "superAdmin": "Super Admin"
+    "superAdmin": "Super Admin",
+    "nameAlreadyExists": "role name already exists",
+    "codeAlreadyExists": "role code already exists"
   },
   "menu": {
     "nameTitleRequired": "name and title required",

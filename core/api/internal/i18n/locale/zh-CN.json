@@ -17,7 +17,10 @@
     "userDisabled": "账号已停用",
     "passwordIncorrect": "用户名或密码错误",
     "noActiveRole": "没有可用角色",
-    "invalidCredentials": "凭证无效",
+    "invalidToken": "登录凭证无效",
+    "userSaltMismatch": "用户盐不匹配",
+    "invalidCredentials": "登录凭证无效",
+    "userNotFound": "登录凭证无效，用户不存在",
     "operatorCodeRequired": "分站编码必填",
     "operatorDisabled": "分站已停用",
     "invalidInitToken": "初始化口令无效",
@@ -38,7 +41,8 @@
     "oldPasswordMismatch": "原密码不正确",
     "notFound": "用户不存在",
     "roleNotFound": "角色不存在",
-    "invalidIpWhitelist": "IP 白名单无效"
+    "invalidIpWhitelist": "IP 白名单无效",
+    "alreadyExists": "登录账号已存在"
   },
   "role": {
     "codeNameRequired": "角色编码和名称必填",
@@ -47,7 +51,9 @@
     "cannotDeleteSystem": "不能删除系统角色",
     "stillBoundToUsers": "角色仍绑定用户",
     "notFound": "角色不存在",
-    "superAdmin": "超级管理员"
+    "superAdmin": "超级管理员",
+    "nameAlreadyExists": "角色名称已存在",
+    "codeAlreadyExists": "角色编码已存在"
   },
   "menu": {
     "nameTitleRequired": "菜单标识和标题必填",

@@ -109,6 +109,10 @@
                   "description": "Service name | 服务名",
                   "type": "string"
                 },
+                "trans_api_group": {
+                  "description": "TransApiGroup | 翻译接口组",
+                  "type": "string"
+                },
                 "trans_description": {
                   "description": "TransDescription | 翻译描述",
                   "type": "string"
@@ -246,6 +250,7 @@
                       "description",
                       "trans_description",
                       "api_group",
+                      "trans_api_group",
                       "method",
                       "path",
                       "is_required",
@@ -284,6 +289,10 @@
                       },
                       "service_name": {
                         "description": "Service name | 服务名",
+                        "type": "string"
+                      },
+                      "trans_api_group": {
+                        "description": "TransApiGroup | 翻译接口组",
                         "type": "string"
                       },
                       "trans_description": {
@@ -5175,7 +5184,7 @@
       "Token": []
     }
   ],
-  "x-date": "2026-09-24 09:34:12",
+  "x-date": "2026-09-24 14:08:44",
   "x-description": "This is a goctls generated swagger file.",
   "x-github": "https://github.com/suyuan32/simple-admin-core",
   "x-goctl-version": "v1.14.8",

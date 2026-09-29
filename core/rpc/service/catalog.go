@@ -97,7 +97,7 @@ func (d *Deps) CreateMenu(ctx context.Context, req CreateMenuReq) (*model.Menu, 
 		SetHideMenu(req.HideMenu).SetSort(req.Sort).SetDisabled(req.Disabled).
 		Save(ctx)
 	if err != nil {
-		return nil, xerr.BadRequest(coreI18n.MenuCreateFailed)
+		return nil, xerr.EntInternalServerError(coreI18n.MenuCreateFailed, err)
 	}
 	if err := d.grantMenuToSupers(ctx, row.ID); err != nil {
 		logx.Errorf("grant menu to supers failed: %v", err)
@@ -144,7 +144,7 @@ func (d *Deps) CreateAPI(ctx context.Context, req CreateAPIReq) (*model.API, err
 		SetPath(norm.Path).SetIsRequired(norm.IsRequired).SetServiceName(norm.ServiceName).
 		Save(ctx)
 	if err != nil {
-		return nil, xerr.BadRequest(coreI18n.APICreateFailed)
+		return nil, xerr.EntInternalServerError(coreI18n.APICreateFailed, err)
 	}
 	if err := d.grantAPIToSupers(ctx, row.Path, row.Method); err != nil {
 		return nil, err
@@ -325,7 +325,7 @@ func (d *Deps) registerAPI(ctx context.Context, req CreateAPIReq, insertOnly boo
 		return nil, err
 	}
 	if row == nil {
-		return nil, xerr.InternalServerError(coreI18n.APIRegisterFailed)
+		return nil, xerr.BadRequest(coreI18n.APIRegisterFailed)
 	}
 	a := apiFromEnt(row)
 	if !insertOnly && a.Description != norm.Description {
@@ -377,7 +377,7 @@ func (d *Deps) DeleteAPIs(ctx context.Context, ids []int64) error {
 
 func (d *Deps) SuperRoles(ctx context.Context) ([]*ent.Role, error) {
 	return d.Client.Role.Query().
-		Where(role.RoleCodeEQ(RoleSuperAdmin), role.IsSystemEQ(true), role.DeletedAtIsNil()).
+		Where(role.RoleCodeEQ(RoleSuperAdmin), role.IsSystemEQ(true)).
 		All(ctx)
 }
 

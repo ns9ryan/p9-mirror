@@ -25,7 +25,6 @@ func (Role) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
-		entmixin.SoftDeleteMixin{},
 		entmixin.OperatorCodeMixin{},
 	}
 }
@@ -59,6 +58,9 @@ func (Role) Indexes() []ent.Index {
 			Annotations(entsql.IndexWhere("operator_code IS NULL")),
 		index.Fields("operator_code", "role_name").Unique().
 			StorageKey("uk_sys_role_operator_name").
-			Annotations(entsql.IndexWhere("deleted_at IS NULL")),
+			Annotations(entsql.IndexWhere("operator_code IS NOT NULL")),
+		index.Fields("role_name").Unique().
+			StorageKey("uk_sys_role_name").
+			Annotations(entsql.IndexWhere("operator_code IS NULL")),
 	}
 }

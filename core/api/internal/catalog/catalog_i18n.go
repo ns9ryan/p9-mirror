@@ -103,6 +103,16 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 			&coreclient.I18NItem{I18NCode: i18nCode, I18NGroup: i18n.GroupAPI, TransKey: key, Lang: i18n.LangEN, Value: en},
 		)
 	}
+	// 接口组多语言
+	add("api.group.user", "用户管理", "用戶管理", "Users")
+	add("api.group.role", "角色管理", "角色管理", "Roles")
+	add("api.group.menu", "菜单管理", "菜單管理", "Menus")
+	add("api.group.api", "接口管理", "接口管理", "APIs")
+	add("api.group.authority", "权限管理", "權限管理", "Authority")
+	add("api.group.log", "日志管理", "日志管理", "Logs")
+	add("api.group.i18n", "多语言", "多語言", "I18n")
+
+	// 接口描述多语言
 	add("api.userCreate", "创建后台用户", "創建後台用戶", "Create admin user")
 	add("api.userUpdate", "更新后台用户", "更新後台用戶", "Update admin user")
 	add("api.userDelete", "删除后台用户", "刪除後台用戶", "Delete admin user")
@@ -235,6 +245,10 @@ func errorI18n(i18nCode string) []*coreclient.I18NItem {
 	add("common.serviceUnavailable", "服务不可用", "服務不可用", "Service unavailable")
 	add("auth.ipMismatch", "登录 IP 已变化，请重新登录", "登錄 IP 已變化，請重新登錄", "Login IP has changed, please login again")
 	add("auth.ipNotAllowed", "当前 IP 不在白名单内", "當前 IP 不在白名單內", "Current IP is not in the whitelist")
+	add("auth.invalidToken", "登录凭证无效", "登錄憑證無效", "Invalid login credentials")
+	add("auth.userSaltMismatch", "用户盐不匹配", "用戶鹽不匹配", "User salt mismatch")
 	add("auth.userDisabled", "账号已停用", "賬號已停用", "Account disabled")
+	add("auth.invalidCredentials", "登录凭证无效", "登錄憑證無效", "Invalid login credentials")
+	add("auth.userNotFound", "登录凭证无效，用户不存在", "登錄憑證無效，用戶不存在", "Invalid login credentials, user not found")
 	return out
 }

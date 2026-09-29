@@ -152,6 +152,7 @@ var sensitiveKeys = map[string]struct{}{
 	"access_token":  {},
 	"token":         {},
 	"init_token":    {},
+	"auth_secret":   {},
 }
 
 // MaskJSON 屏蔽敏感信息

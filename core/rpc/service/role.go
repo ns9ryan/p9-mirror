@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"strings"
-	"time"
 
 	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/common/xerr"
@@ -42,6 +41,23 @@ func (d *Deps) CreateRole(ctx context.Context, claims *ctxdata.Claims, req Creat
 	if d.Mode == ModeOn && (claims == nil || claims.OperatorCode == "") {
 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
 	}
+	// 检查角色编码是否已存在
+	oldRole, err := d.GetRoleByCode(ctx, claims, req.RoleCode)
+	if err != nil && !ent.IsNotFound(err) {
+		return nil, xerr.EntInternalServerError(coreI18n.RoleCreateFailed, err)
+	}
+	if oldRole != nil {
+		return nil, xerr.BadRequest(coreI18n.RoleCodeAlreadyExists)
+	}
+	// 检查角色名称是否已存在
+	oldRole, err = d.GetRoleByName(ctx, claims, req.RoleName)
+	if err != nil && !ent.IsNotFound(err) {
+		return nil, xerr.EntInternalServerError(coreI18n.RoleCreateFailed, err)
+	}
+	if oldRole != nil {
+		return nil, xerr.BadRequest(coreI18n.RoleNameAlreadyExists)
+	}
+	// 创建角色
 	row, err := d.Client.Role.Create().
 		SetRoleCode(req.RoleCode).
 		SetRoleName(req.RoleName).
@@ -51,7 +67,7 @@ func (d *Deps) CreateRole(ctx context.Context, claims *ctxdata.Claims, req Creat
 		SetSortNo(req.SortNo).
 		Save(ctx)
 	if err != nil {
-		return nil, xerr.BadRequest(coreI18n.RoleCreateFailed)
+		return nil, xerr.EntInternalServerError(coreI18n.RoleCreateFailed, err)
 	}
 	return roleFromEnt(row), nil
 }
@@ -65,6 +81,18 @@ func (d *Deps) UpdateRole(ctx context.Context, claims *ctxdata.Claims, req Updat
 	if r.IsSystem && req.Status != nil && *req.Status == model.StatusDisabled {
 		return xerr.Forbidden(coreI18n.RoleCannotDisableSystem)
 	}
+	// 检查角色名称是否已存在
+	if req.RoleName != nil && *req.RoleName != r.RoleName {
+		oldRole, err := d.GetRoleByName(ctx, claims, *req.RoleName)
+		if err != nil && !ent.IsNotFound(err) {
+			return err
+		}
+		if oldRole != nil {
+			return xerr.BadRequest(coreI18n.RoleNameAlreadyExists)
+		}
+	}
+
+	// 更新角色
 	upd := d.Client.Role.UpdateOneID(r.ID)
 	if req.RoleName != nil {
 		upd.SetRoleName(strings.TrimSpace(*req.RoleName))
@@ -110,15 +138,36 @@ func (d *Deps) DeleteRoles(ctx context.Context, claims *ctxdata.Claims, ids []in
 		if err := d.Client.Role.UpdateOneID(r.ID).ClearMenus().Exec(ctx); err != nil {
 			return err
 		}
-		if err := d.Client.Role.UpdateOneID(r.ID).SetDeletedAt(time.Now()).Exec(ctx); err != nil {
+		if err := d.Client.Role.DeleteOneID(r.ID).Exec(ctx); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
+// GetRole 根据角色ID获取角色
 func (d *Deps) GetRole(ctx context.Context, claims *ctxdata.Claims, id int64) (*model.Role, error) {
 	return d.mustTenantRole(ctx, claims, id)
+}
+
+// GetRoleByCode 根据角色编码获取角色
+func (d *Deps) GetRoleByCode(ctx context.Context, claims *ctxdata.Claims, code string) (*model.Role, error) {
+	roleInfo, err := d.Client.Role.Query().Where(role.RoleCode(code)).First(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return roleFromEnt(roleInfo), nil
+}
+
+// GetRoleByName 根据角色名称获取角色
+func (d *Deps) GetRoleByName(ctx context.Context, claims *ctxdata.Claims, name string) (*model.Role, error) {
+	roleInfo, err := d.Client.Role.Query().Where(role.RoleName(name)).First(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return roleFromEnt(roleInfo), nil
 }
 
 type RoleListReq struct {
@@ -130,7 +179,7 @@ func (d *Deps) ListRoles(ctx context.Context, claims *ctxdata.Claims, req RoleLi
 	if claims == nil {
 		return nil, 0, xerr.Unauthorized(coreI18n.Unauthorized)
 	}
-	q := d.Client.Role.Query().Where(role.DeletedAtIsNil())
+	q := d.Client.Role.Query()
 	if s := strings.TrimSpace(req.RoleName); s != "" {
 		q.Where(role.Or(
 			role.RoleNameContains(s),
@@ -150,7 +199,7 @@ func (d *Deps) ListRoles(ctx context.Context, claims *ctxdata.Claims, req RoleLi
 }
 
 func (d *Deps) mustTenantRole(ctx context.Context, claims *ctxdata.Claims, id int64) (*model.Role, error) {
-	row, err := d.Client.Role.Query().Where(role.ID(id), role.DeletedAtIsNil()).Only(ctx)
+	row, err := d.Client.Role.Query().Where(role.ID(id)).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.NotFound(coreI18n.RoleNotFound)

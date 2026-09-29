@@ -36,26 +36,6 @@ func (_u *RoleUpdate) SetUpdatedAt(v time.Time) *RoleUpdate {
 	return _u
 }
 
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *RoleUpdate) SetDeletedAt(v time.Time) *RoleUpdate {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *RoleUpdate) SetNillableDeletedAt(v *time.Time) *RoleUpdate {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *RoleUpdate) ClearDeletedAt() *RoleUpdate {
-	_u.mutation.ClearDeletedAt()
-	return _u
-}
-
 // SetOperatorCode sets the "operator_code" field.
 func (_u *RoleUpdate) SetOperatorCode(v string) *RoleUpdate {
 	_u.mutation.SetOperatorCode(v)
@@ -339,12 +319,6 @@ func (_u *RoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(role.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(role.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(role.FieldDeletedAt, field.TypeTime)
-	}
 	if value, ok := _u.mutation.OperatorCode(); ok {
 		_spec.SetField(role.FieldOperatorCode, field.TypeString, value)
 	}
@@ -491,26 +465,6 @@ type RoleUpdateOne struct {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *RoleUpdateOne) SetUpdatedAt(v time.Time) *RoleUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *RoleUpdateOne) SetDeletedAt(v time.Time) *RoleUpdateOne {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *RoleUpdateOne) SetNillableDeletedAt(v *time.Time) *RoleUpdateOne {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *RoleUpdateOne) ClearDeletedAt() *RoleUpdateOne {
-	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -826,12 +780,6 @@ func (_u *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(role.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(role.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(role.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.OperatorCode(); ok {
 		_spec.SetField(role.FieldOperatorCode, field.TypeString, value)

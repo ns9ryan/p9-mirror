@@ -163,8 +163,9 @@ func ApiInfo(ctx context.Context, code string, in *coreclient.ApiInfo) *types.Ap
 		return nil
 	}
 	return &types.ApiInfo{
-		Id: in.Id, TransDescription: i18n.TG(ctx, code, i18n.GroupAPI, in.Description), Description: in.Description, ApiGroup: in.ApiGroup,
-		Method: in.Method, Path: in.Path, IsRequired: in.IsRequired, ServiceName: in.ServiceName, CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
+		Id: in.Id, TransDescription: i18n.TG(ctx, code, i18n.GroupAPI, in.Description), Description: in.Description,
+		ApiGroup: in.ApiGroup, TransApiGroup: i18n.TG(ctx, code, i18n.GroupAPI, in.ApiGroup), Method: in.Method, Path: in.Path,
+		IsRequired: in.IsRequired, ServiceName: in.ServiceName, CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
 	}
 }
 

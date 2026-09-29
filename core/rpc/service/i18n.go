@@ -85,7 +85,7 @@ func (d *Deps) CreateI18n(ctx context.Context, req CreateI18nReq) (*model.I18n, 
 		SetLang(norm.Lang).SetValue(norm.Value).
 		Save(ctx)
 	if err != nil {
-		return nil, xerr.BadRequest(coreI18n.I18nCreateFailed)
+		return nil, xerr.EntInternalServerError(coreI18n.I18nCreateFailed, err)
 	}
 	out := i18nFromEnt(row)
 	return &out, nil

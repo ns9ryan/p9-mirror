@@ -201,7 +201,10 @@ func (d *Deps) loginUser(ctx context.Context, req LoginReq) (*model.User, error)
 	if d.Mode != ModeOn {
 		row, err := q.Where(user.OperatorCodeIsNil()).Only(ctx)
 		if err != nil {
-			return nil, xerr.Unauthorized(coreI18n.AuthInvalidCredentials)
+			if ent.IsNotFound(err) {
+				return nil, xerr.NotFound(coreI18n.UserNotFound)
+			}
+			return nil, err
 		}
 		return userFromEnt(row), nil
 	}

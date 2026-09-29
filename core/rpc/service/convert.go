@@ -63,7 +63,6 @@ func roleFromEnt(r *ent.Role) *model.Role {
 		SortNo:       r.SortNo,
 		CreatedAt:    r.CreatedAt,
 		UpdatedAt:    r.UpdatedAt,
-		DeletedAt:    r.DeletedAt,
 	}
 }
 

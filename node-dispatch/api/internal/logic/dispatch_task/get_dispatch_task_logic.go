@@ -8,6 +8,7 @@ import (
 
 	"oa.98ent.com/p9/node-dispatch/api/internal/svc"
 	"oa.98ent.com/p9/node-dispatch/api/internal/types"
+	"oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/dispatchpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,8 +27,21 @@ func NewGetDispatchTaskLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 	}
 }
 
+// GetDispatchTask 获取调度任务
 func (l *GetDispatchTaskLogic) GetDispatchTask(req *types.GetDispatchTaskRequest) (resp *types.GetDispatchTaskResponse, err error) {
-	// todo: add your logic here and delete this line
+	// 获取调度任务
+	result, err := l.svcCtx.DispatchRpc.GetTask(
+		l.ctx,
+		&dispatchpb.GetTaskRequest{
+			TaskNo: &req.TaskNo, // 调度任务编号
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	// 返回调度任务信息
+	return &types.GetDispatchTaskResponse{
+		DispatchTaskInfo: toDispatchTaskInfo(result.Task), // 调度任务信息
+	}, nil
 }

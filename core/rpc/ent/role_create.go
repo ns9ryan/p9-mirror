@@ -50,20 +50,6 @@ func (_c *RoleCreate) SetNillableUpdatedAt(v *time.Time) *RoleCreate {
 	return _c
 }
 
-// SetDeletedAt sets the "deleted_at" field.
-func (_c *RoleCreate) SetDeletedAt(v time.Time) *RoleCreate {
-	_c.mutation.SetDeletedAt(v)
-	return _c
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_c *RoleCreate) SetNillableDeletedAt(v *time.Time) *RoleCreate {
-	if v != nil {
-		_c.SetDeletedAt(*v)
-	}
-	return _c
-}
-
 // SetOperatorCode sets the "operator_code" field.
 func (_c *RoleCreate) SetOperatorCode(v string) *RoleCreate {
 	_c.mutation.SetOperatorCode(v)
@@ -324,10 +310,6 @@ func (_c *RoleCreate) createSpec() (*Role, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(role.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
-	}
-	if value, ok := _c.mutation.DeletedAt(); ok {
-		_spec.SetField(role.FieldDeletedAt, field.TypeTime, value)
-		_node.DeletedAt = &value
 	}
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(role.FieldOperatorCode, field.TypeString, value)

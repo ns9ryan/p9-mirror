@@ -43,6 +43,7 @@ func JWT(c Client) rest.Middleware {
 				response.FailCtx(ctx, w, err)
 				return
 			}
+			// 预览模式下不允许写操作
 			if claims != nil && claims.TokenType == jwt.TokenPreview && previewWriteDenied(r.Method, r.URL.Path) {
 				response.FailCtx(ctx, w, xerr.Forbidden(coreI18n.AuthPreviewReadOnly))
 				return

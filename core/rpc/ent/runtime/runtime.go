@@ -356,17 +356,13 @@ func init() {
 	menu.DefaultDisabled = menuDescDisabled.Default.(int16)
 	roleMixin := schema.Role{}.Mixin()
 	roleMixinHooks2 := roleMixin[2].Hooks()
-	roleMixinHooks3 := roleMixin[3].Hooks()
 	role.Hooks[0] = roleMixinHooks2[0]
-	role.Hooks[1] = roleMixinHooks3[0]
 	roleMixinInters2 := roleMixin[2].Interceptors()
-	roleMixinInters3 := roleMixin[3].Interceptors()
 	role.Interceptors[0] = roleMixinInters2[0]
-	role.Interceptors[1] = roleMixinInters3[0]
 	roleMixinFields1 := roleMixin[1].Fields()
 	_ = roleMixinFields1
-	roleMixinFields3 := roleMixin[3].Fields()
-	_ = roleMixinFields3
+	roleMixinFields2 := roleMixin[2].Fields()
+	_ = roleMixinFields2
 	roleFields := schema.Role{}.Fields()
 	_ = roleFields
 	// roleDescCreatedAt is the schema descriptor for created_at field.
@@ -380,7 +376,7 @@ func init() {
 	// role.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	role.UpdateDefaultUpdatedAt = roleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// roleDescOperatorCode is the schema descriptor for operator_code field.
-	roleDescOperatorCode := roleMixinFields3[0].Descriptor()
+	roleDescOperatorCode := roleMixinFields2[0].Descriptor()
 	// role.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
 	role.OperatorCodeValidator = roleDescOperatorCode.Validators[0].(func(string) error)
 	// roleDescRoleCode is the schema descriptor for role_code field.

@@ -150,7 +150,7 @@ func (d *Deps) MenusByRole(ctx context.Context, claims *ctxdata.Claims) ([]model
 		return make([]model.Menu, 0), nil
 	}
 	roles, err := d.Client.Role.Query().
-		Where(role.RoleCodeIn(claims.RoleCodes...), role.DeletedAtIsNil(), role.StatusEQ(model.StatusNormal)).
+		Where(role.RoleCodeIn(claims.RoleCodes...), role.StatusEQ(model.StatusNormal)).
 		All(ctx)
 	if err != nil {
 		return nil, err

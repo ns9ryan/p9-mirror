@@ -323,7 +323,6 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", Default: schema.Expr("CURRENT_TIMESTAMP")},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", Default: schema.Expr("CURRENT_TIMESTAMP")},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "Deleted At | 删除时间"},
 		{Name: "operator_code", Type: field.TypeString, Nullable: true, Size: 64, Comment: "Operator Code | 分站编码"},
 		{Name: "role_code", Type: field.TypeString, Size: 64, Comment: "Role code | 角色编码"},
 		{Name: "role_name", Type: field.TypeString, Size: 100, Comment: "Role name | 角色名"},
@@ -342,7 +341,7 @@ var (
 			{
 				Name:    "uk_sys_role_operator_code",
 				Unique:  true,
-				Columns: []*schema.Column{SysRoleColumns[4], SysRoleColumns[5]},
+				Columns: []*schema.Column{SysRoleColumns[3], SysRoleColumns[4]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "operator_code IS NOT NULL",
 				},
@@ -350,7 +349,7 @@ var (
 			{
 				Name:    "uk_sys_role_code",
 				Unique:  true,
-				Columns: []*schema.Column{SysRoleColumns[5]},
+				Columns: []*schema.Column{SysRoleColumns[4]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "operator_code IS NULL",
 				},
@@ -358,9 +357,17 @@ var (
 			{
 				Name:    "uk_sys_role_operator_name",
 				Unique:  true,
-				Columns: []*schema.Column{SysRoleColumns[4], SysRoleColumns[6]},
+				Columns: []*schema.Column{SysRoleColumns[3], SysRoleColumns[5]},
 				Annotation: &entsql.IndexAnnotation{
-					Where: "deleted_at IS NULL",
+					Where: "operator_code IS NOT NULL",
+				},
+			},
+			{
+				Name:    "uk_sys_role_name",
+				Unique:  true,
+				Columns: []*schema.Column{SysRoleColumns[5]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "operator_code IS NULL",
 				},
 			},
 		},

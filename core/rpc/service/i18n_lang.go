@@ -101,7 +101,7 @@ func (d *Deps) CreateI18nLang(ctx context.Context, req CreateI18nLangReq) (*mode
 		SetDisabled(req.Disabled).SetSortNo(req.SortNo).
 		Save(ctx)
 	if err != nil {
-		return nil, xerr.BadRequest(coreI18n.I18nLangCreateFailed)
+		return nil, xerr.EntInternalServerError(coreI18n.I18nLangCreateFailed, err)
 	}
 	m := i18nLangFromEnt(row)
 	return &m, nil
