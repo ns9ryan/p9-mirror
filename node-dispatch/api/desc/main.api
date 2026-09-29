@@ -1,3 +1,4 @@
 syntax = "v1"
 
 import "node.api"
+import "dispatch_task.api"
