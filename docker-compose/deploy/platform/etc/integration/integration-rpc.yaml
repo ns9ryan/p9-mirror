@@ -77,3 +77,9 @@ IpGeo:
       Priority: 3
       Endpoint: assets/ip2region.xdb
 
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: integration-rpc
+  Endpoint: 192.168.0.15:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc

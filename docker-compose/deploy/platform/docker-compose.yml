@@ -127,6 +127,7 @@ services:
       - ./etc/game/rpc/platform_game.yaml:/app/etc/platform_game.yaml:ro
     networks:
       - p9-platform-network
+      - p9-shared-network
 
   game-api:
     image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/platform-game-api:${VERSION:-1.0.0}
@@ -259,6 +260,7 @@ services:
       - operator-rpc
       - base-rpc
       - core-rpc
+      - game-rpc
     networks:
       - p9-platform-network
 
@@ -270,4 +272,5 @@ volumes:
 networks:
   p9-platform-network:
     driver: bridge
-
+  p9-shared-network:
+    external: true

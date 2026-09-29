@@ -1,4 +1,4 @@
-Name: operator.node02.core.api
+Name: operator02-core-api
 Host: 0.0.0.0
 Port: 38200
 
@@ -18,5 +18,11 @@ CoreRpc:
   Endpoints:
     - operator-node02-core-rpc:39200
   NonBlock: true
-  Timeout: 10000
+  Timeout: 3000
 
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: operator02-core-api
+  Endpoint: 192.168.0.15:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc

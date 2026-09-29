@@ -1,6 +1,7 @@
-Name: operator.node01.core.rpc
-ListenOn: 0.0.0.0:39000
+Name: operator02-core-rpc
+ListenOn: 0.0.0.0:39200
 Timeout: 10000
+Mode: dev
 
 Log:
   Mode: console
@@ -16,10 +17,17 @@ DataRedis:
   DB: 0
 
 Jwt:
-  AccessSecret: rbacx-example-secret-node01
+  AccessSecret: rbacx-example-secret-node02
   AccessExpire: 86400
-  RefreshSecret: rbacx-example-refresh-secret-node01
+  RefreshSecret: rbacx-example-refresh-secret-node02
   RefreshExpire: 604800
+
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: operator02-core-rpc
+  Endpoint: 192.168.0.15:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc
 
 PartnerMode: "on"
 APIPrefix: /admin

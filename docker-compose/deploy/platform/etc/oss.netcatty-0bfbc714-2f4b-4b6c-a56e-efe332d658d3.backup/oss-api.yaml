@@ -3,12 +3,7 @@
 # 未配 oss_rpc.endpoints 时只上传对象（common/oss），不写档案。
 # 无默认服务商时上传和当前生效配置都走本文件（或 etcd）的 oss。
 
-port: "18006"
-Mode: dev
-
-# 国际化多语言配置。默认中文。
-I18n:
-  DefaultLanguage: zh-CN        # 默认语言
+port: "18002"
 
 # 浏览器跨域。'*' 允许全部 Origin。
 cros_conf:
@@ -34,7 +29,7 @@ upload:
 # 存储驱动。未配 oss_rpc 时本进程直连；配了则档案/服务商走 RPC。
 oss:
   driver: s3                   # s3 / minio
-  endpoint: "http://192.168.0.15:9200"           # 容器内网 S3 API
+  endpoint: "http://minio:9000"           # 容器内网 S3 API
   file_url: "http://192.168.0.15:9200"    # 浏览器/外网访问（宿主机映射端口）
   access_key: minioadmin
   secret_key: minioadmin
@@ -53,5 +48,5 @@ core_rpc:
 # 档案 / 服务商。不配则退化成纯对象存储。
 oss_rpc:
   endpoints:
-    - oss-rpc:19006
+    - oss-rpc:19002
   timeout: 10000

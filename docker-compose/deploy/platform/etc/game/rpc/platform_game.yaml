@@ -1,5 +1,5 @@
 # RPC 服务配置
-Name: platform-game.rpc
+Name: platform-game-rpc
 ListenOn: 0.0.0.0:19003
 Timeout: 10000
 
@@ -8,16 +8,32 @@ Log:
   Mode: console
   Level: info
 
-# 数据库配置
-Database:
-  Driver: postgres
-  DSN: "host=postgres user=root password=root dbname=p9_platform port=5432 sslmode=disable TimeZone=UTC"
-  MaxConns: 20
-  MaxIdle: 5
-
 # 游戏供应商 gRPC 服务地址（用于同步）
 #GrpcServerAddr: game-vendor-gateway:5000
 
 Kafka:
   Brokers:
     - "192.168.0.15:9092"
+
+DatabaseConf:
+  Host:     postgres     # 数据库地址
+  Port:     5432          # 数据库端口
+  DBName:   p9_platform   # 数据库名称
+  Username: root          # 数据库用户名
+  Password: root          # 数据库密码
+  SSLMode:  disable       # SSL模式
+
+
+SyncBatchSize: 100
+
+Etcd:
+  Hosts:
+    - 192.168.0.15:2379       # Etcd地址
+  Key: platform-game-rpc    # 服务注册Key
+
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: platform-game-rpc
+  Endpoint: 192.168.0.15:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc

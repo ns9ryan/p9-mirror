@@ -108,6 +108,18 @@ services:
         soft: 262144
         hard: 262144
 
+  jaeger:
+    image: jaegertracing/all-in-one:1.74.0
+    container_name: p9-jaeger
+    restart: always
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+      TZ: Asia/Shanghai
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+
 volumes:
   mysql_data:
   postgres_data:

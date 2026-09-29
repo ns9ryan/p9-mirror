@@ -17,3 +17,10 @@ DatabaseConf:
   Username: root                 # 数据库用户名
   Password: root                 # 数据库密码
   SSLMode:  disable              # SSL模式
+
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: platform-operator-rpc
+  Endpoint: 192.168.0.15:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc

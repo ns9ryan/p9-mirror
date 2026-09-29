@@ -46,7 +46,7 @@ services:
     ports:
       - "39300:39300"
     volumes:
-      - ./etc/core-rpc.yaml:/app/etc/core.yaml:ro
+      - ./etc/core/core-rpc.yaml:/app/etc/core.yaml:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -62,7 +62,7 @@ services:
     ports:
       - "38300:38300"
     volumes:
-      - ./etc/core-api.yaml:/app/etc/core.yaml:ro
+      - ./etc/core/core-api.yaml:/app/etc/core.yaml:ro
     depends_on:
       - core-rpc
     networks:
