@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	operatorpb "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/operatorpb"
+	pingpb "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/pingpb"
 	reflect "reflect"
 	unsafe "unsafe"
 )
@@ -25,20 +26,26 @@ var File_operator_base_proto protoreflect.FileDescriptor
 
 const file_operator_base_proto_rawDesc = "" +
 	"\n" +
-	"\x13operator_base.proto\x12\roperator_base\x1a\"types/operator_base_operator.proto2\x86\x01\n" +
+	"\x13operator_base.proto\x12\roperator_base\x1a\x1etypes/operator_base_ping.proto\x1a\"types/operator_base_operator.proto2X\n" +
+	"\vPingService\x12I\n" +
+	"\x04Ping\x12\x1f.operator_base_ping.PingRequest\x1a .operator_base_ping.PingResponse2\x86\x01\n" +
 	"\x0fOperatorService\x12s\n" +
 	"\n" +
 	"Initialize\x121.operator_base_operator.InitializeOperatorRequest\x1a2.operator_base_operator.InitializeOperatorResponseB6Z4oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpcb\x06proto3"
 
 var file_operator_base_proto_goTypes = []any{
-	(*operatorpb.InitializeOperatorRequest)(nil),  // 0: operator_base_operator.InitializeOperatorRequest
-	(*operatorpb.InitializeOperatorResponse)(nil), // 1: operator_base_operator.InitializeOperatorResponse
+	(*pingpb.PingRequest)(nil),                    // 0: operator_base_ping.PingRequest
+	(*operatorpb.InitializeOperatorRequest)(nil),  // 1: operator_base_operator.InitializeOperatorRequest
+	(*pingpb.PingResponse)(nil),                   // 2: operator_base_ping.PingResponse
+	(*operatorpb.InitializeOperatorResponse)(nil), // 3: operator_base_operator.InitializeOperatorResponse
 }
 var file_operator_base_proto_depIdxs = []int32{
-	0, // 0: operator_base.OperatorService.Initialize:input_type -> operator_base_operator.InitializeOperatorRequest
-	1, // 1: operator_base.OperatorService.Initialize:output_type -> operator_base_operator.InitializeOperatorResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 0: operator_base.PingService.Ping:input_type -> operator_base_ping.PingRequest
+	1, // 1: operator_base.OperatorService.Initialize:input_type -> operator_base_operator.InitializeOperatorRequest
+	2, // 2: operator_base.PingService.Ping:output_type -> operator_base_ping.PingResponse
+	3, // 3: operator_base.OperatorService.Initialize:output_type -> operator_base_operator.InitializeOperatorResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -57,7 +64,7 @@ func file_operator_base_proto_init() {
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_operator_base_proto_goTypes,
 		DependencyIndexes: file_operator_base_proto_depIdxs,

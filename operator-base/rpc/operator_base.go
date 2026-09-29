@@ -6,6 +6,7 @@ import (
 
 	"oa.98ent.com/p9/operator-base/rpc/internal/config"
 	operatorserviceServer "oa.98ent.com/p9/operator-base/rpc/internal/server/operatorservice"
+	pingserviceServer "oa.98ent.com/p9/operator-base/rpc/internal/server/pingservice"
 	"oa.98ent.com/p9/operator-base/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc"
 
@@ -31,6 +32,9 @@ func main() {
 	ctx.MustMigrate()
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+		// Ping 服务
+		operatorbaserpc.RegisterPingServiceServer(grpcServer, pingserviceServer.NewPingServiceServer(ctx))
+
 		// 厅 operator 服务
 		operatorbaserpc.RegisterOperatorServiceServer(grpcServer, operatorserviceServer.NewOperatorServiceServer(ctx))
 

@@ -4,7 +4,14 @@ package operator_base;
 
 option go_package = "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc";
 
+import "types/operator_base_ping.proto";
 import "types/operator_base_operator.proto";
+
+// Ping 服务
+service PingService {
+  // Ping
+  rpc Ping(operator_base_ping.PingRequest) returns (operator_base_ping.PingResponse);
+}
 
 // 厅 operator 服务
 service OperatorService {

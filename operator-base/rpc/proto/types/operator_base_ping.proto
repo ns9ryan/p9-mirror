@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package operator_base_ping;
+
+option go_package = "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/pingpb";
+
+// Ping 请求
+message PingRequest {}
+
+// Ping 响应
+message PingResponse {}
