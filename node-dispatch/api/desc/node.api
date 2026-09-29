@@ -1,0 +1,124 @@
+syntax = "v1"
+
+import "types/common.api"
+
+type (
+	// 节点信息
+	NodeInfo {
+		// 节点ID
+		Id int64 `json:"id"`
+		// 节点业务编码
+		Code string `json:"code"`
+		// 节点名称
+		Name string `json:"name"`
+		// 节点状态: 1启用, 2停用
+		Status int64 `json:"status"`
+		// 节点是否在线
+		Online bool `json:"online"`
+		// 最近一次活动时间, Unix毫秒时间戳
+		LastSeenAt *int64 `json:"last_seen_at,optional"`
+		// 运维备注
+		Remark *string `json:"remark,optional"`
+		// 创建时间, Unix毫秒时间戳
+		CreatedAt int64 `json:"created_at"`
+		// 更新时间, Unix毫秒时间戳
+		UpdatedAt int64 `json:"updated_at"`
+	}
+	// 创建节点请求
+	CreateNodeRequest {
+		// 节点名称
+		Name string `json:"name" validate:"required,notblank,max=100"`
+		// 节点状态: 1启用, 2停用
+		Status *int64 `json:"status,optional" validate:"omitempty,oneof=1 2"`
+		// 运维备注
+		Remark *string `json:"remark,optional" validate:"omitempty,max=1000"`
+	}
+	// 创建节点响应
+	CreateNodeResponse {
+		// 节点ID
+		Id int64 `json:"id"`
+		// 节点业务编码
+		Code string `json:"code"`
+		// 节点认证密钥, 仅本次返回
+		AuthSecret string `json:"auth_secret"`
+	}
+	// 修改节点请求
+	UpdateNodeRequest {
+		// 节点ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+		// 节点名称
+		Name *string `json:"name,optional" validate:"omitempty,notblank,max=100"`
+		// 节点状态: 1启用, 2停用
+		Status *int64 `json:"status,optional" validate:"omitempty,oneof=1 2"`
+		// 运维备注
+		Remark *string `json:"remark,optional" validate:"omitempty,max=1000"`
+	}
+	// 修改节点响应
+	UpdateNodeResponse  {}
+	// 获取节点请求
+	GetNodeRequest {
+		// 节点ID
+		Id int64 `form:"id" validate:"required,gt=0"`
+	}
+	// 获取节点响应
+	GetNodeResponse {
+		// 节点信息
+		NodeInfo
+	}
+	// 获取节点列表请求
+	ListNodesRequest {
+		// 分页参数
+		PageRequest
+		// 搜索关键字, 匹配节点编码或名称
+		Keyword *string `form:"keyword,optional" validate:"omitempty,max=100"`
+		// 节点状态: 1启用, 2停用
+		Status *int64 `form:"status,optional" validate:"omitempty,oneof=1 2"`
+		// 节点是否在线
+		Online *bool `form:"online,optional"`
+	}
+	// 获取节点列表响应
+	ListNodesResponse {
+		// 数据总数
+		Total int64 `json:"total"`
+		// 节点列表
+		List []NodeInfo `json:"list"`
+	}
+	// 重置节点认证密钥请求
+	ResetNodeAuthSecretRequest {
+		// 节点ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+	}
+	// 重置节点认证密钥响应
+	ResetNodeAuthSecretResponse {
+		// 新节点认证密钥, 仅本次返回
+		AuthSecret string `json:"auth_secret"`
+	}
+)
+
+@server (
+	group:      node
+	prefix:     /admin/node
+	middleware: Jwt,ActionLog,Authority
+)
+service node_dispatch {
+	// 创建节点
+	@handler CreateNode
+	post /create (CreateNodeRequest) returns (CreateNodeResponse)
+
+	// 修改节点
+	@handler UpdateNode
+	post /update (UpdateNodeRequest) returns (UpdateNodeResponse)
+
+	// 获取节点
+	@handler GetNode
+	get /get (GetNodeRequest) returns (GetNodeResponse)
+
+	// 获取节点列表
+	@handler ListNodes
+	get /list (ListNodesRequest) returns (ListNodesResponse)
+
+	// 重置节点认证密钥
+	@handler ResetNodeAuthSecret
+	post /reset-auth-secret (ResetNodeAuthSecretRequest) returns (ResetNodeAuthSecretResponse)
+}
+
