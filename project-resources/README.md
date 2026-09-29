@@ -1,23 +1,37 @@
 # project-resources
 
-P9 项目公共资源仓库，用于存放数据库设计、Ent Schema、Docker 本地环境、Demo、产品资料及项目讨论内容。
+P9 项目公共资源目录，用于统一保存数据库设计、开发规范、API 文档、Docker 本地环境及方案验证资料。
 
 ## 目录说明
 
-* `database/`：SQL 文件和 Ent Schema。
-* `demos/`：前后端 Demo、方案验证及选型示例。
-* `docker/`：P9 本地 Docker 基础环境及配置。
-* `docs/`：项目架构、模块划分、产品对接及其他说明资料。
+```text
+project-resources
+├── database/    # 数据库 SQL 和 Ent Schema
+├── demos/       # Demo、方案验证和选型示例
+├── docker/      # 本地 Docker 基础环境和配置
+└── docs/        # 开发规范、API 文档及项目说明
+```
 
-## 相关文档
+## 项目文档
 
-* [Git SSH 配置](docs/git-ssh.md)
-* [服务端口](docs/service-ports.md)
-* [platform-base API 文档](docs/platform-base-api.md)
-* [platform-operator API 文档](docs/platform-operator-api.md)
+### 开发规范与配置
+
+- [代码规范](docs/code-norm.md)
+- [服务端口](docs/service-ports.md)
+- [Git SSH 配置](docs/git-ssh.md)
+
+### API 文档
+
+- [Core API 文档](docs/core-api.md)
+- [Platform Base API 文档](docs/platform-base-api.md)
+- [Platform Operator API 文档](docs/platform-operator-api.md)
+- [Node Dispatch API 文档](docs/node-dispatch-api.md)
+- [Integration API 文档](docs/integration-api.md)
+- [OSS API 文档](docs/oss-api.md)
+- [Operator Game API 文档](docs/operator-game-api.md)
 
 ## 说明
 
-本仓库不作为 P9 正式业务代码仓库。
+`project-resources` 用于保存 P9 项目的公共开发资料和参考资源，不承载正式业务服务代码。
 
-其中的 Docker 配置和 Demo 主要用于本地开发、方案讨论、验证及后续部署配置参考。正式项目代码存放在对应业务仓库，正式部署配置可根据实际部署需要迁移到对应业务或部署仓库。
+`demos/` 中的内容主要用于方案讨论、技术验证和选型参考，不作为正式业务实现依据。
