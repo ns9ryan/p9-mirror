@@ -12,16 +12,16 @@ import (
 	"oa.98ent.com/p9/platform-operator/api/internal/types"
 )
 
-func ListOperatorNodesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetOperatorNodeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ListOperatorNodesRequest
+		var req types.GetOperatorNodeRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := operator_node.NewListOperatorNodesLogic(r.Context(), svcCtx)
-		resp, err := l.ListOperatorNodes(&req)
+		l := operator_node.NewGetOperatorNodeLogic(r.Context(), svcCtx)
+		resp, err := l.GetOperatorNode(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

@@ -200,6 +200,14 @@ type GetOperatorGameProviderListResponse struct {
 	PageSize int32                      `json:"page_size"`
 }
 
+type GetOperatorNodeRequest struct {
+	OperatorId int64 `form:"operator_id" validate:"required,gt=0"`
+}
+
+type GetOperatorNodeResponse struct {
+	OperatorNode *OperatorNodeInfo `json:"operator_node"`
+}
+
 type GetOperatorProfileRequest struct {
 	OperatorId int64 `form:"operator_id" validate:"required,gt=0"`
 }
@@ -293,17 +301,6 @@ type ListOperatorDomainsRequest struct {
 type ListOperatorDomainsResponse struct {
 	Total int64                `json:"total"`
 	List  []OperatorDomainInfo `json:"list"`
-}
-
-type ListOperatorNodesRequest struct {
-	PageRequest
-	OperatorId int64   `form:"operator_id" validate:"required,gt=0"`
-	Keyword    *string `form:"keyword,optional" validate:"omitempty,max=100"`
-}
-
-type ListOperatorNodesResponse struct {
-	Total int64              `json:"total"`
-	List  []OperatorNodeInfo `json:"list"`
 }
 
 type ListOperatorsRequest struct {
@@ -426,7 +423,6 @@ type OperatorNodeInfo struct {
 	NodeOnline     bool    `json:"node_online"`
 	NodeLastSeenAt *int64  `json:"node_last_seen_at,optional"`
 	NodeRemark     *string `json:"node_remark,optional"`
-	Selected       bool    `json:"selected"`
 }
 
 type OperatorProfileInfo struct {

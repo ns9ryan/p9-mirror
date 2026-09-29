@@ -340,8 +340,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
-					Path:    "/list",
-					Handler: operator_node.ListOperatorNodesHandler(serverCtx),
+					Path:    "/get",
+					Handler: operator_node.GetOperatorNodeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
