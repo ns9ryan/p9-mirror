@@ -12,14 +12,14 @@ ENV TZ=Asia/Shanghai
 RUN apk add --no-cache tzdata ca-certificates
 
 # 复制API可执行文件
-COPY ./operator_base_api ./
-RUN chmod +x ./operator_base_api
+COPY ./platform_base_api ./
+RUN chmod +x ./platform_base_api
 
 # 复制API配置文件
-COPY ./api/etc/operator_base.yaml ./etc/
+COPY ./api/etc/platform_base.yaml ./etc/
 
 # API服务端口
-EXPOSE 38001
+EXPOSE 18001
 
-ENTRYPOINT ["./operator_base_api"]
-CMD ["-f", "etc/operator_base.yaml"]
+ENTRYPOINT ["./platform_base_api"]
+CMD ["-f", "etc/platform_base.yaml"]

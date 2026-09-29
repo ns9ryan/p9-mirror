@@ -9,175 +9,77 @@ import (
 )
 
 var (
-	// OperatorColumns holds the columns for the "operator" table.
-	OperatorColumns = []*schema.Column{
+	// CurrencyColumns holds the columns for the "currency" table.
+	CurrencyColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "status", Type: field.TypeInt64, Comment: "状态: 1启用, 2停用", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "sort_no", Type: field.TypeInt64, Comment: "排序值, 数值越小越靠前", SchemaType: map[string]string{"postgres": "integer"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 64, Comment: "operator 全局唯一业务编码"},
-		{Name: "name", Type: field.TypeString, Size: 100, Comment: "operator 名称"},
-		{Name: "timezone_code", Type: field.TypeString, Size: 64, Comment: "IANA 时区编码"},
-		{Name: "settlement_currency_code", Type: field.TypeString, Size: 16, Comment: "结算货币编码"},
-		{Name: "status", Type: field.TypeInt64, Comment: "operator 状态: 1正常, 2暂停, 3关闭", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 16, Comment: "货币编码"},
+		{Name: "name_key", Type: field.TypeString, Size: 128, Comment: "名称翻译 Key"},
+		{Name: "currency_type", Type: field.TypeInt64, Comment: "货币类型: 1法定货币, 2虚拟货币", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "symbol", Type: field.TypeString, Size: 16, Comment: "货币符号"},
+		{Name: "amount_factor", Type: field.TypeInt64, Comment: "金额换算倍率, 例如 USD 为100, VND为1", SchemaType: map[string]string{"postgres": "bigint"}},
 	}
-	// OperatorTable holds the schema information for the "operator" table.
-	OperatorTable = &schema.Table{
-		Name:       "operator",
-		Comment:    "厅 operator 基础表",
-		Columns:    OperatorColumns,
-		PrimaryKey: []*schema.Column{OperatorColumns[0]},
+	// CurrencyTable holds the schema information for the "currency" table.
+	CurrencyTable = &schema.Table{
+		Name:       "currency",
+		Comment:    "系统货币表",
+		Columns:    CurrencyColumns,
+		PrimaryKey: []*schema.Column{CurrencyColumns[0]},
 	}
-	// OperatorAgentLineColumns holds the columns for the "operator_agent_line" table.
-	OperatorAgentLineColumns = []*schema.Column{
+	// RegionColumns holds the columns for the "region" table.
+	RegionColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
-		{Name: "agent_line_code", Type: field.TypeString, Size: 32, Comment: "代理子线路编码"},
-		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "operator_id", Type: field.TypeInt64, Comment: "所属 operator 本地主键", SchemaType: map[string]string{"postgres": "bigint"}},
-	}
-	// OperatorAgentLineTable holds the schema information for the "operator_agent_line" table.
-	OperatorAgentLineTable = &schema.Table{
-		Name:       "operator_agent_line",
-		Comment:    "厅 operator 当前有效代理子线路关系表",
-		Columns:    OperatorAgentLineColumns,
-		PrimaryKey: []*schema.Column{OperatorAgentLineColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "operator_agent_line_operator_agent_lines",
-				Columns:    []*schema.Column{OperatorAgentLineColumns[3]},
-				RefColumns: []*schema.Column{OperatorColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "uk_operator_agent_line",
-				Unique:  true,
-				Columns: []*schema.Column{OperatorAgentLineColumns[3], OperatorAgentLineColumns[1]},
-			},
-		},
-	}
-	// OperatorDomainColumns holds the columns for the "operator_domain" table.
-	OperatorDomainColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "status", Type: field.TypeInt64, Comment: "状态: 1启用, 2停用", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "sort_no", Type: field.TypeInt64, Comment: "排序值, 数值越小越靠前", SchemaType: map[string]string{"postgres": "integer"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "domain_name", Type: field.TypeString, Size: 253, Comment: "域名"},
-		{Name: "domain_type", Type: field.TypeInt64, Comment: "域名类型: 1分站后台, 2代理后台, 3会员H5", SchemaType: map[string]string{"postgres": "smallint"}},
-		{Name: "operator_id", Type: field.TypeInt64, Comment: "所属 operator 本地主键", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 2, Comment: "国家地区编码"},
+		{Name: "calling_code", Type: field.TypeString, Size: 3, Comment: "国际电话区号, 不包含加号"},
+		{Name: "name_key", Type: field.TypeString, Size: 128, Comment: "名称翻译 Key"},
 	}
-	// OperatorDomainTable holds the schema information for the "operator_domain" table.
-	OperatorDomainTable = &schema.Table{
-		Name:       "operator_domain",
-		Comment:    "厅 operator 当前有效域名表",
-		Columns:    OperatorDomainColumns,
-		PrimaryKey: []*schema.Column{OperatorDomainColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "operator_domain_operator_domains",
-				Columns:    []*schema.Column{OperatorDomainColumns[5]},
-				RefColumns: []*schema.Column{OperatorColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "uk_operator_domain_name",
-				Unique:  true,
-				Columns: []*schema.Column{OperatorDomainColumns[3]},
-			},
-			{
-				Name:    "uk_operator_domain_operator_type",
-				Unique:  true,
-				Columns: []*schema.Column{OperatorDomainColumns[5], OperatorDomainColumns[4]},
-			},
-		},
+	// RegionTable holds the schema information for the "region" table.
+	RegionTable = &schema.Table{
+		Name:       "region",
+		Comment:    "系统国家地区表",
+		Columns:    RegionColumns,
+		PrimaryKey: []*schema.Column{RegionColumns[0]},
 	}
-	// OperatorLanguageColumns holds the columns for the "operator_language" table.
-	OperatorLanguageColumns = []*schema.Column{
+	// TimezoneColumns holds the columns for the "timezone" table.
+	TimezoneColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
-		{Name: "language_code", Type: field.TypeString, Size: 16, Comment: "系统语言唯一业务编码"},
+		{Name: "status", Type: field.TypeInt64, Comment: "状态: 1启用, 2停用", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "sort_no", Type: field.TypeInt64, Comment: "排序值, 数值越小越靠前", SchemaType: map[string]string{"postgres": "integer"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "operator_id", Type: field.TypeInt64, Comment: "所属 operator 本地主键", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 64, Comment: "IANA 时区编码"},
+		{Name: "name_key", Type: field.TypeString, Size: 128, Comment: "名称翻译 Key"},
 	}
-	// OperatorLanguageTable holds the schema information for the "operator_language" table.
-	OperatorLanguageTable = &schema.Table{
-		Name:       "operator_language",
-		Comment:    "厅 operator 当前有效语言关系表",
-		Columns:    OperatorLanguageColumns,
-		PrimaryKey: []*schema.Column{OperatorLanguageColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "operator_language_operator_languages",
-				Columns:    []*schema.Column{OperatorLanguageColumns[3]},
-				RefColumns: []*schema.Column{OperatorColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "uk_operator_language",
-				Unique:  true,
-				Columns: []*schema.Column{OperatorLanguageColumns[3], OperatorLanguageColumns[1]},
-			},
-		},
-	}
-	// OperatorRegionColumns holds the columns for the "operator_region" table.
-	OperatorRegionColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
-		{Name: "region_code", Type: field.TypeString, Size: 2, Comment: "国家或地区唯一业务编码"},
-		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
-		{Name: "operator_id", Type: field.TypeInt64, Comment: "所属 operator 本地主键", SchemaType: map[string]string{"postgres": "bigint"}},
-	}
-	// OperatorRegionTable holds the schema information for the "operator_region" table.
-	OperatorRegionTable = &schema.Table{
-		Name:       "operator_region",
-		Comment:    "厅 operator 当前有效经营地区关系表",
-		Columns:    OperatorRegionColumns,
-		PrimaryKey: []*schema.Column{OperatorRegionColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "operator_region_operator_regions",
-				Columns:    []*schema.Column{OperatorRegionColumns[3]},
-				RefColumns: []*schema.Column{OperatorColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "uk_operator_region",
-				Unique:  true,
-				Columns: []*schema.Column{OperatorRegionColumns[3], OperatorRegionColumns[1]},
-			},
-		},
+	// TimezoneTable holds the schema information for the "timezone" table.
+	TimezoneTable = &schema.Table{
+		Name:       "timezone",
+		Comment:    "系统时区表",
+		Columns:    TimezoneColumns,
+		PrimaryKey: []*schema.Column{TimezoneColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		OperatorTable,
-		OperatorAgentLineTable,
-		OperatorDomainTable,
-		OperatorLanguageTable,
-		OperatorRegionTable,
+		CurrencyTable,
+		RegionTable,
+		TimezoneTable,
 	}
 )
 
 func init() {
-	OperatorTable.Annotation = &entsql.Annotation{
-		Table: "operator",
+	CurrencyTable.Annotation = &entsql.Annotation{
+		Table: "currency",
 	}
-	OperatorAgentLineTable.ForeignKeys[0].RefTable = OperatorTable
-	OperatorAgentLineTable.Annotation = &entsql.Annotation{
-		Table: "operator_agent_line",
+	RegionTable.Annotation = &entsql.Annotation{
+		Table: "region",
 	}
-	OperatorDomainTable.ForeignKeys[0].RefTable = OperatorTable
-	OperatorDomainTable.Annotation = &entsql.Annotation{
-		Table: "operator_domain",
-	}
-	OperatorLanguageTable.ForeignKeys[0].RefTable = OperatorTable
-	OperatorLanguageTable.Annotation = &entsql.Annotation{
-		Table: "operator_language",
-	}
-	OperatorRegionTable.ForeignKeys[0].RefTable = OperatorTable
-	OperatorRegionTable.Annotation = &entsql.Annotation{
-		Table: "operator_region",
+	TimezoneTable.Annotation = &entsql.Annotation{
+		Table: "timezone",
 	}
 }

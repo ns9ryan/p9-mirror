@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"oa.98ent.com/p9/operator-base/rpc/ent"
+	"oa.98ent.com/p9/platform-base/rpc/ent"
 	// required by schema hooks.
-	_ "oa.98ent.com/p9/operator-base/rpc/ent/runtime"
+	_ "oa.98ent.com/p9/platform-base/rpc/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"oa.98ent.com/p9/operator-base/rpc/ent/migrate"
+	"oa.98ent.com/p9/platform-base/rpc/ent/migrate"
 )
 
 type (

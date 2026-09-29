@@ -11,12 +11,10 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operator"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatoragentline"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatordomain"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatorlanguage"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatorregion"
-	"oa.98ent.com/p9/operator-base/rpc/ent/predicate"
+	"oa.98ent.com/p9/platform-base/rpc/ent/currency"
+	"oa.98ent.com/p9/platform-base/rpc/ent/predicate"
+	"oa.98ent.com/p9/platform-base/rpc/ent/region"
+	"oa.98ent.com/p9/platform-base/rpc/ent/timezone"
 )
 
 const (
@@ -28,56 +26,47 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeOperator          = "Operator"
-	TypeOperatorAgentLine = "OperatorAgentLine"
-	TypeOperatorDomain    = "OperatorDomain"
-	TypeOperatorLanguage  = "OperatorLanguage"
-	TypeOperatorRegion    = "OperatorRegion"
+	TypeCurrency = "Currency"
+	TypeRegion   = "Region"
+	TypeTimezone = "Timezone"
 )
 
-// OperatorMutation represents an operation that mutates the Operator nodes in the graph.
-type OperatorMutation struct {
+// CurrencyMutation represents an operation that mutates the Currency nodes in the graph.
+type CurrencyMutation struct {
 	config
-	op                       Op
-	typ                      string
-	id                       *int64
-	created_at               *time.Time
-	updated_at               *time.Time
-	code                     *string
-	name                     *string
-	timezone_code            *string
-	settlement_currency_code *string
-	status                   *int64
-	addstatus                *int64
-	clearedFields            map[string]struct{}
-	domains                  map[int64]struct{}
-	removeddomains           map[int64]struct{}
-	cleareddomains           bool
-	languages                map[int64]struct{}
-	removedlanguages         map[int64]struct{}
-	clearedlanguages         bool
-	regions                  map[int64]struct{}
-	removedregions           map[int64]struct{}
-	clearedregions           bool
-	agent_lines              map[int64]struct{}
-	removedagent_lines       map[int64]struct{}
-	clearedagent_lines       bool
-	done                     bool
-	oldValue                 func(context.Context) (*Operator, error)
-	predicates               []predicate.Operator
+	op               Op
+	typ              string
+	id               *int64
+	status           *int64
+	addstatus        *int64
+	sort_no          *int64
+	addsort_no       *int64
+	created_at       *time.Time
+	updated_at       *time.Time
+	code             *string
+	name_key         *string
+	currency_type    *int64
+	addcurrency_type *int64
+	symbol           *string
+	amount_factor    *int64
+	addamount_factor *int64
+	clearedFields    map[string]struct{}
+	done             bool
+	oldValue         func(context.Context) (*Currency, error)
+	predicates       []predicate.Currency
 }
 
-var _ ent.Mutation = (*OperatorMutation)(nil)
+var _ ent.Mutation = (*CurrencyMutation)(nil)
 
-// operatorOption allows management of the mutation configuration using functional options.
-type operatorOption func(*OperatorMutation)
+// currencyOption allows management of the mutation configuration using functional options.
+type currencyOption func(*CurrencyMutation)
 
-// newOperatorMutation creates new mutation for the Operator entity.
-func newOperatorMutation(c config, op Op, opts ...operatorOption) *OperatorMutation {
-	m := &OperatorMutation{
+// newCurrencyMutation creates new mutation for the Currency entity.
+func newCurrencyMutation(c config, op Op, opts ...currencyOption) *CurrencyMutation {
+	m := &CurrencyMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeOperator,
+		typ:           TypeCurrency,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -86,20 +75,20 @@ func newOperatorMutation(c config, op Op, opts ...operatorOption) *OperatorMutat
 	return m
 }
 
-// withOperatorID sets the ID field of the mutation.
-func withOperatorID(id int64) operatorOption {
-	return func(m *OperatorMutation) {
+// withCurrencyID sets the ID field of the mutation.
+func withCurrencyID(id int64) currencyOption {
+	return func(m *CurrencyMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Operator
+			value *Currency
 		)
-		m.oldValue = func(ctx context.Context) (*Operator, error) {
+		m.oldValue = func(ctx context.Context) (*Currency, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Operator.Get(ctx, id)
+					value, err = m.Client().Currency.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -108,10 +97,10 @@ func withOperatorID(id int64) operatorOption {
 	}
 }
 
-// withOperator sets the old Operator of the mutation.
-func withOperator(node *Operator) operatorOption {
-	return func(m *OperatorMutation) {
-		m.oldValue = func(context.Context) (*Operator, error) {
+// withCurrency sets the old Currency of the mutation.
+func withCurrency(node *Currency) currencyOption {
+	return func(m *CurrencyMutation) {
+		m.oldValue = func(context.Context) (*Currency, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -120,7 +109,7 @@ func withOperator(node *Operator) operatorOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m OperatorMutation) Client() *Client {
+func (m CurrencyMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -128,7 +117,7 @@ func (m OperatorMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m OperatorMutation) Tx() (*Tx, error) {
+func (m CurrencyMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -138,14 +127,14 @@ func (m OperatorMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Operator entities.
-func (m *OperatorMutation) SetID(id int64) {
+// operation is only accepted on creation of Currency entities.
+func (m *CurrencyMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *OperatorMutation) ID() (id int64, exists bool) {
+func (m *CurrencyMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -156,7 +145,7 @@ func (m *OperatorMutation) ID() (id int64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *OperatorMutation) IDs(ctx context.Context) ([]int64, error) {
+func (m *CurrencyMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -165,236 +154,20 @@ func (m *OperatorMutation) IDs(ctx context.Context) ([]int64, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Operator.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Currency.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *OperatorMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *OperatorMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the Operator entity.
-// If the Operator object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *OperatorMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *OperatorMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *OperatorMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the Operator entity.
-// If the Operator object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *OperatorMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
-// SetCode sets the "code" field.
-func (m *OperatorMutation) SetCode(s string) {
-	m.code = &s
-}
-
-// Code returns the value of the "code" field in the mutation.
-func (m *OperatorMutation) Code() (r string, exists bool) {
-	v := m.code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCode returns the old "code" field's value of the Operator entity.
-// If the Operator object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorMutation) OldCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCode: %w", err)
-	}
-	return oldValue.Code, nil
-}
-
-// ResetCode resets all changes to the "code" field.
-func (m *OperatorMutation) ResetCode() {
-	m.code = nil
-}
-
-// SetName sets the "name" field.
-func (m *OperatorMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *OperatorMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the Operator entity.
-// If the Operator object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *OperatorMutation) ResetName() {
-	m.name = nil
-}
-
-// SetTimezoneCode sets the "timezone_code" field.
-func (m *OperatorMutation) SetTimezoneCode(s string) {
-	m.timezone_code = &s
-}
-
-// TimezoneCode returns the value of the "timezone_code" field in the mutation.
-func (m *OperatorMutation) TimezoneCode() (r string, exists bool) {
-	v := m.timezone_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTimezoneCode returns the old "timezone_code" field's value of the Operator entity.
-// If the Operator object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorMutation) OldTimezoneCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTimezoneCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTimezoneCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTimezoneCode: %w", err)
-	}
-	return oldValue.TimezoneCode, nil
-}
-
-// ResetTimezoneCode resets all changes to the "timezone_code" field.
-func (m *OperatorMutation) ResetTimezoneCode() {
-	m.timezone_code = nil
-}
-
-// SetSettlementCurrencyCode sets the "settlement_currency_code" field.
-func (m *OperatorMutation) SetSettlementCurrencyCode(s string) {
-	m.settlement_currency_code = &s
-}
-
-// SettlementCurrencyCode returns the value of the "settlement_currency_code" field in the mutation.
-func (m *OperatorMutation) SettlementCurrencyCode() (r string, exists bool) {
-	v := m.settlement_currency_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSettlementCurrencyCode returns the old "settlement_currency_code" field's value of the Operator entity.
-// If the Operator object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorMutation) OldSettlementCurrencyCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSettlementCurrencyCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSettlementCurrencyCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSettlementCurrencyCode: %w", err)
-	}
-	return oldValue.SettlementCurrencyCode, nil
-}
-
-// ResetSettlementCurrencyCode resets all changes to the "settlement_currency_code" field.
-func (m *OperatorMutation) ResetSettlementCurrencyCode() {
-	m.settlement_currency_code = nil
-}
-
 // SetStatus sets the "status" field.
-func (m *OperatorMutation) SetStatus(i int64) {
+func (m *CurrencyMutation) SetStatus(i int64) {
 	m.status = &i
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *OperatorMutation) Status() (r int64, exists bool) {
+func (m *CurrencyMutation) Status() (r int64, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -402,10 +175,10 @@ func (m *OperatorMutation) Status() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldStatus returns the old "status" field's value of the Operator entity.
-// If the Operator object wasn't provided to the builder, the object is fetched from the database.
+// OldStatus returns the old "status" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorMutation) OldStatus(ctx context.Context) (v int64, err error) {
+func (m *CurrencyMutation) OldStatus(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -420,7 +193,7 @@ func (m *OperatorMutation) OldStatus(ctx context.Context) (v int64, err error) {
 }
 
 // AddStatus adds i to the "status" field.
-func (m *OperatorMutation) AddStatus(i int64) {
+func (m *CurrencyMutation) AddStatus(i int64) {
 	if m.addstatus != nil {
 		*m.addstatus += i
 	} else {
@@ -429,7 +202,7 @@ func (m *OperatorMutation) AddStatus(i int64) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *OperatorMutation) AddedStatus() (r int64, exists bool) {
+func (m *CurrencyMutation) AddedStatus() (r int64, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -438,836 +211,74 @@ func (m *OperatorMutation) AddedStatus() (r int64, exists bool) {
 }
 
 // ResetStatus resets all changes to the "status" field.
-func (m *OperatorMutation) ResetStatus() {
+func (m *CurrencyMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
 }
 
-// AddDomainIDs adds the "domains" edge to the OperatorDomain entity by ids.
-func (m *OperatorMutation) AddDomainIDs(ids ...int64) {
-	if m.domains == nil {
-		m.domains = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.domains[ids[i]] = struct{}{}
-	}
+// SetSortNo sets the "sort_no" field.
+func (m *CurrencyMutation) SetSortNo(i int64) {
+	m.sort_no = &i
+	m.addsort_no = nil
 }
 
-// ClearDomains clears the "domains" edge to the OperatorDomain entity.
-func (m *OperatorMutation) ClearDomains() {
-	m.cleareddomains = true
-}
-
-// DomainsCleared reports if the "domains" edge to the OperatorDomain entity was cleared.
-func (m *OperatorMutation) DomainsCleared() bool {
-	return m.cleareddomains
-}
-
-// RemoveDomainIDs removes the "domains" edge to the OperatorDomain entity by IDs.
-func (m *OperatorMutation) RemoveDomainIDs(ids ...int64) {
-	if m.removeddomains == nil {
-		m.removeddomains = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.domains, ids[i])
-		m.removeddomains[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedDomains returns the removed IDs of the "domains" edge to the OperatorDomain entity.
-func (m *OperatorMutation) RemovedDomainsIDs() (ids []int64) {
-	for id := range m.removeddomains {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// DomainsIDs returns the "domains" edge IDs in the mutation.
-func (m *OperatorMutation) DomainsIDs() (ids []int64) {
-	for id := range m.domains {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetDomains resets all changes to the "domains" edge.
-func (m *OperatorMutation) ResetDomains() {
-	m.domains = nil
-	m.cleareddomains = false
-	m.removeddomains = nil
-}
-
-// AddLanguageIDs adds the "languages" edge to the OperatorLanguage entity by ids.
-func (m *OperatorMutation) AddLanguageIDs(ids ...int64) {
-	if m.languages == nil {
-		m.languages = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.languages[ids[i]] = struct{}{}
-	}
-}
-
-// ClearLanguages clears the "languages" edge to the OperatorLanguage entity.
-func (m *OperatorMutation) ClearLanguages() {
-	m.clearedlanguages = true
-}
-
-// LanguagesCleared reports if the "languages" edge to the OperatorLanguage entity was cleared.
-func (m *OperatorMutation) LanguagesCleared() bool {
-	return m.clearedlanguages
-}
-
-// RemoveLanguageIDs removes the "languages" edge to the OperatorLanguage entity by IDs.
-func (m *OperatorMutation) RemoveLanguageIDs(ids ...int64) {
-	if m.removedlanguages == nil {
-		m.removedlanguages = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.languages, ids[i])
-		m.removedlanguages[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedLanguages returns the removed IDs of the "languages" edge to the OperatorLanguage entity.
-func (m *OperatorMutation) RemovedLanguagesIDs() (ids []int64) {
-	for id := range m.removedlanguages {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// LanguagesIDs returns the "languages" edge IDs in the mutation.
-func (m *OperatorMutation) LanguagesIDs() (ids []int64) {
-	for id := range m.languages {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetLanguages resets all changes to the "languages" edge.
-func (m *OperatorMutation) ResetLanguages() {
-	m.languages = nil
-	m.clearedlanguages = false
-	m.removedlanguages = nil
-}
-
-// AddRegionIDs adds the "regions" edge to the OperatorRegion entity by ids.
-func (m *OperatorMutation) AddRegionIDs(ids ...int64) {
-	if m.regions == nil {
-		m.regions = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.regions[ids[i]] = struct{}{}
-	}
-}
-
-// ClearRegions clears the "regions" edge to the OperatorRegion entity.
-func (m *OperatorMutation) ClearRegions() {
-	m.clearedregions = true
-}
-
-// RegionsCleared reports if the "regions" edge to the OperatorRegion entity was cleared.
-func (m *OperatorMutation) RegionsCleared() bool {
-	return m.clearedregions
-}
-
-// RemoveRegionIDs removes the "regions" edge to the OperatorRegion entity by IDs.
-func (m *OperatorMutation) RemoveRegionIDs(ids ...int64) {
-	if m.removedregions == nil {
-		m.removedregions = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.regions, ids[i])
-		m.removedregions[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedRegions returns the removed IDs of the "regions" edge to the OperatorRegion entity.
-func (m *OperatorMutation) RemovedRegionsIDs() (ids []int64) {
-	for id := range m.removedregions {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// RegionsIDs returns the "regions" edge IDs in the mutation.
-func (m *OperatorMutation) RegionsIDs() (ids []int64) {
-	for id := range m.regions {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetRegions resets all changes to the "regions" edge.
-func (m *OperatorMutation) ResetRegions() {
-	m.regions = nil
-	m.clearedregions = false
-	m.removedregions = nil
-}
-
-// AddAgentLineIDs adds the "agent_lines" edge to the OperatorAgentLine entity by ids.
-func (m *OperatorMutation) AddAgentLineIDs(ids ...int64) {
-	if m.agent_lines == nil {
-		m.agent_lines = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.agent_lines[ids[i]] = struct{}{}
-	}
-}
-
-// ClearAgentLines clears the "agent_lines" edge to the OperatorAgentLine entity.
-func (m *OperatorMutation) ClearAgentLines() {
-	m.clearedagent_lines = true
-}
-
-// AgentLinesCleared reports if the "agent_lines" edge to the OperatorAgentLine entity was cleared.
-func (m *OperatorMutation) AgentLinesCleared() bool {
-	return m.clearedagent_lines
-}
-
-// RemoveAgentLineIDs removes the "agent_lines" edge to the OperatorAgentLine entity by IDs.
-func (m *OperatorMutation) RemoveAgentLineIDs(ids ...int64) {
-	if m.removedagent_lines == nil {
-		m.removedagent_lines = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.agent_lines, ids[i])
-		m.removedagent_lines[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedAgentLines returns the removed IDs of the "agent_lines" edge to the OperatorAgentLine entity.
-func (m *OperatorMutation) RemovedAgentLinesIDs() (ids []int64) {
-	for id := range m.removedagent_lines {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// AgentLinesIDs returns the "agent_lines" edge IDs in the mutation.
-func (m *OperatorMutation) AgentLinesIDs() (ids []int64) {
-	for id := range m.agent_lines {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetAgentLines resets all changes to the "agent_lines" edge.
-func (m *OperatorMutation) ResetAgentLines() {
-	m.agent_lines = nil
-	m.clearedagent_lines = false
-	m.removedagent_lines = nil
-}
-
-// Where appends a list predicates to the OperatorMutation builder.
-func (m *OperatorMutation) Where(ps ...predicate.Operator) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the OperatorMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *OperatorMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Operator, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *OperatorMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *OperatorMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (Operator).
-func (m *OperatorMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *OperatorMutation) Fields() []string {
-	fields := make([]string, 0, 7)
-	if m.created_at != nil {
-		fields = append(fields, operator.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, operator.FieldUpdatedAt)
-	}
-	if m.code != nil {
-		fields = append(fields, operator.FieldCode)
-	}
-	if m.name != nil {
-		fields = append(fields, operator.FieldName)
-	}
-	if m.timezone_code != nil {
-		fields = append(fields, operator.FieldTimezoneCode)
-	}
-	if m.settlement_currency_code != nil {
-		fields = append(fields, operator.FieldSettlementCurrencyCode)
-	}
-	if m.status != nil {
-		fields = append(fields, operator.FieldStatus)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *OperatorMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case operator.FieldCreatedAt:
-		return m.CreatedAt()
-	case operator.FieldUpdatedAt:
-		return m.UpdatedAt()
-	case operator.FieldCode:
-		return m.Code()
-	case operator.FieldName:
-		return m.Name()
-	case operator.FieldTimezoneCode:
-		return m.TimezoneCode()
-	case operator.FieldSettlementCurrencyCode:
-		return m.SettlementCurrencyCode()
-	case operator.FieldStatus:
-		return m.Status()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *OperatorMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case operator.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case operator.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	case operator.FieldCode:
-		return m.OldCode(ctx)
-	case operator.FieldName:
-		return m.OldName(ctx)
-	case operator.FieldTimezoneCode:
-		return m.OldTimezoneCode(ctx)
-	case operator.FieldSettlementCurrencyCode:
-		return m.OldSettlementCurrencyCode(ctx)
-	case operator.FieldStatus:
-		return m.OldStatus(ctx)
-	}
-	return nil, fmt.Errorf("unknown Operator field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *OperatorMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case operator.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case operator.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	case operator.FieldCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCode(v)
-		return nil
-	case operator.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case operator.FieldTimezoneCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTimezoneCode(v)
-		return nil
-	case operator.FieldSettlementCurrencyCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSettlementCurrencyCode(v)
-		return nil
-	case operator.FieldStatus:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStatus(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Operator field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *OperatorMutation) AddedFields() []string {
-	var fields []string
-	if m.addstatus != nil {
-		fields = append(fields, operator.FieldStatus)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *OperatorMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case operator.FieldStatus:
-		return m.AddedStatus()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *OperatorMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case operator.FieldStatus:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStatus(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Operator numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *OperatorMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *OperatorMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *OperatorMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Operator nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *OperatorMutation) ResetField(name string) error {
-	switch name {
-	case operator.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case operator.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	case operator.FieldCode:
-		m.ResetCode()
-		return nil
-	case operator.FieldName:
-		m.ResetName()
-		return nil
-	case operator.FieldTimezoneCode:
-		m.ResetTimezoneCode()
-		return nil
-	case operator.FieldSettlementCurrencyCode:
-		m.ResetSettlementCurrencyCode()
-		return nil
-	case operator.FieldStatus:
-		m.ResetStatus()
-		return nil
-	}
-	return fmt.Errorf("unknown Operator field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *OperatorMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.domains != nil {
-		edges = append(edges, operator.EdgeDomains)
-	}
-	if m.languages != nil {
-		edges = append(edges, operator.EdgeLanguages)
-	}
-	if m.regions != nil {
-		edges = append(edges, operator.EdgeRegions)
-	}
-	if m.agent_lines != nil {
-		edges = append(edges, operator.EdgeAgentLines)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *OperatorMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case operator.EdgeDomains:
-		ids := make([]ent.Value, 0, len(m.domains))
-		for id := range m.domains {
-			ids = append(ids, id)
-		}
-		return ids
-	case operator.EdgeLanguages:
-		ids := make([]ent.Value, 0, len(m.languages))
-		for id := range m.languages {
-			ids = append(ids, id)
-		}
-		return ids
-	case operator.EdgeRegions:
-		ids := make([]ent.Value, 0, len(m.regions))
-		for id := range m.regions {
-			ids = append(ids, id)
-		}
-		return ids
-	case operator.EdgeAgentLines:
-		ids := make([]ent.Value, 0, len(m.agent_lines))
-		for id := range m.agent_lines {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *OperatorMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.removeddomains != nil {
-		edges = append(edges, operator.EdgeDomains)
-	}
-	if m.removedlanguages != nil {
-		edges = append(edges, operator.EdgeLanguages)
-	}
-	if m.removedregions != nil {
-		edges = append(edges, operator.EdgeRegions)
-	}
-	if m.removedagent_lines != nil {
-		edges = append(edges, operator.EdgeAgentLines)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *OperatorMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case operator.EdgeDomains:
-		ids := make([]ent.Value, 0, len(m.removeddomains))
-		for id := range m.removeddomains {
-			ids = append(ids, id)
-		}
-		return ids
-	case operator.EdgeLanguages:
-		ids := make([]ent.Value, 0, len(m.removedlanguages))
-		for id := range m.removedlanguages {
-			ids = append(ids, id)
-		}
-		return ids
-	case operator.EdgeRegions:
-		ids := make([]ent.Value, 0, len(m.removedregions))
-		for id := range m.removedregions {
-			ids = append(ids, id)
-		}
-		return ids
-	case operator.EdgeAgentLines:
-		ids := make([]ent.Value, 0, len(m.removedagent_lines))
-		for id := range m.removedagent_lines {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *OperatorMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.cleareddomains {
-		edges = append(edges, operator.EdgeDomains)
-	}
-	if m.clearedlanguages {
-		edges = append(edges, operator.EdgeLanguages)
-	}
-	if m.clearedregions {
-		edges = append(edges, operator.EdgeRegions)
-	}
-	if m.clearedagent_lines {
-		edges = append(edges, operator.EdgeAgentLines)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *OperatorMutation) EdgeCleared(name string) bool {
-	switch name {
-	case operator.EdgeDomains:
-		return m.cleareddomains
-	case operator.EdgeLanguages:
-		return m.clearedlanguages
-	case operator.EdgeRegions:
-		return m.clearedregions
-	case operator.EdgeAgentLines:
-		return m.clearedagent_lines
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *OperatorMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Operator unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *OperatorMutation) ResetEdge(name string) error {
-	switch name {
-	case operator.EdgeDomains:
-		m.ResetDomains()
-		return nil
-	case operator.EdgeLanguages:
-		m.ResetLanguages()
-		return nil
-	case operator.EdgeRegions:
-		m.ResetRegions()
-		return nil
-	case operator.EdgeAgentLines:
-		m.ResetAgentLines()
-		return nil
-	}
-	return fmt.Errorf("unknown Operator edge %s", name)
-}
-
-// OperatorAgentLineMutation represents an operation that mutates the OperatorAgentLine nodes in the graph.
-type OperatorAgentLineMutation struct {
-	config
-	op              Op
-	typ             string
-	id              *int64
-	agent_line_code *string
-	created_at      *time.Time
-	clearedFields   map[string]struct{}
-	operator        *int64
-	clearedoperator bool
-	done            bool
-	oldValue        func(context.Context) (*OperatorAgentLine, error)
-	predicates      []predicate.OperatorAgentLine
-}
-
-var _ ent.Mutation = (*OperatorAgentLineMutation)(nil)
-
-// operatoragentlineOption allows management of the mutation configuration using functional options.
-type operatoragentlineOption func(*OperatorAgentLineMutation)
-
-// newOperatorAgentLineMutation creates new mutation for the OperatorAgentLine entity.
-func newOperatorAgentLineMutation(c config, op Op, opts ...operatoragentlineOption) *OperatorAgentLineMutation {
-	m := &OperatorAgentLineMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeOperatorAgentLine,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withOperatorAgentLineID sets the ID field of the mutation.
-func withOperatorAgentLineID(id int64) operatoragentlineOption {
-	return func(m *OperatorAgentLineMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *OperatorAgentLine
-		)
-		m.oldValue = func(ctx context.Context) (*OperatorAgentLine, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().OperatorAgentLine.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withOperatorAgentLine sets the old OperatorAgentLine of the mutation.
-func withOperatorAgentLine(node *OperatorAgentLine) operatoragentlineOption {
-	return func(m *OperatorAgentLineMutation) {
-		m.oldValue = func(context.Context) (*OperatorAgentLine, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m OperatorAgentLineMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m OperatorAgentLineMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of OperatorAgentLine entities.
-func (m *OperatorAgentLineMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *OperatorAgentLineMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *OperatorAgentLineMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().OperatorAgentLine.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetOperatorID sets the "operator_id" field.
-func (m *OperatorAgentLineMutation) SetOperatorID(i int64) {
-	m.operator = &i
-}
-
-// OperatorID returns the value of the "operator_id" field in the mutation.
-func (m *OperatorAgentLineMutation) OperatorID() (r int64, exists bool) {
-	v := m.operator
+// SortNo returns the value of the "sort_no" field in the mutation.
+func (m *CurrencyMutation) SortNo() (r int64, exists bool) {
+	v := m.sort_no
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOperatorID returns the old "operator_id" field's value of the OperatorAgentLine entity.
-// If the OperatorAgentLine object wasn't provided to the builder, the object is fetched from the database.
+// OldSortNo returns the old "sort_no" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorAgentLineMutation) OldOperatorID(ctx context.Context) (v int64, err error) {
+func (m *CurrencyMutation) OldSortNo(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOperatorID is only allowed on UpdateOne operations")
+		return v, errors.New("OldSortNo is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOperatorID requires an ID field in the mutation")
+		return v, errors.New("OldSortNo requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOperatorID: %w", err)
+		return v, fmt.Errorf("querying old value for OldSortNo: %w", err)
 	}
-	return oldValue.OperatorID, nil
+	return oldValue.SortNo, nil
 }
 
-// ResetOperatorID resets all changes to the "operator_id" field.
-func (m *OperatorAgentLineMutation) ResetOperatorID() {
-	m.operator = nil
+// AddSortNo adds i to the "sort_no" field.
+func (m *CurrencyMutation) AddSortNo(i int64) {
+	if m.addsort_no != nil {
+		*m.addsort_no += i
+	} else {
+		m.addsort_no = &i
+	}
 }
 
-// SetAgentLineCode sets the "agent_line_code" field.
-func (m *OperatorAgentLineMutation) SetAgentLineCode(s string) {
-	m.agent_line_code = &s
-}
-
-// AgentLineCode returns the value of the "agent_line_code" field in the mutation.
-func (m *OperatorAgentLineMutation) AgentLineCode() (r string, exists bool) {
-	v := m.agent_line_code
+// AddedSortNo returns the value that was added to the "sort_no" field in this mutation.
+func (m *CurrencyMutation) AddedSortNo() (r int64, exists bool) {
+	v := m.addsort_no
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAgentLineCode returns the old "agent_line_code" field's value of the OperatorAgentLine entity.
-// If the OperatorAgentLine object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorAgentLineMutation) OldAgentLineCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAgentLineCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAgentLineCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAgentLineCode: %w", err)
-	}
-	return oldValue.AgentLineCode, nil
-}
-
-// ResetAgentLineCode resets all changes to the "agent_line_code" field.
-func (m *OperatorAgentLineMutation) ResetAgentLineCode() {
-	m.agent_line_code = nil
+// ResetSortNo resets all changes to the "sort_no" field.
+func (m *CurrencyMutation) ResetSortNo() {
+	m.sort_no = nil
+	m.addsort_no = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *OperatorAgentLineMutation) SetCreatedAt(t time.Time) {
+func (m *CurrencyMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *OperatorAgentLineMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *CurrencyMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -1275,10 +286,10 @@ func (m *OperatorAgentLineMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the OperatorAgentLine entity.
-// If the OperatorAgentLine object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorAgentLineMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *CurrencyMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -1293,445 +304,17 @@ func (m *OperatorAgentLineMutation) OldCreatedAt(ctx context.Context) (v time.Ti
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *OperatorAgentLineMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// ClearOperator clears the "operator" edge to the Operator entity.
-func (m *OperatorAgentLineMutation) ClearOperator() {
-	m.clearedoperator = true
-	m.clearedFields[operatoragentline.FieldOperatorID] = struct{}{}
-}
-
-// OperatorCleared reports if the "operator" edge to the Operator entity was cleared.
-func (m *OperatorAgentLineMutation) OperatorCleared() bool {
-	return m.clearedoperator
-}
-
-// OperatorIDs returns the "operator" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OperatorID instead. It exists only for internal usage by the builders.
-func (m *OperatorAgentLineMutation) OperatorIDs() (ids []int64) {
-	if id := m.operator; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOperator resets all changes to the "operator" edge.
-func (m *OperatorAgentLineMutation) ResetOperator() {
-	m.operator = nil
-	m.clearedoperator = false
-}
-
-// Where appends a list predicates to the OperatorAgentLineMutation builder.
-func (m *OperatorAgentLineMutation) Where(ps ...predicate.OperatorAgentLine) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the OperatorAgentLineMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *OperatorAgentLineMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.OperatorAgentLine, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *OperatorAgentLineMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *OperatorAgentLineMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (OperatorAgentLine).
-func (m *OperatorAgentLineMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *OperatorAgentLineMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.operator != nil {
-		fields = append(fields, operatoragentline.FieldOperatorID)
-	}
-	if m.agent_line_code != nil {
-		fields = append(fields, operatoragentline.FieldAgentLineCode)
-	}
-	if m.created_at != nil {
-		fields = append(fields, operatoragentline.FieldCreatedAt)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *OperatorAgentLineMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case operatoragentline.FieldOperatorID:
-		return m.OperatorID()
-	case operatoragentline.FieldAgentLineCode:
-		return m.AgentLineCode()
-	case operatoragentline.FieldCreatedAt:
-		return m.CreatedAt()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *OperatorAgentLineMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case operatoragentline.FieldOperatorID:
-		return m.OldOperatorID(ctx)
-	case operatoragentline.FieldAgentLineCode:
-		return m.OldAgentLineCode(ctx)
-	case operatoragentline.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	}
-	return nil, fmt.Errorf("unknown OperatorAgentLine field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *OperatorAgentLineMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case operatoragentline.FieldOperatorID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOperatorID(v)
-		return nil
-	case operatoragentline.FieldAgentLineCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAgentLineCode(v)
-		return nil
-	case operatoragentline.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorAgentLine field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *OperatorAgentLineMutation) AddedFields() []string {
-	var fields []string
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *OperatorAgentLineMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *OperatorAgentLineMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown OperatorAgentLine numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *OperatorAgentLineMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *OperatorAgentLineMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *OperatorAgentLineMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown OperatorAgentLine nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *OperatorAgentLineMutation) ResetField(name string) error {
-	switch name {
-	case operatoragentline.FieldOperatorID:
-		m.ResetOperatorID()
-		return nil
-	case operatoragentline.FieldAgentLineCode:
-		m.ResetAgentLineCode()
-		return nil
-	case operatoragentline.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorAgentLine field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *OperatorAgentLineMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.operator != nil {
-		edges = append(edges, operatoragentline.EdgeOperator)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *OperatorAgentLineMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case operatoragentline.EdgeOperator:
-		if id := m.operator; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *OperatorAgentLineMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *OperatorAgentLineMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *OperatorAgentLineMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedoperator {
-		edges = append(edges, operatoragentline.EdgeOperator)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *OperatorAgentLineMutation) EdgeCleared(name string) bool {
-	switch name {
-	case operatoragentline.EdgeOperator:
-		return m.clearedoperator
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *OperatorAgentLineMutation) ClearEdge(name string) error {
-	switch name {
-	case operatoragentline.EdgeOperator:
-		m.ClearOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorAgentLine unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *OperatorAgentLineMutation) ResetEdge(name string) error {
-	switch name {
-	case operatoragentline.EdgeOperator:
-		m.ResetOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorAgentLine edge %s", name)
-}
-
-// OperatorDomainMutation represents an operation that mutates the OperatorDomain nodes in the graph.
-type OperatorDomainMutation struct {
-	config
-	op              Op
-	typ             string
-	id              *int64
-	created_at      *time.Time
-	updated_at      *time.Time
-	domain_name     *string
-	domain_type     *int64
-	adddomain_type  *int64
-	clearedFields   map[string]struct{}
-	operator        *int64
-	clearedoperator bool
-	done            bool
-	oldValue        func(context.Context) (*OperatorDomain, error)
-	predicates      []predicate.OperatorDomain
-}
-
-var _ ent.Mutation = (*OperatorDomainMutation)(nil)
-
-// operatordomainOption allows management of the mutation configuration using functional options.
-type operatordomainOption func(*OperatorDomainMutation)
-
-// newOperatorDomainMutation creates new mutation for the OperatorDomain entity.
-func newOperatorDomainMutation(c config, op Op, opts ...operatordomainOption) *OperatorDomainMutation {
-	m := &OperatorDomainMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeOperatorDomain,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withOperatorDomainID sets the ID field of the mutation.
-func withOperatorDomainID(id int64) operatordomainOption {
-	return func(m *OperatorDomainMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *OperatorDomain
-		)
-		m.oldValue = func(ctx context.Context) (*OperatorDomain, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().OperatorDomain.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withOperatorDomain sets the old OperatorDomain of the mutation.
-func withOperatorDomain(node *OperatorDomain) operatordomainOption {
-	return func(m *OperatorDomainMutation) {
-		m.oldValue = func(context.Context) (*OperatorDomain, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m OperatorDomainMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m OperatorDomainMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of OperatorDomain entities.
-func (m *OperatorDomainMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *OperatorDomainMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *OperatorDomainMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().OperatorDomain.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *OperatorDomainMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *OperatorDomainMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the OperatorDomain entity.
-// If the OperatorDomain object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorDomainMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *OperatorDomainMutation) ResetCreatedAt() {
+func (m *CurrencyMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *OperatorDomainMutation) SetUpdatedAt(t time.Time) {
+func (m *CurrencyMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *OperatorDomainMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *CurrencyMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -1739,10 +322,10 @@ func (m *OperatorDomainMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the OperatorDomain entity.
-// If the OperatorDomain object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorDomainMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *CurrencyMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -1757,174 +340,239 @@ func (m *OperatorDomainMutation) OldUpdatedAt(ctx context.Context) (v time.Time,
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *OperatorDomainMutation) ResetUpdatedAt() {
+func (m *CurrencyMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetOperatorID sets the "operator_id" field.
-func (m *OperatorDomainMutation) SetOperatorID(i int64) {
-	m.operator = &i
+// SetCode sets the "code" field.
+func (m *CurrencyMutation) SetCode(s string) {
+	m.code = &s
 }
 
-// OperatorID returns the value of the "operator_id" field in the mutation.
-func (m *OperatorDomainMutation) OperatorID() (r int64, exists bool) {
-	v := m.operator
+// Code returns the value of the "code" field in the mutation.
+func (m *CurrencyMutation) Code() (r string, exists bool) {
+	v := m.code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOperatorID returns the old "operator_id" field's value of the OperatorDomain entity.
-// If the OperatorDomain object wasn't provided to the builder, the object is fetched from the database.
+// OldCode returns the old "code" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorDomainMutation) OldOperatorID(ctx context.Context) (v int64, err error) {
+func (m *CurrencyMutation) OldCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOperatorID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOperatorID requires an ID field in the mutation")
+		return v, errors.New("OldCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOperatorID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
 	}
-	return oldValue.OperatorID, nil
+	return oldValue.Code, nil
 }
 
-// ResetOperatorID resets all changes to the "operator_id" field.
-func (m *OperatorDomainMutation) ResetOperatorID() {
-	m.operator = nil
+// ResetCode resets all changes to the "code" field.
+func (m *CurrencyMutation) ResetCode() {
+	m.code = nil
 }
 
-// SetDomainName sets the "domain_name" field.
-func (m *OperatorDomainMutation) SetDomainName(s string) {
-	m.domain_name = &s
+// SetNameKey sets the "name_key" field.
+func (m *CurrencyMutation) SetNameKey(s string) {
+	m.name_key = &s
 }
 
-// DomainName returns the value of the "domain_name" field in the mutation.
-func (m *OperatorDomainMutation) DomainName() (r string, exists bool) {
-	v := m.domain_name
+// NameKey returns the value of the "name_key" field in the mutation.
+func (m *CurrencyMutation) NameKey() (r string, exists bool) {
+	v := m.name_key
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldDomainName returns the old "domain_name" field's value of the OperatorDomain entity.
-// If the OperatorDomain object wasn't provided to the builder, the object is fetched from the database.
+// OldNameKey returns the old "name_key" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorDomainMutation) OldDomainName(ctx context.Context) (v string, err error) {
+func (m *CurrencyMutation) OldNameKey(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDomainName is only allowed on UpdateOne operations")
+		return v, errors.New("OldNameKey is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDomainName requires an ID field in the mutation")
+		return v, errors.New("OldNameKey requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDomainName: %w", err)
+		return v, fmt.Errorf("querying old value for OldNameKey: %w", err)
 	}
-	return oldValue.DomainName, nil
+	return oldValue.NameKey, nil
 }
 
-// ResetDomainName resets all changes to the "domain_name" field.
-func (m *OperatorDomainMutation) ResetDomainName() {
-	m.domain_name = nil
+// ResetNameKey resets all changes to the "name_key" field.
+func (m *CurrencyMutation) ResetNameKey() {
+	m.name_key = nil
 }
 
-// SetDomainType sets the "domain_type" field.
-func (m *OperatorDomainMutation) SetDomainType(i int64) {
-	m.domain_type = &i
-	m.adddomain_type = nil
+// SetCurrencyType sets the "currency_type" field.
+func (m *CurrencyMutation) SetCurrencyType(i int64) {
+	m.currency_type = &i
+	m.addcurrency_type = nil
 }
 
-// DomainType returns the value of the "domain_type" field in the mutation.
-func (m *OperatorDomainMutation) DomainType() (r int64, exists bool) {
-	v := m.domain_type
+// CurrencyType returns the value of the "currency_type" field in the mutation.
+func (m *CurrencyMutation) CurrencyType() (r int64, exists bool) {
+	v := m.currency_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldDomainType returns the old "domain_type" field's value of the OperatorDomain entity.
-// If the OperatorDomain object wasn't provided to the builder, the object is fetched from the database.
+// OldCurrencyType returns the old "currency_type" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorDomainMutation) OldDomainType(ctx context.Context) (v int64, err error) {
+func (m *CurrencyMutation) OldCurrencyType(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDomainType is only allowed on UpdateOne operations")
+		return v, errors.New("OldCurrencyType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDomainType requires an ID field in the mutation")
+		return v, errors.New("OldCurrencyType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDomainType: %w", err)
+		return v, fmt.Errorf("querying old value for OldCurrencyType: %w", err)
 	}
-	return oldValue.DomainType, nil
+	return oldValue.CurrencyType, nil
 }
 
-// AddDomainType adds i to the "domain_type" field.
-func (m *OperatorDomainMutation) AddDomainType(i int64) {
-	if m.adddomain_type != nil {
-		*m.adddomain_type += i
+// AddCurrencyType adds i to the "currency_type" field.
+func (m *CurrencyMutation) AddCurrencyType(i int64) {
+	if m.addcurrency_type != nil {
+		*m.addcurrency_type += i
 	} else {
-		m.adddomain_type = &i
+		m.addcurrency_type = &i
 	}
 }
 
-// AddedDomainType returns the value that was added to the "domain_type" field in this mutation.
-func (m *OperatorDomainMutation) AddedDomainType() (r int64, exists bool) {
-	v := m.adddomain_type
+// AddedCurrencyType returns the value that was added to the "currency_type" field in this mutation.
+func (m *CurrencyMutation) AddedCurrencyType() (r int64, exists bool) {
+	v := m.addcurrency_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetDomainType resets all changes to the "domain_type" field.
-func (m *OperatorDomainMutation) ResetDomainType() {
-	m.domain_type = nil
-	m.adddomain_type = nil
+// ResetCurrencyType resets all changes to the "currency_type" field.
+func (m *CurrencyMutation) ResetCurrencyType() {
+	m.currency_type = nil
+	m.addcurrency_type = nil
 }
 
-// ClearOperator clears the "operator" edge to the Operator entity.
-func (m *OperatorDomainMutation) ClearOperator() {
-	m.clearedoperator = true
-	m.clearedFields[operatordomain.FieldOperatorID] = struct{}{}
+// SetSymbol sets the "symbol" field.
+func (m *CurrencyMutation) SetSymbol(s string) {
+	m.symbol = &s
 }
 
-// OperatorCleared reports if the "operator" edge to the Operator entity was cleared.
-func (m *OperatorDomainMutation) OperatorCleared() bool {
-	return m.clearedoperator
-}
-
-// OperatorIDs returns the "operator" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OperatorID instead. It exists only for internal usage by the builders.
-func (m *OperatorDomainMutation) OperatorIDs() (ids []int64) {
-	if id := m.operator; id != nil {
-		ids = append(ids, *id)
+// Symbol returns the value of the "symbol" field in the mutation.
+func (m *CurrencyMutation) Symbol() (r string, exists bool) {
+	v := m.symbol
+	if v == nil {
+		return
 	}
-	return
+	return *v, true
 }
 
-// ResetOperator resets all changes to the "operator" edge.
-func (m *OperatorDomainMutation) ResetOperator() {
-	m.operator = nil
-	m.clearedoperator = false
+// OldSymbol returns the old "symbol" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CurrencyMutation) OldSymbol(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSymbol is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSymbol requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSymbol: %w", err)
+	}
+	return oldValue.Symbol, nil
 }
 
-// Where appends a list predicates to the OperatorDomainMutation builder.
-func (m *OperatorDomainMutation) Where(ps ...predicate.OperatorDomain) {
+// ResetSymbol resets all changes to the "symbol" field.
+func (m *CurrencyMutation) ResetSymbol() {
+	m.symbol = nil
+}
+
+// SetAmountFactor sets the "amount_factor" field.
+func (m *CurrencyMutation) SetAmountFactor(i int64) {
+	m.amount_factor = &i
+	m.addamount_factor = nil
+}
+
+// AmountFactor returns the value of the "amount_factor" field in the mutation.
+func (m *CurrencyMutation) AmountFactor() (r int64, exists bool) {
+	v := m.amount_factor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAmountFactor returns the old "amount_factor" field's value of the Currency entity.
+// If the Currency object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CurrencyMutation) OldAmountFactor(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAmountFactor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAmountFactor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAmountFactor: %w", err)
+	}
+	return oldValue.AmountFactor, nil
+}
+
+// AddAmountFactor adds i to the "amount_factor" field.
+func (m *CurrencyMutation) AddAmountFactor(i int64) {
+	if m.addamount_factor != nil {
+		*m.addamount_factor += i
+	} else {
+		m.addamount_factor = &i
+	}
+}
+
+// AddedAmountFactor returns the value that was added to the "amount_factor" field in this mutation.
+func (m *CurrencyMutation) AddedAmountFactor() (r int64, exists bool) {
+	v := m.addamount_factor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAmountFactor resets all changes to the "amount_factor" field.
+func (m *CurrencyMutation) ResetAmountFactor() {
+	m.amount_factor = nil
+	m.addamount_factor = nil
+}
+
+// Where appends a list predicates to the CurrencyMutation builder.
+func (m *CurrencyMutation) Where(ps ...predicate.Currency) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the OperatorDomainMutation builder. Using this method,
+// WhereP appends storage-level predicates to the CurrencyMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *OperatorDomainMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.OperatorDomain, len(ps))
+func (m *CurrencyMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Currency, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -1932,39 +580,51 @@ func (m *OperatorDomainMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *OperatorDomainMutation) Op() Op {
+func (m *CurrencyMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *OperatorDomainMutation) SetOp(op Op) {
+func (m *CurrencyMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (OperatorDomain).
-func (m *OperatorDomainMutation) Type() string {
+// Type returns the node type of this mutation (Currency).
+func (m *CurrencyMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *OperatorDomainMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+func (m *CurrencyMutation) Fields() []string {
+	fields := make([]string, 0, 9)
+	if m.status != nil {
+		fields = append(fields, currency.FieldStatus)
+	}
+	if m.sort_no != nil {
+		fields = append(fields, currency.FieldSortNo)
+	}
 	if m.created_at != nil {
-		fields = append(fields, operatordomain.FieldCreatedAt)
+		fields = append(fields, currency.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, operatordomain.FieldUpdatedAt)
+		fields = append(fields, currency.FieldUpdatedAt)
 	}
-	if m.operator != nil {
-		fields = append(fields, operatordomain.FieldOperatorID)
+	if m.code != nil {
+		fields = append(fields, currency.FieldCode)
 	}
-	if m.domain_name != nil {
-		fields = append(fields, operatordomain.FieldDomainName)
+	if m.name_key != nil {
+		fields = append(fields, currency.FieldNameKey)
 	}
-	if m.domain_type != nil {
-		fields = append(fields, operatordomain.FieldDomainType)
+	if m.currency_type != nil {
+		fields = append(fields, currency.FieldCurrencyType)
+	}
+	if m.symbol != nil {
+		fields = append(fields, currency.FieldSymbol)
+	}
+	if m.amount_factor != nil {
+		fields = append(fields, currency.FieldAmountFactor)
 	}
 	return fields
 }
@@ -1972,18 +632,26 @@ func (m *OperatorDomainMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *OperatorDomainMutation) Field(name string) (ent.Value, bool) {
+func (m *CurrencyMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case operatordomain.FieldCreatedAt:
+	case currency.FieldStatus:
+		return m.Status()
+	case currency.FieldSortNo:
+		return m.SortNo()
+	case currency.FieldCreatedAt:
 		return m.CreatedAt()
-	case operatordomain.FieldUpdatedAt:
+	case currency.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case operatordomain.FieldOperatorID:
-		return m.OperatorID()
-	case operatordomain.FieldDomainName:
-		return m.DomainName()
-	case operatordomain.FieldDomainType:
-		return m.DomainType()
+	case currency.FieldCode:
+		return m.Code()
+	case currency.FieldNameKey:
+		return m.NameKey()
+	case currency.FieldCurrencyType:
+		return m.CurrencyType()
+	case currency.FieldSymbol:
+		return m.Symbol()
+	case currency.FieldAmountFactor:
+		return m.AmountFactor()
 	}
 	return nil, false
 }
@@ -1991,72 +659,117 @@ func (m *OperatorDomainMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *OperatorDomainMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *CurrencyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case operatordomain.FieldCreatedAt:
+	case currency.FieldStatus:
+		return m.OldStatus(ctx)
+	case currency.FieldSortNo:
+		return m.OldSortNo(ctx)
+	case currency.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case operatordomain.FieldUpdatedAt:
+	case currency.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case operatordomain.FieldOperatorID:
-		return m.OldOperatorID(ctx)
-	case operatordomain.FieldDomainName:
-		return m.OldDomainName(ctx)
-	case operatordomain.FieldDomainType:
-		return m.OldDomainType(ctx)
+	case currency.FieldCode:
+		return m.OldCode(ctx)
+	case currency.FieldNameKey:
+		return m.OldNameKey(ctx)
+	case currency.FieldCurrencyType:
+		return m.OldCurrencyType(ctx)
+	case currency.FieldSymbol:
+		return m.OldSymbol(ctx)
+	case currency.FieldAmountFactor:
+		return m.OldAmountFactor(ctx)
 	}
-	return nil, fmt.Errorf("unknown OperatorDomain field %s", name)
+	return nil, fmt.Errorf("unknown Currency field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *OperatorDomainMutation) SetField(name string, value ent.Value) error {
+func (m *CurrencyMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case operatordomain.FieldCreatedAt:
+	case currency.FieldStatus:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case currency.FieldSortNo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSortNo(v)
+		return nil
+	case currency.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case operatordomain.FieldUpdatedAt:
+	case currency.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case operatordomain.FieldOperatorID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOperatorID(v)
-		return nil
-	case operatordomain.FieldDomainName:
+	case currency.FieldCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetDomainName(v)
+		m.SetCode(v)
 		return nil
-	case operatordomain.FieldDomainType:
+	case currency.FieldNameKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNameKey(v)
+		return nil
+	case currency.FieldCurrencyType:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetDomainType(v)
+		m.SetCurrencyType(v)
+		return nil
+	case currency.FieldSymbol:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSymbol(v)
+		return nil
+	case currency.FieldAmountFactor:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAmountFactor(v)
 		return nil
 	}
-	return fmt.Errorf("unknown OperatorDomain field %s", name)
+	return fmt.Errorf("unknown Currency field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *OperatorDomainMutation) AddedFields() []string {
+func (m *CurrencyMutation) AddedFields() []string {
 	var fields []string
-	if m.adddomain_type != nil {
-		fields = append(fields, operatordomain.FieldDomainType)
+	if m.addstatus != nil {
+		fields = append(fields, currency.FieldStatus)
+	}
+	if m.addsort_no != nil {
+		fields = append(fields, currency.FieldSortNo)
+	}
+	if m.addcurrency_type != nil {
+		fields = append(fields, currency.FieldCurrencyType)
+	}
+	if m.addamount_factor != nil {
+		fields = append(fields, currency.FieldAmountFactor)
 	}
 	return fields
 }
@@ -2064,10 +777,16 @@ func (m *OperatorDomainMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *OperatorDomainMutation) AddedField(name string) (ent.Value, bool) {
+func (m *CurrencyMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case operatordomain.FieldDomainType:
-		return m.AddedDomainType()
+	case currency.FieldStatus:
+		return m.AddedStatus()
+	case currency.FieldSortNo:
+		return m.AddedSortNo()
+	case currency.FieldCurrencyType:
+		return m.AddedCurrencyType()
+	case currency.FieldAmountFactor:
+		return m.AddedAmountFactor()
 	}
 	return nil, false
 }
@@ -2075,162 +794,174 @@ func (m *OperatorDomainMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *OperatorDomainMutation) AddField(name string, value ent.Value) error {
+func (m *CurrencyMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case operatordomain.FieldDomainType:
+	case currency.FieldStatus:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddDomainType(v)
+		m.AddStatus(v)
+		return nil
+	case currency.FieldSortNo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSortNo(v)
+		return nil
+	case currency.FieldCurrencyType:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCurrencyType(v)
+		return nil
+	case currency.FieldAmountFactor:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAmountFactor(v)
 		return nil
 	}
-	return fmt.Errorf("unknown OperatorDomain numeric field %s", name)
+	return fmt.Errorf("unknown Currency numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *OperatorDomainMutation) ClearedFields() []string {
+func (m *CurrencyMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *OperatorDomainMutation) FieldCleared(name string) bool {
+func (m *CurrencyMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *OperatorDomainMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown OperatorDomain nullable field %s", name)
+func (m *CurrencyMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Currency nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *OperatorDomainMutation) ResetField(name string) error {
+func (m *CurrencyMutation) ResetField(name string) error {
 	switch name {
-	case operatordomain.FieldCreatedAt:
+	case currency.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case currency.FieldSortNo:
+		m.ResetSortNo()
+		return nil
+	case currency.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case operatordomain.FieldUpdatedAt:
+	case currency.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case operatordomain.FieldOperatorID:
-		m.ResetOperatorID()
+	case currency.FieldCode:
+		m.ResetCode()
 		return nil
-	case operatordomain.FieldDomainName:
-		m.ResetDomainName()
+	case currency.FieldNameKey:
+		m.ResetNameKey()
 		return nil
-	case operatordomain.FieldDomainType:
-		m.ResetDomainType()
+	case currency.FieldCurrencyType:
+		m.ResetCurrencyType()
+		return nil
+	case currency.FieldSymbol:
+		m.ResetSymbol()
+		return nil
+	case currency.FieldAmountFactor:
+		m.ResetAmountFactor()
 		return nil
 	}
-	return fmt.Errorf("unknown OperatorDomain field %s", name)
+	return fmt.Errorf("unknown Currency field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *OperatorDomainMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.operator != nil {
-		edges = append(edges, operatordomain.EdgeOperator)
-	}
+func (m *CurrencyMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *OperatorDomainMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case operatordomain.EdgeOperator:
-		if id := m.operator; id != nil {
-			return []ent.Value{*id}
-		}
-	}
+func (m *CurrencyMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *OperatorDomainMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+func (m *CurrencyMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *OperatorDomainMutation) RemovedIDs(name string) []ent.Value {
+func (m *CurrencyMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *OperatorDomainMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedoperator {
-		edges = append(edges, operatordomain.EdgeOperator)
-	}
+func (m *CurrencyMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *OperatorDomainMutation) EdgeCleared(name string) bool {
-	switch name {
-	case operatordomain.EdgeOperator:
-		return m.clearedoperator
-	}
+func (m *CurrencyMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *OperatorDomainMutation) ClearEdge(name string) error {
-	switch name {
-	case operatordomain.EdgeOperator:
-		m.ClearOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorDomain unique edge %s", name)
+func (m *CurrencyMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Currency unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *OperatorDomainMutation) ResetEdge(name string) error {
-	switch name {
-	case operatordomain.EdgeOperator:
-		m.ResetOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorDomain edge %s", name)
+func (m *CurrencyMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Currency edge %s", name)
 }
 
-// OperatorLanguageMutation represents an operation that mutates the OperatorLanguage nodes in the graph.
-type OperatorLanguageMutation struct {
+// RegionMutation represents an operation that mutates the Region nodes in the graph.
+type RegionMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int64
-	language_code   *string
-	created_at      *time.Time
-	clearedFields   map[string]struct{}
-	operator        *int64
-	clearedoperator bool
-	done            bool
-	oldValue        func(context.Context) (*OperatorLanguage, error)
-	predicates      []predicate.OperatorLanguage
+	op            Op
+	typ           string
+	id            *int64
+	status        *int64
+	addstatus     *int64
+	sort_no       *int64
+	addsort_no    *int64
+	created_at    *time.Time
+	updated_at    *time.Time
+	code          *string
+	calling_code  *string
+	name_key      *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*Region, error)
+	predicates    []predicate.Region
 }
 
-var _ ent.Mutation = (*OperatorLanguageMutation)(nil)
+var _ ent.Mutation = (*RegionMutation)(nil)
 
-// operatorlanguageOption allows management of the mutation configuration using functional options.
-type operatorlanguageOption func(*OperatorLanguageMutation)
+// regionOption allows management of the mutation configuration using functional options.
+type regionOption func(*RegionMutation)
 
-// newOperatorLanguageMutation creates new mutation for the OperatorLanguage entity.
-func newOperatorLanguageMutation(c config, op Op, opts ...operatorlanguageOption) *OperatorLanguageMutation {
-	m := &OperatorLanguageMutation{
+// newRegionMutation creates new mutation for the Region entity.
+func newRegionMutation(c config, op Op, opts ...regionOption) *RegionMutation {
+	m := &RegionMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeOperatorLanguage,
+		typ:           TypeRegion,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -2239,20 +970,20 @@ func newOperatorLanguageMutation(c config, op Op, opts ...operatorlanguageOption
 	return m
 }
 
-// withOperatorLanguageID sets the ID field of the mutation.
-func withOperatorLanguageID(id int64) operatorlanguageOption {
-	return func(m *OperatorLanguageMutation) {
+// withRegionID sets the ID field of the mutation.
+func withRegionID(id int64) regionOption {
+	return func(m *RegionMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *OperatorLanguage
+			value *Region
 		)
-		m.oldValue = func(ctx context.Context) (*OperatorLanguage, error) {
+		m.oldValue = func(ctx context.Context) (*Region, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().OperatorLanguage.Get(ctx, id)
+					value, err = m.Client().Region.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -2261,10 +992,10 @@ func withOperatorLanguageID(id int64) operatorlanguageOption {
 	}
 }
 
-// withOperatorLanguage sets the old OperatorLanguage of the mutation.
-func withOperatorLanguage(node *OperatorLanguage) operatorlanguageOption {
-	return func(m *OperatorLanguageMutation) {
-		m.oldValue = func(context.Context) (*OperatorLanguage, error) {
+// withRegion sets the old Region of the mutation.
+func withRegion(node *Region) regionOption {
+	return func(m *RegionMutation) {
+		m.oldValue = func(context.Context) (*Region, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -2273,7 +1004,7 @@ func withOperatorLanguage(node *OperatorLanguage) operatorlanguageOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m OperatorLanguageMutation) Client() *Client {
+func (m RegionMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -2281,7 +1012,7 @@ func (m OperatorLanguageMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m OperatorLanguageMutation) Tx() (*Tx, error) {
+func (m RegionMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -2291,14 +1022,14 @@ func (m OperatorLanguageMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of OperatorLanguage entities.
-func (m *OperatorLanguageMutation) SetID(id int64) {
+// operation is only accepted on creation of Region entities.
+func (m *RegionMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *OperatorLanguageMutation) ID() (id int64, exists bool) {
+func (m *RegionMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2309,7 +1040,7 @@ func (m *OperatorLanguageMutation) ID() (id int64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *OperatorLanguageMutation) IDs(ctx context.Context) ([]int64, error) {
+func (m *RegionMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -2318,91 +1049,131 @@ func (m *OperatorLanguageMutation) IDs(ctx context.Context) ([]int64, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().OperatorLanguage.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Region.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
-// SetOperatorID sets the "operator_id" field.
-func (m *OperatorLanguageMutation) SetOperatorID(i int64) {
-	m.operator = &i
+// SetStatus sets the "status" field.
+func (m *RegionMutation) SetStatus(i int64) {
+	m.status = &i
+	m.addstatus = nil
 }
 
-// OperatorID returns the value of the "operator_id" field in the mutation.
-func (m *OperatorLanguageMutation) OperatorID() (r int64, exists bool) {
-	v := m.operator
+// Status returns the value of the "status" field in the mutation.
+func (m *RegionMutation) Status() (r int64, exists bool) {
+	v := m.status
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOperatorID returns the old "operator_id" field's value of the OperatorLanguage entity.
-// If the OperatorLanguage object wasn't provided to the builder, the object is fetched from the database.
+// OldStatus returns the old "status" field's value of the Region entity.
+// If the Region object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorLanguageMutation) OldOperatorID(ctx context.Context) (v int64, err error) {
+func (m *RegionMutation) OldStatus(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOperatorID is only allowed on UpdateOne operations")
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOperatorID requires an ID field in the mutation")
+		return v, errors.New("OldStatus requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOperatorID: %w", err)
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
 	}
-	return oldValue.OperatorID, nil
+	return oldValue.Status, nil
 }
 
-// ResetOperatorID resets all changes to the "operator_id" field.
-func (m *OperatorLanguageMutation) ResetOperatorID() {
-	m.operator = nil
+// AddStatus adds i to the "status" field.
+func (m *RegionMutation) AddStatus(i int64) {
+	if m.addstatus != nil {
+		*m.addstatus += i
+	} else {
+		m.addstatus = &i
+	}
 }
 
-// SetLanguageCode sets the "language_code" field.
-func (m *OperatorLanguageMutation) SetLanguageCode(s string) {
-	m.language_code = &s
-}
-
-// LanguageCode returns the value of the "language_code" field in the mutation.
-func (m *OperatorLanguageMutation) LanguageCode() (r string, exists bool) {
-	v := m.language_code
+// AddedStatus returns the value that was added to the "status" field in this mutation.
+func (m *RegionMutation) AddedStatus() (r int64, exists bool) {
+	v := m.addstatus
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageCode returns the old "language_code" field's value of the OperatorLanguage entity.
-// If the OperatorLanguage object wasn't provided to the builder, the object is fetched from the database.
+// ResetStatus resets all changes to the "status" field.
+func (m *RegionMutation) ResetStatus() {
+	m.status = nil
+	m.addstatus = nil
+}
+
+// SetSortNo sets the "sort_no" field.
+func (m *RegionMutation) SetSortNo(i int64) {
+	m.sort_no = &i
+	m.addsort_no = nil
+}
+
+// SortNo returns the value of the "sort_no" field in the mutation.
+func (m *RegionMutation) SortNo() (r int64, exists bool) {
+	v := m.sort_no
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSortNo returns the old "sort_no" field's value of the Region entity.
+// If the Region object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorLanguageMutation) OldLanguageCode(ctx context.Context) (v string, err error) {
+func (m *RegionMutation) OldSortNo(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageCode is only allowed on UpdateOne operations")
+		return v, errors.New("OldSortNo is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageCode requires an ID field in the mutation")
+		return v, errors.New("OldSortNo requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageCode: %w", err)
+		return v, fmt.Errorf("querying old value for OldSortNo: %w", err)
 	}
-	return oldValue.LanguageCode, nil
+	return oldValue.SortNo, nil
 }
 
-// ResetLanguageCode resets all changes to the "language_code" field.
-func (m *OperatorLanguageMutation) ResetLanguageCode() {
-	m.language_code = nil
+// AddSortNo adds i to the "sort_no" field.
+func (m *RegionMutation) AddSortNo(i int64) {
+	if m.addsort_no != nil {
+		*m.addsort_no += i
+	} else {
+		m.addsort_no = &i
+	}
+}
+
+// AddedSortNo returns the value that was added to the "sort_no" field in this mutation.
+func (m *RegionMutation) AddedSortNo() (r int64, exists bool) {
+	v := m.addsort_no
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSortNo resets all changes to the "sort_no" field.
+func (m *RegionMutation) ResetSortNo() {
+	m.sort_no = nil
+	m.addsort_no = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *OperatorLanguageMutation) SetCreatedAt(t time.Time) {
+func (m *RegionMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *OperatorLanguageMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *RegionMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -2410,10 +1181,10 @@ func (m *OperatorLanguageMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the OperatorLanguage entity.
-// If the OperatorLanguage object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the Region entity.
+// If the Region object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorLanguageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *RegionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -2428,46 +1199,163 @@ func (m *OperatorLanguageMutation) OldCreatedAt(ctx context.Context) (v time.Tim
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *OperatorLanguageMutation) ResetCreatedAt() {
+func (m *RegionMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// ClearOperator clears the "operator" edge to the Operator entity.
-func (m *OperatorLanguageMutation) ClearOperator() {
-	m.clearedoperator = true
-	m.clearedFields[operatorlanguage.FieldOperatorID] = struct{}{}
+// SetUpdatedAt sets the "updated_at" field.
+func (m *RegionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
 }
 
-// OperatorCleared reports if the "operator" edge to the Operator entity was cleared.
-func (m *OperatorLanguageMutation) OperatorCleared() bool {
-	return m.clearedoperator
-}
-
-// OperatorIDs returns the "operator" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OperatorID instead. It exists only for internal usage by the builders.
-func (m *OperatorLanguageMutation) OperatorIDs() (ids []int64) {
-	if id := m.operator; id != nil {
-		ids = append(ids, *id)
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *RegionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
 	}
-	return
+	return *v, true
 }
 
-// ResetOperator resets all changes to the "operator" edge.
-func (m *OperatorLanguageMutation) ResetOperator() {
-	m.operator = nil
-	m.clearedoperator = false
+// OldUpdatedAt returns the old "updated_at" field's value of the Region entity.
+// If the Region object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
 }
 
-// Where appends a list predicates to the OperatorLanguageMutation builder.
-func (m *OperatorLanguageMutation) Where(ps ...predicate.OperatorLanguage) {
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *RegionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCode sets the "code" field.
+func (m *RegionMutation) SetCode(s string) {
+	m.code = &s
+}
+
+// Code returns the value of the "code" field in the mutation.
+func (m *RegionMutation) Code() (r string, exists bool) {
+	v := m.code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCode returns the old "code" field's value of the Region entity.
+// If the Region object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegionMutation) OldCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
+	}
+	return oldValue.Code, nil
+}
+
+// ResetCode resets all changes to the "code" field.
+func (m *RegionMutation) ResetCode() {
+	m.code = nil
+}
+
+// SetCallingCode sets the "calling_code" field.
+func (m *RegionMutation) SetCallingCode(s string) {
+	m.calling_code = &s
+}
+
+// CallingCode returns the value of the "calling_code" field in the mutation.
+func (m *RegionMutation) CallingCode() (r string, exists bool) {
+	v := m.calling_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCallingCode returns the old "calling_code" field's value of the Region entity.
+// If the Region object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegionMutation) OldCallingCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCallingCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCallingCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCallingCode: %w", err)
+	}
+	return oldValue.CallingCode, nil
+}
+
+// ResetCallingCode resets all changes to the "calling_code" field.
+func (m *RegionMutation) ResetCallingCode() {
+	m.calling_code = nil
+}
+
+// SetNameKey sets the "name_key" field.
+func (m *RegionMutation) SetNameKey(s string) {
+	m.name_key = &s
+}
+
+// NameKey returns the value of the "name_key" field in the mutation.
+func (m *RegionMutation) NameKey() (r string, exists bool) {
+	v := m.name_key
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNameKey returns the old "name_key" field's value of the Region entity.
+// If the Region object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RegionMutation) OldNameKey(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNameKey is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNameKey requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNameKey: %w", err)
+	}
+	return oldValue.NameKey, nil
+}
+
+// ResetNameKey resets all changes to the "name_key" field.
+func (m *RegionMutation) ResetNameKey() {
+	m.name_key = nil
+}
+
+// Where appends a list predicates to the RegionMutation builder.
+func (m *RegionMutation) Where(ps ...predicate.Region) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the OperatorLanguageMutation builder. Using this method,
+// WhereP appends storage-level predicates to the RegionMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *OperatorLanguageMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.OperatorLanguage, len(ps))
+func (m *RegionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Region, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -2475,33 +1363,45 @@ func (m *OperatorLanguageMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *OperatorLanguageMutation) Op() Op {
+func (m *RegionMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *OperatorLanguageMutation) SetOp(op Op) {
+func (m *RegionMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (OperatorLanguage).
-func (m *OperatorLanguageMutation) Type() string {
+// Type returns the node type of this mutation (Region).
+func (m *RegionMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *OperatorLanguageMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.operator != nil {
-		fields = append(fields, operatorlanguage.FieldOperatorID)
+func (m *RegionMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.status != nil {
+		fields = append(fields, region.FieldStatus)
 	}
-	if m.language_code != nil {
-		fields = append(fields, operatorlanguage.FieldLanguageCode)
+	if m.sort_no != nil {
+		fields = append(fields, region.FieldSortNo)
 	}
 	if m.created_at != nil {
-		fields = append(fields, operatorlanguage.FieldCreatedAt)
+		fields = append(fields, region.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, region.FieldUpdatedAt)
+	}
+	if m.code != nil {
+		fields = append(fields, region.FieldCode)
+	}
+	if m.calling_code != nil {
+		fields = append(fields, region.FieldCallingCode)
+	}
+	if m.name_key != nil {
+		fields = append(fields, region.FieldNameKey)
 	}
 	return fields
 }
@@ -2509,14 +1409,22 @@ func (m *OperatorLanguageMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *OperatorLanguageMutation) Field(name string) (ent.Value, bool) {
+func (m *RegionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case operatorlanguage.FieldOperatorID:
-		return m.OperatorID()
-	case operatorlanguage.FieldLanguageCode:
-		return m.LanguageCode()
-	case operatorlanguage.FieldCreatedAt:
+	case region.FieldStatus:
+		return m.Status()
+	case region.FieldSortNo:
+		return m.SortNo()
+	case region.FieldCreatedAt:
 		return m.CreatedAt()
+	case region.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case region.FieldCode:
+		return m.Code()
+	case region.FieldCallingCode:
+		return m.CallingCode()
+	case region.FieldNameKey:
+		return m.NameKey()
 	}
 	return nil, false
 }
@@ -2524,60 +1432,106 @@ func (m *OperatorLanguageMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *OperatorLanguageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *RegionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case operatorlanguage.FieldOperatorID:
-		return m.OldOperatorID(ctx)
-	case operatorlanguage.FieldLanguageCode:
-		return m.OldLanguageCode(ctx)
-	case operatorlanguage.FieldCreatedAt:
+	case region.FieldStatus:
+		return m.OldStatus(ctx)
+	case region.FieldSortNo:
+		return m.OldSortNo(ctx)
+	case region.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
+	case region.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case region.FieldCode:
+		return m.OldCode(ctx)
+	case region.FieldCallingCode:
+		return m.OldCallingCode(ctx)
+	case region.FieldNameKey:
+		return m.OldNameKey(ctx)
 	}
-	return nil, fmt.Errorf("unknown OperatorLanguage field %s", name)
+	return nil, fmt.Errorf("unknown Region field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *OperatorLanguageMutation) SetField(name string, value ent.Value) error {
+func (m *RegionMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case operatorlanguage.FieldOperatorID:
+	case region.FieldStatus:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOperatorID(v)
+		m.SetStatus(v)
 		return nil
-	case operatorlanguage.FieldLanguageCode:
-		v, ok := value.(string)
+	case region.FieldSortNo:
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageCode(v)
+		m.SetSortNo(v)
 		return nil
-	case operatorlanguage.FieldCreatedAt:
+	case region.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
+	case region.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case region.FieldCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCode(v)
+		return nil
+	case region.FieldCallingCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCallingCode(v)
+		return nil
+	case region.FieldNameKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNameKey(v)
+		return nil
 	}
-	return fmt.Errorf("unknown OperatorLanguage field %s", name)
+	return fmt.Errorf("unknown Region field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *OperatorLanguageMutation) AddedFields() []string {
+func (m *RegionMutation) AddedFields() []string {
 	var fields []string
+	if m.addstatus != nil {
+		fields = append(fields, region.FieldStatus)
+	}
+	if m.addsort_no != nil {
+		fields = append(fields, region.FieldSortNo)
+	}
 	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *OperatorLanguageMutation) AddedField(name string) (ent.Value, bool) {
+func (m *RegionMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case region.FieldStatus:
+		return m.AddedStatus()
+	case region.FieldSortNo:
+		return m.AddedSortNo()
 	}
 	return nil, false
 }
@@ -2585,149 +1539,153 @@ func (m *OperatorLanguageMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *OperatorLanguageMutation) AddField(name string, value ent.Value) error {
+func (m *RegionMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case region.FieldStatus:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStatus(v)
+		return nil
+	case region.FieldSortNo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSortNo(v)
+		return nil
 	}
-	return fmt.Errorf("unknown OperatorLanguage numeric field %s", name)
+	return fmt.Errorf("unknown Region numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *OperatorLanguageMutation) ClearedFields() []string {
+func (m *RegionMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *OperatorLanguageMutation) FieldCleared(name string) bool {
+func (m *RegionMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *OperatorLanguageMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown OperatorLanguage nullable field %s", name)
+func (m *RegionMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Region nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *OperatorLanguageMutation) ResetField(name string) error {
+func (m *RegionMutation) ResetField(name string) error {
 	switch name {
-	case operatorlanguage.FieldOperatorID:
-		m.ResetOperatorID()
+	case region.FieldStatus:
+		m.ResetStatus()
 		return nil
-	case operatorlanguage.FieldLanguageCode:
-		m.ResetLanguageCode()
+	case region.FieldSortNo:
+		m.ResetSortNo()
 		return nil
-	case operatorlanguage.FieldCreatedAt:
+	case region.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
+	case region.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case region.FieldCode:
+		m.ResetCode()
+		return nil
+	case region.FieldCallingCode:
+		m.ResetCallingCode()
+		return nil
+	case region.FieldNameKey:
+		m.ResetNameKey()
+		return nil
 	}
-	return fmt.Errorf("unknown OperatorLanguage field %s", name)
+	return fmt.Errorf("unknown Region field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *OperatorLanguageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.operator != nil {
-		edges = append(edges, operatorlanguage.EdgeOperator)
-	}
+func (m *RegionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *OperatorLanguageMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case operatorlanguage.EdgeOperator:
-		if id := m.operator; id != nil {
-			return []ent.Value{*id}
-		}
-	}
+func (m *RegionMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *OperatorLanguageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+func (m *RegionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *OperatorLanguageMutation) RemovedIDs(name string) []ent.Value {
+func (m *RegionMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *OperatorLanguageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedoperator {
-		edges = append(edges, operatorlanguage.EdgeOperator)
-	}
+func (m *RegionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *OperatorLanguageMutation) EdgeCleared(name string) bool {
-	switch name {
-	case operatorlanguage.EdgeOperator:
-		return m.clearedoperator
-	}
+func (m *RegionMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *OperatorLanguageMutation) ClearEdge(name string) error {
-	switch name {
-	case operatorlanguage.EdgeOperator:
-		m.ClearOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorLanguage unique edge %s", name)
+func (m *RegionMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Region unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *OperatorLanguageMutation) ResetEdge(name string) error {
-	switch name {
-	case operatorlanguage.EdgeOperator:
-		m.ResetOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorLanguage edge %s", name)
+func (m *RegionMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Region edge %s", name)
 }
 
-// OperatorRegionMutation represents an operation that mutates the OperatorRegion nodes in the graph.
-type OperatorRegionMutation struct {
+// TimezoneMutation represents an operation that mutates the Timezone nodes in the graph.
+type TimezoneMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int64
-	region_code     *string
-	created_at      *time.Time
-	clearedFields   map[string]struct{}
-	operator        *int64
-	clearedoperator bool
-	done            bool
-	oldValue        func(context.Context) (*OperatorRegion, error)
-	predicates      []predicate.OperatorRegion
+	op            Op
+	typ           string
+	id            *int64
+	status        *int64
+	addstatus     *int64
+	sort_no       *int64
+	addsort_no    *int64
+	created_at    *time.Time
+	updated_at    *time.Time
+	code          *string
+	name_key      *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*Timezone, error)
+	predicates    []predicate.Timezone
 }
 
-var _ ent.Mutation = (*OperatorRegionMutation)(nil)
+var _ ent.Mutation = (*TimezoneMutation)(nil)
 
-// operatorregionOption allows management of the mutation configuration using functional options.
-type operatorregionOption func(*OperatorRegionMutation)
+// timezoneOption allows management of the mutation configuration using functional options.
+type timezoneOption func(*TimezoneMutation)
 
-// newOperatorRegionMutation creates new mutation for the OperatorRegion entity.
-func newOperatorRegionMutation(c config, op Op, opts ...operatorregionOption) *OperatorRegionMutation {
-	m := &OperatorRegionMutation{
+// newTimezoneMutation creates new mutation for the Timezone entity.
+func newTimezoneMutation(c config, op Op, opts ...timezoneOption) *TimezoneMutation {
+	m := &TimezoneMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeOperatorRegion,
+		typ:           TypeTimezone,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -2736,20 +1694,20 @@ func newOperatorRegionMutation(c config, op Op, opts ...operatorregionOption) *O
 	return m
 }
 
-// withOperatorRegionID sets the ID field of the mutation.
-func withOperatorRegionID(id int64) operatorregionOption {
-	return func(m *OperatorRegionMutation) {
+// withTimezoneID sets the ID field of the mutation.
+func withTimezoneID(id int64) timezoneOption {
+	return func(m *TimezoneMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *OperatorRegion
+			value *Timezone
 		)
-		m.oldValue = func(ctx context.Context) (*OperatorRegion, error) {
+		m.oldValue = func(ctx context.Context) (*Timezone, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().OperatorRegion.Get(ctx, id)
+					value, err = m.Client().Timezone.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -2758,10 +1716,10 @@ func withOperatorRegionID(id int64) operatorregionOption {
 	}
 }
 
-// withOperatorRegion sets the old OperatorRegion of the mutation.
-func withOperatorRegion(node *OperatorRegion) operatorregionOption {
-	return func(m *OperatorRegionMutation) {
-		m.oldValue = func(context.Context) (*OperatorRegion, error) {
+// withTimezone sets the old Timezone of the mutation.
+func withTimezone(node *Timezone) timezoneOption {
+	return func(m *TimezoneMutation) {
+		m.oldValue = func(context.Context) (*Timezone, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -2770,7 +1728,7 @@ func withOperatorRegion(node *OperatorRegion) operatorregionOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m OperatorRegionMutation) Client() *Client {
+func (m TimezoneMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -2778,7 +1736,7 @@ func (m OperatorRegionMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m OperatorRegionMutation) Tx() (*Tx, error) {
+func (m TimezoneMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -2788,14 +1746,14 @@ func (m OperatorRegionMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of OperatorRegion entities.
-func (m *OperatorRegionMutation) SetID(id int64) {
+// operation is only accepted on creation of Timezone entities.
+func (m *TimezoneMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *OperatorRegionMutation) ID() (id int64, exists bool) {
+func (m *TimezoneMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2806,7 +1764,7 @@ func (m *OperatorRegionMutation) ID() (id int64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *OperatorRegionMutation) IDs(ctx context.Context) ([]int64, error) {
+func (m *TimezoneMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -2815,91 +1773,131 @@ func (m *OperatorRegionMutation) IDs(ctx context.Context) ([]int64, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().OperatorRegion.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Timezone.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
-// SetOperatorID sets the "operator_id" field.
-func (m *OperatorRegionMutation) SetOperatorID(i int64) {
-	m.operator = &i
+// SetStatus sets the "status" field.
+func (m *TimezoneMutation) SetStatus(i int64) {
+	m.status = &i
+	m.addstatus = nil
 }
 
-// OperatorID returns the value of the "operator_id" field in the mutation.
-func (m *OperatorRegionMutation) OperatorID() (r int64, exists bool) {
-	v := m.operator
+// Status returns the value of the "status" field in the mutation.
+func (m *TimezoneMutation) Status() (r int64, exists bool) {
+	v := m.status
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOperatorID returns the old "operator_id" field's value of the OperatorRegion entity.
-// If the OperatorRegion object wasn't provided to the builder, the object is fetched from the database.
+// OldStatus returns the old "status" field's value of the Timezone entity.
+// If the Timezone object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorRegionMutation) OldOperatorID(ctx context.Context) (v int64, err error) {
+func (m *TimezoneMutation) OldStatus(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOperatorID is only allowed on UpdateOne operations")
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOperatorID requires an ID field in the mutation")
+		return v, errors.New("OldStatus requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOperatorID: %w", err)
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
 	}
-	return oldValue.OperatorID, nil
+	return oldValue.Status, nil
 }
 
-// ResetOperatorID resets all changes to the "operator_id" field.
-func (m *OperatorRegionMutation) ResetOperatorID() {
-	m.operator = nil
+// AddStatus adds i to the "status" field.
+func (m *TimezoneMutation) AddStatus(i int64) {
+	if m.addstatus != nil {
+		*m.addstatus += i
+	} else {
+		m.addstatus = &i
+	}
 }
 
-// SetRegionCode sets the "region_code" field.
-func (m *OperatorRegionMutation) SetRegionCode(s string) {
-	m.region_code = &s
-}
-
-// RegionCode returns the value of the "region_code" field in the mutation.
-func (m *OperatorRegionMutation) RegionCode() (r string, exists bool) {
-	v := m.region_code
+// AddedStatus returns the value that was added to the "status" field in this mutation.
+func (m *TimezoneMutation) AddedStatus() (r int64, exists bool) {
+	v := m.addstatus
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRegionCode returns the old "region_code" field's value of the OperatorRegion entity.
-// If the OperatorRegion object wasn't provided to the builder, the object is fetched from the database.
+// ResetStatus resets all changes to the "status" field.
+func (m *TimezoneMutation) ResetStatus() {
+	m.status = nil
+	m.addstatus = nil
+}
+
+// SetSortNo sets the "sort_no" field.
+func (m *TimezoneMutation) SetSortNo(i int64) {
+	m.sort_no = &i
+	m.addsort_no = nil
+}
+
+// SortNo returns the value of the "sort_no" field in the mutation.
+func (m *TimezoneMutation) SortNo() (r int64, exists bool) {
+	v := m.sort_no
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSortNo returns the old "sort_no" field's value of the Timezone entity.
+// If the Timezone object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorRegionMutation) OldRegionCode(ctx context.Context) (v string, err error) {
+func (m *TimezoneMutation) OldSortNo(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRegionCode is only allowed on UpdateOne operations")
+		return v, errors.New("OldSortNo is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRegionCode requires an ID field in the mutation")
+		return v, errors.New("OldSortNo requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRegionCode: %w", err)
+		return v, fmt.Errorf("querying old value for OldSortNo: %w", err)
 	}
-	return oldValue.RegionCode, nil
+	return oldValue.SortNo, nil
 }
 
-// ResetRegionCode resets all changes to the "region_code" field.
-func (m *OperatorRegionMutation) ResetRegionCode() {
-	m.region_code = nil
+// AddSortNo adds i to the "sort_no" field.
+func (m *TimezoneMutation) AddSortNo(i int64) {
+	if m.addsort_no != nil {
+		*m.addsort_no += i
+	} else {
+		m.addsort_no = &i
+	}
+}
+
+// AddedSortNo returns the value that was added to the "sort_no" field in this mutation.
+func (m *TimezoneMutation) AddedSortNo() (r int64, exists bool) {
+	v := m.addsort_no
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSortNo resets all changes to the "sort_no" field.
+func (m *TimezoneMutation) ResetSortNo() {
+	m.sort_no = nil
+	m.addsort_no = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *OperatorRegionMutation) SetCreatedAt(t time.Time) {
+func (m *TimezoneMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *OperatorRegionMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *TimezoneMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -2907,10 +1905,10 @@ func (m *OperatorRegionMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the OperatorRegion entity.
-// If the OperatorRegion object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the Timezone entity.
+// If the Timezone object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OperatorRegionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *TimezoneMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -2925,46 +1923,127 @@ func (m *OperatorRegionMutation) OldCreatedAt(ctx context.Context) (v time.Time,
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *OperatorRegionMutation) ResetCreatedAt() {
+func (m *TimezoneMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// ClearOperator clears the "operator" edge to the Operator entity.
-func (m *OperatorRegionMutation) ClearOperator() {
-	m.clearedoperator = true
-	m.clearedFields[operatorregion.FieldOperatorID] = struct{}{}
+// SetUpdatedAt sets the "updated_at" field.
+func (m *TimezoneMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
 }
 
-// OperatorCleared reports if the "operator" edge to the Operator entity was cleared.
-func (m *OperatorRegionMutation) OperatorCleared() bool {
-	return m.clearedoperator
-}
-
-// OperatorIDs returns the "operator" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OperatorID instead. It exists only for internal usage by the builders.
-func (m *OperatorRegionMutation) OperatorIDs() (ids []int64) {
-	if id := m.operator; id != nil {
-		ids = append(ids, *id)
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *TimezoneMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
 	}
-	return
+	return *v, true
 }
 
-// ResetOperator resets all changes to the "operator" edge.
-func (m *OperatorRegionMutation) ResetOperator() {
-	m.operator = nil
-	m.clearedoperator = false
+// OldUpdatedAt returns the old "updated_at" field's value of the Timezone entity.
+// If the Timezone object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TimezoneMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
 }
 
-// Where appends a list predicates to the OperatorRegionMutation builder.
-func (m *OperatorRegionMutation) Where(ps ...predicate.OperatorRegion) {
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *TimezoneMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCode sets the "code" field.
+func (m *TimezoneMutation) SetCode(s string) {
+	m.code = &s
+}
+
+// Code returns the value of the "code" field in the mutation.
+func (m *TimezoneMutation) Code() (r string, exists bool) {
+	v := m.code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCode returns the old "code" field's value of the Timezone entity.
+// If the Timezone object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TimezoneMutation) OldCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
+	}
+	return oldValue.Code, nil
+}
+
+// ResetCode resets all changes to the "code" field.
+func (m *TimezoneMutation) ResetCode() {
+	m.code = nil
+}
+
+// SetNameKey sets the "name_key" field.
+func (m *TimezoneMutation) SetNameKey(s string) {
+	m.name_key = &s
+}
+
+// NameKey returns the value of the "name_key" field in the mutation.
+func (m *TimezoneMutation) NameKey() (r string, exists bool) {
+	v := m.name_key
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNameKey returns the old "name_key" field's value of the Timezone entity.
+// If the Timezone object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TimezoneMutation) OldNameKey(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNameKey is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNameKey requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNameKey: %w", err)
+	}
+	return oldValue.NameKey, nil
+}
+
+// ResetNameKey resets all changes to the "name_key" field.
+func (m *TimezoneMutation) ResetNameKey() {
+	m.name_key = nil
+}
+
+// Where appends a list predicates to the TimezoneMutation builder.
+func (m *TimezoneMutation) Where(ps ...predicate.Timezone) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the OperatorRegionMutation builder. Using this method,
+// WhereP appends storage-level predicates to the TimezoneMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *OperatorRegionMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.OperatorRegion, len(ps))
+func (m *TimezoneMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Timezone, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -2972,33 +2051,42 @@ func (m *OperatorRegionMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *OperatorRegionMutation) Op() Op {
+func (m *TimezoneMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *OperatorRegionMutation) SetOp(op Op) {
+func (m *TimezoneMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (OperatorRegion).
-func (m *OperatorRegionMutation) Type() string {
+// Type returns the node type of this mutation (Timezone).
+func (m *TimezoneMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *OperatorRegionMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.operator != nil {
-		fields = append(fields, operatorregion.FieldOperatorID)
+func (m *TimezoneMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.status != nil {
+		fields = append(fields, timezone.FieldStatus)
 	}
-	if m.region_code != nil {
-		fields = append(fields, operatorregion.FieldRegionCode)
+	if m.sort_no != nil {
+		fields = append(fields, timezone.FieldSortNo)
 	}
 	if m.created_at != nil {
-		fields = append(fields, operatorregion.FieldCreatedAt)
+		fields = append(fields, timezone.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, timezone.FieldUpdatedAt)
+	}
+	if m.code != nil {
+		fields = append(fields, timezone.FieldCode)
+	}
+	if m.name_key != nil {
+		fields = append(fields, timezone.FieldNameKey)
 	}
 	return fields
 }
@@ -3006,14 +2094,20 @@ func (m *OperatorRegionMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *OperatorRegionMutation) Field(name string) (ent.Value, bool) {
+func (m *TimezoneMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case operatorregion.FieldOperatorID:
-		return m.OperatorID()
-	case operatorregion.FieldRegionCode:
-		return m.RegionCode()
-	case operatorregion.FieldCreatedAt:
+	case timezone.FieldStatus:
+		return m.Status()
+	case timezone.FieldSortNo:
+		return m.SortNo()
+	case timezone.FieldCreatedAt:
 		return m.CreatedAt()
+	case timezone.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case timezone.FieldCode:
+		return m.Code()
+	case timezone.FieldNameKey:
+		return m.NameKey()
 	}
 	return nil, false
 }
@@ -3021,60 +2115,97 @@ func (m *OperatorRegionMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *OperatorRegionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *TimezoneMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case operatorregion.FieldOperatorID:
-		return m.OldOperatorID(ctx)
-	case operatorregion.FieldRegionCode:
-		return m.OldRegionCode(ctx)
-	case operatorregion.FieldCreatedAt:
+	case timezone.FieldStatus:
+		return m.OldStatus(ctx)
+	case timezone.FieldSortNo:
+		return m.OldSortNo(ctx)
+	case timezone.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
+	case timezone.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case timezone.FieldCode:
+		return m.OldCode(ctx)
+	case timezone.FieldNameKey:
+		return m.OldNameKey(ctx)
 	}
-	return nil, fmt.Errorf("unknown OperatorRegion field %s", name)
+	return nil, fmt.Errorf("unknown Timezone field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *OperatorRegionMutation) SetField(name string, value ent.Value) error {
+func (m *TimezoneMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case operatorregion.FieldOperatorID:
+	case timezone.FieldStatus:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOperatorID(v)
+		m.SetStatus(v)
 		return nil
-	case operatorregion.FieldRegionCode:
-		v, ok := value.(string)
+	case timezone.FieldSortNo:
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRegionCode(v)
+		m.SetSortNo(v)
 		return nil
-	case operatorregion.FieldCreatedAt:
+	case timezone.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
+	case timezone.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case timezone.FieldCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCode(v)
+		return nil
+	case timezone.FieldNameKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNameKey(v)
+		return nil
 	}
-	return fmt.Errorf("unknown OperatorRegion field %s", name)
+	return fmt.Errorf("unknown Timezone field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *OperatorRegionMutation) AddedFields() []string {
+func (m *TimezoneMutation) AddedFields() []string {
 	var fields []string
+	if m.addstatus != nil {
+		fields = append(fields, timezone.FieldStatus)
+	}
+	if m.addsort_no != nil {
+		fields = append(fields, timezone.FieldSortNo)
+	}
 	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *OperatorRegionMutation) AddedField(name string) (ent.Value, bool) {
+func (m *TimezoneMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case timezone.FieldStatus:
+		return m.AddedStatus()
+	case timezone.FieldSortNo:
+		return m.AddedSortNo()
 	}
 	return nil, false
 }
@@ -3082,118 +2213,115 @@ func (m *OperatorRegionMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *OperatorRegionMutation) AddField(name string, value ent.Value) error {
+func (m *TimezoneMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case timezone.FieldStatus:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStatus(v)
+		return nil
+	case timezone.FieldSortNo:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSortNo(v)
+		return nil
 	}
-	return fmt.Errorf("unknown OperatorRegion numeric field %s", name)
+	return fmt.Errorf("unknown Timezone numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *OperatorRegionMutation) ClearedFields() []string {
+func (m *TimezoneMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *OperatorRegionMutation) FieldCleared(name string) bool {
+func (m *TimezoneMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *OperatorRegionMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown OperatorRegion nullable field %s", name)
+func (m *TimezoneMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Timezone nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *OperatorRegionMutation) ResetField(name string) error {
+func (m *TimezoneMutation) ResetField(name string) error {
 	switch name {
-	case operatorregion.FieldOperatorID:
-		m.ResetOperatorID()
+	case timezone.FieldStatus:
+		m.ResetStatus()
 		return nil
-	case operatorregion.FieldRegionCode:
-		m.ResetRegionCode()
+	case timezone.FieldSortNo:
+		m.ResetSortNo()
 		return nil
-	case operatorregion.FieldCreatedAt:
+	case timezone.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
+	case timezone.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case timezone.FieldCode:
+		m.ResetCode()
+		return nil
+	case timezone.FieldNameKey:
+		m.ResetNameKey()
+		return nil
 	}
-	return fmt.Errorf("unknown OperatorRegion field %s", name)
+	return fmt.Errorf("unknown Timezone field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *OperatorRegionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.operator != nil {
-		edges = append(edges, operatorregion.EdgeOperator)
-	}
+func (m *TimezoneMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *OperatorRegionMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case operatorregion.EdgeOperator:
-		if id := m.operator; id != nil {
-			return []ent.Value{*id}
-		}
-	}
+func (m *TimezoneMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *OperatorRegionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+func (m *TimezoneMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *OperatorRegionMutation) RemovedIDs(name string) []ent.Value {
+func (m *TimezoneMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *OperatorRegionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedoperator {
-		edges = append(edges, operatorregion.EdgeOperator)
-	}
+func (m *TimezoneMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *OperatorRegionMutation) EdgeCleared(name string) bool {
-	switch name {
-	case operatorregion.EdgeOperator:
-		return m.clearedoperator
-	}
+func (m *TimezoneMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *OperatorRegionMutation) ClearEdge(name string) error {
-	switch name {
-	case operatorregion.EdgeOperator:
-		m.ClearOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorRegion unique edge %s", name)
+func (m *TimezoneMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Timezone unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *OperatorRegionMutation) ResetEdge(name string) error {
-	switch name {
-	case operatorregion.EdgeOperator:
-		m.ResetOperator()
-		return nil
-	}
-	return fmt.Errorf("unknown OperatorRegion edge %s", name)
+func (m *TimezoneMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Timezone edge %s", name)
 }

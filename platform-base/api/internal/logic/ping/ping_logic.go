@@ -6,9 +6,9 @@ package ping
 import (
 	"context"
 
-	"oa.98ent.com/p9/operator-base/api/internal/svc"
-	"oa.98ent.com/p9/operator-base/api/internal/types"
-	"oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/pingpb"
+	"oa.98ent.com/p9/platform-base/api/internal/svc"
+	"oa.98ent.com/p9/platform-base/api/internal/types"
+	"oa.98ent.com/p9/platform-base/rpc/pb/platformbaserpc/pingpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

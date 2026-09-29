@@ -9,17 +9,14 @@ import (
 	"log"
 	"reflect"
 
-	"oa.98ent.com/p9/operator-base/rpc/ent/migrate"
+	"oa.98ent.com/p9/platform-base/rpc/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operator"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatoragentline"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatordomain"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatorlanguage"
-	"oa.98ent.com/p9/operator-base/rpc/ent/operatorregion"
+	"oa.98ent.com/p9/platform-base/rpc/ent/currency"
+	"oa.98ent.com/p9/platform-base/rpc/ent/region"
+	"oa.98ent.com/p9/platform-base/rpc/ent/timezone"
 )
 
 // Client is the client that holds all ent builders.
@@ -27,16 +24,12 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Operator is the client for interacting with the Operator builders.
-	Operator *OperatorClient
-	// OperatorAgentLine is the client for interacting with the OperatorAgentLine builders.
-	OperatorAgentLine *OperatorAgentLineClient
-	// OperatorDomain is the client for interacting with the OperatorDomain builders.
-	OperatorDomain *OperatorDomainClient
-	// OperatorLanguage is the client for interacting with the OperatorLanguage builders.
-	OperatorLanguage *OperatorLanguageClient
-	// OperatorRegion is the client for interacting with the OperatorRegion builders.
-	OperatorRegion *OperatorRegionClient
+	// Currency is the client for interacting with the Currency builders.
+	Currency *CurrencyClient
+	// Region is the client for interacting with the Region builders.
+	Region *RegionClient
+	// Timezone is the client for interacting with the Timezone builders.
+	Timezone *TimezoneClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -48,11 +41,9 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Operator = NewOperatorClient(c.config)
-	c.OperatorAgentLine = NewOperatorAgentLineClient(c.config)
-	c.OperatorDomain = NewOperatorDomainClient(c.config)
-	c.OperatorLanguage = NewOperatorLanguageClient(c.config)
-	c.OperatorRegion = NewOperatorRegionClient(c.config)
+	c.Currency = NewCurrencyClient(c.config)
+	c.Region = NewRegionClient(c.config)
+	c.Timezone = NewTimezoneClient(c.config)
 }
 
 type (
@@ -143,13 +134,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		Operator:          NewOperatorClient(cfg),
-		OperatorAgentLine: NewOperatorAgentLineClient(cfg),
-		OperatorDomain:    NewOperatorDomainClient(cfg),
-		OperatorLanguage:  NewOperatorLanguageClient(cfg),
-		OperatorRegion:    NewOperatorRegionClient(cfg),
+		ctx:      ctx,
+		config:   cfg,
+		Currency: NewCurrencyClient(cfg),
+		Region:   NewRegionClient(cfg),
+		Timezone: NewTimezoneClient(cfg),
 	}, nil
 }
 
@@ -167,20 +156,18 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		Operator:          NewOperatorClient(cfg),
-		OperatorAgentLine: NewOperatorAgentLineClient(cfg),
-		OperatorDomain:    NewOperatorDomainClient(cfg),
-		OperatorLanguage:  NewOperatorLanguageClient(cfg),
-		OperatorRegion:    NewOperatorRegionClient(cfg),
+		ctx:      ctx,
+		config:   cfg,
+		Currency: NewCurrencyClient(cfg),
+		Region:   NewRegionClient(cfg),
+		Timezone: NewTimezoneClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Operator.
+//		Currency.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -202,142 +189,134 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Operator.Use(hooks...)
-	c.OperatorAgentLine.Use(hooks...)
-	c.OperatorDomain.Use(hooks...)
-	c.OperatorLanguage.Use(hooks...)
-	c.OperatorRegion.Use(hooks...)
+	c.Currency.Use(hooks...)
+	c.Region.Use(hooks...)
+	c.Timezone.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Operator.Intercept(interceptors...)
-	c.OperatorAgentLine.Intercept(interceptors...)
-	c.OperatorDomain.Intercept(interceptors...)
-	c.OperatorLanguage.Intercept(interceptors...)
-	c.OperatorRegion.Intercept(interceptors...)
+	c.Currency.Intercept(interceptors...)
+	c.Region.Intercept(interceptors...)
+	c.Timezone.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *OperatorMutation:
-		return c.Operator.mutate(ctx, m)
-	case *OperatorAgentLineMutation:
-		return c.OperatorAgentLine.mutate(ctx, m)
-	case *OperatorDomainMutation:
-		return c.OperatorDomain.mutate(ctx, m)
-	case *OperatorLanguageMutation:
-		return c.OperatorLanguage.mutate(ctx, m)
-	case *OperatorRegionMutation:
-		return c.OperatorRegion.mutate(ctx, m)
+	case *CurrencyMutation:
+		return c.Currency.mutate(ctx, m)
+	case *RegionMutation:
+		return c.Region.mutate(ctx, m)
+	case *TimezoneMutation:
+		return c.Timezone.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
 }
 
-// OperatorClient is a client for the Operator schema.
-type OperatorClient struct {
+// CurrencyClient is a client for the Currency schema.
+type CurrencyClient struct {
 	config
 }
 
-// NewOperatorClient returns a client for the Operator from the given config.
-func NewOperatorClient(c config) *OperatorClient {
-	return &OperatorClient{config: c}
+// NewCurrencyClient returns a client for the Currency from the given config.
+func NewCurrencyClient(c config) *CurrencyClient {
+	return &CurrencyClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `operator.Hooks(f(g(h())))`.
-func (c *OperatorClient) Use(hooks ...Hook) {
-	c.hooks.Operator = append(c.hooks.Operator, hooks...)
+// A call to `Use(f, g, h)` equals to `currency.Hooks(f(g(h())))`.
+func (c *CurrencyClient) Use(hooks ...Hook) {
+	c.hooks.Currency = append(c.hooks.Currency, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `operator.Intercept(f(g(h())))`.
-func (c *OperatorClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Operator = append(c.inters.Operator, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `currency.Intercept(f(g(h())))`.
+func (c *CurrencyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Currency = append(c.inters.Currency, interceptors...)
 }
 
-// Create returns a builder for creating a Operator entity.
-func (c *OperatorClient) Create() *OperatorCreate {
-	mutation := newOperatorMutation(c.config, OpCreate)
-	return &OperatorCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Currency entity.
+func (c *CurrencyClient) Create() *CurrencyCreate {
+	mutation := newCurrencyMutation(c.config, OpCreate)
+	return &CurrencyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Operator entities.
-func (c *OperatorClient) CreateBulk(builders ...*OperatorCreate) *OperatorCreateBulk {
-	return &OperatorCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Currency entities.
+func (c *CurrencyClient) CreateBulk(builders ...*CurrencyCreate) *CurrencyCreateBulk {
+	return &CurrencyCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *OperatorClient) MapCreateBulk(slice any, setFunc func(*OperatorCreate, int)) *OperatorCreateBulk {
+func (c *CurrencyClient) MapCreateBulk(slice any, setFunc func(*CurrencyCreate, int)) *CurrencyCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &OperatorCreateBulk{err: fmt.Errorf("calling to OperatorClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &CurrencyCreateBulk{err: fmt.Errorf("calling to CurrencyClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*OperatorCreate, rv.Len())
+	builders := make([]*CurrencyCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &OperatorCreateBulk{config: c.config, builders: builders}
+	return &CurrencyCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Operator.
-func (c *OperatorClient) Update() *OperatorUpdate {
-	mutation := newOperatorMutation(c.config, OpUpdate)
-	return &OperatorUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Currency.
+func (c *CurrencyClient) Update() *CurrencyUpdate {
+	mutation := newCurrencyMutation(c.config, OpUpdate)
+	return &CurrencyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OperatorClient) UpdateOne(_m *Operator) *OperatorUpdateOne {
-	mutation := newOperatorMutation(c.config, OpUpdateOne, withOperator(_m))
-	return &OperatorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CurrencyClient) UpdateOne(_m *Currency) *CurrencyUpdateOne {
+	mutation := newCurrencyMutation(c.config, OpUpdateOne, withCurrency(_m))
+	return &CurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OperatorClient) UpdateOneID(id int64) *OperatorUpdateOne {
-	mutation := newOperatorMutation(c.config, OpUpdateOne, withOperatorID(id))
-	return &OperatorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CurrencyClient) UpdateOneID(id int64) *CurrencyUpdateOne {
+	mutation := newCurrencyMutation(c.config, OpUpdateOne, withCurrencyID(id))
+	return &CurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Operator.
-func (c *OperatorClient) Delete() *OperatorDelete {
-	mutation := newOperatorMutation(c.config, OpDelete)
-	return &OperatorDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Currency.
+func (c *CurrencyClient) Delete() *CurrencyDelete {
+	mutation := newCurrencyMutation(c.config, OpDelete)
+	return &CurrencyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OperatorClient) DeleteOne(_m *Operator) *OperatorDeleteOne {
+func (c *CurrencyClient) DeleteOne(_m *Currency) *CurrencyDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OperatorClient) DeleteOneID(id int64) *OperatorDeleteOne {
-	builder := c.Delete().Where(operator.ID(id))
+func (c *CurrencyClient) DeleteOneID(id int64) *CurrencyDeleteOne {
+	builder := c.Delete().Where(currency.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &OperatorDeleteOne{builder}
+	return &CurrencyDeleteOne{builder}
 }
 
-// Query returns a query builder for Operator.
-func (c *OperatorClient) Query() *OperatorQuery {
-	return &OperatorQuery{
+// Query returns a query builder for Currency.
+func (c *CurrencyClient) Query() *CurrencyQuery {
+	return &CurrencyQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOperator},
+		ctx:    &QueryContext{Type: TypeCurrency},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a Operator entity by its id.
-func (c *OperatorClient) Get(ctx context.Context, id int64) (*Operator, error) {
-	return c.Query().Where(operator.ID(id)).Only(ctx)
+// Get returns a Currency entity by its id.
+func (c *CurrencyClient) Get(ctx context.Context, id int64) (*Currency, error) {
+	return c.Query().Where(currency.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OperatorClient) GetX(ctx context.Context, id int64) *Operator {
+func (c *CurrencyClient) GetX(ctx context.Context, id int64) *Currency {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -345,196 +324,132 @@ func (c *OperatorClient) GetX(ctx context.Context, id int64) *Operator {
 	return obj
 }
 
-// QueryDomains queries the domains edge of a Operator.
-func (c *OperatorClient) QueryDomains(_m *Operator) *OperatorDomainQuery {
-	query := (&OperatorDomainClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operator.Table, operator.FieldID, id),
-			sqlgraph.To(operatordomain.Table, operatordomain.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, operator.DomainsTable, operator.DomainsColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryLanguages queries the languages edge of a Operator.
-func (c *OperatorClient) QueryLanguages(_m *Operator) *OperatorLanguageQuery {
-	query := (&OperatorLanguageClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operator.Table, operator.FieldID, id),
-			sqlgraph.To(operatorlanguage.Table, operatorlanguage.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, operator.LanguagesTable, operator.LanguagesColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryRegions queries the regions edge of a Operator.
-func (c *OperatorClient) QueryRegions(_m *Operator) *OperatorRegionQuery {
-	query := (&OperatorRegionClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operator.Table, operator.FieldID, id),
-			sqlgraph.To(operatorregion.Table, operatorregion.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, operator.RegionsTable, operator.RegionsColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryAgentLines queries the agent_lines edge of a Operator.
-func (c *OperatorClient) QueryAgentLines(_m *Operator) *OperatorAgentLineQuery {
-	query := (&OperatorAgentLineClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operator.Table, operator.FieldID, id),
-			sqlgraph.To(operatoragentline.Table, operatoragentline.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, operator.AgentLinesTable, operator.AgentLinesColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
-func (c *OperatorClient) Hooks() []Hook {
-	return c.hooks.Operator
+func (c *CurrencyClient) Hooks() []Hook {
+	return c.hooks.Currency
 }
 
 // Interceptors returns the client interceptors.
-func (c *OperatorClient) Interceptors() []Interceptor {
-	return c.inters.Operator
+func (c *CurrencyClient) Interceptors() []Interceptor {
+	return c.inters.Currency
 }
 
-func (c *OperatorClient) mutate(ctx context.Context, m *OperatorMutation) (Value, error) {
+func (c *CurrencyClient) mutate(ctx context.Context, m *CurrencyMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OperatorCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&CurrencyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OperatorUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&CurrencyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OperatorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&CurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OperatorDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&CurrencyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown Operator mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Currency mutation op: %q", m.Op())
 	}
 }
 
-// OperatorAgentLineClient is a client for the OperatorAgentLine schema.
-type OperatorAgentLineClient struct {
+// RegionClient is a client for the Region schema.
+type RegionClient struct {
 	config
 }
 
-// NewOperatorAgentLineClient returns a client for the OperatorAgentLine from the given config.
-func NewOperatorAgentLineClient(c config) *OperatorAgentLineClient {
-	return &OperatorAgentLineClient{config: c}
+// NewRegionClient returns a client for the Region from the given config.
+func NewRegionClient(c config) *RegionClient {
+	return &RegionClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `operatoragentline.Hooks(f(g(h())))`.
-func (c *OperatorAgentLineClient) Use(hooks ...Hook) {
-	c.hooks.OperatorAgentLine = append(c.hooks.OperatorAgentLine, hooks...)
+// A call to `Use(f, g, h)` equals to `region.Hooks(f(g(h())))`.
+func (c *RegionClient) Use(hooks ...Hook) {
+	c.hooks.Region = append(c.hooks.Region, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `operatoragentline.Intercept(f(g(h())))`.
-func (c *OperatorAgentLineClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OperatorAgentLine = append(c.inters.OperatorAgentLine, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `region.Intercept(f(g(h())))`.
+func (c *RegionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Region = append(c.inters.Region, interceptors...)
 }
 
-// Create returns a builder for creating a OperatorAgentLine entity.
-func (c *OperatorAgentLineClient) Create() *OperatorAgentLineCreate {
-	mutation := newOperatorAgentLineMutation(c.config, OpCreate)
-	return &OperatorAgentLineCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Region entity.
+func (c *RegionClient) Create() *RegionCreate {
+	mutation := newRegionMutation(c.config, OpCreate)
+	return &RegionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of OperatorAgentLine entities.
-func (c *OperatorAgentLineClient) CreateBulk(builders ...*OperatorAgentLineCreate) *OperatorAgentLineCreateBulk {
-	return &OperatorAgentLineCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Region entities.
+func (c *RegionClient) CreateBulk(builders ...*RegionCreate) *RegionCreateBulk {
+	return &RegionCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *OperatorAgentLineClient) MapCreateBulk(slice any, setFunc func(*OperatorAgentLineCreate, int)) *OperatorAgentLineCreateBulk {
+func (c *RegionClient) MapCreateBulk(slice any, setFunc func(*RegionCreate, int)) *RegionCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &OperatorAgentLineCreateBulk{err: fmt.Errorf("calling to OperatorAgentLineClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &RegionCreateBulk{err: fmt.Errorf("calling to RegionClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*OperatorAgentLineCreate, rv.Len())
+	builders := make([]*RegionCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &OperatorAgentLineCreateBulk{config: c.config, builders: builders}
+	return &RegionCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for OperatorAgentLine.
-func (c *OperatorAgentLineClient) Update() *OperatorAgentLineUpdate {
-	mutation := newOperatorAgentLineMutation(c.config, OpUpdate)
-	return &OperatorAgentLineUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Region.
+func (c *RegionClient) Update() *RegionUpdate {
+	mutation := newRegionMutation(c.config, OpUpdate)
+	return &RegionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OperatorAgentLineClient) UpdateOne(_m *OperatorAgentLine) *OperatorAgentLineUpdateOne {
-	mutation := newOperatorAgentLineMutation(c.config, OpUpdateOne, withOperatorAgentLine(_m))
-	return &OperatorAgentLineUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *RegionClient) UpdateOne(_m *Region) *RegionUpdateOne {
+	mutation := newRegionMutation(c.config, OpUpdateOne, withRegion(_m))
+	return &RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OperatorAgentLineClient) UpdateOneID(id int64) *OperatorAgentLineUpdateOne {
-	mutation := newOperatorAgentLineMutation(c.config, OpUpdateOne, withOperatorAgentLineID(id))
-	return &OperatorAgentLineUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *RegionClient) UpdateOneID(id int64) *RegionUpdateOne {
+	mutation := newRegionMutation(c.config, OpUpdateOne, withRegionID(id))
+	return &RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for OperatorAgentLine.
-func (c *OperatorAgentLineClient) Delete() *OperatorAgentLineDelete {
-	mutation := newOperatorAgentLineMutation(c.config, OpDelete)
-	return &OperatorAgentLineDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Region.
+func (c *RegionClient) Delete() *RegionDelete {
+	mutation := newRegionMutation(c.config, OpDelete)
+	return &RegionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OperatorAgentLineClient) DeleteOne(_m *OperatorAgentLine) *OperatorAgentLineDeleteOne {
+func (c *RegionClient) DeleteOne(_m *Region) *RegionDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OperatorAgentLineClient) DeleteOneID(id int64) *OperatorAgentLineDeleteOne {
-	builder := c.Delete().Where(operatoragentline.ID(id))
+func (c *RegionClient) DeleteOneID(id int64) *RegionDeleteOne {
+	builder := c.Delete().Where(region.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &OperatorAgentLineDeleteOne{builder}
+	return &RegionDeleteOne{builder}
 }
 
-// Query returns a query builder for OperatorAgentLine.
-func (c *OperatorAgentLineClient) Query() *OperatorAgentLineQuery {
-	return &OperatorAgentLineQuery{
+// Query returns a query builder for Region.
+func (c *RegionClient) Query() *RegionQuery {
+	return &RegionQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOperatorAgentLine},
+		ctx:    &QueryContext{Type: TypeRegion},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a OperatorAgentLine entity by its id.
-func (c *OperatorAgentLineClient) Get(ctx context.Context, id int64) (*OperatorAgentLine, error) {
-	return c.Query().Where(operatoragentline.ID(id)).Only(ctx)
+// Get returns a Region entity by its id.
+func (c *RegionClient) Get(ctx context.Context, id int64) (*Region, error) {
+	return c.Query().Where(region.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OperatorAgentLineClient) GetX(ctx context.Context, id int64) *OperatorAgentLine {
+func (c *RegionClient) GetX(ctx context.Context, id int64) *Region {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -542,148 +457,132 @@ func (c *OperatorAgentLineClient) GetX(ctx context.Context, id int64) *OperatorA
 	return obj
 }
 
-// QueryOperator queries the operator edge of a OperatorAgentLine.
-func (c *OperatorAgentLineClient) QueryOperator(_m *OperatorAgentLine) *OperatorQuery {
-	query := (&OperatorClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operatoragentline.Table, operatoragentline.FieldID, id),
-			sqlgraph.To(operator.Table, operator.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, operatoragentline.OperatorTable, operatoragentline.OperatorColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
-func (c *OperatorAgentLineClient) Hooks() []Hook {
-	return c.hooks.OperatorAgentLine
+func (c *RegionClient) Hooks() []Hook {
+	return c.hooks.Region
 }
 
 // Interceptors returns the client interceptors.
-func (c *OperatorAgentLineClient) Interceptors() []Interceptor {
-	return c.inters.OperatorAgentLine
+func (c *RegionClient) Interceptors() []Interceptor {
+	return c.inters.Region
 }
 
-func (c *OperatorAgentLineClient) mutate(ctx context.Context, m *OperatorAgentLineMutation) (Value, error) {
+func (c *RegionClient) mutate(ctx context.Context, m *RegionMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OperatorAgentLineCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&RegionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OperatorAgentLineUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&RegionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OperatorAgentLineUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OperatorAgentLineDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&RegionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown OperatorAgentLine mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Region mutation op: %q", m.Op())
 	}
 }
 
-// OperatorDomainClient is a client for the OperatorDomain schema.
-type OperatorDomainClient struct {
+// TimezoneClient is a client for the Timezone schema.
+type TimezoneClient struct {
 	config
 }
 
-// NewOperatorDomainClient returns a client for the OperatorDomain from the given config.
-func NewOperatorDomainClient(c config) *OperatorDomainClient {
-	return &OperatorDomainClient{config: c}
+// NewTimezoneClient returns a client for the Timezone from the given config.
+func NewTimezoneClient(c config) *TimezoneClient {
+	return &TimezoneClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `operatordomain.Hooks(f(g(h())))`.
-func (c *OperatorDomainClient) Use(hooks ...Hook) {
-	c.hooks.OperatorDomain = append(c.hooks.OperatorDomain, hooks...)
+// A call to `Use(f, g, h)` equals to `timezone.Hooks(f(g(h())))`.
+func (c *TimezoneClient) Use(hooks ...Hook) {
+	c.hooks.Timezone = append(c.hooks.Timezone, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `operatordomain.Intercept(f(g(h())))`.
-func (c *OperatorDomainClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OperatorDomain = append(c.inters.OperatorDomain, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `timezone.Intercept(f(g(h())))`.
+func (c *TimezoneClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Timezone = append(c.inters.Timezone, interceptors...)
 }
 
-// Create returns a builder for creating a OperatorDomain entity.
-func (c *OperatorDomainClient) Create() *OperatorDomainCreate {
-	mutation := newOperatorDomainMutation(c.config, OpCreate)
-	return &OperatorDomainCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Timezone entity.
+func (c *TimezoneClient) Create() *TimezoneCreate {
+	mutation := newTimezoneMutation(c.config, OpCreate)
+	return &TimezoneCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of OperatorDomain entities.
-func (c *OperatorDomainClient) CreateBulk(builders ...*OperatorDomainCreate) *OperatorDomainCreateBulk {
-	return &OperatorDomainCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Timezone entities.
+func (c *TimezoneClient) CreateBulk(builders ...*TimezoneCreate) *TimezoneCreateBulk {
+	return &TimezoneCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *OperatorDomainClient) MapCreateBulk(slice any, setFunc func(*OperatorDomainCreate, int)) *OperatorDomainCreateBulk {
+func (c *TimezoneClient) MapCreateBulk(slice any, setFunc func(*TimezoneCreate, int)) *TimezoneCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &OperatorDomainCreateBulk{err: fmt.Errorf("calling to OperatorDomainClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &TimezoneCreateBulk{err: fmt.Errorf("calling to TimezoneClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*OperatorDomainCreate, rv.Len())
+	builders := make([]*TimezoneCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &OperatorDomainCreateBulk{config: c.config, builders: builders}
+	return &TimezoneCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for OperatorDomain.
-func (c *OperatorDomainClient) Update() *OperatorDomainUpdate {
-	mutation := newOperatorDomainMutation(c.config, OpUpdate)
-	return &OperatorDomainUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Timezone.
+func (c *TimezoneClient) Update() *TimezoneUpdate {
+	mutation := newTimezoneMutation(c.config, OpUpdate)
+	return &TimezoneUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OperatorDomainClient) UpdateOne(_m *OperatorDomain) *OperatorDomainUpdateOne {
-	mutation := newOperatorDomainMutation(c.config, OpUpdateOne, withOperatorDomain(_m))
-	return &OperatorDomainUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TimezoneClient) UpdateOne(_m *Timezone) *TimezoneUpdateOne {
+	mutation := newTimezoneMutation(c.config, OpUpdateOne, withTimezone(_m))
+	return &TimezoneUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OperatorDomainClient) UpdateOneID(id int64) *OperatorDomainUpdateOne {
-	mutation := newOperatorDomainMutation(c.config, OpUpdateOne, withOperatorDomainID(id))
-	return &OperatorDomainUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TimezoneClient) UpdateOneID(id int64) *TimezoneUpdateOne {
+	mutation := newTimezoneMutation(c.config, OpUpdateOne, withTimezoneID(id))
+	return &TimezoneUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for OperatorDomain.
-func (c *OperatorDomainClient) Delete() *OperatorDomainDelete {
-	mutation := newOperatorDomainMutation(c.config, OpDelete)
-	return &OperatorDomainDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Timezone.
+func (c *TimezoneClient) Delete() *TimezoneDelete {
+	mutation := newTimezoneMutation(c.config, OpDelete)
+	return &TimezoneDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OperatorDomainClient) DeleteOne(_m *OperatorDomain) *OperatorDomainDeleteOne {
+func (c *TimezoneClient) DeleteOne(_m *Timezone) *TimezoneDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OperatorDomainClient) DeleteOneID(id int64) *OperatorDomainDeleteOne {
-	builder := c.Delete().Where(operatordomain.ID(id))
+func (c *TimezoneClient) DeleteOneID(id int64) *TimezoneDeleteOne {
+	builder := c.Delete().Where(timezone.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &OperatorDomainDeleteOne{builder}
+	return &TimezoneDeleteOne{builder}
 }
 
-// Query returns a query builder for OperatorDomain.
-func (c *OperatorDomainClient) Query() *OperatorDomainQuery {
-	return &OperatorDomainQuery{
+// Query returns a query builder for Timezone.
+func (c *TimezoneClient) Query() *TimezoneQuery {
+	return &TimezoneQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOperatorDomain},
+		ctx:    &QueryContext{Type: TypeTimezone},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a OperatorDomain entity by its id.
-func (c *OperatorDomainClient) Get(ctx context.Context, id int64) (*OperatorDomain, error) {
-	return c.Query().Where(operatordomain.ID(id)).Only(ctx)
+// Get returns a Timezone entity by its id.
+func (c *TimezoneClient) Get(ctx context.Context, id int64) (*Timezone, error) {
+	return c.Query().Where(timezone.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OperatorDomainClient) GetX(ctx context.Context, id int64) *OperatorDomain {
+func (c *TimezoneClient) GetX(ctx context.Context, id int64) *Timezone {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -691,353 +590,37 @@ func (c *OperatorDomainClient) GetX(ctx context.Context, id int64) *OperatorDoma
 	return obj
 }
 
-// QueryOperator queries the operator edge of a OperatorDomain.
-func (c *OperatorDomainClient) QueryOperator(_m *OperatorDomain) *OperatorQuery {
-	query := (&OperatorClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operatordomain.Table, operatordomain.FieldID, id),
-			sqlgraph.To(operator.Table, operator.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, operatordomain.OperatorTable, operatordomain.OperatorColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
-func (c *OperatorDomainClient) Hooks() []Hook {
-	return c.hooks.OperatorDomain
+func (c *TimezoneClient) Hooks() []Hook {
+	return c.hooks.Timezone
 }
 
 // Interceptors returns the client interceptors.
-func (c *OperatorDomainClient) Interceptors() []Interceptor {
-	return c.inters.OperatorDomain
+func (c *TimezoneClient) Interceptors() []Interceptor {
+	return c.inters.Timezone
 }
 
-func (c *OperatorDomainClient) mutate(ctx context.Context, m *OperatorDomainMutation) (Value, error) {
+func (c *TimezoneClient) mutate(ctx context.Context, m *TimezoneMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OperatorDomainCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TimezoneCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OperatorDomainUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TimezoneUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OperatorDomainUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TimezoneUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OperatorDomainDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&TimezoneDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown OperatorDomain mutation op: %q", m.Op())
-	}
-}
-
-// OperatorLanguageClient is a client for the OperatorLanguage schema.
-type OperatorLanguageClient struct {
-	config
-}
-
-// NewOperatorLanguageClient returns a client for the OperatorLanguage from the given config.
-func NewOperatorLanguageClient(c config) *OperatorLanguageClient {
-	return &OperatorLanguageClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `operatorlanguage.Hooks(f(g(h())))`.
-func (c *OperatorLanguageClient) Use(hooks ...Hook) {
-	c.hooks.OperatorLanguage = append(c.hooks.OperatorLanguage, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `operatorlanguage.Intercept(f(g(h())))`.
-func (c *OperatorLanguageClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OperatorLanguage = append(c.inters.OperatorLanguage, interceptors...)
-}
-
-// Create returns a builder for creating a OperatorLanguage entity.
-func (c *OperatorLanguageClient) Create() *OperatorLanguageCreate {
-	mutation := newOperatorLanguageMutation(c.config, OpCreate)
-	return &OperatorLanguageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of OperatorLanguage entities.
-func (c *OperatorLanguageClient) CreateBulk(builders ...*OperatorLanguageCreate) *OperatorLanguageCreateBulk {
-	return &OperatorLanguageCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *OperatorLanguageClient) MapCreateBulk(slice any, setFunc func(*OperatorLanguageCreate, int)) *OperatorLanguageCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &OperatorLanguageCreateBulk{err: fmt.Errorf("calling to OperatorLanguageClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*OperatorLanguageCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &OperatorLanguageCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for OperatorLanguage.
-func (c *OperatorLanguageClient) Update() *OperatorLanguageUpdate {
-	mutation := newOperatorLanguageMutation(c.config, OpUpdate)
-	return &OperatorLanguageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *OperatorLanguageClient) UpdateOne(_m *OperatorLanguage) *OperatorLanguageUpdateOne {
-	mutation := newOperatorLanguageMutation(c.config, OpUpdateOne, withOperatorLanguage(_m))
-	return &OperatorLanguageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *OperatorLanguageClient) UpdateOneID(id int64) *OperatorLanguageUpdateOne {
-	mutation := newOperatorLanguageMutation(c.config, OpUpdateOne, withOperatorLanguageID(id))
-	return &OperatorLanguageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for OperatorLanguage.
-func (c *OperatorLanguageClient) Delete() *OperatorLanguageDelete {
-	mutation := newOperatorLanguageMutation(c.config, OpDelete)
-	return &OperatorLanguageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *OperatorLanguageClient) DeleteOne(_m *OperatorLanguage) *OperatorLanguageDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OperatorLanguageClient) DeleteOneID(id int64) *OperatorLanguageDeleteOne {
-	builder := c.Delete().Where(operatorlanguage.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &OperatorLanguageDeleteOne{builder}
-}
-
-// Query returns a query builder for OperatorLanguage.
-func (c *OperatorLanguageClient) Query() *OperatorLanguageQuery {
-	return &OperatorLanguageQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeOperatorLanguage},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a OperatorLanguage entity by its id.
-func (c *OperatorLanguageClient) Get(ctx context.Context, id int64) (*OperatorLanguage, error) {
-	return c.Query().Where(operatorlanguage.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *OperatorLanguageClient) GetX(ctx context.Context, id int64) *OperatorLanguage {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryOperator queries the operator edge of a OperatorLanguage.
-func (c *OperatorLanguageClient) QueryOperator(_m *OperatorLanguage) *OperatorQuery {
-	query := (&OperatorClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operatorlanguage.Table, operatorlanguage.FieldID, id),
-			sqlgraph.To(operator.Table, operator.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, operatorlanguage.OperatorTable, operatorlanguage.OperatorColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *OperatorLanguageClient) Hooks() []Hook {
-	return c.hooks.OperatorLanguage
-}
-
-// Interceptors returns the client interceptors.
-func (c *OperatorLanguageClient) Interceptors() []Interceptor {
-	return c.inters.OperatorLanguage
-}
-
-func (c *OperatorLanguageClient) mutate(ctx context.Context, m *OperatorLanguageMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&OperatorLanguageCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&OperatorLanguageUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&OperatorLanguageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&OperatorLanguageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown OperatorLanguage mutation op: %q", m.Op())
-	}
-}
-
-// OperatorRegionClient is a client for the OperatorRegion schema.
-type OperatorRegionClient struct {
-	config
-}
-
-// NewOperatorRegionClient returns a client for the OperatorRegion from the given config.
-func NewOperatorRegionClient(c config) *OperatorRegionClient {
-	return &OperatorRegionClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `operatorregion.Hooks(f(g(h())))`.
-func (c *OperatorRegionClient) Use(hooks ...Hook) {
-	c.hooks.OperatorRegion = append(c.hooks.OperatorRegion, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `operatorregion.Intercept(f(g(h())))`.
-func (c *OperatorRegionClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OperatorRegion = append(c.inters.OperatorRegion, interceptors...)
-}
-
-// Create returns a builder for creating a OperatorRegion entity.
-func (c *OperatorRegionClient) Create() *OperatorRegionCreate {
-	mutation := newOperatorRegionMutation(c.config, OpCreate)
-	return &OperatorRegionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of OperatorRegion entities.
-func (c *OperatorRegionClient) CreateBulk(builders ...*OperatorRegionCreate) *OperatorRegionCreateBulk {
-	return &OperatorRegionCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *OperatorRegionClient) MapCreateBulk(slice any, setFunc func(*OperatorRegionCreate, int)) *OperatorRegionCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &OperatorRegionCreateBulk{err: fmt.Errorf("calling to OperatorRegionClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*OperatorRegionCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &OperatorRegionCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for OperatorRegion.
-func (c *OperatorRegionClient) Update() *OperatorRegionUpdate {
-	mutation := newOperatorRegionMutation(c.config, OpUpdate)
-	return &OperatorRegionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *OperatorRegionClient) UpdateOne(_m *OperatorRegion) *OperatorRegionUpdateOne {
-	mutation := newOperatorRegionMutation(c.config, OpUpdateOne, withOperatorRegion(_m))
-	return &OperatorRegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *OperatorRegionClient) UpdateOneID(id int64) *OperatorRegionUpdateOne {
-	mutation := newOperatorRegionMutation(c.config, OpUpdateOne, withOperatorRegionID(id))
-	return &OperatorRegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for OperatorRegion.
-func (c *OperatorRegionClient) Delete() *OperatorRegionDelete {
-	mutation := newOperatorRegionMutation(c.config, OpDelete)
-	return &OperatorRegionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *OperatorRegionClient) DeleteOne(_m *OperatorRegion) *OperatorRegionDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OperatorRegionClient) DeleteOneID(id int64) *OperatorRegionDeleteOne {
-	builder := c.Delete().Where(operatorregion.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &OperatorRegionDeleteOne{builder}
-}
-
-// Query returns a query builder for OperatorRegion.
-func (c *OperatorRegionClient) Query() *OperatorRegionQuery {
-	return &OperatorRegionQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeOperatorRegion},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a OperatorRegion entity by its id.
-func (c *OperatorRegionClient) Get(ctx context.Context, id int64) (*OperatorRegion, error) {
-	return c.Query().Where(operatorregion.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *OperatorRegionClient) GetX(ctx context.Context, id int64) *OperatorRegion {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryOperator queries the operator edge of a OperatorRegion.
-func (c *OperatorRegionClient) QueryOperator(_m *OperatorRegion) *OperatorQuery {
-	query := (&OperatorClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(operatorregion.Table, operatorregion.FieldID, id),
-			sqlgraph.To(operator.Table, operator.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, operatorregion.OperatorTable, operatorregion.OperatorColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *OperatorRegionClient) Hooks() []Hook {
-	return c.hooks.OperatorRegion
-}
-
-// Interceptors returns the client interceptors.
-func (c *OperatorRegionClient) Interceptors() []Interceptor {
-	return c.inters.OperatorRegion
-}
-
-func (c *OperatorRegionClient) mutate(ctx context.Context, m *OperatorRegionMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&OperatorRegionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&OperatorRegionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&OperatorRegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&OperatorRegionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown OperatorRegion mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Timezone mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Operator, OperatorAgentLine, OperatorDomain, OperatorLanguage,
-		OperatorRegion []ent.Hook
+		Currency, Region, Timezone []ent.Hook
 	}
 	inters struct {
-		Operator, OperatorAgentLine, OperatorDomain, OperatorLanguage,
-		OperatorRegion []ent.Interceptor
+		Currency, Region, Timezone []ent.Interceptor
 	}
 )

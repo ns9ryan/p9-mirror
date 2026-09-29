@@ -6,67 +6,43 @@ import (
 	"context"
 	"fmt"
 
-	"oa.98ent.com/p9/operator-base/rpc/ent"
+	"oa.98ent.com/p9/platform-base/rpc/ent"
 )
 
-// The OperatorFunc type is an adapter to allow the use of ordinary
-// function as Operator mutator.
-type OperatorFunc func(context.Context, *ent.OperatorMutation) (ent.Value, error)
+// The CurrencyFunc type is an adapter to allow the use of ordinary
+// function as Currency mutator.
+type CurrencyFunc func(context.Context, *ent.CurrencyMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OperatorFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OperatorMutation); ok {
+func (f CurrencyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CurrencyMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OperatorMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CurrencyMutation", m)
 }
 
-// The OperatorAgentLineFunc type is an adapter to allow the use of ordinary
-// function as OperatorAgentLine mutator.
-type OperatorAgentLineFunc func(context.Context, *ent.OperatorAgentLineMutation) (ent.Value, error)
+// The RegionFunc type is an adapter to allow the use of ordinary
+// function as Region mutator.
+type RegionFunc func(context.Context, *ent.RegionMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OperatorAgentLineFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OperatorAgentLineMutation); ok {
+func (f RegionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RegionMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OperatorAgentLineMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RegionMutation", m)
 }
 
-// The OperatorDomainFunc type is an adapter to allow the use of ordinary
-// function as OperatorDomain mutator.
-type OperatorDomainFunc func(context.Context, *ent.OperatorDomainMutation) (ent.Value, error)
+// The TimezoneFunc type is an adapter to allow the use of ordinary
+// function as Timezone mutator.
+type TimezoneFunc func(context.Context, *ent.TimezoneMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OperatorDomainFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OperatorDomainMutation); ok {
+func (f TimezoneFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TimezoneMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OperatorDomainMutation", m)
-}
-
-// The OperatorLanguageFunc type is an adapter to allow the use of ordinary
-// function as OperatorLanguage mutator.
-type OperatorLanguageFunc func(context.Context, *ent.OperatorLanguageMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f OperatorLanguageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OperatorLanguageMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OperatorLanguageMutation", m)
-}
-
-// The OperatorRegionFunc type is an adapter to allow the use of ordinary
-// function as OperatorRegion mutator.
-type OperatorRegionFunc func(context.Context, *ent.OperatorRegionMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f OperatorRegionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OperatorRegionMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OperatorRegionMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TimezoneMutation", m)
 }
 
 // Condition is a hook condition function.

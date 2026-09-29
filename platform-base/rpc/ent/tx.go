@@ -12,16 +12,12 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Operator is the client for interacting with the Operator builders.
-	Operator *OperatorClient
-	// OperatorAgentLine is the client for interacting with the OperatorAgentLine builders.
-	OperatorAgentLine *OperatorAgentLineClient
-	// OperatorDomain is the client for interacting with the OperatorDomain builders.
-	OperatorDomain *OperatorDomainClient
-	// OperatorLanguage is the client for interacting with the OperatorLanguage builders.
-	OperatorLanguage *OperatorLanguageClient
-	// OperatorRegion is the client for interacting with the OperatorRegion builders.
-	OperatorRegion *OperatorRegionClient
+	// Currency is the client for interacting with the Currency builders.
+	Currency *CurrencyClient
+	// Region is the client for interacting with the Region builders.
+	Region *RegionClient
+	// Timezone is the client for interacting with the Timezone builders.
+	Timezone *TimezoneClient
 
 	// lazily loaded.
 	client     *Client
@@ -153,11 +149,9 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Operator = NewOperatorClient(tx.config)
-	tx.OperatorAgentLine = NewOperatorAgentLineClient(tx.config)
-	tx.OperatorDomain = NewOperatorDomainClient(tx.config)
-	tx.OperatorLanguage = NewOperatorLanguageClient(tx.config)
-	tx.OperatorRegion = NewOperatorRegionClient(tx.config)
+	tx.Currency = NewCurrencyClient(tx.config)
+	tx.Region = NewRegionClient(tx.config)
+	tx.Timezone = NewTimezoneClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -167,7 +161,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Operator.QueryXXX(), the query will be executed
+// applies a query, for example: Currency.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

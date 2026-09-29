@@ -6,7 +6,7 @@ type PingResponse {}
 @server (
 	group: ping
 )
-service operator_base {
+service platform_base {
 	// Ping
 	@handler Ping
 	get /ping returns (PingResponse)
