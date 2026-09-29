@@ -12,14 +12,14 @@ ENV TZ=Asia/Shanghai
 RUN apk add --no-cache tzdata ca-certificates
 
 # 复制API可执行文件
-COPY ./platform_operator_api ./
-RUN chmod +x ./platform_operator_api
+COPY ./node_dispatch_api ./
+RUN chmod +x ./node_dispatch_api
 
 # 复制API配置文件
-COPY ./api/etc/platform_operator.yaml ./etc/
+COPY ./api/etc/node_dispatch.yaml ./etc/
 
 # API服务端口
-EXPOSE 18002
+EXPOSE 28001
 
-ENTRYPOINT ["./platform_operator_api"]
-CMD ["-f", "etc/platform_operator.yaml"]
+ENTRYPOINT ["./node_dispatch_api"]
+CMD ["-f", "etc/node_dispatch.yaml"]

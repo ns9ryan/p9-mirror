@@ -12,14 +12,17 @@ ENV TZ=Asia/Shanghai
 RUN apk add --no-cache tzdata ca-certificates
 
 # 复制RPC可执行文件
-COPY ./platform_operator_rpc ./
-RUN chmod +x ./platform_operator_rpc
+COPY ./node_dispatch_rpc ./
+RUN chmod +x ./node_dispatch_rpc
 
 # 复制RPC配置文件
-COPY ./rpc/etc/platform_operator.yaml ./etc/
+COPY ./rpc/etc/node_dispatch.yaml ./etc/
 
 # RPC服务端口
-EXPOSE 19002
+EXPOSE 29001
 
-ENTRYPOINT ["./platform_operator_rpc"]
-CMD ["-f", "etc/platform_operator.yaml"]
+# WebSocket服务端口
+EXPOSE 28002
+
+ENTRYPOINT ["./node_dispatch_rpc"]
+CMD ["-f", "etc/node_dispatch.yaml"]
