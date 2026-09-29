@@ -24,6 +24,7 @@ func menuI18n() []*coreclient.I18NItem {
 
 	// 分站列表
 	addI18n(&out, i18n.GroupMenu, "menu.route.operatorList", "分站列表", "分站列表", "Operators")
+	addI18n(&out, i18n.GroupMenu, "menu.route.operatorDetail", "分站详情", "分站詳情", "Operator details")
 	addI18n(&out, i18n.GroupMenu, "menu.route.operatorCreate", "创建分站", "建立分站", "Create operator")
 	addI18n(&out, i18n.GroupMenu, "menu.route.operatorUpdate", "编辑分站", "編輯分站", "Edit operator")
 	addI18n(&out, i18n.GroupMenu, "menu.route.operatorPublish", "发布分站", "發布分站", "Publish operator")
@@ -64,6 +65,7 @@ func apiI18n() []*coreclient.I18NItem {
 	addI18n(&out, i18n.GroupAPI, "api.operatorComplete", "完成分站创建", "完成分站建立", "Complete operator creation")
 	addI18n(&out, i18n.GroupAPI, "api.operatorPublish", "发布分站", "發布分站", "Publish operator")
 	addI18n(&out, i18n.GroupAPI, "api.operatorDelete", "删除分站", "刪除分站", "Delete operator")
+	addI18n(&out, i18n.GroupAPI, "api.operatorSyncPublishStatus", "同步分站发布状态", "同步分站發布狀態", "Sync operator publish status")
 
 	// 分站部署节点
 	addI18n(&out, i18n.GroupAPI, "api.operatorNodeGet", "分站部署节点详情", "分站部署節點詳情", "Operator deployment node details")

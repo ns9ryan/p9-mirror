@@ -29,10 +29,11 @@ func menus() []*coreclient.RegisterMenuReq {
 
 		// 分站列表
 		{Name: "OperatorList", Title: "menu.route.operatorList", Path: "/operator/list", MenuType: menuTypeMenu, Component: "operator/list/index", ParentName: "OperatorManagement", Sort: 31},
-		{Name: "OperatorCreate", Title: "menu.route.operatorCreate", MenuType: menuTypeButton, Permission: "operator:create", ParentName: "OperatorList", Sort: 311},
-		{Name: "OperatorUpdate", Title: "menu.route.operatorUpdate", MenuType: menuTypeButton, Permission: "operator:update", ParentName: "OperatorList", Sort: 312},
-		{Name: "OperatorPublish", Title: "menu.route.operatorPublish", MenuType: menuTypeButton, Permission: "operator:publish", ParentName: "OperatorList", Sort: 313},
-		{Name: "OperatorDelete", Title: "menu.route.operatorDelete", MenuType: menuTypeButton, Permission: "operator:delete", ParentName: "OperatorList", Sort: 314},
+		{Name: "OperatorDetail", Title: "menu.route.operatorDetail", MenuType: menuTypeButton, Permission: "operator:detail", ParentName: "OperatorList", Sort: 311},
+		{Name: "OperatorCreate", Title: "menu.route.operatorCreate", MenuType: menuTypeButton, Permission: "operator:create", ParentName: "OperatorList", Sort: 312},
+		{Name: "OperatorUpdate", Title: "menu.route.operatorUpdate", MenuType: menuTypeButton, Permission: "operator:update", ParentName: "OperatorList", Sort: 313},
+		{Name: "OperatorPublish", Title: "menu.route.operatorPublish", MenuType: menuTypeButton, Permission: "operator:publish", ParentName: "OperatorList", Sort: 314},
+		{Name: "OperatorDelete", Title: "menu.route.operatorDelete", MenuType: menuTypeButton, Permission: "operator:delete", ParentName: "OperatorList", Sort: 315},
 
 		// 域名管理
 		{Name: "OperatorDomain", Title: "menu.route.operatorDomain", Path: "/operator/domain", MenuType: menuTypeMenu, Component: "operator/domain/index", ParentName: "OperatorManagement", Sort: 32},
@@ -66,6 +67,7 @@ func apis() []*coreclient.CreateApiReq {
 		{Path: "/admin/operator/list", Method: http.MethodGet, Description: "api.operatorList", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/complete", Method: http.MethodPost, Description: "api.operatorComplete", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/publish", Method: http.MethodPost, Description: "api.operatorPublish", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/sync-publish-status", Method: http.MethodPost, Description: "api.operatorSyncPublishStatus", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/delete", Method: http.MethodPost, Description: "api.operatorDelete", ApiGroup: "api.group.operator", ServiceName: "platform-operator-api"},
 
 		// 分站部署节点
