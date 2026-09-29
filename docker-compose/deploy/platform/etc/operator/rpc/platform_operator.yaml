@@ -9,6 +9,13 @@ Etcd:
     - 192.168.0.15:2379          # Etcd地址
   Key: platform-operator-rpc     # 服务注册Key
 
+# Node Dispatch RPC配置
+NodeDispatchRpc:
+  Etcd:
+    Hosts:
+      - 192.168.0.15:2379        # Etcd地址
+    Key: node-dispatch-rpc       # RPC服务注册Key
+
 # 数据库配置
 DatabaseConf:
   Host:     postgres             # 数据库地址
@@ -18,7 +25,7 @@ DatabaseConf:
   Password: root                 # 数据库密码
   SSLMode:  disable              # SSL模式
 
-# 链路追踪, 生产建议 Sampler 0.01~0.1
+# 链路追踪
 Telemetry:
   Name: platform-operator-rpc
   Endpoint: 192.168.0.15:4317

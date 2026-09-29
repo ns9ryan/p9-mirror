@@ -1,0 +1,35 @@
+# RPC服务配置
+Name:     node-dispatch-rpc       # RPC服务名称
+ListenOn: 0.0.0.0:29001           # RPC监听地址
+Mode:     dev                     # 运行模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 192.168.0.15:2379           # Etcd地址
+  Key: node-dispatch-rpc          # 服务注册Key
+
+# WebSocket服务配置
+WebSocketListenOn: 0.0.0.0:28002  # WebSocket监听地址
+
+# HTTP回调配置
+Callback:
+  TaskResultURL: http://platform-operator-api:18002/internal/dispatch/task-result # 任务结果回调地址
+  Secret: p9-node-dispatch-callback                                               # 回调认证密钥
+  Timeout: 5000                                                                   # HTTP请求超时时间, 毫秒
+
+# 数据库配置
+DatabaseConf:
+  Host:     postgres                  # 数据库地址
+  Port:     5432                      # 数据库端口
+  DBName:   p9_node_dispatch          # 调度中心数据库
+  Username: root                      # 数据库用户名
+  Password: root                      # 数据库密码
+  SSLMode:  disable                   # SSL模式
+
+# 链路追踪
+Telemetry:
+  Name: node-dispatch-rpc
+  Endpoint: 192.168.0.15:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc

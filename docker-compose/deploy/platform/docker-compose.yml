@@ -22,6 +22,28 @@ services:
     networks:
       - p9-platform-network
 
+  # 初始化调度中心数据库
+  postgres-init:
+    image: postgres:16-alpine
+    container_name: platform-postgres-init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-app123}
+    entrypoint: >
+      /bin/sh -c "
+      set -e;
+      psql -h postgres -U $${POSTGRES_USER} -d $${POSTGRES_DB} -tAc \"SELECT 1 FROM pg_database WHERE datname='p9_node_dispatch'\" | grep -q 1 ||
+      psql -h postgres -U $${POSTGRES_USER} -d $${POSTGRES_DB} -c \"CREATE DATABASE p9_node_dispatch\";
+      echo postgres-init done;
+      "
+    networks:
+      - p9-platform-network
+    restart: "no"
+
   redis:
     image: redis:7-alpine
     container_name: platform-redis
@@ -234,6 +256,35 @@ services:
     networks:
       - p9-platform-network
 
+  node-dispatch-rpc:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/node-dispatch-rpc:${VERSION:-1.0.0}
+    container_name: node-dispatch-rpc
+    restart: always
+    ports:
+      - "29001:29001"
+      - "28002:28002"
+    volumes:
+      - ./etc/node-dispatch/rpc/node_dispatch.yaml:/app/etc/node_dispatch.yaml:ro
+    depends_on:
+      postgres-init:
+        condition: service_completed_successfully
+    networks:
+      - p9-platform-network
+
+  node-dispatch-api:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/node-dispatch-api:${VERSION:-1.0.0}
+    container_name: node-dispatch-api
+    restart: always
+    ports:
+      - "28001:28001"
+    volumes:
+      - ./etc/node-dispatch/api/node_dispatch.yaml:/app/etc/node_dispatch.yaml:ro
+    depends_on:
+      - node-dispatch-rpc
+      - core-rpc
+    networks:
+      - p9-platform-network
+
   operator-rpc:
     image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/platform-operator-rpc:${VERSION:-1.0.0}
     container_name: platform-operator-rpc
@@ -245,6 +296,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      node-dispatch-rpc:
+        condition: service_started
     networks:
       - p9-platform-network
 
@@ -261,6 +314,7 @@ services:
       - base-rpc
       - core-rpc
       - game-rpc
+      - node-dispatch-rpc
     networks:
       - p9-platform-network
 
