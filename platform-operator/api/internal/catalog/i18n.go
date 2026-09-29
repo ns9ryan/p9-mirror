@@ -64,8 +64,8 @@ func apiI18n() []*coreclient.I18NItem {
 	addI18n(&out, i18n.GroupAPI, "api.operatorList", "分站列表", "分站列表", "Operator list")
 	addI18n(&out, i18n.GroupAPI, "api.operatorComplete", "完成分站创建", "完成分站建立", "Complete operator creation")
 	addI18n(&out, i18n.GroupAPI, "api.operatorPublish", "发布分站", "發布分站", "Publish operator")
-	addI18n(&out, i18n.GroupAPI, "api.operatorDelete", "删除分站", "刪除分站", "Delete operator")
 	addI18n(&out, i18n.GroupAPI, "api.operatorSyncPublishStatus", "同步分站发布状态", "同步分站發布狀態", "Sync operator publish status")
+	addI18n(&out, i18n.GroupAPI, "api.operatorDelete", "删除分站", "刪除分站", "Delete operator")
 
 	// 分站部署节点
 	addI18n(&out, i18n.GroupAPI, "api.operatorNodeGet", "分站部署节点详情", "分站部署節點詳情", "Operator deployment node details")
