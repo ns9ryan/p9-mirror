@@ -8,6 +8,7 @@ import (
 
 	"oa.98ent.com/p9/node-dispatch/api/internal/svc"
 	"oa.98ent.com/p9/node-dispatch/api/internal/types"
+	"oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/nodepb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,8 +27,21 @@ func NewGetNodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetNodeLo
 	}
 }
 
+// GetNode 获取节点
 func (l *GetNodeLogic) GetNode(req *types.GetNodeRequest) (resp *types.GetNodeResponse, err error) {
-	// todo: add your logic here and delete this line
+	// 获取节点
+	result, err := l.svcCtx.NodeRpc.Get(
+		l.ctx,
+		&nodepb.GetNodeRequest{
+			Id: req.Id, // 节点ID
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	// 返回节点信息
+	return &types.GetNodeResponse{
+		NodeInfo: toNodeInfo(result.Node), // 节点信息
+	}, nil
 }

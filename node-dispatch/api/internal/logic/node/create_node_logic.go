@@ -8,6 +8,7 @@ import (
 
 	"oa.98ent.com/p9/node-dispatch/api/internal/svc"
 	"oa.98ent.com/p9/node-dispatch/api/internal/types"
+	"oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/nodepb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,8 +27,25 @@ func NewCreateNodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 	}
 }
 
+// CreateNode 创建节点
 func (l *CreateNodeLogic) CreateNode(req *types.CreateNodeRequest) (resp *types.CreateNodeResponse, err error) {
-	// todo: add your logic here and delete this line
+	// 创建节点
+	result, err := l.svcCtx.NodeRpc.Create(
+		l.ctx,
+		&nodepb.CreateNodeRequest{
+			Name:   req.Name,   // 节点名称
+			Status: req.Status, // 节点状态: 1启用, 2停用
+			Remark: req.Remark, // 运维备注
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	// 返回创建结果
+	return &types.CreateNodeResponse{
+		Id:         result.Id,         // 节点ID
+		Code:       result.Code,       // 节点业务编码
+		AuthSecret: result.AuthSecret, // 节点认证密钥, 仅本次返回
+	}, nil
 }
