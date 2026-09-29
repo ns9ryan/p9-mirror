@@ -1,4 +1,5 @@
 syntax = "v1"
 
+import "ping.api"
 import "node.api"
 import "dispatch_task.api"

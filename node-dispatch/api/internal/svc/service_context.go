@@ -18,6 +18,7 @@ import (
 	"oa.98ent.com/p9/node-dispatch/api/internal/locales"
 	"oa.98ent.com/p9/node-dispatch/rpc/client/dispatchservice"
 	"oa.98ent.com/p9/node-dispatch/rpc/client/nodeservice"
+	"oa.98ent.com/p9/node-dispatch/rpc/client/pingservice"
 )
 
 // ServiceContext 服务上下文
@@ -29,6 +30,7 @@ type ServiceContext struct {
 	Core coreclient.Core // Core RPC客户端
 
 	// Node Dispatch RPC
+	PingRpc     pingservice.PingService         // Ping RPC
 	NodeRpc     nodeservice.NodeService         // 节点RPC
 	DispatchRpc dispatchservice.DispatchService // 调度任务RPC
 
@@ -94,6 +96,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Core: coreCli, // Core RPC客户端
 
 		// Node Dispatch RPC
+		PingRpc:     pingservice.NewPingService(nodeDispatchClient),         // Ping RPC
 		NodeRpc:     nodeservice.NewNodeService(nodeDispatchClient),         // 节点RPC
 		DispatchRpc: dispatchservice.NewDispatchService(nodeDispatchClient), // 调度任务RPC
 

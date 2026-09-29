@@ -89,6 +89,9 @@ type PageRequest struct {
 	PageSize int64 `form:"page_size" validate:"required,gte=1,lte=100"`
 }
 
+type PingResponse struct {
+}
+
 type ResetNodeAuthSecretRequest struct {
 	Id int64 `json:"id" validate:"required,gt=0"`
 }
