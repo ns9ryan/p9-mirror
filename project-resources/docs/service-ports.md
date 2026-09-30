@@ -1,8 +1,12 @@
 # P9 服务端口
 
-P9 默认开发端口按部署域划分。
+P9 默认服务端口按部署域划分。
 
-同一服务的 API 和 RPC 原则上使用相同尾号，其他通信端口按服务实际需要单独分配。
+同一服务的 API 和 RPC 原则上使用相同尾号；WebSocket 等其他通信端口按服务实际需要单独分配。
+
+本文定义的是 P9 默认端口约定。
+
+当前开发环境因多个逻辑 Node 部署在同一台物理服务器上，部分 Node 会使用偏移端口避免冲突，这类端口仅用于当前联调环境，不作为正式端口标准。
 
 ## 端口段
 
@@ -11,6 +15,8 @@ P9 默认开发端口按部署域划分。
 | Platform | `18000-18999` | `19000-19999` |
 | Node Dispatch | `28000-28999` | `29000-29999` |
 | Operator | `38000-38999` | `39000-39999` |
+
+---
 
 ## Platform
 
@@ -22,7 +28,16 @@ P9 默认开发端口按部署域划分。
 | platform-game | `18003` | `19003` |
 | platform-message | `18004` | `19004` |
 | integration | `18005` | `19005` |
-| oss | `18006` | `19006` |
+| file | `18006` | - |
+
+说明：
+
+- Platform 服务默认使用 `180xx` 作为 HTTP API 端口
+- Platform RPC 服务默认使用对应的 `190xx` 端口
+- `file` 当前只分配 HTTP API 端口，RPC 暂不分配，后续有实际需求时再增加
+- 同一服务的 API 和 RPC 使用相同尾号，例如 `platform-base` 使用 `18001 / 19001`
+
+---
 
 ## Node Dispatch
 
@@ -34,16 +49,109 @@ P9 默认开发端口按部署域划分。
 
 - `28001` 用于总网后台访问 node-dispatch HTTP API
 - `28002` 用于 node-agent 与 node-dispatch 建立 WebSocket 长连接
-- `29001` 用于 platform 等内部服务调用 node-dispatch RPC
+- `29001` 用于 Platform 内部服务调用 node-dispatch RPC
+- node-agent 主动连接 node-dispatch WebSocket，本身当前不分配固定对外监听端口
+
+---
 
 ## Operator
 
+每个正式 Operator Node 独立部署时，统一使用以下默认端口。
+
 | 服务 | API | RPC |
 |---|---:|---:|
+| core | `38000` | `39000` |
 | operator-base | `38001` | `39001` |
+| operator-game | `38003` | `39003` |
 
 说明：
 
-- `38001` 用于厅后台访问 operator-base HTTP API，当前先预留，API 后续实现
-- `39001` 用于 node-agent 等厅侧内部服务调用 operator-base RPC
-- `node-agent` 主动连接 node-dispatch WebSocket，当前不分配固定对外监听端口
+- `core` 提供厅侧认证、权限及公共后台能力
+- `operator-base` 提供厅基础业务能力
+- `operator-game` 提供厅侧游戏业务能力
+- `38002 / 39002` 当前未分配，不提前预留具体业务服务
+- 正式多节点部署时，不同服务器可以重复使用同一套 Operator 默认端口，因为各节点之间不存在端口冲突
+
+例如：
+
+```text
+node01
+├── core-api              38000
+├── core-rpc              39000
+├── operator-base-api     38001
+├── operator-base-rpc     39001
+├── operator-game-api     38003
+└── operator-game-rpc     39003
+
+node02
+├── core-api              38000
+├── core-rpc              39000
+├── operator-base-api     38001
+├── operator-base-rpc     39001
+├── operator-game-api     38003
+└── operator-game-rpc     39003
+```
+
+---
+
+## 当前单机联调环境
+
+当前开发环境只有一台物理服务器：
+
+```text
+192.168.0.15
+```
+
+为了在同一台服务器上同时模拟多个 Operator Node，不同逻辑 Node 使用不同端口段避免冲突。
+
+### node01
+
+| 服务 | API | RPC |
+|---|---:|---:|
+| core | `38000` | `39000` |
+| operator-base | `38001` | `39001` |
+| operator-game | `38003` | `39003` |
+
+### node02
+
+| 服务 | API | RPC |
+|---|---:|---:|
+| core | `38200` | `39200` |
+| operator-base | `38201` | `39201` |
+| operator-game | - | - |
+
+说明：
+
+- node01 当前直接使用 Operator 默认端口
+- node02 因与 node01 共用同一台物理服务器，当前使用 `382xx / 392xx` 避免端口冲突
+- node02 当前尚未部署 operator-game
+- `382xx / 392xx` 属于当前单机联调环境的临时分配，不作为正式 Operator Node 端口标准
+- 后续 Operator Node 独立部署到不同服务器后，应统一恢复使用 `380xx / 390xx` 默认端口
+
+---
+
+## Nginx
+
+正式 Operator Node 原则上每个节点部署一个 Nginx。
+
+```text
+Operator Node
+├── Nginx
+├── node-agent
+├── core
+├── operator-base
+└── operator-game
+```
+
+Nginx 对外通常监听：
+
+```text
+HTTP   80
+HTTPS  443
+```
+
+`80 / 443` 属于节点统一 Web 入口，不占用 P9 API / RPC 服务端口段。
+
+正式环境中，请求通过域名进入对应节点的 Nginx，再由 Nginx 转发到本节点的 API 服务。
+
+当前单机联调环境中，一个 Nginx 可以临时同时代理 node01、node02 等多个逻辑 Node，并根据访问域名转发到对应的联调端口。
