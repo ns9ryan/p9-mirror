@@ -1,0 +1,2927 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "title": "Platform Game API",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "paths": {
+    "/admin/execute/v2sql": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "ExecuteV2sqlGet",
+        "operationId": "executeExecuteV2sqlGet",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {},
+                "message": {
+                  "type": "string"
+                },
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-category/get": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameCategoryGet",
+        "operationId": "categoryGameCategoryGet",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "category_code": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_category_code": {
+                  "type": "string"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-category/list": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameCategoryList",
+        "operationId": "categoryGameCategoryList",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "page",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "page_size",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "category_code",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "status",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "is_deleted",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_by",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_order",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "source_id",
+                      "category_code",
+                      "source_category_code",
+                      "source_name_i18n",
+                      "name_i18n",
+                      "source_sort_no",
+                      "sort_no",
+                      "source_status",
+                      "status",
+                      "is_deleted",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "category_code": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "is_deleted": {
+                        "type": "integer"
+                      },
+                      "name_i18n": {
+                        "type": "string"
+                      },
+                      "sort_no": {
+                        "type": "integer"
+                      },
+                      "source_category_code": {
+                        "type": "string"
+                      },
+                      "source_id": {
+                        "type": "integer"
+                      },
+                      "source_name_i18n": {
+                        "type": "string"
+                      },
+                      "source_sort_no": {
+                        "type": "integer"
+                      },
+                      "source_status": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "updated_at": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-category/update": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameCategoryUpdate",
+        "operationId": "categoryGameCategoryUpdate",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "force_logout": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "category_code": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_category_code": {
+                  "type": "string"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-channel/get": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameChannelGet",
+        "operationId": "channelGameChannelGet",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "channel_code": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_channel_code": {
+                  "type": "string"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-channel/list": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameChannelList",
+        "operationId": "channelGameChannelList",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "page",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "page_size",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "channel_code",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "status",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "is_deleted",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_by",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_order",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "source_id",
+                      "channel_code",
+                      "source_channel_code",
+                      "source_name_i18n",
+                      "name_i18n",
+                      "source_sort_no",
+                      "sort_no",
+                      "source_status",
+                      "status",
+                      "is_deleted",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "channel_code": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "is_deleted": {
+                        "type": "integer"
+                      },
+                      "name_i18n": {
+                        "type": "string"
+                      },
+                      "sort_no": {
+                        "type": "integer"
+                      },
+                      "source_channel_code": {
+                        "type": "string"
+                      },
+                      "source_id": {
+                        "type": "integer"
+                      },
+                      "source_name_i18n": {
+                        "type": "string"
+                      },
+                      "source_sort_no": {
+                        "type": "integer"
+                      },
+                      "source_status": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "updated_at": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-channel/update": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameChannelUpdate",
+        "operationId": "channelGameChannelUpdate",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "force_logout": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "channel_code": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_channel_code": {
+                  "type": "string"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-currency/get": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameCurrencyGet",
+        "operationId": "currencyGameCurrencyGet",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "integer"
+                },
+                "currency_code": {
+                  "type": "string"
+                },
+                "currency_id": {
+                  "type": "integer"
+                },
+                "currency_name_i18n": {
+                  "type": "string"
+                },
+                "game_code": {
+                  "type": "string"
+                },
+                "game_id": {
+                  "type": "integer"
+                },
+                "game_name_i18n": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-currency/list": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameCurrencyList",
+        "operationId": "currencyGameCurrencyList",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "page",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "page_size",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "game_id",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "currency_id",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "status",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "is_deleted",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_by",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_order",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "game_id",
+                      "currency_id",
+                      "game_code",
+                      "game_name_i18n",
+                      "currency_code",
+                      "currency_name_i18n",
+                      "source_status",
+                      "status",
+                      "is_deleted",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "created_at": {
+                        "type": "integer"
+                      },
+                      "currency_code": {
+                        "type": "string"
+                      },
+                      "currency_id": {
+                        "type": "integer"
+                      },
+                      "currency_name_i18n": {
+                        "type": "string"
+                      },
+                      "game_code": {
+                        "type": "string"
+                      },
+                      "game_id": {
+                        "type": "integer"
+                      },
+                      "game_name_i18n": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "is_deleted": {
+                        "type": "integer"
+                      },
+                      "source_status": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "updated_at": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-currency/update": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameCurrencyUpdate",
+        "operationId": "currencyGameCurrencyUpdate",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "force_logout": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "integer"
+                },
+                "currency_code": {
+                  "type": "string"
+                },
+                "currency_id": {
+                  "type": "integer"
+                },
+                "currency_name_i18n": {
+                  "type": "string"
+                },
+                "game_code": {
+                  "type": "string"
+                },
+                "game_id": {
+                  "type": "integer"
+                },
+                "game_name_i18n": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-provider/get": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameProviderGet",
+        "operationId": "providerGameProviderGet",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "logo_url": {
+                  "type": "string"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "provider_code": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_logo_url": {
+                  "type": "string"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_provider_code": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-provider/list": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameProviderList",
+        "operationId": "providerGameProviderList",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "page",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "page_size",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "provider_code",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "status",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "is_deleted",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_by",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_order",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "source_id",
+                      "provider_code",
+                      "source_provider_code",
+                      "source_name_i18n",
+                      "name_i18n",
+                      "source_logo_url",
+                      "logo_url",
+                      "source_sort_no",
+                      "sort_no",
+                      "source_status",
+                      "status",
+                      "is_deleted",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "created_at": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "is_deleted": {
+                        "type": "integer"
+                      },
+                      "logo_url": {
+                        "type": "string"
+                      },
+                      "name_i18n": {
+                        "type": "string"
+                      },
+                      "provider_code": {
+                        "type": "string"
+                      },
+                      "sort_no": {
+                        "type": "integer"
+                      },
+                      "source_id": {
+                        "type": "integer"
+                      },
+                      "source_logo_url": {
+                        "type": "string"
+                      },
+                      "source_name_i18n": {
+                        "type": "string"
+                      },
+                      "source_provider_code": {
+                        "type": "string"
+                      },
+                      "source_sort_no": {
+                        "type": "integer"
+                      },
+                      "source_status": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "updated_at": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-provider/update": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameProviderUpdate",
+        "operationId": "providerGameProviderUpdate",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "force_logout": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "logo_url": {
+                  "type": "string"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "logo_url": {
+                  "type": "string"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "provider_code": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_logo_url": {
+                  "type": "string"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_provider_code": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-sync-checkpoint/get": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameSyncCheckpointGet",
+        "operationId": "checkpointGameSyncCheckpointGet",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sync_scope",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "checkpoint_value": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "integer"
+                },
+                "created_count": {
+                  "type": "integer"
+                },
+                "deleted_count": {
+                  "type": "integer"
+                },
+                "failed_count": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "last_error_message": {
+                  "type": "string"
+                },
+                "last_success_at": {
+                  "type": "integer"
+                },
+                "last_sync_at": {
+                  "type": "integer"
+                },
+                "local_total": {
+                  "type": "integer"
+                },
+                "progress": {
+                  "type": "integer"
+                },
+                "remote_total": {
+                  "type": "integer"
+                },
+                "sync_scope": {
+                  "type": "string"
+                },
+                "sync_status": {
+                  "type": "integer"
+                },
+                "updated_at": {
+                  "type": "integer"
+                },
+                "updated_count": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game-sync-checkpoint/list": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameSyncCheckpointList",
+        "operationId": "checkpointGameSyncCheckpointList",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "page",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "page_size",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sync_scope",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "start_time",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "end_time",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "sync_scope",
+                      "checkpoint_value",
+                      "remote_total",
+                      "local_total",
+                      "created_count",
+                      "updated_count",
+                      "deleted_count",
+                      "failed_count",
+                      "sync_status",
+                      "progress",
+                      "last_error_message",
+                      "last_success_at",
+                      "last_sync_at",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "checkpoint_value": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "integer"
+                      },
+                      "created_count": {
+                        "type": "integer"
+                      },
+                      "deleted_count": {
+                        "type": "integer"
+                      },
+                      "failed_count": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "last_error_message": {
+                        "type": "string"
+                      },
+                      "last_success_at": {
+                        "type": "integer"
+                      },
+                      "last_sync_at": {
+                        "type": "integer"
+                      },
+                      "local_total": {
+                        "type": "integer"
+                      },
+                      "progress": {
+                        "type": "integer"
+                      },
+                      "remote_total": {
+                        "type": "integer"
+                      },
+                      "sync_scope": {
+                        "type": "string"
+                      },
+                      "sync_status": {
+                        "type": "integer"
+                      },
+                      "updated_at": {
+                        "type": "integer"
+                      },
+                      "updated_count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game/get": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameGet",
+        "operationId": "gameGameGet",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "category_id": {
+                  "type": "integer"
+                },
+                "category_name_i18n": {
+                  "type": "string"
+                },
+                "channel_id": {
+                  "type": "integer"
+                },
+                "channel_name_i18n": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "integer"
+                },
+                "game_code": {
+                  "type": "string"
+                },
+                "game_currency_info": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "currency_id",
+                      "currency_name_i18n"
+                    ],
+                    "properties": {
+                      "currency_id": {
+                        "type": "integer"
+                      },
+                      "currency_name_i18n": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "image_url": {
+                  "type": "string"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "provider_id": {
+                  "type": "integer"
+                },
+                "provider_key": {
+                  "type": "string"
+                },
+                "provider_name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_game_code": {
+                  "type": "string"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_image_url": {
+                  "type": "string"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_provider_key": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "supports_embed": {
+                  "type": "boolean"
+                },
+                "supports_redirect": {
+                  "type": "boolean"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game/list": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameList",
+        "operationId": "gameGameList",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "page",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "page_size",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "game_code",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "category_id",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "provider_id",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "channel_id",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "status",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "integer",
+            "name": "is_deleted",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_by",
+            "in": "query",
+            "allowEmptyValue": true
+          },
+          {
+            "type": "string",
+            "name": "sort_order",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "source_id",
+                      "game_code",
+                      "source_game_code",
+                      "source_provider_key",
+                      "source_name_i18n",
+                      "source_image_url",
+                      "source_sort_no",
+                      "source_status",
+                      "category_id",
+                      "provider_id",
+                      "channel_id",
+                      "category_name_i18n",
+                      "provider_name_i18n",
+                      "channel_name_i18n",
+                      "provider_key",
+                      "name_i18n",
+                      "game_currency_info",
+                      "image_url",
+                      "sort_no",
+                      "supports_embed",
+                      "supports_redirect",
+                      "status",
+                      "is_deleted",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "category_id": {
+                        "type": "integer"
+                      },
+                      "category_name_i18n": {
+                        "type": "string"
+                      },
+                      "channel_id": {
+                        "type": "integer"
+                      },
+                      "channel_name_i18n": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "integer"
+                      },
+                      "game_code": {
+                        "type": "string"
+                      },
+                      "game_currency_info": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "currency_id",
+                            "currency_name_i18n"
+                          ],
+                          "properties": {
+                            "currency_id": {
+                              "type": "integer"
+                            },
+                            "currency_name_i18n": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "image_url": {
+                        "type": "string"
+                      },
+                      "is_deleted": {
+                        "type": "integer"
+                      },
+                      "name_i18n": {
+                        "type": "string"
+                      },
+                      "provider_id": {
+                        "type": "integer"
+                      },
+                      "provider_key": {
+                        "type": "string"
+                      },
+                      "provider_name_i18n": {
+                        "type": "string"
+                      },
+                      "sort_no": {
+                        "type": "integer"
+                      },
+                      "source_game_code": {
+                        "type": "string"
+                      },
+                      "source_id": {
+                        "type": "integer"
+                      },
+                      "source_image_url": {
+                        "type": "string"
+                      },
+                      "source_name_i18n": {
+                        "type": "string"
+                      },
+                      "source_provider_key": {
+                        "type": "string"
+                      },
+                      "source_sort_no": {
+                        "type": "integer"
+                      },
+                      "source_status": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "supports_embed": {
+                        "type": "boolean"
+                      },
+                      "supports_redirect": {
+                        "type": "boolean"
+                      },
+                      "updated_at": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/game/update": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "GameUpdate",
+        "operationId": "gameGameUpdate",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "force_logout": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "image_url": {
+                  "type": "string"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "supports_embed": {
+                  "type": "boolean"
+                },
+                "supports_redirect": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "category_id": {
+                  "type": "integer"
+                },
+                "category_name_i18n": {
+                  "type": "string"
+                },
+                "channel_id": {
+                  "type": "integer"
+                },
+                "channel_name_i18n": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "integer"
+                },
+                "game_code": {
+                  "type": "string"
+                },
+                "game_currency_info": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "currency_id",
+                      "currency_name_i18n"
+                    ],
+                    "properties": {
+                      "currency_id": {
+                        "type": "integer"
+                      },
+                      "currency_name_i18n": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "image_url": {
+                  "type": "string"
+                },
+                "is_deleted": {
+                  "type": "integer"
+                },
+                "name_i18n": {
+                  "type": "string"
+                },
+                "provider_id": {
+                  "type": "integer"
+                },
+                "provider_key": {
+                  "type": "string"
+                },
+                "provider_name_i18n": {
+                  "type": "string"
+                },
+                "sort_no": {
+                  "type": "integer"
+                },
+                "source_game_code": {
+                  "type": "string"
+                },
+                "source_id": {
+                  "type": "integer"
+                },
+                "source_image_url": {
+                  "type": "string"
+                },
+                "source_name_i18n": {
+                  "type": "string"
+                },
+                "source_provider_key": {
+                  "type": "string"
+                },
+                "source_sort_no": {
+                  "type": "integer"
+                },
+                "source_status": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "supports_embed": {
+                  "type": "boolean"
+                },
+                "supports_redirect": {
+                  "type": "boolean"
+                },
+                "updated_at": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/categories/preview": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "PreviewCategory",
+        "operationId": "previewPreviewCategory",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_skip": {
+                  "type": "boolean"
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "diffs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "object_type",
+                      "object_id",
+                      "object_code",
+                      "action",
+                      "remote_id",
+                      "remote_code",
+                      "reason",
+                      "conflict_type"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string"
+                      },
+                      "conflict_type": {
+                        "type": "string"
+                      },
+                      "object_code": {
+                        "type": "string"
+                      },
+                      "object_id": {
+                        "type": "integer"
+                      },
+                      "object_type": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "remote_code": {
+                        "type": "string"
+                      },
+                      "remote_id": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                },
+                "stats": {
+                  "type": "object",
+                  "required": [
+                    "remote_total",
+                    "local_total",
+                    "create_total",
+                    "update_total",
+                    "delete_total",
+                    "noop_total",
+                    "conflict_total",
+                    "error_total"
+                  ],
+                  "properties": {
+                    "conflict_total": {
+                      "type": "integer"
+                    },
+                    "create_total": {
+                      "type": "integer"
+                    },
+                    "delete_total": {
+                      "type": "integer"
+                    },
+                    "error_total": {
+                      "type": "integer"
+                    },
+                    "local_total": {
+                      "type": "integer"
+                    },
+                    "noop_total": {
+                      "type": "integer"
+                    },
+                    "remote_total": {
+                      "type": "integer"
+                    },
+                    "update_total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "total_count": {
+                  "type": "integer"
+                },
+                "total_page": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/categories/run": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "RunCategory",
+        "operationId": "syncRunCategory",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sync_cols": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "checkpoint_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/channel/preview": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "PreviewChannel",
+        "operationId": "previewPreviewChannel",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_skip": {
+                  "type": "boolean"
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "diffs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "object_type",
+                      "object_id",
+                      "object_code",
+                      "action",
+                      "remote_id",
+                      "remote_code",
+                      "reason",
+                      "conflict_type"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string"
+                      },
+                      "conflict_type": {
+                        "type": "string"
+                      },
+                      "object_code": {
+                        "type": "string"
+                      },
+                      "object_id": {
+                        "type": "integer"
+                      },
+                      "object_type": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "remote_code": {
+                        "type": "string"
+                      },
+                      "remote_id": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                },
+                "stats": {
+                  "type": "object",
+                  "required": [
+                    "remote_total",
+                    "local_total",
+                    "create_total",
+                    "update_total",
+                    "delete_total",
+                    "noop_total",
+                    "conflict_total",
+                    "error_total"
+                  ],
+                  "properties": {
+                    "conflict_total": {
+                      "type": "integer"
+                    },
+                    "create_total": {
+                      "type": "integer"
+                    },
+                    "delete_total": {
+                      "type": "integer"
+                    },
+                    "error_total": {
+                      "type": "integer"
+                    },
+                    "local_total": {
+                      "type": "integer"
+                    },
+                    "noop_total": {
+                      "type": "integer"
+                    },
+                    "remote_total": {
+                      "type": "integer"
+                    },
+                    "update_total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "total_count": {
+                  "type": "integer"
+                },
+                "total_page": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/channel/run": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "RunChannel",
+        "operationId": "syncRunChannel",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sync_cols": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "checkpoint_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/currencies/preview": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "PreviewCurrency",
+        "operationId": "previewPreviewCurrency",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_skip": {
+                  "type": "boolean"
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "diffs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "object_type",
+                      "object_id",
+                      "object_code",
+                      "action",
+                      "remote_id",
+                      "remote_code",
+                      "reason",
+                      "conflict_type"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string"
+                      },
+                      "conflict_type": {
+                        "type": "string"
+                      },
+                      "object_code": {
+                        "type": "string"
+                      },
+                      "object_id": {
+                        "type": "integer"
+                      },
+                      "object_type": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "remote_code": {
+                        "type": "string"
+                      },
+                      "remote_id": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                },
+                "stats": {
+                  "type": "object",
+                  "required": [
+                    "remote_total",
+                    "local_total",
+                    "create_total",
+                    "update_total",
+                    "delete_total",
+                    "noop_total",
+                    "conflict_total",
+                    "error_total"
+                  ],
+                  "properties": {
+                    "conflict_total": {
+                      "type": "integer"
+                    },
+                    "create_total": {
+                      "type": "integer"
+                    },
+                    "delete_total": {
+                      "type": "integer"
+                    },
+                    "error_total": {
+                      "type": "integer"
+                    },
+                    "local_total": {
+                      "type": "integer"
+                    },
+                    "noop_total": {
+                      "type": "integer"
+                    },
+                    "remote_total": {
+                      "type": "integer"
+                    },
+                    "update_total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "total_count": {
+                  "type": "integer"
+                },
+                "total_page": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/currencies/run": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "RunCurrency",
+        "operationId": "syncRunCurrency",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sync_cols": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "checkpoint_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/games/preview": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "PreviewGame",
+        "operationId": "previewPreviewGame",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_skip": {
+                  "type": "boolean"
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "diffs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "object_type",
+                      "object_id",
+                      "object_code",
+                      "action",
+                      "remote_id",
+                      "remote_code",
+                      "reason",
+                      "conflict_type"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string"
+                      },
+                      "conflict_type": {
+                        "type": "string"
+                      },
+                      "object_code": {
+                        "type": "string"
+                      },
+                      "object_id": {
+                        "type": "integer"
+                      },
+                      "object_type": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "remote_code": {
+                        "type": "string"
+                      },
+                      "remote_id": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                },
+                "stats": {
+                  "type": "object",
+                  "required": [
+                    "remote_total",
+                    "local_total",
+                    "create_total",
+                    "update_total",
+                    "delete_total",
+                    "noop_total",
+                    "conflict_total",
+                    "error_total"
+                  ],
+                  "properties": {
+                    "conflict_total": {
+                      "type": "integer"
+                    },
+                    "create_total": {
+                      "type": "integer"
+                    },
+                    "delete_total": {
+                      "type": "integer"
+                    },
+                    "error_total": {
+                      "type": "integer"
+                    },
+                    "local_total": {
+                      "type": "integer"
+                    },
+                    "noop_total": {
+                      "type": "integer"
+                    },
+                    "remote_total": {
+                      "type": "integer"
+                    },
+                    "update_total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "total_count": {
+                  "type": "integer"
+                },
+                "total_page": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/games/run": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "RunGame",
+        "operationId": "syncRunGame",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sync_cols": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "checkpoint_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/vendors/preview": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "PreviewProvider",
+        "operationId": "previewPreviewProvider",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "is_skip": {
+                  "type": "boolean"
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "diffs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "object_type",
+                      "object_id",
+                      "object_code",
+                      "action",
+                      "remote_id",
+                      "remote_code",
+                      "reason",
+                      "conflict_type"
+                    ],
+                    "properties": {
+                      "action": {
+                        "type": "string"
+                      },
+                      "conflict_type": {
+                        "type": "string"
+                      },
+                      "object_code": {
+                        "type": "string"
+                      },
+                      "object_id": {
+                        "type": "integer"
+                      },
+                      "object_type": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "remote_code": {
+                        "type": "string"
+                      },
+                      "remote_id": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "page": {
+                  "type": "integer"
+                },
+                "page_size": {
+                  "type": "integer"
+                },
+                "stats": {
+                  "type": "object",
+                  "required": [
+                    "remote_total",
+                    "local_total",
+                    "create_total",
+                    "update_total",
+                    "delete_total",
+                    "noop_total",
+                    "conflict_total",
+                    "error_total"
+                  ],
+                  "properties": {
+                    "conflict_total": {
+                      "type": "integer"
+                    },
+                    "create_total": {
+                      "type": "integer"
+                    },
+                    "delete_total": {
+                      "type": "integer"
+                    },
+                    "error_total": {
+                      "type": "integer"
+                    },
+                    "local_total": {
+                      "type": "integer"
+                    },
+                    "noop_total": {
+                      "type": "integer"
+                    },
+                    "remote_total": {
+                      "type": "integer"
+                    },
+                    "update_total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "total_count": {
+                  "type": "integer"
+                },
+                "total_page": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sync/vendors/run": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "RunProvider",
+        "operationId": "syncRunProvider",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sync_cols": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "checkpoint_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ping": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "summary": "Ping",
+        "operationId": "pingPing",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-date": "2026-09-10 18:44:59",
+  "x-description": "This is a goctl generated swagger file.",
+  "x-github": "https://github.com/zeromicro/go-zero",
+  "x-go-zero-doc": "https://go-zero.dev/",
+  "x-goctl-version": "1.10.2"
+}

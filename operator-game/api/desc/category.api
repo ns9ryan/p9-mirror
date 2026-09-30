@@ -1,0 +1,51 @@
+syntax = "v1"
+
+@server (
+	group: category
+	middleware: Jwt,ActionLog,Authority
+	prefix: /admin/game-category
+)
+service operator_game {
+	// ===== Game Category APIs =====
+	@handler GameCategoryList
+	get /list (GameCategoryListReq) returns (GameCategoryListResp)
+
+	@handler GameCategoryGet
+	get /get (GameCategoryGetReq) returns (GameCategoryResp)
+
+	@handler GameCategoryUpdate
+	post /update (GameCategoryUpdateReq) returns (GameCategoryResp)
+}
+
+// ========== Game Category ==========
+type GameCategoryResp {
+	ID           int64  `json:"id" comment:"分类ID"`
+	CategoryCode string `json:"category_code" comment:"分类编码"`
+	Name         string `json:"name" comment:"分类名称"`
+	SortNo       int32  `json:"sort_no" comment:"排序号"`
+	Status       int32  `json:"status" comment:"状态：1启用/2禁用"`
+	CreatedAt    int64  `json:"created_at" comment:"创建时间戳"`
+	UpdatedAt    int64  `json:"updated_at" comment:"更新时间戳"`
+}
+
+type GameCategoryListReq {
+	Page         int64  `form:"page,optional" comment:"页码（默认1）"`
+	PageSize     int64  `form:"page_size,optional" comment:"每页大小（默认15）"`
+	CategoryCode string `form:"category_code,optional" comment:"分类编码"`
+	Status       int16  `form:"status,optional" comment:"状态筛选：1启用/2禁用"`
+}
+
+type GameCategoryListResp {
+	List []GameCategoryResp `json:"list" comment:"分类列表"`
+	Total int64              `json:"total" comment:"总数"`
+}
+
+type GameCategoryGetReq {
+	ID int64 `form:"id" binding:"required" comment:"分类ID"`
+}
+
+type GameCategoryUpdateReq {
+	ID          int64  `json:"id" binding:"required" comment:"分类ID"`
+	SortNo      int32  `json:"sort_no,optional" comment:"排序号"`
+	Status      int16  `json:"status,optional" comment:"状态：1启用/2禁用"`
+}

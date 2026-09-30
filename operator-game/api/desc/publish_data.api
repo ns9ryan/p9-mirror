@@ -1,0 +1,35 @@
+syntax = "v1"
+
+@server (
+	group: publish_data
+	prefix: /admin/publish-data
+)
+service operator_game {
+	// ===== 发布使用的临时接口 =====
+	@handler SyncPublishedData
+	post /sync (SyncPublishedDataReq) returns (SyncPublishedDataResp)
+}
+
+// ========== Publish Data ==========
+type SyncStatistic {
+	Total         int64  `json:"total" comment:"总数"`
+	Success       int64  `json:"success" comment:"成功数"`
+	Failed        int64  `json:"failed" comment:"失败数"`
+	FailedReason  string `json:"failed_reason,omitempty" comment:"失败原因"`
+}
+
+type SyncPublishedDataReq {
+	OpCode string `json:"op_code" binding:"required" comment:"分站代码"`
+}
+
+type SyncPublishedDataResp {
+	Success       bool           `json:"success" comment:"是否成功"`
+	Message       string         `json:"message" comment:"提示消息"`
+	CategoryStat  SyncStatistic  `json:"category_stat" comment:"分类同步统计"`
+	ProviderStat  SyncStatistic  `json:"provider_stat" comment:"供应商同步统计"`
+	ChannelStat   SyncStatistic  `json:"channel_stat" comment:"渠道同步统计"`
+	GameStat      SyncStatistic  `json:"game_stat" comment:"游戏同步统计"`
+	CurrencyStat  SyncStatistic  `json:"currency_stat" comment:"货币同步统计"`
+	CreatedAt     int64          `json:"created_at" comment:"创建时间戳"`
+	UpdatedAt     int64          `json:"updated_at" comment:"更新时间戳"`
+}

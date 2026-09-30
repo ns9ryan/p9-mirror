@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package operator_game;
+
+option go_package = "oa.98ent.com/p9/operator-game/rpc/pb/operator_game";
+
+// GameInfo 游戏信息
+message GameInfo {
+  int64  id = 1;
+  int64  source_id = 2;
+  string game_code = 3;
+  string name = 4;
+  int32  status = 5;
+  string category_code = 6;
+  string provider_code = 7;
+  string channel_code = 8;
+  repeated string currency_code_list = 17;
+  string provider_key = 9;
+  string game_currency_info = 10;
+  string image_url = 11;
+  int64  sort_no = 12;
+  bool supports_embed = 13;
+  bool supports_redirect = 14;
+  int64 created_at = 15;
+  int64 updated_at = 16;
+}
+
+// GetGameListRequest 获取游戏列表请求
+message GetGameListRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+    string game_code = 3;
+    string name = 4;
+    string category_code = 5;
+    string provider_code = 6;
+    string channel_code = 7;
+    int32 status = 8;
+}
+
+// GetGameListResp 游戏列表响应
+message GetGameListResp {
+    int32 code = 1;
+    string message = 2;
+    repeated GameInfo items = 3;
+    int64 total = 4;
+    int32 page = 5;
+    int32 page_size = 6;
+}
+
+// GetGameRequest 获取单个游戏请求
+message GetGameRequest {
+    int64 id = 1;
+}
+
+// GetGameResp 获取单个游戏响应
+message GetGameResp {
+    int32 code = 1;
+    string message = 2;
+    GameInfo data = 3;
+}
+
+// UpdateGameRequest 更新游戏请求
+message UpdateGameRequest {
+    int64 id = 1;
+    string name = 2;
+    int32 sort_no = 3;
+    int32 status = 4;
+}
+
+// UpdateGameResp 更新游戏响应
+message UpdateGameResp {
+    int32 code = 1;
+    string message = 2;
+    GameInfo data = 3;
+}

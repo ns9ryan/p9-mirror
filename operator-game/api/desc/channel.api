@@ -1,0 +1,55 @@
+syntax = "v1"
+
+@server (
+	group: channel
+	middleware: Jwt,ActionLog,Authority
+	prefix: /admin/game-channel
+)
+service operator_game {
+	// ===== Game Channel APIs =====
+	@handler GameChannelList
+	get /list (GameChannelListReq) returns (GameChannelListResp)
+
+	@handler GameChannelGet
+	get /get (GameChannelGetReq) returns (GameChannelResp)
+
+	@handler GameChannelUpdate
+	post /update (GameChannelUpdateReq) returns (GameChannelResp)
+}
+
+// ========== Game Channel ==========
+type GameChannelResp {
+	ID          int64  `json:"id" comment:"渠道ID"`
+	ChannelCode string `json:"channel_code" comment:"渠道编码"`
+	ProviderCount int32 `json:"provider_count" comment:"厂商数量"`
+	GameCount int32 `json:"game_count" comment:"独立游戏数量"`
+	Name        string `json:"name" comment:"渠道名称"`
+	SortNo      int32  `json:"sort_no" comment:"排序号"`
+	LoadType    int32  `json:"load_type" comment:"加载类型"`
+	Status      int32  `json:"status" comment:"状态：1启用/2禁用"`
+	CreatedAt   int64  `json:"created_at" comment:"创建时间戳"`
+	UpdatedAt   int64  `json:"updated_at" comment:"更新时间戳"`
+}
+
+type GameChannelListReq {
+	Page        int64  `form:"page,optional" comment:"页码（默认1）"`
+	PageSize    int64  `form:"page_size,optional" comment:"每页大小（默认15）"`
+	ChannelCode string `form:"channel_code,optional" comment:"渠道编码"`
+	Name        string `form:"name,optional" comment:"渠道名称"`
+	Status      int16  `form:"status,optional" comment:"状态筛选：1启用/2禁用"`
+}
+
+type GameChannelListResp {
+	List []GameChannelResp `json:"list" comment:"渠道列表"`
+	Total int64             `json:"total" comment:"总数"`
+}
+
+type GameChannelGetReq {
+	ID int64 `form:"id" binding:"required" comment:"渠道ID"`
+}
+
+type GameChannelUpdateReq {
+	ID          int64  `json:"id" binding:"required" comment:"渠道ID"`
+	SortNo      int32  `json:"sort_no,optional" comment:"排序号"`
+	Status      int16  `json:"status,optional" comment:"状态：1启用/2禁用"`
+}

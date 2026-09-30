@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package operator_game;
+
+option go_package = "oa.98ent.com/p9/operator-game/rpc/pb/operator_game";
+
+import "op/game.proto";
+import "op/game_category.proto";
+import "op/game_provider.proto";
+import "op/game_channel.proto";
+import "op/published_data.proto";
+
+// ========== Game Service ==========
+
+// GameService - 游戏服务
+service GameService {
+    // 获取游戏列表
+    rpc GetGameList(operator_game.GetGameListRequest) returns (operator_game.GetGameListResp);
+    
+    // 获取单个游戏详情
+    rpc GetGame(operator_game.GetGameRequest) returns (operator_game.GetGameResp);
+
+    // 更新游戏
+    rpc UpdateGame(operator_game.UpdateGameRequest) returns (operator_game.UpdateGameResp);
+}
+
+// ========== GameCategory Service ==========
+
+// GameCategoryService - 游戏分类服务
+service GameCategoryService {
+    // 获取游戏分类列表
+    rpc GetGameCategoryList(operator_game.GetGameCategoryListRequest) returns (operator_game.GetGameCategoryListResp);
+    
+    // 获取单个游戏分类
+    rpc GetGameCategory(operator_game.GetGameCategoryRequest) returns (operator_game.GetGameCategoryResp);
+
+    // 更新游戏分类
+    rpc UpdateGameCategory(operator_game.UpdateGameCategoryRequest) returns (operator_game.UpdateGameCategoryResp);
+}
+
+// ========== GameProvider Service ==========
+
+// GameProviderService - 游戏供应商服务
+service GameProviderService {
+    // 获取游戏供应商列表
+    rpc GetGameProviderList(operator_game.GetGameProviderListRequest) returns (operator_game.GetGameProviderListResp);
+    
+    // 获取单个游戏供应商
+    rpc GetGameProvider(operator_game.GetGameProviderRequest) returns (operator_game.GetGameProviderResp);
+
+    // 更新游戏供应商
+    rpc UpdateGameProvider(operator_game.UpdateGameProviderRequest) returns (operator_game.UpdateGameProviderResp);
+}
+
+// ========== GameChannel Service ==========
+
+// GameChannelService - 游戏渠道服务
+service GameChannelService {
+    // 获取单个游戏渠道
+    rpc GetGameChannel(operator_game.GetGameChannelRequest) returns (operator_game.GetGameChannelResp);
+    
+    // 获取游戏渠道列表
+    rpc GetGameChannelList(operator_game.GetGameChannelListRequest) returns (operator_game.GetGameChannelListResp);
+
+    // 更新游戏渠道
+    rpc UpdateGameChannel(operator_game.UpdateGameChannelRequest) returns (operator_game.UpdateGameChannelResp);
+}
+
+// ========== Publish Data Service ==========
+
+// PublishDataService - 发布数据服务
+service PublishDataService {
+    // 同步已发布的游戏数据到分站
+    rpc SyncPublishedData(operator_game.SyncPublishedDataRequest) returns (operator_game.SyncPublishedDataResp);
+}

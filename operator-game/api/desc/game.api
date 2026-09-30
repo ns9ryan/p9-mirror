@@ -1,0 +1,68 @@
+syntax = "v1"
+
+@server (
+	group: game
+	middleware: Jwt,ActionLog,Authority
+	prefix: /admin/game
+)
+service operator_game {
+	// ===== Game APIs =====
+	@handler GameList
+	get /list (GameListReq) returns (GameListResp)
+
+	@handler GameGet
+	get /get (GameGetReq) returns (GameResp)
+
+	@handler GameUpdate
+	post /update (GameUpdateReq) returns (GameResp)
+}
+
+// ========== Game ==========
+type GameResp {
+	ID                  int64  `json:"id" comment:"游戏ID"`
+	SourceID            int64  `json:"source_id" comment:"上游游戏ID"`
+	GameCode            string `json:"game_code" comment:"游戏编码"`
+	Name                string `json:"name" comment:"游戏名称"`
+	Status              int32  `json:"status" comment:"状态：1启用/2禁用"`
+	CategoryCode        string  `json:"category_code" comment:"分类Code"`
+	ProviderCode        string  `json:"provider_code" comment:"供应商Code"`
+	ChannelCode         string  `json:"channel_code" comment:"渠道Code"`
+	CategoryName        string `json:"category_name" comment:"分类名称"`
+	ProviderName        string `json:"provider_name" comment:"供应商名称"`
+	ChannelName         string `json:"channel_name" comment:"渠道名称"`
+	CurrencyCodeList    []string `json:"currency_code_list" comment:"货币"`
+	ProviderKey         string `json:"provider_key" comment:"供应商Key"`
+	ImageUrl            string `json:"image_url" comment:"游戏图片URL"`
+	SortNo              int64  `json:"sort_no" comment:"排序号"`
+	SupportsEmbed       bool   `json:"supports_embed" comment:"是否支持嵌入"`
+	SupportsRedirect    bool   `json:"supports_redirect" comment:"是否支持重定向"`
+	CreatedAt           int64  `json:"created_at" comment:"创建时间戳"`
+	UpdatedAt           int64  `json:"updated_at" comment:"更新时间戳"`
+}
+
+type GameListReq {
+	Page       int64  `form:"page,optional" comment:"页码（默认1）"`
+	PageSize   int64  `form:"page_size,optional" comment:"每页大小（默认15）"`
+	GameCode   string `form:"game_code,optional" comment:"游戏编码"`
+	Name       string `form:"name,optional" comment:"游戏名称（查询 source_name_i18n.default）"`
+	CategoryCode string  `form:"category_code,optional" comment:"分类ID筛选"`
+	ProviderCode string  `form:"provider_code,optional" comment:"厂商ID筛选"`
+	ChannelCode  string  `form:"channel_code,optional" comment:"渠道ID筛选"`
+	Status     int16  `form:"status,optional" comment:"状态筛选：1启用/2禁用"`
+}
+
+type GameListResp {
+	List []GameResp `json:"list" comment:"游戏列表"`
+	Total int64      `json:"total" comment:"总数"`
+}
+
+type GameGetReq {
+	ID int64 `form:"id" binding:"required" comment:"游戏ID"`
+}
+
+type GameUpdateReq {
+	ID               int64  `json:"id" binding:"required" comment:"游戏ID"`
+	Name         	 string `json:"name,optional" comment:"游戏名称"`
+	SortNo           int32  `json:"sort_no,optional" comment:"排序号"`
+	Status           int16  `json:"status,optional" comment:"状态：1启用/2禁用"`
+}

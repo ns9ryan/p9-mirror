@@ -1,0 +1,55 @@
+syntax = "v1"
+
+@server (
+	group: provider
+	middleware: Jwt,ActionLog,Authority
+	prefix: /admin/game-provider
+)
+service operator_game {
+	// ===== Game Provider APIs =====
+	@handler GameProviderList
+	get /list (GameProviderListReq) returns (GameProviderListResp)
+
+	@handler GameProviderGet
+	get /get (GameProviderGetReq) returns (GameProviderResp)
+
+	@handler GameProviderUpdate
+	post /update (GameProviderUpdateReq) returns (GameProviderResp)
+}
+
+// ========== Game Provider ==========
+type GameProviderResp {
+	ID           int64  `json:"id" comment:"厂商ID"`
+	ProviderCode string `json:"provider_code" comment:"厂商编码"`
+	ChannelCode string `json:"channel_code" comment:"渠道编码"`
+	ProviderName         string `json:"name" comment:"厂商名称"`
+	ChannelName string `json:"channel_name" comment:"渠道名称"`
+	LogoUrl      string `json:"logo_url" comment:"厂商Logo URL"`
+	SortNo       int32  `json:"sort_no" comment:"排序号"`
+	Status       int32  `json:"status" comment:"状态：1启用/2禁用"`
+	CreatedAt    int64  `json:"created_at" comment:"创建时间戳"`
+	UpdatedAt    int64  `json:"updated_at" comment:"更新时间戳"`
+}
+
+type GameProviderListReq {
+	Page         int64  `form:"page,optional" comment:"页码（默认1）"`
+	PageSize     int64  `form:"page_size,optional" comment:"每页大小（默认15）"`
+	ProviderCode string `form:"provider_code,optional" comment:"厂商编码"`
+	Name         string `form:"name,optional" comment:"厂商名称"`
+	Status       int16  `form:"status,optional" comment:"状态筛选：1启用/2禁用"`
+}
+
+type GameProviderListResp {
+	List []GameProviderResp `json:"list" comment:"厂商列表"`
+	Total int64              `json:"total" comment:"总数"`
+}
+
+type GameProviderGetReq {
+	ID int64 `form:"id" binding:"required" comment:"厂商ID"`
+}
+
+type GameProviderUpdateReq {
+	ID          int64  `json:"id" binding:"required" comment:"厂商ID"`
+	SortNo      int32  `json:"sort_no,optional" comment:"排序号"`
+	Status      int16  `json:"status,optional" comment:"状态：1启用/2禁用"`
+}

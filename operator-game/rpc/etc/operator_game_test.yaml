@@ -1,0 +1,29 @@
+# RPC 服务配置
+Name: operator-game-rpc-node01
+ListenOn: 0.0.0.0:39003
+Timeout: 10000
+Mode: dev               # 运行模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 192.168.0.15:2379       # Etcd地址
+  Key: operator-game-rpc-node01    # 服务注册Key
+
+# 总网游戏服务 RPC 配置（用于同步已发布数据）
+PlatformGameRpcConf:
+  # 直接指定为容器名称（通过共享网络解析）
+  Target: platform-game-rpc:19003
+  Timeout: 10000
+
+CoreRpc:
+  Target: 192.168.0.15:39000
+  Timeout: 10000
+
+DatabaseConf:
+  Host:     192.168.0.15     # 数据库地址
+  Port:     15441          # 数据库端口
+  DBName:   p9_operator           # 数据库名称
+  Username: root          # 数据库用户名
+  Password: root          # 数据库密码
+  SSLMode:  disable       # SSL模式
