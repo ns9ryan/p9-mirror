@@ -262,12 +262,12 @@ func (_q *GameCurrencyQuery) Clone() *GameCurrencyQuery {
 // Example:
 //
 //	var v []struct {
-//		GameID int64 `json:"game_id,omitempty"`
+//		GameCode string `json:"game_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.GameCurrency.Query().
-//		GroupBy(gamecurrency.FieldGameID).
+//		GroupBy(gamecurrency.FieldGameCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *GameCurrencyQuery) GroupBy(field string, fields ...string) *GameCurrencyGroupBy {
@@ -285,11 +285,11 @@ func (_q *GameCurrencyQuery) GroupBy(field string, fields ...string) *GameCurren
 // Example:
 //
 //	var v []struct {
-//		GameID int64 `json:"game_id,omitempty"`
+//		GameCode string `json:"game_code,omitempty"`
 //	}
 //
 //	client.GameCurrency.Query().
-//		Select(gamecurrency.FieldGameID).
+//		Select(gamecurrency.FieldGameCode).
 //		Scan(ctx, &v)
 func (_q *GameCurrencyQuery) Select(fields ...string) *GameCurrencySelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

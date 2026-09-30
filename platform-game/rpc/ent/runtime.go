@@ -54,7 +54,7 @@ func init() {
 	gameproviderFields := schema.GameProvider{}.Fields()
 	_ = gameproviderFields
 	// gameproviderDescStatus is the schema descriptor for status field.
-	gameproviderDescStatus := gameproviderFields[9].Descriptor()
+	gameproviderDescStatus := gameproviderFields[10].Descriptor()
 	// gameprovider.StatusValidator is a validator for the "status" field. It is called by the builders before save.
 	gameprovider.StatusValidator = gameproviderDescStatus.Validators[0].(func(int64) error)
 	operatorFields := schema.Operator{}.Fields()

@@ -24,24 +24,28 @@ var File_platform_game_proto protoreflect.FileDescriptor
 
 const file_platform_game_proto_rawDesc = "" +
 	"\n" +
-	"\x13platform_game.proto\x12\rplatform_game\x1a\x10types/game.proto\x1a\x19types/game_category.proto\x1a\x19types/game_provider.proto\x1a\x18types/game_channel.proto\x1a\x19types/game_currency.proto\x1a types/game_sync_checkpoint.proto\x1a\x10types/sync.proto\x1a\"types/operator_game_category.proto\x1a!types/operator_game_channel.proto\x1a\"types/operator_game_provider.proto\x1a\x19types/operator_game.proto\x1a$types/operator_game_allocation.proto2\xf4\x01\n" +
+	"\x13platform_game.proto\x12\rplatform_game\x1a\x10types/game.proto\x1a\x19types/game_category.proto\x1a\x19types/game_provider.proto\x1a\x18types/game_channel.proto\x1a\x19types/game_currency.proto\x1a types/game_sync_checkpoint.proto\x1a\x10types/sync.proto\x1a\"types/operator_game_category.proto\x1a!types/operator_game_channel.proto\x1a\"types/operator_game_provider.proto\x1a\x19types/operator_game.proto\x1a$types/operator_game_allocation.proto\x1a\x1etypes/published_category.proto\x1a\x1atypes/published_game.proto\x1a\x1etypes/published_provider.proto\x1a\x1dtypes/published_channel.proto2\xe1\x02\n" +
 	"\vGameService\x12P\n" +
 	"\vGetGameList\x12!.platform_game.GetGameListRequest\x1a\x1e.platform_game.GetGameListResp\x12D\n" +
 	"\aGetGame\x12\x1d.platform_game.GetGameRequest\x1a\x1a.platform_game.GetGameResp\x12M\n" +
 	"\n" +
-	"UpdateGame\x12 .platform_game.UpdateGameRequest\x1a\x1d.platform_game.UpdateGameResp2\xc4\x02\n" +
+	"UpdateGame\x12 .platform_game.UpdateGameRequest\x1a\x1d.platform_game.UpdateGameResp\x12k\n" +
+	"\x14GetPublishedGameList\x12*.platform_game.GetPublishedGameListRequest\x1a'.platform_game.GetPublishedGameListResp2\xca\x03\n" +
 	"\x13GameCategoryService\x12h\n" +
 	"\x13GetGameCategoryList\x12).platform_game.GetGameCategoryListRequest\x1a&.platform_game.GetGameCategoryListResp\x12\\\n" +
 	"\x0fGetGameCategory\x12%.platform_game.GetGameCategoryRequest\x1a\".platform_game.GetGameCategoryResp\x12e\n" +
-	"\x12UpdateGameCategory\x12(.platform_game.UpdateGameCategoryRequest\x1a%.platform_game.UpdateGameCategoryResp2\xc4\x02\n" +
+	"\x12UpdateGameCategory\x12(.platform_game.UpdateGameCategoryRequest\x1a%.platform_game.UpdateGameCategoryResp\x12\x83\x01\n" +
+	"\x1cGetPublishedGameCategoryList\x122.platform_game.GetPublishedGameCategoryListRequest\x1a/.platform_game.GetPublishedGameCategoryListResp2\xca\x03\n" +
 	"\x13GameProviderService\x12h\n" +
 	"\x13GetGameProviderList\x12).platform_game.GetGameProviderListRequest\x1a&.platform_game.GetGameProviderListResp\x12\\\n" +
 	"\x0fGetGameProvider\x12%.platform_game.GetGameProviderRequest\x1a\".platform_game.GetGameProviderResp\x12e\n" +
-	"\x12UpdateGameProvider\x12(.platform_game.UpdateGameProviderRequest\x1a%.platform_game.UpdateGameProviderResp2\xba\x02\n" +
+	"\x12UpdateGameProvider\x12(.platform_game.UpdateGameProviderRequest\x1a%.platform_game.UpdateGameProviderResp\x12\x83\x01\n" +
+	"\x1cGetPublishedGameProviderList\x122.platform_game.GetPublishedGameProviderListRequest\x1a/.platform_game.GetPublishedGameProviderListResp2\xbd\x03\n" +
 	"\x12GameChannelService\x12Y\n" +
 	"\x0eGetGameChannel\x12$.platform_game.GetGameChannelRequest\x1a!.platform_game.GetGameChannelResp\x12e\n" +
 	"\x12GetGameChannelList\x12(.platform_game.GetGameChannelListRequest\x1a%.platform_game.GetGameChannelListResp\x12b\n" +
-	"\x11UpdateGameChannel\x12'.platform_game.UpdateGameChannelRequest\x1a$.platform_game.UpdateGameChannelResp2\xc4\x02\n" +
+	"\x11UpdateGameChannel\x12'.platform_game.UpdateGameChannelRequest\x1a$.platform_game.UpdateGameChannelResp\x12\x80\x01\n" +
+	"\x1bGetPublishedGameChannelList\x121.platform_game.GetPublishedGameChannelListRequest\x1a..platform_game.GetPublishedGameChannelListResp2\xc4\x02\n" +
 	"\x13GameCurrencyService\x12h\n" +
 	"\x13GetGameCurrencyList\x12).platform_game.GetGameCurrencyListRequest\x1a&.platform_game.GetGameCurrencyListResp\x12\\\n" +
 	"\x0fGetGameCurrency\x12%.platform_game.GetGameCurrencyRequest\x1a\".platform_game.GetGameCurrencyResp\x12e\n" +
@@ -69,151 +73,172 @@ const file_platform_game_proto_rawDesc = "" +
 	"\x13OperatorGameService\x12h\n" +
 	"\x13GetOperatorGameList\x12).platform_game.GetOperatorGameListRequest\x1a&.platform_game.GetOperatorGameListResp\x12\x86\x01\n" +
 	"\x1dBatchUpdateOperatorGameStatus\x123.platform_game.BatchUpdateOperatorGameStatusRequest\x1a0.platform_game.BatchUpdateOperatorGameStatusResp\x12}\n" +
-	"\x1aSaveOperatorGameAllocation\x120.platform_game.SaveOperatorGameAllocationRequest\x1a-.platform_game.SaveOperatorGameAllocationResp2\xa8\x01\n" +
+	"\x1aSaveOperatorGameAllocation\x120.platform_game.SaveOperatorGameAllocationRequest\x1a-.platform_game.SaveOperatorGameAllocationResp2\xb5\x02\n" +
 	"\x1dOperatorGameAllocationService\x12\x86\x01\n" +
-	"\x1dGetOperatorGameAllocationList\x123.platform_game.GetOperatorGameAllocationListRequest\x1a0.platform_game.GetOperatorGameAllocationListRespB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
+	"\x1dGetOperatorGameAllocationList\x123.platform_game.GetOperatorGameAllocationListRequest\x1a0.platform_game.GetOperatorGameAllocationListResp\x12\x8a\x01\n" +
+	"\x1dPublishOperatorGameAllocation\x123.platform_game.PublishOperatorGameAllocationRequest\x1a4.platform_game.PublishOperatorGameAllocationResponseB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
 
 var file_platform_game_proto_goTypes = []any{
 	(*GetGameListRequest)(nil),                           // 0: platform_game.GetGameListRequest
 	(*GetGameRequest)(nil),                               // 1: platform_game.GetGameRequest
 	(*UpdateGameRequest)(nil),                            // 2: platform_game.UpdateGameRequest
-	(*GetGameCategoryListRequest)(nil),                   // 3: platform_game.GetGameCategoryListRequest
-	(*GetGameCategoryRequest)(nil),                       // 4: platform_game.GetGameCategoryRequest
-	(*UpdateGameCategoryRequest)(nil),                    // 5: platform_game.UpdateGameCategoryRequest
-	(*GetGameProviderListRequest)(nil),                   // 6: platform_game.GetGameProviderListRequest
-	(*GetGameProviderRequest)(nil),                       // 7: platform_game.GetGameProviderRequest
-	(*UpdateGameProviderRequest)(nil),                    // 8: platform_game.UpdateGameProviderRequest
-	(*GetGameChannelRequest)(nil),                        // 9: platform_game.GetGameChannelRequest
-	(*GetGameChannelListRequest)(nil),                    // 10: platform_game.GetGameChannelListRequest
-	(*UpdateGameChannelRequest)(nil),                     // 11: platform_game.UpdateGameChannelRequest
-	(*GetGameCurrencyListRequest)(nil),                   // 12: platform_game.GetGameCurrencyListRequest
-	(*GetGameCurrencyRequest)(nil),                       // 13: platform_game.GetGameCurrencyRequest
-	(*UpdateGameCurrencyRequest)(nil),                    // 14: platform_game.UpdateGameCurrencyRequest
-	(*GetGameSyncCheckpointRequest)(nil),                 // 15: platform_game.GetGameSyncCheckpointRequest
-	(*GetGameSyncCheckpointListRequest)(nil),             // 16: platform_game.GetGameSyncCheckpointListRequest
-	(*GetI18NNameMapRequest)(nil),                        // 17: platform_game.GetI18nNameMapRequest
-	(*SyncPreviewRequest)(nil),                           // 18: platform_game.SyncPreviewRequest
-	(*SyncRunRequest)(nil),                               // 19: platform_game.SyncRunRequest
-	(*ExecuteV2SqlRequest)(nil),                          // 20: platform_game.ExecuteV2SqlRequest
-	(*GetOperatorGameCategoryListRequest)(nil),           // 21: platform_game.GetOperatorGameCategoryListRequest
-	(*BatchUpdateOperatorGameCategoryStatusRequest)(nil), // 22: platform_game.BatchUpdateOperatorGameCategoryStatusRequest
-	(*SaveOperatorGameCategoryAllocationRequest)(nil),    // 23: platform_game.SaveOperatorGameCategoryAllocationRequest
-	(*GetOperatorGameChannelListRequest)(nil),            // 24: platform_game.GetOperatorGameChannelListRequest
-	(*BatchUpdateOperatorGameChannelStatusRequest)(nil),  // 25: platform_game.BatchUpdateOperatorGameChannelStatusRequest
-	(*SaveOperatorGameChannelAllocationRequest)(nil),     // 26: platform_game.SaveOperatorGameChannelAllocationRequest
-	(*GetOperatorGameProviderListRequest)(nil),           // 27: platform_game.GetOperatorGameProviderListRequest
-	(*BatchUpdateOperatorGameProviderStatusRequest)(nil), // 28: platform_game.BatchUpdateOperatorGameProviderStatusRequest
-	(*SaveOperatorGameProviderAllocationRequest)(nil),    // 29: platform_game.SaveOperatorGameProviderAllocationRequest
-	(*GetOperatorGameListRequest)(nil),                   // 30: platform_game.GetOperatorGameListRequest
-	(*BatchUpdateOperatorGameStatusRequest)(nil),         // 31: platform_game.BatchUpdateOperatorGameStatusRequest
-	(*SaveOperatorGameAllocationRequest)(nil),            // 32: platform_game.SaveOperatorGameAllocationRequest
-	(*GetOperatorGameAllocationListRequest)(nil),         // 33: platform_game.GetOperatorGameAllocationListRequest
-	(*GetGameListResp)(nil),                              // 34: platform_game.GetGameListResp
-	(*GetGameResp)(nil),                                  // 35: platform_game.GetGameResp
-	(*UpdateGameResp)(nil),                               // 36: platform_game.UpdateGameResp
-	(*GetGameCategoryListResp)(nil),                      // 37: platform_game.GetGameCategoryListResp
-	(*GetGameCategoryResp)(nil),                          // 38: platform_game.GetGameCategoryResp
-	(*UpdateGameCategoryResp)(nil),                       // 39: platform_game.UpdateGameCategoryResp
-	(*GetGameProviderListResp)(nil),                      // 40: platform_game.GetGameProviderListResp
-	(*GetGameProviderResp)(nil),                          // 41: platform_game.GetGameProviderResp
-	(*UpdateGameProviderResp)(nil),                       // 42: platform_game.UpdateGameProviderResp
-	(*GetGameChannelResp)(nil),                           // 43: platform_game.GetGameChannelResp
-	(*GetGameChannelListResp)(nil),                       // 44: platform_game.GetGameChannelListResp
-	(*UpdateGameChannelResp)(nil),                        // 45: platform_game.UpdateGameChannelResp
-	(*GetGameCurrencyListResp)(nil),                      // 46: platform_game.GetGameCurrencyListResp
-	(*GetGameCurrencyResp)(nil),                          // 47: platform_game.GetGameCurrencyResp
-	(*UpdateGameCurrencyResp)(nil),                       // 48: platform_game.UpdateGameCurrencyResp
-	(*GetGameSyncCheckpointResp)(nil),                    // 49: platform_game.GetGameSyncCheckpointResp
-	(*GetGameSyncCheckpointListResp)(nil),                // 50: platform_game.GetGameSyncCheckpointListResp
-	(*GetI18NNameMapResp)(nil),                           // 51: platform_game.GetI18nNameMapResp
-	(*SyncPreviewResp)(nil),                              // 52: platform_game.SyncPreviewResp
-	(*SyncRunResp)(nil),                                  // 53: platform_game.SyncRunResp
-	(*ExecuteV2SqlResp)(nil),                             // 54: platform_game.ExecuteV2SqlResp
-	(*GetOperatorGameCategoryListResp)(nil),              // 55: platform_game.GetOperatorGameCategoryListResp
-	(*BatchUpdateOperatorGameCategoryStatusResp)(nil),    // 56: platform_game.BatchUpdateOperatorGameCategoryStatusResp
-	(*SaveOperatorGameCategoryAllocationResp)(nil),       // 57: platform_game.SaveOperatorGameCategoryAllocationResp
-	(*GetOperatorGameChannelListResp)(nil),               // 58: platform_game.GetOperatorGameChannelListResp
-	(*BatchUpdateOperatorGameChannelStatusResp)(nil),     // 59: platform_game.BatchUpdateOperatorGameChannelStatusResp
-	(*SaveOperatorGameChannelAllocationResp)(nil),        // 60: platform_game.SaveOperatorGameChannelAllocationResp
-	(*GetOperatorGameProviderListResp)(nil),              // 61: platform_game.GetOperatorGameProviderListResp
-	(*BatchUpdateOperatorGameProviderStatusResp)(nil),    // 62: platform_game.BatchUpdateOperatorGameProviderStatusResp
-	(*SaveOperatorGameProviderAllocationResp)(nil),       // 63: platform_game.SaveOperatorGameProviderAllocationResp
-	(*GetOperatorGameListResp)(nil),                      // 64: platform_game.GetOperatorGameListResp
-	(*BatchUpdateOperatorGameStatusResp)(nil),            // 65: platform_game.BatchUpdateOperatorGameStatusResp
-	(*SaveOperatorGameAllocationResp)(nil),               // 66: platform_game.SaveOperatorGameAllocationResp
-	(*GetOperatorGameAllocationListResp)(nil),            // 67: platform_game.GetOperatorGameAllocationListResp
+	(*GetPublishedGameListRequest)(nil),                  // 3: platform_game.GetPublishedGameListRequest
+	(*GetGameCategoryListRequest)(nil),                   // 4: platform_game.GetGameCategoryListRequest
+	(*GetGameCategoryRequest)(nil),                       // 5: platform_game.GetGameCategoryRequest
+	(*UpdateGameCategoryRequest)(nil),                    // 6: platform_game.UpdateGameCategoryRequest
+	(*GetPublishedGameCategoryListRequest)(nil),          // 7: platform_game.GetPublishedGameCategoryListRequest
+	(*GetGameProviderListRequest)(nil),                   // 8: platform_game.GetGameProviderListRequest
+	(*GetGameProviderRequest)(nil),                       // 9: platform_game.GetGameProviderRequest
+	(*UpdateGameProviderRequest)(nil),                    // 10: platform_game.UpdateGameProviderRequest
+	(*GetPublishedGameProviderListRequest)(nil),          // 11: platform_game.GetPublishedGameProviderListRequest
+	(*GetGameChannelRequest)(nil),                        // 12: platform_game.GetGameChannelRequest
+	(*GetGameChannelListRequest)(nil),                    // 13: platform_game.GetGameChannelListRequest
+	(*UpdateGameChannelRequest)(nil),                     // 14: platform_game.UpdateGameChannelRequest
+	(*GetPublishedGameChannelListRequest)(nil),           // 15: platform_game.GetPublishedGameChannelListRequest
+	(*GetGameCurrencyListRequest)(nil),                   // 16: platform_game.GetGameCurrencyListRequest
+	(*GetGameCurrencyRequest)(nil),                       // 17: platform_game.GetGameCurrencyRequest
+	(*UpdateGameCurrencyRequest)(nil),                    // 18: platform_game.UpdateGameCurrencyRequest
+	(*GetGameSyncCheckpointRequest)(nil),                 // 19: platform_game.GetGameSyncCheckpointRequest
+	(*GetGameSyncCheckpointListRequest)(nil),             // 20: platform_game.GetGameSyncCheckpointListRequest
+	(*GetI18NNameMapRequest)(nil),                        // 21: platform_game.GetI18nNameMapRequest
+	(*SyncPreviewRequest)(nil),                           // 22: platform_game.SyncPreviewRequest
+	(*SyncRunRequest)(nil),                               // 23: platform_game.SyncRunRequest
+	(*ExecuteV2SqlRequest)(nil),                          // 24: platform_game.ExecuteV2SqlRequest
+	(*GetOperatorGameCategoryListRequest)(nil),           // 25: platform_game.GetOperatorGameCategoryListRequest
+	(*BatchUpdateOperatorGameCategoryStatusRequest)(nil), // 26: platform_game.BatchUpdateOperatorGameCategoryStatusRequest
+	(*SaveOperatorGameCategoryAllocationRequest)(nil),    // 27: platform_game.SaveOperatorGameCategoryAllocationRequest
+	(*GetOperatorGameChannelListRequest)(nil),            // 28: platform_game.GetOperatorGameChannelListRequest
+	(*BatchUpdateOperatorGameChannelStatusRequest)(nil),  // 29: platform_game.BatchUpdateOperatorGameChannelStatusRequest
+	(*SaveOperatorGameChannelAllocationRequest)(nil),     // 30: platform_game.SaveOperatorGameChannelAllocationRequest
+	(*GetOperatorGameProviderListRequest)(nil),           // 31: platform_game.GetOperatorGameProviderListRequest
+	(*BatchUpdateOperatorGameProviderStatusRequest)(nil), // 32: platform_game.BatchUpdateOperatorGameProviderStatusRequest
+	(*SaveOperatorGameProviderAllocationRequest)(nil),    // 33: platform_game.SaveOperatorGameProviderAllocationRequest
+	(*GetOperatorGameListRequest)(nil),                   // 34: platform_game.GetOperatorGameListRequest
+	(*BatchUpdateOperatorGameStatusRequest)(nil),         // 35: platform_game.BatchUpdateOperatorGameStatusRequest
+	(*SaveOperatorGameAllocationRequest)(nil),            // 36: platform_game.SaveOperatorGameAllocationRequest
+	(*GetOperatorGameAllocationListRequest)(nil),         // 37: platform_game.GetOperatorGameAllocationListRequest
+	(*PublishOperatorGameAllocationRequest)(nil),         // 38: platform_game.PublishOperatorGameAllocationRequest
+	(*GetGameListResp)(nil),                              // 39: platform_game.GetGameListResp
+	(*GetGameResp)(nil),                                  // 40: platform_game.GetGameResp
+	(*UpdateGameResp)(nil),                               // 41: platform_game.UpdateGameResp
+	(*GetPublishedGameListResp)(nil),                     // 42: platform_game.GetPublishedGameListResp
+	(*GetGameCategoryListResp)(nil),                      // 43: platform_game.GetGameCategoryListResp
+	(*GetGameCategoryResp)(nil),                          // 44: platform_game.GetGameCategoryResp
+	(*UpdateGameCategoryResp)(nil),                       // 45: platform_game.UpdateGameCategoryResp
+	(*GetPublishedGameCategoryListResp)(nil),             // 46: platform_game.GetPublishedGameCategoryListResp
+	(*GetGameProviderListResp)(nil),                      // 47: platform_game.GetGameProviderListResp
+	(*GetGameProviderResp)(nil),                          // 48: platform_game.GetGameProviderResp
+	(*UpdateGameProviderResp)(nil),                       // 49: platform_game.UpdateGameProviderResp
+	(*GetPublishedGameProviderListResp)(nil),             // 50: platform_game.GetPublishedGameProviderListResp
+	(*GetGameChannelResp)(nil),                           // 51: platform_game.GetGameChannelResp
+	(*GetGameChannelListResp)(nil),                       // 52: platform_game.GetGameChannelListResp
+	(*UpdateGameChannelResp)(nil),                        // 53: platform_game.UpdateGameChannelResp
+	(*GetPublishedGameChannelListResp)(nil),              // 54: platform_game.GetPublishedGameChannelListResp
+	(*GetGameCurrencyListResp)(nil),                      // 55: platform_game.GetGameCurrencyListResp
+	(*GetGameCurrencyResp)(nil),                          // 56: platform_game.GetGameCurrencyResp
+	(*UpdateGameCurrencyResp)(nil),                       // 57: platform_game.UpdateGameCurrencyResp
+	(*GetGameSyncCheckpointResp)(nil),                    // 58: platform_game.GetGameSyncCheckpointResp
+	(*GetGameSyncCheckpointListResp)(nil),                // 59: platform_game.GetGameSyncCheckpointListResp
+	(*GetI18NNameMapResp)(nil),                           // 60: platform_game.GetI18nNameMapResp
+	(*SyncPreviewResp)(nil),                              // 61: platform_game.SyncPreviewResp
+	(*SyncRunResp)(nil),                                  // 62: platform_game.SyncRunResp
+	(*ExecuteV2SqlResp)(nil),                             // 63: platform_game.ExecuteV2SqlResp
+	(*GetOperatorGameCategoryListResp)(nil),              // 64: platform_game.GetOperatorGameCategoryListResp
+	(*BatchUpdateOperatorGameCategoryStatusResp)(nil),    // 65: platform_game.BatchUpdateOperatorGameCategoryStatusResp
+	(*SaveOperatorGameCategoryAllocationResp)(nil),       // 66: platform_game.SaveOperatorGameCategoryAllocationResp
+	(*GetOperatorGameChannelListResp)(nil),               // 67: platform_game.GetOperatorGameChannelListResp
+	(*BatchUpdateOperatorGameChannelStatusResp)(nil),     // 68: platform_game.BatchUpdateOperatorGameChannelStatusResp
+	(*SaveOperatorGameChannelAllocationResp)(nil),        // 69: platform_game.SaveOperatorGameChannelAllocationResp
+	(*GetOperatorGameProviderListResp)(nil),              // 70: platform_game.GetOperatorGameProviderListResp
+	(*BatchUpdateOperatorGameProviderStatusResp)(nil),    // 71: platform_game.BatchUpdateOperatorGameProviderStatusResp
+	(*SaveOperatorGameProviderAllocationResp)(nil),       // 72: platform_game.SaveOperatorGameProviderAllocationResp
+	(*GetOperatorGameListResp)(nil),                      // 73: platform_game.GetOperatorGameListResp
+	(*BatchUpdateOperatorGameStatusResp)(nil),            // 74: platform_game.BatchUpdateOperatorGameStatusResp
+	(*SaveOperatorGameAllocationResp)(nil),               // 75: platform_game.SaveOperatorGameAllocationResp
+	(*GetOperatorGameAllocationListResp)(nil),            // 76: platform_game.GetOperatorGameAllocationListResp
+	(*PublishOperatorGameAllocationResponse)(nil),        // 77: platform_game.PublishOperatorGameAllocationResponse
 }
 var file_platform_game_proto_depIdxs = []int32{
 	0,  // 0: platform_game.GameService.GetGameList:input_type -> platform_game.GetGameListRequest
 	1,  // 1: platform_game.GameService.GetGame:input_type -> platform_game.GetGameRequest
 	2,  // 2: platform_game.GameService.UpdateGame:input_type -> platform_game.UpdateGameRequest
-	3,  // 3: platform_game.GameCategoryService.GetGameCategoryList:input_type -> platform_game.GetGameCategoryListRequest
-	4,  // 4: platform_game.GameCategoryService.GetGameCategory:input_type -> platform_game.GetGameCategoryRequest
-	5,  // 5: platform_game.GameCategoryService.UpdateGameCategory:input_type -> platform_game.UpdateGameCategoryRequest
-	6,  // 6: platform_game.GameProviderService.GetGameProviderList:input_type -> platform_game.GetGameProviderListRequest
-	7,  // 7: platform_game.GameProviderService.GetGameProvider:input_type -> platform_game.GetGameProviderRequest
-	8,  // 8: platform_game.GameProviderService.UpdateGameProvider:input_type -> platform_game.UpdateGameProviderRequest
-	9,  // 9: platform_game.GameChannelService.GetGameChannel:input_type -> platform_game.GetGameChannelRequest
-	10, // 10: platform_game.GameChannelService.GetGameChannelList:input_type -> platform_game.GetGameChannelListRequest
-	11, // 11: platform_game.GameChannelService.UpdateGameChannel:input_type -> platform_game.UpdateGameChannelRequest
-	12, // 12: platform_game.GameCurrencyService.GetGameCurrencyList:input_type -> platform_game.GetGameCurrencyListRequest
-	13, // 13: platform_game.GameCurrencyService.GetGameCurrency:input_type -> platform_game.GetGameCurrencyRequest
-	14, // 14: platform_game.GameCurrencyService.UpdateGameCurrency:input_type -> platform_game.UpdateGameCurrencyRequest
-	15, // 15: platform_game.GameSyncCheckpointService.GetGameSyncCheckpoint:input_type -> platform_game.GetGameSyncCheckpointRequest
-	16, // 16: platform_game.GameSyncCheckpointService.GetGameSyncCheckpointList:input_type -> platform_game.GetGameSyncCheckpointListRequest
-	17, // 17: platform_game.GameSyncCheckpointService.GetI18nNameMap:input_type -> platform_game.GetI18nNameMapRequest
-	18, // 18: platform_game.SyncService.SyncPreview:input_type -> platform_game.SyncPreviewRequest
-	19, // 19: platform_game.SyncService.SyncRun:input_type -> platform_game.SyncRunRequest
-	20, // 20: platform_game.SyncService.ExecuteV2Sql:input_type -> platform_game.ExecuteV2SqlRequest
-	21, // 21: platform_game.OperatorGameCategoryService.GetOperatorGameCategoryList:input_type -> platform_game.GetOperatorGameCategoryListRequest
-	22, // 22: platform_game.OperatorGameCategoryService.BatchUpdateOperatorGameCategoryStatus:input_type -> platform_game.BatchUpdateOperatorGameCategoryStatusRequest
-	23, // 23: platform_game.OperatorGameCategoryService.SaveOperatorGameCategoryAllocation:input_type -> platform_game.SaveOperatorGameCategoryAllocationRequest
-	24, // 24: platform_game.OperatorGameChannelService.GetOperatorGameChannelList:input_type -> platform_game.GetOperatorGameChannelListRequest
-	25, // 25: platform_game.OperatorGameChannelService.BatchUpdateOperatorGameChannelStatus:input_type -> platform_game.BatchUpdateOperatorGameChannelStatusRequest
-	26, // 26: platform_game.OperatorGameChannelService.SaveOperatorGameChannelAllocation:input_type -> platform_game.SaveOperatorGameChannelAllocationRequest
-	27, // 27: platform_game.OperatorGameProviderService.GetOperatorGameProviderList:input_type -> platform_game.GetOperatorGameProviderListRequest
-	28, // 28: platform_game.OperatorGameProviderService.BatchUpdateOperatorGameProviderStatus:input_type -> platform_game.BatchUpdateOperatorGameProviderStatusRequest
-	29, // 29: platform_game.OperatorGameProviderService.SaveOperatorGameProviderAllocation:input_type -> platform_game.SaveOperatorGameProviderAllocationRequest
-	30, // 30: platform_game.OperatorGameService.GetOperatorGameList:input_type -> platform_game.GetOperatorGameListRequest
-	31, // 31: platform_game.OperatorGameService.BatchUpdateOperatorGameStatus:input_type -> platform_game.BatchUpdateOperatorGameStatusRequest
-	32, // 32: platform_game.OperatorGameService.SaveOperatorGameAllocation:input_type -> platform_game.SaveOperatorGameAllocationRequest
-	33, // 33: platform_game.OperatorGameAllocationService.GetOperatorGameAllocationList:input_type -> platform_game.GetOperatorGameAllocationListRequest
-	34, // 34: platform_game.GameService.GetGameList:output_type -> platform_game.GetGameListResp
-	35, // 35: platform_game.GameService.GetGame:output_type -> platform_game.GetGameResp
-	36, // 36: platform_game.GameService.UpdateGame:output_type -> platform_game.UpdateGameResp
-	37, // 37: platform_game.GameCategoryService.GetGameCategoryList:output_type -> platform_game.GetGameCategoryListResp
-	38, // 38: platform_game.GameCategoryService.GetGameCategory:output_type -> platform_game.GetGameCategoryResp
-	39, // 39: platform_game.GameCategoryService.UpdateGameCategory:output_type -> platform_game.UpdateGameCategoryResp
-	40, // 40: platform_game.GameProviderService.GetGameProviderList:output_type -> platform_game.GetGameProviderListResp
-	41, // 41: platform_game.GameProviderService.GetGameProvider:output_type -> platform_game.GetGameProviderResp
-	42, // 42: platform_game.GameProviderService.UpdateGameProvider:output_type -> platform_game.UpdateGameProviderResp
-	43, // 43: platform_game.GameChannelService.GetGameChannel:output_type -> platform_game.GetGameChannelResp
-	44, // 44: platform_game.GameChannelService.GetGameChannelList:output_type -> platform_game.GetGameChannelListResp
-	45, // 45: platform_game.GameChannelService.UpdateGameChannel:output_type -> platform_game.UpdateGameChannelResp
-	46, // 46: platform_game.GameCurrencyService.GetGameCurrencyList:output_type -> platform_game.GetGameCurrencyListResp
-	47, // 47: platform_game.GameCurrencyService.GetGameCurrency:output_type -> platform_game.GetGameCurrencyResp
-	48, // 48: platform_game.GameCurrencyService.UpdateGameCurrency:output_type -> platform_game.UpdateGameCurrencyResp
-	49, // 49: platform_game.GameSyncCheckpointService.GetGameSyncCheckpoint:output_type -> platform_game.GetGameSyncCheckpointResp
-	50, // 50: platform_game.GameSyncCheckpointService.GetGameSyncCheckpointList:output_type -> platform_game.GetGameSyncCheckpointListResp
-	51, // 51: platform_game.GameSyncCheckpointService.GetI18nNameMap:output_type -> platform_game.GetI18nNameMapResp
-	52, // 52: platform_game.SyncService.SyncPreview:output_type -> platform_game.SyncPreviewResp
-	53, // 53: platform_game.SyncService.SyncRun:output_type -> platform_game.SyncRunResp
-	54, // 54: platform_game.SyncService.ExecuteV2Sql:output_type -> platform_game.ExecuteV2SqlResp
-	55, // 55: platform_game.OperatorGameCategoryService.GetOperatorGameCategoryList:output_type -> platform_game.GetOperatorGameCategoryListResp
-	56, // 56: platform_game.OperatorGameCategoryService.BatchUpdateOperatorGameCategoryStatus:output_type -> platform_game.BatchUpdateOperatorGameCategoryStatusResp
-	57, // 57: platform_game.OperatorGameCategoryService.SaveOperatorGameCategoryAllocation:output_type -> platform_game.SaveOperatorGameCategoryAllocationResp
-	58, // 58: platform_game.OperatorGameChannelService.GetOperatorGameChannelList:output_type -> platform_game.GetOperatorGameChannelListResp
-	59, // 59: platform_game.OperatorGameChannelService.BatchUpdateOperatorGameChannelStatus:output_type -> platform_game.BatchUpdateOperatorGameChannelStatusResp
-	60, // 60: platform_game.OperatorGameChannelService.SaveOperatorGameChannelAllocation:output_type -> platform_game.SaveOperatorGameChannelAllocationResp
-	61, // 61: platform_game.OperatorGameProviderService.GetOperatorGameProviderList:output_type -> platform_game.GetOperatorGameProviderListResp
-	62, // 62: platform_game.OperatorGameProviderService.BatchUpdateOperatorGameProviderStatus:output_type -> platform_game.BatchUpdateOperatorGameProviderStatusResp
-	63, // 63: platform_game.OperatorGameProviderService.SaveOperatorGameProviderAllocation:output_type -> platform_game.SaveOperatorGameProviderAllocationResp
-	64, // 64: platform_game.OperatorGameService.GetOperatorGameList:output_type -> platform_game.GetOperatorGameListResp
-	65, // 65: platform_game.OperatorGameService.BatchUpdateOperatorGameStatus:output_type -> platform_game.BatchUpdateOperatorGameStatusResp
-	66, // 66: platform_game.OperatorGameService.SaveOperatorGameAllocation:output_type -> platform_game.SaveOperatorGameAllocationResp
-	67, // 67: platform_game.OperatorGameAllocationService.GetOperatorGameAllocationList:output_type -> platform_game.GetOperatorGameAllocationListResp
-	34, // [34:68] is the sub-list for method output_type
-	0,  // [0:34] is the sub-list for method input_type
+	3,  // 3: platform_game.GameService.GetPublishedGameList:input_type -> platform_game.GetPublishedGameListRequest
+	4,  // 4: platform_game.GameCategoryService.GetGameCategoryList:input_type -> platform_game.GetGameCategoryListRequest
+	5,  // 5: platform_game.GameCategoryService.GetGameCategory:input_type -> platform_game.GetGameCategoryRequest
+	6,  // 6: platform_game.GameCategoryService.UpdateGameCategory:input_type -> platform_game.UpdateGameCategoryRequest
+	7,  // 7: platform_game.GameCategoryService.GetPublishedGameCategoryList:input_type -> platform_game.GetPublishedGameCategoryListRequest
+	8,  // 8: platform_game.GameProviderService.GetGameProviderList:input_type -> platform_game.GetGameProviderListRequest
+	9,  // 9: platform_game.GameProviderService.GetGameProvider:input_type -> platform_game.GetGameProviderRequest
+	10, // 10: platform_game.GameProviderService.UpdateGameProvider:input_type -> platform_game.UpdateGameProviderRequest
+	11, // 11: platform_game.GameProviderService.GetPublishedGameProviderList:input_type -> platform_game.GetPublishedGameProviderListRequest
+	12, // 12: platform_game.GameChannelService.GetGameChannel:input_type -> platform_game.GetGameChannelRequest
+	13, // 13: platform_game.GameChannelService.GetGameChannelList:input_type -> platform_game.GetGameChannelListRequest
+	14, // 14: platform_game.GameChannelService.UpdateGameChannel:input_type -> platform_game.UpdateGameChannelRequest
+	15, // 15: platform_game.GameChannelService.GetPublishedGameChannelList:input_type -> platform_game.GetPublishedGameChannelListRequest
+	16, // 16: platform_game.GameCurrencyService.GetGameCurrencyList:input_type -> platform_game.GetGameCurrencyListRequest
+	17, // 17: platform_game.GameCurrencyService.GetGameCurrency:input_type -> platform_game.GetGameCurrencyRequest
+	18, // 18: platform_game.GameCurrencyService.UpdateGameCurrency:input_type -> platform_game.UpdateGameCurrencyRequest
+	19, // 19: platform_game.GameSyncCheckpointService.GetGameSyncCheckpoint:input_type -> platform_game.GetGameSyncCheckpointRequest
+	20, // 20: platform_game.GameSyncCheckpointService.GetGameSyncCheckpointList:input_type -> platform_game.GetGameSyncCheckpointListRequest
+	21, // 21: platform_game.GameSyncCheckpointService.GetI18nNameMap:input_type -> platform_game.GetI18nNameMapRequest
+	22, // 22: platform_game.SyncService.SyncPreview:input_type -> platform_game.SyncPreviewRequest
+	23, // 23: platform_game.SyncService.SyncRun:input_type -> platform_game.SyncRunRequest
+	24, // 24: platform_game.SyncService.ExecuteV2Sql:input_type -> platform_game.ExecuteV2SqlRequest
+	25, // 25: platform_game.OperatorGameCategoryService.GetOperatorGameCategoryList:input_type -> platform_game.GetOperatorGameCategoryListRequest
+	26, // 26: platform_game.OperatorGameCategoryService.BatchUpdateOperatorGameCategoryStatus:input_type -> platform_game.BatchUpdateOperatorGameCategoryStatusRequest
+	27, // 27: platform_game.OperatorGameCategoryService.SaveOperatorGameCategoryAllocation:input_type -> platform_game.SaveOperatorGameCategoryAllocationRequest
+	28, // 28: platform_game.OperatorGameChannelService.GetOperatorGameChannelList:input_type -> platform_game.GetOperatorGameChannelListRequest
+	29, // 29: platform_game.OperatorGameChannelService.BatchUpdateOperatorGameChannelStatus:input_type -> platform_game.BatchUpdateOperatorGameChannelStatusRequest
+	30, // 30: platform_game.OperatorGameChannelService.SaveOperatorGameChannelAllocation:input_type -> platform_game.SaveOperatorGameChannelAllocationRequest
+	31, // 31: platform_game.OperatorGameProviderService.GetOperatorGameProviderList:input_type -> platform_game.GetOperatorGameProviderListRequest
+	32, // 32: platform_game.OperatorGameProviderService.BatchUpdateOperatorGameProviderStatus:input_type -> platform_game.BatchUpdateOperatorGameProviderStatusRequest
+	33, // 33: platform_game.OperatorGameProviderService.SaveOperatorGameProviderAllocation:input_type -> platform_game.SaveOperatorGameProviderAllocationRequest
+	34, // 34: platform_game.OperatorGameService.GetOperatorGameList:input_type -> platform_game.GetOperatorGameListRequest
+	35, // 35: platform_game.OperatorGameService.BatchUpdateOperatorGameStatus:input_type -> platform_game.BatchUpdateOperatorGameStatusRequest
+	36, // 36: platform_game.OperatorGameService.SaveOperatorGameAllocation:input_type -> platform_game.SaveOperatorGameAllocationRequest
+	37, // 37: platform_game.OperatorGameAllocationService.GetOperatorGameAllocationList:input_type -> platform_game.GetOperatorGameAllocationListRequest
+	38, // 38: platform_game.OperatorGameAllocationService.PublishOperatorGameAllocation:input_type -> platform_game.PublishOperatorGameAllocationRequest
+	39, // 39: platform_game.GameService.GetGameList:output_type -> platform_game.GetGameListResp
+	40, // 40: platform_game.GameService.GetGame:output_type -> platform_game.GetGameResp
+	41, // 41: platform_game.GameService.UpdateGame:output_type -> platform_game.UpdateGameResp
+	42, // 42: platform_game.GameService.GetPublishedGameList:output_type -> platform_game.GetPublishedGameListResp
+	43, // 43: platform_game.GameCategoryService.GetGameCategoryList:output_type -> platform_game.GetGameCategoryListResp
+	44, // 44: platform_game.GameCategoryService.GetGameCategory:output_type -> platform_game.GetGameCategoryResp
+	45, // 45: platform_game.GameCategoryService.UpdateGameCategory:output_type -> platform_game.UpdateGameCategoryResp
+	46, // 46: platform_game.GameCategoryService.GetPublishedGameCategoryList:output_type -> platform_game.GetPublishedGameCategoryListResp
+	47, // 47: platform_game.GameProviderService.GetGameProviderList:output_type -> platform_game.GetGameProviderListResp
+	48, // 48: platform_game.GameProviderService.GetGameProvider:output_type -> platform_game.GetGameProviderResp
+	49, // 49: platform_game.GameProviderService.UpdateGameProvider:output_type -> platform_game.UpdateGameProviderResp
+	50, // 50: platform_game.GameProviderService.GetPublishedGameProviderList:output_type -> platform_game.GetPublishedGameProviderListResp
+	51, // 51: platform_game.GameChannelService.GetGameChannel:output_type -> platform_game.GetGameChannelResp
+	52, // 52: platform_game.GameChannelService.GetGameChannelList:output_type -> platform_game.GetGameChannelListResp
+	53, // 53: platform_game.GameChannelService.UpdateGameChannel:output_type -> platform_game.UpdateGameChannelResp
+	54, // 54: platform_game.GameChannelService.GetPublishedGameChannelList:output_type -> platform_game.GetPublishedGameChannelListResp
+	55, // 55: platform_game.GameCurrencyService.GetGameCurrencyList:output_type -> platform_game.GetGameCurrencyListResp
+	56, // 56: platform_game.GameCurrencyService.GetGameCurrency:output_type -> platform_game.GetGameCurrencyResp
+	57, // 57: platform_game.GameCurrencyService.UpdateGameCurrency:output_type -> platform_game.UpdateGameCurrencyResp
+	58, // 58: platform_game.GameSyncCheckpointService.GetGameSyncCheckpoint:output_type -> platform_game.GetGameSyncCheckpointResp
+	59, // 59: platform_game.GameSyncCheckpointService.GetGameSyncCheckpointList:output_type -> platform_game.GetGameSyncCheckpointListResp
+	60, // 60: platform_game.GameSyncCheckpointService.GetI18nNameMap:output_type -> platform_game.GetI18nNameMapResp
+	61, // 61: platform_game.SyncService.SyncPreview:output_type -> platform_game.SyncPreviewResp
+	62, // 62: platform_game.SyncService.SyncRun:output_type -> platform_game.SyncRunResp
+	63, // 63: platform_game.SyncService.ExecuteV2Sql:output_type -> platform_game.ExecuteV2SqlResp
+	64, // 64: platform_game.OperatorGameCategoryService.GetOperatorGameCategoryList:output_type -> platform_game.GetOperatorGameCategoryListResp
+	65, // 65: platform_game.OperatorGameCategoryService.BatchUpdateOperatorGameCategoryStatus:output_type -> platform_game.BatchUpdateOperatorGameCategoryStatusResp
+	66, // 66: platform_game.OperatorGameCategoryService.SaveOperatorGameCategoryAllocation:output_type -> platform_game.SaveOperatorGameCategoryAllocationResp
+	67, // 67: platform_game.OperatorGameChannelService.GetOperatorGameChannelList:output_type -> platform_game.GetOperatorGameChannelListResp
+	68, // 68: platform_game.OperatorGameChannelService.BatchUpdateOperatorGameChannelStatus:output_type -> platform_game.BatchUpdateOperatorGameChannelStatusResp
+	69, // 69: platform_game.OperatorGameChannelService.SaveOperatorGameChannelAllocation:output_type -> platform_game.SaveOperatorGameChannelAllocationResp
+	70, // 70: platform_game.OperatorGameProviderService.GetOperatorGameProviderList:output_type -> platform_game.GetOperatorGameProviderListResp
+	71, // 71: platform_game.OperatorGameProviderService.BatchUpdateOperatorGameProviderStatus:output_type -> platform_game.BatchUpdateOperatorGameProviderStatusResp
+	72, // 72: platform_game.OperatorGameProviderService.SaveOperatorGameProviderAllocation:output_type -> platform_game.SaveOperatorGameProviderAllocationResp
+	73, // 73: platform_game.OperatorGameService.GetOperatorGameList:output_type -> platform_game.GetOperatorGameListResp
+	74, // 74: platform_game.OperatorGameService.BatchUpdateOperatorGameStatus:output_type -> platform_game.BatchUpdateOperatorGameStatusResp
+	75, // 75: platform_game.OperatorGameService.SaveOperatorGameAllocation:output_type -> platform_game.SaveOperatorGameAllocationResp
+	76, // 76: platform_game.OperatorGameAllocationService.GetOperatorGameAllocationList:output_type -> platform_game.GetOperatorGameAllocationListResp
+	77, // 77: platform_game.OperatorGameAllocationService.PublishOperatorGameAllocation:output_type -> platform_game.PublishOperatorGameAllocationResponse
+	39, // [39:78] is the sub-list for method output_type
+	0,  // [0:39] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -236,6 +261,10 @@ func file_platform_game_proto_init() {
 	file_types_operator_game_provider_proto_init()
 	file_types_operator_game_proto_init()
 	file_types_operator_game_allocation_proto_init()
+	file_types_published_category_proto_init()
+	file_types_published_game_proto_init()
+	file_types_published_provider_proto_init()
+	file_types_published_channel_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

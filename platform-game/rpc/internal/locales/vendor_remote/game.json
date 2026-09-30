@@ -2187,16 +2187,5 @@
         "name": "Mythical Guardians",
         "image": "https://file.98ent.com/assets/PGS/PGS_1849515.jpg",
         "chan_id": 5
-    },
-    {
-        "id": 213,
-        "ven_id": 600035,
-        "cat_id": 3,
-        "group_id": 52,
-        "ven_key": "PGS_1865521",
-        "code": "PGS-SL-79",
-        "name": "Dead Man's Riches",
-        "image": "https://file.98ent.com/assets/PGS/PGS_1865521.jpg",
-        "chan_id": 5
     }
 ]

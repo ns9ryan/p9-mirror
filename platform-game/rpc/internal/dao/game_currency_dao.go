@@ -29,7 +29,7 @@ func (d *GameCurrencyDAO) GetGameCurrencyByID(ctx context.Context, id int64) (*e
 }
 
 // GetGameCurrencyList 获取游戏货币列表
-func (d *GameCurrencyDAO) GetGameCurrencyList(ctx context.Context, isDeleted int32, status int32, gameID, currencyID int64, offset, limit int64) ([]*ent.GameCurrency, int, error) {
+func (d *GameCurrencyDAO) GetGameCurrencyList(ctx context.Context, isDeleted int32, status int32, gameCode, currencyCode string, offset, limit int64) ([]*ent.GameCurrency, int, error) {
 	query := d.db.GameCurrency.Query()
 	if status > 0 {
 		query = query.Where(gamecurrency.StatusEQ(int64(status)))
@@ -37,13 +37,13 @@ func (d *GameCurrencyDAO) GetGameCurrencyList(ctx context.Context, isDeleted int
 	} else if status == 0 {
 		logx.Infof("[DAO GameCurrencyList] skip status filter (status=0 means all)")
 	}
-	if gameID > 0 {
-		query = query.Where(gamecurrency.GameIDEQ(gameID))
-		logx.Infof("[DAO GameCurrencyList] apply filter: gameID=%d", gameID)
+	if gameCode != "" {
+		query = query.Where(gamecurrency.GameCodeEQ(gameCode))
+		logx.Infof("[DAO GameCurrencyList] apply filter: gameCode=%s", gameCode)
 	}
-	if currencyID > 0 {
-		query = query.Where(gamecurrency.CurrencyIDEQ(currencyID))
-		logx.Infof("[DAO GameCurrencyList] apply filter: currencyID=%d", currencyID)
+	if currencyCode != "" {
+		query = query.Where(gamecurrency.CurrencyCodeEQ(currencyCode))
+		logx.Infof("[DAO GameCurrencyList] apply filter: currencyCode=%s", currencyCode)
 	}
 
 	// 处理软删除条件
@@ -81,13 +81,13 @@ func (d *GameCurrencyDAO) GetGameCurrencyList(ctx context.Context, isDeleted int
 	return currencies, total, nil
 }
 
-func (d *GameCurrencyDAO) GetAllGameCurrency(ctx context.Context, gameID, currencyID int64) ([]*ent.GameCurrency, error) {
+func (d *GameCurrencyDAO) GetAllGameCurrency(ctx context.Context, gameCode, currencyCode string) ([]*ent.GameCurrency, error) {
 	query := d.db.GameCurrency.Query()
-	if gameID > 0 {
-		query = query.Where(gamecurrency.GameIDEQ(gameID))
+	if gameCode != "" {
+		query = query.Where(gamecurrency.GameCodeEQ(gameCode))
 	}
-	if currencyID > 0 {
-		query = query.Where(gamecurrency.CurrencyIDEQ(currencyID))
+	if currencyCode != "" {
+		query = query.Where(gamecurrency.CurrencyCodeEQ(currencyCode))
 	}
 	query = query.Where(gamecurrency.DeletedAtIsNil())
 
@@ -107,14 +107,14 @@ func (d *GameCurrencyDAO) UpdateGameCurrency(ctx context.Context, id int64, upda
 	// 动态应用更新
 	for key, value := range updates {
 		switch key {
-		case "game_id":
-			if val, ok := value.(int64); ok {
-				update = update.SetGameID(val)
+		case "game_code":
+			if val, ok := value.(string); ok {
+				update = update.SetGameCode(val)
 			}
 
-		case "currency_id":
-			if val, ok := value.(int64); ok {
-				update = update.SetCurrencyID(val)
+		case "currency_code":
+			if val, ok := value.(string); ok {
+				update = update.SetCurrencyCode(val)
 			}
 		case "status":
 			if val, ok := value.(int32); ok {
@@ -142,12 +142,34 @@ func (d *GameCurrencyDAO) BatchCreateGameCurrency(ctx context.Context, createLis
 	return d.db.GameCurrency.CreateBulk(createList...).Save(ctx)
 }
 
-func (d *GameCurrencyDAO) GetGameCurrencyByCurrcyIdAndGameId(ctx context.Context, gameID, currencyID int64) (*ent.GameCurrency, error) {
+func (d *GameCurrencyDAO) GetGameCurrencyByGameCodeAndCurrencyCode(ctx context.Context, gameCode, currencyCode string) (*ent.GameCurrency, error) {
 	query := d.db.GameCurrency.Query().
-		Where(gamecurrency.GameIDEQ(gameID), gamecurrency.CurrencyIDEQ(currencyID), gamecurrency.DeletedAtIsNil())
+		Where(gamecurrency.GameCodeEQ(gameCode), gamecurrency.CurrencyCodeEQ(currencyCode), gamecurrency.DeletedAtIsNil())
 	currency, err := query.Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("query failed: %w", err)
 	}
 	return currency, nil
+}
+
+func (d *GameCurrencyDAO) GetCurrencyCodesByGameCode(ctx context.Context, gameCode string) ([]string, error) {
+	query := d.db.GameCurrency.Query().
+		Select(gamecurrency.FieldCurrencyCode).
+		Where(
+			gamecurrency.GameCodeEQ(gameCode),
+			gamecurrency.DeletedAtIsNil(),
+			gamecurrency.StatusEQ(1),
+		)
+
+	currencies, err := query.All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+
+	currencyCodes := make([]string, 0, len(currencies))
+	for _, currency := range currencies {
+		currencyCodes = append(currencyCodes, currency.CurrencyCode)
+	}
+
+	return currencyCodes, nil
 }

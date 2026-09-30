@@ -161,6 +161,23 @@ func (d *OperatorGameProviderDAO) FindAllByOpCodeAndProviderCodes(ctx context.Co
 	return records, nil
 }
 
+// GetProviderCodesByOpCode 获取指定分站的所有供应商代码
+func (d *OperatorGameProviderDAO) GetProviderCodesByOpCode(ctx context.Context, opCode string) ([]string, error) {
+	records, err := d.db.OperatorGameProvider.Query().
+		Where(operatorgameprovider.OpCodeEQ(opCode)).
+		Where(operatorgameprovider.StatusEQ(1)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+
+	codes := make([]string, 0, len(records))
+	for _, r := range records {
+		codes = append(codes, r.ProviderCode)
+	}
+	return codes, nil
+}
+
 func (d *OperatorGameProviderDAO) FindAll(ctx context.Context, opCode, providerCode string, offset, limit int64) ([]*ent.OperatorGameProvider, error) {
 	query := d.db.OperatorGameProvider.Query().
 		Where(operatorgameprovider.OpCodeEQ(opCode)).

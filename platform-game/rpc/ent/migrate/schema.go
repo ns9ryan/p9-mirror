@@ -107,8 +107,8 @@ var (
 	// GameCurrencyColumns holds the columns for the "game_currency" table.
 	GameCurrencyColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "game_id", Type: field.TypeInt64},
-		{Name: "currency_id", Type: field.TypeInt64},
+		{Name: "game_code", Type: field.TypeString},
+		{Name: "currency_code", Type: field.TypeString},
 		{Name: "source_status", Type: field.TypeInt64},
 		{Name: "status", Type: field.TypeInt64},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
@@ -127,6 +127,7 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "source_id", Type: field.TypeInt64},
 		{Name: "provider_code", Type: field.TypeString},
+		{Name: "channel_code", Type: field.TypeString, Nullable: true},
 		{Name: "source_provider_code", Type: field.TypeString},
 		{Name: "source_logo_url", Type: field.TypeString, Nullable: true},
 		{Name: "logo_url", Type: field.TypeString, Nullable: true},

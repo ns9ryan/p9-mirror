@@ -40,3 +40,9 @@ func (s *GameCategoryServiceServer) UpdateGameCategory(ctx context.Context, in *
 	l := gamecategoryservicelogic.NewUpdateGameCategoryLogic(ctx, s.svcCtx)
 	return l.UpdateGameCategory(in)
 }
+
+// 获取已发布的游戏分类列表（供分站同步）
+func (s *GameCategoryServiceServer) GetPublishedGameCategoryList(ctx context.Context, in *platform_game.GetPublishedGameCategoryListRequest) (*platform_game.GetPublishedGameCategoryListResp, error) {
+	l := gamecategoryservicelogic.NewGetPublishedGameCategoryListLogic(ctx, s.svcCtx)
+	return l.GetPublishedGameCategoryList(in)
+}

@@ -25,8 +25,8 @@ const (
 type GameCurrencyInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	GameId        int64                  `protobuf:"varint,2,opt,name=game_id,json=gameId,proto3" json:"game_id,omitempty"`
-	CurrencyId    int64                  `protobuf:"varint,3,opt,name=currency_id,json=currencyId,proto3" json:"currency_id,omitempty"`
+	GameCode      string                 `protobuf:"bytes,2,opt,name=game_code,json=gameCode,proto3" json:"game_code,omitempty"`
+	CurrencyCode  string                 `protobuf:"bytes,3,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
 	Status        int32                  `protobuf:"varint,4,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -69,18 +69,18 @@ func (x *GameCurrencyInfo) GetId() int64 {
 	return 0
 }
 
-func (x *GameCurrencyInfo) GetGameId() int64 {
+func (x *GameCurrencyInfo) GetGameCode() string {
 	if x != nil {
-		return x.GameId
+		return x.GameCode
 	}
-	return 0
+	return ""
 }
 
-func (x *GameCurrencyInfo) GetCurrencyId() int64 {
+func (x *GameCurrencyInfo) GetCurrencyCode() string {
 	if x != nil {
-		return x.CurrencyId
+		return x.CurrencyCode
 	}
-	return 0
+	return ""
 }
 
 func (x *GameCurrencyInfo) GetStatus() int32 {
@@ -155,12 +155,11 @@ var File_vendor_game_currency_proto protoreflect.FileDescriptor
 
 const file_vendor_game_currency_proto_rawDesc = "" +
 	"\n" +
-	"\x1avendor/game_currency.proto\x12\avendors\"t\n" +
+	"\x1avendor/game_currency.proto\x12\avendors\"|\n" +
 	"\x10GameCurrencyInfo\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
-	"\agame_id\x18\x02 \x01(\x03R\x06gameId\x12\x1f\n" +
-	"\vcurrency_id\x18\x03 \x01(\x03R\n" +
-	"currencyId\x12\x16\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
+	"\tgame_code\x18\x02 \x01(\tR\bgameCode\x12#\n" +
+	"\rcurrency_code\x18\x03 \x01(\tR\fcurrencyCode\x12\x16\n" +
 	"\x06status\x18\x04 \x01(\x05R\x06status\"\x88\x01\n" +
 	"\x17GetGameCurrencyResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x03R\x04code\x12\x10\n" +

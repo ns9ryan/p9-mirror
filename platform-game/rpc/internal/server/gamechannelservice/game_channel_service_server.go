@@ -40,3 +40,9 @@ func (s *GameChannelServiceServer) UpdateGameChannel(ctx context.Context, in *pl
 	l := gamechannelservicelogic.NewUpdateGameChannelLogic(ctx, s.svcCtx)
 	return l.UpdateGameChannel(in)
 }
+
+// 获取已发布的游戏渠道列表（供分站同步）
+func (s *GameChannelServiceServer) GetPublishedGameChannelList(ctx context.Context, in *platform_game.GetPublishedGameChannelListRequest) (*platform_game.GetPublishedGameChannelListResp, error) {
+	l := gamechannelservicelogic.NewGetPublishedGameChannelListLogic(ctx, s.svcCtx)
+	return l.GetPublishedGameChannelList(in)
+}

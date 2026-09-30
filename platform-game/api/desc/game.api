@@ -3,7 +3,7 @@ syntax = "v1"
 @server (
 	group: game
 	middleware: Jwt,ActionLog,Authority
-	prefix: /admin/game
+	prefix: /platform-game/game
 )
 service platform_game {
 	// ===== Game APIs =====
@@ -19,7 +19,7 @@ service platform_game {
 
 // ========== Game ==========
 type GameCurrencyInfo {
-	CurrencyID       int64  `json:"currency_id" comment:"币种ID"`
+	CurrencyCode       string  `json:"currency_code" comment:"币种Code"`
 	CurrencyName     string `json:"currency_name" comment:"币种名称"`
 }
 

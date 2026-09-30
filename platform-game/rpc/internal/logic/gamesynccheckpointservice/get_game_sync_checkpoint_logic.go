@@ -52,6 +52,15 @@ func (l *GetGameSyncCheckpointLogic) GetGameSyncCheckpoint(in *platformgame.GetG
 
 	checkpoint, err := query.First(l.ctx)
 	if err != nil {
+		// 检查是否是"not found"错误
+		if ent.IsNotFound(err) {
+			l.Infof("[RPC GetGameSyncCheckpoint] no checkpoint found with given criteria")
+			return &platformgame.GetGameSyncCheckpointResp{
+				Code:    constant.CodeSuccess,
+				Message: "no checkpoint found",
+				Data:    nil,
+			}, nil
+		}
 		l.Errorf("[RPC GetGameSyncCheckpoint] query failed: %v", err)
 		return &platformgame.GetGameSyncCheckpointResp{
 			Code:    constant.CodeInternalError,

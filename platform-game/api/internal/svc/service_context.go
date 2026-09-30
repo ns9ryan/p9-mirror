@@ -67,10 +67,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 		// 创建 Core 客户端并初始化鉴权
 		// coreCli = coreclient.NewCore(zrpcClient)
-		coreClient := zrpc.MustNewClient(zrpc.RpcClientConf{
-			Target:  c.CoreRpc.Target,
-			Timeout: int64(c.CoreRpc.Timeout),
-		})
+		coreClient := zrpc.MustNewClient(c.CoreRpc)
 		coreCli = coreclient.NewCore(coreClient)
 
 		// 设置Core多语言词典加载器

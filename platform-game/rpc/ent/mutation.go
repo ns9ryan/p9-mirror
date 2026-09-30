@@ -4966,10 +4966,8 @@ type GameCurrencyMutation struct {
 	op               Op
 	typ              string
 	id               *int64
-	game_id          *int64
-	addgame_id       *int64
-	currency_id      *int64
-	addcurrency_id   *int64
+	game_code        *string
+	currency_code    *string
 	source_status    *int64
 	addsource_status *int64
 	status           *int64
@@ -5087,116 +5085,76 @@ func (m *GameCurrencyMutation) IDs(ctx context.Context) ([]int64, error) {
 	}
 }
 
-// SetGameID sets the "game_id" field.
-func (m *GameCurrencyMutation) SetGameID(i int64) {
-	m.game_id = &i
-	m.addgame_id = nil
+// SetGameCode sets the "game_code" field.
+func (m *GameCurrencyMutation) SetGameCode(s string) {
+	m.game_code = &s
 }
 
-// GameID returns the value of the "game_id" field in the mutation.
-func (m *GameCurrencyMutation) GameID() (r int64, exists bool) {
-	v := m.game_id
+// GameCode returns the value of the "game_code" field in the mutation.
+func (m *GameCurrencyMutation) GameCode() (r string, exists bool) {
+	v := m.game_code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldGameID returns the old "game_id" field's value of the GameCurrency entity.
+// OldGameCode returns the old "game_code" field's value of the GameCurrency entity.
 // If the GameCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GameCurrencyMutation) OldGameID(ctx context.Context) (v int64, err error) {
+func (m *GameCurrencyMutation) OldGameCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldGameID is only allowed on UpdateOne operations")
+		return v, errors.New("OldGameCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldGameID requires an ID field in the mutation")
+		return v, errors.New("OldGameCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldGameID: %w", err)
+		return v, fmt.Errorf("querying old value for OldGameCode: %w", err)
 	}
-	return oldValue.GameID, nil
+	return oldValue.GameCode, nil
 }
 
-// AddGameID adds i to the "game_id" field.
-func (m *GameCurrencyMutation) AddGameID(i int64) {
-	if m.addgame_id != nil {
-		*m.addgame_id += i
-	} else {
-		m.addgame_id = &i
-	}
+// ResetGameCode resets all changes to the "game_code" field.
+func (m *GameCurrencyMutation) ResetGameCode() {
+	m.game_code = nil
 }
 
-// AddedGameID returns the value that was added to the "game_id" field in this mutation.
-func (m *GameCurrencyMutation) AddedGameID() (r int64, exists bool) {
-	v := m.addgame_id
+// SetCurrencyCode sets the "currency_code" field.
+func (m *GameCurrencyMutation) SetCurrencyCode(s string) {
+	m.currency_code = &s
+}
+
+// CurrencyCode returns the value of the "currency_code" field in the mutation.
+func (m *GameCurrencyMutation) CurrencyCode() (r string, exists bool) {
+	v := m.currency_code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetGameID resets all changes to the "game_id" field.
-func (m *GameCurrencyMutation) ResetGameID() {
-	m.game_id = nil
-	m.addgame_id = nil
-}
-
-// SetCurrencyID sets the "currency_id" field.
-func (m *GameCurrencyMutation) SetCurrencyID(i int64) {
-	m.currency_id = &i
-	m.addcurrency_id = nil
-}
-
-// CurrencyID returns the value of the "currency_id" field in the mutation.
-func (m *GameCurrencyMutation) CurrencyID() (r int64, exists bool) {
-	v := m.currency_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCurrencyID returns the old "currency_id" field's value of the GameCurrency entity.
+// OldCurrencyCode returns the old "currency_code" field's value of the GameCurrency entity.
 // If the GameCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GameCurrencyMutation) OldCurrencyID(ctx context.Context) (v int64, err error) {
+func (m *GameCurrencyMutation) OldCurrencyCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCurrencyID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCurrencyCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCurrencyID requires an ID field in the mutation")
+		return v, errors.New("OldCurrencyCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCurrencyID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCurrencyCode: %w", err)
 	}
-	return oldValue.CurrencyID, nil
+	return oldValue.CurrencyCode, nil
 }
 
-// AddCurrencyID adds i to the "currency_id" field.
-func (m *GameCurrencyMutation) AddCurrencyID(i int64) {
-	if m.addcurrency_id != nil {
-		*m.addcurrency_id += i
-	} else {
-		m.addcurrency_id = &i
-	}
-}
-
-// AddedCurrencyID returns the value that was added to the "currency_id" field in this mutation.
-func (m *GameCurrencyMutation) AddedCurrencyID() (r int64, exists bool) {
-	v := m.addcurrency_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetCurrencyID resets all changes to the "currency_id" field.
-func (m *GameCurrencyMutation) ResetCurrencyID() {
-	m.currency_id = nil
-	m.addcurrency_id = nil
+// ResetCurrencyCode resets all changes to the "currency_code" field.
+func (m *GameCurrencyMutation) ResetCurrencyCode() {
+	m.currency_code = nil
 }
 
 // SetSourceStatus sets the "source_status" field.
@@ -5467,11 +5425,11 @@ func (m *GameCurrencyMutation) Type() string {
 // AddedFields().
 func (m *GameCurrencyMutation) Fields() []string {
 	fields := make([]string, 0, 7)
-	if m.game_id != nil {
-		fields = append(fields, gamecurrency.FieldGameID)
+	if m.game_code != nil {
+		fields = append(fields, gamecurrency.FieldGameCode)
 	}
-	if m.currency_id != nil {
-		fields = append(fields, gamecurrency.FieldCurrencyID)
+	if m.currency_code != nil {
+		fields = append(fields, gamecurrency.FieldCurrencyCode)
 	}
 	if m.source_status != nil {
 		fields = append(fields, gamecurrency.FieldSourceStatus)
@@ -5496,10 +5454,10 @@ func (m *GameCurrencyMutation) Fields() []string {
 // schema.
 func (m *GameCurrencyMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case gamecurrency.FieldGameID:
-		return m.GameID()
-	case gamecurrency.FieldCurrencyID:
-		return m.CurrencyID()
+	case gamecurrency.FieldGameCode:
+		return m.GameCode()
+	case gamecurrency.FieldCurrencyCode:
+		return m.CurrencyCode()
 	case gamecurrency.FieldSourceStatus:
 		return m.SourceStatus()
 	case gamecurrency.FieldStatus:
@@ -5519,10 +5477,10 @@ func (m *GameCurrencyMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *GameCurrencyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case gamecurrency.FieldGameID:
-		return m.OldGameID(ctx)
-	case gamecurrency.FieldCurrencyID:
-		return m.OldCurrencyID(ctx)
+	case gamecurrency.FieldGameCode:
+		return m.OldGameCode(ctx)
+	case gamecurrency.FieldCurrencyCode:
+		return m.OldCurrencyCode(ctx)
 	case gamecurrency.FieldSourceStatus:
 		return m.OldSourceStatus(ctx)
 	case gamecurrency.FieldStatus:
@@ -5542,19 +5500,19 @@ func (m *GameCurrencyMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *GameCurrencyMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case gamecurrency.FieldGameID:
-		v, ok := value.(int64)
+	case gamecurrency.FieldGameCode:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetGameID(v)
+		m.SetGameCode(v)
 		return nil
-	case gamecurrency.FieldCurrencyID:
-		v, ok := value.(int64)
+	case gamecurrency.FieldCurrencyCode:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCurrencyID(v)
+		m.SetCurrencyCode(v)
 		return nil
 	case gamecurrency.FieldSourceStatus:
 		v, ok := value.(int64)
@@ -5599,12 +5557,6 @@ func (m *GameCurrencyMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *GameCurrencyMutation) AddedFields() []string {
 	var fields []string
-	if m.addgame_id != nil {
-		fields = append(fields, gamecurrency.FieldGameID)
-	}
-	if m.addcurrency_id != nil {
-		fields = append(fields, gamecurrency.FieldCurrencyID)
-	}
 	if m.addsource_status != nil {
 		fields = append(fields, gamecurrency.FieldSourceStatus)
 	}
@@ -5619,10 +5571,6 @@ func (m *GameCurrencyMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *GameCurrencyMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case gamecurrency.FieldGameID:
-		return m.AddedGameID()
-	case gamecurrency.FieldCurrencyID:
-		return m.AddedCurrencyID()
 	case gamecurrency.FieldSourceStatus:
 		return m.AddedSourceStatus()
 	case gamecurrency.FieldStatus:
@@ -5636,20 +5584,6 @@ func (m *GameCurrencyMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *GameCurrencyMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case gamecurrency.FieldGameID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddGameID(v)
-		return nil
-	case gamecurrency.FieldCurrencyID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCurrencyID(v)
-		return nil
 	case gamecurrency.FieldSourceStatus:
 		v, ok := value.(int64)
 		if !ok {
@@ -5700,11 +5634,11 @@ func (m *GameCurrencyMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *GameCurrencyMutation) ResetField(name string) error {
 	switch name {
-	case gamecurrency.FieldGameID:
-		m.ResetGameID()
+	case gamecurrency.FieldGameCode:
+		m.ResetGameCode()
 		return nil
-	case gamecurrency.FieldCurrencyID:
-		m.ResetCurrencyID()
+	case gamecurrency.FieldCurrencyCode:
+		m.ResetCurrencyCode()
 		return nil
 	case gamecurrency.FieldSourceStatus:
 		m.ResetSourceStatus()
@@ -5782,6 +5716,7 @@ type GameProviderMutation struct {
 	source_id            *int64
 	addsource_id         *int64
 	provider_code        *string
+	channel_code         *string
 	source_provider_code *string
 	source_logo_url      *string
 	logo_url             *string
@@ -5996,6 +5931,55 @@ func (m *GameProviderMutation) OldProviderCode(ctx context.Context) (v string, e
 // ResetProviderCode resets all changes to the "provider_code" field.
 func (m *GameProviderMutation) ResetProviderCode() {
 	m.provider_code = nil
+}
+
+// SetChannelCode sets the "channel_code" field.
+func (m *GameProviderMutation) SetChannelCode(s string) {
+	m.channel_code = &s
+}
+
+// ChannelCode returns the value of the "channel_code" field in the mutation.
+func (m *GameProviderMutation) ChannelCode() (r string, exists bool) {
+	v := m.channel_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChannelCode returns the old "channel_code" field's value of the GameProvider entity.
+// If the GameProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameProviderMutation) OldChannelCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChannelCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChannelCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChannelCode: %w", err)
+	}
+	return oldValue.ChannelCode, nil
+}
+
+// ClearChannelCode clears the value of the "channel_code" field.
+func (m *GameProviderMutation) ClearChannelCode() {
+	m.channel_code = nil
+	m.clearedFields[gameprovider.FieldChannelCode] = struct{}{}
+}
+
+// ChannelCodeCleared returns if the "channel_code" field was cleared in this mutation.
+func (m *GameProviderMutation) ChannelCodeCleared() bool {
+	_, ok := m.clearedFields[gameprovider.FieldChannelCode]
+	return ok
+}
+
+// ResetChannelCode resets all changes to the "channel_code" field.
+func (m *GameProviderMutation) ResetChannelCode() {
+	m.channel_code = nil
+	delete(m.clearedFields, gameprovider.FieldChannelCode)
 }
 
 // SetSourceProviderCode sets the "source_provider_code" field.
@@ -6525,12 +6509,15 @@ func (m *GameProviderMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GameProviderMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.source_id != nil {
 		fields = append(fields, gameprovider.FieldSourceID)
 	}
 	if m.provider_code != nil {
 		fields = append(fields, gameprovider.FieldProviderCode)
+	}
+	if m.channel_code != nil {
+		fields = append(fields, gameprovider.FieldChannelCode)
 	}
 	if m.source_provider_code != nil {
 		fields = append(fields, gameprovider.FieldSourceProviderCode)
@@ -6574,6 +6561,8 @@ func (m *GameProviderMutation) Field(name string) (ent.Value, bool) {
 		return m.SourceID()
 	case gameprovider.FieldProviderCode:
 		return m.ProviderCode()
+	case gameprovider.FieldChannelCode:
+		return m.ChannelCode()
 	case gameprovider.FieldSourceProviderCode:
 		return m.SourceProviderCode()
 	case gameprovider.FieldSourceLogoURL:
@@ -6607,6 +6596,8 @@ func (m *GameProviderMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldSourceID(ctx)
 	case gameprovider.FieldProviderCode:
 		return m.OldProviderCode(ctx)
+	case gameprovider.FieldChannelCode:
+		return m.OldChannelCode(ctx)
 	case gameprovider.FieldSourceProviderCode:
 		return m.OldSourceProviderCode(ctx)
 	case gameprovider.FieldSourceLogoURL:
@@ -6649,6 +6640,13 @@ func (m *GameProviderMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProviderCode(v)
+		return nil
+	case gameprovider.FieldChannelCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChannelCode(v)
 		return nil
 	case gameprovider.FieldSourceProviderCode:
 		v, ok := value.(string)
@@ -6813,6 +6811,9 @@ func (m *GameProviderMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *GameProviderMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(gameprovider.FieldChannelCode) {
+		fields = append(fields, gameprovider.FieldChannelCode)
+	}
 	if m.FieldCleared(gameprovider.FieldSourceLogoURL) {
 		fields = append(fields, gameprovider.FieldSourceLogoURL)
 	}
@@ -6839,6 +6840,9 @@ func (m *GameProviderMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *GameProviderMutation) ClearField(name string) error {
 	switch name {
+	case gameprovider.FieldChannelCode:
+		m.ClearChannelCode()
+		return nil
 	case gameprovider.FieldSourceLogoURL:
 		m.ClearSourceLogoURL()
 		return nil
@@ -6864,6 +6868,9 @@ func (m *GameProviderMutation) ResetField(name string) error {
 		return nil
 	case gameprovider.FieldProviderCode:
 		m.ResetProviderCode()
+		return nil
+	case gameprovider.FieldChannelCode:
+		m.ResetChannelCode()
 		return nil
 	case gameprovider.FieldSourceProviderCode:
 		m.ResetSourceProviderCode()

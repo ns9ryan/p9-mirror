@@ -63,6 +63,26 @@ func (_u *GameProviderUpdate) SetNillableProviderCode(v *string) *GameProviderUp
 	return _u
 }
 
+// SetChannelCode sets the "channel_code" field.
+func (_u *GameProviderUpdate) SetChannelCode(v string) *GameProviderUpdate {
+	_u.mutation.SetChannelCode(v)
+	return _u
+}
+
+// SetNillableChannelCode sets the "channel_code" field if the given value is not nil.
+func (_u *GameProviderUpdate) SetNillableChannelCode(v *string) *GameProviderUpdate {
+	if v != nil {
+		_u.SetChannelCode(*v)
+	}
+	return _u
+}
+
+// ClearChannelCode clears the value of the "channel_code" field.
+func (_u *GameProviderUpdate) ClearChannelCode() *GameProviderUpdate {
+	_u.mutation.ClearChannelCode()
+	return _u
+}
+
 // SetSourceProviderCode sets the "source_provider_code" field.
 func (_u *GameProviderUpdate) SetSourceProviderCode(v string) *GameProviderUpdate {
 	_u.mutation.SetSourceProviderCode(v)
@@ -318,6 +338,12 @@ func (_u *GameProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 	if value, ok := _u.mutation.ProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldProviderCode, field.TypeString, value)
 	}
+	if value, ok := _u.mutation.ChannelCode(); ok {
+		_spec.SetField(gameprovider.FieldChannelCode, field.TypeString, value)
+	}
+	if _u.mutation.ChannelCodeCleared() {
+		_spec.ClearField(gameprovider.FieldChannelCode, field.TypeString)
+	}
 	if value, ok := _u.mutation.SourceProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldSourceProviderCode, field.TypeString, value)
 	}
@@ -424,6 +450,26 @@ func (_u *GameProviderUpdateOne) SetNillableProviderCode(v *string) *GameProvide
 	if v != nil {
 		_u.SetProviderCode(*v)
 	}
+	return _u
+}
+
+// SetChannelCode sets the "channel_code" field.
+func (_u *GameProviderUpdateOne) SetChannelCode(v string) *GameProviderUpdateOne {
+	_u.mutation.SetChannelCode(v)
+	return _u
+}
+
+// SetNillableChannelCode sets the "channel_code" field if the given value is not nil.
+func (_u *GameProviderUpdateOne) SetNillableChannelCode(v *string) *GameProviderUpdateOne {
+	if v != nil {
+		_u.SetChannelCode(*v)
+	}
+	return _u
+}
+
+// ClearChannelCode clears the value of the "channel_code" field.
+func (_u *GameProviderUpdateOne) ClearChannelCode() *GameProviderUpdateOne {
+	_u.mutation.ClearChannelCode()
 	return _u
 }
 
@@ -711,6 +757,12 @@ func (_u *GameProviderUpdateOne) sqlSave(ctx context.Context) (_node *GameProvid
 	}
 	if value, ok := _u.mutation.ProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldProviderCode, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.ChannelCode(); ok {
+		_spec.SetField(gameprovider.FieldChannelCode, field.TypeString, value)
+	}
+	if _u.mutation.ChannelCodeCleared() {
+		_spec.ClearField(gameprovider.FieldChannelCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.SourceProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldSourceProviderCode, field.TypeString, value)

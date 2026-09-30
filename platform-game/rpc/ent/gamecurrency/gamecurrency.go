@@ -11,10 +11,10 @@ const (
 	Label = "game_currency"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldGameID holds the string denoting the game_id field in the database.
-	FieldGameID = "game_id"
-	// FieldCurrencyID holds the string denoting the currency_id field in the database.
-	FieldCurrencyID = "currency_id"
+	// FieldGameCode holds the string denoting the game_code field in the database.
+	FieldGameCode = "game_code"
+	// FieldCurrencyCode holds the string denoting the currency_code field in the database.
+	FieldCurrencyCode = "currency_code"
 	// FieldSourceStatus holds the string denoting the source_status field in the database.
 	FieldSourceStatus = "source_status"
 	// FieldStatus holds the string denoting the status field in the database.
@@ -32,8 +32,8 @@ const (
 // Columns holds all SQL columns for gamecurrency fields.
 var Columns = []string{
 	FieldID,
-	FieldGameID,
-	FieldCurrencyID,
+	FieldGameCode,
+	FieldCurrencyCode,
 	FieldSourceStatus,
 	FieldStatus,
 	FieldDeletedAt,
@@ -64,14 +64,14 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByGameID orders the results by the game_id field.
-func ByGameID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldGameID, opts...).ToFunc()
+// ByGameCode orders the results by the game_code field.
+func ByGameCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGameCode, opts...).ToFunc()
 }
 
-// ByCurrencyID orders the results by the currency_id field.
-func ByCurrencyID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCurrencyID, opts...).ToFunc()
+// ByCurrencyCode orders the results by the currency_code field.
+func ByCurrencyCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCurrencyCode, opts...).ToFunc()
 }
 
 // BySourceStatus orders the results by the source_status field.

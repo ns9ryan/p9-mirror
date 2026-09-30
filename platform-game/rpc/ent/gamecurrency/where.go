@@ -54,14 +54,14 @@ func IDLTE(id int64) predicate.GameCurrency {
 	return predicate.GameCurrency(sql.FieldLTE(FieldID, id))
 }
 
-// GameID applies equality check predicate on the "game_id" field. It's identical to GameIDEQ.
-func GameID(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldEQ(FieldGameID, v))
+// GameCode applies equality check predicate on the "game_code" field. It's identical to GameCodeEQ.
+func GameCode(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldEQ(FieldGameCode, v))
 }
 
-// CurrencyID applies equality check predicate on the "currency_id" field. It's identical to CurrencyIDEQ.
-func CurrencyID(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldEQ(FieldCurrencyID, v))
+// CurrencyCode applies equality check predicate on the "currency_code" field. It's identical to CurrencyCodeEQ.
+func CurrencyCode(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldEQ(FieldCurrencyCode, v))
 }
 
 // SourceStatus applies equality check predicate on the "source_status" field. It's identical to SourceStatusEQ.
@@ -89,84 +89,134 @@ func UpdatedAt(v time.Time) predicate.GameCurrency {
 	return predicate.GameCurrency(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// GameIDEQ applies the EQ predicate on the "game_id" field.
-func GameIDEQ(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldEQ(FieldGameID, v))
+// GameCodeEQ applies the EQ predicate on the "game_code" field.
+func GameCodeEQ(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldEQ(FieldGameCode, v))
 }
 
-// GameIDNEQ applies the NEQ predicate on the "game_id" field.
-func GameIDNEQ(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldNEQ(FieldGameID, v))
+// GameCodeNEQ applies the NEQ predicate on the "game_code" field.
+func GameCodeNEQ(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldNEQ(FieldGameCode, v))
 }
 
-// GameIDIn applies the In predicate on the "game_id" field.
-func GameIDIn(vs ...int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldIn(FieldGameID, vs...))
+// GameCodeIn applies the In predicate on the "game_code" field.
+func GameCodeIn(vs ...string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldIn(FieldGameCode, vs...))
 }
 
-// GameIDNotIn applies the NotIn predicate on the "game_id" field.
-func GameIDNotIn(vs ...int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldNotIn(FieldGameID, vs...))
+// GameCodeNotIn applies the NotIn predicate on the "game_code" field.
+func GameCodeNotIn(vs ...string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldNotIn(FieldGameCode, vs...))
 }
 
-// GameIDGT applies the GT predicate on the "game_id" field.
-func GameIDGT(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldGT(FieldGameID, v))
+// GameCodeGT applies the GT predicate on the "game_code" field.
+func GameCodeGT(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldGT(FieldGameCode, v))
 }
 
-// GameIDGTE applies the GTE predicate on the "game_id" field.
-func GameIDGTE(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldGTE(FieldGameID, v))
+// GameCodeGTE applies the GTE predicate on the "game_code" field.
+func GameCodeGTE(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldGTE(FieldGameCode, v))
 }
 
-// GameIDLT applies the LT predicate on the "game_id" field.
-func GameIDLT(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldLT(FieldGameID, v))
+// GameCodeLT applies the LT predicate on the "game_code" field.
+func GameCodeLT(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldLT(FieldGameCode, v))
 }
 
-// GameIDLTE applies the LTE predicate on the "game_id" field.
-func GameIDLTE(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldLTE(FieldGameID, v))
+// GameCodeLTE applies the LTE predicate on the "game_code" field.
+func GameCodeLTE(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldLTE(FieldGameCode, v))
 }
 
-// CurrencyIDEQ applies the EQ predicate on the "currency_id" field.
-func CurrencyIDEQ(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldEQ(FieldCurrencyID, v))
+// GameCodeContains applies the Contains predicate on the "game_code" field.
+func GameCodeContains(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldContains(FieldGameCode, v))
 }
 
-// CurrencyIDNEQ applies the NEQ predicate on the "currency_id" field.
-func CurrencyIDNEQ(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldNEQ(FieldCurrencyID, v))
+// GameCodeHasPrefix applies the HasPrefix predicate on the "game_code" field.
+func GameCodeHasPrefix(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldHasPrefix(FieldGameCode, v))
 }
 
-// CurrencyIDIn applies the In predicate on the "currency_id" field.
-func CurrencyIDIn(vs ...int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldIn(FieldCurrencyID, vs...))
+// GameCodeHasSuffix applies the HasSuffix predicate on the "game_code" field.
+func GameCodeHasSuffix(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldHasSuffix(FieldGameCode, v))
 }
 
-// CurrencyIDNotIn applies the NotIn predicate on the "currency_id" field.
-func CurrencyIDNotIn(vs ...int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldNotIn(FieldCurrencyID, vs...))
+// GameCodeEqualFold applies the EqualFold predicate on the "game_code" field.
+func GameCodeEqualFold(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldEqualFold(FieldGameCode, v))
 }
 
-// CurrencyIDGT applies the GT predicate on the "currency_id" field.
-func CurrencyIDGT(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldGT(FieldCurrencyID, v))
+// GameCodeContainsFold applies the ContainsFold predicate on the "game_code" field.
+func GameCodeContainsFold(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldContainsFold(FieldGameCode, v))
 }
 
-// CurrencyIDGTE applies the GTE predicate on the "currency_id" field.
-func CurrencyIDGTE(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldGTE(FieldCurrencyID, v))
+// CurrencyCodeEQ applies the EQ predicate on the "currency_code" field.
+func CurrencyCodeEQ(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldEQ(FieldCurrencyCode, v))
 }
 
-// CurrencyIDLT applies the LT predicate on the "currency_id" field.
-func CurrencyIDLT(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldLT(FieldCurrencyID, v))
+// CurrencyCodeNEQ applies the NEQ predicate on the "currency_code" field.
+func CurrencyCodeNEQ(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldNEQ(FieldCurrencyCode, v))
 }
 
-// CurrencyIDLTE applies the LTE predicate on the "currency_id" field.
-func CurrencyIDLTE(v int64) predicate.GameCurrency {
-	return predicate.GameCurrency(sql.FieldLTE(FieldCurrencyID, v))
+// CurrencyCodeIn applies the In predicate on the "currency_code" field.
+func CurrencyCodeIn(vs ...string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldIn(FieldCurrencyCode, vs...))
+}
+
+// CurrencyCodeNotIn applies the NotIn predicate on the "currency_code" field.
+func CurrencyCodeNotIn(vs ...string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldNotIn(FieldCurrencyCode, vs...))
+}
+
+// CurrencyCodeGT applies the GT predicate on the "currency_code" field.
+func CurrencyCodeGT(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldGT(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeGTE applies the GTE predicate on the "currency_code" field.
+func CurrencyCodeGTE(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldGTE(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeLT applies the LT predicate on the "currency_code" field.
+func CurrencyCodeLT(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldLT(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeLTE applies the LTE predicate on the "currency_code" field.
+func CurrencyCodeLTE(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldLTE(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeContains applies the Contains predicate on the "currency_code" field.
+func CurrencyCodeContains(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldContains(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeHasPrefix applies the HasPrefix predicate on the "currency_code" field.
+func CurrencyCodeHasPrefix(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldHasPrefix(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeHasSuffix applies the HasSuffix predicate on the "currency_code" field.
+func CurrencyCodeHasSuffix(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldHasSuffix(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeEqualFold applies the EqualFold predicate on the "currency_code" field.
+func CurrencyCodeEqualFold(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldEqualFold(FieldCurrencyCode, v))
+}
+
+// CurrencyCodeContainsFold applies the ContainsFold predicate on the "currency_code" field.
+func CurrencyCodeContainsFold(v string) predicate.GameCurrency {
+	return predicate.GameCurrency(sql.FieldContainsFold(FieldCurrencyCode, v))
 }
 
 // SourceStatusEQ applies the EQ predicate on the "source_status" field.

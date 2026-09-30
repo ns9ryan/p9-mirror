@@ -14,12 +14,14 @@ import (
 )
 
 type (
-	GetGameCategoryListRequest = platform_game.GetGameCategoryListRequest
-	GetGameCategoryListResp    = platform_game.GetGameCategoryListResp
-	GetGameCategoryRequest     = platform_game.GetGameCategoryRequest
-	GetGameCategoryResp        = platform_game.GetGameCategoryResp
-	UpdateGameCategoryRequest  = platform_game.UpdateGameCategoryRequest
-	UpdateGameCategoryResp     = platform_game.UpdateGameCategoryResp
+	GetGameCategoryListRequest          = platform_game.GetGameCategoryListRequest
+	GetGameCategoryListResp             = platform_game.GetGameCategoryListResp
+	GetGameCategoryRequest              = platform_game.GetGameCategoryRequest
+	GetGameCategoryResp                 = platform_game.GetGameCategoryResp
+	GetPublishedGameCategoryListRequest = platform_game.GetPublishedGameCategoryListRequest
+	GetPublishedGameCategoryListResp    = platform_game.GetPublishedGameCategoryListResp
+	UpdateGameCategoryRequest           = platform_game.UpdateGameCategoryRequest
+	UpdateGameCategoryResp              = platform_game.UpdateGameCategoryResp
 
 	GameCategoryService interface {
 		// 获取游戏分类列表
@@ -28,6 +30,8 @@ type (
 		GetGameCategory(ctx context.Context, in *GetGameCategoryRequest, opts ...grpc.CallOption) (*GetGameCategoryResp, error)
 		// 更新游戏分类
 		UpdateGameCategory(ctx context.Context, in *UpdateGameCategoryRequest, opts ...grpc.CallOption) (*UpdateGameCategoryResp, error)
+		// 获取已发布的游戏分类列表（供分站同步）
+		GetPublishedGameCategoryList(ctx context.Context, in *GetPublishedGameCategoryListRequest, opts ...grpc.CallOption) (*GetPublishedGameCategoryListResp, error)
 	}
 
 	defaultGameCategoryService struct {
@@ -57,4 +61,10 @@ func (m *defaultGameCategoryService) GetGameCategory(ctx context.Context, in *Ge
 func (m *defaultGameCategoryService) UpdateGameCategory(ctx context.Context, in *UpdateGameCategoryRequest, opts ...grpc.CallOption) (*UpdateGameCategoryResp, error) {
 	client := platform_game.NewGameCategoryServiceClient(m.cli.Conn())
 	return client.UpdateGameCategory(ctx, in, opts...)
+}
+
+// 获取已发布的游戏分类列表（供分站同步）
+func (m *defaultGameCategoryService) GetPublishedGameCategoryList(ctx context.Context, in *GetPublishedGameCategoryListRequest, opts ...grpc.CallOption) (*GetPublishedGameCategoryListResp, error) {
+	client := platform_game.NewGameCategoryServiceClient(m.cli.Conn())
+	return client.GetPublishedGameCategoryList(ctx, in, opts...)
 }

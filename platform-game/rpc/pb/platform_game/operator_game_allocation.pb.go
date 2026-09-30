@@ -276,6 +276,88 @@ func (x *GetOperatorGameAllocationListResp) GetPageSize() int32 {
 	return 0
 }
 
+// PublishOperatorGameAllocationRequest 发布游戏资源分配请求
+type PublishOperatorGameAllocationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OpCode        string                 `protobuf:"bytes,1,opt,name=op_code,json=opCode,proto3" json:"op_code,omitempty"` // 分站全局唯一业务编码
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PublishOperatorGameAllocationRequest) Reset() {
+	*x = PublishOperatorGameAllocationRequest{}
+	mi := &file_types_operator_game_allocation_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PublishOperatorGameAllocationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublishOperatorGameAllocationRequest) ProtoMessage() {}
+
+func (x *PublishOperatorGameAllocationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_game_allocation_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublishOperatorGameAllocationRequest.ProtoReflect.Descriptor instead.
+func (*PublishOperatorGameAllocationRequest) Descriptor() ([]byte, []int) {
+	return file_types_operator_game_allocation_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PublishOperatorGameAllocationRequest) GetOpCode() string {
+	if x != nil {
+		return x.OpCode
+	}
+	return ""
+}
+
+// PublishOperatorGameAllocationResponse 发布游戏资源分配响应
+type PublishOperatorGameAllocationResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PublishOperatorGameAllocationResponse) Reset() {
+	*x = PublishOperatorGameAllocationResponse{}
+	mi := &file_types_operator_game_allocation_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PublishOperatorGameAllocationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublishOperatorGameAllocationResponse) ProtoMessage() {}
+
+func (x *PublishOperatorGameAllocationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_game_allocation_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublishOperatorGameAllocationResponse.ProtoReflect.Descriptor instead.
+func (*PublishOperatorGameAllocationResponse) Descriptor() ([]byte, []int) {
+	return file_types_operator_game_allocation_proto_rawDescGZIP(), []int{4}
+}
+
 var File_types_operator_game_allocation_proto protoreflect.FileDescriptor
 
 const file_types_operator_game_allocation_proto_rawDesc = "" +
@@ -303,7 +385,10 @@ const file_types_operator_game_allocation_proto_rawDesc = "" +
 	"\x05items\x18\x03 \x03(\v2).platform_game.OperatorGameAllocationInfoR\x05items\x12\x14\n" +
 	"\x05total\x18\x04 \x01(\x03R\x05total\x12\x12\n" +
 	"\x04page\x18\x05 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x06 \x01(\x05R\bpageSizeB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
+	"\tpage_size\x18\x06 \x01(\x05R\bpageSize\"?\n" +
+	"$PublishOperatorGameAllocationRequest\x12\x17\n" +
+	"\aop_code\x18\x01 \x01(\tR\x06opCode\"'\n" +
+	"%PublishOperatorGameAllocationResponseB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
 
 var (
 	file_types_operator_game_allocation_proto_rawDescOnce sync.Once
@@ -317,11 +402,13 @@ func file_types_operator_game_allocation_proto_rawDescGZIP() []byte {
 	return file_types_operator_game_allocation_proto_rawDescData
 }
 
-var file_types_operator_game_allocation_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_types_operator_game_allocation_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_types_operator_game_allocation_proto_goTypes = []any{
-	(*OperatorGameAllocationInfo)(nil),           // 0: platform_game.OperatorGameAllocationInfo
-	(*GetOperatorGameAllocationListRequest)(nil), // 1: platform_game.GetOperatorGameAllocationListRequest
-	(*GetOperatorGameAllocationListResp)(nil),    // 2: platform_game.GetOperatorGameAllocationListResp
+	(*OperatorGameAllocationInfo)(nil),            // 0: platform_game.OperatorGameAllocationInfo
+	(*GetOperatorGameAllocationListRequest)(nil),  // 1: platform_game.GetOperatorGameAllocationListRequest
+	(*GetOperatorGameAllocationListResp)(nil),     // 2: platform_game.GetOperatorGameAllocationListResp
+	(*PublishOperatorGameAllocationRequest)(nil),  // 3: platform_game.PublishOperatorGameAllocationRequest
+	(*PublishOperatorGameAllocationResponse)(nil), // 4: platform_game.PublishOperatorGameAllocationResponse
 }
 var file_types_operator_game_allocation_proto_depIdxs = []int32{
 	0, // 0: platform_game.GetOperatorGameAllocationListResp.items:type_name -> platform_game.OperatorGameAllocationInfo
@@ -343,7 +430,7 @@ func file_types_operator_game_allocation_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_operator_game_allocation_proto_rawDesc), len(file_types_operator_game_allocation_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

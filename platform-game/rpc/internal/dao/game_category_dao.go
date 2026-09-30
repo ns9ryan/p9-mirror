@@ -162,3 +162,33 @@ func (d *GameCategoryDAO) ExistByCode(ctx context.Context, categoryCode string) 
 	}
 	return exists, nil
 }
+
+// GetPublishedGameCategoryList 获取已发布的游戏分类列表（供分站同步）
+func (d *GameCategoryDAO) GetPublishedGameCategoryList(ctx context.Context, categoryCodes []string, offset, limit int64) ([]*ent.GameCategory, int, error) {
+	if len(categoryCodes) == 0 {
+		return []*ent.GameCategory{}, 0, nil
+	}
+
+	query := d.db.GameCategory.Query().
+		Where(gamecategory.SourceCategoryCodeIn(categoryCodes...)).
+		Where(gamecategory.DeletedAtIsNil()).
+		Where(gamecategory.StatusEQ(1))
+
+	// 获取总数
+	total, err := query.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("count failed: %w", err)
+	}
+
+	// 获取分页数据
+	categories, err := query.
+		Order(gamecategory.BySortNo(), gamecategory.ByID()).
+		Offset(int(offset)).
+		Limit(int(limit)).
+		All(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("query failed: %w", err)
+	}
+
+	return categories, total, nil
+}

@@ -99,19 +99,19 @@ type GameCurrencyGetReq struct {
 }
 
 type GameCurrencyInfo struct {
-	CurrencyID   int64  `json:"currency_id" comment:"币种ID"`
+	CurrencyCode string `json:"currency_code" comment:"币种Code"`
 	CurrencyName string `json:"currency_name" comment:"币种名称"`
 }
 
 type GameCurrencyListReq struct {
-	Page       int64  `form:"page,optional" comment:"页码（默认1）"`
-	PageSize   int64  `form:"page_size,optional" comment:"每页大小（默认15）"`
-	GameID     int64  `form:"game_id,optional" comment:"游戏ID筛选"`
-	CurrencyID int64  `form:"currency_id,optional" comment:"币种ID筛选"`
-	Status     int16  `form:"status,optional" comment:"状态筛选：1启用/2禁用"`
-	IsDeleted  int16  `form:"is_deleted,optional" comment:"软删除筛选：0未删除/1已删除（默认0-未删除）"`
-	SortBy     string `form:"sort_by,optional" comment:"排序字段（id/created_at）"`
-	SortOrder  string `form:"sort_order,optional" comment:"排序顺序（asc/desc）"`
+	Page         int64  `form:"page,optional" comment:"页码（默认1）"`
+	PageSize     int64  `form:"page_size,optional" comment:"每页大小（默认15）"`
+	GameCode     string `form:"game_code,optional" comment:"游戏编码筛选"`
+	CurrencyCode string `form:"currency_code,optional" comment:"币种编码筛选"`
+	Status       int16  `form:"status,optional" comment:"状态筛选：1启用/2禁用"`
+	IsDeleted    int16  `form:"is_deleted,optional" comment:"软删除筛选：0未删除/1已删除（默认0-未删除）"`
+	SortBy       string `form:"sort_by,optional" comment:"排序字段（id/created_at）"`
+	SortOrder    string `form:"sort_order,optional" comment:"排序顺序（asc/desc）"`
 }
 
 type GameCurrencyListResp struct {
@@ -121,11 +121,9 @@ type GameCurrencyListResp struct {
 
 type GameCurrencyResp struct {
 	ID           int64  `json:"id" comment:"游戏货币ID"`
-	GameID       int64  `json:"game_id" comment:"游戏ID"`
-	CurrencyID   int64  `json:"currency_id" comment:"货币ID"`
-	GameCode     string `json:"game_code,omitempty" comment:"游戏编码"`
+	GameCode     string `json:"game_code" comment:"游戏编码"`
+	CurrencyCode string `json:"currency_code" comment:"币种编码"`
 	GameName     string `json:"game_name,omitempty" comment:"游戏名称（多语言JSON）"`
-	CurrencyCode string `json:"currency_code,omitempty" comment:"币种编码"`
 	CurrencyName string `json:"currency_name,omitempty" comment:"币种名称（多语言JSON）"`
 	SourceStatus int16  `json:"source_status" comment:"上游状态：1启用/2禁用"`
 	Status       int16  `json:"status" comment:"状态：1启用/2禁用"`

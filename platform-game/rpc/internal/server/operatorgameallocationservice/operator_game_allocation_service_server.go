@@ -28,3 +28,9 @@ func (s *OperatorGameAllocationServiceServer) GetOperatorGameAllocationList(ctx 
 	l := operatorgameallocationservicelogic.NewGetOperatorGameAllocationListLogic(ctx, s.svcCtx)
 	return l.GetOperatorGameAllocationList(in)
 }
+
+// 发布游戏资源分配到指定分站
+func (s *OperatorGameAllocationServiceServer) PublishOperatorGameAllocation(ctx context.Context, in *platform_game.PublishOperatorGameAllocationRequest) (*platform_game.PublishOperatorGameAllocationResponse, error) {
+	l := operatorgameallocationservicelogic.NewPublishOperatorGameAllocationLogic(ctx, s.svcCtx)
+	return l.PublishOperatorGameAllocation(in)
+}

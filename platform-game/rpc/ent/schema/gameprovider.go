@@ -23,6 +23,7 @@ func (GameProvider) Fields() []ent.Field {
 		field.Int64("id").Unique(),
 		field.Int64("source_id"),
 		field.String("provider_code"),
+		field.String("channel_code").Optional(),
 		field.String("source_provider_code"),
 		field.String("source_logo_url").Optional(),
 		field.String("logo_url").Optional(),

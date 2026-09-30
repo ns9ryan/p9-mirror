@@ -7,25 +7,22 @@ option go_package = "oa.98ent.com/p9/platform-game/rpc/pb/platform_game";
 // GameCurrencyInfo 货币信息
 message GameCurrencyInfo {
     int64 id = 1;
-    int64 game_id = 2;
-    string game_code = 3;
-    string game_name = 4;
-    int64 currency_id = 5;
-    string currency_code = 6;
-    string currency_name_key = 7;
-    int32 status = 8;
-    int32 source_status = 9;
-    int32 is_deleted = 10;
-    int64 created_at = 11;
-    int64 updated_at = 12;
+    string game_code = 2;
+    string game_name = 3;
+    string currency_code = 4;
+    int32 status = 6;
+    int32 source_status = 7;
+    int32 is_deleted = 8;
+    int64 created_at = 9;
+    int64 updated_at = 10;
 }
 
 // GetGameCurrencyListRequest 获取游戏货币列表请求
 message GetGameCurrencyListRequest {
     int32 page = 1;
     int32 page_size = 2;
-    int64 game_id = 3;
-    int64 currency_id = 4;
+    string game_code = 3;
+    string currency_code = 4;
     int32 status = 5;
     int32 is_deleted = 6;
 }

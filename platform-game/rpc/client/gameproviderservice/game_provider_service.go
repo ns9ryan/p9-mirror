@@ -14,12 +14,14 @@ import (
 )
 
 type (
-	GetGameProviderListRequest = platform_game.GetGameProviderListRequest
-	GetGameProviderListResp    = platform_game.GetGameProviderListResp
-	GetGameProviderRequest     = platform_game.GetGameProviderRequest
-	GetGameProviderResp        = platform_game.GetGameProviderResp
-	UpdateGameProviderRequest  = platform_game.UpdateGameProviderRequest
-	UpdateGameProviderResp     = platform_game.UpdateGameProviderResp
+	GetGameProviderListRequest          = platform_game.GetGameProviderListRequest
+	GetGameProviderListResp             = platform_game.GetGameProviderListResp
+	GetGameProviderRequest              = platform_game.GetGameProviderRequest
+	GetGameProviderResp                 = platform_game.GetGameProviderResp
+	GetPublishedGameProviderListRequest = platform_game.GetPublishedGameProviderListRequest
+	GetPublishedGameProviderListResp    = platform_game.GetPublishedGameProviderListResp
+	UpdateGameProviderRequest           = platform_game.UpdateGameProviderRequest
+	UpdateGameProviderResp              = platform_game.UpdateGameProviderResp
 
 	GameProviderService interface {
 		// 获取游戏供应商列表
@@ -28,6 +30,8 @@ type (
 		GetGameProvider(ctx context.Context, in *GetGameProviderRequest, opts ...grpc.CallOption) (*GetGameProviderResp, error)
 		// 更新游戏供应商
 		UpdateGameProvider(ctx context.Context, in *UpdateGameProviderRequest, opts ...grpc.CallOption) (*UpdateGameProviderResp, error)
+		// 获取已发布的游戏供应商列表（供分站同步）
+		GetPublishedGameProviderList(ctx context.Context, in *GetPublishedGameProviderListRequest, opts ...grpc.CallOption) (*GetPublishedGameProviderListResp, error)
 	}
 
 	defaultGameProviderService struct {
@@ -57,4 +61,10 @@ func (m *defaultGameProviderService) GetGameProvider(ctx context.Context, in *Ge
 func (m *defaultGameProviderService) UpdateGameProvider(ctx context.Context, in *UpdateGameProviderRequest, opts ...grpc.CallOption) (*UpdateGameProviderResp, error) {
 	client := platform_game.NewGameProviderServiceClient(m.cli.Conn())
 	return client.UpdateGameProvider(ctx, in, opts...)
+}
+
+// 获取已发布的游戏供应商列表（供分站同步）
+func (m *defaultGameProviderService) GetPublishedGameProviderList(ctx context.Context, in *GetPublishedGameProviderListRequest, opts ...grpc.CallOption) (*GetPublishedGameProviderListResp, error) {
+	client := platform_game.NewGameProviderServiceClient(m.cli.Conn())
+	return client.GetPublishedGameProviderList(ctx, in, opts...)
 }

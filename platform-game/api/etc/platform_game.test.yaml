@@ -18,3 +18,9 @@ CoreRpc:
   Timeout: 10000
 
 IsLocal: false
+
+PlatformGameRpc:
+  Hosts:
+    - 192.168.0.15:2379
+  Target: platform-game-rpc:19003
+  Timeout: 10000

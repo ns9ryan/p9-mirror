@@ -93,6 +93,23 @@ func (d *OperatorGameChannelDAO) ExistByOpCodeAndChannelCode(ctx context.Context
 	return exists, nil
 }
 
+// GetChannelCodesByOpCode 获取指定分站的所有渠道代码
+func (d *OperatorGameChannelDAO) GetChannelCodesByOpCode(ctx context.Context, opCode string) ([]string, error) {
+	records, err := d.db.OperatorGameChannel.Query().
+		Where(operatorgamechannel.OpCodeEQ(opCode)).
+		Where(operatorgamechannel.StatusEQ(1)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+
+	codes := make([]string, 0, len(records))
+	for _, r := range records {
+		codes = append(codes, r.ChannelCode)
+	}
+	return codes, nil
+}
+
 func (d *OperatorGameChannelDAO) BatchDeleteOperatorGameChannel(ctx context.Context, ids []int64) (int, error) {
 	if len(ids) == 0 {
 		return 0, nil

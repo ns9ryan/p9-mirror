@@ -8,8 +8,9 @@ require (
 	github.com/zeromicro/go-zero v1.10.3
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
-	oa.98ent.com/p9/common v1.0.0
-	oa.98ent.com/p9/core v1.1.8
+	oa.98ent.com/p9/common v1.0.3
+	oa.98ent.com/p9/core v1.2.1
+	oa.98ent.com/p9/node-dispatch v0.1.0
 )
 
 require (
@@ -51,13 +52,13 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
+	github.com/google/uuid v1.6.0
 	github.com/grafana/pyroscope-go v1.3.0 // indirect
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.10 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.7 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.10.0
+	github.com/jackc/pgx/v5 v5.11.0
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -130,4 +131,5 @@ replace (
 	oa.98ent.com/p9/common => ../common
 	// 使用本地的 core 模块（支持 go work）
 	oa.98ent.com/p9/core => ../core
+	oa.98ent.com/p9/node-dispatch => ../node-dispatch
 )

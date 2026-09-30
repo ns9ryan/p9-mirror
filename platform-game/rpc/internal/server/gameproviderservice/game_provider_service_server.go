@@ -40,3 +40,9 @@ func (s *GameProviderServiceServer) UpdateGameProvider(ctx context.Context, in *
 	l := gameproviderservicelogic.NewUpdateGameProviderLogic(ctx, s.svcCtx)
 	return l.UpdateGameProvider(in)
 }
+
+// 获取已发布的游戏供应商列表（供分站同步）
+func (s *GameProviderServiceServer) GetPublishedGameProviderList(ctx context.Context, in *platform_game.GetPublishedGameProviderListRequest) (*platform_game.GetPublishedGameProviderListResp, error) {
+	l := gameproviderservicelogic.NewGetPublishedGameProviderListLogic(ctx, s.svcCtx)
+	return l.GetPublishedGameProviderList(in)
+}

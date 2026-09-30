@@ -21,8 +21,8 @@ func (GameCurrency) Table() string {
 func (GameCurrency) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Unique(),
-		field.Int64("game_id"),
-		field.Int64("currency_id"),
+		field.String("game_code"),
+		field.String("currency_code"),
 		field.Int64("source_status"),
 		field.Int64("status").Range(1, 2),
 		field.Time("deleted_at").Optional(),

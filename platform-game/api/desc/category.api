@@ -3,7 +3,7 @@ syntax = "v1"
 @server (
 	group: category
 	middleware: Jwt,ActionLog,Authority
-	prefix: /admin/game-category
+	prefix: /platform-game/game-category
 )
 service platform_game {
 	// ===== Game Category APIs =====

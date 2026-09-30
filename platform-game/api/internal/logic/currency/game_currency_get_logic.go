@@ -60,10 +60,10 @@ func (l *GameCurrencyGetLogic) GameCurrencyGet(req *types.GameCurrencyGetReq) (r
 	}
 
 	item := grpcResp.Data
-	l.Infof("[API GameCurrencyGet] gRPC response: id=%d, game_id=%d, currency_id=%d", item.Id, item.GameId, item.CurrencyId)
+	l.Infof("[API GameCurrencyGet] gRPC response: id=%d, game_code=%s, currency_code=%s", item.Id, item.GameCode, item.CurrencyCode)
 
 	resp = logic.CurrencyProtoToResponse(l.ctx, item)
 
-	l.Infof("[API GameCurrencyGet] success: id=%d, game_id=%d, currency_id=%d", item.Id, item.GameId, item.CurrencyId)
+	l.Infof("[API GameCurrencyGet] success: id=%d, game_code=%s, currency_code=%s", item.Id, item.GameCode, item.CurrencyCode)
 	return resp, nil
 }

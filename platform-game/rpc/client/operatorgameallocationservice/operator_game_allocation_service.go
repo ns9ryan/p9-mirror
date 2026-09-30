@@ -14,12 +14,16 @@ import (
 )
 
 type (
-	GetOperatorGameAllocationListRequest = platform_game.GetOperatorGameAllocationListRequest
-	GetOperatorGameAllocationListResp    = platform_game.GetOperatorGameAllocationListResp
+	GetOperatorGameAllocationListRequest  = platform_game.GetOperatorGameAllocationListRequest
+	GetOperatorGameAllocationListResp     = platform_game.GetOperatorGameAllocationListResp
+	PublishOperatorGameAllocationRequest  = platform_game.PublishOperatorGameAllocationRequest
+	PublishOperatorGameAllocationResponse = platform_game.PublishOperatorGameAllocationResponse
 
 	OperatorGameAllocationService interface {
 		// 获取分站游戏分配列表
 		GetOperatorGameAllocationList(ctx context.Context, in *GetOperatorGameAllocationListRequest, opts ...grpc.CallOption) (*GetOperatorGameAllocationListResp, error)
+		// 发布游戏资源分配到指定分站
+		PublishOperatorGameAllocation(ctx context.Context, in *PublishOperatorGameAllocationRequest, opts ...grpc.CallOption) (*PublishOperatorGameAllocationResponse, error)
 	}
 
 	defaultOperatorGameAllocationService struct {
@@ -37,4 +41,10 @@ func NewOperatorGameAllocationService(cli zrpc.Client) OperatorGameAllocationSer
 func (m *defaultOperatorGameAllocationService) GetOperatorGameAllocationList(ctx context.Context, in *GetOperatorGameAllocationListRequest, opts ...grpc.CallOption) (*GetOperatorGameAllocationListResp, error) {
 	client := platform_game.NewOperatorGameAllocationServiceClient(m.cli.Conn())
 	return client.GetOperatorGameAllocationList(ctx, in, opts...)
+}
+
+// 发布游戏资源分配到指定分站
+func (m *defaultOperatorGameAllocationService) PublishOperatorGameAllocation(ctx context.Context, in *PublishOperatorGameAllocationRequest, opts ...grpc.CallOption) (*PublishOperatorGameAllocationResponse, error) {
+	client := platform_game.NewOperatorGameAllocationServiceClient(m.cli.Conn())
+	return client.PublishOperatorGameAllocation(ctx, in, opts...)
 }

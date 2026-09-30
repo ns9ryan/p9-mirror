@@ -38,12 +38,12 @@ func (l *GameCurrencyListLogic) GameCurrencyList(req *types.GameCurrencyListReq)
 	}
 
 	grpcReq := &platform_game.GetGameCurrencyListRequest{
-		Page:       int32(req.Page),
-		PageSize:   int32(req.PageSize),
-		Status:     int32(req.Status),
-		IsDeleted:  int32(req.IsDeleted),
-		GameId:     req.GameID,
-		CurrencyId: req.CurrencyID,
+		Page:         int32(req.Page),
+		PageSize:     int32(req.PageSize),
+		Status:       int32(req.Status),
+		IsDeleted:    int32(req.IsDeleted),
+		GameCode:     req.GameCode,
+		CurrencyCode: req.CurrencyCode,
 	}
 
 	client := l.svcCtx.GameGrpcClient.GetGameCurrencyServiceClient()

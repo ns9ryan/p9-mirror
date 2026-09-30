@@ -175,3 +175,31 @@ func (d *OperatorGameCategoryDAO) FindAll(ctx context.Context, opCode, categoryC
 	}
 	return records, nil
 }
+
+// GetCategoryCodesByOpCode 根据opCode获取所有已分配的分类codes
+func (d *OperatorGameCategoryDAO) GetCategoryCodesByOpCode(ctx context.Context, opCode string) ([]string, error) {
+	records, err := d.db.OperatorGameCategory.Query().
+		Where(operatorgamecategory.OpCodeEQ(opCode)).
+		Where(operatorgamecategory.StatusEQ(1)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+
+	categoryCodes := make([]string, 0, len(records))
+	for _, record := range records {
+		categoryCodes = append(categoryCodes, record.CategoryCode)
+	}
+	return categoryCodes, nil
+}
+
+// GetPublishedGameCategoryCountByOpCode 获取分站已发布的游戏分类总数
+func (d *OperatorGameCategoryDAO) GetPublishedGameCategoryCountByOpCode(ctx context.Context, opCode string) (int, error) {
+	count, err := d.db.OperatorGameCategory.Query().
+		Where(operatorgamecategory.OpCodeEQ(opCode)).
+		Count(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("count failed: %w", err)
+	}
+	return count, nil
+}

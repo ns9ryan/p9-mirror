@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GameService_GetGameList_FullMethodName = "/platform_game.GameService/GetGameList"
-	GameService_GetGame_FullMethodName     = "/platform_game.GameService/GetGame"
-	GameService_UpdateGame_FullMethodName  = "/platform_game.GameService/UpdateGame"
+	GameService_GetGameList_FullMethodName          = "/platform_game.GameService/GetGameList"
+	GameService_GetGame_FullMethodName              = "/platform_game.GameService/GetGame"
+	GameService_UpdateGame_FullMethodName           = "/platform_game.GameService/UpdateGame"
+	GameService_GetPublishedGameList_FullMethodName = "/platform_game.GameService/GetPublishedGameList"
 )
 
 // GameServiceClient is the client API for GameService service.
@@ -36,6 +37,8 @@ type GameServiceClient interface {
 	GetGame(ctx context.Context, in *GetGameRequest, opts ...grpc.CallOption) (*GetGameResp, error)
 	// 更新游戏
 	UpdateGame(ctx context.Context, in *UpdateGameRequest, opts ...grpc.CallOption) (*UpdateGameResp, error)
+	// 获取已发布的游戏列表（供分站同步）
+	GetPublishedGameList(ctx context.Context, in *GetPublishedGameListRequest, opts ...grpc.CallOption) (*GetPublishedGameListResp, error)
 }
 
 type gameServiceClient struct {
@@ -76,6 +79,16 @@ func (c *gameServiceClient) UpdateGame(ctx context.Context, in *UpdateGameReques
 	return out, nil
 }
 
+func (c *gameServiceClient) GetPublishedGameList(ctx context.Context, in *GetPublishedGameListRequest, opts ...grpc.CallOption) (*GetPublishedGameListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPublishedGameListResp)
+	err := c.cc.Invoke(ctx, GameService_GetPublishedGameList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GameServiceServer is the server API for GameService service.
 // All implementations must embed UnimplementedGameServiceServer
 // for forward compatibility.
@@ -88,6 +101,8 @@ type GameServiceServer interface {
 	GetGame(context.Context, *GetGameRequest) (*GetGameResp, error)
 	// 更新游戏
 	UpdateGame(context.Context, *UpdateGameRequest) (*UpdateGameResp, error)
+	// 获取已发布的游戏列表（供分站同步）
+	GetPublishedGameList(context.Context, *GetPublishedGameListRequest) (*GetPublishedGameListResp, error)
 	mustEmbedUnimplementedGameServiceServer()
 }
 
@@ -106,6 +121,9 @@ func (UnimplementedGameServiceServer) GetGame(context.Context, *GetGameRequest) 
 }
 func (UnimplementedGameServiceServer) UpdateGame(context.Context, *UpdateGameRequest) (*UpdateGameResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateGame not implemented")
+}
+func (UnimplementedGameServiceServer) GetPublishedGameList(context.Context, *GetPublishedGameListRequest) (*GetPublishedGameListResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetPublishedGameList not implemented")
 }
 func (UnimplementedGameServiceServer) mustEmbedUnimplementedGameServiceServer() {}
 func (UnimplementedGameServiceServer) testEmbeddedByValue()                     {}
@@ -182,6 +200,24 @@ func _GameService_UpdateGame_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GameService_GetPublishedGameList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublishedGameListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameServiceServer).GetPublishedGameList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GameService_GetPublishedGameList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameServiceServer).GetPublishedGameList(ctx, req.(*GetPublishedGameListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GameService_ServiceDesc is the grpc.ServiceDesc for GameService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -201,15 +237,20 @@ var GameService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateGame",
 			Handler:    _GameService_UpdateGame_Handler,
 		},
+		{
+			MethodName: "GetPublishedGameList",
+			Handler:    _GameService_GetPublishedGameList_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "platform_game.proto",
 }
 
 const (
-	GameCategoryService_GetGameCategoryList_FullMethodName = "/platform_game.GameCategoryService/GetGameCategoryList"
-	GameCategoryService_GetGameCategory_FullMethodName     = "/platform_game.GameCategoryService/GetGameCategory"
-	GameCategoryService_UpdateGameCategory_FullMethodName  = "/platform_game.GameCategoryService/UpdateGameCategory"
+	GameCategoryService_GetGameCategoryList_FullMethodName          = "/platform_game.GameCategoryService/GetGameCategoryList"
+	GameCategoryService_GetGameCategory_FullMethodName              = "/platform_game.GameCategoryService/GetGameCategory"
+	GameCategoryService_UpdateGameCategory_FullMethodName           = "/platform_game.GameCategoryService/UpdateGameCategory"
+	GameCategoryService_GetPublishedGameCategoryList_FullMethodName = "/platform_game.GameCategoryService/GetPublishedGameCategoryList"
 )
 
 // GameCategoryServiceClient is the client API for GameCategoryService service.
@@ -224,6 +265,8 @@ type GameCategoryServiceClient interface {
 	GetGameCategory(ctx context.Context, in *GetGameCategoryRequest, opts ...grpc.CallOption) (*GetGameCategoryResp, error)
 	// 更新游戏分类
 	UpdateGameCategory(ctx context.Context, in *UpdateGameCategoryRequest, opts ...grpc.CallOption) (*UpdateGameCategoryResp, error)
+	// 获取已发布的游戏分类列表（供分站同步）
+	GetPublishedGameCategoryList(ctx context.Context, in *GetPublishedGameCategoryListRequest, opts ...grpc.CallOption) (*GetPublishedGameCategoryListResp, error)
 }
 
 type gameCategoryServiceClient struct {
@@ -264,6 +307,16 @@ func (c *gameCategoryServiceClient) UpdateGameCategory(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *gameCategoryServiceClient) GetPublishedGameCategoryList(ctx context.Context, in *GetPublishedGameCategoryListRequest, opts ...grpc.CallOption) (*GetPublishedGameCategoryListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPublishedGameCategoryListResp)
+	err := c.cc.Invoke(ctx, GameCategoryService_GetPublishedGameCategoryList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GameCategoryServiceServer is the server API for GameCategoryService service.
 // All implementations must embed UnimplementedGameCategoryServiceServer
 // for forward compatibility.
@@ -276,6 +329,8 @@ type GameCategoryServiceServer interface {
 	GetGameCategory(context.Context, *GetGameCategoryRequest) (*GetGameCategoryResp, error)
 	// 更新游戏分类
 	UpdateGameCategory(context.Context, *UpdateGameCategoryRequest) (*UpdateGameCategoryResp, error)
+	// 获取已发布的游戏分类列表（供分站同步）
+	GetPublishedGameCategoryList(context.Context, *GetPublishedGameCategoryListRequest) (*GetPublishedGameCategoryListResp, error)
 	mustEmbedUnimplementedGameCategoryServiceServer()
 }
 
@@ -294,6 +349,9 @@ func (UnimplementedGameCategoryServiceServer) GetGameCategory(context.Context, *
 }
 func (UnimplementedGameCategoryServiceServer) UpdateGameCategory(context.Context, *UpdateGameCategoryRequest) (*UpdateGameCategoryResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateGameCategory not implemented")
+}
+func (UnimplementedGameCategoryServiceServer) GetPublishedGameCategoryList(context.Context, *GetPublishedGameCategoryListRequest) (*GetPublishedGameCategoryListResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetPublishedGameCategoryList not implemented")
 }
 func (UnimplementedGameCategoryServiceServer) mustEmbedUnimplementedGameCategoryServiceServer() {}
 func (UnimplementedGameCategoryServiceServer) testEmbeddedByValue()                             {}
@@ -370,6 +428,24 @@ func _GameCategoryService_UpdateGameCategory_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GameCategoryService_GetPublishedGameCategoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublishedGameCategoryListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameCategoryServiceServer).GetPublishedGameCategoryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GameCategoryService_GetPublishedGameCategoryList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameCategoryServiceServer).GetPublishedGameCategoryList(ctx, req.(*GetPublishedGameCategoryListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GameCategoryService_ServiceDesc is the grpc.ServiceDesc for GameCategoryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -389,15 +465,20 @@ var GameCategoryService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateGameCategory",
 			Handler:    _GameCategoryService_UpdateGameCategory_Handler,
 		},
+		{
+			MethodName: "GetPublishedGameCategoryList",
+			Handler:    _GameCategoryService_GetPublishedGameCategoryList_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "platform_game.proto",
 }
 
 const (
-	GameProviderService_GetGameProviderList_FullMethodName = "/platform_game.GameProviderService/GetGameProviderList"
-	GameProviderService_GetGameProvider_FullMethodName     = "/platform_game.GameProviderService/GetGameProvider"
-	GameProviderService_UpdateGameProvider_FullMethodName  = "/platform_game.GameProviderService/UpdateGameProvider"
+	GameProviderService_GetGameProviderList_FullMethodName          = "/platform_game.GameProviderService/GetGameProviderList"
+	GameProviderService_GetGameProvider_FullMethodName              = "/platform_game.GameProviderService/GetGameProvider"
+	GameProviderService_UpdateGameProvider_FullMethodName           = "/platform_game.GameProviderService/UpdateGameProvider"
+	GameProviderService_GetPublishedGameProviderList_FullMethodName = "/platform_game.GameProviderService/GetPublishedGameProviderList"
 )
 
 // GameProviderServiceClient is the client API for GameProviderService service.
@@ -412,6 +493,8 @@ type GameProviderServiceClient interface {
 	GetGameProvider(ctx context.Context, in *GetGameProviderRequest, opts ...grpc.CallOption) (*GetGameProviderResp, error)
 	// 更新游戏供应商
 	UpdateGameProvider(ctx context.Context, in *UpdateGameProviderRequest, opts ...grpc.CallOption) (*UpdateGameProviderResp, error)
+	// 获取已发布的游戏供应商列表（供分站同步）
+	GetPublishedGameProviderList(ctx context.Context, in *GetPublishedGameProviderListRequest, opts ...grpc.CallOption) (*GetPublishedGameProviderListResp, error)
 }
 
 type gameProviderServiceClient struct {
@@ -452,6 +535,16 @@ func (c *gameProviderServiceClient) UpdateGameProvider(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *gameProviderServiceClient) GetPublishedGameProviderList(ctx context.Context, in *GetPublishedGameProviderListRequest, opts ...grpc.CallOption) (*GetPublishedGameProviderListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPublishedGameProviderListResp)
+	err := c.cc.Invoke(ctx, GameProviderService_GetPublishedGameProviderList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GameProviderServiceServer is the server API for GameProviderService service.
 // All implementations must embed UnimplementedGameProviderServiceServer
 // for forward compatibility.
@@ -464,6 +557,8 @@ type GameProviderServiceServer interface {
 	GetGameProvider(context.Context, *GetGameProviderRequest) (*GetGameProviderResp, error)
 	// 更新游戏供应商
 	UpdateGameProvider(context.Context, *UpdateGameProviderRequest) (*UpdateGameProviderResp, error)
+	// 获取已发布的游戏供应商列表（供分站同步）
+	GetPublishedGameProviderList(context.Context, *GetPublishedGameProviderListRequest) (*GetPublishedGameProviderListResp, error)
 	mustEmbedUnimplementedGameProviderServiceServer()
 }
 
@@ -482,6 +577,9 @@ func (UnimplementedGameProviderServiceServer) GetGameProvider(context.Context, *
 }
 func (UnimplementedGameProviderServiceServer) UpdateGameProvider(context.Context, *UpdateGameProviderRequest) (*UpdateGameProviderResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateGameProvider not implemented")
+}
+func (UnimplementedGameProviderServiceServer) GetPublishedGameProviderList(context.Context, *GetPublishedGameProviderListRequest) (*GetPublishedGameProviderListResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetPublishedGameProviderList not implemented")
 }
 func (UnimplementedGameProviderServiceServer) mustEmbedUnimplementedGameProviderServiceServer() {}
 func (UnimplementedGameProviderServiceServer) testEmbeddedByValue()                             {}
@@ -558,6 +656,24 @@ func _GameProviderService_UpdateGameProvider_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GameProviderService_GetPublishedGameProviderList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublishedGameProviderListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameProviderServiceServer).GetPublishedGameProviderList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GameProviderService_GetPublishedGameProviderList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameProviderServiceServer).GetPublishedGameProviderList(ctx, req.(*GetPublishedGameProviderListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GameProviderService_ServiceDesc is the grpc.ServiceDesc for GameProviderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -577,15 +693,20 @@ var GameProviderService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateGameProvider",
 			Handler:    _GameProviderService_UpdateGameProvider_Handler,
 		},
+		{
+			MethodName: "GetPublishedGameProviderList",
+			Handler:    _GameProviderService_GetPublishedGameProviderList_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "platform_game.proto",
 }
 
 const (
-	GameChannelService_GetGameChannel_FullMethodName     = "/platform_game.GameChannelService/GetGameChannel"
-	GameChannelService_GetGameChannelList_FullMethodName = "/platform_game.GameChannelService/GetGameChannelList"
-	GameChannelService_UpdateGameChannel_FullMethodName  = "/platform_game.GameChannelService/UpdateGameChannel"
+	GameChannelService_GetGameChannel_FullMethodName              = "/platform_game.GameChannelService/GetGameChannel"
+	GameChannelService_GetGameChannelList_FullMethodName          = "/platform_game.GameChannelService/GetGameChannelList"
+	GameChannelService_UpdateGameChannel_FullMethodName           = "/platform_game.GameChannelService/UpdateGameChannel"
+	GameChannelService_GetPublishedGameChannelList_FullMethodName = "/platform_game.GameChannelService/GetPublishedGameChannelList"
 )
 
 // GameChannelServiceClient is the client API for GameChannelService service.
@@ -600,6 +721,8 @@ type GameChannelServiceClient interface {
 	GetGameChannelList(ctx context.Context, in *GetGameChannelListRequest, opts ...grpc.CallOption) (*GetGameChannelListResp, error)
 	// 更新游戏渠道
 	UpdateGameChannel(ctx context.Context, in *UpdateGameChannelRequest, opts ...grpc.CallOption) (*UpdateGameChannelResp, error)
+	// 获取已发布的游戏渠道列表（供分站同步）
+	GetPublishedGameChannelList(ctx context.Context, in *GetPublishedGameChannelListRequest, opts ...grpc.CallOption) (*GetPublishedGameChannelListResp, error)
 }
 
 type gameChannelServiceClient struct {
@@ -640,6 +763,16 @@ func (c *gameChannelServiceClient) UpdateGameChannel(ctx context.Context, in *Up
 	return out, nil
 }
 
+func (c *gameChannelServiceClient) GetPublishedGameChannelList(ctx context.Context, in *GetPublishedGameChannelListRequest, opts ...grpc.CallOption) (*GetPublishedGameChannelListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPublishedGameChannelListResp)
+	err := c.cc.Invoke(ctx, GameChannelService_GetPublishedGameChannelList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GameChannelServiceServer is the server API for GameChannelService service.
 // All implementations must embed UnimplementedGameChannelServiceServer
 // for forward compatibility.
@@ -652,6 +785,8 @@ type GameChannelServiceServer interface {
 	GetGameChannelList(context.Context, *GetGameChannelListRequest) (*GetGameChannelListResp, error)
 	// 更新游戏渠道
 	UpdateGameChannel(context.Context, *UpdateGameChannelRequest) (*UpdateGameChannelResp, error)
+	// 获取已发布的游戏渠道列表（供分站同步）
+	GetPublishedGameChannelList(context.Context, *GetPublishedGameChannelListRequest) (*GetPublishedGameChannelListResp, error)
 	mustEmbedUnimplementedGameChannelServiceServer()
 }
 
@@ -670,6 +805,9 @@ func (UnimplementedGameChannelServiceServer) GetGameChannelList(context.Context,
 }
 func (UnimplementedGameChannelServiceServer) UpdateGameChannel(context.Context, *UpdateGameChannelRequest) (*UpdateGameChannelResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateGameChannel not implemented")
+}
+func (UnimplementedGameChannelServiceServer) GetPublishedGameChannelList(context.Context, *GetPublishedGameChannelListRequest) (*GetPublishedGameChannelListResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetPublishedGameChannelList not implemented")
 }
 func (UnimplementedGameChannelServiceServer) mustEmbedUnimplementedGameChannelServiceServer() {}
 func (UnimplementedGameChannelServiceServer) testEmbeddedByValue()                            {}
@@ -746,6 +884,24 @@ func _GameChannelService_UpdateGameChannel_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GameChannelService_GetPublishedGameChannelList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublishedGameChannelListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameChannelServiceServer).GetPublishedGameChannelList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GameChannelService_GetPublishedGameChannelList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameChannelServiceServer).GetPublishedGameChannelList(ctx, req.(*GetPublishedGameChannelListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GameChannelService_ServiceDesc is the grpc.ServiceDesc for GameChannelService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -764,6 +920,10 @@ var GameChannelService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateGameChannel",
 			Handler:    _GameChannelService_UpdateGameChannel_Handler,
+		},
+		{
+			MethodName: "GetPublishedGameChannelList",
+			Handler:    _GameChannelService_GetPublishedGameChannelList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -2076,6 +2236,7 @@ var OperatorGameService_ServiceDesc = grpc.ServiceDesc{
 
 const (
 	OperatorGameAllocationService_GetOperatorGameAllocationList_FullMethodName = "/platform_game.OperatorGameAllocationService/GetOperatorGameAllocationList"
+	OperatorGameAllocationService_PublishOperatorGameAllocation_FullMethodName = "/platform_game.OperatorGameAllocationService/PublishOperatorGameAllocation"
 )
 
 // OperatorGameAllocationServiceClient is the client API for OperatorGameAllocationService service.
@@ -2084,6 +2245,8 @@ const (
 type OperatorGameAllocationServiceClient interface {
 	// 获取分站游戏分配列表
 	GetOperatorGameAllocationList(ctx context.Context, in *GetOperatorGameAllocationListRequest, opts ...grpc.CallOption) (*GetOperatorGameAllocationListResp, error)
+	// 发布游戏资源分配到指定分站
+	PublishOperatorGameAllocation(ctx context.Context, in *PublishOperatorGameAllocationRequest, opts ...grpc.CallOption) (*PublishOperatorGameAllocationResponse, error)
 }
 
 type operatorGameAllocationServiceClient struct {
@@ -2104,12 +2267,24 @@ func (c *operatorGameAllocationServiceClient) GetOperatorGameAllocationList(ctx 
 	return out, nil
 }
 
+func (c *operatorGameAllocationServiceClient) PublishOperatorGameAllocation(ctx context.Context, in *PublishOperatorGameAllocationRequest, opts ...grpc.CallOption) (*PublishOperatorGameAllocationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PublishOperatorGameAllocationResponse)
+	err := c.cc.Invoke(ctx, OperatorGameAllocationService_PublishOperatorGameAllocation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OperatorGameAllocationServiceServer is the server API for OperatorGameAllocationService service.
 // All implementations must embed UnimplementedOperatorGameAllocationServiceServer
 // for forward compatibility.
 type OperatorGameAllocationServiceServer interface {
 	// 获取分站游戏分配列表
 	GetOperatorGameAllocationList(context.Context, *GetOperatorGameAllocationListRequest) (*GetOperatorGameAllocationListResp, error)
+	// 发布游戏资源分配到指定分站
+	PublishOperatorGameAllocation(context.Context, *PublishOperatorGameAllocationRequest) (*PublishOperatorGameAllocationResponse, error)
 	mustEmbedUnimplementedOperatorGameAllocationServiceServer()
 }
 
@@ -2122,6 +2297,9 @@ type UnimplementedOperatorGameAllocationServiceServer struct{}
 
 func (UnimplementedOperatorGameAllocationServiceServer) GetOperatorGameAllocationList(context.Context, *GetOperatorGameAllocationListRequest) (*GetOperatorGameAllocationListResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetOperatorGameAllocationList not implemented")
+}
+func (UnimplementedOperatorGameAllocationServiceServer) PublishOperatorGameAllocation(context.Context, *PublishOperatorGameAllocationRequest) (*PublishOperatorGameAllocationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PublishOperatorGameAllocation not implemented")
 }
 func (UnimplementedOperatorGameAllocationServiceServer) mustEmbedUnimplementedOperatorGameAllocationServiceServer() {
 }
@@ -2163,6 +2341,24 @@ func _OperatorGameAllocationService_GetOperatorGameAllocationList_Handler(srv in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OperatorGameAllocationService_PublishOperatorGameAllocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublishOperatorGameAllocationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorGameAllocationServiceServer).PublishOperatorGameAllocation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorGameAllocationService_PublishOperatorGameAllocation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorGameAllocationServiceServer).PublishOperatorGameAllocation(ctx, req.(*PublishOperatorGameAllocationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OperatorGameAllocationService_ServiceDesc is the grpc.ServiceDesc for OperatorGameAllocationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2173,6 +2369,10 @@ var OperatorGameAllocationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOperatorGameAllocationList",
 			Handler:    _OperatorGameAllocationService_GetOperatorGameAllocationList_Handler,
+		},
+		{
+			MethodName: "PublishOperatorGameAllocation",
+			Handler:    _OperatorGameAllocationService_PublishOperatorGameAllocation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

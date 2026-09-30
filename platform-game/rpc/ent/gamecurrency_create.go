@@ -20,15 +20,15 @@ type GameCurrencyCreate struct {
 	hooks    []Hook
 }
 
-// SetGameID sets the "game_id" field.
-func (_c *GameCurrencyCreate) SetGameID(v int64) *GameCurrencyCreate {
-	_c.mutation.SetGameID(v)
+// SetGameCode sets the "game_code" field.
+func (_c *GameCurrencyCreate) SetGameCode(v string) *GameCurrencyCreate {
+	_c.mutation.SetGameCode(v)
 	return _c
 }
 
-// SetCurrencyID sets the "currency_id" field.
-func (_c *GameCurrencyCreate) SetCurrencyID(v int64) *GameCurrencyCreate {
-	_c.mutation.SetCurrencyID(v)
+// SetCurrencyCode sets the "currency_code" field.
+func (_c *GameCurrencyCreate) SetCurrencyCode(v string) *GameCurrencyCreate {
+	_c.mutation.SetCurrencyCode(v)
 	return _c
 }
 
@@ -110,11 +110,11 @@ func (_c *GameCurrencyCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *GameCurrencyCreate) check() error {
-	if _, ok := _c.mutation.GameID(); !ok {
-		return &ValidationError{Name: "game_id", err: errors.New(`ent: missing required field "GameCurrency.game_id"`)}
+	if _, ok := _c.mutation.GameCode(); !ok {
+		return &ValidationError{Name: "game_code", err: errors.New(`ent: missing required field "GameCurrency.game_code"`)}
 	}
-	if _, ok := _c.mutation.CurrencyID(); !ok {
-		return &ValidationError{Name: "currency_id", err: errors.New(`ent: missing required field "GameCurrency.currency_id"`)}
+	if _, ok := _c.mutation.CurrencyCode(); !ok {
+		return &ValidationError{Name: "currency_code", err: errors.New(`ent: missing required field "GameCurrency.currency_code"`)}
 	}
 	if _, ok := _c.mutation.SourceStatus(); !ok {
 		return &ValidationError{Name: "source_status", err: errors.New(`ent: missing required field "GameCurrency.source_status"`)}
@@ -165,13 +165,13 @@ func (_c *GameCurrencyCreate) createSpec() (*GameCurrency, *sqlgraph.CreateSpec)
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := _c.mutation.GameID(); ok {
-		_spec.SetField(gamecurrency.FieldGameID, field.TypeInt64, value)
-		_node.GameID = value
+	if value, ok := _c.mutation.GameCode(); ok {
+		_spec.SetField(gamecurrency.FieldGameCode, field.TypeString, value)
+		_node.GameCode = value
 	}
-	if value, ok := _c.mutation.CurrencyID(); ok {
-		_spec.SetField(gamecurrency.FieldCurrencyID, field.TypeInt64, value)
-		_node.CurrencyID = value
+	if value, ok := _c.mutation.CurrencyCode(); ok {
+		_spec.SetField(gamecurrency.FieldCurrencyCode, field.TypeString, value)
+		_node.CurrencyCode = value
 	}
 	if value, ok := _c.mutation.SourceStatus(); ok {
 		_spec.SetField(gamecurrency.FieldSourceStatus, field.TypeInt64, value)

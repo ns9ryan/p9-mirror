@@ -100,6 +100,10 @@ func (d *GameProviderDAO) UpdateGameProvider(ctx context.Context, id int64, upda
 			if val, ok := value.(string); ok {
 				update = update.SetLogoURL(val)
 			}
+		case "channel_code":
+			if val, ok := value.(string); ok {
+				update = update.SetChannelCode(val)
+			}
 		}
 	}
 
@@ -142,4 +146,34 @@ func (d *GameProviderDAO) ExistByCode(ctx context.Context, sourceProviderCode st
 		return false, fmt.Errorf("exist check failed: %w", err)
 	}
 	return exists, nil
+}
+
+// GetPublishedGameProviderList 获取已发布的游戏供应商列表（供分站同步）
+func (d *GameProviderDAO) GetPublishedGameProviderList(ctx context.Context, providerCodes []string, offset, limit int64) ([]*ent.GameProvider, int, error) {
+	if len(providerCodes) == 0 {
+		return []*ent.GameProvider{}, 0, nil
+	}
+
+	query := d.db.GameProvider.Query().
+		Where(gameprovider.SourceProviderCodeIn(providerCodes...)).
+		Where(gameprovider.DeletedAtIsNil()).
+		Where(gameprovider.StatusEQ(1))
+
+	// 获取总数
+	total, err := query.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("count failed: %w", err)
+	}
+
+	// 获取分页数据
+	providers, err := query.
+		Order(gameprovider.BySortNo(), gameprovider.ByID()).
+		Offset(int(offset)).
+		Limit(int(limit)).
+		All(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("query failed: %w", err)
+	}
+
+	return providers, total, nil
 }

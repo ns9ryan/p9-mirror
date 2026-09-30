@@ -18,6 +18,7 @@ import (
 	"oa.98ent.com/p9/platform-game/api/internal/handler"
 	"oa.98ent.com/p9/platform-game/api/internal/svc"
 
+	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/common/response"
 	"oa.98ent.com/p9/core/common/middleware"
 )
@@ -35,6 +36,8 @@ func main() {
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
+	// 注册I18n中间件
+	server.Use(i18n.NewI18nLangMiddleware(c.I18n.DefaultLanguage).Handle)
 	// 注册客户端 IP 中间件
 	server.Use(middleware.ClientIP)
 

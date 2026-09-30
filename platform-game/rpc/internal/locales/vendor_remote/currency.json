@@ -1,18 +1,27 @@
 [
     {
-        "game_id": 1,
-        "currency_id": 1
+        "game_code": "BNG-SL-1",
+        "currency_code": "USD",
+        "status": 1
     },
     {
-        "game_id": 2,
-        "currency_id": 1
+        "game_code": "FC-GM-1",
+        "currency_code": "USD",
+        "status": 1
     },
     {
-        "game_id": 4,
-        "currency_id": 1
+        "game_code": "GPKBG-SL-1",
+        "currency_code": "USD",
+        "status": 1
     },
     {
-        "game_id": 5,
-        "currency_id": 1
+        "game_code": "DB-SL-1",
+        "currency_code": "USD",
+        "status": 2
+    },
+    {
+        "game_code": "BB-LC-1",
+        "currency_code": "USD",
+        "status": 2
     }
 ]

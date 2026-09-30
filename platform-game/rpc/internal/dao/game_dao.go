@@ -7,11 +7,9 @@ import (
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"oa.98ent.com/p9/platform-game/rpc/ent"
-	"oa.98ent.com/p9/platform-game/rpc/ent/currency"
 	"oa.98ent.com/p9/platform-game/rpc/ent/game"
 	"oa.98ent.com/p9/platform-game/rpc/ent/gamecategory"
 	"oa.98ent.com/p9/platform-game/rpc/ent/gamechannel"
-	"oa.98ent.com/p9/platform-game/rpc/ent/gamecurrency"
 	"oa.98ent.com/p9/platform-game/rpc/ent/gameprovider"
 )
 
@@ -173,90 +171,54 @@ func (d *GameDAO) BatchCreateGame(ctx context.Context, items []*ent.GameCreate) 
 
 // GameExtInfo 游戏扩展信息
 type GameExtInfo struct {
-	CategoryCode string  `json:"category_code"`
-	ProviderCode string  `json:"provider_code"`
-	ChannelCode  string  `json:"channel_code"`
-	Currencies   []int64 `json:"currencies"`
+	CategoryCode string `json:"category_code"`
+	ProviderCode string `json:"provider_code"`
+	ChannelCode  string `json:"channel_code"`
 }
 
 // GetGameExtInfo 获取游戏的扩展信息
-func (d *GameDAO) GetGameExtInfo(ctx context.Context, gameRecord *ent.Game) (*GameExtInfo, error) {
+func (d *GameDAO) GetGameExtraInfo(ctx context.Context, gameRecord *ent.Game) (*GameExtInfo, error) {
 	ext := &GameExtInfo{}
 
 	// 查询分类信息
 	if gameRecord.CategoryID > 0 {
 		categoryRecord, err := d.db.GameCategory.Query().
-			Select(gamecategory.FieldCategoryCode).
+			Select(gamecategory.FieldSourceCategoryCode).
 			Where(gamecategory.SourceIDEQ(gameRecord.CategoryID)).
 			Where(gamecategory.DeletedAtIsNil()).
 			Only(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("query category failed: %w", err)
 		}
-		ext.CategoryCode = categoryRecord.CategoryCode
+		ext.CategoryCode = categoryRecord.SourceCategoryCode
 	}
 
 	// 查询提供商信息
 	if gameRecord.ProviderID > 0 {
 		providerRecord, err := d.db.GameProvider.Query().
-			Select(gameprovider.FieldProviderCode).
+			Select(gameprovider.FieldSourceProviderCode).
 			Where(gameprovider.SourceIDEQ(gameRecord.ProviderID)).
 			Where(gameprovider.DeletedAtIsNil()).
 			Only(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("query provider failed: %w", err)
 		}
-		ext.ProviderCode = providerRecord.ProviderCode
+		ext.ProviderCode = providerRecord.SourceProviderCode
 	}
 
 	// 查询渠道信息（如果存在）
 	if gameRecord.ChannelID > 0 {
 		channelRecord, err := d.db.GameChannel.Query().
-			Select(gamechannel.FieldChannelCode).
+			Select(gamechannel.FieldSourceChannelCode).
 			Where(gamechannel.SourceIDEQ(gameRecord.ChannelID)).
 			Where(gamechannel.DeletedAtIsNil()).
 			Only(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("query channel failed: %w", err)
 		}
-		ext.ChannelCode = channelRecord.ChannelCode
+		ext.ChannelCode = channelRecord.SourceChannelCode
 	}
-
-	// 查询游戏货币信息
-	gameCurrencyRecords, err := d.db.GameCurrency.Query().
-		Select(gamecurrency.FieldCurrencyID).
-		Where(gamecurrency.GameIDEQ(gameRecord.SourceID)).
-		Where(gamecurrency.DeletedAtIsNil()).
-		All(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("query game currency failed: %w", err)
-	}
-
-	currencies := make([]int64, 0, len(gameCurrencyRecords))
-	for _, gameCurrencyRecord := range gameCurrencyRecords {
-		_, err := d.db.Currency.Query().
-			Select(currency.FieldNameKey).
-			Where(currency.IDEQ(gameCurrencyRecord.CurrencyID)).
-			Only(ctx)
-		if err != nil {
-			return nil, fmt.Errorf("query currency failed: %w", err)
-		}
-		currencies = append(currencies, gameCurrencyRecord.CurrencyID)
-	}
-
-	ext.Currencies = currencies
 	return ext, nil
-}
-
-func (d *GameDAO) CreateGameCurrency(ctx context.Context, gameID int64, currencyID int64) (*ent.GameCurrency, error) {
-	return d.db.GameCurrency.Create().
-		SetGameID(gameID).
-		SetCurrencyID(currencyID).
-		SetSourceStatus(1).
-		SetStatus(1).
-		SetCreatedAt(time.Now()).
-		SetUpdatedAt(time.Now()).
-		Save(ctx)
 }
 
 func (d *GameDAO) ExistByCode(ctx context.Context, code string) (bool, error) {
@@ -282,4 +244,34 @@ func (d *GameDAO) GetGameByCode(ctx context.Context, code string) (*ent.Game, er
 		Where(game.SourceGameCodeEQ(code)).
 		Where(game.DeletedAtIsNil()).
 		Only(ctx)
+}
+
+// GetPublishedGameList 获取已发布的游戏列表（供分站同步）
+func (d *GameDAO) GetPublishedGameList(ctx context.Context, gameCodes []string, offset, limit int64) ([]*ent.Game, int, error) {
+	if len(gameCodes) == 0 {
+		return []*ent.Game{}, 0, nil
+	}
+
+	query := d.db.Game.Query().
+		Where(game.SourceGameCodeIn(gameCodes...)).
+		Where(game.DeletedAtIsNil()).
+		Where(game.StatusEQ(1))
+
+	// 获取总数
+	total, err := query.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("count failed: %w", err)
+	}
+
+	// 获取分页数据
+	games, err := query.
+		Order(game.BySortNo(), game.ByID()).
+		Offset(int(offset)).
+		Limit(int(limit)).
+		All(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("query failed: %w", err)
+	}
+
+	return games, total, nil
 }

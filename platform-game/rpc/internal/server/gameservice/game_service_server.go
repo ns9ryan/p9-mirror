@@ -40,3 +40,9 @@ func (s *GameServiceServer) UpdateGame(ctx context.Context, in *platform_game.Up
 	l := gameservicelogic.NewUpdateGameLogic(ctx, s.svcCtx)
 	return l.UpdateGame(in)
 }
+
+// 获取已发布的游戏列表（供分站同步）
+func (s *GameServiceServer) GetPublishedGameList(ctx context.Context, in *platform_game.GetPublishedGameListRequest) (*platform_game.GetPublishedGameListResp, error) {
+	l := gameservicelogic.NewGetPublishedGameListLogic(ctx, s.svcCtx)
+	return l.GetPublishedGameList(in)
+}

@@ -53,8 +53,7 @@ func (l *GameSyncCheckpointGetLogic) GameSyncCheckpointGet(req *types.GameSyncCh
 	}
 
 	if grpcResp.Data == nil {
-		l.Errorf("[API GameSyncCheckpointGet] gRPC data is nil")
-		return nil, fmt.Errorf("gRPC data is nil")
+		return &types.GameSyncCheckpointResp{}, nil
 	}
 
 	resp = logic.CheckpointProtoToResponse(grpcResp.Data)

@@ -128,7 +128,18 @@ func (s *ProviderSyncService) processProviderDataWithProgress(ctx context.Contex
 		// 生成 P9 内部的提供商编码
 		providerCode := remoteProvider.Code + "_" + fmt.Sprintf("%d", i)
 		if err != nil || localProvider == nil {
-			createList = append(createList, s.DAOManager.DB.GameProvider.Create().
+			// 根据 ChanId 查询对应的 channel_code
+			channelCode := ""
+			if remoteProvider.ChanId > 0 {
+				ch, err := s.DAOManager.GameChannel.GetGameChannelBySourceId(ctx, remoteProvider.ChanId)
+				if err == nil && ch != nil {
+					channelCode = ch.ChannelCode
+					s.Debugf("[提供商同步] 获取 channel_code 成功: chanId=%d, channelCode=%s", remoteProvider.ChanId, channelCode)
+				} else if remoteProvider.ChanId > 0 {
+					s.Errorf("[提供商同步] 根据 ChanId 获取 channel_code 失败: chanId=%d, 错误=%v", remoteProvider.ChanId, err)
+				}
+			}
+			createBuilder := s.DAOManager.DB.GameProvider.Create().
 				SetSourceID(remoteProvider.Id).
 				SetProviderCode(providerCode).
 				SetSourceProviderCode(remoteProvider.Code).
@@ -137,47 +148,62 @@ func (s *ProviderSyncService) processProviderDataWithProgress(ctx context.Contex
 				SetSourceStatus(int64(remoteProvider.Status)).
 				SetStatus(int64(remoteProvider.Status)).
 				SetCreatedAt(time.Now()).
-				SetUpdatedAt(time.Now()))
+				SetUpdatedAt(time.Now())
+			if channelCode != "" {
+				createBuilder.SetChannelCode(channelCode)
+			}
+			createList = append(createList, createBuilder)
 		} else {
-			if s.compare(&platform_game.SyncDiff{}, remoteProvider, localProvider) || len(syncCols) > 0 {
-				s.Infof("[提供商同步] 检测到需要更新的提供商: %s", remoteProvider.Code)
-				update := s.DAOManager.DB.GameProvider.
-					UpdateOneID(localProvider.ID).
-					SetUpdatedAt(time.Now())
+			s.Infof("[提供商同步] 检测到需要更新的提供商: %s", remoteProvider.Code)
+			update := s.DAOManager.DB.GameProvider.
+				UpdateOneID(localProvider.ID).
+				SetUpdatedAt(time.Now())
 
-				if len(syncCols) == 0 {
-					syncCols = append(syncCols, "provider_code")
-					syncCols = append(syncCols, "source_provider_code")
-					syncCols = append(syncCols, "source_status")
-					syncCols = append(syncCols, "source_sort_no")
-				}
-
-				for _, col := range syncCols {
-					switch col {
-					case "provider_code":
-						update.SetProviderCode(providerCode)
-					case "source_provider_code":
-						update.SetSourceProviderCode(remoteProvider.Code)
-					case "status":
-						update.SetStatus(int64(remoteProvider.Status))
-					case "source_status":
-						update.SetSourceStatus(int64(remoteProvider.Status))
-					case "sort_no":
-						update.SetSortNo(int64(remoteProvider.Id))
-					case "source_sort_no":
-						update.SetSourceSortNo(0)
+			if len(syncCols) == 0 {
+				syncCols = append(syncCols, "provider_code")
+				syncCols = append(syncCols, "source_provider_code")
+				syncCols = append(syncCols, "source_status")
+				syncCols = append(syncCols, "source_sort_no")
+				syncCols = append(syncCols, "channel_code")
+			}
+			for _, col := range syncCols {
+				switch col {
+				case "provider_code":
+					update.SetProviderCode(providerCode)
+				case "source_provider_code":
+					update.SetSourceProviderCode(remoteProvider.Code)
+				case "status":
+					update.SetStatus(int64(remoteProvider.Status))
+				case "source_status":
+					update.SetSourceStatus(int64(remoteProvider.Status))
+				case "sort_no":
+					update.SetSortNo(int64(remoteProvider.Id))
+				case "source_sort_no":
+					update.SetSourceSortNo(0)
+				case "channel_code":
+					// 根据 ChanId 查询对应的 channel_code
+					if remoteProvider.ChanId > 0 {
+						ch, err := s.DAOManager.GameChannel.GetGameChannelBySourceId(ctx, remoteProvider.ChanId)
+						if err == nil && ch != nil {
+							update.SetChannelCode(ch.SourceChannelCode)
+							s.Debugf("[提供商更新] 获取 channel_code 成功: chanId=%d, channelCode=%s", remoteProvider.ChanId, ch.ChannelCode)
+						} else {
+							update.ClearChannelCode()
+							s.Errorf("[提供商更新] 根据 ChanId 获取 channel_code 失败: chanId=%d, 错误=%v", remoteProvider.ChanId, err)
+						}
+					} else {
+						update.ClearChannelCode()
 					}
 				}
-
-				if _, err := update.Save(ctx); err != nil {
-					s.Errorf("[提供商更新] 失败: %v", err)
-					applyResult.Failed++
-					continue
-				}
-				applyResult.Updated++
-				s.Infof("[提供商更新] ✓ 已更新提供商: %s", remoteProvider.Code)
 			}
 
+			if _, err := update.Save(ctx); err != nil {
+				s.Errorf("[提供商更新] 失败: %v", err)
+				applyResult.Failed++
+				continue
+			}
+			applyResult.Updated++
+			s.Infof("[提供商更新] ✓ 已更新提供商: %s", remoteProvider.Code)
 		}
 	}
 	if len(createList) > 0 {
@@ -210,21 +236,21 @@ func (s *ProviderSyncService) Run(ctx context.Context, client vendors.VendorGame
 	// 创建并启动进度队列
 	s.progressQueue.Start(ctx)
 	defer s.progressQueue.Stop()
-	if previewResp.Stats.UpdateTotal == 0 && previewResp.Stats.CreateTotal == 0 && previewResp.Stats.DeleteTotal == 0 && previewResp.Stats.RemoteTotal == previewResp.Stats.LocalTotal && len(syncCols) == 0 {
-		s.Infof("[提供商同步] 无需更新，直接返回")
-		s.Infof("[提供商同步] UpdateTotal=%d, CreateTotal=%d, DeleteTotal=%d, RemoteTotal=%d, LocalTotal=%d",
-			previewResp.Stats.UpdateTotal, previewResp.Stats.CreateTotal, previewResp.Stats.DeleteTotal, previewResp.Stats.RemoteTotal, previewResp.Stats.LocalTotal)
-		// 更新checkpointID进度为100
-		s.progressQueue.Send(&ProgressMessage{
-			TableName:      "provider",
-			ProcessedCount: previewResp.Stats.RemoteTotal,
-			RemoteTotal:    previewResp.Stats.RemoteTotal,
-			LocalTotal:     previewResp.Stats.LocalTotal,
-			Progress:       100,
-			CheckpointID:   checkpointID,
-		})
-		return nil
-	}
+	// if previewResp.Stats.UpdateTotal == 0 && previewResp.Stats.CreateTotal == 0 && previewResp.Stats.DeleteTotal == 0 && previewResp.Stats.RemoteTotal == previewResp.Stats.LocalTotal && len(syncCols) == 0 {
+	// 	s.Infof("[提供商同步] 无需更新，直接返回")
+	// 	s.Infof("[提供商同步] UpdateTotal=%d, CreateTotal=%d, DeleteTotal=%d, RemoteTotal=%d, LocalTotal=%d",
+	// 		previewResp.Stats.UpdateTotal, previewResp.Stats.CreateTotal, previewResp.Stats.DeleteTotal, previewResp.Stats.RemoteTotal, previewResp.Stats.LocalTotal)
+	// 	// 更新checkpointID进度为100
+	// 	s.progressQueue.Send(&ProgressMessage{
+	// 		TableName:      "provider",
+	// 		ProcessedCount: previewResp.Stats.RemoteTotal,
+	// 		RemoteTotal:    previewResp.Stats.RemoteTotal,
+	// 		LocalTotal:     previewResp.Stats.LocalTotal,
+	// 		Progress:       100,
+	// 		CheckpointID:   checkpointID,
+	// 	})
+	// 	return nil
+	// }
 	// 把remoteResp.Data拆分为多条一批进行处理（可根据实际情况调整批次大小）
 	batchSize := s.config.SyncBatchSize
 	s.Infof("[提供商同步] 预检查完成: remote_total=%d, local_total=%d, 检查点已创建: checkpointID=%d, batch_size=%d",

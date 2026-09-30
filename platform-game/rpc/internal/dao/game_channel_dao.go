@@ -143,3 +143,33 @@ func (d *GameChannelDAO) ExistByCode(ctx context.Context, channelCode string) (b
 	}
 	return exists, nil
 }
+
+// GetPublishedGameChannelList 获取已发布的游戏渠道列表（供分站同步）
+func (d *GameChannelDAO) GetPublishedGameChannelList(ctx context.Context, channelCodes []string, offset, limit int64) ([]*ent.GameChannel, int, error) {
+	if len(channelCodes) == 0 {
+		return []*ent.GameChannel{}, 0, nil
+	}
+
+	query := d.db.GameChannel.Query().
+		Where(gamechannel.SourceChannelCodeIn(channelCodes...)).
+		Where(gamechannel.DeletedAtIsNil()).
+		Where(gamechannel.StatusEQ(1))
+
+	// 获取总数
+	total, err := query.Clone().Count(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("count failed: %w", err)
+	}
+
+	// 获取分页数据
+	channels, err := query.
+		Order(gamechannel.BySortNo(), gamechannel.ByID()).
+		Offset(int(offset)).
+		Limit(int(limit)).
+		All(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("query failed: %w", err)
+	}
+
+	return channels, total, nil
+}

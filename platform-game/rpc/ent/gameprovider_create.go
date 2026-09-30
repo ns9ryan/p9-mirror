@@ -32,6 +32,20 @@ func (_c *GameProviderCreate) SetProviderCode(v string) *GameProviderCreate {
 	return _c
 }
 
+// SetChannelCode sets the "channel_code" field.
+func (_c *GameProviderCreate) SetChannelCode(v string) *GameProviderCreate {
+	_c.mutation.SetChannelCode(v)
+	return _c
+}
+
+// SetNillableChannelCode sets the "channel_code" field if the given value is not nil.
+func (_c *GameProviderCreate) SetNillableChannelCode(v *string) *GameProviderCreate {
+	if v != nil {
+		_c.SetChannelCode(*v)
+	}
+	return _c
+}
+
 // SetSourceProviderCode sets the "source_provider_code" field.
 func (_c *GameProviderCreate) SetSourceProviderCode(v string) *GameProviderCreate {
 	_c.mutation.SetSourceProviderCode(v)
@@ -232,6 +246,10 @@ func (_c *GameProviderCreate) createSpec() (*GameProvider, *sqlgraph.CreateSpec)
 	if value, ok := _c.mutation.ProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldProviderCode, field.TypeString, value)
 		_node.ProviderCode = value
+	}
+	if value, ok := _c.mutation.ChannelCode(); ok {
+		_spec.SetField(gameprovider.FieldChannelCode, field.TypeString, value)
+		_node.ChannelCode = value
 	}
 	if value, ok := _c.mutation.SourceProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldSourceProviderCode, field.TypeString, value)

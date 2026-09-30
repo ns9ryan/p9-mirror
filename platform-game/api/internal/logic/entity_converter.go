@@ -68,13 +68,11 @@ func CheckpointProtoToResponse(checkpoint *platformgame.GameSyncCheckpointInfo) 
 }
 
 func CurrencyProtoToResponse(ctx context.Context, currency *platformgame.GameCurrencyInfo) *types.GameCurrencyResp {
-	currencyName := utils.TGPlatformBase(ctx, currency.CurrencyNameKey)
+	currencyName := utils.TGPlatformBase(ctx, currency.CurrencyCode)
 	return &types.GameCurrencyResp{
 		ID:           currency.Id,
-		GameID:       currency.GameId,
 		GameCode:     currency.GameCode,
 		GameName:     currency.GameName,
-		CurrencyID:   currency.CurrencyId,
 		CurrencyCode: currency.CurrencyCode,
 		CurrencyName: currencyName,
 		Status:       int16(currency.Status),
@@ -94,7 +92,7 @@ func GameProtoToResponse(ctx context.Context, game *platformgame.GameInfo) *type
 	channelName := utils.TGPlatformGame(ctx, game.ChannelNameKey)
 	for _, currencyMap := range gameCurrencyArray {
 		currency := types.GameCurrencyInfo{
-			CurrencyID:   int64(currencyMap["currency_id"].(float64)),
+			CurrencyCode: currencyMap["currency_code"].(string),
 			CurrencyName: "",
 		}
 		currencyName := utils.TGPlatformBase(ctx, currencyMap["currency_name_key"].(string))

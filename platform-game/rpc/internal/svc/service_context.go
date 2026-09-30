@@ -5,6 +5,9 @@ import (
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
+	"github.com/zeromicro/go-zero/zrpc"
+	nodedispatchdispatchservice "oa.98ent.com/p9/node-dispatch/rpc/client/dispatchservice"
+	nodedispatchoperatornodeservice "oa.98ent.com/p9/node-dispatch/rpc/client/operatornodeservice"
 	"oa.98ent.com/p9/platform-game/rpc/ent"
 	"oa.98ent.com/p9/platform-game/rpc/ent/migrate"
 	"oa.98ent.com/p9/platform-game/rpc/internal/cache"
@@ -17,6 +20,10 @@ type ServiceContext struct {
 	DB           *ent.Client    // Ent数据库客户端
 	DAOManager   *dao.Manager   // DAO管理器
 	CacheManager *cache.Manager // 缓存管理器
+
+	// Node Dispatch RPC
+	NodeDispatchDispatchRpc     nodedispatchdispatchservice.DispatchService         // 调度任务RPC
+	NodeDispatchOperatorNodeRpc nodedispatchoperatornodeservice.OperatorNodeService // 分站部署节点RPC
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -38,11 +45,22 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// 创建Ent数据库客户端
 	db := ent.NewClient(entOpts...)
 
+	// ============================== Node Dispatch RPC ==============================
+
+	// 创建Node Dispatch RPC客户端
+	nodeDispatchClient := zrpc.MustNewClient(c.NodeDispatchRpc)
+
+	// ============================== Service Context ==============================
+
 	return &ServiceContext{
 		Config:       c,
 		DB:           db,
 		DAOManager:   dao.NewManager(db),
 		CacheManager: cache.NewManager(),
+
+		// Node Dispatch RPC
+		NodeDispatchDispatchRpc:     nodedispatchdispatchservice.NewDispatchService(nodeDispatchClient),         // 调度任务RPC
+		NodeDispatchOperatorNodeRpc: nodedispatchoperatornodeservice.NewOperatorNodeService(nodeDispatchClient), // 分站部署节点RPC
 	}
 }
 

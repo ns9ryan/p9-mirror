@@ -3,7 +3,7 @@ syntax = "v1"
 @server (
 	group: sync
 	middleware: Jwt,ActionLog,Authority
-	prefix: /admin/sync
+	prefix: /platform-game/sync
 )
 service platform_game {
 	// ===== Sync APIs =====
@@ -34,7 +34,7 @@ service platform_game {
 @server (
 	group: preview
 	middleware: Jwt,ActionLog,Authority
-	prefix: /admin/sync
+	prefix: /platform-game/sync
 )
 service platform_game {
 	// ===== Sync APIs =====

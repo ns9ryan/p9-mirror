@@ -98,9 +98,9 @@ func (s *CurrencySyncService) processCurrencyDataWithProgress(ctx context.Contex
 	counterMap := make(map[string]int) // 用于记录每个 currency key 的计数，确保唯一性
 	createList := make([]*ent.GameCurrencyCreate, 0)
 	for _, remoteCurrency := range remoteData {
-		currencyKey := fmt.Sprintf("%d_%d", remoteCurrency.GameId, remoteCurrency.CurrencyId)
+		currencyKey := fmt.Sprintf("%s_%s", remoteCurrency.GameCode, remoteCurrency.CurrencyCode)
 		if counterMap[currencyKey] > 0 {
-			s.Errorf("[货币同步] 检测到重复的远程货币编码: GameID=%d, CurrencyID=%d, 计数器: %d, 跳过处理", remoteCurrency.GameId, remoteCurrency.CurrencyId, counterMap[currencyKey])
+			s.Errorf("[货币同步] 检测到重复的远程货币编码: GameCode=%s, CurrencyCode=%s, 计数器: %d, 跳过处理", remoteCurrency.GameCode, remoteCurrency.CurrencyCode, counterMap[currencyKey])
 			applyResult.Failed++
 			continue
 		}
@@ -108,19 +108,19 @@ func (s *CurrencySyncService) processCurrencyDataWithProgress(ctx context.Contex
 		counterMap[currencyKey]++
 		i++
 		// 检查本地是否存在该游戏货币
-		gameCurrencyRecord, err := s.DAOManager.GameCurrency.GetGameCurrencyByCurrcyIdAndGameId(ctx, remoteCurrency.GameId, remoteCurrency.CurrencyId)
+		gameCurrencyRecord, err := s.DAOManager.GameCurrency.GetGameCurrencyByGameCodeAndCurrencyCode(ctx, remoteCurrency.GameCode, remoteCurrency.CurrencyCode)
 
 		if err != nil || gameCurrencyRecord == nil {
 			createList = append(createList, s.DAOManager.DB.GameCurrency.Create().
-				SetGameID(remoteCurrency.GameId).
-				SetCurrencyID(remoteCurrency.CurrencyId).
+				SetGameCode(remoteCurrency.GameCode).
+				SetCurrencyCode(remoteCurrency.CurrencyCode).
 				SetSourceStatus(1).
 				SetStatus(1).
 				SetCreatedAt(time.Now()).
 				SetUpdatedAt(time.Now()))
 		} else {
 			if s.compare(&platform_game.SyncDiff{}, remoteCurrency, gameCurrencyRecord) || len(syncCols) > 0 {
-				s.Infof("[货币同步] 检测到需要更新的货币: GameID=%d, CurrencyID=%d", remoteCurrency.GameId, remoteCurrency.CurrencyId)
+				s.Infof("[货币同步] 检测到需要更新的货币: GameCode=%s, CurrencyCode=%s", remoteCurrency.GameCode, remoteCurrency.CurrencyCode)
 				update := s.DAOManager.DB.GameCurrency.
 					UpdateOneID(gameCurrencyRecord.ID).
 					SetUpdatedAt(time.Now())
@@ -134,10 +134,10 @@ func (s *CurrencySyncService) processCurrencyDataWithProgress(ctx context.Contex
 
 				for _, col := range syncCols {
 					switch col {
-					case "game_id":
-						update.SetGameID(remoteCurrency.GameId)
-					case "currency_id":
-						update.SetCurrencyID(remoteCurrency.CurrencyId)
+					case "game_code":
+						update.SetGameCode(remoteCurrency.GameCode)
+					case "currency_code":
+						update.SetCurrencyCode(remoteCurrency.CurrencyCode)
 					case "source_status":
 						update.SetSourceStatus(int64(remoteCurrency.Status))
 					case "status":
@@ -273,7 +273,7 @@ func (s *CurrencySyncService) Run(ctx context.Context, client vendors.VendorGame
 
 // 获取本地所有游戏货币
 func (s *CurrencySyncService) fetchLocal(ctx context.Context) ([]*ent.GameCurrency, error) {
-	currencies, err := s.DAOManager.GameCurrency.GetAllGameCurrency(ctx, 0, 0)
+	currencies, err := s.DAOManager.GameCurrency.GetAllGameCurrency(ctx, "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -285,17 +285,13 @@ func (s *CurrencySyncService) compareAll(remote *vendors.GameCurrencyInfo, local
 	// 初始化差异记录
 	diff := &platform_game.SyncDiff{
 		ObjectType: "currency",
-		ObjectId:   remote.CurrencyId,
-		// ObjectCode: remote.CurrencyID,
-		RemoteId: remote.CurrencyId,
-		// RemoteCode: remote.CurrencyID,
+		ObjectId:   0, // 使用 CurrencyCode 作为标识
 	}
 
 	// 检查本地是否存在该游戏货币关系
-	// 简化策略：按 game_id 检查是否已有货币配置
 	exists := false
 	for _, curr := range local {
-		if curr.GameID == remote.GameId && curr.CurrencyID == remote.CurrencyId {
+		if curr.GameCode == remote.GameCode && curr.CurrencyCode == remote.CurrencyCode {
 			s.compare(diff, remote, curr)
 			exists = true
 			break
@@ -326,15 +322,15 @@ func (s *CurrencySyncService) compare(diff *platform_game.SyncDiff, remote *vend
 // ReverseSync 逆向同步：检查本地数据在远程是否存在，不存在则软删除
 func (s *CurrencySyncService) ReverseSync(ctx context.Context, client vendors.VendorGameServiceClient, remoteResp *RemoteGameCurrencyResponse, apply *Apply) error {
 	s.Infof("[币种逆向同步] 开始执行逆向同步...")
-	// 构建远程币种唯一性索引（game_id + currency_id）
+	// 构建远程币种唯一性索引（game_code + currency_code）
 	remoteIndex := make(map[string]bool)
 	for _, remoteCurr := range remoteResp.Data {
-		key := fmt.Sprintf("%d_%d", remoteCurr.GameId, remoteCurr.CurrencyId)
+		key := fmt.Sprintf("%s_%s", remoteCurr.GameCode, remoteCurr.CurrencyCode)
 		remoteIndex[key] = true
 	}
 
 	// 获取本地币种关联数据
-	localCurrencies, err := s.DAOManager.GameCurrency.GetAllGameCurrency(ctx, 0, 0)
+	localCurrencies, err := s.DAOManager.GameCurrency.GetAllGameCurrency(ctx, "", "")
 	if err != nil {
 		s.Errorf("[币种逆向同步] ✗ 获取本地数据失败: %v", err)
 		return err
@@ -343,7 +339,7 @@ func (s *CurrencySyncService) ReverseSync(ctx context.Context, client vendors.Ve
 
 	for _, localCurr := range localCurrencies {
 		// 如果本地币种在远程不存在，则软删除
-		key := fmt.Sprintf("%d_%d", localCurr.GameID, localCurr.CurrencyID)
+		key := fmt.Sprintf("%s_%s", localCurr.GameCode, localCurr.CurrencyCode)
 		if !remoteIndex[key] {
 			_, err := s.DAOManager.GameCurrency.UpdateGameCurrency(ctx, localCurr.ID, map[string]interface{}{"deleted_at": time.Now()})
 			if err != nil {
@@ -352,7 +348,7 @@ func (s *CurrencySyncService) ReverseSync(ctx context.Context, client vendors.Ve
 				continue
 			}
 			apply.Deleted++
-			s.Infof("[币种逆向同步] ✓ 已软删除币种关联: GameID=%d, CurrencyID=%d", localCurr.GameID, localCurr.CurrencyID)
+			s.Infof("[币种逆向同步] ✓ 已软删除币种关联: GameCode=%s, CurrencyCode=%s", localCurr.GameCode, localCurr.CurrencyCode)
 		}
 	}
 	if err != nil {

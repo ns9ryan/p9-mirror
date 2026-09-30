@@ -48,38 +48,19 @@ func (l *GetGameCurrencyLogic) GetGameCurrency(in *platformgame.GetGameCurrencyR
 			Message: "failed to get currency: " + err.Error(),
 		}, nil
 	}
-
-	sysCurrencyMap, err := l.svcCtx.DAOManager.Currency.GetCurrencyMap(l.ctx)
-	if err != nil {
-		l.Errorf("[RPC GetGameCurrency] query system currency failed: %v", err)
-		return &platformgame.GetGameCurrencyResp{
-			Code:    constant.CodeInternalError,
-			Message: "failed to get system currency: " + err.Error(),
-		}, nil
-	}
-
-	gameRecord, err := GetGameRecord(l.ctx, l.svcCtx, currency.GameID)
-	if err != nil {
-		l.Errorf("[RPC GetGameCurrency] query game failed: %v", err)
-		return &platformgame.GetGameCurrencyResp{
-			Code:    constant.CodeInternalError,
-			Message: "failed to get game: " + err.Error(),
-		}, nil
-	}
-
-	l.Infof("[RPC GetGameCurrency] query result: id=%d, game_id=%d, currency_id=%d, status=%d, deleted_at=%v",
-		currency.ID, currency.GameID, currency.CurrencyID, currency.Status, currency.DeletedAt)
+	l.Infof("[RPC GetGameCurrency] query result: id=%d, game_code=%s, currency_code=%s, status=%d, deleted_at=%v",
+		currency.ID, currency.GameCode, currency.CurrencyCode, currency.Status, currency.DeletedAt)
 
 	return &platformgame.GetGameCurrencyResp{
 		Code:    constant.CodeSuccess,
 		Message: "ok",
-		Data:    logic.CurrencyModelToProto(currency, gameRecord, sysCurrencyMap),
+		Data:    logic.CurrencyModelToProto(currency),
 	}, nil
 }
 
-func GetGameRecord(ctx context.Context, svcCtx *svc.ServiceContext, gameId int64) (*ent.Game, error) {
+func GetGameRecordByCode(ctx context.Context, svcCtx *svc.ServiceContext, gameCode string) (*ent.Game, error) {
 	if svcCtx == nil || svcCtx.DAOManager == nil {
 		return nil, fmt.Errorf("DAO Manager not available")
 	}
-	return svcCtx.DAOManager.Game.GetGameByID(ctx, gameId)
+	return svcCtx.DAOManager.Game.GetGameByCode(ctx, gameCode)
 }

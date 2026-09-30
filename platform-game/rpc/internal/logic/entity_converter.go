@@ -64,26 +64,17 @@ func ChannelModelToProtoList(channels []*ent.GameChannel) []*platformgame.GameCh
 	return channelsProto
 }
 
-func CurrencyModelToProto(currency *ent.GameCurrency, gameRecord *ent.Game, sysCurrencyMap map[int64]*ent.Currency) *platformgame.GameCurrencyInfo {
-	currencyCode := ""
-	currencyNameKey := ""
-	if sysCurrency, ok := sysCurrencyMap[currency.CurrencyID]; ok {
-		currencyCode = sysCurrency.Code
-		currencyNameKey = sysCurrency.NameKey
-	}
+func CurrencyModelToProto(currency *ent.GameCurrency) *platformgame.GameCurrencyInfo {
 	return &platformgame.GameCurrencyInfo{
-		Id:              currency.ID,
-		GameId:          currency.GameID,
-		GameCode:        gameRecord.GameCode,
-		GameName:        gameRecord.Name,
-		CurrencyId:      currency.CurrencyID,
-		CurrencyCode:    currencyCode,
-		CurrencyNameKey: currencyNameKey,
-		Status:          int32(currency.Status),
-		SourceStatus:    int32(currency.SourceStatus),
-		IsDeleted:       IsDel(currency.DeletedAt),
-		CreatedAt:       currency.CreatedAt.Unix(),
-		UpdatedAt:       currency.UpdatedAt.Unix(),
+		Id:           currency.ID,
+		GameCode:     currency.GameCode,
+		GameName:     currency.GameCode,
+		CurrencyCode: currency.CurrencyCode,
+		Status:       int32(currency.Status),
+		SourceStatus: int32(currency.SourceStatus),
+		IsDeleted:    IsDel(currency.DeletedAt),
+		CreatedAt:    currency.CreatedAt.Unix(),
+		UpdatedAt:    currency.UpdatedAt.Unix(),
 	}
 }
 

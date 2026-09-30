@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"oa.98ent.com/p9/platform-game/rpc/ent"
+	"oa.98ent.com/p9/platform-game/rpc/ent/game"
 	"oa.98ent.com/p9/platform-game/rpc/ent/operatorgame"
 )
 
@@ -93,6 +94,27 @@ func (d *OperatorGameDAO) ExistByOpCodeAndGameCode(ctx context.Context, opCode, 
 	return count > 0, nil
 }
 
+// GetGameIDsByOpCode 获取指定分站的所有游戏ID
+func (d *OperatorGameDAO) GetGameIDsByOpCode(ctx context.Context, opCode string) ([]int64, error) {
+	codes, err := d.GetGameCodesByOpCode(ctx, opCode)
+	if err != nil {
+		return nil, fmt.Errorf("get game codes by opCode failed: %w", err)
+	}
+	if len(codes) == 0 {
+		return []int64{}, nil
+	}
+	// 根据codes查询游戏表中的游戏IDs
+	gameRecords, err := d.db.Game.Query().
+		Select(game.FieldSourceID).
+		Where(game.GameCodeIn(codes...)).
+		All(ctx)
+	gameIds := make([]int64, 0, len(gameRecords))
+	for _, record := range gameRecords {
+		gameIds = append(gameIds, record.SourceID)
+	}
+	return gameIds, nil
+}
+
 func (d *OperatorGameDAO) BatchDeleteOperatorGame(ctx context.Context, ids []int64) (int, error) {
 	if len(ids) == 0 {
 		return 0, nil
@@ -175,4 +197,21 @@ func (d *OperatorGameDAO) FindAll(ctx context.Context, opCode, gameCode string, 
 		return nil, fmt.Errorf("query failed: %w", err)
 	}
 	return records, nil
+}
+
+// GetGameCodesByOpCode 根据opCode获取所有已分配的游戏codes
+func (d *OperatorGameDAO) GetGameCodesByOpCode(ctx context.Context, opCode string) ([]string, error) {
+	records, err := d.db.OperatorGame.Query().
+		Select(operatorgame.FieldGameCode).
+		Where(operatorgame.OpCodeEQ(opCode)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+
+	gameCodes := make([]string, 0, len(records))
+	for _, record := range records {
+		gameCodes = append(gameCodes, record.GameCode)
+	}
+	return gameCodes, nil
 }

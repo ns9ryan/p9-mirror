@@ -28,45 +28,31 @@ func (_u *GameCurrencyUpdate) Where(ps ...predicate.GameCurrency) *GameCurrencyU
 	return _u
 }
 
-// SetGameID sets the "game_id" field.
-func (_u *GameCurrencyUpdate) SetGameID(v int64) *GameCurrencyUpdate {
-	_u.mutation.ResetGameID()
-	_u.mutation.SetGameID(v)
+// SetGameCode sets the "game_code" field.
+func (_u *GameCurrencyUpdate) SetGameCode(v string) *GameCurrencyUpdate {
+	_u.mutation.SetGameCode(v)
 	return _u
 }
 
-// SetNillableGameID sets the "game_id" field if the given value is not nil.
-func (_u *GameCurrencyUpdate) SetNillableGameID(v *int64) *GameCurrencyUpdate {
+// SetNillableGameCode sets the "game_code" field if the given value is not nil.
+func (_u *GameCurrencyUpdate) SetNillableGameCode(v *string) *GameCurrencyUpdate {
 	if v != nil {
-		_u.SetGameID(*v)
+		_u.SetGameCode(*v)
 	}
 	return _u
 }
 
-// AddGameID adds value to the "game_id" field.
-func (_u *GameCurrencyUpdate) AddGameID(v int64) *GameCurrencyUpdate {
-	_u.mutation.AddGameID(v)
+// SetCurrencyCode sets the "currency_code" field.
+func (_u *GameCurrencyUpdate) SetCurrencyCode(v string) *GameCurrencyUpdate {
+	_u.mutation.SetCurrencyCode(v)
 	return _u
 }
 
-// SetCurrencyID sets the "currency_id" field.
-func (_u *GameCurrencyUpdate) SetCurrencyID(v int64) *GameCurrencyUpdate {
-	_u.mutation.ResetCurrencyID()
-	_u.mutation.SetCurrencyID(v)
-	return _u
-}
-
-// SetNillableCurrencyID sets the "currency_id" field if the given value is not nil.
-func (_u *GameCurrencyUpdate) SetNillableCurrencyID(v *int64) *GameCurrencyUpdate {
+// SetNillableCurrencyCode sets the "currency_code" field if the given value is not nil.
+func (_u *GameCurrencyUpdate) SetNillableCurrencyCode(v *string) *GameCurrencyUpdate {
 	if v != nil {
-		_u.SetCurrencyID(*v)
+		_u.SetCurrencyCode(*v)
 	}
-	return _u
-}
-
-// AddCurrencyID adds value to the "currency_id" field.
-func (_u *GameCurrencyUpdate) AddCurrencyID(v int64) *GameCurrencyUpdate {
-	_u.mutation.AddCurrencyID(v)
 	return _u
 }
 
@@ -214,17 +200,11 @@ func (_u *GameCurrencyUpdate) sqlSave(ctx context.Context) (_node int, err error
 			}
 		}
 	}
-	if value, ok := _u.mutation.GameID(); ok {
-		_spec.SetField(gamecurrency.FieldGameID, field.TypeInt64, value)
+	if value, ok := _u.mutation.GameCode(); ok {
+		_spec.SetField(gamecurrency.FieldGameCode, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.AddedGameID(); ok {
-		_spec.AddField(gamecurrency.FieldGameID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.CurrencyID(); ok {
-		_spec.SetField(gamecurrency.FieldCurrencyID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedCurrencyID(); ok {
-		_spec.AddField(gamecurrency.FieldCurrencyID, field.TypeInt64, value)
+	if value, ok := _u.mutation.CurrencyCode(); ok {
+		_spec.SetField(gamecurrency.FieldCurrencyCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.SourceStatus(); ok {
 		_spec.SetField(gamecurrency.FieldSourceStatus, field.TypeInt64, value)
@@ -270,45 +250,31 @@ type GameCurrencyUpdateOne struct {
 	mutation *GameCurrencyMutation
 }
 
-// SetGameID sets the "game_id" field.
-func (_u *GameCurrencyUpdateOne) SetGameID(v int64) *GameCurrencyUpdateOne {
-	_u.mutation.ResetGameID()
-	_u.mutation.SetGameID(v)
+// SetGameCode sets the "game_code" field.
+func (_u *GameCurrencyUpdateOne) SetGameCode(v string) *GameCurrencyUpdateOne {
+	_u.mutation.SetGameCode(v)
 	return _u
 }
 
-// SetNillableGameID sets the "game_id" field if the given value is not nil.
-func (_u *GameCurrencyUpdateOne) SetNillableGameID(v *int64) *GameCurrencyUpdateOne {
+// SetNillableGameCode sets the "game_code" field if the given value is not nil.
+func (_u *GameCurrencyUpdateOne) SetNillableGameCode(v *string) *GameCurrencyUpdateOne {
 	if v != nil {
-		_u.SetGameID(*v)
+		_u.SetGameCode(*v)
 	}
 	return _u
 }
 
-// AddGameID adds value to the "game_id" field.
-func (_u *GameCurrencyUpdateOne) AddGameID(v int64) *GameCurrencyUpdateOne {
-	_u.mutation.AddGameID(v)
+// SetCurrencyCode sets the "currency_code" field.
+func (_u *GameCurrencyUpdateOne) SetCurrencyCode(v string) *GameCurrencyUpdateOne {
+	_u.mutation.SetCurrencyCode(v)
 	return _u
 }
 
-// SetCurrencyID sets the "currency_id" field.
-func (_u *GameCurrencyUpdateOne) SetCurrencyID(v int64) *GameCurrencyUpdateOne {
-	_u.mutation.ResetCurrencyID()
-	_u.mutation.SetCurrencyID(v)
-	return _u
-}
-
-// SetNillableCurrencyID sets the "currency_id" field if the given value is not nil.
-func (_u *GameCurrencyUpdateOne) SetNillableCurrencyID(v *int64) *GameCurrencyUpdateOne {
+// SetNillableCurrencyCode sets the "currency_code" field if the given value is not nil.
+func (_u *GameCurrencyUpdateOne) SetNillableCurrencyCode(v *string) *GameCurrencyUpdateOne {
 	if v != nil {
-		_u.SetCurrencyID(*v)
+		_u.SetCurrencyCode(*v)
 	}
-	return _u
-}
-
-// AddCurrencyID adds value to the "currency_id" field.
-func (_u *GameCurrencyUpdateOne) AddCurrencyID(v int64) *GameCurrencyUpdateOne {
-	_u.mutation.AddCurrencyID(v)
 	return _u
 }
 
@@ -486,17 +452,11 @@ func (_u *GameCurrencyUpdateOne) sqlSave(ctx context.Context) (_node *GameCurren
 			}
 		}
 	}
-	if value, ok := _u.mutation.GameID(); ok {
-		_spec.SetField(gamecurrency.FieldGameID, field.TypeInt64, value)
+	if value, ok := _u.mutation.GameCode(); ok {
+		_spec.SetField(gamecurrency.FieldGameCode, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.AddedGameID(); ok {
-		_spec.AddField(gamecurrency.FieldGameID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.CurrencyID(); ok {
-		_spec.SetField(gamecurrency.FieldCurrencyID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedCurrencyID(); ok {
-		_spec.AddField(gamecurrency.FieldCurrencyID, field.TypeInt64, value)
+	if value, ok := _u.mutation.CurrencyCode(); ok {
+		_spec.SetField(gamecurrency.FieldCurrencyCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.SourceStatus(); ok {
 		_spec.SetField(gamecurrency.FieldSourceStatus, field.TypeInt64, value)

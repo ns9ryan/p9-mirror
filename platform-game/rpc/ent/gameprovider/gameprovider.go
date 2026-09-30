@@ -15,6 +15,8 @@ const (
 	FieldSourceID = "source_id"
 	// FieldProviderCode holds the string denoting the provider_code field in the database.
 	FieldProviderCode = "provider_code"
+	// FieldChannelCode holds the string denoting the channel_code field in the database.
+	FieldChannelCode = "channel_code"
 	// FieldSourceProviderCode holds the string denoting the source_provider_code field in the database.
 	FieldSourceProviderCode = "source_provider_code"
 	// FieldSourceLogoURL holds the string denoting the source_logo_url field in the database.
@@ -44,6 +46,7 @@ var Columns = []string{
 	FieldID,
 	FieldSourceID,
 	FieldProviderCode,
+	FieldChannelCode,
 	FieldSourceProviderCode,
 	FieldSourceLogoURL,
 	FieldLogoURL,
@@ -87,6 +90,11 @@ func BySourceID(opts ...sql.OrderTermOption) OrderOption {
 // ByProviderCode orders the results by the provider_code field.
 func ByProviderCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProviderCode, opts...).ToFunc()
+}
+
+// ByChannelCode orders the results by the channel_code field.
+func ByChannelCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldChannelCode, opts...).ToFunc()
 }
 
 // BySourceProviderCode orders the results by the source_provider_code field.

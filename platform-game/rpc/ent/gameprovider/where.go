@@ -64,6 +64,11 @@ func ProviderCode(v string) predicate.GameProvider {
 	return predicate.GameProvider(sql.FieldEQ(FieldProviderCode, v))
 }
 
+// ChannelCode applies equality check predicate on the "channel_code" field. It's identical to ChannelCodeEQ.
+func ChannelCode(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldEQ(FieldChannelCode, v))
+}
+
 // SourceProviderCode applies equality check predicate on the "source_provider_code" field. It's identical to SourceProviderCodeEQ.
 func SourceProviderCode(v string) predicate.GameProvider {
 	return predicate.GameProvider(sql.FieldEQ(FieldSourceProviderCode, v))
@@ -217,6 +222,81 @@ func ProviderCodeEqualFold(v string) predicate.GameProvider {
 // ProviderCodeContainsFold applies the ContainsFold predicate on the "provider_code" field.
 func ProviderCodeContainsFold(v string) predicate.GameProvider {
 	return predicate.GameProvider(sql.FieldContainsFold(FieldProviderCode, v))
+}
+
+// ChannelCodeEQ applies the EQ predicate on the "channel_code" field.
+func ChannelCodeEQ(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldEQ(FieldChannelCode, v))
+}
+
+// ChannelCodeNEQ applies the NEQ predicate on the "channel_code" field.
+func ChannelCodeNEQ(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldNEQ(FieldChannelCode, v))
+}
+
+// ChannelCodeIn applies the In predicate on the "channel_code" field.
+func ChannelCodeIn(vs ...string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldIn(FieldChannelCode, vs...))
+}
+
+// ChannelCodeNotIn applies the NotIn predicate on the "channel_code" field.
+func ChannelCodeNotIn(vs ...string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldNotIn(FieldChannelCode, vs...))
+}
+
+// ChannelCodeGT applies the GT predicate on the "channel_code" field.
+func ChannelCodeGT(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldGT(FieldChannelCode, v))
+}
+
+// ChannelCodeGTE applies the GTE predicate on the "channel_code" field.
+func ChannelCodeGTE(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldGTE(FieldChannelCode, v))
+}
+
+// ChannelCodeLT applies the LT predicate on the "channel_code" field.
+func ChannelCodeLT(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldLT(FieldChannelCode, v))
+}
+
+// ChannelCodeLTE applies the LTE predicate on the "channel_code" field.
+func ChannelCodeLTE(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldLTE(FieldChannelCode, v))
+}
+
+// ChannelCodeContains applies the Contains predicate on the "channel_code" field.
+func ChannelCodeContains(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldContains(FieldChannelCode, v))
+}
+
+// ChannelCodeHasPrefix applies the HasPrefix predicate on the "channel_code" field.
+func ChannelCodeHasPrefix(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldHasPrefix(FieldChannelCode, v))
+}
+
+// ChannelCodeHasSuffix applies the HasSuffix predicate on the "channel_code" field.
+func ChannelCodeHasSuffix(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldHasSuffix(FieldChannelCode, v))
+}
+
+// ChannelCodeIsNil applies the IsNil predicate on the "channel_code" field.
+func ChannelCodeIsNil() predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldIsNull(FieldChannelCode))
+}
+
+// ChannelCodeNotNil applies the NotNil predicate on the "channel_code" field.
+func ChannelCodeNotNil() predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldNotNull(FieldChannelCode))
+}
+
+// ChannelCodeEqualFold applies the EqualFold predicate on the "channel_code" field.
+func ChannelCodeEqualFold(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldEqualFold(FieldChannelCode, v))
+}
+
+// ChannelCodeContainsFold applies the ContainsFold predicate on the "channel_code" field.
+func ChannelCodeContainsFold(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldContainsFold(FieldChannelCode, v))
 }
 
 // SourceProviderCodeEQ applies the EQ predicate on the "source_provider_code" field.

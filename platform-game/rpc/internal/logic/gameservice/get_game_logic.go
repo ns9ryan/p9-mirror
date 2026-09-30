@@ -96,22 +96,17 @@ func GetGameExtInfo(ctx context.Context, svcCtx *svc.ServiceContext, gameRecord 
 	}
 
 	// 查询游戏货币信息 - 需要通过GameCurrencyDAO
-	gameCurrencyRecords, err := svcCtx.DAOManager.GameCurrency.GetAllGameCurrency(ctx, gameRecord.SourceID, 0)
+	gameCurrencyRecords, err := svcCtx.DAOManager.GameCurrency.GetAllGameCurrency(ctx, gameRecord.GameCode, "")
 	if err != nil {
 		return nil, fmt.Errorf("query game currency failed: %w", err)
 	}
 
 	gameCurrencyInfo := []GameCurrencyInfo{}
 	for _, gameCurrencyRecord := range gameCurrencyRecords {
-		currencyRecord, err := svcCtx.DAOManager.Currency.GetCurrencyByID(ctx, gameCurrencyRecord.CurrencyID)
-		if err != nil {
-			fmt.Errorf("query currency failed: currencyID=%d: %w", gameCurrencyRecord.CurrencyID, err)
-			continue
-		}
-		// 需要查询Currency表获取name_key
+		// 直接使用 CurrencyCode，不需要再查询 Currency 表
 		gameCurrencyInfo = append(gameCurrencyInfo, GameCurrencyInfo{
-			CurrencyID:      gameCurrencyRecord.CurrencyID,
-			CurrencyNameKey: currencyRecord.NameKey,
+			CurrencyCode:    gameCurrencyRecord.CurrencyCode,
+			CurrencyNameKey: fmt.Sprintf("%s.%s.name", "game.currency", gameCurrencyRecord.CurrencyCode),
 		})
 	}
 
@@ -120,6 +115,6 @@ func GetGameExtInfo(ctx context.Context, svcCtx *svc.ServiceContext, gameRecord 
 }
 
 type GameCurrencyInfo struct {
-	CurrencyID      int64  `json:"currency_id" comment:"币种ID"`
+	CurrencyCode    string `json:"currency_code" comment:"币种编码"`
 	CurrencyNameKey string `json:"currency_name_key" comment:"币种名称Key"`
 }

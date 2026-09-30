@@ -17,10 +17,10 @@ type GameCurrency struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
-	// GameID holds the value of the "game_id" field.
-	GameID int64 `json:"game_id,omitempty"`
-	// CurrencyID holds the value of the "currency_id" field.
-	CurrencyID int64 `json:"currency_id,omitempty"`
+	// GameCode holds the value of the "game_code" field.
+	GameCode string `json:"game_code,omitempty"`
+	// CurrencyCode holds the value of the "currency_code" field.
+	CurrencyCode string `json:"currency_code,omitempty"`
 	// SourceStatus holds the value of the "source_status" field.
 	SourceStatus int64 `json:"source_status,omitempty"`
 	// Status holds the value of the "status" field.
@@ -39,8 +39,10 @@ func (*GameCurrency) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case gamecurrency.FieldID, gamecurrency.FieldGameID, gamecurrency.FieldCurrencyID, gamecurrency.FieldSourceStatus, gamecurrency.FieldStatus:
+		case gamecurrency.FieldID, gamecurrency.FieldSourceStatus, gamecurrency.FieldStatus:
 			values[i] = new(sql.NullInt64)
+		case gamecurrency.FieldGameCode, gamecurrency.FieldCurrencyCode:
+			values[i] = new(sql.NullString)
 		case gamecurrency.FieldDeletedAt, gamecurrency.FieldCreatedAt, gamecurrency.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
@@ -64,17 +66,17 @@ func (_m *GameCurrency) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case gamecurrency.FieldGameID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field game_id", values[i])
+		case gamecurrency.FieldGameCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field game_code", values[i])
 			} else if value.Valid {
-				_m.GameID = value.Int64
+				_m.GameCode = value.String
 			}
-		case gamecurrency.FieldCurrencyID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field currency_id", values[i])
+		case gamecurrency.FieldCurrencyCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field currency_code", values[i])
 			} else if value.Valid {
-				_m.CurrencyID = value.Int64
+				_m.CurrencyCode = value.String
 			}
 		case gamecurrency.FieldSourceStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -142,11 +144,11 @@ func (_m *GameCurrency) String() string {
 	var builder strings.Builder
 	builder.WriteString("GameCurrency(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("game_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.GameID))
+	builder.WriteString("game_code=")
+	builder.WriteString(_m.GameCode)
 	builder.WriteString(", ")
-	builder.WriteString("currency_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.CurrencyID))
+	builder.WriteString("currency_code=")
+	builder.WriteString(_m.CurrencyCode)
 	builder.WriteString(", ")
 	builder.WriteString("source_status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.SourceStatus))

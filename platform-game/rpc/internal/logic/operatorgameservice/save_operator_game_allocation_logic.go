@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"oa.98ent.com/p9/platform-game/rpc/internal/svc"
+	"oa.98ent.com/p9/platform-game/rpc/internal/utils"
 	"oa.98ent.com/p9/platform-game/rpc/pb/platform_game"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -27,7 +28,6 @@ func NewSaveOperatorGameAllocationLogic(ctx context.Context, svcCtx *svc.Service
 func (l *SaveOperatorGameAllocationLogic) SaveOperatorGameAllocation(in *platform_game.SaveOperatorGameAllocationRequest) (*platform_game.SaveOperatorGameAllocationResp, error) {
 	var resp platform_game.SaveOperatorGameAllocationResp
 	resp.Total = int64(len(in.GetItems()))
-
 	if l.svcCtx == nil || l.svcCtx.DAOManager == nil {
 		l.Errorf("[SaveOperatorGameAllocation] database not available")
 		return &resp, nil
@@ -46,7 +46,28 @@ func (l *SaveOperatorGameAllocationLogic) SaveOperatorGameAllocation(in *platfor
 		return &resp, nil
 	}
 
-	for _, item := range in.GetItems() {
+	// 如果isAllCheck为true，拉取所有游戏数据
+	var items []*platform_game.SaveOperatorGameAllocationInfo
+	if in.GetIsCheckAll() {
+		allGames, err := l.svcCtx.DAOManager.Game.GetAllGames(l.ctx)
+		if err != nil {
+			l.Errorf("[SaveOperatorGameAllocation] failed to get all games: err=%v", err)
+			return &resp, nil
+		}
+
+		for _, game := range allGames {
+			items = append(items, &platform_game.SaveOperatorGameAllocationInfo{
+				Code:        game.GameCode,
+				CheckStatus: 1, // 默认为创建状态
+			})
+		}
+		resp.Total = int64(len(items))
+		l.Infof("[SaveOperatorGameAllocation] isAllCheck=true, loaded %d games", len(items))
+	} else {
+		items = in.GetItems()
+	}
+
+	for _, item := range items {
 		if item == nil {
 			resp.Failed++
 			continue
@@ -91,6 +112,7 @@ func (l *SaveOperatorGameAllocationLogic) SaveOperatorGameAllocation(in *platfor
 			}
 
 			if checkStatus == 1 {
+				l.Infof("[SaveOperatorGameAllocation] queried game record: game_code=%s, record=%s", gameCode, utils.JSON(gameRecord))
 				// 创建记录
 				_, err := l.svcCtx.DAOManager.OperatorGame.CreateAllocation(l.ctx, gameRecord.Name, opCode, gameCode)
 				if err != nil {
@@ -100,6 +122,80 @@ func (l *SaveOperatorGameAllocationLogic) SaveOperatorGameAllocation(in *platfor
 					continue
 				}
 				resp.Created++
+
+				// 获取游戏的扩展信息（渠道和供应商）
+				gameExtInfo, err := l.svcCtx.DAOManager.Game.GetGameExtraInfo(l.ctx, gameRecord)
+				l.Infof("[SaveOperatorGameAllocation] got game ext info: game_code=%s, ext_info=%s", gameCode, utils.JSON(gameExtInfo))
+				if err != nil {
+					l.Errorf("[SaveOperatorGameAllocation] get game ext info failed: game_code=%s, err=%v",
+						gameCode, err)
+					continue
+				}
+				// 添加游戏分类到分配表（如果分类存在）
+				if gameExtInfo.CategoryCode != "" {
+					categoryExists, err := l.svcCtx.DAOManager.OperatorGameCategory.ExistByOpCodeAndCategoryCode(l.ctx, opCode, gameExtInfo.CategoryCode)
+					l.Infof("[SaveOperatorGameAllocation] checked category existence: op_code=%s, category_code=%s, exists=%v", opCode, gameExtInfo.CategoryCode, categoryExists)
+					if err != nil {
+						l.Errorf("[SaveOperatorGameAllocation] check category existence failed: op_code=%s, category_code=%s, err=%v",
+							opCode, gameExtInfo.CategoryCode, err)
+						continue
+					}
+
+					if !categoryExists {
+						_, err := l.svcCtx.DAOManager.OperatorGameCategory.CreateAllocation(l.ctx, opCode, gameExtInfo.CategoryCode)
+						if err != nil {
+							l.Errorf("[SaveOperatorGameAllocation] create operator game category failed: op_code=%s, category_code=%s, err=%v",
+								opCode, gameExtInfo.CategoryCode, err)
+						} else {
+							l.Infof("[SaveOperatorGameAllocation] operator game category created: op_code=%s, category_code=%s",
+								opCode, gameExtInfo.CategoryCode)
+						}
+					}
+				}
+
+				// 添加游戏供应商到分配表（如果供应商存在）
+				if gameExtInfo.ProviderCode != "" {
+					providerExists, err := l.svcCtx.DAOManager.OperatorGameProvider.ExistByOpCodeAndProviderCode(l.ctx, opCode, gameExtInfo.ProviderCode)
+					l.Infof("[SaveOperatorGameAllocation] checked provider existence: op_code=%s, provider_code=%s, exists=%v", opCode, gameExtInfo.ProviderCode, providerExists)
+					if err != nil {
+						l.Errorf("[SaveOperatorGameAllocation] check provider existence failed: op_code=%s, provider_code=%s, err=%v",
+							opCode, gameExtInfo.ProviderCode, err)
+						continue
+					}
+
+					if !providerExists {
+						_, err := l.svcCtx.DAOManager.OperatorGameProvider.CreateAllocation(l.ctx, opCode, gameExtInfo.ProviderCode)
+						if err != nil {
+							l.Errorf("[SaveOperatorGameAllocation] create operator game provider failed: op_code=%s, provider_code=%s, err=%v",
+								opCode, gameExtInfo.ProviderCode, err)
+						} else {
+							l.Infof("[SaveOperatorGameAllocation] operator game provider created: op_code=%s, provider_code=%s",
+								opCode, gameExtInfo.ProviderCode)
+						}
+					}
+				}
+
+				// 添加游戏渠道到分配表（如果渠道存在）
+				if gameExtInfo.ChannelCode != "" {
+					channelExists, err := l.svcCtx.DAOManager.OperatorGameChannel.ExistByOpCodeAndChannelCode(l.ctx, opCode, gameExtInfo.ChannelCode)
+					l.Infof("[SaveOperatorGameAllocation] checked channel existence: op_code=%s, channel_code=%s, exists=%v", opCode, gameExtInfo.ChannelCode, channelExists)
+					if err != nil {
+						l.Errorf("[SaveOperatorGameAllocation] check channel existence failed: op_code=%s, channel_code=%s, err=%v",
+							opCode, gameExtInfo.ChannelCode, err)
+						continue
+					}
+
+					if !channelExists {
+						_, err := l.svcCtx.DAOManager.OperatorGameChannel.CreateAllocation(l.ctx, opCode, gameExtInfo.ChannelCode)
+						if err != nil {
+							l.Errorf("[SaveOperatorGameAllocation] create operator game channel failed: op_code=%s, channel_code=%s, err=%v",
+								opCode, gameExtInfo.ChannelCode, err)
+						} else {
+							l.Infof("[SaveOperatorGameAllocation] operator game channel created: op_code=%s, channel_code=%s",
+								opCode, gameExtInfo.ChannelCode)
+						}
+					}
+				}
 			}
 		}
 	}

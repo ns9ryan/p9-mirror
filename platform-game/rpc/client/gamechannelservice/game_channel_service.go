@@ -14,12 +14,14 @@ import (
 )
 
 type (
-	GetGameChannelListRequest = platform_game.GetGameChannelListRequest
-	GetGameChannelListResp    = platform_game.GetGameChannelListResp
-	GetGameChannelRequest     = platform_game.GetGameChannelRequest
-	GetGameChannelResp        = platform_game.GetGameChannelResp
-	UpdateGameChannelRequest  = platform_game.UpdateGameChannelRequest
-	UpdateGameChannelResp     = platform_game.UpdateGameChannelResp
+	GetGameChannelListRequest          = platform_game.GetGameChannelListRequest
+	GetGameChannelListResp             = platform_game.GetGameChannelListResp
+	GetGameChannelRequest              = platform_game.GetGameChannelRequest
+	GetGameChannelResp                 = platform_game.GetGameChannelResp
+	GetPublishedGameChannelListRequest = platform_game.GetPublishedGameChannelListRequest
+	GetPublishedGameChannelListResp    = platform_game.GetPublishedGameChannelListResp
+	UpdateGameChannelRequest           = platform_game.UpdateGameChannelRequest
+	UpdateGameChannelResp              = platform_game.UpdateGameChannelResp
 
 	GameChannelService interface {
 		// 获取单个游戏渠道
@@ -28,6 +30,8 @@ type (
 		GetGameChannelList(ctx context.Context, in *GetGameChannelListRequest, opts ...grpc.CallOption) (*GetGameChannelListResp, error)
 		// 更新游戏渠道
 		UpdateGameChannel(ctx context.Context, in *UpdateGameChannelRequest, opts ...grpc.CallOption) (*UpdateGameChannelResp, error)
+		// 获取已发布的游戏渠道列表（供分站同步）
+		GetPublishedGameChannelList(ctx context.Context, in *GetPublishedGameChannelListRequest, opts ...grpc.CallOption) (*GetPublishedGameChannelListResp, error)
 	}
 
 	defaultGameChannelService struct {
@@ -57,4 +61,10 @@ func (m *defaultGameChannelService) GetGameChannelList(ctx context.Context, in *
 func (m *defaultGameChannelService) UpdateGameChannel(ctx context.Context, in *UpdateGameChannelRequest, opts ...grpc.CallOption) (*UpdateGameChannelResp, error) {
 	client := platform_game.NewGameChannelServiceClient(m.cli.Conn())
 	return client.UpdateGameChannel(ctx, in, opts...)
+}
+
+// 获取已发布的游戏渠道列表（供分站同步）
+func (m *defaultGameChannelService) GetPublishedGameChannelList(ctx context.Context, in *GetPublishedGameChannelListRequest, opts ...grpc.CallOption) (*GetPublishedGameChannelListResp, error) {
+	client := platform_game.NewGameChannelServiceClient(m.cli.Conn())
+	return client.GetPublishedGameChannelList(ctx, in, opts...)
 }

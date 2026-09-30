@@ -16,6 +16,10 @@ import "types/operator_game_channel.proto";
 import "types/operator_game_provider.proto";
 import "types/operator_game.proto";
 import "types/operator_game_allocation.proto";
+import "types/published_category.proto";
+import "types/published_game.proto";
+import "types/published_provider.proto";
+import "types/published_channel.proto";
 
 // ========== Game Service ==========
 
@@ -29,6 +33,9 @@ service GameService {
 
     // 更新游戏
     rpc UpdateGame(platform_game.UpdateGameRequest) returns (platform_game.UpdateGameResp);
+
+    // 获取已发布的游戏列表（供分站同步）
+    rpc GetPublishedGameList(platform_game.GetPublishedGameListRequest) returns (platform_game.GetPublishedGameListResp);
 }
 
 // ========== GameCategory Service ==========
@@ -43,6 +50,9 @@ service GameCategoryService {
 
     // 更新游戏分类
     rpc UpdateGameCategory(platform_game.UpdateGameCategoryRequest) returns (platform_game.UpdateGameCategoryResp);
+
+    // 获取已发布的游戏分类列表（供分站同步）
+    rpc GetPublishedGameCategoryList(platform_game.GetPublishedGameCategoryListRequest) returns (platform_game.GetPublishedGameCategoryListResp);
 }
 
 // ========== GameProvider Service ==========
@@ -57,6 +67,9 @@ service GameProviderService {
 
     // 更新游戏供应商
     rpc UpdateGameProvider(platform_game.UpdateGameProviderRequest) returns (platform_game.UpdateGameProviderResp);
+
+    // 获取已发布的游戏供应商列表（供分站同步）
+    rpc GetPublishedGameProviderList(platform_game.GetPublishedGameProviderListRequest) returns (platform_game.GetPublishedGameProviderListResp);
 }
 
 // ========== GameChannel Service ==========
@@ -71,6 +84,9 @@ service GameChannelService {
 
     // 更新游戏渠道
     rpc UpdateGameChannel(platform_game.UpdateGameChannelRequest) returns (platform_game.UpdateGameChannelResp);
+
+    // 获取已发布的游戏渠道列表（供分站同步）
+    rpc GetPublishedGameChannelList(platform_game.GetPublishedGameChannelListRequest) returns (platform_game.GetPublishedGameChannelListResp);
 }
 
 // ========== GameCurrency Service ==========
@@ -162,4 +178,7 @@ service OperatorGameService {
 service OperatorGameAllocationService {
     // 获取分站游戏分配列表
     rpc GetOperatorGameAllocationList(platform_game.GetOperatorGameAllocationListRequest) returns (platform_game.GetOperatorGameAllocationListResp);
+
+    // 发布游戏资源分配到指定分站
+    rpc PublishOperatorGameAllocation(platform_game.PublishOperatorGameAllocationRequest) returns (platform_game.PublishOperatorGameAllocationResponse);
 }

@@ -42,7 +42,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin/game-category"),
+		rest.WithPrefix("/platform-game/game-category"),
 	)
 
 	server.AddRoutes(
@@ -66,7 +66,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin/game-channel"),
+		rest.WithPrefix("/platform-game/game-channel"),
 	)
 
 	server.AddRoutes(
@@ -85,7 +85,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/platform-game"),
 	)
 
 	server.AddRoutes(
@@ -109,7 +109,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin/game-currency"),
+		rest.WithPrefix("/platform-game/game-currency"),
 	)
 
 	server.AddRoutes(
@@ -133,7 +133,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin/game"),
+		rest.WithPrefix("/platform-game/game"),
 	)
 
 	server.AddRoutes(
@@ -177,7 +177,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin/sync"),
+		rest.WithPrefix("/platform-game/sync"),
 	)
 
 	server.AddRoutes(
@@ -201,7 +201,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin/game-provider"),
+		rest.WithPrefix("/platform-game/game-provider"),
 	)
 
 	server.AddRoutes(
@@ -240,6 +240,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin/sync"),
+		rest.WithPrefix("/platform-game/sync"),
 	)
 }

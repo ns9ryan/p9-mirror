@@ -33,3 +33,12 @@ message GetOperatorGameAllocationListResp {
     int32 page = 5;
     int32 page_size = 6;
 }
+
+// PublishOperatorGameAllocationRequest 发布游戏资源分配请求
+message PublishOperatorGameAllocationRequest {
+    string op_code = 1; // 分站全局唯一业务编码
+}
+
+// PublishOperatorGameAllocationResponse 发布游戏资源分配响应
+message PublishOperatorGameAllocationResponse {
+}

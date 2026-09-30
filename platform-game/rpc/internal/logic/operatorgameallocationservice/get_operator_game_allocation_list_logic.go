@@ -99,11 +99,11 @@ func (l *GetOperatorGameAllocationListLogic) GetOperatorGameAllocationList(in *p
 				GameCategoryCount: int32(categoryCount),
 				GameChannelCount:  int32(channelCount),
 				GameProviderCount: int32(providerCount),
-				UpdatedAt:         operator.UpdatedAt.Unix(),
+				UpdatedAt:         operator.UpdatedAt.UnixMilli(),
 			}
 
-			// 缓存2分钟
-			l.svcCtx.CacheManager.Set(cacheKey, info, 120)
+			// 缓存2s
+			l.svcCtx.CacheManager.Set(cacheKey, info, 2)
 
 			mu.Lock()
 			items = append(items, info)

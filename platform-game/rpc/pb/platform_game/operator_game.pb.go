@@ -439,6 +439,7 @@ type SaveOperatorGameAllocationRequest struct {
 	state         protoimpl.MessageState            `protogen:"open.v1"`
 	OpCode        string                            `protobuf:"bytes,1,opt,name=op_code,json=opCode,proto3" json:"op_code,omitempty"`
 	Items         []*SaveOperatorGameAllocationInfo `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
+	IsCheckAll    bool                              `protobuf:"varint,3,opt,name=is_check_all,json=isCheckAll,proto3" json:"is_check_all,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -485,6 +486,13 @@ func (x *SaveOperatorGameAllocationRequest) GetItems() []*SaveOperatorGameAlloca
 		return x.Items
 	}
 	return nil
+}
+
+func (x *SaveOperatorGameAllocationRequest) GetIsCheckAll() bool {
+	if x != nil {
+		return x.IsCheckAll
+	}
+	return false
 }
 
 // SaveOperatorGameAllocationResp 保存分站游戏分配响应
@@ -600,10 +608,12 @@ const file_types_operator_game_proto_rawDesc = "" +
 	"\x06failed\x18\x03 \x01(\x03R\x06failed\"W\n" +
 	"\x1eSaveOperatorGameAllocationInfo\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12!\n" +
-	"\fcheck_status\x18\x02 \x01(\x05R\vcheckStatus\"\x81\x01\n" +
+	"\fcheck_status\x18\x02 \x01(\x05R\vcheckStatus\"\xa3\x01\n" +
 	"!SaveOperatorGameAllocationRequest\x12\x17\n" +
 	"\aop_code\x18\x01 \x01(\tR\x06opCode\x12C\n" +
-	"\x05items\x18\x02 \x03(\v2-.platform_game.SaveOperatorGameAllocationInfoR\x05items\"\x98\x01\n" +
+	"\x05items\x18\x02 \x03(\v2-.platform_game.SaveOperatorGameAllocationInfoR\x05items\x12 \n" +
+	"\fis_check_all\x18\x03 \x01(\bR\n" +
+	"isCheckAll\"\x98\x01\n" +
 	"\x1eSaveOperatorGameAllocationResp\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12\x18\n" +
 	"\acreated\x18\x02 \x01(\x03R\acreated\x12\x18\n" +

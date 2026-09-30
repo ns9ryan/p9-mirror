@@ -21,6 +21,8 @@ type GameProvider struct {
 	SourceID int64 `json:"source_id,omitempty"`
 	// ProviderCode holds the value of the "provider_code" field.
 	ProviderCode string `json:"provider_code,omitempty"`
+	// ChannelCode holds the value of the "channel_code" field.
+	ChannelCode string `json:"channel_code,omitempty"`
 	// SourceProviderCode holds the value of the "source_provider_code" field.
 	SourceProviderCode string `json:"source_provider_code,omitempty"`
 	// SourceLogoURL holds the value of the "source_logo_url" field.
@@ -51,7 +53,7 @@ func (*GameProvider) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case gameprovider.FieldID, gameprovider.FieldSourceID, gameprovider.FieldSourceSortNo, gameprovider.FieldSortNo, gameprovider.FieldSourceStatus, gameprovider.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case gameprovider.FieldProviderCode, gameprovider.FieldSourceProviderCode, gameprovider.FieldSourceLogoURL, gameprovider.FieldLogoURL:
+		case gameprovider.FieldProviderCode, gameprovider.FieldChannelCode, gameprovider.FieldSourceProviderCode, gameprovider.FieldSourceLogoURL, gameprovider.FieldLogoURL:
 			values[i] = new(sql.NullString)
 		case gameprovider.FieldDeletedAt, gameprovider.FieldCreatedAt, gameprovider.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -87,6 +89,12 @@ func (_m *GameProvider) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field provider_code", values[i])
 			} else if value.Valid {
 				_m.ProviderCode = value.String
+			}
+		case gameprovider.FieldChannelCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field channel_code", values[i])
+			} else if value.Valid {
+				_m.ChannelCode = value.String
 			}
 		case gameprovider.FieldSourceProviderCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -189,6 +197,9 @@ func (_m *GameProvider) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("provider_code=")
 	builder.WriteString(_m.ProviderCode)
+	builder.WriteString(", ")
+	builder.WriteString("channel_code=")
+	builder.WriteString(_m.ChannelCode)
 	builder.WriteString(", ")
 	builder.WriteString("source_provider_code=")
 	builder.WriteString(_m.SourceProviderCode)

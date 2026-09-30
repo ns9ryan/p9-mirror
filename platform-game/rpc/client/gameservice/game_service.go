@@ -14,12 +14,14 @@ import (
 )
 
 type (
-	GetGameListRequest = platform_game.GetGameListRequest
-	GetGameListResp    = platform_game.GetGameListResp
-	GetGameRequest     = platform_game.GetGameRequest
-	GetGameResp        = platform_game.GetGameResp
-	UpdateGameRequest  = platform_game.UpdateGameRequest
-	UpdateGameResp     = platform_game.UpdateGameResp
+	GetGameListRequest          = platform_game.GetGameListRequest
+	GetGameListResp             = platform_game.GetGameListResp
+	GetGameRequest              = platform_game.GetGameRequest
+	GetGameResp                 = platform_game.GetGameResp
+	GetPublishedGameListRequest = platform_game.GetPublishedGameListRequest
+	GetPublishedGameListResp    = platform_game.GetPublishedGameListResp
+	UpdateGameRequest           = platform_game.UpdateGameRequest
+	UpdateGameResp              = platform_game.UpdateGameResp
 
 	GameService interface {
 		// 获取游戏列表
@@ -28,6 +30,8 @@ type (
 		GetGame(ctx context.Context, in *GetGameRequest, opts ...grpc.CallOption) (*GetGameResp, error)
 		// 更新游戏
 		UpdateGame(ctx context.Context, in *UpdateGameRequest, opts ...grpc.CallOption) (*UpdateGameResp, error)
+		// 获取已发布的游戏列表（供分站同步）
+		GetPublishedGameList(ctx context.Context, in *GetPublishedGameListRequest, opts ...grpc.CallOption) (*GetPublishedGameListResp, error)
 	}
 
 	defaultGameService struct {
@@ -57,4 +61,10 @@ func (m *defaultGameService) GetGame(ctx context.Context, in *GetGameRequest, op
 func (m *defaultGameService) UpdateGame(ctx context.Context, in *UpdateGameRequest, opts ...grpc.CallOption) (*UpdateGameResp, error) {
 	client := platform_game.NewGameServiceClient(m.cli.Conn())
 	return client.UpdateGame(ctx, in, opts...)
+}
+
+// 获取已发布的游戏列表（供分站同步）
+func (m *defaultGameService) GetPublishedGameList(ctx context.Context, in *GetPublishedGameListRequest, opts ...grpc.CallOption) (*GetPublishedGameListResp, error) {
+	client := platform_game.NewGameServiceClient(m.cli.Conn())
+	return client.GetPublishedGameList(ctx, in, opts...)
 }

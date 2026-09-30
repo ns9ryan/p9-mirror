@@ -14,6 +14,9 @@ type Config struct {
 
 	SyncBatchSize int `json:"syncBatchSize,optional,default=100" yaml:"SyncBatchSize"`
 
+	// Node Dispatch RPC配置
+	NodeDispatchRpc zrpc.RpcClientConf `json:"nodeDispatchRpc,optional" yaml:"NodeDispatchRpc"`
+
 	Kafka struct {
 		// Kafka brokers 列表
 		Brokers []string `json:"brokers,optional" yaml:"Brokers"`

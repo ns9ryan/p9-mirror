@@ -55,6 +55,7 @@ message SaveOperatorGameAllocationInfo {
 message SaveOperatorGameAllocationRequest {
     string op_code = 1;
     repeated SaveOperatorGameAllocationInfo items = 2;
+    bool is_check_all = 3;
 }
 
 // SaveOperatorGameAllocationResp 保存分站游戏分配响应
