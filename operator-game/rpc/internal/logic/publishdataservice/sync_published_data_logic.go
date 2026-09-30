@@ -126,10 +126,10 @@ func (l *SyncPublishedDataLogic) syncPublishedGameCategory(opCode string) (*oper
 
 	// 同步到数据库
 	for _, item := range allItems {
-		_, err := l.svcCtx.DAOManager.GameCategory.GetOrCreateGameCategory(l.ctx,
-			item.CategoryCode, item.SortNo, int64(item.Status))
+		_, err := l.svcCtx.DAOManager.GameCategory.GetOrUpdateGameCategory(l.ctx,
+			opCode, item.CategoryCode, item.SortNo, int64(item.Status))
 		if err != nil {
-			l.Errorf("创建游戏分类失败: %v", err)
+			l.Errorf("同步游戏分类失败: %v", err)
 			stat.Failed++
 			continue
 		}
@@ -171,10 +171,10 @@ func (l *SyncPublishedDataLogic) syncPublishedGameProvider(opCode string) (*oper
 
 	// 同步到数据库
 	for _, item := range allItems {
-		_, err := l.svcCtx.DAOManager.GameProvider.GetOrCreateGameProvider(l.ctx,
-			item.ProviderCode, item.ChannelCode, &item.LogoUrl, item.SortNo, int64(item.Status))
+		_, err := l.svcCtx.DAOManager.GameProvider.GetOrUpdateGameProvider(l.ctx,
+			opCode, item.ProviderCode, item.ChannelCode, &item.LogoUrl, item.SortNo, int64(item.Status))
 		if err != nil {
-			l.Errorf("创建游戏供应商失败: %v", err)
+			l.Errorf("同步游戏供应商失败: %v", err)
 			stat.Failed++
 			continue
 		}
@@ -217,10 +217,10 @@ func (l *SyncPublishedDataLogic) syncPublishedGameChannel(opCode string) (*opera
 
 	// 同步到数据库
 	for _, item := range allItems {
-		_, err := l.svcCtx.DAOManager.GameChannel.GetOrCreateGameChannel(l.ctx,
-			1, item.ChannelCode, item.SortNo, item.LoadType, int64(item.Status))
+		_, err := l.svcCtx.DAOManager.GameChannel.GetOrUpdateGameChannel(l.ctx,
+			opCode, item.ChannelCode, item.SortNo, item.LoadType, int64(item.Status))
 		if err != nil {
-			l.Errorf("创建游戏渠道失败: %v", err)
+			l.Errorf("同步游戏渠道失败: %v", err)
 			stat.Failed++
 			continue
 		}
@@ -283,8 +283,8 @@ func (l *SyncPublishedDataLogic) syncPublishedGame(opCode string) (*operator_gam
 	// 同步收集到的分类
 	l.Infof("[游戏同步] 开始同步游戏相关的分类, 共 %d 项", len(categoryMap))
 	for _, catItem := range categoryMap {
-		_, err := l.svcCtx.DAOManager.GameCategory.GetOrCreateGameCategory(l.ctx,
-			catItem.CategoryCode, catItem.SortNo, int64(catItem.Status))
+		_, err := l.svcCtx.DAOManager.GameCategory.GetOrUpdateGameCategory(l.ctx,
+			opCode, catItem.CategoryCode, catItem.SortNo, int64(catItem.Status))
 		if err != nil {
 			l.Errorf("[游戏同步] 同步游戏分类失败: %v", err)
 			// 不中断游戏同步
@@ -294,8 +294,8 @@ func (l *SyncPublishedDataLogic) syncPublishedGame(opCode string) (*operator_gam
 	// 同步收集到的厂商
 	l.Infof("[游戏同步] 开始同步游戏相关的厂商, 共 %d 项", len(providerMap))
 	for _, prvItem := range providerMap {
-		_, err := l.svcCtx.DAOManager.GameProvider.GetOrCreateGameProvider(l.ctx,
-			prvItem.ProviderCode, prvItem.ChannelCode, &prvItem.LogoUrl, prvItem.SortNo, int64(prvItem.Status))
+		_, err := l.svcCtx.DAOManager.GameProvider.GetOrUpdateGameProvider(l.ctx,
+			opCode, prvItem.ProviderCode, prvItem.ChannelCode, &prvItem.LogoUrl, prvItem.SortNo, int64(prvItem.Status))
 		if err != nil {
 			l.Errorf("[游戏同步] 同步游戏厂商失败: %v", err)
 			// 不中断游戏同步
@@ -305,8 +305,8 @@ func (l *SyncPublishedDataLogic) syncPublishedGame(opCode string) (*operator_gam
 	// 同步收集到的渠道
 	l.Infof("[游戏同步] 开始同步游戏相关的渠道, 共 %d 项", len(channelMap))
 	for _, chnItem := range channelMap {
-		_, err := l.svcCtx.DAOManager.GameChannel.GetOrCreateGameChannel(l.ctx,
-			1, chnItem.ChannelCode, chnItem.SortNo, chnItem.LoadType, int64(chnItem.Status))
+		_, err := l.svcCtx.DAOManager.GameChannel.GetOrUpdateGameChannel(l.ctx,
+			opCode, chnItem.ChannelCode, chnItem.SortNo, chnItem.LoadType, int64(chnItem.Status))
 		if err != nil {
 			l.Errorf("[游戏同步] 同步游戏渠道失败: %v", err)
 			// 不中断游戏同步
@@ -319,12 +319,12 @@ func (l *SyncPublishedDataLogic) syncPublishedGame(opCode string) (*operator_gam
 		name := item.Name
 		imageURL := item.ImageUrl
 
-		_, err := l.svcCtx.DAOManager.Game.GetOrCreateGame(l.ctx,
-			item.SourceId,
+		_, err := l.svcCtx.DAOManager.Game.GetOrUpdateGame(l.ctx,
+			opCode, item.SourceId,
 			item.GameCode, item.ProviderKey, item.CategoryCode, item.ProviderCode, item.ChannelCode,
 			&name, &imageURL, item.SortNo, item.SupportsEmbed, item.SupportsRedirect, int64(item.Status), item.CurrencyCodeList)
 		if err != nil {
-			l.Errorf("[游戏同步] 创建游戏失败: %v", err)
+			l.Errorf("[游戏同步] 同步游戏失败: %v", err)
 			stat.Failed++
 			continue
 		}

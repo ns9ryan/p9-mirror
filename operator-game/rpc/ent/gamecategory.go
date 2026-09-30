@@ -17,6 +17,8 @@ type GameCategory struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
+	// OpCode holds the value of the "op_code" field.
+	OpCode string `json:"op_code,omitempty"`
 	// CategoryCode holds the value of the "category_code" field.
 	CategoryCode string `json:"category_code,omitempty"`
 	// SortNo holds the value of the "sort_no" field.
@@ -37,7 +39,7 @@ func (*GameCategory) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case gamecategory.FieldID, gamecategory.FieldSortNo, gamecategory.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case gamecategory.FieldCategoryCode:
+		case gamecategory.FieldOpCode, gamecategory.FieldCategoryCode:
 			values[i] = new(sql.NullString)
 		case gamecategory.FieldCreatedAt, gamecategory.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -62,6 +64,12 @@ func (_m *GameCategory) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case gamecategory.FieldOpCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field op_code", values[i])
+			} else if value.Valid {
+				_m.OpCode = value.String
+			}
 		case gamecategory.FieldCategoryCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field category_code", values[i])
@@ -128,6 +136,9 @@ func (_m *GameCategory) String() string {
 	var builder strings.Builder
 	builder.WriteString("GameCategory(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("op_code=")
+	builder.WriteString(_m.OpCode)
+	builder.WriteString(", ")
 	builder.WriteString("category_code=")
 	builder.WriteString(_m.CategoryCode)
 	builder.WriteString(", ")

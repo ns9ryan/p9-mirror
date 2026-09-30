@@ -3,7 +3,7 @@ syntax = "v1"
 @server (
 	group: provider
 	middleware: Jwt,ActionLog,Authority
-	prefix: /admin/game-provider
+	prefix: /operator-game/game-provider
 )
 service operator_game {
 	// ===== Game Provider APIs =====

@@ -3,6 +3,7 @@ package gameproviderservicelogic
 import (
 	"context"
 
+	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/operator-game/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-game/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-game/rpc/internal/utils"
@@ -41,6 +42,12 @@ func (l *GetGameProviderListLogic) GetGameProviderList(in *operator_game.GetGame
 	opts := []dao.GameProviderListOption{
 		dao.WithGameProviderOffset(offset),
 		dao.WithGameProviderLimit(pageSize),
+	}
+
+	// 从上下文获取 OperatorCode
+	operatorCode := ctxdata.OperatorCodeFromCtx(l.ctx)
+	if operatorCode != "" {
+		opts = append(opts, dao.WithProviderOpCode(operatorCode))
 	}
 
 	if in.ProviderCode != "" {

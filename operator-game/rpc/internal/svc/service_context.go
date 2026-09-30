@@ -47,10 +47,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	gameGrpcClient, err := grpc_client.NewGameClientManager(c.PlatformGameRpcConf)
 
 	// 创建 Core 客户端并初始化鉴权
-	coreClient := zrpc.MustNewClient(zrpc.RpcClientConf{
-		Target:  c.CoreRpc.Target,
-		Timeout: int64(c.CoreRpc.Timeout),
-	})
+	coreClient := zrpc.MustNewClient(c.CoreRpc)
 	coreCli := coreclient.NewCore(coreClient)
 	return &ServiceContext{
 		Config:                 c,

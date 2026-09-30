@@ -262,12 +262,12 @@ func (_q *GameChannelQuery) Clone() *GameChannelQuery {
 // Example:
 //
 //	var v []struct {
-//		ChannelCode string `json:"channel_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.GameChannel.Query().
-//		GroupBy(gamechannel.FieldChannelCode).
+//		GroupBy(gamechannel.FieldOpCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *GameChannelQuery) GroupBy(field string, fields ...string) *GameChannelGroupBy {
@@ -285,11 +285,11 @@ func (_q *GameChannelQuery) GroupBy(field string, fields ...string) *GameChannel
 // Example:
 //
 //	var v []struct {
-//		ChannelCode string `json:"channel_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //	}
 //
 //	client.GameChannel.Query().
-//		Select(gamechannel.FieldChannelCode).
+//		Select(gamechannel.FieldOpCode).
 //		Scan(ctx, &v)
 func (_q *GameChannelQuery) Select(fields ...string) *GameChannelSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -3,6 +3,7 @@ package gamechannelservicelogic
 import (
 	"context"
 
+	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/operator-game/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-game/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-game/rpc/internal/utils"
@@ -41,6 +42,12 @@ func (l *GetGameChannelListLogic) GetGameChannelList(in *operator_game.GetGameCh
 	opts := []dao.GameChannelListOption{
 		dao.WithGameChannelOffset(offset),
 		dao.WithGameChannelLimit(pageSize),
+	}
+
+	// 从上下文获取 OperatorCode
+	operatorCode := ctxdata.OperatorCodeFromCtx(l.ctx)
+	if operatorCode != "" {
+		opts = append(opts, dao.WithChannelOpCode(operatorCode))
 	}
 
 	if in.ChannelCode != "" {

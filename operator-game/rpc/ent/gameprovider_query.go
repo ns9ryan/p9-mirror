@@ -262,12 +262,12 @@ func (_q *GameProviderQuery) Clone() *GameProviderQuery {
 // Example:
 //
 //	var v []struct {
-//		ProviderCode string `json:"provider_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.GameProvider.Query().
-//		GroupBy(gameprovider.FieldProviderCode).
+//		GroupBy(gameprovider.FieldOpCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *GameProviderQuery) GroupBy(field string, fields ...string) *GameProviderGroupBy {
@@ -285,11 +285,11 @@ func (_q *GameProviderQuery) GroupBy(field string, fields ...string) *GameProvid
 // Example:
 //
 //	var v []struct {
-//		ProviderCode string `json:"provider_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //	}
 //
 //	client.GameProvider.Query().
-//		Select(gameprovider.FieldProviderCode).
+//		Select(gameprovider.FieldOpCode).
 //		Scan(ctx, &v)
 func (_q *GameProviderQuery) Select(fields ...string) *GameProviderSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

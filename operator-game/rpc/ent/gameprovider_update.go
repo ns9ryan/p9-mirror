@@ -28,6 +28,20 @@ func (_u *GameProviderUpdate) Where(ps ...predicate.GameProvider) *GameProviderU
 	return _u
 }
 
+// SetOpCode sets the "op_code" field.
+func (_u *GameProviderUpdate) SetOpCode(v string) *GameProviderUpdate {
+	_u.mutation.SetOpCode(v)
+	return _u
+}
+
+// SetNillableOpCode sets the "op_code" field if the given value is not nil.
+func (_u *GameProviderUpdate) SetNillableOpCode(v *string) *GameProviderUpdate {
+	if v != nil {
+		_u.SetOpCode(*v)
+	}
+	return _u
+}
+
 // SetProviderCode sets the "provider_code" field.
 func (_u *GameProviderUpdate) SetProviderCode(v string) *GameProviderUpdate {
 	_u.mutation.SetProviderCode(v)
@@ -193,6 +207,9 @@ func (_u *GameProviderUpdate) sqlSave(ctx context.Context) (_node int, err error
 			}
 		}
 	}
+	if value, ok := _u.mutation.OpCode(); ok {
+		_spec.SetField(gameprovider.FieldOpCode, field.TypeString, value)
+	}
 	if value, ok := _u.mutation.ProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldProviderCode, field.TypeString, value)
 	}
@@ -244,6 +261,20 @@ type GameProviderUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *GameProviderMutation
+}
+
+// SetOpCode sets the "op_code" field.
+func (_u *GameProviderUpdateOne) SetOpCode(v string) *GameProviderUpdateOne {
+	_u.mutation.SetOpCode(v)
+	return _u
+}
+
+// SetNillableOpCode sets the "op_code" field if the given value is not nil.
+func (_u *GameProviderUpdateOne) SetNillableOpCode(v *string) *GameProviderUpdateOne {
+	if v != nil {
+		_u.SetOpCode(*v)
+	}
+	return _u
 }
 
 // SetProviderCode sets the "provider_code" field.
@@ -440,6 +471,9 @@ func (_u *GameProviderUpdateOne) sqlSave(ctx context.Context) (_node *GameProvid
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.OpCode(); ok {
+		_spec.SetField(gameprovider.FieldOpCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.ProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldProviderCode, field.TypeString, value)

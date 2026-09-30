@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // Game holds the schema definition for the Game entity.
@@ -27,6 +28,7 @@ type CurrencyInfo struct {
 func (Game) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Unique(),
+		field.String("op_code"),
 		field.String("game_code"),
 		field.Int64("source_id").Optional(),
 		field.String("category_code").Optional(),
@@ -48,6 +50,13 @@ func (Game) Fields() []ent.Field {
 // Edges of the Game.
 func (Game) Edges() []ent.Edge {
 	return nil
+}
+
+// Indexes of the Game.
+func (Game) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("op_code", "game_code").Unique(),
+	}
 }
 
 func (Game) Annotations() []schema.Annotation {

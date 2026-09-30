@@ -20,6 +20,12 @@ type GameChannelCreate struct {
 	hooks    []Hook
 }
 
+// SetOpCode sets the "op_code" field.
+func (_c *GameChannelCreate) SetOpCode(v string) *GameChannelCreate {
+	_c.mutation.SetOpCode(v)
+	return _c
+}
+
 // SetChannelCode sets the "channel_code" field.
 func (_c *GameChannelCreate) SetChannelCode(v string) *GameChannelCreate {
 	_c.mutation.SetChannelCode(v)
@@ -125,6 +131,9 @@ func (_c *GameChannelCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *GameChannelCreate) check() error {
+	if _, ok := _c.mutation.OpCode(); !ok {
+		return &ValidationError{Name: "op_code", err: errors.New(`ent: missing required field "GameChannel.op_code"`)}
+	}
 	if _, ok := _c.mutation.ChannelCode(); !ok {
 		return &ValidationError{Name: "channel_code", err: errors.New(`ent: missing required field "GameChannel.channel_code"`)}
 	}
@@ -174,6 +183,10 @@ func (_c *GameChannelCreate) createSpec() (*GameChannel, *sqlgraph.CreateSpec) {
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := _c.mutation.OpCode(); ok {
+		_spec.SetField(gamechannel.FieldOpCode, field.TypeString, value)
+		_node.OpCode = value
 	}
 	if value, ok := _c.mutation.ChannelCode(); ok {
 		_spec.SetField(gamechannel.FieldChannelCode, field.TypeString, value)

@@ -33,6 +33,9 @@ func (d *GameDAO) GetGameList(ctx context.Context, opts ...GameListOption) ([]*e
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(game.OpCodeEQ(opt.OpCode))
+	}
 	if opt.GameCode != "" {
 		query = query.Where(game.GameCodeEQ(opt.GameCode))
 	}
@@ -81,6 +84,9 @@ func (d *GameDAO) CountGameList(ctx context.Context, opts ...GameListOption) (in
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(game.OpCodeEQ(opt.OpCode))
+	}
 	if opt.GameCode != "" {
 		query = query.Where(game.GameCodeEQ(opt.GameCode))
 	}
@@ -129,7 +135,7 @@ func (d *GameDAO) UpdateGame(ctx context.Context, id int64, name string, sortNo,
 }
 
 // CreateGame 创建游戏
-func (d *GameDAO) CreateGame(ctx context.Context, sourceID int64, gameCode string, providerKey string, categoryCode, providerCode string, channelCode string,
+func (d *GameDAO) CreateGame(ctx context.Context, opCode string, sourceID int64, gameCode string, providerKey string, categoryCode, providerCode string, channelCode string,
 	name, imageURL *string, sortNo int64, supportsEmbed, supportsRedirect bool, status int64, currencyCodeList []string) (*ent.Game, error) {
 	currencyInfoList := make([]schema.CurrencyInfo, len(currencyCodeList))
 	for i, code := range currencyCodeList {
@@ -137,6 +143,7 @@ func (d *GameDAO) CreateGame(ctx context.Context, sourceID int64, gameCode strin
 	}
 
 	creator := d.db.Game.Create().
+		SetOpCode(opCode).
 		SetSourceID(sourceID).
 		SetGameCode(gameCode).
 		SetCategoryCode(categoryCode).
@@ -163,20 +170,43 @@ func (d *GameDAO) CreateGame(ctx context.Context, sourceID int64, gameCode strin
 	return g, nil
 }
 
-// GetOrCreateGame 获取或创建游戏
-func (d *GameDAO) GetOrCreateGame(ctx context.Context, sourceID int64, gameCode string, providerKey string, categoryCode, providerCode string, channelCode string,
+// GetOrUpdateGame 获取或更新游戏（更新除了sortNo和status之外的所有字段）
+func (d *GameDAO) GetOrUpdateGame(ctx context.Context, opCode string, sourceID int64, gameCode string, providerKey string, categoryCode, providerCode string, channelCode string,
 	name, imageURL *string, sortNo int64, supportsEmbed, supportsRedirect bool, status int64, currencyCodeList []string) (*ent.Game, error) {
 
 	// 先查询是否存在
 	g, err := d.db.Game.Query().
+		Where(game.OpCodeEQ(opCode)).
 		Where(game.GameCodeEQ(gameCode)).
 		First(ctx)
 	if err == nil {
-		return g, nil
+		// 存在则更新其他字段（除了sortNo和status）
+		updater := d.db.Game.UpdateOneID(g.ID).
+			SetProviderKey(providerKey).
+			SetCategoryCode(categoryCode).
+			SetProviderCode(providerCode).
+			SetChannelCode(channelCode).
+			SetSupportsEmbed(supportsEmbed).
+			SetSupportsRedirect(supportsRedirect)
+
+		if name != nil && *name != "" {
+			updater = updater.SetName(*name)
+		}
+		if imageURL != nil && *imageURL != "" {
+			updater = updater.SetImageURL(*imageURL)
+		}
+
+		currencyInfoList := make([]schema.CurrencyInfo, len(currencyCodeList))
+		for i, code := range currencyCodeList {
+			currencyInfoList[i] = schema.CurrencyInfo{Code: code}
+		}
+		updater = updater.SetCurrencyList(currencyInfoList)
+
+		return updater.Save(ctx)
 	}
 
-	// 创建新的
-	return d.CreateGame(ctx, sourceID, gameCode, providerKey, categoryCode, providerCode, channelCode, name, imageURL, sortNo, supportsEmbed, supportsRedirect, status, currencyCodeList)
+	// 不存在则创建新的
+	return d.CreateGame(ctx, opCode, sourceID, gameCode, providerKey, categoryCode, providerCode, channelCode, name, imageURL, sortNo, supportsEmbed, supportsRedirect, status, currencyCodeList)
 }
 
 func (d *GameDAO) CountGameByChannel(ctx context.Context, channelCode string) (int, error) {
@@ -187,6 +217,7 @@ func (d *GameDAO) CountGameByChannel(ctx context.Context, channelCode string) (i
 
 // GameListOptions 列表选项
 type GameListOptions struct {
+	OpCode       string
 	GameCode     string
 	Name         string
 	CategoryCode string
@@ -200,6 +231,12 @@ type GameListOptions struct {
 
 // GameListOption 列表选项函数
 type GameListOption func(*GameListOptions)
+
+func WithGameOpCode(code string) GameListOption {
+	return func(opt *GameListOptions) {
+		opt.OpCode = code
+	}
+}
 
 func WithGameCode(code string) GameListOption {
 	return func(opt *GameListOptions) {

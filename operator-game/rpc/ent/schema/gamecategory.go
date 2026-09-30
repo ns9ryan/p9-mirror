@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // GameCategory holds the schema definition for the GameCategory entity.
@@ -23,6 +24,7 @@ func (GameCategory) Table() string {
 func (GameCategory) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Unique(),
+		field.String("op_code"),
 		field.String("category_code"),
 		field.Int64("sort_no"),
 		field.Int64("status").Comment("Status | 状态"),
@@ -34,6 +36,13 @@ func (GameCategory) Fields() []ent.Field {
 // Edges of the GameCategory.
 func (GameCategory) Edges() []ent.Edge {
 	return nil
+}
+
+// Indexes of the GameCategory.
+func (GameCategory) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("op_code", "category_code").Unique(),
+	}
 }
 
 func (GameCategory) Annotations() []schema.Annotation {

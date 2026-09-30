@@ -13,6 +13,8 @@ const (
 	Label = "game"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldOpCode holds the string denoting the op_code field in the database.
+	FieldOpCode = "op_code"
 	// FieldGameCode holds the string denoting the game_code field in the database.
 	FieldGameCode = "game_code"
 	// FieldSourceID holds the string denoting the source_id field in the database.
@@ -50,6 +52,7 @@ const (
 // Columns holds all SQL columns for game fields.
 var Columns = []string{
 	FieldID,
+	FieldOpCode,
 	FieldGameCode,
 	FieldSourceID,
 	FieldCategoryCode,
@@ -90,6 +93,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByOpCode orders the results by the op_code field.
+func ByOpCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOpCode, opts...).ToFunc()
 }
 
 // ByGameCode orders the results by the game_code field.

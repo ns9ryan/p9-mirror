@@ -18,6 +18,7 @@ import (
 	"oa.98ent.com/p9/operator-game/api/internal/handler"
 	"oa.98ent.com/p9/operator-game/api/internal/svc"
 
+	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/common/response"
 	"oa.98ent.com/p9/core/common/middleware"
 )
@@ -36,7 +37,7 @@ func main() {
 	defer server.Stop()
 
 	// 注册I18n中间件
-	server.Use(middleware.I18n)
+	server.Use(i18n.NewI18nLangMiddleware(c.I18n.DefaultLanguage).Handle)
 	// 注册客户端 IP 中间件
 	server.Use(middleware.ClientIP)
 
@@ -50,7 +51,10 @@ func main() {
 	response.SetupHTTPX(ctx.Trans, c.GetI18nCode(), c.IsDebug())
 
 	// 注册菜单、API目录、多语言数据
-	logx.Must(catalog.Register(ctx))
+	if err := catalog.Register(ctx); err != nil {
+		logx.Error("Failed to register catalog:", err)
+		// 不卡在注册失败，允许服务继续启动
+	}
 	// 注册API路由
 	handler.RegisterHandlers(server, ctx)
 	// 调试模式下注册swagger接口文档路由

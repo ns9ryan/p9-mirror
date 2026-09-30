@@ -68,6 +68,9 @@ func (d *GameChannelDAO) CountGameChannelList(ctx context.Context, opts ...GameC
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(gamechannel.OpCodeEQ(opt.OpCode))
+	}
 	if opt.ChannelCode != "" {
 		query = query.Where(gamechannel.ChannelCodeEQ(opt.ChannelCode))
 	}
@@ -101,8 +104,9 @@ func (d *GameChannelDAO) UpdateGameChannel(ctx context.Context, id int64, sortNo
 }
 
 // CreateGameChannel 创建游戏渠道
-func (d *GameChannelDAO) CreateGameChannel(ctx context.Context, sourceID int64, channelCode string, sortNo, loadType, status int64) (*ent.GameChannel, error) {
+func (d *GameChannelDAO) CreateGameChannel(ctx context.Context, opCode, channelCode string, sortNo, loadType, status int64) (*ent.GameChannel, error) {
 	gc, err := d.db.GameChannel.Create().
+		SetOpCode(opCode).
 		SetChannelCode(channelCode).
 		SetSortNo(sortNo).
 		SetLoadType(loadType).
@@ -114,22 +118,26 @@ func (d *GameChannelDAO) CreateGameChannel(ctx context.Context, sourceID int64, 
 	return gc, nil
 }
 
-// GetOrCreateGameChannel 获取或创建游戏渠道
-func (d *GameChannelDAO) GetOrCreateGameChannel(ctx context.Context, sourceID int64, channelCode string, sortNo, loadType, status int64) (*ent.GameChannel, error) {
+// GetOrUpdateGameChannel 获取或更新游戏渠道（更新除了sortNo和status之外的所有字段）
+func (d *GameChannelDAO) GetOrUpdateGameChannel(ctx context.Context, opCode, channelCode string, sortNo, loadType, status int64) (*ent.GameChannel, error) {
 	// 先查询是否存在
 	gc, err := d.db.GameChannel.Query().
+		Where(gamechannel.OpCodeEQ(opCode)).
 		Where(gamechannel.ChannelCodeEQ(channelCode)).
 		First(ctx)
 	if err == nil {
-		return gc, nil
+		// 存在则更新其他字段（除了sortNo和status）
+		updater := d.db.GameChannel.UpdateOneID(gc.ID).SetLoadType(loadType)
+		return updater.Save(ctx)
 	}
 
-	// 创建新的
-	return d.CreateGameChannel(ctx, sourceID, channelCode, sortNo, loadType, status)
+	// 不存在则创建新的
+	return d.CreateGameChannel(ctx, opCode, channelCode, sortNo, loadType, status)
 }
 
 // GameChannelListOptions 列表选项
 type GameChannelListOptions struct {
+	OpCode      string
 	ChannelCode string
 	Status      int64
 	Offset      int64
@@ -139,6 +147,12 @@ type GameChannelListOptions struct {
 
 // GameChannelListOption 列表选项函数
 type GameChannelListOption func(*GameChannelListOptions)
+
+func WithChannelOpCode(code string) GameChannelListOption {
+	return func(opt *GameChannelListOptions) {
+		opt.OpCode = code
+	}
+}
 
 func WithChannelCode(code string) GameChannelListOption {
 	return func(opt *GameChannelListOptions) {

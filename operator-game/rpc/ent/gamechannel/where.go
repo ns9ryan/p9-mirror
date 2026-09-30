@@ -54,6 +54,11 @@ func IDLTE(id int64) predicate.GameChannel {
 	return predicate.GameChannel(sql.FieldLTE(FieldID, id))
 }
 
+// OpCode applies equality check predicate on the "op_code" field. It's identical to OpCodeEQ.
+func OpCode(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldEQ(FieldOpCode, v))
+}
+
 // ChannelCode applies equality check predicate on the "channel_code" field. It's identical to ChannelCodeEQ.
 func ChannelCode(v string) predicate.GameChannel {
 	return predicate.GameChannel(sql.FieldEQ(FieldChannelCode, v))
@@ -82,6 +87,71 @@ func CreatedAt(v time.Time) predicate.GameChannel {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.GameChannel {
 	return predicate.GameChannel(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// OpCodeEQ applies the EQ predicate on the "op_code" field.
+func OpCodeEQ(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldEQ(FieldOpCode, v))
+}
+
+// OpCodeNEQ applies the NEQ predicate on the "op_code" field.
+func OpCodeNEQ(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldNEQ(FieldOpCode, v))
+}
+
+// OpCodeIn applies the In predicate on the "op_code" field.
+func OpCodeIn(vs ...string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldIn(FieldOpCode, vs...))
+}
+
+// OpCodeNotIn applies the NotIn predicate on the "op_code" field.
+func OpCodeNotIn(vs ...string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldNotIn(FieldOpCode, vs...))
+}
+
+// OpCodeGT applies the GT predicate on the "op_code" field.
+func OpCodeGT(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldGT(FieldOpCode, v))
+}
+
+// OpCodeGTE applies the GTE predicate on the "op_code" field.
+func OpCodeGTE(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldGTE(FieldOpCode, v))
+}
+
+// OpCodeLT applies the LT predicate on the "op_code" field.
+func OpCodeLT(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldLT(FieldOpCode, v))
+}
+
+// OpCodeLTE applies the LTE predicate on the "op_code" field.
+func OpCodeLTE(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldLTE(FieldOpCode, v))
+}
+
+// OpCodeContains applies the Contains predicate on the "op_code" field.
+func OpCodeContains(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldContains(FieldOpCode, v))
+}
+
+// OpCodeHasPrefix applies the HasPrefix predicate on the "op_code" field.
+func OpCodeHasPrefix(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldHasPrefix(FieldOpCode, v))
+}
+
+// OpCodeHasSuffix applies the HasSuffix predicate on the "op_code" field.
+func OpCodeHasSuffix(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldHasSuffix(FieldOpCode, v))
+}
+
+// OpCodeEqualFold applies the EqualFold predicate on the "op_code" field.
+func OpCodeEqualFold(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldEqualFold(FieldOpCode, v))
+}
+
+// OpCodeContainsFold applies the ContainsFold predicate on the "op_code" field.
+func OpCodeContainsFold(v string) predicate.GameChannel {
+	return predicate.GameChannel(sql.FieldContainsFold(FieldOpCode, v))
 }
 
 // ChannelCodeEQ applies the EQ predicate on the "channel_code" field.

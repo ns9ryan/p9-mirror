@@ -12,6 +12,7 @@ var (
 	// GameColumns holds the columns for the "game" table.
 	GameColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "op_code", Type: field.TypeString},
 		{Name: "game_code", Type: field.TypeString},
 		{Name: "source_id", Type: field.TypeInt64, Nullable: true},
 		{Name: "category_code", Type: field.TypeString, Nullable: true},
@@ -34,10 +35,18 @@ var (
 		Comment:    "分站游戏表",
 		Columns:    GameColumns,
 		PrimaryKey: []*schema.Column{GameColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "game_op_code_game_code",
+				Unique:  true,
+				Columns: []*schema.Column{GameColumns[1], GameColumns[2]},
+			},
+		},
 	}
 	// GameCategoryColumns holds the columns for the "game_category" table.
 	GameCategoryColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "op_code", Type: field.TypeString},
 		{Name: "category_code", Type: field.TypeString},
 		{Name: "sort_no", Type: field.TypeInt64},
 		{Name: "status", Type: field.TypeInt64, Comment: "Status | 状态"},
@@ -50,10 +59,18 @@ var (
 		Comment:    "分站游戏分类表",
 		Columns:    GameCategoryColumns,
 		PrimaryKey: []*schema.Column{GameCategoryColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "gamecategory_op_code_category_code",
+				Unique:  true,
+				Columns: []*schema.Column{GameCategoryColumns[1], GameCategoryColumns[2]},
+			},
+		},
 	}
 	// GameChannelColumns holds the columns for the "game_channel" table.
 	GameChannelColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "op_code", Type: field.TypeString},
 		{Name: "channel_code", Type: field.TypeString},
 		{Name: "sort_no", Type: field.TypeInt64},
 		{Name: "load_type", Type: field.TypeInt64},
@@ -67,10 +84,18 @@ var (
 		Comment:    "分站游戏渠道表",
 		Columns:    GameChannelColumns,
 		PrimaryKey: []*schema.Column{GameChannelColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "gamechannel_op_code_channel_code",
+				Unique:  true,
+				Columns: []*schema.Column{GameChannelColumns[1], GameChannelColumns[2]},
+			},
+		},
 	}
 	// GameProviderColumns holds the columns for the "game_provider" table.
 	GameProviderColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "op_code", Type: field.TypeString},
 		{Name: "provider_code", Type: field.TypeString},
 		{Name: "channel_code", Type: field.TypeString, Nullable: true},
 		{Name: "logo_url", Type: field.TypeString, Nullable: true},
@@ -85,6 +110,13 @@ var (
 		Comment:    "分站游戏供应商表",
 		Columns:    GameProviderColumns,
 		PrimaryKey: []*schema.Column{GameProviderColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "gameprovider_op_code_provider_code",
+				Unique:  true,
+				Columns: []*schema.Column{GameProviderColumns[1], GameProviderColumns[2]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{

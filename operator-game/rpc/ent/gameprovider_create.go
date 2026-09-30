@@ -20,6 +20,12 @@ type GameProviderCreate struct {
 	hooks    []Hook
 }
 
+// SetOpCode sets the "op_code" field.
+func (_c *GameProviderCreate) SetOpCode(v string) *GameProviderCreate {
+	_c.mutation.SetOpCode(v)
+	return _c
+}
+
 // SetProviderCode sets the "provider_code" field.
 func (_c *GameProviderCreate) SetProviderCode(v string) *GameProviderCreate {
 	_c.mutation.SetProviderCode(v)
@@ -147,6 +153,9 @@ func (_c *GameProviderCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *GameProviderCreate) check() error {
+	if _, ok := _c.mutation.OpCode(); !ok {
+		return &ValidationError{Name: "op_code", err: errors.New(`ent: missing required field "GameProvider.op_code"`)}
+	}
 	if _, ok := _c.mutation.ProviderCode(); !ok {
 		return &ValidationError{Name: "provider_code", err: errors.New(`ent: missing required field "GameProvider.provider_code"`)}
 	}
@@ -193,6 +202,10 @@ func (_c *GameProviderCreate) createSpec() (*GameProvider, *sqlgraph.CreateSpec)
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := _c.mutation.OpCode(); ok {
+		_spec.SetField(gameprovider.FieldOpCode, field.TypeString, value)
+		_node.OpCode = value
 	}
 	if value, ok := _c.mutation.ProviderCode(); ok {
 		_spec.SetField(gameprovider.FieldProviderCode, field.TypeString, value)

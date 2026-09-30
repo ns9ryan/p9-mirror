@@ -3,6 +3,7 @@ package gamecategoryservicelogic
 import (
 	"context"
 
+	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/operator-game/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-game/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-game/rpc/internal/utils"
@@ -41,6 +42,13 @@ func (l *GetGameCategoryListLogic) GetGameCategoryList(in *operator_game.GetGame
 	opts := []dao.GameCategoryListOption{
 		dao.WithGameCategoryOffset(offset),
 		dao.WithGameCategoryLimit(pageSize),
+	}
+
+	// 从上下文获取 OperatorCode
+	operatorCode := ctxdata.OperatorCodeFromCtx(l.ctx)
+	if operatorCode != "" {
+		l.Infof("[RPC GetGameCategoryList] operator code: %s", operatorCode)
+		opts = append(opts, dao.WithCategoryOpCode(operatorCode))
 	}
 
 	if in.CategoryCode != "" {

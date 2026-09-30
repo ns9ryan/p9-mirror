@@ -28,6 +28,7 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
+	ctx.MustMigrate() // 自动建表
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		operator_game.RegisterGameServiceServer(grpcServer, gameserviceServer.NewGameServiceServer(ctx))

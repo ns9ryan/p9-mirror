@@ -262,12 +262,12 @@ func (_q *GameQuery) Clone() *GameQuery {
 // Example:
 //
 //	var v []struct {
-//		GameCode string `json:"game_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Game.Query().
-//		GroupBy(game.FieldGameCode).
+//		GroupBy(game.FieldOpCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *GameQuery) GroupBy(field string, fields ...string) *GameGroupBy {
@@ -285,11 +285,11 @@ func (_q *GameQuery) GroupBy(field string, fields ...string) *GameGroupBy {
 // Example:
 //
 //	var v []struct {
-//		GameCode string `json:"game_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //	}
 //
 //	client.Game.Query().
-//		Select(game.FieldGameCode).
+//		Select(game.FieldOpCode).
 //		Scan(ctx, &v)
 func (_q *GameQuery) Select(fields ...string) *GameSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

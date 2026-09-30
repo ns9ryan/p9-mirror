@@ -70,26 +70,26 @@ services:
 
   operator-game-rpc:
     image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-game-rpc:${VERSION:-1.0.0}
-    container_name: operator-game-rpc-node01
+    container_name: operator-game-rpc-node02
     restart: always
     ports:
-      - "39003:39003"
+      - "39203:39203"
     volumes:
       - ./etc/game/rpc/operator_game.yaml:/app/etc/operator_game.yaml:ro
     networks:
-      - p9-operator-node01-network
+      - p9-operator-node02-network
       - p9-shared-network
 
   operator-game-api:
     image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-game-api:${VERSION:-1.0.0}
-    container_name: operator-game-api-node01
+    container_name: operator-game-api-node02
     restart: always
     ports:
-      - "38003:38003"
+      - "38203:38203"
     volumes:
       - ./etc/game/api/operator_game.yaml:/app/etc/operator_game.yaml:ro
     networks:
-      - p9-operator-node01-network
+      - p9-operator-node02-network
       - p9-shared-network
 
 volumes:

@@ -68,6 +68,9 @@ func (d *GameProviderDAO) CountGameProviderList(ctx context.Context, opts ...Gam
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(gameprovider.OpCodeEQ(opt.OpCode))
+	}
 	if opt.ProviderCode != "" {
 		query = query.Where(gameprovider.ProviderCodeEQ(opt.ProviderCode))
 	}
@@ -101,8 +104,9 @@ func (d *GameProviderDAO) UpdateGameProvider(ctx context.Context, id int64, sort
 }
 
 // CreateGameProvider 创建游戏供应商
-func (d *GameProviderDAO) CreateGameProvider(ctx context.Context, providerCode string, channelCode string, logoURL *string, sortNo, status int64) (*ent.GameProvider, error) {
+func (d *GameProviderDAO) CreateGameProvider(ctx context.Context, opCode, providerCode string, channelCode string, logoURL *string, sortNo, status int64) (*ent.GameProvider, error) {
 	creator := d.db.GameProvider.Create().
+		SetOpCode(opCode).
 		SetProviderCode(providerCode).
 		SetChannelCode(channelCode).
 		SetSortNo(sortNo).
@@ -119,18 +123,24 @@ func (d *GameProviderDAO) CreateGameProvider(ctx context.Context, providerCode s
 	return gp, nil
 }
 
-// GetOrCreateGameProvider 获取或创建游戏供应商
-func (d *GameProviderDAO) GetOrCreateGameProvider(ctx context.Context, providerCode string, channelCode string, logoURL *string, sortNo, status int64) (*ent.GameProvider, error) {
+// GetOrUpdateGameProvider 获取或更新游戏供应商（更新除了sortNo和status之外的所有字段）
+func (d *GameProviderDAO) GetOrUpdateGameProvider(ctx context.Context, opCode, providerCode string, channelCode string, logoURL *string, sortNo, status int64) (*ent.GameProvider, error) {
 	// 先查询是否存在
 	gp, err := d.db.GameProvider.Query().
+		Where(gameprovider.OpCodeEQ(opCode)).
 		Where(gameprovider.ProviderCodeEQ(providerCode)).
 		First(ctx)
 	if err == nil {
-		return gp, nil
+		// 存在则更新其他字段（除了sortNo和status）
+		updater := d.db.GameProvider.UpdateOneID(gp.ID).SetChannelCode(channelCode)
+		if logoURL != nil && *logoURL != "" {
+			updater = updater.SetLogoURL(*logoURL)
+		}
+		return updater.Save(ctx)
 	}
 
-	// 创建新的
-	return d.CreateGameProvider(ctx, providerCode, channelCode, logoURL, sortNo, status)
+	// 不存在则创建新的
+	return d.CreateGameProvider(ctx, opCode, providerCode, channelCode, logoURL, sortNo, status)
 }
 
 // CountGameProviderByChannel 统计指定渠道的游戏供应商数量
@@ -142,6 +152,7 @@ func (d *GameProviderDAO) CountGameProviderByChannel(ctx context.Context, channe
 
 // GameProviderListOptions 列表选项
 type GameProviderListOptions struct {
+	OpCode       string
 	ProviderCode string
 	Status       int64
 	Offset       int64
@@ -151,6 +162,12 @@ type GameProviderListOptions struct {
 
 // GameProviderListOption 列表选项函数
 type GameProviderListOption func(*GameProviderListOptions)
+
+func WithProviderOpCode(code string) GameProviderListOption {
+	return func(opt *GameProviderListOptions) {
+		opt.OpCode = code
+	}
+}
 
 func WithProviderCode(code string) GameProviderListOption {
 	return func(opt *GameProviderListOptions) {

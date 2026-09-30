@@ -17,6 +17,8 @@ type GameChannel struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
+	// OpCode holds the value of the "op_code" field.
+	OpCode string `json:"op_code,omitempty"`
 	// ChannelCode holds the value of the "channel_code" field.
 	ChannelCode string `json:"channel_code,omitempty"`
 	// SortNo holds the value of the "sort_no" field.
@@ -39,7 +41,7 @@ func (*GameChannel) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case gamechannel.FieldID, gamechannel.FieldSortNo, gamechannel.FieldLoadType, gamechannel.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case gamechannel.FieldChannelCode:
+		case gamechannel.FieldOpCode, gamechannel.FieldChannelCode:
 			values[i] = new(sql.NullString)
 		case gamechannel.FieldCreatedAt, gamechannel.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -64,6 +66,12 @@ func (_m *GameChannel) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case gamechannel.FieldOpCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field op_code", values[i])
+			} else if value.Valid {
+				_m.OpCode = value.String
+			}
 		case gamechannel.FieldChannelCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field channel_code", values[i])
@@ -136,6 +144,9 @@ func (_m *GameChannel) String() string {
 	var builder strings.Builder
 	builder.WriteString("GameChannel(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("op_code=")
+	builder.WriteString(_m.OpCode)
+	builder.WriteString(", ")
 	builder.WriteString("channel_code=")
 	builder.WriteString(_m.ChannelCode)
 	builder.WriteString(", ")

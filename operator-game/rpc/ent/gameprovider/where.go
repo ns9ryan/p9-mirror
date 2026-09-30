@@ -54,6 +54,11 @@ func IDLTE(id int64) predicate.GameProvider {
 	return predicate.GameProvider(sql.FieldLTE(FieldID, id))
 }
 
+// OpCode applies equality check predicate on the "op_code" field. It's identical to OpCodeEQ.
+func OpCode(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldEQ(FieldOpCode, v))
+}
+
 // ProviderCode applies equality check predicate on the "provider_code" field. It's identical to ProviderCodeEQ.
 func ProviderCode(v string) predicate.GameProvider {
 	return predicate.GameProvider(sql.FieldEQ(FieldProviderCode, v))
@@ -87,6 +92,71 @@ func CreatedAt(v time.Time) predicate.GameProvider {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.GameProvider {
 	return predicate.GameProvider(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// OpCodeEQ applies the EQ predicate on the "op_code" field.
+func OpCodeEQ(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldEQ(FieldOpCode, v))
+}
+
+// OpCodeNEQ applies the NEQ predicate on the "op_code" field.
+func OpCodeNEQ(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldNEQ(FieldOpCode, v))
+}
+
+// OpCodeIn applies the In predicate on the "op_code" field.
+func OpCodeIn(vs ...string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldIn(FieldOpCode, vs...))
+}
+
+// OpCodeNotIn applies the NotIn predicate on the "op_code" field.
+func OpCodeNotIn(vs ...string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldNotIn(FieldOpCode, vs...))
+}
+
+// OpCodeGT applies the GT predicate on the "op_code" field.
+func OpCodeGT(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldGT(FieldOpCode, v))
+}
+
+// OpCodeGTE applies the GTE predicate on the "op_code" field.
+func OpCodeGTE(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldGTE(FieldOpCode, v))
+}
+
+// OpCodeLT applies the LT predicate on the "op_code" field.
+func OpCodeLT(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldLT(FieldOpCode, v))
+}
+
+// OpCodeLTE applies the LTE predicate on the "op_code" field.
+func OpCodeLTE(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldLTE(FieldOpCode, v))
+}
+
+// OpCodeContains applies the Contains predicate on the "op_code" field.
+func OpCodeContains(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldContains(FieldOpCode, v))
+}
+
+// OpCodeHasPrefix applies the HasPrefix predicate on the "op_code" field.
+func OpCodeHasPrefix(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldHasPrefix(FieldOpCode, v))
+}
+
+// OpCodeHasSuffix applies the HasSuffix predicate on the "op_code" field.
+func OpCodeHasSuffix(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldHasSuffix(FieldOpCode, v))
+}
+
+// OpCodeEqualFold applies the EqualFold predicate on the "op_code" field.
+func OpCodeEqualFold(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldEqualFold(FieldOpCode, v))
+}
+
+// OpCodeContainsFold applies the ContainsFold predicate on the "op_code" field.
+func OpCodeContainsFold(v string) predicate.GameProvider {
+	return predicate.GameProvider(sql.FieldContainsFold(FieldOpCode, v))
 }
 
 // ProviderCodeEQ applies the EQ predicate on the "provider_code" field.

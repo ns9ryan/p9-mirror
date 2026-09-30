@@ -20,6 +20,12 @@ type GameCategoryCreate struct {
 	hooks    []Hook
 }
 
+// SetOpCode sets the "op_code" field.
+func (_c *GameCategoryCreate) SetOpCode(v string) *GameCategoryCreate {
+	_c.mutation.SetOpCode(v)
+	return _c
+}
+
 // SetCategoryCode sets the "category_code" field.
 func (_c *GameCategoryCreate) SetCategoryCode(v string) *GameCategoryCreate {
 	_c.mutation.SetCategoryCode(v)
@@ -119,6 +125,9 @@ func (_c *GameCategoryCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *GameCategoryCreate) check() error {
+	if _, ok := _c.mutation.OpCode(); !ok {
+		return &ValidationError{Name: "op_code", err: errors.New(`ent: missing required field "GameCategory.op_code"`)}
+	}
 	if _, ok := _c.mutation.CategoryCode(); !ok {
 		return &ValidationError{Name: "category_code", err: errors.New(`ent: missing required field "GameCategory.category_code"`)}
 	}
@@ -165,6 +174,10 @@ func (_c *GameCategoryCreate) createSpec() (*GameCategory, *sqlgraph.CreateSpec)
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := _c.mutation.OpCode(); ok {
+		_spec.SetField(gamecategory.FieldOpCode, field.TypeString, value)
+		_node.OpCode = value
 	}
 	if value, ok := _c.mutation.CategoryCode(); ok {
 		_spec.SetField(gamecategory.FieldCategoryCode, field.TypeString, value)

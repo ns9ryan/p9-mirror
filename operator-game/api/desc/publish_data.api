@@ -2,7 +2,7 @@ syntax = "v1"
 
 @server (
 	group: publish_data
-	prefix: /admin/publish-data
+	prefix: /operator-game/publish-data
 )
 service operator_game {
 	// ===== 发布使用的临时接口 =====

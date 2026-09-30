@@ -262,12 +262,12 @@ func (_q *GameCategoryQuery) Clone() *GameCategoryQuery {
 // Example:
 //
 //	var v []struct {
-//		CategoryCode string `json:"category_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.GameCategory.Query().
-//		GroupBy(gamecategory.FieldCategoryCode).
+//		GroupBy(gamecategory.FieldOpCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *GameCategoryQuery) GroupBy(field string, fields ...string) *GameCategoryGroupBy {
@@ -285,11 +285,11 @@ func (_q *GameCategoryQuery) GroupBy(field string, fields ...string) *GameCatego
 // Example:
 //
 //	var v []struct {
-//		CategoryCode string `json:"category_code,omitempty"`
+//		OpCode string `json:"op_code,omitempty"`
 //	}
 //
 //	client.GameCategory.Query().
-//		Select(gamecategory.FieldCategoryCode).
+//		Select(gamecategory.FieldOpCode).
 //		Scan(ctx, &v)
 func (_q *GameCategoryQuery) Select(fields ...string) *GameCategorySelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

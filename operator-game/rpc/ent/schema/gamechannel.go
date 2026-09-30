@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // GameChannel holds the schema definition for the GameChannel entity.
@@ -23,6 +24,7 @@ func (GameChannel) Table() string {
 func (GameChannel) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Unique(),
+		field.String("op_code"),
 		field.String("channel_code"),
 		field.Int64("sort_no"),
 		field.Int64("load_type"),
@@ -35,6 +37,13 @@ func (GameChannel) Fields() []ent.Field {
 // Edges of the GameChannel.
 func (GameChannel) Edges() []ent.Edge {
 	return nil
+}
+
+// Indexes of the GameChannel.
+func (GameChannel) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("op_code", "channel_code").Unique(),
+	}
 }
 
 func (GameChannel) Annotations() []schema.Annotation {

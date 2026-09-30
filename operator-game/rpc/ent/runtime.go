@@ -19,41 +19,41 @@ func init() {
 	gameFields := schema.Game{}.Fields()
 	_ = gameFields
 	// gameDescCreatedAt is the schema descriptor for created_at field.
-	gameDescCreatedAt := gameFields[14].Descriptor()
+	gameDescCreatedAt := gameFields[15].Descriptor()
 	// game.DefaultCreatedAt holds the default value on creation for the created_at field.
 	game.DefaultCreatedAt = gameDescCreatedAt.Default.(func() time.Time)
 	// gameDescUpdatedAt is the schema descriptor for updated_at field.
-	gameDescUpdatedAt := gameFields[15].Descriptor()
+	gameDescUpdatedAt := gameFields[16].Descriptor()
 	// game.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	game.DefaultUpdatedAt = gameDescUpdatedAt.Default.(func() time.Time)
 	gamecategoryFields := schema.GameCategory{}.Fields()
 	_ = gamecategoryFields
 	// gamecategoryDescCreatedAt is the schema descriptor for created_at field.
-	gamecategoryDescCreatedAt := gamecategoryFields[4].Descriptor()
+	gamecategoryDescCreatedAt := gamecategoryFields[5].Descriptor()
 	// gamecategory.DefaultCreatedAt holds the default value on creation for the created_at field.
 	gamecategory.DefaultCreatedAt = gamecategoryDescCreatedAt.Default.(func() time.Time)
 	// gamecategoryDescUpdatedAt is the schema descriptor for updated_at field.
-	gamecategoryDescUpdatedAt := gamecategoryFields[5].Descriptor()
+	gamecategoryDescUpdatedAt := gamecategoryFields[6].Descriptor()
 	// gamecategory.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	gamecategory.DefaultUpdatedAt = gamecategoryDescUpdatedAt.Default.(func() time.Time)
 	gamechannelFields := schema.GameChannel{}.Fields()
 	_ = gamechannelFields
 	// gamechannelDescCreatedAt is the schema descriptor for created_at field.
-	gamechannelDescCreatedAt := gamechannelFields[5].Descriptor()
+	gamechannelDescCreatedAt := gamechannelFields[6].Descriptor()
 	// gamechannel.DefaultCreatedAt holds the default value on creation for the created_at field.
 	gamechannel.DefaultCreatedAt = gamechannelDescCreatedAt.Default.(func() time.Time)
 	// gamechannelDescUpdatedAt is the schema descriptor for updated_at field.
-	gamechannelDescUpdatedAt := gamechannelFields[6].Descriptor()
+	gamechannelDescUpdatedAt := gamechannelFields[7].Descriptor()
 	// gamechannel.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	gamechannel.DefaultUpdatedAt = gamechannelDescUpdatedAt.Default.(func() time.Time)
 	gameproviderFields := schema.GameProvider{}.Fields()
 	_ = gameproviderFields
 	// gameproviderDescCreatedAt is the schema descriptor for created_at field.
-	gameproviderDescCreatedAt := gameproviderFields[6].Descriptor()
+	gameproviderDescCreatedAt := gameproviderFields[7].Descriptor()
 	// gameprovider.DefaultCreatedAt holds the default value on creation for the created_at field.
 	gameprovider.DefaultCreatedAt = gameproviderDescCreatedAt.Default.(func() time.Time)
 	// gameproviderDescUpdatedAt is the schema descriptor for updated_at field.
-	gameproviderDescUpdatedAt := gameproviderFields[7].Descriptor()
+	gameproviderDescUpdatedAt := gameproviderFields[8].Descriptor()
 	// gameprovider.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	gameprovider.DefaultUpdatedAt = gameproviderDescUpdatedAt.Default.(func() time.Time)
 }

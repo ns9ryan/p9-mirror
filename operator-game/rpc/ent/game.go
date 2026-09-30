@@ -19,6 +19,8 @@ type Game struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
+	// OpCode holds the value of the "op_code" field.
+	OpCode string `json:"op_code,omitempty"`
 	// GameCode holds the value of the "game_code" field.
 	GameCode string `json:"game_code,omitempty"`
 	// SourceID holds the value of the "source_id" field.
@@ -63,7 +65,7 @@ func (*Game) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case game.FieldID, game.FieldSourceID, game.FieldSortNo, game.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case game.FieldGameCode, game.FieldCategoryCode, game.FieldProviderCode, game.FieldChannelCode, game.FieldProviderKey, game.FieldName, game.FieldImageURL:
+		case game.FieldOpCode, game.FieldGameCode, game.FieldCategoryCode, game.FieldProviderCode, game.FieldChannelCode, game.FieldProviderKey, game.FieldName, game.FieldImageURL:
 			values[i] = new(sql.NullString)
 		case game.FieldCreatedAt, game.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -88,6 +90,12 @@ func (_m *Game) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case game.FieldOpCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field op_code", values[i])
+			} else if value.Valid {
+				_m.OpCode = value.String
+			}
 		case game.FieldGameCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field game_code", values[i])
@@ -216,6 +224,9 @@ func (_m *Game) String() string {
 	var builder strings.Builder
 	builder.WriteString("Game(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("op_code=")
+	builder.WriteString(_m.OpCode)
+	builder.WriteString(", ")
 	builder.WriteString("game_code=")
 	builder.WriteString(_m.GameCode)
 	builder.WriteString(", ")

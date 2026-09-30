@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // GameProvider holds the schema definition for the GameProvider entity.
@@ -23,6 +24,7 @@ func (GameProvider) Table() string {
 func (GameProvider) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Unique(),
+		field.String("op_code"),
 		field.String("provider_code"),
 		field.String("channel_code").Optional(),
 		field.String("logo_url").Optional(),
@@ -36,6 +38,13 @@ func (GameProvider) Fields() []ent.Field {
 // Edges of the GameProvider.
 func (GameProvider) Edges() []ent.Edge {
 	return nil
+}
+
+// Indexes of the GameProvider.
+func (GameProvider) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("op_code", "provider_code").Unique(),
+	}
 }
 
 func (GameProvider) Annotations() []schema.Annotation {

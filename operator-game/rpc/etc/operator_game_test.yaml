@@ -12,12 +12,21 @@ Etcd:
 
 # 总网游戏服务 RPC 配置（用于同步已发布数据）
 PlatformGameRpcConf:
-  # 直接指定为容器名称（通过共享网络解析）
+  Hosts:
+    - 192.168.0.15:2379
   Target: platform-game-rpc:19003
   Timeout: 10000
 
+# CoreRpc:
+#   Endpoints:
+#     - operator-node02-core-rpc:39200
+#   NonBlock: true
+#   Timeout: 3000
+
 CoreRpc:
-  Target: 192.168.0.15:39000
+  Hosts:
+    - 192.168.0.15:2379
+  Target: operator-node02-core-rpc:39200
   Timeout: 10000
 
 DatabaseConf:

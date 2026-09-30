@@ -3,7 +3,7 @@ syntax = "v1"
 @server (
 	group: channel
 	middleware: Jwt,ActionLog,Authority
-	prefix: /admin/game-channel
+	prefix: /operator-game/game-channel
 )
 service operator_game {
 	// ===== Game Channel APIs =====

@@ -8,8 +8,8 @@ require (
 	github.com/zeromicro/go-zero v1.10.3
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
-	oa.98ent.com/p9/common v1.0.0
-	oa.98ent.com/p9/core v1.1.8
+	oa.98ent.com/p9/common v1.0.3
+	oa.98ent.com/p9/core v1.2.1
 	oa.98ent.com/p9/platform-game v1.0.0
 )
 
@@ -58,7 +58,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.7 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.10.0
+	github.com/jackc/pgx/v5 v5.11.0
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

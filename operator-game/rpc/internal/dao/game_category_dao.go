@@ -32,6 +32,9 @@ func (d *GameCategoryDAO) GetGameCategoryList(ctx context.Context, opts ...GameC
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(gamecategory.OpCodeEQ(opt.OpCode))
+	}
 	if opt.CategoryCode != "" {
 		query = query.Where(gamecategory.CategoryCodeEQ(opt.CategoryCode))
 	}
@@ -68,6 +71,9 @@ func (d *GameCategoryDAO) CountGameCategoryList(ctx context.Context, opts ...Gam
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(gamecategory.OpCodeEQ(opt.OpCode))
+	}
 	if opt.CategoryCode != "" {
 		query = query.Where(gamecategory.CategoryCodeEQ(opt.CategoryCode))
 	}
@@ -101,8 +107,9 @@ func (d *GameCategoryDAO) UpdateGameCategory(ctx context.Context, id int64, sort
 }
 
 // CreateGameCategory 创建游戏分类
-func (d *GameCategoryDAO) CreateGameCategory(ctx context.Context, categoryCode string, sortNo, status int64) (*ent.GameCategory, error) {
+func (d *GameCategoryDAO) CreateGameCategory(ctx context.Context, opCode, categoryCode string, sortNo, status int64) (*ent.GameCategory, error) {
 	gc, err := d.db.GameCategory.Create().
+		SetOpCode(opCode).
 		SetCategoryCode(categoryCode).
 		SetSortNo(sortNo).
 		SetStatus(status).
@@ -113,22 +120,25 @@ func (d *GameCategoryDAO) CreateGameCategory(ctx context.Context, categoryCode s
 	return gc, nil
 }
 
-// GetOrCreateGameCategory 获取或创建游戏分类
-func (d *GameCategoryDAO) GetOrCreateGameCategory(ctx context.Context, categoryCode string, sortNo, status int64) (*ent.GameCategory, error) {
+// GetOrUpdateGameCategory 获取或更新游戏分类（存在则保留，不存在则创建）
+func (d *GameCategoryDAO) GetOrUpdateGameCategory(ctx context.Context, opCode, categoryCode string, sortNo, status int64) (*ent.GameCategory, error) {
 	// 先查询是否存在
 	gc, err := d.db.GameCategory.Query().
+		Where(gamecategory.OpCodeEQ(opCode)).
 		Where(gamecategory.CategoryCodeEQ(categoryCode)).
 		First(ctx)
 	if err == nil {
+		// 存在则直接返回，不做更新
 		return gc, nil
 	}
 
-	// 创建新的
-	return d.CreateGameCategory(ctx, categoryCode, sortNo, status)
+	// 不存在则创建新的
+	return d.CreateGameCategory(ctx, opCode, categoryCode, sortNo, status)
 }
 
 // GameCategoryListOptions 列表选项
 type GameCategoryListOptions struct {
+	OpCode       string
 	CategoryCode string
 	Status       int64
 	Offset       int64
@@ -138,6 +148,12 @@ type GameCategoryListOptions struct {
 
 // GameCategoryListOption 列表选项函数
 type GameCategoryListOption func(*GameCategoryListOptions)
+
+func WithCategoryOpCode(code string) GameCategoryListOption {
+	return func(opt *GameCategoryListOptions) {
+		opt.OpCode = code
+	}
+}
 
 func WithCategoryCode(code string) GameCategoryListOption {
 	return func(opt *GameCategoryListOptions) {

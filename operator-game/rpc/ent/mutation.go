@@ -40,6 +40,7 @@ type GameMutation struct {
 	op                  Op
 	typ                 string
 	id                  *int64
+	op_code             *string
 	game_code           *string
 	source_id           *int64
 	addsource_id        *int64
@@ -167,6 +168,42 @@ func (m *GameMutation) IDs(ctx context.Context) ([]int64, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetOpCode sets the "op_code" field.
+func (m *GameMutation) SetOpCode(s string) {
+	m.op_code = &s
+}
+
+// OpCode returns the value of the "op_code" field in the mutation.
+func (m *GameMutation) OpCode() (r string, exists bool) {
+	v := m.op_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOpCode returns the old "op_code" field's value of the Game entity.
+// If the Game object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameMutation) OldOpCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOpCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOpCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOpCode: %w", err)
+	}
+	return oldValue.OpCode, nil
+}
+
+// ResetOpCode resets all changes to the "op_code" field.
+func (m *GameMutation) ResetOpCode() {
+	m.op_code = nil
 }
 
 // SetGameCode sets the "game_code" field.
@@ -924,7 +961,10 @@ func (m *GameMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GameMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
+	if m.op_code != nil {
+		fields = append(fields, game.FieldOpCode)
+	}
 	if m.game_code != nil {
 		fields = append(fields, game.FieldGameCode)
 	}
@@ -978,6 +1018,8 @@ func (m *GameMutation) Fields() []string {
 // schema.
 func (m *GameMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case game.FieldOpCode:
+		return m.OpCode()
 	case game.FieldGameCode:
 		return m.GameCode()
 	case game.FieldSourceID:
@@ -1017,6 +1059,8 @@ func (m *GameMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *GameMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case game.FieldOpCode:
+		return m.OldOpCode(ctx)
 	case game.FieldGameCode:
 		return m.OldGameCode(ctx)
 	case game.FieldSourceID:
@@ -1056,6 +1100,13 @@ func (m *GameMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *GameMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case game.FieldOpCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOpCode(v)
+		return nil
 	case game.FieldGameCode:
 		v, ok := value.(string)
 		if !ok {
@@ -1300,6 +1351,9 @@ func (m *GameMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *GameMutation) ResetField(name string) error {
 	switch name {
+	case game.FieldOpCode:
+		m.ResetOpCode()
+		return nil
 	case game.FieldGameCode:
 		m.ResetGameCode()
 		return nil
@@ -1403,6 +1457,7 @@ type GameCategoryMutation struct {
 	op            Op
 	typ           string
 	id            *int64
+	op_code       *string
 	category_code *string
 	sort_no       *int64
 	addsort_no    *int64
@@ -1518,6 +1573,42 @@ func (m *GameCategoryMutation) IDs(ctx context.Context) ([]int64, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetOpCode sets the "op_code" field.
+func (m *GameCategoryMutation) SetOpCode(s string) {
+	m.op_code = &s
+}
+
+// OpCode returns the value of the "op_code" field in the mutation.
+func (m *GameCategoryMutation) OpCode() (r string, exists bool) {
+	v := m.op_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOpCode returns the old "op_code" field's value of the GameCategory entity.
+// If the GameCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameCategoryMutation) OldOpCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOpCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOpCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOpCode: %w", err)
+	}
+	return oldValue.OpCode, nil
+}
+
+// ResetOpCode resets all changes to the "op_code" field.
+func (m *GameCategoryMutation) ResetOpCode() {
+	m.op_code = nil
 }
 
 // SetCategoryCode sets the "category_code" field.
@@ -1774,7 +1865,10 @@ func (m *GameCategoryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GameCategoryMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
+	if m.op_code != nil {
+		fields = append(fields, gamecategory.FieldOpCode)
+	}
 	if m.category_code != nil {
 		fields = append(fields, gamecategory.FieldCategoryCode)
 	}
@@ -1798,6 +1892,8 @@ func (m *GameCategoryMutation) Fields() []string {
 // schema.
 func (m *GameCategoryMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case gamecategory.FieldOpCode:
+		return m.OpCode()
 	case gamecategory.FieldCategoryCode:
 		return m.CategoryCode()
 	case gamecategory.FieldSortNo:
@@ -1817,6 +1913,8 @@ func (m *GameCategoryMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *GameCategoryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case gamecategory.FieldOpCode:
+		return m.OldOpCode(ctx)
 	case gamecategory.FieldCategoryCode:
 		return m.OldCategoryCode(ctx)
 	case gamecategory.FieldSortNo:
@@ -1836,6 +1934,13 @@ func (m *GameCategoryMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *GameCategoryMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case gamecategory.FieldOpCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOpCode(v)
+		return nil
 	case gamecategory.FieldCategoryCode:
 		v, ok := value.(string)
 		if !ok {
@@ -1947,6 +2052,9 @@ func (m *GameCategoryMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *GameCategoryMutation) ResetField(name string) error {
 	switch name {
+	case gamecategory.FieldOpCode:
+		m.ResetOpCode()
+		return nil
 	case gamecategory.FieldCategoryCode:
 		m.ResetCategoryCode()
 		return nil
@@ -2020,6 +2128,7 @@ type GameChannelMutation struct {
 	op            Op
 	typ           string
 	id            *int64
+	op_code       *string
 	channel_code  *string
 	sort_no       *int64
 	addsort_no    *int64
@@ -2137,6 +2246,42 @@ func (m *GameChannelMutation) IDs(ctx context.Context) ([]int64, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetOpCode sets the "op_code" field.
+func (m *GameChannelMutation) SetOpCode(s string) {
+	m.op_code = &s
+}
+
+// OpCode returns the value of the "op_code" field in the mutation.
+func (m *GameChannelMutation) OpCode() (r string, exists bool) {
+	v := m.op_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOpCode returns the old "op_code" field's value of the GameChannel entity.
+// If the GameChannel object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameChannelMutation) OldOpCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOpCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOpCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOpCode: %w", err)
+	}
+	return oldValue.OpCode, nil
+}
+
+// ResetOpCode resets all changes to the "op_code" field.
+func (m *GameChannelMutation) ResetOpCode() {
+	m.op_code = nil
 }
 
 // SetChannelCode sets the "channel_code" field.
@@ -2449,7 +2594,10 @@ func (m *GameChannelMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GameChannelMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
+	if m.op_code != nil {
+		fields = append(fields, gamechannel.FieldOpCode)
+	}
 	if m.channel_code != nil {
 		fields = append(fields, gamechannel.FieldChannelCode)
 	}
@@ -2476,6 +2624,8 @@ func (m *GameChannelMutation) Fields() []string {
 // schema.
 func (m *GameChannelMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case gamechannel.FieldOpCode:
+		return m.OpCode()
 	case gamechannel.FieldChannelCode:
 		return m.ChannelCode()
 	case gamechannel.FieldSortNo:
@@ -2497,6 +2647,8 @@ func (m *GameChannelMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *GameChannelMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case gamechannel.FieldOpCode:
+		return m.OldOpCode(ctx)
 	case gamechannel.FieldChannelCode:
 		return m.OldChannelCode(ctx)
 	case gamechannel.FieldSortNo:
@@ -2518,6 +2670,13 @@ func (m *GameChannelMutation) OldField(ctx context.Context, name string) (ent.Va
 // type.
 func (m *GameChannelMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case gamechannel.FieldOpCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOpCode(v)
+		return nil
 	case gamechannel.FieldChannelCode:
 		v, ok := value.(string)
 		if !ok {
@@ -2648,6 +2807,9 @@ func (m *GameChannelMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *GameChannelMutation) ResetField(name string) error {
 	switch name {
+	case gamechannel.FieldOpCode:
+		m.ResetOpCode()
+		return nil
 	case gamechannel.FieldChannelCode:
 		m.ResetChannelCode()
 		return nil
@@ -2724,6 +2886,7 @@ type GameProviderMutation struct {
 	op            Op
 	typ           string
 	id            *int64
+	op_code       *string
 	provider_code *string
 	channel_code  *string
 	logo_url      *string
@@ -2841,6 +3004,42 @@ func (m *GameProviderMutation) IDs(ctx context.Context) ([]int64, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetOpCode sets the "op_code" field.
+func (m *GameProviderMutation) SetOpCode(s string) {
+	m.op_code = &s
+}
+
+// OpCode returns the value of the "op_code" field in the mutation.
+func (m *GameProviderMutation) OpCode() (r string, exists bool) {
+	v := m.op_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOpCode returns the old "op_code" field's value of the GameProvider entity.
+// If the GameProvider object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GameProviderMutation) OldOpCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOpCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOpCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOpCode: %w", err)
+	}
+	return oldValue.OpCode, nil
+}
+
+// ResetOpCode resets all changes to the "op_code" field.
+func (m *GameProviderMutation) ResetOpCode() {
+	m.op_code = nil
 }
 
 // SetProviderCode sets the "provider_code" field.
@@ -3195,7 +3394,10 @@ func (m *GameProviderMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GameProviderMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
+	if m.op_code != nil {
+		fields = append(fields, gameprovider.FieldOpCode)
+	}
 	if m.provider_code != nil {
 		fields = append(fields, gameprovider.FieldProviderCode)
 	}
@@ -3225,6 +3427,8 @@ func (m *GameProviderMutation) Fields() []string {
 // schema.
 func (m *GameProviderMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case gameprovider.FieldOpCode:
+		return m.OpCode()
 	case gameprovider.FieldProviderCode:
 		return m.ProviderCode()
 	case gameprovider.FieldChannelCode:
@@ -3248,6 +3452,8 @@ func (m *GameProviderMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *GameProviderMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case gameprovider.FieldOpCode:
+		return m.OldOpCode(ctx)
 	case gameprovider.FieldProviderCode:
 		return m.OldProviderCode(ctx)
 	case gameprovider.FieldChannelCode:
@@ -3271,6 +3477,13 @@ func (m *GameProviderMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *GameProviderMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case gameprovider.FieldOpCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOpCode(v)
+		return nil
 	case gameprovider.FieldProviderCode:
 		v, ok := value.(string)
 		if !ok {
@@ -3411,6 +3624,9 @@ func (m *GameProviderMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *GameProviderMutation) ResetField(name string) error {
 	switch name {
+	case gameprovider.FieldOpCode:
+		m.ResetOpCode()
+		return nil
 	case gameprovider.FieldProviderCode:
 		m.ResetProviderCode()
 		return nil

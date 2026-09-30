@@ -28,6 +28,20 @@ func (_u *GameCategoryUpdate) Where(ps ...predicate.GameCategory) *GameCategoryU
 	return _u
 }
 
+// SetOpCode sets the "op_code" field.
+func (_u *GameCategoryUpdate) SetOpCode(v string) *GameCategoryUpdate {
+	_u.mutation.SetOpCode(v)
+	return _u
+}
+
+// SetNillableOpCode sets the "op_code" field if the given value is not nil.
+func (_u *GameCategoryUpdate) SetNillableOpCode(v *string) *GameCategoryUpdate {
+	if v != nil {
+		_u.SetOpCode(*v)
+	}
+	return _u
+}
+
 // SetCategoryCode sets the "category_code" field.
 func (_u *GameCategoryUpdate) SetCategoryCode(v string) *GameCategoryUpdate {
 	_u.mutation.SetCategoryCode(v)
@@ -153,6 +167,9 @@ func (_u *GameCategoryUpdate) sqlSave(ctx context.Context) (_node int, err error
 			}
 		}
 	}
+	if value, ok := _u.mutation.OpCode(); ok {
+		_spec.SetField(gamecategory.FieldOpCode, field.TypeString, value)
+	}
 	if value, ok := _u.mutation.CategoryCode(); ok {
 		_spec.SetField(gamecategory.FieldCategoryCode, field.TypeString, value)
 	}
@@ -192,6 +209,20 @@ type GameCategoryUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *GameCategoryMutation
+}
+
+// SetOpCode sets the "op_code" field.
+func (_u *GameCategoryUpdateOne) SetOpCode(v string) *GameCategoryUpdateOne {
+	_u.mutation.SetOpCode(v)
+	return _u
+}
+
+// SetNillableOpCode sets the "op_code" field if the given value is not nil.
+func (_u *GameCategoryUpdateOne) SetNillableOpCode(v *string) *GameCategoryUpdateOne {
+	if v != nil {
+		_u.SetOpCode(*v)
+	}
+	return _u
 }
 
 // SetCategoryCode sets the "category_code" field.
@@ -348,6 +379,9 @@ func (_u *GameCategoryUpdateOne) sqlSave(ctx context.Context) (_node *GameCatego
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.OpCode(); ok {
+		_spec.SetField(gamecategory.FieldOpCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.CategoryCode(); ok {
 		_spec.SetField(gamecategory.FieldCategoryCode, field.TypeString, value)

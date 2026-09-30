@@ -13,6 +13,8 @@ const (
 	Label = "game_channel"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldOpCode holds the string denoting the op_code field in the database.
+	FieldOpCode = "op_code"
 	// FieldChannelCode holds the string denoting the channel_code field in the database.
 	FieldChannelCode = "channel_code"
 	// FieldSortNo holds the string denoting the sort_no field in the database.
@@ -32,6 +34,7 @@ const (
 // Columns holds all SQL columns for gamechannel fields.
 var Columns = []string{
 	FieldID,
+	FieldOpCode,
 	FieldChannelCode,
 	FieldSortNo,
 	FieldLoadType,
@@ -63,6 +66,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByOpCode orders the results by the op_code field.
+func ByOpCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOpCode, opts...).ToFunc()
 }
 
 // ByChannelCode orders the results by the channel_code field.

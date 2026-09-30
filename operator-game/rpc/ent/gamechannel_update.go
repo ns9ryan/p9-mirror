@@ -28,6 +28,20 @@ func (_u *GameChannelUpdate) Where(ps ...predicate.GameChannel) *GameChannelUpda
 	return _u
 }
 
+// SetOpCode sets the "op_code" field.
+func (_u *GameChannelUpdate) SetOpCode(v string) *GameChannelUpdate {
+	_u.mutation.SetOpCode(v)
+	return _u
+}
+
+// SetNillableOpCode sets the "op_code" field if the given value is not nil.
+func (_u *GameChannelUpdate) SetNillableOpCode(v *string) *GameChannelUpdate {
+	if v != nil {
+		_u.SetOpCode(*v)
+	}
+	return _u
+}
+
 // SetChannelCode sets the "channel_code" field.
 func (_u *GameChannelUpdate) SetChannelCode(v string) *GameChannelUpdate {
 	_u.mutation.SetChannelCode(v)
@@ -174,6 +188,9 @@ func (_u *GameChannelUpdate) sqlSave(ctx context.Context) (_node int, err error)
 			}
 		}
 	}
+	if value, ok := _u.mutation.OpCode(); ok {
+		_spec.SetField(gamechannel.FieldOpCode, field.TypeString, value)
+	}
 	if value, ok := _u.mutation.ChannelCode(); ok {
 		_spec.SetField(gamechannel.FieldChannelCode, field.TypeString, value)
 	}
@@ -219,6 +236,20 @@ type GameChannelUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *GameChannelMutation
+}
+
+// SetOpCode sets the "op_code" field.
+func (_u *GameChannelUpdateOne) SetOpCode(v string) *GameChannelUpdateOne {
+	_u.mutation.SetOpCode(v)
+	return _u
+}
+
+// SetNillableOpCode sets the "op_code" field if the given value is not nil.
+func (_u *GameChannelUpdateOne) SetNillableOpCode(v *string) *GameChannelUpdateOne {
+	if v != nil {
+		_u.SetOpCode(*v)
+	}
+	return _u
 }
 
 // SetChannelCode sets the "channel_code" field.
@@ -396,6 +427,9 @@ func (_u *GameChannelUpdateOne) sqlSave(ctx context.Context) (_node *GameChannel
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.OpCode(); ok {
+		_spec.SetField(gamechannel.FieldOpCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.ChannelCode(); ok {
 		_spec.SetField(gamechannel.FieldChannelCode, field.TypeString, value)
