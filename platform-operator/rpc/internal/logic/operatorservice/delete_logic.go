@@ -46,8 +46,8 @@ func (l *DeleteLogic) Delete(in *operatorpb.DeleteOperatorRequest) (*operatorpb.
 		return nil, enterror.Handle(l.Logger, err)
 	}
 
-	// 仅未发布或发布失败的分站允许删除
-	if current.PublishStatus != 1 && current.PublishStatus != 4 {
+	// 仅未发布的分站允许删除
+	if current.PublishStatus != 1 {
 		return nil, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
 	}
 

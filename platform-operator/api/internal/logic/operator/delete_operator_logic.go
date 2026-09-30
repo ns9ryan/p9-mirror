@@ -42,8 +42,8 @@ func (l *DeleteOperatorLogic) DeleteOperator(req *types.DeleteOperatorRequest) (
 		return nil, err
 	}
 
-	// 仅未发布或发布失败的分站允许删除
-	if current.Operator.PublishStatus != 1 && current.Operator.PublishStatus != 4 {
+	// 仅未发布的分站允许删除
+	if current.Operator.PublishStatus != 1 {
 		return nil, xerr.BadRequest(i18nkey.ConstraintError)
 	}
 
