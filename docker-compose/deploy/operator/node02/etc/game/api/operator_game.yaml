@@ -1,0 +1,26 @@
+# API 服务配置
+Name: operator-game-api-node02
+Host: 0.0.0.0
+Port: 38203
+Mode: test
+Timeout: 10000
+
+# 国际化配置
+I18n:
+  DefaultLanguage: zh-CN
+
+# Swagger 配置
+Swagger:
+  Protocol: http
+
+CoreRpc:
+  Hosts:
+    - 192.168.0.15:2379
+  Target: operator-node02-core-rpc:39200
+  Timeout: 10000
+
+OperatorGameRpc:
+  Etcd:
+    Hosts:
+      - 192.168.0.15:2379
+    Key: operator-game-rpc-node02

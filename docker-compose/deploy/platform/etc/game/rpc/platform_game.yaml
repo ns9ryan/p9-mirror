@@ -31,6 +31,12 @@ Etcd:
     - 192.168.0.15:2379       # Etcd地址
   Key: platform-game-rpc    # 服务注册Key
 
+NodeDispatchRpc:
+  Etcd:
+    Hosts:
+      - 192.168.0.15:2379
+    Key: node-dispatch-rpc
+
 # 链路追踪, 生产建议 Sampler 0.01~0.1
 Telemetry:
   Name: platform-game-rpc
