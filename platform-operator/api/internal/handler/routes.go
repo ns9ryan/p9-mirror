@@ -248,6 +248,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/list",
 					Handler: operator_game_allocation.ListGameAllocationsHandler(serverCtx),
 				},
+				{
+					// 发布游戏资源分配到指定分站
+					Method:  http.MethodPost,
+					Path:    "/publish",
+					Handler: operator_game_allocation.PublishOperatorGameAllocationHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/admin/operator/game-allocation"),

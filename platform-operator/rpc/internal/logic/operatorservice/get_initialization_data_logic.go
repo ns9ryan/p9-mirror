@@ -7,6 +7,7 @@ import (
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/platform-operator/pkg/i18nkey"
 	operatorent "oa.98ent.com/p9/platform-operator/rpc/ent/operator"
+	"oa.98ent.com/p9/platform-operator/rpc/ent/operatoradmin"
 	operatoragentlineallocationent "oa.98ent.com/p9/platform-operator/rpc/ent/operatoragentlineallocation"
 	operatordomainent "oa.98ent.com/p9/platform-operator/rpc/ent/operatordomain"
 	operatorlanguageallocationent "oa.98ent.com/p9/platform-operator/rpc/ent/operatorlanguageallocation"
@@ -120,6 +121,29 @@ func (l *GetInitializationDataLogic) GetInitializationData(in *operatorpb.GetIni
 		return nil, xerr.RpcErr(xerr.BadRequest(i18nkey.ValidationError))
 	}
 
+	// 获取当前分配的管理后台信息
+	adminList, err := l.svcCtx.DB.OperatorAdmin.
+		Query().
+		Where(operatoradmin.OperatorIDEQ(operatorData.ID)).
+		Order(operatoradmin.ByUsername()).
+		All(l.ctx)
+	if err != nil {
+		// 转换Ent错误为gRPC错误
+		return nil, enterror.Handle(l.Logger, err)
+	}
+	// 初始化时只能有一个管理后台
+	if len(adminList) != 1 {
+		return nil, xerr.RpcErr(xerr.BadRequest(i18nkey.ValidationError))
+	}
+	// 转换当前分配的管理后台信息
+	admins := make([]*operatorpb.AdminInitializationInfo, 0, len(adminList))
+	for _, data := range adminList {
+		admins = append(admins, &operatorpb.AdminInitializationInfo{
+			Username:    data.Username,    // 管理员用户名
+			Password:    data.Password,    // 管理员密码
+			DisplayName: data.DisplayName, // 显示名称
+		})
+	}
 	// 转换当前启用域名
 	domains := make([]*operatorpb.DomainInitializationInfo, 0, len(domainData))
 	for _, data := range domainData {
@@ -139,6 +163,7 @@ func (l *GetInitializationDataLogic) GetInitializationData(in *operatorpb.GetIni
 			Status:                 operatorData.Status,                 // 分站状态: 1正常, 2暂停, 3关闭
 		},
 		Domains:        domains,        // 当前启用域名
+		Admins:         admins,         // 当前分配的管理后台信息
 		LanguageCodes:  languageCodes,  // 当前分配的语言编码
 		RegionCodes:    regionCodes,    // 当前分配的经营地区编码
 		AgentLineCodes: agentLineCodes, // 当前分配的代理子线路编码

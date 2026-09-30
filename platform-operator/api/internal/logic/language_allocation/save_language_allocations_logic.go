@@ -37,7 +37,7 @@ func (l *SaveLanguageAllocationsLogic) SaveLanguageAllocations(req *types.SaveLa
 
 	if len(req.LanguageCodes) > 0 {
 		// 获取Core全部启用语言
-		result, err := l.svcCtx.Core.GetEnabledI18NLangs(l.ctx, &coreclient.Empty{})
+		result, err := l.svcCtx.Core.GetEnabledI18NLangs(l.ctx, &coreclient.GetEnabledI18NLangsReq{})
 		if err != nil {
 			return nil, err
 		}

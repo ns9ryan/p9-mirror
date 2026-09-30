@@ -444,6 +444,13 @@ type PageRequest struct {
 type PingResponse struct {
 }
 
+type PublishOperatorGameAllocationRequest struct {
+	OpCode string `json:"op_code" validate:"required,notblank"`
+}
+
+type PublishOperatorGameAllocationResponse struct {
+}
+
 type PublishOperatorRequest struct {
 	Id int64 `json:"id" validate:"required,gt=0"`
 }

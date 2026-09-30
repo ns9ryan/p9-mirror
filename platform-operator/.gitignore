@@ -25,3 +25,5 @@ go.work.sum
 # Build binaries
 /platform_operator_api
 /platform_operator_rpc
+
+api/etc/platform_operator_local.yaml

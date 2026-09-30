@@ -123,5 +123,7 @@ func apis() []*coreclient.CreateApiReq {
 		{Path: "/admin/operator/game-category/save-allocation", Method: http.MethodPost, Description: "api.operatorGameCategorySaveAllocation", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/game-provider/save-allocation", Method: http.MethodPost, Description: "api.operatorGameProviderSaveAllocation", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/game-channel/save-allocation", Method: http.MethodPost, Description: "api.operatorGameChannelSaveAllocation", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
+
+		{Path: "/admin/operator/game-allocation/publish", Method: http.MethodPost, Description: "api.operatorGameAllocationPublish", ApiGroup: "api.group.game_allocation", ServiceName: "platform-operator-api"},
 	}
 }
