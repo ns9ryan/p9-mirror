@@ -249,15 +249,21 @@ type I18nLangListResp {
 	Total int64          `json:"total"`
 }
 
+// Enabled i18n lang list request | 已开启语言列表
+type GetEnabledI18nLangsReq {
+	// Operator code | 分站编码，无 claims 时必填
+	OperatorCode string `form:"operator_code,optional"`
+}
+
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      i18n
-	middleware: ActionLog
+	middleware: JwtWithoutError,ActionLog
 )
 service Core {
 	@doc "已开启的语言列表"
 	@handler getEnabledI18nLangs
-	get /i18n/lang/enabled returns (I18nLangListResp)
+	get /i18n/lang/enabled (GetEnabledI18nLangsReq) returns (I18nLangListResp)
 
 	@doc "词条下发"
 	@handler getI18nDict
@@ -265,7 +271,7 @@ service Core {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      i18n
 	middleware: Jwt,ActionLog,Authority
 )

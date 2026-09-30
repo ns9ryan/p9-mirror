@@ -147,6 +147,10 @@ message ReorderI18nLangReq {
   int64 target_id = 2;
 }
 
+message GetEnabledI18nLangsReq {
+  string operator_code = 1;
+}
+
 service Core {
   // I18n management
   // group: i18n
@@ -178,5 +182,5 @@ service Core {
   // group: i18n
   rpc reorderI18nLang (ReorderI18nLangReq) returns (Empty);
   // group: i18n
-  rpc getEnabledI18nLangs (Empty) returns (I18nLangListResp);
+  rpc getEnabledI18nLangs (GetEnabledI18nLangsReq) returns (I18nLangListResp);
 }

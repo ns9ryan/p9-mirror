@@ -1100,12 +1100,14 @@ func (c *I18nLangClient) GetX(ctx context.Context, id int64) *I18nLang {
 
 // Hooks returns the client hooks.
 func (c *I18nLangClient) Hooks() []Hook {
-	return c.hooks.I18nLang
+	hooks := c.hooks.I18nLang
+	return append(hooks[:len(hooks):len(hooks)], i18nlang.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *I18nLangClient) Interceptors() []Interceptor {
-	return c.inters.I18nLang
+	inters := c.inters.I18nLang
+	return append(inters[:len(inters):len(inters)], i18nlang.Interceptors[:]...)
 }
 
 func (c *I18nLangClient) mutate(ctx context.Context, m *I18nLangMutation) (Value, error) {

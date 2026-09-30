@@ -14,10 +14,10 @@ rpc/              Core 权限 RPC
   desc/*.proto    按资源拆分，goctls 合并为 rpc/core.proto
   ent/            权限表 schema（go generate）
   service/        业务实现
-api/              后台 HTTP（/admin/*），只转发 Core RPC
+api/              后台 HTTP（/core/*），只转发 Core RPC
   desc/all.api    入口；desc/core/*.api 按资源拆分
   internal/catalog  启动时 RegisterCatalog（系统菜单 + 后台 API + 默认语言）
-example/promo-api 业务示例：GET /admin/promo/list
+example/promo-api 业务示例：GET /core/promo/list
 ```
 
 
@@ -44,17 +44,17 @@ Partner 模式在 `rpc/etc/core.yaml` 的 `PartnerMode`：`"on"` 分厅，`"off"
 `on` 模式：
 
 ```bash
-curl -s localhost:8889/admin/bootstrap/operator \
+curl -s localhost:8889/core/bootstrap/operator \
   -H 'X-Init-Token: change-me-init-token' \
   -H 'Content-Type: application/json' \
   -d '{"operator_code":"demo","username":"admin","password":"Admin@123","display_name":"分站超管"}'
 
-curl -s localhost:8889/admin/login \
+curl -s localhost:8889/core/login \
   -H 'Content-Type: application/json' \
   -d '{"username":"admin","password":"Admin@123","operator_code":"demo"}'
 ```
 
-`off` 模式把 `PartnerMode` 改为 `"off"`，改调 `POST /admin/bootstrap/admin`（body 无 `operator_code`），登录也不带厅代码。
+`off` 模式把 `PartnerMode` 改为 `"off"`，改调 `POST /core/bootstrap/admin`（body 无 `operator_code`），登录也不带厅代码。
 
 之后请求头带 `Authorization: Bearer <access_token>`。响应统一为 `{ "code": 0, "msg": "ok", "data": ... }`，失败 `code` 为 HTTP 状态码。
 
@@ -66,7 +66,7 @@ curl -s localhost:8889/admin/login \
 - 仅 JWT：`/logout` `/logout/all` `/user/info` `/user/perm` `/menu/role` `/user/password/self`
 - JWT + Casbin：用户/角色/菜单/API/授权
 
-业务接口示例：`GET /admin/promo/list`（promo-api 启动时一次 `RegisterCatalog` 写入菜单「优惠中心 / 活动列表」和对应 API）。
+业务接口示例：`GET /core/promo/list`（promo-api 启动时一次 `RegisterCatalog` 写入菜单「优惠中心 / 活动列表」和对应 API）。
 
 ## 业务服务怎么接
 
@@ -74,7 +74,7 @@ curl -s localhost:8889/admin/login \
 2. 调 RPC 时传入 HTTP 的 `ctx` 即可，gRPC 会自动带上 metadata。不要挂 Unary Client/Server Interceptor。RPC logic / Ent mixin 用 `ctxdata.ClaimsFromCtx`（无 Value 时从 incoming metadata 还原）。
 3. 业务 Ent schema 嵌入 `entmixin.TimeMixin` + `entmixin.OperatorCodeMixin`（`operator_code` 可空）。`claims.OperatorCode != ""` 且未 `ctxdata.SkipTenant` 时自动按分站编码过滤；创建时自动盖章。
 4. `import _ "your/module/ent/runtime"`，启动时 `Schema.Create`。
-5. 菜单和需鉴权的 HTTP path 不要写进 core-rpc。各 HTTP 服务启动时调 RPC `RegisterCatalog`（菜单按 `name` upsert，API 按 method+path upsert，多语言按 group+key+lang upsert，支持的语言按 `lang` 幂等插入，并给各厅 `super_admin` 补授权）。`core-api` 注册系统管理菜单、`/admin/user|role|menu|api|i18n|authority|*` 和默认语言 `zh-CN` / `zh-HK` / `en-US`；`example/promo-api` 注册「优惠中心 / 活动列表」和 `GET /admin/promo/list`。若先 bootstrap 再启对应 HTTP 服务，重启一次即可写入。仍可单独调 `RegisterApi`。
+5. 菜单和需鉴权的 HTTP path 不要写进 core-rpc。各 HTTP 服务启动时调 RPC `RegisterCatalog`（菜单按 `name` upsert，API 按 method+path upsert，多语言按 group+key+lang upsert，支持的语言按 `lang` 幂等插入，并给各厅 `super_admin` 补授权）。`core-api` 注册系统管理菜单、`/core/user|role|menu|api|i18n|authority|*` 和默认语言 `zh-CN` / `zh-HK` / `en-US`；`example/promo-api` 注册「优惠中心 / 活动列表」和 `GET /core/promo/list`。若先 bootstrap 再启对应 HTTP 服务，重启一次即可写入。仍可单独调 `RegisterApi`。
 
 
 

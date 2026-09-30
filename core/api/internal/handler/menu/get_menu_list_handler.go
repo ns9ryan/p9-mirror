@@ -9,7 +9,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/svc"
 )
 
-// swagger:route post /admin/menu/list menu GetMenuList
+// swagger:route post /core/menu/list menu GetMenuList
 //
 
 //

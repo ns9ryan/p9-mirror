@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 
+	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/common/xerr"
 	coreI18n "oa.98ent.com/p9/core/common/i18n"
 	"oa.98ent.com/p9/core/rpc/ent"
@@ -201,7 +202,18 @@ func (d *Deps) ListI18nLangs(ctx context.Context, req I18nLangListReq) ([]model.
 	return i18nLangsFromEnt(list), int64(total), err
 }
 
-func (d *Deps) ListEnabledI18nLangs(ctx context.Context) ([]model.I18nLang, error) {
+func (d *Deps) ListEnabledI18nLangs(ctx context.Context, operatorCode string) ([]model.I18nLang, error) {
+	code := ""
+	if c := ctxdata.ClaimsFromCtx(ctx); c != nil {
+		code = strings.TrimSpace(c.OperatorCode)
+	}
+	if code == "" {
+		code = strings.TrimSpace(operatorCode)
+	}
+	if code == "" && d.IsOperatorMode() {
+		return nil, xerr.BadRequest(coreI18n.AuthOperatorCodeRequired)
+	}
+	ctx = ctxdata.WithOperatorCode(ctx, code)
 	list, err := d.Client.I18nLang.Query().
 		Where(enti18nlang.DisabledEQ(0)).
 		Order(ent.Asc(enti18nlang.FieldSortNo), ent.Asc(enti18nlang.FieldLang), ent.Asc(enti18nlang.FieldID)).

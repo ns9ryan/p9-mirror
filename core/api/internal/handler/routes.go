@@ -53,7 +53,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: public.IssuePreviewTokenHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -92,7 +92,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -149,7 +149,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -188,7 +188,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -203,7 +203,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -236,12 +236,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.ActionLog},
+			[]rest.Middleware{serverCtx.JwtWithoutError, serverCtx.ActionLog},
 			[]rest.Route{
 				{
 					// 已开启的语言列表
@@ -257,7 +257,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -344,7 +344,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -377,7 +377,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -410,7 +410,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 
 	server.AddRoutes(
@@ -437,6 +437,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/admin"),
+		rest.WithPrefix("/core"),
 	)
 }

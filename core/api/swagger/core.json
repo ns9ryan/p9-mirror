@@ -17,7 +17,7 @@
   "host": "localhost:18000",
   "basePath": "/",
   "paths": {
-    "/admin/api/create": {
+    "/core/api/create": {
       "post": {
         "description": "创建接口",
         "consumes": [
@@ -127,7 +127,7 @@
         }
       }
     },
-    "/admin/api/delete": {
+    "/core/api/delete": {
       "post": {
         "description": "删除接口",
         "consumes": [
@@ -180,7 +180,7 @@
         }
       }
     },
-    "/admin/api/list": {
+    "/core/api/list": {
       "post": {
         "description": "接口列表",
         "consumes": [
@@ -316,7 +316,7 @@
         }
       }
     },
-    "/admin/api/update": {
+    "/core/api/update": {
       "post": {
         "description": "更新接口",
         "consumes": [
@@ -389,7 +389,7 @@
         }
       }
     },
-    "/admin/authority/api/role": {
+    "/core/authority/api/role": {
       "post": {
         "description": "查询角色接口权限",
         "consumes": [
@@ -460,7 +460,7 @@
         }
       }
     },
-    "/admin/authority/api/update": {
+    "/core/authority/api/update": {
       "post": {
         "description": "更新角色接口权限",
         "consumes": [
@@ -530,7 +530,7 @@
         }
       }
     },
-    "/admin/authority/menu/role": {
+    "/core/authority/menu/role": {
       "post": {
         "description": "查询角色菜单权限",
         "consumes": [
@@ -583,7 +583,7 @@
         }
       }
     },
-    "/admin/authority/menu/update": {
+    "/core/authority/menu/update": {
       "post": {
         "description": "更新角色菜单权限",
         "consumes": [
@@ -639,7 +639,7 @@
         }
       }
     },
-    "/admin/bootstrap/admin": {
+    "/core/bootstrap/admin": {
       "post": {
         "description": "初始化平台超管",
         "consumes": [
@@ -772,7 +772,7 @@
         }
       }
     },
-    "/admin/bootstrap/operator": {
+    "/core/bootstrap/operator": {
       "post": {
         "description": "初始化分站超管",
         "consumes": [
@@ -910,7 +910,7 @@
         }
       }
     },
-    "/admin/i18n/create": {
+    "/core/i18n/create": {
       "post": {
         "description": "创建多语言",
         "consumes": [
@@ -1006,7 +1006,7 @@
         }
       }
     },
-    "/admin/i18n/delete": {
+    "/core/i18n/delete": {
       "post": {
         "description": "删除多语言",
         "consumes": [
@@ -1059,7 +1059,7 @@
         }
       }
     },
-    "/admin/i18n/deleteByKey": {
+    "/core/i18n/deleteByKey": {
       "post": {
         "description": "按站点/分组/key删除词条",
         "consumes": [
@@ -1118,7 +1118,7 @@
         }
       }
     },
-    "/admin/i18n/dict": {
+    "/core/i18n/dict": {
       "get": {
         "description": "词条下发",
         "produces": [
@@ -1171,7 +1171,7 @@
         }
       }
     },
-    "/admin/i18n/export": {
+    "/core/i18n/export": {
       "post": {
         "description": "导出多语言（下载 JSON 文件）",
         "consumes": [
@@ -1257,7 +1257,7 @@
         }
       }
     },
-    "/admin/i18n/import": {
+    "/core/i18n/import": {
       "post": {
         "description": "导入多语言（上传 JSON 文件，字段 file，格式同导出）",
         "consumes": [
@@ -1314,7 +1314,7 @@
         }
       }
     },
-    "/admin/i18n/lang/create": {
+    "/core/i18n/lang/create": {
       "post": {
         "description": "创建支持的语言",
         "consumes": [
@@ -1412,7 +1412,7 @@
         }
       }
     },
-    "/admin/i18n/lang/delete": {
+    "/core/i18n/lang/delete": {
       "post": {
         "description": "删除支持的语言",
         "consumes": [
@@ -1465,7 +1465,7 @@
         }
       }
     },
-    "/admin/i18n/lang/enabled": {
+    "/core/i18n/lang/enabled": {
       "get": {
         "description": "已开启的语言列表",
         "produces": [
@@ -1476,6 +1476,15 @@
         ],
         "summary": "已开启的语言列表",
         "operationId": "i18nGetEnabledI18nLangs",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Operator code | 分站编码，无 claims 时必填",
+            "name": "operator_code",
+            "in": "query",
+            "allowEmptyValue": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1548,7 +1557,7 @@
         }
       }
     },
-    "/admin/i18n/lang/list": {
+    "/core/i18n/lang/list": {
       "post": {
         "description": "支持的语言列表",
         "consumes": [
@@ -1662,7 +1671,7 @@
         }
       }
     },
-    "/admin/i18n/lang/reorder": {
+    "/core/i18n/lang/reorder": {
       "post": {
         "description": "调整语言排序",
         "consumes": [
@@ -1716,7 +1725,7 @@
         }
       }
     },
-    "/admin/i18n/lang/update": {
+    "/core/i18n/lang/update": {
       "post": {
         "description": "更新支持的语言",
         "consumes": [
@@ -1785,7 +1794,7 @@
         }
       }
     },
-    "/admin/i18n/list": {
+    "/core/i18n/list": {
       "post": {
         "description": "多语言列表",
         "consumes": [
@@ -1902,7 +1911,7 @@
         }
       }
     },
-    "/admin/i18n/update": {
+    "/core/i18n/update": {
       "post": {
         "description": "更新多语言",
         "consumes": [
@@ -1971,7 +1980,7 @@
         }
       }
     },
-    "/admin/i18n/updateByKey": {
+    "/core/i18n/updateByKey": {
       "post": {
         "description": "按词条key更新多语言",
         "consumes": [
@@ -2036,7 +2045,7 @@
         }
       }
     },
-    "/admin/log/action/list": {
+    "/core/log/action/list": {
       "post": {
         "description": "操作日志列表",
         "consumes": [
@@ -2191,7 +2200,7 @@
         }
       }
     },
-    "/admin/log/error/list": {
+    "/core/log/error/list": {
       "post": {
         "description": "错误日志列表",
         "consumes": [
@@ -2353,7 +2362,7 @@
         }
       }
     },
-    "/admin/log/login/list": {
+    "/core/log/login/list": {
       "post": {
         "description": "登录日志列表",
         "consumes": [
@@ -2475,7 +2484,7 @@
         }
       }
     },
-    "/admin/login": {
+    "/core/login": {
       "post": {
         "description": "登录",
         "consumes": [
@@ -2649,7 +2658,7 @@
         }
       }
     },
-    "/admin/logout": {
+    "/core/logout": {
       "post": {
         "description": "登出当前会话",
         "consumes": [
@@ -2698,7 +2707,7 @@
         }
       }
     },
-    "/admin/logout/all": {
+    "/core/logout/all": {
       "post": {
         "description": "登出全部会话",
         "produces": [
@@ -2725,7 +2734,7 @@
         }
       }
     },
-    "/admin/menu/create": {
+    "/core/menu/create": {
       "post": {
         "description": "创建菜单",
         "consumes": [
@@ -2880,7 +2889,7 @@
         }
       }
     },
-    "/admin/menu/delete": {
+    "/core/menu/delete": {
       "post": {
         "description": "删除菜单",
         "consumes": [
@@ -2933,7 +2942,7 @@
         }
       }
     },
-    "/admin/menu/list": {
+    "/core/menu/list": {
       "post": {
         "description": "菜单列表",
         "produces": [
@@ -3107,7 +3116,7 @@
         }
       }
     },
-    "/admin/menu/role": {
+    "/core/menu/role": {
       "get": {
         "description": "当前角色菜单树",
         "produces": [
@@ -3548,7 +3557,7 @@
         }
       }
     },
-    "/admin/menu/update": {
+    "/core/menu/update": {
       "post": {
         "description": "更新菜单",
         "consumes": [
@@ -3645,7 +3654,7 @@
         }
       }
     },
-    "/admin/previewToken": {
+    "/core/previewToken": {
       "post": {
         "description": "签发总网预览令牌，只读",
         "consumes": [
@@ -3706,7 +3715,7 @@
         }
       }
     },
-    "/admin/refresh": {
+    "/core/refresh": {
       "post": {
         "description": "刷新访问令牌",
         "consumes": [
@@ -3871,7 +3880,7 @@
         }
       }
     },
-    "/admin/role/create": {
+    "/core/role/create": {
       "post": {
         "description": "创建角色",
         "consumes": [
@@ -3973,7 +3982,7 @@
         }
       }
     },
-    "/admin/role/delete": {
+    "/core/role/delete": {
       "post": {
         "description": "删除角色",
         "consumes": [
@@ -4026,7 +4035,7 @@
         }
       }
     },
-    "/admin/role/detail": {
+    "/core/role/detail": {
       "get": {
         "description": "角色详情",
         "produces": [
@@ -4098,7 +4107,7 @@
         }
       }
     },
-    "/admin/role/list": {
+    "/core/role/list": {
       "post": {
         "description": "角色列表",
         "consumes": [
@@ -4131,6 +4140,10 @@
                 "role_name": {
                   "description": "Role name | 角色名称",
                   "type": "string"
+                },
+                "status": {
+                  "description": "Status 1 enabled 2 disabled | 状态 1 启用 2 停用，0 不过滤",
+                  "type": "integer"
                 }
               }
             }
@@ -4211,7 +4224,7 @@
         }
       }
     },
-    "/admin/role/update": {
+    "/core/role/update": {
       "post": {
         "description": "更新角色",
         "consumes": [
@@ -4276,7 +4289,7 @@
         }
       }
     },
-    "/admin/user/create": {
+    "/core/user/create": {
       "post": {
         "description": "创建用户",
         "consumes": [
@@ -4427,7 +4440,7 @@
         }
       }
     },
-    "/admin/user/delete": {
+    "/core/user/delete": {
       "post": {
         "description": "删除用户",
         "consumes": [
@@ -4480,7 +4493,7 @@
         }
       }
     },
-    "/admin/user/detail": {
+    "/core/user/detail": {
       "get": {
         "description": "用户详情",
         "produces": [
@@ -4585,7 +4598,7 @@
         }
       }
     },
-    "/admin/user/info": {
+    "/core/user/info": {
       "get": {
         "description": "当前用户信息",
         "produces": [
@@ -4681,7 +4694,7 @@
         }
       }
     },
-    "/admin/user/ipWhitelist": {
+    "/core/user/ipWhitelist": {
       "post": {
         "description": "更新用户登录 IP 白名单",
         "consumes": [
@@ -4743,7 +4756,7 @@
         }
       }
     },
-    "/admin/user/list": {
+    "/core/user/list": {
       "post": {
         "description": "用户列表",
         "consumes": [
@@ -4911,7 +4924,7 @@
         }
       }
     },
-    "/admin/user/password": {
+    "/core/user/password": {
       "post": {
         "description": "重置用户密码",
         "consumes": [
@@ -4965,7 +4978,7 @@
         }
       }
     },
-    "/admin/user/password/self": {
+    "/core/user/password/self": {
       "post": {
         "description": "修改本人密码",
         "consumes": [
@@ -5019,7 +5032,7 @@
         }
       }
     },
-    "/admin/user/perm": {
+    "/core/user/perm": {
       "get": {
         "description": "当前用户权限码",
         "produces": [
@@ -5049,7 +5062,7 @@
         }
       }
     },
-    "/admin/user/roles": {
+    "/core/user/roles": {
       "post": {
         "description": "绑定用户角色",
         "consumes": [
@@ -5106,7 +5119,7 @@
         }
       }
     },
-    "/admin/user/update": {
+    "/core/user/update": {
       "post": {
         "description": "更新用户",
         "consumes": [
@@ -5184,7 +5197,7 @@
       "Token": []
     }
   ],
-  "x-date": "2026-09-24 14:08:44",
+  "x-date": "2026-09-30 13:37:52",
   "x-description": "This is a goctls generated swagger file.",
   "x-github": "https://github.com/suyuan32/simple-admin-core",
   "x-goctl-version": "v1.14.8",

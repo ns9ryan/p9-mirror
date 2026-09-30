@@ -105,6 +105,16 @@ func OperatorCodeFromCtx(ctx context.Context) string {
 	return c.OperatorCode
 }
 
+// WithOperatorCode 添加分站代码到上下文
+func WithOperatorCode(ctx context.Context, code string) context.Context {
+	if c := ClaimsFromCtx(ctx); c != nil {
+		next := *c
+		next.OperatorCode = code
+		return WithClaims(ctx, &next)
+	}
+	return WithClaims(ctx, &Claims{OperatorCode: code})
+}
+
 // WithRawToken 添加原始令牌到上下文
 func WithRawToken(ctx context.Context, token string) context.Context {
 	if token == "" {

@@ -37,7 +37,7 @@ func TestErrorLogMiddlewareWrites5xx(t *testing.T) {
 	h := ErrorLog("core-api", errChanRecorder{ch: ch})(func(w http.ResponseWriter, r *http.Request) {
 		response.FailCtx(r.Context(), w, http.ErrAbortHandler)
 	})
-	req := httptest.NewRequest(http.MethodPost, "/admin/user/create?x=1", strings.NewReader(`{"password":"secret"}`))
+	req := httptest.NewRequest(http.MethodPost, "/core/user/create?x=1", strings.NewReader(`{"password":"secret"}`))
 	req = req.WithContext(ctxdata.WithClaims(req.Context(), &ctxdata.Claims{UserID: 9, OperatorCode: "A"}))
 	rr := httptest.NewRecorder()
 	h(rr, req)
@@ -70,7 +70,7 @@ func TestErrorLogMiddlewareReadsInnerJWTClaims(t *testing.T) {
 	h := ErrorLog("core-api", errChanRecorder{ch: ch})(jwtLike(func(w http.ResponseWriter, r *http.Request) {
 		response.FailCtx(r.Context(), w, http.ErrAbortHandler)
 	}))
-	h(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/admin/user/create", strings.NewReader(`{}`)))
+	h(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/core/user/create", strings.NewReader(`{}`)))
 	rec := waitErr(t, ch)
 	if rec.UserID != 9 {
 		t.Fatalf("%+v", rec)
@@ -83,7 +83,7 @@ func TestErrorLogMiddlewareSkips4xx(t *testing.T) {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte(`{"code":400}`))
 	})
-	h(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/admin/user/create", strings.NewReader(`{}`)))
+	h(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/core/user/create", strings.NewReader(`{}`)))
 	select {
 	case rec := <-ch:
 		t.Fatalf("unexpected %+v", rec)
@@ -97,7 +97,7 @@ func TestErrorLogMiddlewarePanic(t *testing.T) {
 		panic("kaboom")
 	})
 	rr := httptest.NewRecorder()
-	h(rr, httptest.NewRequest(http.MethodGet, "/admin/login", nil))
+	h(rr, httptest.NewRequest(http.MethodGet, "/core/login", nil))
 	if rr.Code != http.StatusInternalServerError {
 		t.Fatalf("status %d body %s", rr.Code, rr.Body.String())
 	}

@@ -10,66 +10,66 @@ core-api 默认 `http://192.168.0.15:18000`，前缀 `/admin`。JSON 字段以 `
 
 - [约定](#约定)
 - [公开（无 JWT）](#公开无-jwt)
-  - [POST /admin/login](#post-adminlogin)
-  - [POST /admin/refresh](#post-adminrefresh)
-  - [GET /admin/i18n/lang/enabled](#get-admini18nlangenabled)
-  - [GET /admin/i18n/dict](#get-admini18ndict)
+  - [POST /core/login](#post-adminlogin)
+  - [POST /core/refresh](#post-adminrefresh)
+  - [GET /core/i18n/lang/enabled](#get-admini18nlangenabled)
+  - [GET /core/i18n/dict](#get-admini18ndict)
 - [仅 JWT](#仅-jwt)
-  - [POST /admin/logout](#post-adminlogout)
-  - [POST /admin/logout/all](#post-adminlogoutall)
-  - [GET /admin/user/info](#get-adminuserinfo)
-  - [GET /admin/user/perm](#get-adminuserperm)
-  - [GET /admin/menu/role](#get-adminmenurole)
-  - [POST /admin/user/password/self](#post-adminuserpasswordself)
+  - [POST /core/logout](#post-adminlogout)
+  - [POST /core/logout/all](#post-adminlogoutall)
+  - [GET /core/user/info](#get-adminuserinfo)
+  - [GET /core/user/perm](#get-adminuserperm)
+  - [GET /core/menu/role](#get-adminmenurole)
+  - [POST /core/user/password/self](#post-adminuserpasswordself)
   - [JWT + Casbin](#jwt--casbin)
   - [用户](#用户)
-    - [POST /admin/user/create](#post-adminusercreate)
-    - [POST /admin/user/update](#post-adminuserupdate)
-    - [POST /admin/user/delete](#post-adminuserdelete)
-    - [POST /admin/user/list](#post-adminuserlist)
-    - [GET /admin/user/detail](#get-adminuserdetail)
-    - [POST /admin/user/password](#post-adminuserpassword)
-    - [POST /admin/user/roles](#post-adminuserroles)
-    - [POST /admin/user/ipWhitelist](#post-adminuseripwhitelist)
+    - [POST /core/user/create](#post-adminusercreate)
+    - [POST /core/user/update](#post-adminuserupdate)
+    - [POST /core/user/delete](#post-adminuserdelete)
+    - [POST /core/user/list](#post-adminuserlist)
+    - [GET /core/user/detail](#get-adminuserdetail)
+    - [POST /core/user/password](#post-adminuserpassword)
+    - [POST /core/user/roles](#post-adminuserroles)
+    - [POST /core/user/ipWhitelist](#post-adminuseripwhitelist)
   - [角色](#角色)
-    - [POST /admin/role/create](#post-adminrolecreate)
-    - [POST /admin/role/update](#post-adminroleupdate)
-    - [POST /admin/role/delete](#post-adminroledelete)
-    - [POST /admin/role/list](#post-adminrolelist)
-    - [GET /admin/role/detail](#get-adminroledetail)
+    - [POST /core/role/create](#post-adminrolecreate)
+    - [POST /core/role/update](#post-adminroleupdate)
+    - [POST /core/role/delete](#post-adminroledelete)
+    - [POST /core/role/list](#post-adminrolelist)
+    - [GET /core/role/detail](#get-adminroledetail)
   - [菜单（全局，不分分站）](#菜单全局不分分站)
-    - [POST /admin/menu/create](#post-adminmenucreate)
-    - [POST /admin/menu/update](#post-adminmenuupdate)
-    - [POST /admin/menu/delete](#post-adminmenudelete)
-    - [POST /admin/menu/list](#post-adminmenulist)
+    - [POST /core/menu/create](#post-adminmenucreate)
+    - [POST /core/menu/update](#post-adminmenuupdate)
+    - [POST /core/menu/delete](#post-adminmenudelete)
+    - [POST /core/menu/list](#post-adminmenulist)
   - [API（全局，不分分站）](#api全局不分分站)
-    - [POST /admin/api/create](#post-adminapicreate)
-    - [POST /admin/api/update](#post-adminapiupdate)
-    - [POST /admin/api/delete](#post-adminapidelete)
-    - [POST /admin/api/list](#post-adminapilist)
-  - [多语言（按站点隔离词条，语言表全局）](#多语言按站点隔离词条语言表全局)
-    - [POST /admin/i18n/create](#post-admini18ncreate)
-    - [POST /admin/i18n/update](#post-admini18nupdate)
-    - [POST /admin/i18n/updateByKey](#post-admini18nupdatebykey)
-    - [POST /admin/i18n/delete](#post-admini18ndelete)
-    - [POST /admin/i18n/deleteByKey](#post-admini18ndeletebykey)
-    - [POST /admin/i18n/list](#post-admini18nlist)
-    - [POST /admin/i18n/export](#post-admini18nexport)
-    - [POST /admin/i18n/import](#post-admini18nimport)
-    - [POST /admin/i18n/lang/create](#post-admini18nlangcreate)
-    - [POST /admin/i18n/lang/update](#post-admini18nlangupdate)
-    - [POST /admin/i18n/lang/reorder](#post-admini18nlangreorder)
-    - [POST /admin/i18n/lang/delete](#post-admini18nlangdelete)
-    - [POST /admin/i18n/lang/list](#post-admini18nlanglist)
+    - [POST /core/api/create](#post-adminapicreate)
+    - [POST /core/api/update](#post-adminapiupdate)
+    - [POST /core/api/delete](#post-adminapidelete)
+    - [POST /core/api/list](#post-adminapilist)
+  - [多语言（词条按站点，语言按分站）](#多语言词条按站点语言按分站)
+    - [POST /core/i18n/create](#post-admini18ncreate)
+    - [POST /core/i18n/update](#post-admini18nupdate)
+    - [POST /core/i18n/updateByKey](#post-admini18nupdatebykey)
+    - [POST /core/i18n/delete](#post-admini18ndelete)
+    - [POST /core/i18n/deleteByKey](#post-admini18ndeletebykey)
+    - [POST /core/i18n/list](#post-admini18nlist)
+    - [POST /core/i18n/export](#post-admini18nexport)
+    - [POST /core/i18n/import](#post-admini18nimport)
+    - [POST /core/i18n/lang/create](#post-admini18nlangcreate)
+    - [POST /core/i18n/lang/update](#post-admini18nlangupdate)
+    - [POST /core/i18n/lang/reorder](#post-admini18nlangreorder)
+    - [POST /core/i18n/lang/delete](#post-admini18nlangdelete)
+    - [POST /core/i18n/lang/list](#post-admini18nlanglist)
   - [日志](#日志)
-    - [POST /admin/log/login/list](#post-adminlogloginlist)
-    - [POST /admin/log/action/list](#post-adminlogactionlist)
-    - [POST /admin/log/error/list](#post-adminlogerrorlist)
+    - [POST /core/log/login/list](#post-adminlogloginlist)
+    - [POST /core/log/action/list](#post-adminlogactionlist)
+    - [POST /core/log/error/list](#post-adminlogerrorlist)
   - [授权](#授权)
-    - [POST /admin/authority/menu/update](#post-adminauthoritymenuupdate)
-    - [POST /admin/authority/menu/role](#post-adminauthoritymenurole)
-    - [POST /admin/authority/api/update](#post-adminauthorityapiupdate)
-    - [POST /admin/authority/api/role](#post-adminauthorityapirole)
+    - [POST /core/authority/menu/update](#post-adminauthoritymenuupdate)
+    - [POST /core/authority/menu/role](#post-adminauthoritymenurole)
+    - [POST /core/authority/api/update](#post-adminauthorityapiupdate)
+    - [POST /core/authority/api/role](#post-adminauthorityapirole)
 - [二、RPC 初始化](#二rpc-初始化)
   - [CreatePlatformAdmin / bootstrapAdmin](#1-createplatformadmin--bootstrapadmin-创建总网超级管理员账号)
   - [CreateOperatorAdmin / bootstrapOperator](#2-createoperatoradmin--bootstrapoperator-创建分站超级管理员账号)
@@ -104,13 +104,13 @@ access 过期（前端用 refresh 后续请求）：
 { "code": 498, "msg": "登录已过期" }
 ```
 
-无 `returns` 的接口成功时 `data` 为 `null`。时间字段为 Unix 秒。下文示例均为完整 HTTP body。例外：[POST /admin/i18n/export](#post-admini18nexport) 成功时直接下载 JSON 文件，不套信封；失败仍走信封。[POST /admin/i18n/import](#post-admini18nimport) 请求为 `multipart/form-data`，不是 JSON。
+无 `returns` 的接口成功时 `data` 为 `null`。时间字段为 Unix 秒。下文示例均为完整 HTTP body。例外：[POST /core/i18n/export](#post-admini18nexport) 成功时直接下载 JSON 文件，不套信封；失败仍走信封。[POST /core/i18n/import](#post-admini18nimport) 请求为 `multipart/form-data`，不是 JSON。
 
 ### 鉴权
 
 登录后请求头：`Authorization: Bearer <access_token>`。
 
-access / refresh / preview token 都会写入签发时的客户端 IP（已规范化，含 IPv4-mapped）。后续请求的客户端 IP 须与 token 内一致，否则 **401**（`auth.ipMismatch`），需重新登录。不要用 498。发版前签发、没有 `client_ip` 的旧 token 同样失效。`POST /admin/refresh` 也会比对 refresh token 内的 IP，新 token 仍绑定当前请求 IP。
+access / refresh / preview token 都会写入签发时的客户端 IP（已规范化，含 IPv4-mapped）。后续请求的客户端 IP 须与 token 内一致，否则 **401**（`auth.ipMismatch`），需重新登录。不要用 498。发版前签发、没有 `client_ip` 的旧 token 同样失效。`POST /core/refresh` 也会比对 refresh token 内的 IP，新 token 仍绑定当前请求 IP。
 
 
 | 分组           | 中间件                        |
@@ -126,7 +126,7 @@ access / refresh / preview token 都会写入签发时的客户端 IP（已规�
 
 请求头：`X-Lang: zh-CN`（缺省）或 `en-US`，也可传其它语言码（如 `ja-JP`）。`zh*` 归一为 `zh-CN`，`en*` 为 `en-US`，其余原样保留。
 
-菜单 `title`、接口 `description` 在库中存 i18n key（如 `menu.route.dashboard`、`api.userCreate`），词条按分组存在 `sys_i18n`（菜单 `menu`、接口 `api`、前端 `front`），HTTP 出参按当前语言翻译（进程内缓存 2 分钟）。前端公共文案用 [GET /admin/i18n/dict](#get-admini18ndict) 按下发。角色 `role_name`、信封 `msg` 仍走内置 JSON。自定义名称没有对应词条时原样返回。下文示例默认 `zh-CN`。
+菜单 `title`、接口 `description` 在库中存 i18n key（如 `menu.route.dashboard`、`api.userCreate`），词条按分组存在 `sys_i18n`（菜单 `menu`、接口 `api`、前端 `front`），HTTP 出参按当前语言翻译（进程内缓存 2 分钟）。前端公共文案用 [GET /core/i18n/dict](#get-admini18ndict) 按下发。角色 `role_name`、信封 `msg` 仍走内置 JSON。自定义名称没有对应词条时原样返回。下文示例默认 `zh-CN`。
 
 ### 分页
 
@@ -161,7 +161,7 @@ access / refresh / preview token 都会写入签发时的客户端 IP（已规�
 | 401  | 未登录 / token 无效 / 登录 IP 已变化需重新登录                                  |
 | 403  | 无权限或资源被禁用                                                        |
 | 404  | 不存在                                                              |
-| 498  | access token 过期：用 `refresh_token` 调 `POST /admin/refresh` 后重试原请求 |
+| 498  | access token 过期：用 `refresh_token` 调 `POST /core/refresh` 后重试原请求 |
 | 500  | 内部错误                                                             |
 
 
@@ -297,7 +297,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### POST /admin/login
+### POST /core/login
 
 `off`：`username` + `password`。`on`：再加 `operator_code`。
 
@@ -352,7 +352,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### POST /admin/refresh
+### POST /core/refresh
 
 校验 refresh 密钥 + 用户 salt + 客户端 IP，下发新 token 对并拉黑旧 refresh。过期或 IP 不一致返回 401。
 
@@ -407,7 +407,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 需 Header：`Authorization: Bearer <access_token>`。
 
-### POST /admin/logout
+### POST /core/logout
 
 拉黑当前 access 与该 refresh（需 Redis）。不改 salt。
 
@@ -433,7 +433,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### POST /admin/logout/all
+### POST /core/logout/all
 
 轮换该用户 `salt`，全部 access / refresh 失效。无请求体。
 
@@ -445,7 +445,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### GET /admin/user/info
+### GET /core/user/info
 
 当前用户。无请求参数。
 
@@ -472,7 +472,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### GET /admin/user/perm
+### GET /core/user/perm
 
 本角色菜单中 `permission != ""` 的按钮码。
 
@@ -490,7 +490,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### GET /admin/menu/role
+### GET /core/menu/role
 
 动态菜单：`permission == ""` 的项组树。
 
@@ -553,7 +553,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### POST /admin/user/password/self
+### POST /core/user/password/self
 
 改自己密码并轮换自己 salt。
 
@@ -581,9 +581,21 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### GET /admin/i18n/lang/enabled
+### GET /core/i18n/lang/enabled
 
-已开启语言（`disabled=0`），无分页。按 `sort_no`、`lang`、`id` 升序。登录后切语言用。无请求参数。`i18n_name` 已按请求 `X-Lang` 翻译，`i18n_key` 仍是词条 key，`name` 是库里的回退原文。
+已开启语言（`disabled=0`），无分页。按 `sort_no`、`lang`、`id` 升序。`JwtWithoutError`：有 token 时优先用 claims 的 `operator_code`；否则用 query `operator_code`。两者都空返回 400（`auth.operatorCodeRequired`）。分站只返回对应 `operator_code` 的语言。`i18n_name` 已按请求 `X-Lang` 翻译，`i18n_key` 仍是词条 key，`name` 是库里的回退原文。
+
+**请求**
+
+
+| 字段              | 位置    | 必填                         | 类型     | 说明                                      |
+| --------------- | ----- | -------------------------- | ------ | --------------------------------------- |
+| `operator_code` | query | claims 无分站编码时必填            | string | 分站编码；claims 已有则忽略                      |
+
+
+```
+GET /core/i18n/lang/enabled?operator_code=demo
+```
 
 **响应**
 
@@ -634,7 +646,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 
 
-### GET /admin/i18n/dict
+### GET /core/i18n/dict
 
 按 `i18n_code` + `lang` 下发词条，无分页。`data` 为 `trans_key -> value`。登录后拉前端/菜单等文案用。不进 Casbin 目录。
 
@@ -642,7 +654,7 @@ refresh token 过期仍返回 **401**，不要用 498 刷新，避免死循环�
 
 `i18n_group` 可选：有值只下发该组；不传则下发该语言全部组。
 
-Query：`/admin/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
+Query：`/core/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
 
 **请求**
 
@@ -680,7 +692,7 @@ Query：`/admin/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
 
 `off` 写 `operator_code=NULL`；`on` 写 JWT 分站编码。禁止设 `is_super_admin`。
 
-#### POST /admin/user/create
+#### POST /core/user/create
 
 **请求**
 
@@ -733,7 +745,7 @@ Query：`/admin/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
 
 
 
-#### POST /admin/user/update
+#### POST /core/user/update
 
 不可改 `operator_code` / `is_super_admin` / `salt`。
 
@@ -767,7 +779,7 @@ Query：`/admin/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
 
 
 
-#### POST /admin/user/delete
+#### POST /core/user/delete
 
 软删。不可删自己、不可删 root。`id` 与 `ids` 至少一个，`ids` 优先。
 
@@ -798,7 +810,7 @@ Query：`/admin/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
 
 
 
-#### POST /admin/user/list
+#### POST /core/user/list
 
 `off` 全量；`on` 仅本分站。
 
@@ -872,16 +884,16 @@ Query：`/admin/i18n/dict?i18n_code=platform&i18n_group=front&lang=zh-CN`
 
 
 
-#### GET /admin/user/detail
+#### GET /core/user/detail
 
-Query：`/admin/user/detail?id=2`
+Query：`/core/user/detail?id=2`
 
 **请求**
 
 
 | 字段   | 位置    | 必填  | 类型    | 说明                               |
 | ---- | ----- | --- | ----- | -------------------------------- |
-| `id` | query | 是   | int64 | 用户主键，如 `/admin/user/detail?id=2` |
+| `id` | query | 是   | int64 | 用户主键，如 `/core/user/detail?id=2` |
 
 
 **响应**
@@ -911,7 +923,7 @@ Query：`/admin/user/detail?id=2`
 
 
 
-#### POST /admin/user/password
+#### POST /core/user/password
 
 改他人密码并轮换对方 salt。
 
@@ -939,7 +951,7 @@ Query：`/admin/user/detail?id=2`
 
 
 
-#### POST /admin/user/roles
+#### POST /core/user/roles
 
 用户与角色的 `operator_code` 必须同为空或同值。
 
@@ -967,9 +979,9 @@ Query：`/admin/user/detail?id=2`
 
 
 
-#### POST /admin/user/ipWhitelist
+#### POST /core/user/ipWhitelist
 
-单独修改登录 IP 白名单，不并入 `POST /admin/user/update`。JWT + Casbin。超管不豁免登录校验。只拦登录，不拦 refresh / 已有会话。
+单独修改登录 IP 白名单，不并入 `POST /core/user/update`。JWT + Casbin。超管不豁免登录校验。只拦登录，不拦 refresh / 已有会话。
 
 开启后客户端 IP（已规范化，含 IPv4-mapped）须命中列表中的精确 IP 或 CIDR；开启且列表为空会拒绝登录，因此开启时列表不能为空。
 
@@ -1003,7 +1015,7 @@ Query：`/admin/user/detail?id=2`
 
 接口不能把 `is_system` 设为 true。停用角色会清掉该 `(role_code, v1)` 的 Casbin 策略。`v1`：`off` 为 `""`，`on` 为 `operator_code`。
 
-#### POST /admin/role/create
+#### POST /core/role/create
 
 **请求**
 
@@ -1050,7 +1062,7 @@ Query：`/admin/user/detail?id=2`
 
 
 
-#### POST /admin/role/update
+#### POST /core/role/update
 
 内置角色的 `role_code` / `is_system` 不可改。
 
@@ -1084,7 +1096,7 @@ Query：`/admin/user/detail?id=2`
 
 
 
-#### POST /admin/role/delete
+#### POST /core/role/delete
 
 `is_system` 不可删；有用户绑定则拒绝；按 `(role_code, v1)` 清 Casbin。
 
@@ -1109,7 +1121,7 @@ Query：`/admin/user/detail?id=2`
 
 
 
-#### POST /admin/role/list
+#### POST /core/role/list
 
 **请求**
 
@@ -1119,10 +1131,11 @@ Query：`/admin/user/detail?id=2`
 | `page`      | json | 否   | int32  | 页码，从 1 起，缺省 1                           |
 | `page_size` | json | 否   | int32  | 每页条数，缺省 50，上限 100                       |
 | `role_name` | json | 否   | string | 模糊匹配 `role_name` **或** `role_code`；空则忽略 |
+| `status`    | json | 否   | int32  | 1 启用 / 2 停用；0 或不传不过滤                    |
 
 
 ```json
-{ "page": 1, "page_size": 50, "role_name": "admin" }
+{ "page": 1, "page_size": 50, "role_name": "admin", "status": 1 }
 ```
 
 **响应**
@@ -1165,16 +1178,16 @@ Query：`/admin/user/detail?id=2`
 
 
 
-#### GET /admin/role/detail
+#### GET /core/role/detail
 
-Query：`/admin/role/detail?id=2`
+Query：`/core/role/detail?id=2`
 
 **请求**
 
 
 | 字段   | 位置    | 必填  | 类型    | 说明                               |
 | ---- | ----- | --- | ----- | -------------------------------- |
-| `id` | query | 是   | int64 | 角色主键，如 `/admin/role/detail?id=2` |
+| `id` | query | 是   | int64 | 角色主键，如 `/core/role/detail?id=2` |
 
 
 **响应**
@@ -1204,7 +1217,7 @@ Query：`/admin/role/detail?id=2`
 
 `name` 唯一。创建后补授权给各分站 `super_admin`。超管角色不可减菜单。
 
-#### POST /admin/menu/create
+#### POST /core/menu/create
 
 **请求**
 
@@ -1264,7 +1277,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/menu/update
+#### POST /core/menu/update
 
 按 `id` 部分更新；禁止挂到自己的子孙。
 
@@ -1305,7 +1318,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/menu/delete
+#### POST /core/menu/delete
 
 有子节点则拒绝；先清 `sys_role_menu`。
 
@@ -1330,7 +1343,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/menu/list
+#### POST /core/menu/list
 
 授权页勾选，全量未停用菜单。无请求体。
 
@@ -1387,7 +1400,7 @@ Query：`/admin/role/detail?id=2`
 
 `(method, path)` 唯一。改 path/method 或删除会同步 Casbin。创建后补授权给各分站 `super_admin`。
 
-#### POST /admin/api/create
+#### POST /core/api/create
 
 **请求**
 
@@ -1407,7 +1420,7 @@ Query：`/admin/role/detail?id=2`
   "description": "导出用户",
   "api_group": "user",
   "method": "POST",
-  "path": "/admin/user/export",
+  "path": "/core/user/export",
   "is_required": 0,
   "service_name": "core-api"
 }
@@ -1424,7 +1437,7 @@ Query：`/admin/role/detail?id=2`
     "description": "导出用户",
     "api_group": "user",
     "method": "POST",
-    "path": "/admin/user/export",
+    "path": "/core/user/export",
     "is_required": 0,
     "service_name": "core-api",
     "created_at": 1700000300,
@@ -1435,7 +1448,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/api/update
+#### POST /core/api/update
 
 **请求**
 
@@ -1467,7 +1480,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/api/delete
+#### POST /core/api/delete
 
 同时删除对应 Casbin 策略。
 
@@ -1492,7 +1505,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/api/list
+#### POST /core/api/list
 
 无请求体。
 
@@ -1509,7 +1522,7 @@ Query：`/admin/role/detail?id=2`
       "trans_description": "后台用户列表",
       "api_group": "user",
       "method": "POST",
-      "path": "/admin/user/list",
+      "path": "/core/user/list",
       "is_required": 0,
       "service_name": "core-api",
       "created_at": 1700000000,
@@ -1521,7 +1534,7 @@ Query：`/admin/role/detail?id=2`
       "trans_description": "后台用户详情",
       "api_group": "user",
       "method": "GET",
-      "path": "/admin/user/detail",
+      "path": "/core/user/detail",
       "is_required": 0,
       "service_name": "core-api",
       "created_at": 1700000000,
@@ -1533,13 +1546,13 @@ Query：`/admin/role/detail?id=2`
 
 
 
-### 多语言（按站点隔离词条，语言表全局）
+### 多语言（词条按站点，语言按分站）
 
 词条按 `(i18n_code, trans_key, lang)` 唯一。`i18n_code` 区分业务站点/服务（`core`、`promo` 等），**不是**分站租户；空则服务端当作 `core`。同一 `trans_key`+`lang` 可在不同站点各有一条。`trans_key` 为业务标识，形如 `menu.route.dashboard`（group 拼进 key）。`i18n_group` 仍保留，供列表过滤和按组分发。创建/目录注册仍可传短 key（如 `route.dashboard`），服务端会拼成完整 key。菜单 `title` 仍存短 key。新增词条（含按 key 更新时新建、目录 upsert 新建）的 `lang` 必须已在 `sys_i18n_lang`。
 
-支持的语言存在 `sys_i18n_lang`（全局，不分站点）。core-api 启动时随 `RegisterCatalog` 种子 `zh-CN` / 简体中文 / `i18n_key=lang.zh-CN`（`sort_no=1`）、`zh-HK` / 繁體中文 / `lang.zh-HK`（`sort_no=2`）、`en-US` / English / `lang.en-US`（`sort_no=3`）。首次写入后 `sys_init` 记下 `i18n_langs`，之后只插入缺失语言；首次尚未打标时已存在不改 `disabled` / `sort_no`，仅当 `name` 或 `i18n_key` 为空时回填。HTTP 出参 `name` 是库里的回退原文，`i18n_key` 是词条 key，`i18n_name` 按当前 `X-Lang` 用 `i18n.TG`（`i18n_group=lang`）翻译，无词条则回退 `name`。该语言在 `sys_i18n` 已有词条时，不能改 `lang`、不能删除。拖拽排序见 [POST /admin/i18n/lang/reorder](#post-admini18nlangreorder)，按当前 `sort_no` 序列把 `id` 挪到 `target_id` 的位置后重写全表 `sort_no` 为 `1..n`。管理 CRUD（含 reorder、导出、导入）走 JWT + Casbin；已开启列表和词条下发仅 JWT（登录后切语言 / 拉文案），不进 Casbin 目录，见 [GET /admin/i18n/lang/enabled](#get-admini18nlangenabled)、[GET /admin/i18n/dict](#get-admini18ndict)。一种语言一个 JSON 文件的导入导出见 [POST /admin/i18n/export](#post-admini18nexport)、[POST /admin/i18n/import](#post-admini18nimport)。
+支持的语言存在 `sys_i18n_lang`，按分站 `operator_code` 隔离（与角色相同：登录后只见本分站；无 token 的 `RegisterCatalog` 写入 `operator_code` 为空的平台语言）。HTTP/RPC 出参不含 `operator_code`。core-api 启动时随 `RegisterCatalog` 种子 `zh-CN` / 简体中文 / `i18n_key=lang.zh-CN`（`sort_no=1`）、`zh-HK` / 繁體中文 / `lang.zh-HK`（`sort_no=2`）、`en-US` / English / `lang.en-US`（`sort_no=3`）。首次写入后 `sys_init` 记下 `i18n_langs`，之后只插入缺失语言；首次尚未打标时已存在不改 `disabled` / `sort_no`，仅当 `name` 或 `i18n_key` 为空时回填。HTTP 出参 `name` 是库里的回退原文，`i18n_key` 是词条 key，`i18n_name` 按当前 `X-Lang` 用 `i18n.TG`（`i18n_group=lang`）翻译，无词条则回退 `name`。该语言在 `sys_i18n` 已有词条时，不能改 `lang`、不能删除。拖拽排序见 [POST /core/i18n/lang/reorder](#post-admini18nlangreorder)，按当前 `sort_no` 序列把 `id` 挪到 `target_id` 的位置后重写全表 `sort_no` 为 `1..n`。管理 CRUD（含 reorder、导出、导入）走 JWT + Casbin；已开启列表 `JwtWithoutError`（claims 优先，否则 query `operator_code`），词条下发仅 JWT，二者不进 Casbin 目录，见 [GET /core/i18n/lang/enabled](#get-admini18nlangenabled)、[GET /core/i18n/dict](#get-admini18ndict)。一种语言一个 JSON 文件的导入导出见 [POST /core/i18n/export](#post-admini18nexport)、[POST /core/i18n/import](#post-admini18nimport)。
 
-#### POST /admin/i18n/create
+#### POST /core/i18n/create
 
 **请求**
 
@@ -1584,7 +1597,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/update
+#### POST /core/i18n/update
 
 **请求**
 
@@ -1611,7 +1624,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/updateByKey
+#### POST /core/i18n/updateByKey
 
 按完整 `trans_key` 一次更新多语言。`i18n_code` / `i18n_group` 可选：有值才加入查询条件；不传则不按站点/分组过滤。已有匹配行则更新译文；没有则新建（空 code 落到 `platform`，空 group 从 `trans_key` 第一段推断，如 `menu.route.dashboard` → `menu`）。新建某语言的词条时，该语言码须已在支持列表中。
 
@@ -1647,7 +1660,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/delete
+#### POST /core/i18n/delete
 
 **请求**
 
@@ -1670,7 +1683,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/deleteByKey
+#### POST /core/i18n/deleteByKey
 
 按 `i18n_code` + `i18n_group` + `trans_key` 删除该词条的**全部语言**。不删其它站点或其它 key。短 key 会拼上 group（如 `menu` + `route.dashboard` → `menu.route.dashboard`）。无匹配行返回 404。
 
@@ -1700,7 +1713,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/list
+#### POST /core/i18n/list
 
 **请求(卡片**`i18n_code:` platform总网,  operator分站, agent代理, user会员端**)**
 
@@ -1745,7 +1758,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/export
+#### POST /core/i18n/export
 
 按一种语言导出全部（或按站点/分组过滤）词条，下载 JSON 文件。JWT + Casbin。按钮权限 `i18n:export`。必须 POST 并带 `Authorization`，不能用 `window.open` / GET（会 401）。
 
@@ -1789,7 +1802,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/import
+#### POST /core/i18n/import
 
 上传与导出同格式的 JSON 文件，按文件内 `lang` upsert 到该语言。JWT + Casbin。按钮权限 `i18n:import`。不删除文件里没有的词条，也不改其它语言。
 
@@ -1836,7 +1849,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/lang/create
+#### POST /core/i18n/lang/create
 
 **请求**
 
@@ -1876,7 +1889,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/lang/update
+#### POST /core/i18n/lang/update
 
 **请求**
 
@@ -1903,7 +1916,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/lang/reorder
+#### POST /core/i18n/lang/reorder
 
 按当前列表顺序（`sort_no`、`lang`、`id` 升序）把 `id` 挪到 `target_id` 所在位置：往前拖插到目标前面，往后拖落到目标原下标（目标前移后相当于插在目标后），然后事务内重写全表 `sort_no` 为 `1..n`。`id` 与 `target_id` 相同视为成功空操作。任一方不存在返回语言不存在。
 
@@ -1928,7 +1941,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/lang/delete
+#### POST /core/i18n/lang/delete
 
 该语言在 `sys_i18n` 已有词条时不能删除。
 
@@ -1953,7 +1966,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/i18n/lang/list
+#### POST /core/i18n/lang/list
 
 无排序参数，固定按 `sort_no`、`lang`、`id` 升序。已开启列表同样按该顺序，且只含 `disabled=0`。`i18n_name` 已按请求 `X-Lang` 翻译。
 
@@ -2003,7 +2016,7 @@ Query：`/admin/role/detail?id=2`
 
 需 JWT + Casbin。`off` 全量；`on` 仅本分站。列表按时间倒序，`page_size` 缺省 20。请求里的 `login_result` / `action_result` 用数字过滤；响应里的同名字段已按语言翻译为「成功 / 失败」。
 
-#### POST /admin/log/login/list
+#### POST /core/log/login/list
 
 **请求**
 
@@ -2050,7 +2063,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/log/action/list
+#### POST /core/log/action/list
 
 **请求**
 
@@ -2069,7 +2082,7 @@ Query：`/admin/role/detail?id=2`
 
 
 ```json
-{ "request_path": "/admin/user", "action_result": 1, "page": 1, "page_size": 20 }
+{ "request_path": "/core/user", "action_result": 1, "page": 1, "page_size": 20 }
 ```
 
 **响应**
@@ -2085,7 +2098,7 @@ Query：`/admin/role/detail?id=2`
         "user_id": 1,
         "username": "admin",
         "request_method": "POST",
-        "request_path": "/admin/user/update",
+        "request_path": "/core/user/update",
         "request_query": "",
         "request_body": "{\"id\":2}",
         "action_result": "成功",
@@ -2104,7 +2117,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/log/error/list
+#### POST /core/log/error/list
 
 **请求**
 
@@ -2138,7 +2151,7 @@ Query：`/admin/role/detail?id=2`
         "user_id": 1,
         "username": "admin",
         "request_method": "POST",
-        "request_path": "/admin/user/create",
+        "request_path": "/core/user/create",
         "request_query": "",
         "request_body": "",
         "service_name": "core-api",
@@ -2164,7 +2177,7 @@ Query：`/admin/role/detail?id=2`
 
 `role_id` 与 `id` 二选一（`role_id` 优先）。角色必须本租户。
 
-#### POST /admin/authority/menu/update
+#### POST /core/authority/menu/update
 
 `is_system` 超管角色禁止减菜单。
 
@@ -2192,7 +2205,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/authority/menu/role
+#### POST /core/authority/menu/role
 
 **请求**
 
@@ -2221,7 +2234,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/authority/api/update
+#### POST /core/authority/api/update
 
 按 `(role_code, v1)` 替换；合并 `is_required`；超管角色禁止减 API。
 
@@ -2240,8 +2253,8 @@ Query：`/admin/role/detail?id=2`
 {
   "role_id": 2,
   "data": [
-    { "path": "/admin/user/list", "method": "POST" },
-    { "path": "/admin/user/detail", "method": "GET" }
+    { "path": "/core/user/list", "method": "POST" },
+    { "path": "/core/user/detail", "method": "GET" }
   ]
 }
 ```
@@ -2254,7 +2267,7 @@ Query：`/admin/role/detail?id=2`
 
 
 
-#### POST /admin/authority/api/role
+#### POST /core/authority/api/role
 
 **请求**
 
@@ -2276,8 +2289,8 @@ Query：`/admin/role/detail?id=2`
   "code": 0,
   "msg": "ok",
   "data": [
-    { "path": "/admin/user/list", "method": "POST" },
-    { "path": "/admin/user/detail", "method": "GET" }
+    { "path": "/core/user/list", "method": "POST" },
+    { "path": "/core/user/detail", "method": "GET" }
   ]
 }
 ```
@@ -2375,7 +2388,7 @@ Query：`/admin/role/detail?id=2`
 }
 ```
 
-HTTP 对应：`POST /admin/bootstrap/admin`、`POST /admin/bootstrap/operator`（`init_token` 走 Header `X-Init-Token`）。
+HTTP 对应：`POST /core/bootstrap/admin`、`POST /core/bootstrap/operator`（`init_token` 走 Header `X-Init-Token`）。
 
 ---
 
@@ -2390,7 +2403,7 @@ HTTP 对应：`POST /admin/bootstrap/admin`、`POST /admin/bootstrap/operator`�
 - 多语言按 `(i18n_code, trans_key, lang)`：首次 upsert；已初始化后只插入新词条。短 key 会拼上 `i18n_group`（如 `menu` + `route.dashboard` → `menu.route.dashboard`）。站点编码写在每条 `I18nItem.i18n_code`（core-api 为 `platform`，promo-api 为 `promo`）；空则 `platform`
 - 支持的语言按 `lang`：首次幂等插入（已存在不改 `disabled` / `sort_no`，仅当 `name` 为空时回填）；已初始化后只插入新语言
 
-core-api 启动时注册系统管理菜单、`/admin/user|role|menu|api|authority|operator|i18n/*`，以及默认语言 `zh-CN` / `zh-HK` / `en-US`（见 `[api/internal/catalog/catalog.go](../api/internal/catalog/catalog.go)`）。若先 bootstrap 再启 HTTP，重启一次即可写入。
+core-api 启动时注册系统管理菜单、`/core/user|role|menu|api|authority|operator|i18n/*`，以及默认语言 `zh-CN` / `zh-HK` / `en-US`（见 `[api/internal/catalog/catalog.go](../api/internal/catalog/catalog.go)`）。若先 bootstrap 再启 HTTP，重启一次即可写入。
 
 ### 示例：promo-api
 
@@ -2488,7 +2501,7 @@ core-api 启动时注册系统管理菜单、`/admin/user|role|menu|api|authorit
       "description": "api.promoList",
       "api_group": "promo",
       "method": "GET",
-      "path": "/admin/promo/list",
+      "path": "/core/promo/list",
       "service_name": "promo-api"
     }
   ],

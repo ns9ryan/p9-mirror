@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route post /admin/user/password/self user ChangeOwnPassword
+// swagger:route post /core/user/password/self user ChangeOwnPassword
 //
 
 //

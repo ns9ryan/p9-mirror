@@ -48,7 +48,7 @@ type ApiAuthReq {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      authority
 	middleware: Jwt,ActionLog,Authority
 )

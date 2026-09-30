@@ -9,7 +9,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/svc"
 )
 
-// swagger:route get /admin/user/info user GetUserInfo
+// swagger:route get /core/user/info user GetUserInfo
 //
 
 //

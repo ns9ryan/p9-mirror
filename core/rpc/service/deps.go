@@ -75,6 +75,16 @@ func (d *Deps) DomainFromClaims(c *ctxdata.Claims) string {
 	return c.OperatorCode
 }
 
+// IsPlatformMode 是否为总网模式
+func (d *Deps) IsPlatformMode() bool {
+	return d.Mode == ModeOff
+}
+
+// IsOperatorMode 是否为分站模式
+func (d *Deps) IsOperatorMode() bool {
+	return d.Mode == ModeOn
+}
+
 func (d *Deps) RequireMode(want string) error {
 	if d.Mode != want {
 		return xerr.BadRequest(coreI18n.AuthPartnerModeMismatch)

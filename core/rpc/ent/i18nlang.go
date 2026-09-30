@@ -22,6 +22,8 @@ type I18nLang struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Updated At | 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Operator Code | 分站编码
+	OperatorCode *string `json:"operator_code,omitempty"`
 	// Language code | 语言码
 	Lang string `json:"lang,omitempty"`
 	// Display name | 显示名
@@ -42,7 +44,7 @@ func (*I18nLang) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case i18nlang.FieldID, i18nlang.FieldDisabled, i18nlang.FieldSortNo:
 			values[i] = new(sql.NullInt64)
-		case i18nlang.FieldLang, i18nlang.FieldName, i18nlang.FieldI18nKey:
+		case i18nlang.FieldOperatorCode, i18nlang.FieldLang, i18nlang.FieldName, i18nlang.FieldI18nKey:
 			values[i] = new(sql.NullString)
 		case i18nlang.FieldCreatedAt, i18nlang.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -78,6 +80,13 @@ func (_m *I18nLang) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
+			}
+		case i18nlang.FieldOperatorCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
+			} else if value.Valid {
+				_m.OperatorCode = new(string)
+				*_m.OperatorCode = value.String
 			}
 		case i18nlang.FieldLang:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -150,6 +159,11 @@ func (_m *I18nLang) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	if v := _m.OperatorCode; v != nil {
+		builder.WriteString("operator_code=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	builder.WriteString("lang=")
 	builder.WriteString(_m.Lang)

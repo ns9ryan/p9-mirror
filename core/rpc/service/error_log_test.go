@@ -17,7 +17,7 @@ func TestCreateErrorLogWritesWithoutUser(t *testing.T) {
 	d := testDeps(t, ModeOff)
 	d.CreateErrorLog(context.Background(), CreateErrorLogReq{
 		RequestMethod:  "post",
-		RequestPath:    "/admin/login",
+		RequestPath:    "/core/login",
 		ServiceName:    "core-api",
 		ResponseStatus: 500,
 		Subject:        "db down",
@@ -44,7 +44,7 @@ func TestCreateErrorLogSkipsMissingUser(t *testing.T) {
 	d.CreateErrorLog(context.Background(), CreateErrorLogReq{
 		UserID:         99999,
 		RequestMethod:  "POST",
-		RequestPath:    "/admin/user/list",
+		RequestPath:    "/core/user/list",
 		ServiceName:    "core-api",
 		ResponseStatus: 500,
 		ClientIP:       "10.0.0.1",
@@ -65,7 +65,7 @@ func TestListErrorLogsFilterAndTenant(t *testing.T) {
 	u1 := createUserWithRole(t, d, "alice", "pass", &code1)
 	now := time.Now()
 	if err := d.Client.ErrorLog.Create().
-		SetUserID(u1.ID).SetRequestMethod("POST").SetRequestPath("/admin/user/create").
+		SetUserID(u1.ID).SetRequestMethod("POST").SetRequestPath("/core/user/create").
 		SetServiceName("core-api").SetResponseStatus(500).SetClientIP("1.1.1.1").
 		SetSubject("boom").SetOperatorCode(code1).SetCreatedAt(now).Exec(ctx); err != nil {
 		t.Fatal(err)
@@ -87,7 +87,7 @@ func TestListErrorLogsFilterAndTenant(t *testing.T) {
 
 	d.Mode = ModeOff
 	if err := d.Client.ErrorLog.Create().
-		SetRequestMethod("POST").SetRequestPath("/admin/role/update").
+		SetRequestMethod("POST").SetRequestPath("/core/role/update").
 		SetServiceName("demo-api").SetResponseStatus(503).SetClientIP("3.3.3.3").
 		SetCreatedAt(now).Exec(ctx); err != nil {
 		t.Fatal(err)

@@ -309,6 +309,8 @@ type RoleListReq struct {
 	PageSize int32 `json:"page_size,optional"`
 	// Role name | 角色名称
 	RoleName string `json:"role_name,optional"`
+	// Status 1 enabled 2 disabled | 状态 1 启用 2 停用，0 不过滤
+	Status int32 `json:"status,optional"`
 }
 
 // Role list response | 角色列表
@@ -681,6 +683,12 @@ type I18nLangListResp struct {
 	List []I18nLangInfo `json:"list"`
 	// Total | 总数
 	Total int64 `json:"total"`
+}
+
+// Enabled i18n lang list request | 已开启语言列表
+type GetEnabledI18nLangsReq struct {
+	// Operator code | 分站编码，无 claims 时必填
+	OperatorCode string `form:"operator_code,optional"`
 }
 
 // Create API request | 创建接口

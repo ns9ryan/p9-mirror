@@ -173,6 +173,7 @@ func (d *Deps) GetRoleByName(ctx context.Context, claims *ctxdata.Claims, name s
 type RoleListReq struct {
 	PageReq
 	RoleName string
+	Status   int16
 }
 
 func (d *Deps) ListRoles(ctx context.Context, claims *ctxdata.Claims, req RoleListReq) ([]model.Role, int64, error) {
@@ -185,6 +186,9 @@ func (d *Deps) ListRoles(ctx context.Context, claims *ctxdata.Claims, req RoleLi
 			role.RoleNameContains(s),
 			role.RoleCodeContains(s),
 		))
+	}
+	if req.Status != 0 {
+		q.Where(role.StatusEQ(req.Status))
 	}
 	total, err := q.Clone().Count(ctx)
 	if err != nil {

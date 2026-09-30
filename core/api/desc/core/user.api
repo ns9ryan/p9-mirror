@@ -94,7 +94,7 @@ type UpdateUserIpWhitelistReq {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      user
 	middleware: Jwt,ActionLog
 )
@@ -121,7 +121,7 @@ service Core {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      user
 	middleware: Jwt,ActionLog,Authority
 )

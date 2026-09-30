@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route get /admin/user/detail user GetUserById
+// swagger:route get /core/user/detail user GetUserById
 //
 
 //

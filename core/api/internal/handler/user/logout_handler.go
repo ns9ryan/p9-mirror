@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route post /admin/logout user Logout
+// swagger:route post /core/logout user Logout
 //
 
 //

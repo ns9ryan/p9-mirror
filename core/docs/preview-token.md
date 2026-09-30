@@ -9,7 +9,7 @@
 
 |               | 登录 access           | 预览 preview                  |
 | ------------- | ------------------- | --------------------------- |
-| 签发            | `POST /admin/login` | `POST /admin/previewToken` |
+| 签发            | `POST /core/login` | `POST /core/previewToken` |
 | 鉴权            | 用户名密码               | 公开接口，只传 `operator_code`     |
 | 身份            | 登录用户                | 该分站 `is_super_admin` 且启用的用户 |
 | `token_type`  | `access`            | `preview`                   |
@@ -26,7 +26,7 @@
 ```mermaid
 flowchart TB
   Plat["总网后台"]
-  Issue["分站 API<br/>POST /admin/previewToken"]
+  Issue["分站 API<br/>POST /core/previewToken"]
   JWT["Authorization: Bearer preview"]
   MW["JWT 中间件"]
   RO{"token_type=preview<br/>且是写接口?"}
@@ -51,7 +51,7 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  Req["POST /admin/previewToken<br/>{ operator_code }"]
+  Req["POST /core/previewToken<br/>{ operator_code }"]
   Mode{"RPC Mode == on ?"}
   Code{"operator_code 非空 ?"}
   User["SkipTenant 查<br/>operator_code + is_super_admin<br/>未删除且启用"]
@@ -147,4 +147,4 @@ flowchart LR
 
 
 
-`POST /admin/logout`、`/logout/all`、`/refresh` 都不能用预览 token 续命或登出。
+`POST /core/logout`、`/logout/all`、`/refresh` 都不能用预览 token 续命或登出。

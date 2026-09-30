@@ -30,6 +30,7 @@ func testClient(t *testing.T) *ent.Client {
 	client.LoginLog.Intercept(fOperatorCode)
 	client.AdminActionLog.Intercept(fOperatorCode)
 	client.ErrorLog.Intercept(fOperatorCode)
+	client.I18nLang.Intercept(fOperatorCode)
 	t.Cleanup(func() { _ = client.Close() })
 	return client
 }

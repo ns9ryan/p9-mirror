@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route post /admin/user/delete user DeleteUser
+// swagger:route post /core/user/delete user DeleteUser
 //
 
 //

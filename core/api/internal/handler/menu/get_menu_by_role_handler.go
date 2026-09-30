@@ -9,7 +9,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/svc"
 )
 
-// swagger:route get /admin/menu/role menu GetMenuByRole
+// swagger:route get /core/menu/role menu GetMenuByRole
 //
 
 //

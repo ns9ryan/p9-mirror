@@ -17,7 +17,7 @@ require (
 	golang.org/x/crypto v0.55.0
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
-	oa.98ent.com/p9/common v1.0.2
+	oa.98ent.com/p9/common v1.0.3
 )
 
 // replace oa.98ent.com/p9/common => ../common

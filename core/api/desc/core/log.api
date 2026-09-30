@@ -186,7 +186,7 @@ type ErrorLogListResp {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      log
 	middleware: Jwt,ActionLog,Authority
 )

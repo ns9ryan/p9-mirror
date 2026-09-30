@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route post /admin/user/list user GetUserList
+// swagger:route post /core/user/list user GetUserList
 //
 
 //

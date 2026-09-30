@@ -25,8 +25,8 @@ func NewGetEnabledI18nLangsLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
-func (l *GetEnabledI18nLangsLogic) GetEnabledI18nLangs() (resp *types.I18nLangListResp, err error) {
-	out, err := l.svcCtx.Core.GetEnabledI18NLangs(l.ctx, &coreclient.Empty{})
+func (l *GetEnabledI18nLangsLogic) GetEnabledI18nLangs(req *types.GetEnabledI18nLangsReq) (resp *types.I18nLangListResp, err error) {
+	out, err := l.svcCtx.Core.GetEnabledI18NLangs(l.ctx, &coreclient.GetEnabledI18NLangsReq{OperatorCode: req.OperatorCode})
 	if err != nil {
 		return nil, err
 	}

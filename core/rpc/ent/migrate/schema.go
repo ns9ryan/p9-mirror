@@ -213,6 +213,7 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", Default: schema.Expr("CURRENT_TIMESTAMP")},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", Default: schema.Expr("CURRENT_TIMESTAMP")},
+		{Name: "operator_code", Type: field.TypeString, Nullable: true, Size: 64, Comment: "Operator Code | 分站编码"},
 		{Name: "lang", Type: field.TypeString, Size: 16, Comment: "Language code | 语言码"},
 		{Name: "name", Type: field.TypeString, Size: 64, Comment: "Display name | 显示名", Default: ""},
 		{Name: "i18n_key", Type: field.TypeString, Size: 255, Comment: "I18n key | 多语言 key", Default: ""},
@@ -227,9 +228,20 @@ var (
 		PrimaryKey: []*schema.Column{SysI18nLangColumns[0]},
 		Indexes: []*schema.Index{
 			{
+				Name:    "uk_sys_i18n_lang_operator",
+				Unique:  true,
+				Columns: []*schema.Column{SysI18nLangColumns[3], SysI18nLangColumns[4]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "operator_code IS NOT NULL",
+				},
+			},
+			{
 				Name:    "uk_sys_i18n_lang",
 				Unique:  true,
-				Columns: []*schema.Column{SysI18nLangColumns[3]},
+				Columns: []*schema.Column{SysI18nLangColumns[4]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "operator_code IS NULL",
+				},
 			},
 		},
 	}

@@ -9,7 +9,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/svc"
 )
 
-// swagger:route post /admin/logout/all user LogoutAll
+// swagger:route post /core/logout/all user LogoutAll
 //
 
 //

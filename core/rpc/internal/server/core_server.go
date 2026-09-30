@@ -200,7 +200,7 @@ func (s *CoreServer) ReorderI18NLang(ctx context.Context, in *core.ReorderI18NLa
 	return l.ReorderI18NLang(in)
 }
 
-func (s *CoreServer) GetEnabledI18NLangs(ctx context.Context, in *core.Empty) (*core.I18NLangListResp, error) {
+func (s *CoreServer) GetEnabledI18NLangs(ctx context.Context, in *core.GetEnabledI18NLangsReq) (*core.I18NLangListResp, error) {
 	l := i18n.NewGetEnabledI18nLangsLogic(ctx, s.svcCtx)
 	return l.GetEnabledI18NLangs(in)
 }

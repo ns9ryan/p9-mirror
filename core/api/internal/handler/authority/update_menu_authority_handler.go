@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route post /admin/authority/menu/update authority UpdateMenuAuthority
+// swagger:route post /core/authority/menu/update authority UpdateMenuAuthority
 //
 
 //

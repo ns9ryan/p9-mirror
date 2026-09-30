@@ -31,6 +31,7 @@ func (l *GetRoleListLogic) GetRoleList(in *core.RoleListReq) (*core.RoleListResp
 	list, total, err := l.svcCtx.Deps.ListRoles(l.ctx, ctxdata.ClaimsFromCtx(l.ctx), service.RoleListReq{
 		PageReq:  service.PageReq{Page: int(in.GetPage()), PageSize: int(in.GetPageSize())},
 		RoleName: in.GetRoleName(),
+		Status:   int16(in.GetStatus()),
 	})
 	if err != nil {
 		return nil, xerr.RpcErr(err)

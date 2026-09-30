@@ -9,7 +9,7 @@ import (
 func langSeeds(i18nCode string) []*coreclient.CreateI18NLangReq {
 	// 如果i18nCode为运营商，则返回空，等建分站分配语言在迁移
 	if i18nCode == i18n.CodeOperator {
-		// return []*coreclient.CreateI18NLangReq{}
+		return []*coreclient.CreateI18NLangReq{}
 	}
 
 	return []*coreclient.CreateI18NLangReq{

@@ -156,7 +156,7 @@ type CoreClient interface {
 	// group: i18n
 	ReorderI18NLang(ctx context.Context, in *ReorderI18NLangReq, opts ...grpc.CallOption) (*Empty, error)
 	// group: i18n
-	GetEnabledI18NLangs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*I18NLangListResp, error)
+	GetEnabledI18NLangs(ctx context.Context, in *GetEnabledI18NLangsReq, opts ...grpc.CallOption) (*I18NLangListResp, error)
 	// group: log
 	GetLoginLogList(ctx context.Context, in *LoginLogListReq, opts ...grpc.CallOption) (*LoginLogListResp, error)
 	// group: log
@@ -554,7 +554,7 @@ func (c *coreClient) ReorderI18NLang(ctx context.Context, in *ReorderI18NLangReq
 	return out, nil
 }
 
-func (c *coreClient) GetEnabledI18NLangs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*I18NLangListResp, error) {
+func (c *coreClient) GetEnabledI18NLangs(ctx context.Context, in *GetEnabledI18NLangsReq, opts ...grpc.CallOption) (*I18NLangListResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(I18NLangListResp)
 	err := c.cc.Invoke(ctx, Core_GetEnabledI18NLangs_FullMethodName, in, out, cOpts...)
@@ -908,7 +908,7 @@ type CoreServer interface {
 	// group: i18n
 	ReorderI18NLang(context.Context, *ReorderI18NLangReq) (*Empty, error)
 	// group: i18n
-	GetEnabledI18NLangs(context.Context, *Empty) (*I18NLangListResp, error)
+	GetEnabledI18NLangs(context.Context, *GetEnabledI18NLangsReq) (*I18NLangListResp, error)
 	// group: log
 	GetLoginLogList(context.Context, *LoginLogListReq) (*LoginLogListResp, error)
 	// group: log
@@ -1075,7 +1075,7 @@ func (UnimplementedCoreServer) GetI18NLangList(context.Context, *I18NLangListReq
 func (UnimplementedCoreServer) ReorderI18NLang(context.Context, *ReorderI18NLangReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReorderI18NLang not implemented")
 }
-func (UnimplementedCoreServer) GetEnabledI18NLangs(context.Context, *Empty) (*I18NLangListResp, error) {
+func (UnimplementedCoreServer) GetEnabledI18NLangs(context.Context, *GetEnabledI18NLangsReq) (*I18NLangListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEnabledI18NLangs not implemented")
 }
 func (UnimplementedCoreServer) GetLoginLogList(context.Context, *LoginLogListReq) (*LoginLogListResp, error) {
@@ -1775,7 +1775,7 @@ func _Core_ReorderI18NLang_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _Core_GetEnabledI18NLangs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(GetEnabledI18NLangsReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1787,7 +1787,7 @@ func _Core_GetEnabledI18NLangs_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: Core_GetEnabledI18NLangs_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreServer).GetEnabledI18NLangs(ctx, req.(*Empty))
+		return srv.(CoreServer).GetEnabledI18NLangs(ctx, req.(*GetEnabledI18NLangsReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

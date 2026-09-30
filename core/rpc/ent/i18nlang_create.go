@@ -48,6 +48,20 @@ func (_c *I18nLangCreate) SetNillableUpdatedAt(v *time.Time) *I18nLangCreate {
 	return _c
 }
 
+// SetOperatorCode sets the "operator_code" field.
+func (_c *I18nLangCreate) SetOperatorCode(v string) *I18nLangCreate {
+	_c.mutation.SetOperatorCode(v)
+	return _c
+}
+
+// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
+func (_c *I18nLangCreate) SetNillableOperatorCode(v *string) *I18nLangCreate {
+	if v != nil {
+		_c.SetOperatorCode(*v)
+	}
+	return _c
+}
+
 // SetLang sets the "lang" field.
 func (_c *I18nLangCreate) SetLang(v string) *I18nLangCreate {
 	_c.mutation.SetLang(v)
@@ -123,7 +137,9 @@ func (_c *I18nLangCreate) Mutation() *I18nLangMutation {
 
 // Save creates the I18nLang in the database.
 func (_c *I18nLangCreate) Save(ctx context.Context) (*I18nLang, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -150,12 +166,18 @@ func (_c *I18nLangCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *I18nLangCreate) defaults() {
+func (_c *I18nLangCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if i18nlang.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized i18nlang.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := i18nlang.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if i18nlang.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized i18nlang.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := i18nlang.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -175,10 +197,16 @@ func (_c *I18nLangCreate) defaults() {
 		v := i18nlang.DefaultSortNo
 		_c.mutation.SetSortNo(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *I18nLangCreate) check() error {
+	if v, ok := _c.mutation.OperatorCode(); ok {
+		if err := i18nlang.OperatorCodeValidator(v); err != nil {
+			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "I18nLang.operator_code": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Lang(); !ok {
 		return &ValidationError{Name: "lang", err: errors.New(`ent: missing required field "I18nLang.lang"`)}
 	}
@@ -248,6 +276,10 @@ func (_c *I18nLangCreate) createSpec() (*I18nLang, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(i18nlang.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if value, ok := _c.mutation.OperatorCode(); ok {
+		_spec.SetField(i18nlang.FieldOperatorCode, field.TypeString, value)
+		_node.OperatorCode = &value
 	}
 	if value, ok := _c.mutation.Lang(); ok {
 		_spec.SetField(i18nlang.FieldLang, field.TypeString, value)

@@ -146,7 +146,7 @@ func registerPromoCatalog(cli coreclient.Core) error {
 			{Name: "PromoActivityList", Title: "menu.route.promoActivityList", MenuType: menuTypeMenu, Path: "/promo/activity/list", Component: "promo/activity/list", ParentName: "PromoCenter", Sort: 21},
 		},
 		Apis: []*coreclient.CreateApiReq{
-			{Description: "api.promoList", ApiGroup: "promo", Method: http.MethodGet, Path: "/admin/promo/list", ServiceName: "promo-api"},
+			{Description: "api.promoList", ApiGroup: "promo", Method: http.MethodGet, Path: "/core/promo/list", ServiceName: "promo-api"},
 		},
 		I18N: []*coreclient.I18NItem{
 			{I18NCode: "promo", I18NGroup: "menu", TransKey: "menu.route.promoCenter", Lang: "zh-CN", Value: "优惠中心"},

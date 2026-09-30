@@ -214,8 +214,14 @@ func init() {
 	// i18n.ValueValidator is a validator for the "value" field. It is called by the builders before save.
 	i18n.ValueValidator = i18nDescValue.Validators[0].(func(string) error)
 	i18nlangMixin := schema.I18nLang{}.Mixin()
+	i18nlangMixinHooks2 := i18nlangMixin[2].Hooks()
+	i18nlang.Hooks[0] = i18nlangMixinHooks2[0]
+	i18nlangMixinInters2 := i18nlangMixin[2].Interceptors()
+	i18nlang.Interceptors[0] = i18nlangMixinInters2[0]
 	i18nlangMixinFields1 := i18nlangMixin[1].Fields()
 	_ = i18nlangMixinFields1
+	i18nlangMixinFields2 := i18nlangMixin[2].Fields()
+	_ = i18nlangMixinFields2
 	i18nlangFields := schema.I18nLang{}.Fields()
 	_ = i18nlangFields
 	// i18nlangDescCreatedAt is the schema descriptor for created_at field.
@@ -228,6 +234,10 @@ func init() {
 	i18nlang.DefaultUpdatedAt = i18nlangDescUpdatedAt.Default.(func() time.Time)
 	// i18nlang.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	i18nlang.UpdateDefaultUpdatedAt = i18nlangDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// i18nlangDescOperatorCode is the schema descriptor for operator_code field.
+	i18nlangDescOperatorCode := i18nlangMixinFields2[0].Descriptor()
+	// i18nlang.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	i18nlang.OperatorCodeValidator = i18nlangDescOperatorCode.Validators[0].(func(string) error)
 	// i18nlangDescLang is the schema descriptor for lang field.
 	i18nlangDescLang := i18nlangFields[0].Descriptor()
 	// i18nlang.LangValidator is a validator for the "lang" field. It is called by the builders before save.

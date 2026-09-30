@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route post /admin/login public Login
+// swagger:route post /core/login public Login
 //
 
 //

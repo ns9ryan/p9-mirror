@@ -64,7 +64,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	prefix := c.APIPrefix
 	if prefix == "" {
-		prefix = "/admin"
+		prefix = "/core"
 	}
 	// 初始化deps，封装数据库操作依赖
 	deps := &service.Deps{
@@ -94,6 +94,7 @@ func attachTenant(c *ent.Client) {
 	})
 	c.User.Intercept(fOperatorCode, fSoftDelete)
 	c.Role.Intercept(fOperatorCode)
+	c.I18nLang.Intercept(fOperatorCode)
 	c.LoginLog.Intercept(fOperatorCode)
 	c.AdminActionLog.Intercept(fOperatorCode)
 	c.ErrorLog.Intercept(fOperatorCode)

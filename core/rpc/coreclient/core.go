@@ -44,6 +44,7 @@ type (
 	ErrorLogListResp         = core.ErrorLogListResp
 	ExportI18NReq            = core.ExportI18NReq
 	ExportI18NResp           = core.ExportI18NResp
+	GetEnabledI18NLangsReq   = core.GetEnabledI18NLangsReq
 	GetI18NDictReq           = core.GetI18NDictReq
 	I18NDictResp             = core.I18NDictResp
 	I18NFileItem             = core.I18NFileItem
@@ -134,7 +135,7 @@ type (
 		DeleteI18NLang(ctx context.Context, in *IDsReq, opts ...grpc.CallOption) (*Empty, error)
 		GetI18NLangList(ctx context.Context, in *I18NLangListReq, opts ...grpc.CallOption) (*I18NLangListResp, error)
 		ReorderI18NLang(ctx context.Context, in *ReorderI18NLangReq, opts ...grpc.CallOption) (*Empty, error)
-		GetEnabledI18NLangs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*I18NLangListResp, error)
+		GetEnabledI18NLangs(ctx context.Context, in *GetEnabledI18NLangsReq, opts ...grpc.CallOption) (*I18NLangListResp, error)
 		GetLoginLogList(ctx context.Context, in *LoginLogListReq, opts ...grpc.CallOption) (*LoginLogListResp, error)
 		CreateAdminActionLog(ctx context.Context, in *CreateAdminActionLogReq, opts ...grpc.CallOption) (*Empty, error)
 		GetAdminActionLogList(ctx context.Context, in *AdminActionLogListReq, opts ...grpc.CallOption) (*AdminActionLogListResp, error)
@@ -346,7 +347,7 @@ func (m *defaultCore) ReorderI18NLang(ctx context.Context, in *ReorderI18NLangRe
 	return client.ReorderI18NLang(ctx, in, opts...)
 }
 
-func (m *defaultCore) GetEnabledI18NLangs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*I18NLangListResp, error) {
+func (m *defaultCore) GetEnabledI18NLangs(ctx context.Context, in *GetEnabledI18NLangsReq, opts ...grpc.CallOption) (*I18NLangListResp, error) {
 	client := core.NewCoreClient(m.cli.Conn())
 	return client.GetEnabledI18NLangs(ctx, in, opts...)
 }

@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/core/api/internal/types"
 )
 
-// swagger:route post /admin/bootstrap/admin public BootstrapAdmin
+// swagger:route post /core/bootstrap/admin public BootstrapAdmin
 //
 
 //

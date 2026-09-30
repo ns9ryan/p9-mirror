@@ -36,5 +36,5 @@ Jwt:
   RefreshExpire: 604800
 
 PartnerMode: "off"
-APIPrefix: /admin
+APIPrefix: /core
 InitToken: change-me-init-token

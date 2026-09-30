@@ -14,13 +14,14 @@ import (
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	Core      coreclient.Core  // Core RPC客户端
-	Authority rest.Middleware  // 权限中间件
-	Jwt       rest.Middleware  // JWT中间件
-	ActionLog rest.Middleware  // 操作日志中间件
-	ErrorLog  rest.Middleware  // 错误日志中间件
-	Trans     *i18n.Translator // 多语言翻译器
+	Config          config.Config
+	Core            coreclient.Core  // Core RPC客户端
+	Authority       rest.Middleware  // 权限中间件
+	Jwt             rest.Middleware  // JWT中间件
+	JwtWithoutError rest.Middleware  // JWTWithoutError中间件，不返回错误
+	ActionLog       rest.Middleware  // 操作日志中间件
+	ErrorLog        rest.Middleware  // 错误日志中间件
+	Trans           *i18n.Translator // 多语言翻译器
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -35,12 +36,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.Must(err)
 
 	return &ServiceContext{
-		Trans:     trans,
-		Config:    c,
-		Core:      coreCli,
-		Jwt:       middleware.JWT(auth),
-		Authority: middleware.Authority(auth),
-		ActionLog: middleware.ActionLog(coreadapt.ActionRecorder(coreCli)),
-		ErrorLog:  middleware.ErrorLog(c.Name, coreadapt.ErrorRecorder(coreCli)),
+		Trans:           trans,
+		Config:          c,
+		Core:            coreCli,
+		Jwt:             middleware.JWT(auth),
+		JwtWithoutError: middleware.JWTWithoutError(auth),
+		Authority:       middleware.Authority(auth),
+		ActionLog:       middleware.ActionLog(coreadapt.ActionRecorder(coreCli)),
+		ErrorLog:        middleware.ErrorLog(c.Name, coreadapt.ErrorRecorder(coreCli)),
 	}
 }

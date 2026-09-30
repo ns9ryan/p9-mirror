@@ -28,7 +28,7 @@ type IssuePreviewTokenResp {
 }
 
 @server (
-	prefix: /admin
+	prefix: /core
 	group:  public
 )
 service Core {

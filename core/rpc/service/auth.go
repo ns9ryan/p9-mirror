@@ -202,7 +202,7 @@ func (d *Deps) loginUser(ctx context.Context, req LoginReq) (*model.User, error)
 		row, err := q.Where(user.OperatorCodeIsNil()).Only(ctx)
 		if err != nil {
 			if ent.IsNotFound(err) {
-				return nil, xerr.NotFound(coreI18n.UserNotFound)
+				return nil, xerr.NotFound(coreI18n.AuthPasswordIncorrect)
 			}
 			return nil, err
 		}
@@ -215,7 +215,7 @@ func (d *Deps) loginUser(ctx context.Context, req LoginReq) (*model.User, error)
 	row, err := q.Where(user.OperatorCodeEQ(code)).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil, xerr.Unauthorized(coreI18n.AuthInvalidCredentials)
+			return nil, xerr.Unauthorized(coreI18n.AuthPasswordIncorrect)
 		}
 		return nil, err
 	}

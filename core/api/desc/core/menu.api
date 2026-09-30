@@ -134,7 +134,7 @@ type UpdateMenuReq {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      menu
 	middleware: Jwt,ActionLog
 )
@@ -145,7 +145,7 @@ service Core {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      menu
 	middleware: Jwt,ActionLog,Authority
 )

@@ -29,7 +29,7 @@ func TestRegisterCatalogFirstUpsertThenInsertOnly(t *testing.T) {
 		{Name: "User", Title: "menu.route.user", MenuType: model.MenuTypeMenu, Path: "/user", ParentName: "Dashboard", Sort: 2},
 	}
 	firstAPIs := []CreateAPIReq{
-		{Method: "GET", Path: "/admin/user/list", Description: "api.userList", APIGroup: "user", ServiceName: "core-api"},
+		{Method: "GET", Path: "/core/user/list", Description: "api.userList", APIGroup: "user", ServiceName: "core-api"},
 	}
 	firstItems := []I18nItem{
 		{I18nCode: "platform", I18nGroup: "menu", TransKey: "route.dashboard", Lang: i18n.LangZH, Value: "仪表盘"},
@@ -73,7 +73,7 @@ func TestRegisterCatalogFirstUpsertThenInsertOnly(t *testing.T) {
 	if err := d.Client.Menu.UpdateOne(user).SetParentID(0).SetTitle("custom-user").Exec(ctx); err != nil {
 		t.Fatal(err)
 	}
-	if err := d.Client.API.Update().Where(api.MethodEQ("GET"), api.PathEQ("/admin/user/list")).
+	if err := d.Client.API.Update().Where(api.MethodEQ("GET"), api.PathEQ("/core/user/list")).
 		SetDescription("custom-api").Exec(ctx); err != nil {
 		t.Fatal(err)
 	}
@@ -96,8 +96,8 @@ func TestRegisterCatalogFirstUpsertThenInsertOnly(t *testing.T) {
 		{Name: "Role", Title: "menu.route.role", MenuType: model.MenuTypeMenu, Path: "/role", ParentName: "Dashboard", Sort: 3},
 	}
 	secondAPIs := []CreateAPIReq{
-		{Method: "GET", Path: "/admin/user/list", Description: "should-not-overwrite-api", APIGroup: "user", ServiceName: "core-api"},
-		{Method: "POST", Path: "/admin/user/create", Description: "api.userCreate", APIGroup: "user", ServiceName: "core-api"},
+		{Method: "GET", Path: "/core/user/list", Description: "should-not-overwrite-api", APIGroup: "user", ServiceName: "core-api"},
+		{Method: "POST", Path: "/core/user/create", Description: "api.userCreate", APIGroup: "user", ServiceName: "core-api"},
 	}
 	secondItems := []I18nItem{
 		{I18nCode: "platform", I18nGroup: "menu", TransKey: "route.dashboard", Lang: i18n.LangZH, Value: "should-not-overwrite-i18n"},
@@ -132,14 +132,14 @@ func TestRegisterCatalogFirstUpsertThenInsertOnly(t *testing.T) {
 		t.Fatalf("new menu should be inserted and linked: %+v", role)
 	}
 
-	oldAPI, err := d.Client.API.Query().Where(api.MethodEQ("GET"), api.PathEQ("/admin/user/list")).Only(ctx)
+	oldAPI, err := d.Client.API.Query().Where(api.MethodEQ("GET"), api.PathEQ("/core/user/list")).Only(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if oldAPI.Description != "custom-api" {
 		t.Fatalf("initialized api must not be updated: %+v", oldAPI)
 	}
-	newAPI, err := d.Client.API.Query().Where(api.MethodEQ("POST"), api.PathEQ("/admin/user/create")).Only(ctx)
+	newAPI, err := d.Client.API.Query().Where(api.MethodEQ("POST"), api.PathEQ("/core/user/create")).Only(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}

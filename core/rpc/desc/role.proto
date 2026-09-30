@@ -33,6 +33,7 @@ message RoleListReq {
   int32 page = 1;
   int32 page_size = 2;
   string role_name = 3;
+  int32 status = 4;
 }
 
 message RoleListResp {

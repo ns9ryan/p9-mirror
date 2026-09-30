@@ -22,7 +22,11 @@ CROSConf:
   Address: '*'
 
 CoreRpc:
-  Endpoints:
-    - 127.0.0.1:19100
+  # Endpoints:
+  #   - 127.0.0.1:19100
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379
+    Key: operator-core-rpc
   NonBlock: true
-  Timeout: 10000
+  Timeout: 3000

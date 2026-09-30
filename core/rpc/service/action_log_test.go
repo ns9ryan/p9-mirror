@@ -24,13 +24,13 @@ func TestListAdminActionLogsFilterAndTenant(t *testing.T) {
 	u2 := createUserWithRole(t, d, "bob", "pass", &code2)
 	now := time.Now()
 	if err := d.Client.AdminActionLog.Create().
-		SetUserID(u1.ID).SetRequestMethod("POST").SetRequestPath("/admin/user/create").
+		SetUserID(u1.ID).SetRequestMethod("POST").SetRequestPath("/core/user/create").
 		SetActionResult(model.ActionResultSuccess).SetResponseStatus(200).SetClientIP("1.1.1.1").
 		SetOperatorCode(code1).SetCreatedAt(now).Exec(ctx); err != nil {
 		t.Fatal(err)
 	}
 	if err := d.Client.AdminActionLog.Create().
-		SetUserID(u2.ID).SetRequestMethod("POST").SetRequestPath("/admin/role/update").
+		SetUserID(u2.ID).SetRequestMethod("POST").SetRequestPath("/core/role/update").
 		SetActionResult(model.ActionResultFail).SetResponseStatus(400).SetClientIP("2.2.2.2").
 		SetOperatorCode(code2).SetCreatedAt(now).Exec(ctx); err != nil {
 		t.Fatal(err)
@@ -51,13 +51,13 @@ func TestListAdminActionLogsFilterAndTenant(t *testing.T) {
 	d.Mode = ModeOff
 	plat := createUserWithRole(t, d, "plat", "pass", nil)
 	if err := d.Client.AdminActionLog.Create().
-		SetUserID(plat.ID).SetRequestMethod("POST").SetRequestPath("/admin/role/update").
+		SetUserID(plat.ID).SetRequestMethod("POST").SetRequestPath("/core/role/update").
 		SetActionResult(model.ActionResultFail).SetResponseStatus(400).SetClientIP("3.3.3.3").
 		SetCreatedAt(now).Exec(ctx); err != nil {
 		t.Fatal(err)
 	}
 	if err := d.Client.AdminActionLog.Create().
-		SetUserID(plat.ID).SetRequestMethod("POST").SetRequestPath("/admin/user/create").
+		SetUserID(plat.ID).SetRequestMethod("POST").SetRequestPath("/core/user/create").
 		SetActionResult(model.ActionResultSuccess).SetResponseStatus(200).SetClientIP("4.4.4.4").
 		SetCreatedAt(now).Exec(ctx); err != nil {
 		t.Fatal(err)
@@ -69,11 +69,11 @@ func TestListAdminActionLogsFilterAndTenant(t *testing.T) {
 	if total != 1 || fails[0].Username != "plat" || fails[0].OperatorCode != nil {
 		t.Fatalf("fail filter total=%d list=%+v", total, fails)
 	}
-	byPath, total, err := d.ListAdminActionLogs(ctx, &ctxdata.Claims{}, AdminActionLogListReq{RequestPath: "/admin/user"})
+	byPath, total, err := d.ListAdminActionLogs(ctx, &ctxdata.Claims{}, AdminActionLogListReq{RequestPath: "/core/user"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if total != 1 || byPath[0].RequestPath != "/admin/user/create" || byPath[0].OperatorCode != nil {
+	if total != 1 || byPath[0].RequestPath != "/core/user/create" || byPath[0].OperatorCode != nil {
 		t.Fatalf("path filter total=%d list=%+v", total, byPath)
 	}
 }
@@ -85,7 +85,7 @@ func TestCreateAdminActionLogWrites(t *testing.T) {
 	d.CreateAdminActionLog(ctx, CreateAdminActionLogReq{
 		UserID:         u.ID,
 		RequestMethod:  "post",
-		RequestPath:    "/admin/user/update",
+		RequestPath:    "/core/user/update",
 		RequestBody:    `{"display_name":"x"}`,
 		ActionResult:   model.ActionResultSuccess,
 		ResponseStatus: 200,
@@ -118,7 +118,7 @@ func TestCreateAdminActionLogWritesOperatorCode(t *testing.T) {
 	d.CreateAdminActionLog(ctx, CreateAdminActionLogReq{
 		UserID:         u.ID,
 		RequestMethod:  "POST",
-		RequestPath:    "/admin/user/update",
+		RequestPath:    "/core/user/update",
 		ActionResult:   model.ActionResultSuccess,
 		ResponseStatus: 200,
 		ClientIP:       "127.0.0.1",

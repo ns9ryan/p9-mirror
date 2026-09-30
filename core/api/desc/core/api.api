@@ -96,7 +96,7 @@ type ApiListResp {
 }
 
 @server (
-	prefix:     /admin
+	prefix:     /core
 	group:      api
 	middleware: Jwt,ActionLog,Authority
 )

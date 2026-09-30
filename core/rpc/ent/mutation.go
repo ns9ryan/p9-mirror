@@ -4713,6 +4713,7 @@ type I18nLangMutation struct {
 	id            *int64
 	created_at    *time.Time
 	updated_at    *time.Time
+	operator_code *string
 	lang          *string
 	name          *string
 	i18n_key      *string
@@ -4900,6 +4901,55 @@ func (m *I18nLangMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err e
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *I18nLangMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *I18nLangMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *I18nLangMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the I18nLang entity.
+// If the I18nLang object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *I18nLangMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ClearOperatorCode clears the value of the "operator_code" field.
+func (m *I18nLangMutation) ClearOperatorCode() {
+	m.operator_code = nil
+	m.clearedFields[i18nlang.FieldOperatorCode] = struct{}{}
+}
+
+// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
+func (m *I18nLangMutation) OperatorCodeCleared() bool {
+	_, ok := m.clearedFields[i18nlang.FieldOperatorCode]
+	return ok
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *I18nLangMutation) ResetOperatorCode() {
+	m.operator_code = nil
+	delete(m.clearedFields, i18nlang.FieldOperatorCode)
 }
 
 // SetLang sets the "lang" field.
@@ -5156,12 +5206,15 @@ func (m *I18nLangMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *I18nLangMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, i18nlang.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, i18nlang.FieldUpdatedAt)
+	}
+	if m.operator_code != nil {
+		fields = append(fields, i18nlang.FieldOperatorCode)
 	}
 	if m.lang != nil {
 		fields = append(fields, i18nlang.FieldLang)
@@ -5190,6 +5243,8 @@ func (m *I18nLangMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case i18nlang.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case i18nlang.FieldOperatorCode:
+		return m.OperatorCode()
 	case i18nlang.FieldLang:
 		return m.Lang()
 	case i18nlang.FieldName:
@@ -5213,6 +5268,8 @@ func (m *I18nLangMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case i18nlang.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case i18nlang.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
 	case i18nlang.FieldLang:
 		return m.OldLang(ctx)
 	case i18nlang.FieldName:
@@ -5245,6 +5302,13 @@ func (m *I18nLangMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case i18nlang.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
 		return nil
 	case i18nlang.FieldLang:
 		v, ok := value.(string)
@@ -5337,7 +5401,11 @@ func (m *I18nLangMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *I18nLangMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(i18nlang.FieldOperatorCode) {
+		fields = append(fields, i18nlang.FieldOperatorCode)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -5350,6 +5418,11 @@ func (m *I18nLangMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *I18nLangMutation) ClearField(name string) error {
+	switch name {
+	case i18nlang.FieldOperatorCode:
+		m.ClearOperatorCode()
+		return nil
+	}
 	return fmt.Errorf("unknown I18nLang nullable field %s", name)
 }
 
@@ -5362,6 +5435,9 @@ func (m *I18nLangMutation) ResetField(name string) error {
 		return nil
 	case i18nlang.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case i18nlang.FieldOperatorCode:
+		m.ResetOperatorCode()
 		return nil
 	case i18nlang.FieldLang:
 		m.ResetLang()

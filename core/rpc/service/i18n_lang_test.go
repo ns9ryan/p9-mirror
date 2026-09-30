@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/common/xerr"
 
@@ -24,7 +25,7 @@ func TestUpsertI18nLangsSeedsAndKeepsExisting(t *testing.T) {
 	if err := d.UpsertI18nLangs(ctx, testLangSeeds()); err != nil {
 		t.Fatal(err)
 	}
-	list, err := d.ListEnabledI18nLangs(ctx)
+	list, _, err := d.ListI18nLangs(ctx, I18nLangListReq{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -301,5 +302,67 @@ func TestReorderI18nLang(t *testing.T) {
 		t.Fatal("expected not found")
 	} else if got := xerr.AsError(err); got.Message != coreI18n.I18nLangNotFound {
 		t.Fatalf("not found=%v", got.Message)
+	}
+}
+
+func TestI18nLangOperatorCodeAllowsSameLang(t *testing.T) {
+	d := testDeps(t, ModeOn)
+	ctx := context.Background()
+	if err := d.UpsertI18nLangs(ctx, testLangSeeds()); err != nil {
+		t.Fatal(err)
+	}
+	opCtx := ctxdata.WithClaims(ctx, &ctxdata.Claims{OperatorCode: "op1"})
+	row, err := d.CreateI18nLang(opCtx, CreateI18nLangReq{Lang: i18n.LangZH, Name: "分站中文"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if row.Lang != i18n.LangZH {
+		t.Fatalf("lang=%s", row.Lang)
+	}
+	plat, _, err := d.ListI18nLangs(ctxdata.WithClaims(ctx, &ctxdata.Claims{}), I18nLangListReq{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(plat) != 3 {
+		t.Fatalf("platform list=%d want 3", len(plat))
+	}
+	tenant, err := d.ListEnabledI18nLangs(opCtx, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(tenant) != 1 || tenant[0].ID != row.ID || tenant[0].Lang != i18n.LangZH {
+		t.Fatalf("tenant list=%+v", tenant)
+	}
+	byQuery, err := d.ListEnabledI18nLangs(ctx, "op1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(byQuery) != 1 || byQuery[0].ID != row.ID {
+		t.Fatalf("query list=%+v", byQuery)
+	}
+	platClaims := ctxdata.WithClaims(ctx, &ctxdata.Claims{})
+	fromPlatQuery, err := d.ListEnabledI18nLangs(platClaims, "op1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fromPlatQuery) != 1 || fromPlatQuery[0].ID != row.ID {
+		t.Fatalf("empty claims + query should see tenant: %+v", fromPlatQuery)
+	}
+	preferClaims, err := d.ListEnabledI18nLangs(opCtx, "op2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(preferClaims) != 1 || preferClaims[0].ID != row.ID {
+		t.Fatalf("claims should win over query: %+v", preferClaims)
+	}
+	if _, err := d.ListEnabledI18nLangs(ctx, ""); err == nil {
+		t.Fatal("expected operator_code required")
+	} else if got := xerr.AsError(err); got.Message != coreI18n.AuthOperatorCodeRequired {
+		t.Fatalf("required=%v", got.Message)
+	}
+	if _, err := d.ListEnabledI18nLangs(ctxdata.WithClaims(ctx, &ctxdata.Claims{}), ""); err == nil {
+		t.Fatal("expected operator_code required for empty claims")
+	} else if got := xerr.AsError(err); got.Message != coreI18n.AuthOperatorCodeRequired {
+		t.Fatalf("empty claims required=%v", got.Message)
 	}
 }

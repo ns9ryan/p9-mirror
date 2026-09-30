@@ -23,16 +23,16 @@ func (c chanRecorder) RecordAction(_ context.Context, rec ActionRecord) {
 }
 
 func TestIsAdminWrite(t *testing.T) {
-	if IsAdminWrite(http.MethodPost, "/admin/user/list") {
+	if IsAdminWrite(http.MethodPost, "/core/user/list") {
 		t.Fatal("list")
 	}
-	if !IsAdminWrite(http.MethodPost, "/admin/user/create") {
+	if !IsAdminWrite(http.MethodPost, "/core/user/create") {
 		t.Fatal("create")
 	}
-	if !IsAdminWrite(http.MethodPost, "/admin/logout") {
+	if !IsAdminWrite(http.MethodPost, "/core/logout") {
 		t.Fatal("logout")
 	}
-	if IsAdminWrite(http.MethodGet, "/admin/user/detail") {
+	if IsAdminWrite(http.MethodGet, "/core/user/detail") {
 		t.Fatal("detail")
 	}
 }
@@ -54,7 +54,7 @@ func TestActionLogMiddlewareWrites(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"code":0,"msg":"ok"}`))
 	})
-	req := httptest.NewRequest(http.MethodPost, "/admin/user/create", strings.NewReader(`{"username":"a","password":"secret"}`))
+	req := httptest.NewRequest(http.MethodPost, "/core/user/create", strings.NewReader(`{"username":"a","password":"secret"}`))
 	req = req.WithContext(ctxdata.WithClaims(req.Context(), &ctxdata.Claims{UserID: 9}))
 	rr := httptest.NewRecorder()
 	h(rr, req)
@@ -62,7 +62,7 @@ func TestActionLogMiddlewareWrites(t *testing.T) {
 	if rec.UserID != 9 || rec.ActionResult != 1 || rec.ResponseStatus != http.StatusOK {
 		t.Fatalf("%+v", rec)
 	}
-	if rec.RequestPath != "/admin/user/create" {
+	if rec.RequestPath != "/core/user/create" {
 		t.Fatalf("path %s", rec.RequestPath)
 	}
 	if strings.Contains(rec.RequestBody, "secret") || !strings.Contains(rec.RequestBody, "***") {
@@ -76,7 +76,7 @@ func TestActionLogMiddlewareFailStatus(t *testing.T) {
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = w.Write([]byte(`{"code":403}`))
 	})
-	req := httptest.NewRequest(http.MethodPost, "/admin/user/delete", strings.NewReader(`{}`))
+	req := httptest.NewRequest(http.MethodPost, "/core/user/delete", strings.NewReader(`{}`))
 	req = req.WithContext(ctxdata.WithClaims(req.Context(), &ctxdata.Claims{UserID: 1}))
 	h(httptest.NewRecorder(), req)
 	rec := waitRec(t, ch)
@@ -90,11 +90,11 @@ func TestActionLogMiddlewareSkips(t *testing.T) {
 	h := ActionLog(chanRecorder{ch: ch})(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	list := httptest.NewRequest(http.MethodPost, "/admin/user/list", strings.NewReader(`{}`))
+	list := httptest.NewRequest(http.MethodPost, "/core/user/list", strings.NewReader(`{}`))
 	list = list.WithContext(ctxdata.WithClaims(list.Context(), &ctxdata.Claims{UserID: 1}))
 	h(httptest.NewRecorder(), list)
 
-	noClaims := httptest.NewRequest(http.MethodPost, "/admin/user/create", strings.NewReader(`{}`))
+	noClaims := httptest.NewRequest(http.MethodPost, "/core/user/create", strings.NewReader(`{}`))
 	h(httptest.NewRecorder(), noClaims)
 
 	select {
@@ -137,7 +137,7 @@ func TestActionLogMiddlewareLeavesMultipartBody(t *testing.T) {
 		}
 		w.WriteHeader(http.StatusOK)
 	})
-	req := httptest.NewRequest(http.MethodPost, "/admin/i18n/import", bytes.NewReader(buf.Bytes()))
+	req := httptest.NewRequest(http.MethodPost, "/core/i18n/import", bytes.NewReader(buf.Bytes()))
 	req.Header.Set("Content-Type", mw.FormDataContentType())
 	req = req.WithContext(ctxdata.WithClaims(req.Context(), &ctxdata.Claims{UserID: 1}))
 	h(httptest.NewRecorder(), req)

@@ -21,7 +21,7 @@ func (I18nLang) Annotations() []schema.Annotation {
 }
 
 func (I18nLang) Mixin() []ent.Mixin {
-	return []ent.Mixin{entmixin.IDMixin{}, entmixin.TimeMixin{}}
+	return []ent.Mixin{entmixin.IDMixin{}, entmixin.TimeMixin{}, entmixin.OperatorCodeMixin{}}
 }
 
 func (I18nLang) Fields() []ent.Field {
@@ -36,6 +36,11 @@ func (I18nLang) Fields() []ent.Field {
 
 func (I18nLang) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("lang").Unique().StorageKey("uk_sys_i18n_lang"),
+		index.Fields("operator_code", "lang").Unique().
+			StorageKey("uk_sys_i18n_lang_operator").
+			Annotations(entsql.IndexWhere("operator_code IS NOT NULL")),
+		index.Fields("lang").Unique().
+			StorageKey("uk_sys_i18n_lang").
+			Annotations(entsql.IndexWhere("operator_code IS NULL")),
 	}
 }

@@ -55,6 +55,32 @@ func JWT(c Client) rest.Middleware {
 	}
 }
 
+// JWTWithoutError 认证，不返回错误
+func JWTWithoutError(c Client) rest.Middleware {
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			raw := stripBearer(r.Header.Get("Authorization"))
+			ctx := r.Context()
+			if ctxdata.ClientIPFromCtx(ctx) == "" {
+				ctx = ctxdata.WithClientIP(ctx, utils.ClientIP(r))
+			}
+			claims, err := c.CheckToken(ctx, raw)
+			if err != nil {
+				next(w, r.WithContext(ctx))
+				return
+			}
+			// 预览模式下不允许写操作
+			if claims != nil && claims.TokenType == jwt.TokenPreview && previewWriteDenied(r.Method, r.URL.Path) {
+				response.FailCtx(ctx, w, xerr.Forbidden(coreI18n.AuthPreviewReadOnly))
+				return
+			}
+			ctx = ctxdata.WithClaims(ctx, claims)
+			ctx = ctxdata.WithRawToken(ctx, raw)
+			next(w, r.WithContext(ctx))
+		}
+	}
+}
+
 // Authority 权限控制
 func Authority(c Client) rest.Middleware {
 	return func(next http.HandlerFunc) http.HandlerFunc {

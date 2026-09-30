@@ -341,6 +341,7 @@ func RoleListReq(in *types.RoleListReq) *coreclient.RoleListReq {
 		Page:     in.Page,
 		PageSize: in.PageSize,
 		RoleName: in.RoleName,
+		Status:   in.Status,
 	}
 }
 
