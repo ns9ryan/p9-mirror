@@ -24,3 +24,5 @@ go.work.sum
 
 # Build binaries
 /node_agent
+
+etc/node_agent_local.yaml

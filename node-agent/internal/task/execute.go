@@ -8,8 +8,10 @@ import (
 )
 
 const (
-	TargetOperatorBase = "operator-base"   // 任务目标: 分站基础服务
-	TypeCreateOperator = "CREATE_OPERATOR" // 任务类型: 创建分站
+	TargetOperatorBase        = "operator-base"           // 任务目标: 分站基础服务
+	TargetOperatorGame        = "operator-game"           // 任务目标: 分站游戏服务
+	TypeCreateOperator        = "CREATE_OPERATOR"         // 任务类型: 创建分站
+	TypePublishGameAllocation = "PUBLISH_GAME_ALLOCATION" // 任务类型: 发布游戏资源分配
 )
 
 // Execute 执行调度任务
@@ -22,7 +24,8 @@ func (s *Service) Execute(ctx context.Context, target string, taskType string, p
 	switch target {
 	case TargetOperatorBase:
 		return s.executeOperatorBaseTask(ctx, taskType, params)
-
+	case TargetOperatorGame:
+		return s.executeOperatorGameTask(ctx, taskType, params)
 	default:
 		return nil, fmt.Errorf("不支持的任务目标服务: %s", target)
 	}
@@ -37,5 +40,17 @@ func (s *Service) executeOperatorBaseTask(ctx context.Context, taskType string, 
 
 	default:
 		return nil, fmt.Errorf("不支持的operator-base任务类型: %s", taskType)
+	}
+}
+
+// executeOperatorGameTask 执行分站游戏服务任务
+func (s *Service) executeOperatorGameTask(ctx context.Context, taskType string, params json.RawMessage) (json.RawMessage, error) {
+	// 根据任务类型执行任务
+	switch taskType {
+	case TypePublishGameAllocation:
+		return s.executePublishGameAllocation(ctx, params)
+
+	default:
+		return nil, fmt.Errorf("不支持的operator-game任务类型: %s", taskType)
 	}
 }

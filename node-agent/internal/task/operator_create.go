@@ -4,8 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strings"
 
+	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/core/rpc/coreclient"
 	operatorbasepb "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/operatorpb"
 	platformoperatorpb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/operatorpb"
 )
@@ -70,6 +73,59 @@ func (s *Service) executeCreateOperator(ctx context.Context, params json.RawMess
 		return nil, fmt.Errorf("初始化当前节点分站数据失败: %w", err)
 	}
 
+	// 初始化核心数据: 管理员数据、系统多语言
+	err = s.initCoreData(ctx, initializationData)
+	if err != nil {
+		return nil, fmt.Errorf("初始化核心数据失败: %w", err)
+	}
+
 	// 当前任务无需返回业务结果
 	return nil, nil
+}
+
+// initCoreData 初始化核心数据: 管理员数据、系统多语言
+func (s *Service) initCoreData(ctx context.Context, data *platformoperatorpb.GetInitializationDataResponse) error {
+	// 获取分站基础信息
+	operatorInfo := data.GetOperator()
+	// 初始化管理员数据
+	for _, adminInfo := range data.GetAdmins() {
+		_, err := s.operatorCoreRpc.BootstrapOperator(ctx, &coreclient.BootstrapOperatorReq{
+			OperatorCode: operatorInfo.GetCode(),
+			Username:     adminInfo.GetUsername(),
+			Password:     adminInfo.GetPassword(),
+			DisplayName:  adminInfo.GetDisplayName(),
+		})
+		if err != nil && !strings.Contains(err.Error(), "auth.rootUserExists") {
+			return fmt.Errorf("初始化管理员数据失败: %w", err)
+		}
+	}
+
+	// 获取总网系统多语言
+	languageCodes := data.GetLanguageCodes()
+	if len(languageCodes) > 0 {
+		langResp, err := s.platformCoreRpc.GetEnabledI18NLangs(ctx, &coreclient.GetEnabledI18NLangsReq{})
+		if err != nil {
+			return fmt.Errorf("获取总网系统多语言失败: %w", err)
+		}
+		if langResp != nil {
+			// 设置分站编码到上下文
+			ctx = ctxdata.WithOperatorCode(ctx, operatorInfo.GetCode())
+			for idx, langInfo := range langResp.GetList() {
+				if slices.Contains(languageCodes, langInfo.GetLang()) {
+					_, err := s.operatorCoreRpc.CreateI18NLang(ctx, &coreclient.CreateI18NLangReq{
+						Lang:     langInfo.GetLang(),
+						Name:     langInfo.GetName(),
+						I18NKey:  "lang." + langInfo.GetLang(),
+						SortNo:   int32(idx + 1),
+						Disabled: 0,
+					})
+					if err != nil && !strings.Contains(err.Error(), "i18n.langExists") {
+						return fmt.Errorf("创建系统多语言失败: %w", err)
+					}
+				}
+			}
+		}
+	}
+
+	return nil
 }
