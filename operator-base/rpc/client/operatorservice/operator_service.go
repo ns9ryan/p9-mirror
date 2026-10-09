@@ -19,6 +19,8 @@ type (
 	OperatorService interface {
 		// 初始化厅 operator
 		Initialize(ctx context.Context, in *operatorpb.InitializeOperatorRequest, opts ...grpc.CallOption) (*operatorpb.InitializeOperatorResponse, error)
+		// 初始化基础资源分配到指定分站
+		InitializeBasicResources(ctx context.Context, in *operatorpb.InitializeBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.InitializeBasicResourcesResponse, error)
 	}
 
 	defaultOperatorService struct {
@@ -36,4 +38,10 @@ func NewOperatorService(cli zrpc.Client) OperatorService {
 func (m *defaultOperatorService) Initialize(ctx context.Context, in *operatorpb.InitializeOperatorRequest, opts ...grpc.CallOption) (*operatorpb.InitializeOperatorResponse, error) {
 	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
 	return client.Initialize(ctx, in, opts...)
+}
+
+// 初始化基础资源分配到指定分站
+func (m *defaultOperatorService) InitializeBasicResources(ctx context.Context, in *operatorpb.InitializeBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.InitializeBasicResourcesResponse, error) {
+	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
+	return client.InitializeBasicResources(ctx, in, opts...)
 }

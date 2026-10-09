@@ -4,10 +4,6 @@ package platform_game;
 
 option go_package = "oa.98ent.com/p9/platform-game/rpc/pb/platform_game";
 
-import "types/published_category.proto";
-import "types/published_provider.proto";
-import "types/published_channel.proto";
-
 // PublishedGameInfo 已发布的游戏信息
 message PublishedGameInfo {
     int64 id = 1;
@@ -40,10 +36,7 @@ message GetPublishedGameListRequest {
 // GetPublishedGameListResp 已发布游戏列表响应
 message GetPublishedGameListResp {
     repeated PublishedGameInfo game_items = 1;
-    repeated PublishedGameCategoryInfo category_items = 2;
-    repeated PublishedGameProviderInfo provider_items = 3;
-    repeated PublishedGameChannelInfo channel_items = 4;
-    int64 total = 5;
-    int32 page = 6;
-    int32 page_size = 7;
+    int64 total = 2;
+    int32 page = 3;
+    int32 page_size = 4;
 }

@@ -80,6 +80,7 @@ func (l *GetGameProviderListLogic) GetGameProviderList(in *operator_game.GetGame
 		items = append(items, &operator_game.ProviderInfo{
 			Id:           gp.ID,
 			ProviderCode: gp.ProviderCode,
+			ChannelCode:  gp.ChannelCode,
 			LogoUrl:      gp.LogoURL,
 			SortNo:       int32(gp.SortNo),
 			Status:       int32(gp.Status),

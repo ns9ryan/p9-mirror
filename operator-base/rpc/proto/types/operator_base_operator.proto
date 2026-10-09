@@ -42,3 +42,39 @@ message InitializeOperatorRequest {
 
 // 初始化 operator 响应
 message InitializeOperatorResponse {}
+
+// 资源初始化统计信息
+message ResourceStat {
+  // 总数
+  int64 total = 1;
+  // 成功初始化数量
+  int64 success = 2;
+  // 失败初始化数量
+  int64 failed = 3;
+}
+
+// 初始化基础资源分配请求
+message InitializeBasicResourcesRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 当前分配的语言编码
+  repeated string language_codes = 2;
+  // 当前分配的国家地区编码
+  repeated string region_codes = 3;
+  // 当前分配的代理子线路编码
+  repeated string agent_line_codes = 4;
+}
+
+// 初始化基础资源分配响应
+message InitializeBasicResourcesResponse {
+  // 初始化是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 语言初始化统计
+  ResourceStat language_stat = 3;
+  // 地区初始化统计
+  ResourceStat region_stat = 4;
+  // 代理线路初始化统计
+  ResourceStat agent_line_stat = 5;
+}

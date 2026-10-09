@@ -32,6 +32,9 @@ func (d *GameChannelDAO) GetGameChannelList(ctx context.Context, opts ...GameCha
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(gamechannel.OpCodeEQ(opt.OpCode))
+	}
 	if opt.ChannelCode != "" {
 		query = query.Where(gamechannel.ChannelCodeEQ(opt.ChannelCode))
 	}
@@ -133,6 +136,37 @@ func (d *GameChannelDAO) GetOrUpdateGameChannel(ctx context.Context, opCode, cha
 
 	// 不存在则创建新的
 	return d.CreateGameChannel(ctx, opCode, channelCode, sortNo, loadType, status)
+}
+
+// DeleteGameChannelNotIn 删除不在给定编码集合中的游戏渠道
+func (d *GameChannelDAO) DeleteGameChannelNotIn(ctx context.Context, opCode string, channelCodeSet map[string]bool) (int, error) {
+	// 查询该分站的所有渠道
+	channels, err := d.GetGameChannelList(ctx, WithChannelOpCode(opCode))
+	if err != nil {
+		return 0, fmt.Errorf("query game channels failed: %w", err)
+	}
+
+	// 找出需要删除的渠道
+	var idsToDelete []int64
+	for _, ch := range channels {
+		if !channelCodeSet[ch.ChannelCode] {
+			idsToDelete = append(idsToDelete, ch.ID)
+		}
+	}
+
+	// 删除
+	if len(idsToDelete) == 0 {
+		return 0, nil
+	}
+
+	count, err := d.db.GameChannel.Delete().
+		Where(gamechannel.IDIn(idsToDelete...)).
+		Exec(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("delete game channels failed: %w", err)
+	}
+
+	return count, nil
 }
 
 // GameChannelListOptions 列表选项

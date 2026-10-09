@@ -7,6 +7,10 @@ import (
 
 	"oa.98ent.com/p9/operator-base/rpc/ent"
 	operatorent "oa.98ent.com/p9/operator-base/rpc/ent/operator"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatoragentline"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatordomain"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatorlanguage"
+	"oa.98ent.com/p9/operator-base/rpc/ent/operatorregion"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -58,18 +62,6 @@ func (s *Service) getOperatorByCode(ctx context.Context, code string) (*ent.Oper
 	return data, true, nil
 }
 
-// checkExistingOperator 检查已存在 operator 是否符合初始化幂等要求
-func checkExistingOperator(data *ent.Operator, req InitializeRequest) error {
-	// 时区和结算货币首次初始化后不可修改
-	if data.TimezoneCode != req.TimezoneCode ||
-		data.SettlementCurrencyCode != req.SettlementCurrencyCode {
-		return status.Error(codes.FailedPrecondition, "operator initialization data conflicts with existing operator")
-	}
-
-	// name、status 和资源可能已经在初始化后发生变化, 不使用旧初始化数据覆盖
-	return nil
-}
-
 // createOperator 创建 operator
 func createOperator(ctx context.Context, tx *ent.Tx, req InitializeRequest) (*ent.Operator, error) {
 	data, err := tx.Operator.
@@ -85,4 +77,68 @@ func createOperator(ctx context.Context, tx *ent.Tx, req InitializeRequest) (*en
 	}
 
 	return data, nil
+}
+
+// updateOperatorResources 更新已存在 operator 的资源配置（域名、语言、地区、代理线路）
+func (s *Service) updateOperatorResources(ctx context.Context, operator *ent.Operator, req InitializeRequest) error {
+	// 开启更新事务
+	tx, err := s.db.Tx(ctx)
+	if err != nil {
+		return fmt.Errorf("开启更新事务失败: %w", err)
+	}
+
+	// 删除旧的域名
+	if _, err = tx.OperatorDomain.Delete().Where(operatordomain.OperatorIDEQ(operator.ID)).Exec(ctx); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("删除旧域名失败: %w", err)
+	}
+
+	// 删除旧的语言
+	if _, err = tx.OperatorLanguage.Delete().Where(operatorlanguage.OperatorIDEQ(operator.ID)).Exec(ctx); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("删除旧语言失败: %w", err)
+	}
+
+	// 删除旧的经营地区
+	if _, err = tx.OperatorRegion.Delete().Where(operatorregion.OperatorIDEQ(operator.ID)).Exec(ctx); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("删除旧经营地区失败: %w", err)
+	}
+
+	// 删除旧的代理子线路
+	if _, err = tx.OperatorAgentLine.Delete().Where(operatoragentline.OperatorIDEQ(operator.ID)).Exec(ctx); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("删除旧代理子线路失败: %w", err)
+	}
+
+	// 创建新的域名
+	if err = createDomains(ctx, tx, operator.ID, req.Domains); err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+
+	// 创建新的语言
+	if err = createLanguages(ctx, tx, operator.ID, req.LanguageCodes); err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+
+	// 创建新的经营地区
+	if err = createRegions(ctx, tx, operator.ID, req.RegionCodes); err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+
+	// 创建新的代理子线路
+	if err = createAgentLines(ctx, tx, operator.ID, req.AgentLineCodes); err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+
+	// 提交更新事务
+	if err = tx.Commit(); err != nil {
+		return fmt.Errorf("提交更新事务失败: %w", err)
+	}
+
+	return nil
 }

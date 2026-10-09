@@ -14,6 +14,10 @@ project-resources
 
 ## 项目文档
 
+### 项目架构
+
+- [厅侧仓库与服务划分](docs/operator-repositories.md)
+
 ### 开发规范与配置
 
 - [代码规范](docs/code-norm.md)

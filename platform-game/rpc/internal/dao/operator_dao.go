@@ -34,7 +34,7 @@ func (d *OperatorDAO) GetAllOperatorsByCode(ctx context.Context, code string) ([
 	}
 	return d.db.Operator.Query().
 		Where(operator.CodeEQ(code)).
-		Order(operator.ByCode()).
+		Order(operator.ByID()).
 		All(ctx)
 }
 

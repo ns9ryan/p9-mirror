@@ -265,14 +265,11 @@ func (x *GetPublishedGameListRequest) GetProviderCode() string {
 
 // GetPublishedGameListResp 已发布游戏列表响应
 type GetPublishedGameListResp struct {
-	state         protoimpl.MessageState       `protogen:"open.v1"`
-	GameItems     []*PublishedGameInfo         `protobuf:"bytes,1,rep,name=game_items,json=gameItems,proto3" json:"game_items,omitempty"`
-	CategoryItems []*PublishedGameCategoryInfo `protobuf:"bytes,2,rep,name=category_items,json=categoryItems,proto3" json:"category_items,omitempty"`
-	ProviderItems []*PublishedGameProviderInfo `protobuf:"bytes,3,rep,name=provider_items,json=providerItems,proto3" json:"provider_items,omitempty"`
-	ChannelItems  []*PublishedGameChannelInfo  `protobuf:"bytes,4,rep,name=channel_items,json=channelItems,proto3" json:"channel_items,omitempty"`
-	Total         int64                        `protobuf:"varint,5,opt,name=total,proto3" json:"total,omitempty"`
-	Page          int32                        `protobuf:"varint,6,opt,name=page,proto3" json:"page,omitempty"`
-	PageSize      int32                        `protobuf:"varint,7,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GameItems     []*PublishedGameInfo   `protobuf:"bytes,1,rep,name=game_items,json=gameItems,proto3" json:"game_items,omitempty"`
+	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -314,27 +311,6 @@ func (x *GetPublishedGameListResp) GetGameItems() []*PublishedGameInfo {
 	return nil
 }
 
-func (x *GetPublishedGameListResp) GetCategoryItems() []*PublishedGameCategoryInfo {
-	if x != nil {
-		return x.CategoryItems
-	}
-	return nil
-}
-
-func (x *GetPublishedGameListResp) GetProviderItems() []*PublishedGameProviderInfo {
-	if x != nil {
-		return x.ProviderItems
-	}
-	return nil
-}
-
-func (x *GetPublishedGameListResp) GetChannelItems() []*PublishedGameChannelInfo {
-	if x != nil {
-		return x.ChannelItems
-	}
-	return nil
-}
-
 func (x *GetPublishedGameListResp) GetTotal() int64 {
 	if x != nil {
 		return x.Total
@@ -360,7 +336,7 @@ var File_types_published_game_proto protoreflect.FileDescriptor
 
 const file_types_published_game_proto_rawDesc = "" +
 	"\n" +
-	"\x1atypes/published_game.proto\x12\rplatform_game\x1a\x1etypes/published_category.proto\x1a\x1etypes/published_provider.proto\x1a\x1dtypes/published_channel.proto\"\x8f\x04\n" +
+	"\x1atypes/published_game.proto\x12\rplatform_game\"\x8f\x04\n" +
 	"\x11PublishedGameInfo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
 	"\tsource_id\x18\x02 \x01(\x03R\bsourceId\x12\x1b\n" +
@@ -386,16 +362,13 @@ const file_types_published_game_proto_rawDesc = "" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x12#\n" +
 	"\rcategory_code\x18\x04 \x01(\tR\fcategoryCode\x12#\n" +
-	"\rprovider_code\x18\x05 \x01(\tR\fproviderCode\"\x92\x03\n" +
+	"\rprovider_code\x18\x05 \x01(\tR\fproviderCode\"\xa2\x01\n" +
 	"\x18GetPublishedGameListResp\x12?\n" +
 	"\n" +
-	"game_items\x18\x01 \x03(\v2 .platform_game.PublishedGameInfoR\tgameItems\x12O\n" +
-	"\x0ecategory_items\x18\x02 \x03(\v2(.platform_game.PublishedGameCategoryInfoR\rcategoryItems\x12O\n" +
-	"\x0eprovider_items\x18\x03 \x03(\v2(.platform_game.PublishedGameProviderInfoR\rproviderItems\x12L\n" +
-	"\rchannel_items\x18\x04 \x03(\v2'.platform_game.PublishedGameChannelInfoR\fchannelItems\x12\x14\n" +
-	"\x05total\x18\x05 \x01(\x03R\x05total\x12\x12\n" +
-	"\x04page\x18\x06 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\a \x01(\x05R\bpageSizeB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
+	"game_items\x18\x01 \x03(\v2 .platform_game.PublishedGameInfoR\tgameItems\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSizeB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
 
 var (
 	file_types_published_game_proto_rawDescOnce sync.Once
@@ -414,20 +387,14 @@ var file_types_published_game_proto_goTypes = []any{
 	(*PublishedGameInfo)(nil),           // 0: platform_game.PublishedGameInfo
 	(*GetPublishedGameListRequest)(nil), // 1: platform_game.GetPublishedGameListRequest
 	(*GetPublishedGameListResp)(nil),    // 2: platform_game.GetPublishedGameListResp
-	(*PublishedGameCategoryInfo)(nil),   // 3: platform_game.PublishedGameCategoryInfo
-	(*PublishedGameProviderInfo)(nil),   // 4: platform_game.PublishedGameProviderInfo
-	(*PublishedGameChannelInfo)(nil),    // 5: platform_game.PublishedGameChannelInfo
 }
 var file_types_published_game_proto_depIdxs = []int32{
 	0, // 0: platform_game.GetPublishedGameListResp.game_items:type_name -> platform_game.PublishedGameInfo
-	3, // 1: platform_game.GetPublishedGameListResp.category_items:type_name -> platform_game.PublishedGameCategoryInfo
-	4, // 2: platform_game.GetPublishedGameListResp.provider_items:type_name -> platform_game.PublishedGameProviderInfo
-	5, // 3: platform_game.GetPublishedGameListResp.channel_items:type_name -> platform_game.PublishedGameChannelInfo
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_types_published_game_proto_init() }
@@ -435,9 +402,6 @@ func file_types_published_game_proto_init() {
 	if File_types_published_game_proto != nil {
 		return
 	}
-	file_types_published_category_proto_init()
-	file_types_published_provider_proto_init()
-	file_types_published_channel_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

@@ -32,6 +32,9 @@ func (d *GameProviderDAO) GetGameProviderList(ctx context.Context, opts ...GameP
 	}
 
 	// 应用过滤条件
+	if opt.OpCode != "" {
+		query = query.Where(gameprovider.OpCodeEQ(opt.OpCode))
+	}
 	if opt.ProviderCode != "" {
 		query = query.Where(gameprovider.ProviderCodeEQ(opt.ProviderCode))
 	}
@@ -141,6 +144,37 @@ func (d *GameProviderDAO) GetOrUpdateGameProvider(ctx context.Context, opCode, p
 
 	// 不存在则创建新的
 	return d.CreateGameProvider(ctx, opCode, providerCode, channelCode, logoURL, sortNo, status)
+}
+
+// DeleteGameProviderNotIn 删除不在给定编码集合中的游戏供应商
+func (d *GameProviderDAO) DeleteGameProviderNotIn(ctx context.Context, opCode string, providerCodeSet map[string]bool) (int, error) {
+	// 查询该分站的所有供应商
+	providers, err := d.GetGameProviderList(ctx, WithProviderOpCode(opCode))
+	if err != nil {
+		return 0, fmt.Errorf("query game providers failed: %w", err)
+	}
+
+	// 找出需要删除的供应商
+	var idsToDelete []int64
+	for _, prov := range providers {
+		if !providerCodeSet[prov.ProviderCode] {
+			idsToDelete = append(idsToDelete, prov.ID)
+		}
+	}
+
+	// 删除
+	if len(idsToDelete) == 0 {
+		return 0, nil
+	}
+
+	count, err := d.db.GameProvider.Delete().
+		Where(gameprovider.IDIn(idsToDelete...)).
+		Exec(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("delete game providers failed: %w", err)
+	}
+
+	return count, nil
 }
 
 // CountGameProviderByChannel 统计指定渠道的游戏供应商数量

@@ -57,47 +57,23 @@ func (l *GetPublishedGameListLogic) GetPublishedGameList(in *platform_game.GetPu
 
 	// 转换为proto消息
 	items := make([]*platform_game.PublishedGameInfo, 0, len(games))
-	categoryItems := make([]*platform_game.PublishedGameCategoryInfo, 0)
-	providerItems := make([]*platform_game.PublishedGameProviderInfo, 0)
-	channelItems := make([]*platform_game.PublishedGameChannelInfo, 0)
 	for _, game := range games {
 		// 转换category_id为category_code
 		categoryRecord, _ := l.svcCtx.DAOManager.GameCategory.GetGameCategoryBySourceId(l.ctx, game.CategoryID)
 		categoryCode := ""
 		if categoryRecord != nil {
 			categoryCode = categoryRecord.SourceCategoryCode
-			categoryItems = append(categoryItems, &platform_game.PublishedGameCategoryInfo{
-				Id:           categoryRecord.SourceID,
-				CategoryCode: categoryCode,
-				SortNo:       categoryRecord.SortNo,
-				Status:       int32(categoryRecord.Status),
-			})
 		}
 		providerRecord, _ := l.svcCtx.DAOManager.GameProvider.GetGameProviderBySourceId(l.ctx, game.ProviderID)
 		providerCode := ""
 		if providerRecord != nil {
 			providerCode = providerRecord.SourceProviderCode
-			providerItems = append(providerItems, &platform_game.PublishedGameProviderInfo{
-				Id:           providerRecord.SourceID,
-				ProviderCode: providerCode,
-				ChannelCode:  providerRecord.ChannelCode,
-				LogoUrl:      providerRecord.LogoURL,
-				SortNo:       providerRecord.SortNo,
-				Status:       int32(providerRecord.Status),
-			})
 		}
 
 		channelRecord, _ := l.svcCtx.DAOManager.GameChannel.GetGameChannelBySourceId(l.ctx, game.ChannelID)
 		channelCode := ""
 		if channelRecord != nil {
 			channelCode = channelRecord.SourceChannelCode
-			channelItems = append(channelItems, &platform_game.PublishedGameChannelInfo{
-				Id:          channelRecord.SourceID,
-				ChannelCode: channelCode,
-				LoadType:    channelRecord.LoadType,
-				SortNo:      channelRecord.SortNo,
-				Status:      int32(channelRecord.Status),
-			})
 		}
 
 		currencyCodeList, _ := l.svcCtx.DAOManager.GameCurrency.GetCurrencyCodesByGameCode(l.ctx, game.SourceGameCode)
@@ -123,12 +99,9 @@ func (l *GetPublishedGameListLogic) GetPublishedGameList(in *platform_game.GetPu
 	}
 
 	return &platform_game.GetPublishedGameListResp{
-		GameItems:     items,
-		CategoryItems: categoryItems,
-		ProviderItems: providerItems,
-		ChannelItems:  channelItems,
-		Total:         int64(total),
-		Page:          in.Page,
-		PageSize:      in.PageSize,
+		GameItems: items,
+		Total:     int64(total),
+		Page:      in.Page,
+		PageSize:  in.PageSize,
 	}, nil
 }

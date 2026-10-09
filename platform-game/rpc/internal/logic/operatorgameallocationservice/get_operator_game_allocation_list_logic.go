@@ -113,10 +113,10 @@ func (l *GetOperatorGameAllocationListLogic) GetOperatorGameAllocationList(in *p
 
 	wg.Wait()
 
-	// 按分站编码排序
+	// 按分站ID排序
 	for i := 0; i < len(items)-1; i++ {
 		for j := i + 1; j < len(items); j++ {
-			if items[i].OpCode > items[j].OpCode {
+			if items[i].Id < items[j].Id {
 				items[i], items[j] = items[j], items[i]
 			}
 		}

@@ -209,6 +209,37 @@ func (d *GameDAO) GetOrUpdateGame(ctx context.Context, opCode string, sourceID i
 	return d.CreateGame(ctx, opCode, sourceID, gameCode, providerKey, categoryCode, providerCode, channelCode, name, imageURL, sortNo, supportsEmbed, supportsRedirect, status, currencyCodeList)
 }
 
+// DeleteGameNotIn 删除不在给定编码集合中的游戏
+func (d *GameDAO) DeleteGameNotIn(ctx context.Context, opCode string, gameCodeSet map[string]bool) (int, error) {
+	// 查询该分站的所有游戏
+	games, err := d.GetGameList(ctx, WithGameOpCode(opCode))
+	if err != nil {
+		return 0, fmt.Errorf("query games failed: %w", err)
+	}
+
+	// 找出需要删除的游戏
+	var idsToDelete []int64
+	for _, g := range games {
+		if !gameCodeSet[g.GameCode] {
+			idsToDelete = append(idsToDelete, g.ID)
+		}
+	}
+
+	// 删除
+	if len(idsToDelete) == 0 {
+		return 0, nil
+	}
+
+	count, err := d.db.Game.Delete().
+		Where(game.IDIn(idsToDelete...)).
+		Exec(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("delete games failed: %w", err)
+	}
+
+	return count, nil
+}
+
 func (d *GameDAO) CountGameByChannel(ctx context.Context, channelCode string) (int, error) {
 	return d.db.Game.Query().
 		Where(game.ChannelCodeEQ(channelCode)).

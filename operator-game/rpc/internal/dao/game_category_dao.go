@@ -136,6 +136,37 @@ func (d *GameCategoryDAO) GetOrUpdateGameCategory(ctx context.Context, opCode, c
 	return d.CreateGameCategory(ctx, opCode, categoryCode, sortNo, status)
 }
 
+// DeleteGameCategoryNotIn 删除不在给定编码集合中的游戏分类
+func (d *GameCategoryDAO) DeleteGameCategoryNotIn(ctx context.Context, opCode string, categoryCodeSet map[string]bool) (int, error) {
+	// 查询该分站的所有分类
+	categories, err := d.GetGameCategoryList(ctx, WithCategoryOpCode(opCode))
+	if err != nil {
+		return 0, fmt.Errorf("query game categories failed: %w", err)
+	}
+
+	// 找出需要删除的分类
+	var idsToDelete []int64
+	for _, cat := range categories {
+		if !categoryCodeSet[cat.CategoryCode] {
+			idsToDelete = append(idsToDelete, cat.ID)
+		}
+	}
+
+	// 删除
+	if len(idsToDelete) == 0 {
+		return 0, nil
+	}
+
+	count, err := d.db.GameCategory.Delete().
+		Where(gamecategory.IDIn(idsToDelete...)).
+		Exec(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("delete game categories failed: %w", err)
+	}
+
+	return count, nil
+}
+
 // GameCategoryListOptions 列表选项
 type GameCategoryListOptions struct {
 	OpCode       string

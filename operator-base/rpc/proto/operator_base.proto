@@ -17,4 +17,7 @@ service PingService {
 service OperatorService {
   // 初始化厅 operator
   rpc Initialize(operator_base_operator.InitializeOperatorRequest) returns (operator_base_operator.InitializeOperatorResponse);
+
+  // 初始化基础资源分配到指定分站
+  rpc InitializeBasicResources(operator_base_operator.InitializeBasicResourcesRequest) returns (operator_base_operator.InitializeBasicResourcesResponse);
 }

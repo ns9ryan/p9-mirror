@@ -29,3 +29,9 @@ func (s *OperatorServiceServer) Initialize(ctx context.Context, in *operatorpb.I
 	l := operatorservicelogic.NewInitializeLogic(ctx, s.svcCtx)
 	return l.Initialize(in)
 }
+
+// 初始化基础资源分配到指定分站
+func (s *OperatorServiceServer) InitializeBasicResources(ctx context.Context, in *operatorpb.InitializeBasicResourcesRequest) (*operatorpb.InitializeBasicResourcesResponse, error) {
+	l := operatorservicelogic.NewInitializeBasicResourcesLogic(ctx, s.svcCtx)
+	return l.InitializeBasicResources(in)
+}

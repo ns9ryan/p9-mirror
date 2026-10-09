@@ -35,8 +35,10 @@ func (s *Service) Initialize(ctx context.Context, req InitializeRequest) error {
 	if err != nil {
 		return err
 	}
+
+	// 如果 operator 已存在, 则更新其基础资源配置
 	if exists {
-		return checkExistingOperator(existing, req)
+		return s.updateOperatorResources(ctx, existing, req)
 	}
 
 	// 开启初始化事务
@@ -57,7 +59,7 @@ func (s *Service) Initialize(ctx context.Context, req InitializeRequest) error {
 				return queryErr
 			}
 			if exists {
-				return checkExistingOperator(existing, req)
+				return s.updateOperatorResources(ctx, existing, req)
 			}
 		}
 
