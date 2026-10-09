@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package crm;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc";
+
+import "types/crm_ping.proto";
+
+// CRM 健康检查服务
+service PingService {
+  // 健康检查
+  rpc Ping(crm_ping.PingRequest) returns (crm_ping.PingResponse);
+}

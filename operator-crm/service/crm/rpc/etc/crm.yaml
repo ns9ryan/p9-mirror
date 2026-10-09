@@ -1,0 +1,10 @@
+# RPC服务配置
+Name:     crm-rpc         # RPC服务名称
+ListenOn: 0.0.0.0:39002   # RPC监听地址
+Mode:     dev             # 运行模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 127.0.0.1:12379     # Etcd地址
+  Key: crm-rpc            # 服务注册Key

@@ -21,3 +21,7 @@ go.work.sum
 # Editor/IDE
 .idea/
 .vscode/
+
+# Build binaries
+/crm_rpc
+/settlement_rpc
