@@ -1,0 +1,168 @@
+export default {
+  'menu.outstation': 'Station Manage',
+  'menu.outstation.stationManage': 'Station Manage',
+
+  'stationManage.title': 'Station List',
+  'stationManage.subtitle':
+    'Manage basic information, publish status and resource allocation of each station.',
+
+  'stationManage.search.keyword': 'Keyword:',
+  'stationManage.search.keywordPlaceholder': 'Enter station name, code or ID',
+  'stationManage.search.name': 'Station Name:',
+  'stationManage.search.namePlaceholder': 'Enter station name',
+  'stationManage.search.code': 'Station Code:',
+  'stationManage.search.codePlaceholder': 'Enter station code',
+  'stationManage.search.status': 'Status:',
+  'stationManage.search.publishStatus': 'Publish Status:',
+  'stationManage.search.createdAt': 'Created At:',
+
+  'stationManage.toolbar.create': 'Create Station',
+
+  'stationManage.tip.title': 'Tip:',
+  'stationManage.tip.content':
+    'Publishing is only available after completing the basic configuration, domain binding and resource allocation of the station.',
+
+  'stationManage.status.normal': 'Normal',
+  'stationManage.status.configuring': 'Configuring',
+  'stationManage.status.disabled': 'Disabled',
+  'stationManage.status.paused': 'Paused',
+  'stationManage.status.closed': 'Closed',
+
+  'stationManage.publishStatus.published': 'Published',
+  'stationManage.publishStatus.unpublished': 'Unpublished',
+
+  'stationManage.column.id': 'Station ID',
+  'stationManage.column.name': 'Station Name',
+  'stationManage.column.code': 'Station Code',
+  'stationManage.column.group': 'Group',
+  'stationManage.column.timezone': 'Timezone',
+  'stationManage.column.currency': 'Currency',
+  'stationManage.column.status': 'Status',
+  'stationManage.column.publishStatus': 'Publish Status',
+
+  'stationManage.action.detail': 'Detail',
+  'stationManage.action.edit': 'Edit',
+  'stationManage.action.publish': 'Publish',
+  'stationManage.action.unpublish': 'Unpublish',
+  'stationManage.action.pause': 'Pause',
+  'stationManage.action.resume': 'Resume',
+  'stationManage.action.close': 'Close',
+  'stationManage.action.delete': 'Delete',
+  'stationManage.action.more': 'More',
+
+  'stationManage.legend.statusTitle': 'Station Status:',
+  'stationManage.legend.statusNormal': 'Normal: station is operating normally',
+  'stationManage.legend.statusPaused': 'Paused: temporarily suspended',
+  'stationManage.legend.statusClosed': 'Closed: no longer operating',
+  'stationManage.legend.publishTitle': 'Publish Status:',
+  'stationManage.legend.publishPublished': 'Published: officially live',
+  'stationManage.legend.publishUnpublished':
+    'Unpublished: created but not published (or draft)',
+
+  'stationManage.message.createFlowTodo':
+    'Entering the multi-step station creation flow',
+  'stationManage.message.publishConfirmTitle': 'Confirm Publish',
+  'stationManage.message.publishConfirmContent':
+    'Once published, this station will be live to the public. Continue?',
+  'stationManage.message.unpublishConfirmTitle': 'Confirm Unpublish',
+  'stationManage.message.unpublishConfirmContent':
+    'Once unpublished, this station will no longer be publicly available. Continue?',
+  'stationManage.message.publishSuccess': 'Published successfully',
+  'stationManage.message.unpublishSuccess': 'Unpublished',
+  'stationManage.message.pauseSuccess': 'Paused',
+  'stationManage.message.resumeSuccess': 'Resumed',
+  'stationManage.message.closeConfirmTitle': 'Confirm Close',
+  'stationManage.message.closeConfirmContent':
+    'Once closed, this station will stop operating. Continue?',
+  'stationManage.message.closeSuccess': 'Closed',
+  'stationManage.message.deleteConfirmContent':
+    'This cannot be undone. Delete station "{name}"?',
+
+  'stationCreate.title': 'Create Station',
+  'stationCreate.stepLabel': 'Step {step}: {name}',
+  'stationCreate.step.baseInfo': 'Basic Info',
+  'stationCreate.step.profileInfo': 'Profile Info',
+  'stationCreate.step.adminDomain': 'Admin & Domain',
+  'stationCreate.step.resource': 'Resource Allocation',
+  'stationCreate.step.confirm': 'Confirm',
+
+  'stationCreate.baseInfo.title': 'Basic Info',
+  'stationCreate.baseInfo.name': 'Station Name',
+  'stationCreate.baseInfo.namePlaceholder': 'Enter station name',
+  'stationCreate.baseInfo.timezone': 'Timezone',
+  'stationCreate.baseInfo.timezonePlaceholder': 'Select timezone',
+  'stationCreate.baseInfo.currency': 'Currency',
+  'stationCreate.baseInfo.currencyPlaceholder': 'Select currency',
+  'stationCreate.baseInfo.status': 'Status',
+  'stationCreate.baseInfo.statusPlaceholder': 'Normal / Closed / Paused',
+  'stationCreate.baseInfo.remark': 'Remark',
+  'stationCreate.baseInfo.remarkPlaceholder': 'Enter remark',
+
+  'stationCreate.profileInfo.title': 'Profile Info',
+  'stationCreate.profileInfo.code': 'Station Code',
+  'stationCreate.profileInfo.codePlaceholder': 'e.g. SEA001',
+  'stationCreate.profileInfo.group': 'Group',
+  'stationCreate.profileInfo.groupPlaceholder': 'Enter group name',
+  'stationCreate.profileInfo.contactName': 'Contact Name',
+  'stationCreate.profileInfo.contactNamePlaceholder': 'Enter contact name',
+  'stationCreate.profileInfo.contactPhone': 'Contact Phone',
+  'stationCreate.profileInfo.contactPhonePlaceholder': 'Enter contact phone',
+  'stationCreate.profileInfo.contactEmail': 'Contact Email',
+  'stationCreate.profileInfo.contactEmailPlaceholder': 'Enter contact email',
+  'stationCreate.profileInfo.icpNo': 'ICP License No.',
+  'stationCreate.profileInfo.icpNoPlaceholder': 'Optional',
+  'stationCreate.profileInfo.description': 'Description',
+  'stationCreate.profileInfo.descriptionPlaceholder': 'Optional',
+
+  'stationCreate.adminDomain.title': 'Admin & Domain',
+  'stationCreate.adminDomain.account': 'Admin Account',
+  'stationCreate.adminDomain.accountPlaceholder': 'Enter admin account',
+  'stationCreate.adminDomain.password': 'Admin Password',
+  'stationCreate.adminDomain.passwordPlaceholder': 'Enter admin password',
+  'stationCreate.adminDomain.confirmPassword': 'Confirm Password',
+  'stationCreate.adminDomain.confirmPasswordPlaceholder': 'Re-enter password',
+  'stationCreate.adminDomain.domain': 'Bound Domain',
+  'stationCreate.adminDomain.domainPlaceholder': 'e.g. sea.example.com',
+  'stationCreate.adminDomain.ssl': 'SSL Certificate',
+  'stationCreate.adminDomain.sslAuto': 'Auto apply',
+  'stationCreate.adminDomain.sslUpload': 'Manual upload',
+
+  'stationCreate.resource.title': 'Resource Allocation',
+  'stationCreate.resource.gameScope': 'Game Scope',
+  'stationCreate.resource.gameScopeAll': 'All games',
+  'stationCreate.resource.gameScopeCustom': 'Custom games',
+  'stationCreate.resource.gameScopeCustomPlaceholder':
+    'Select available games (optional)',
+  'stationCreate.resource.paymentChannels': 'Payment Channels',
+  'stationCreate.resource.storageQuota': 'Storage Quota',
+  'stationCreate.resource.bandwidthLimit': 'Bandwidth Limit',
+
+  'stationCreate.confirm.title': 'Confirm Creation',
+  'stationCreate.confirm.tip':
+    'Please review the information below, then click "Confirm Create" to finish',
+  'stationCreate.confirm.section.baseInfo': 'Basic Info',
+  'stationCreate.confirm.section.profileInfo': 'Profile Info',
+  'stationCreate.confirm.section.adminDomain': 'Admin & Domain',
+  'stationCreate.confirm.section.resource': 'Resource Allocation',
+
+  'stationCreate.action.cancel': 'Cancel',
+  'stationCreate.action.saveDraft': 'Save Draft',
+  'stationCreate.action.prev': 'Previous',
+  'stationCreate.action.next': 'Next',
+  'stationCreate.action.submit': 'Confirm Create',
+
+  'stationCreate.rule.nameRequired': 'Please enter station name',
+  'stationCreate.rule.timezoneRequired': 'Please select timezone',
+  'stationCreate.rule.currencyRequired': 'Please select currency',
+  'stationCreate.rule.statusRequired': 'Please select status',
+  'stationCreate.rule.codeRequired': 'Please enter station code',
+  'stationCreate.rule.accountRequired': 'Please enter admin account',
+  'stationCreate.rule.passwordRequired': 'Please enter admin password',
+  'stationCreate.rule.confirmPasswordRequired': 'Please re-enter password',
+  'stationCreate.rule.passwordNotMatch': 'Passwords do not match',
+  'stationCreate.rule.domainRequired': 'Please enter bound domain',
+
+  'stationCreate.message.saveDraftSuccess': 'Draft saved',
+  'stationCreate.message.createSuccess':
+    'Station "{name}" created successfully',
+};

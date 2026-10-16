@@ -1,2 +1,6 @@
 # 节点代理私密配置
 deploy/operator/node*/etc/node-agent/node_agent.yaml
+
+# Editor/IDE
+.idea/
+.vscode/

@@ -66,3 +66,11 @@ message SaveOperatorGameAllocationResp {
     int64 exist = 4;
     int64 failed = 5;
 }
+
+// 根据opcode删除分站游戏分配请求
+message DeleteOperatorGameRequest {
+    string op_code = 1;
+}
+
+message DeleteOperatorGameResp {
+}

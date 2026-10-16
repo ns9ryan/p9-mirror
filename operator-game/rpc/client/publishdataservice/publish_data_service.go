@@ -14,12 +14,16 @@ import (
 )
 
 type (
-	SyncPublishedDataRequest = operator_game.SyncPublishedDataRequest
-	SyncPublishedDataResp    = operator_game.SyncPublishedDataResp
+	DeleteOperatorDataRequest  = operator_game.DeleteOperatorDataRequest
+	DeleteOperatorDataResponse = operator_game.DeleteOperatorDataResponse
+	SyncPublishedDataRequest   = operator_game.SyncPublishedDataRequest
+	SyncPublishedDataResp      = operator_game.SyncPublishedDataResp
 
 	PublishDataService interface {
 		// 同步已发布的游戏数据到分站
 		SyncPublishedData(ctx context.Context, in *SyncPublishedDataRequest, opts ...grpc.CallOption) (*SyncPublishedDataResp, error)
+		// 删除分站的游戏数据
+		DeleteOperatorData(ctx context.Context, in *DeleteOperatorDataRequest, opts ...grpc.CallOption) (*DeleteOperatorDataResponse, error)
 	}
 
 	defaultPublishDataService struct {
@@ -37,4 +41,10 @@ func NewPublishDataService(cli zrpc.Client) PublishDataService {
 func (m *defaultPublishDataService) SyncPublishedData(ctx context.Context, in *SyncPublishedDataRequest, opts ...grpc.CallOption) (*SyncPublishedDataResp, error) {
 	client := operator_game.NewPublishDataServiceClient(m.cli.Conn())
 	return client.SyncPublishedData(ctx, in, opts...)
+}
+
+// 删除分站的游戏数据
+func (m *defaultPublishDataService) DeleteOperatorData(ctx context.Context, in *DeleteOperatorDataRequest, opts ...grpc.CallOption) (*DeleteOperatorDataResponse, error) {
+	client := operator_game.NewPublishDataServiceClient(m.cli.Conn())
+	return client.DeleteOperatorData(ctx, in, opts...)
 }

@@ -107,6 +107,12 @@ func (_c *SysInitCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *SysInitCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysInit.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SysInit.updated_at"`)}
+	}
 	if _, ok := _c.mutation.InitKey(); !ok {
 		return &ValidationError{Name: "init_key", err: errors.New(`ent: missing required field "SysInit.init_key"`)}
 	}

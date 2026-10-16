@@ -143,6 +143,12 @@ func (_c *I18nCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *I18nCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "I18n.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "I18n.updated_at"`)}
+	}
 	if _, ok := _c.mutation.I18nCode(); !ok {
 		return &ValidationError{Name: "i18n_code", err: errors.New(`ent: missing required field "I18n.i18n_code"`)}
 	}

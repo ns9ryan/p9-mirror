@@ -1,0 +1,37 @@
+syntax = "v1"
+
+info (
+	title:   "agent config api"
+	desc:    "代理配置"
+	author:  "p9"
+	version: "v1"
+)
+
+import "common.api"
+
+type UpdateAgentConfigReq {
+	MaxShareRate          int32 `json:"max_share_rate"`
+	ApplyMinShareRate     int32 `json:"apply_min_share_rate"`
+	ApplyMaxShareRate     int32 `json:"apply_max_share_rate"`
+	CashMaxMemberCount    int64 `json:"cash_max_member_count"`
+	CashMaxAgentPerIp     int64 `json:"cash_max_agent_per_ip"`
+	CashProductionAgentId int64 `json:"cash_production_agent_id,optional"`
+	CashDemoAgentId       int64 `json:"cash_demo_agent_id,optional"`
+	CashTestAgentId       int64 `json:"cash_test_agent_id,optional"`
+	CreditDemoAgentId     int64 `json:"credit_demo_agent_id,optional"`
+	CreditTestAgentId     int64 `json:"credit_test_agent_id,optional"`
+}
+
+@server (
+	group:      agent/config
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "获取代理配置"
+	@handler getAgentConfig
+	get /agent/config returns (AgentConfig)
+
+	@doc "更新代理配置"
+	@handler updateAgentConfig
+	post /agent/config/update (UpdateAgentConfigReq) returns (AgentConfig)
+}

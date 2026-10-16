@@ -17,10 +17,10 @@ Swagger:
   Protocol: https
 
 PlatformGameRpc:
-  Etcd:
-    Hosts:
-      - 192.168.0.15:2379
-    Key: platform-game-rpc
+  Hosts:
+    - 192.168.0.15:2379
+  Target: platform-game-rpc:19003
+  Timeout: 10000
 
 # 链路追踪, 生产建议 Sampler 0.01~0.1
 Telemetry:

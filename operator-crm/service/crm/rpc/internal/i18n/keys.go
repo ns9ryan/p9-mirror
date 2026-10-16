@@ -1,0 +1,42 @@
+package i18n
+
+// 错误文案 i18n key，由 API 层翻译。
+const (
+	Unauthorized  = "common.unauthorized"
+	TokenExpired  = "common.tokenExpired"
+	InternalError = "common.internalError"
+	InvalidParam  = "common.invalidParam"
+
+	AuthUsernamePasswordRequired = "auth.usernamePasswordRequired"
+	AuthOperatorCodeRequired     = "auth.operatorCodeRequired"
+	AuthPasswordIncorrect        = "auth.passwordIncorrect"
+	AuthUserDisabled             = "auth.userDisabled"
+	AuthInvalidToken             = "auth.invalidToken"
+	AuthUserSaltMismatch         = "auth.userSaltMismatch"
+	AuthRefreshTokenRequired     = "auth.refreshTokenRequired"
+	AuthIPMismatch               = "auth.ipMismatch"
+	AuthUserNotFound             = "auth.userNotFound"
+
+	AgentLevelItemsRequired        = "agent.levelItemsRequired"
+	AgentLevelDuplicate            = "agent.levelDuplicate"
+	AgentLevelOutOfRange           = "agent.levelOutOfRange"
+	AgentShareRateInvalid          = "agent.shareRateInvalid"
+	AgentShareRateOrderInvalid     = "agent.shareRateOrderInvalid"
+	AgentConfigMissing             = "agent.configMissing"
+	AgentDesignatedAgentMissing    = "agent.designatedAgentMissing"
+	AgentParentNotFound            = "agent.parentNotFound"
+	AgentParentLevelInvalid        = "agent.parentLevelInvalid"
+	AgentParentDisabled            = "agent.parentDisabled"
+	AgentLevelExceeded             = "agent.levelExceeded"
+	AgentShareRateExceedParent     = "agent.shareRateExceedParent"
+	AgentShareRateExceedMax        = "agent.shareRateExceedMax"
+	AgentFieldsRequired            = "agent.fieldsRequired"
+	AgentConflict                  = "agent.conflict"
+	AgentDesignatedAgentInvalid    = "agent.designatedAgentInvalid"
+	AgentParentRequired            = "agent.parentRequired"
+	AgentLineCodeInvalid           = "agent.lineCodeInvalid"
+	AgentApplyNotFound             = "agent.applyNotFound"
+	AgentApplyNotPending           = "agent.applyNotPending"
+	AgentApplyRejectReasonRequired = "agent.applyRejectReasonRequired"
+	AgentApplyPendingExists        = "agent.applyPendingExists"
+)

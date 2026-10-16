@@ -34,3 +34,9 @@ func (s *OperatorGameAllocationServiceServer) PublishOperatorGameAllocation(ctx 
 	l := operatorgameallocationservicelogic.NewPublishOperatorGameAllocationLogic(ctx, s.svcCtx)
 	return l.PublishOperatorGameAllocation(in)
 }
+
+// 根据opcode删除分站游戏分配
+func (s *OperatorGameAllocationServiceServer) DeleteOperatorGame(ctx context.Context, in *platform_game.DeleteOperatorGameRequest) (*platform_game.DeleteOperatorGameResp, error) {
+	l := operatorgameallocationservicelogic.NewDeleteOperatorGameLogic(ctx, s.svcCtx)
+	return l.DeleteOperatorGame(in)
+}

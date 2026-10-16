@@ -1,0 +1,106 @@
+syntax = "v1"
+
+import "../base.api"
+
+// Login request | 登录请求
+type LoginReq {
+	// Account | 代理账号
+	Account string `json:"account"`
+	// Password | 密码
+	Password string `json:"password"`
+	// Operator code | 分站编码
+	OperatorCode string `json:"operator_code,optional"`
+}
+
+// Login response | 登录响应
+type LoginResp {
+	// Token | 令牌
+	Token TokenInfo  `json:"token"`
+	// User | 用户
+	User  UserPublic `json:"user"`
+}
+
+// Refresh request | 刷新令牌请求
+type RefreshReq {
+	// Refresh token | 刷新令牌
+	RefreshToken string `json:"refresh_token"`
+}
+
+// Token pair | 令牌
+type TokenInfo {
+	// Access token | 访问令牌
+	AccessToken   string `json:"access_token"`
+	// Refresh token | 刷新令牌
+	RefreshToken  string `json:"refresh_token"`
+	// Access expire unix | 访问令牌过期时间
+	Expire        int64  `json:"expire"`
+	// Refresh expire unix | 刷新令牌过期时间
+	RefreshExpire int64  `json:"refresh_expire"`
+}
+
+// Enabled i18n lang list request | 已开启语言列表
+type GetEnabledI18nLangsReq {
+	// Operator code | 分站编码，无 claims 时必填
+	OperatorCode string `form:"operator_code,optional"`
+}
+
+// I18n lang list response | 支持的语言列表
+type I18nLangListResp {
+	// List | 列表
+	List  []I18nLangInfo `json:"list"`
+	// Total | 总数
+	Total int64          `json:"total"`
+}
+
+// I18n lang info | 支持的语言
+type I18nLangInfo {
+	// ID | 语言ID
+	Id        int64  `json:"id"`
+	// Lang | 语言码
+	Lang      string `json:"lang"`
+	// Name | 显示名
+	Name      string `json:"name"`
+}
+
+// Get i18n dict request | 词条下发
+type GetI18nDictReq {
+	// Site | 站点编码
+	I18nCode  string `form:"i18n_code"`
+	// Group | 分组，空则下发全部组
+	I18nGroup string `form:"i18n_group,optional"`
+	// Lang | 语言，空则从ctx取
+	Lang      string `form:"lang,optional"`
+}
+
+// I18n dict response | 词条下发，trans_key -> value
+type I18nDictResp {
+	// Items | 词条
+	Items map[string]string `json:"items"`
+}
+
+@server (
+	group: public
+	middleware: JwtWithoutError
+)
+service agent_admin_api {
+    @doc "已开启的语言列表"
+	@handler getEnabledI18nLangs
+	get /i18n/lang/enabled (GetEnabledI18nLangsReq) returns (I18nLangListResp)
+
+	@doc "词条下发"
+	@handler getI18nDict
+	get /i18n/dict (GetI18nDictReq) returns (I18nDictResp)
+}
+
+@server (
+	group: public
+)
+service agent_admin_api {
+	@doc "登录"
+	@handler login
+	post /login (LoginReq) returns (LoginResp)
+
+	@doc "刷新访问令牌"
+	@handler refresh
+	post /refresh (RefreshReq) returns (LoginResp)
+}

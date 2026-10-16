@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"oa.98ent.com/p9/core/common/entmixin"
+	"oa.98ent.com/p9/common/entmixin"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"

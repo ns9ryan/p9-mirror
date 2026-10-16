@@ -2,6 +2,7 @@ package task
 
 import (
 	coreservice "oa.98ent.com/p9/core/rpc/coreclient"
+	"oa.98ent.com/p9/node-agent/internal/domain"
 	operatorbaseservice "oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
 	operatorgameservice "oa.98ent.com/p9/operator-game/rpc/client/publishdataservice"
 	platformoperatorservice "oa.98ent.com/p9/platform-operator/rpc/client/operatorservice"
@@ -14,6 +15,7 @@ type Service struct {
 	platformCoreRpc     coreservice.Core                        // 总网Core RPC
 	operatorCoreRpc     coreservice.Core                        // 分站Core RPC
 	operatorGameRpc     operatorgameservice.PublishDataService  // 当前节点游戏RPC
+	DomainManager       *domain.Manager                         // Nginx 管理器
 }
 
 // NewService 创建调度任务执行服务

@@ -2,6 +2,7 @@ package operatorservicelogic
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
@@ -83,10 +84,38 @@ func validatePublishTask(
 		return "", "", xerr.RpcErr(xerr.InternalServerError(i18nkey.InternalError))
 	}
 
-	// 只允许分站创建发布任务
-	if taskData.Target != dispatchTargetOperatorBase || taskData.TaskType != dispatchTaskTypeCreateOperator {
+	// 打印任务详细信息用于调试
+	logx.Infof(
+		"validatePublishTask: task_no=%s, request_no=%s, target=%s, task_type=%s, expected_target=%s, expected_request_no=%s",
+		taskNo, requestNo, taskData.Target, taskData.TaskType, expectedTaskNo, expectedRequestNo,
+	)
+
+	// 只允许分站相关的发布任务
+	if taskData.Target != dispatchTargetOperatorBase {
+		logx.Errorf(
+			"validatePublishTask: target验证失败，期望target=%s，实际target=%s，task_no=%s",
+			dispatchTargetOperatorBase, taskData.Target, taskNo,
+		)
 		return "", "", xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
 	}
+
+	// 允许的任务类型
+	allowedTaskTypes := map[string]bool{
+		dispatchTaskTypeCreateOperator: true, // CREATE_OPERATOR
+		"PUBLISH_BASIC_ALLOCATION":     true, // 发布基础资源分配
+		"PUBLISH_DOMAIN":               true, // 发布域名
+	}
+
+	// 校验任务类型是否被允许
+	if !allowedTaskTypes[taskData.TaskType] {
+		logx.Errorf(
+			"validatePublishTask: task_type验证失败，task_type=%s不在允许列表中，task_no=%s，允许列表=%v",
+			taskData.TaskType, taskNo, allowedTaskTypes,
+		)
+		return "", "", xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+	}
+
+	logx.Infof("validatePublishTask: 验证通过，task_no=%s, request_no=%s", taskNo, requestNo)
 
 	return taskNo, requestNo, nil
 }
@@ -102,37 +131,92 @@ func applyFinalPublishTask(
 	// 校验发布任务
 	taskNo, requestNo, err := validatePublishTask(taskData, "", "")
 	if err != nil {
+		logger.Errorw("发布任务校验失败", logx.Field("error", err.Error()))
 		return nil, false, err
 	}
 
+	logger.Debugw(
+		"开始应用最终发布任务结果",
+		logx.Field("task_no", taskNo),
+		logx.Field("request_no", requestNo),
+		logx.Field("operator_id", current.ID),
+		logx.Field("operator_code", current.Code),
+		logx.Field("current_publish_status", current.PublishStatus),
+		logx.Field("task_status", taskData.Status),
+	)
+
 	// 任务必须属于分站当前发布轮次
 	if current.PublishRequestNo == nil || strings.TrimSpace(*current.PublishRequestNo) != requestNo {
+		logger.Infow(
+			"任务不属于分站当前发布轮次，忽略处理",
+			logx.Field("task_no", taskNo),
+			logx.Field("task_request_no", requestNo),
+			logx.Field("current_request_no", current.PublishRequestNo),
+		)
 		return current, false, nil
 	}
 
 	// 只允许应用最终任务状态
 	if taskData.Status != 3 && taskData.Status != 4 {
+		logger.Errorw(
+			"任务状态不是最终状态",
+			logx.Field("task_no", taskNo),
+			logx.Field("task_status", taskData.Status),
+		)
 		return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
 	}
 
 	// 最终任务必须存在结束时间
 	if taskData.FinishedAt == nil || *taskData.FinishedAt <= 0 {
+		logger.Errorw(
+			"任务结束时间不有效",
+			logx.Field("task_no", taskNo),
+			logx.Field("finished_at", taskData.FinishedAt),
+		)
 		return nil, false, xerr.RpcErr(xerr.InternalServerError(i18nkey.InternalError))
 	}
 
 	// 相同任务结果已经处理时直接返回
 	if current.PublishStatus == taskData.Status {
+		logger.Debugw(
+			"分站已处于目标发布状态",
+			logx.Field("task_no", taskNo),
+			logx.Field("publish_status", current.PublishStatus),
+		)
+
 		if current.PublishTaskNo != nil && strings.TrimSpace(*current.PublishTaskNo) == taskNo {
+			logger.Infow(
+				"相同任务结果已处理，直接返回",
+				logx.Field("task_no", taskNo),
+			)
 			return current, true, nil
 		}
 
+		logger.Errorw(
+			"分站状态与任务状态相同，但任务编号不匹配",
+			logx.Field("task_no", taskNo),
+			logx.Field("current_task_no", current.PublishTaskNo),
+		)
 		return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
 	}
 
 	// 只有发布中的分站允许进入最终状态
 	if current.PublishStatus != 2 {
+		logger.Errorw(
+			"分站发布状态不是发布中，无法进入最终状态",
+			logx.Field("task_no", taskNo),
+			logx.Field("current_publish_status", current.PublishStatus),
+		)
 		return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
 	}
+
+	logger.Infow(
+		"准备更新分站发布状态",
+		logx.Field("task_no", taskNo),
+		logx.Field("operator_code", current.Code),
+		logx.Field("new_status", taskData.Status),
+		logx.Field("status_description", statusDescription(taskData.Status)),
+	)
 
 	// 创建最终发布状态更新
 	update := svcCtx.DB.Operator.
@@ -153,6 +237,12 @@ func applyFinalPublishTask(
 	// 保存最终发布状态
 	affected, err := update.Save(ctx)
 	if err != nil {
+		logger.Errorw(
+			"更新分站发布状态失败",
+			logx.Field("task_no", taskNo),
+			logx.Field("operator_code", current.Code),
+			logx.Field("error", err.Error()),
+		)
 		return nil, false, enterror.Handle(logger, err)
 	}
 
@@ -166,17 +256,40 @@ func applyFinalPublishTask(
 			current.PublishedAt = &finishedAt
 		}
 
+		logger.Infow(
+			"分站发布状态更新成功（第一次写入）",
+			logx.Field("task_no", taskNo),
+			logx.Field("operator_code", current.Code),
+			logx.Field("new_status", current.PublishStatus),
+		)
 		return current, true, nil
 	}
+
+	logger.Debugw(
+		"并发更新检测，重新查询分站最新状态",
+		logx.Field("task_no", taskNo),
+		logx.Field("affected_rows", affected),
+	)
 
 	// 获取并发更新后的最新分站状态
 	latest, err := svcCtx.DB.Operator.Get(ctx, current.ID)
 	if err != nil {
+		logger.Errorw(
+			"查询分站最新状态失败",
+			logx.Field("task_no", taskNo),
+			logx.Field("error", err.Error()),
+		)
 		return nil, false, enterror.Handle(logger, err)
 	}
 
 	// 当前已经进入其他发布轮次时忽略本次结果
 	if latest.PublishRequestNo == nil || strings.TrimSpace(*latest.PublishRequestNo) != requestNo {
+		logger.Infow(
+			"分站已进入新的发布轮次，忽略本次结果",
+			logx.Field("task_no", taskNo),
+			logx.Field("task_request_no", requestNo),
+			logx.Field("latest_request_no", latest.PublishRequestNo),
+		)
 		return latest, false, nil
 	}
 
@@ -184,8 +297,36 @@ func applyFinalPublishTask(
 	if latest.PublishStatus == taskData.Status &&
 		latest.PublishTaskNo != nil &&
 		strings.TrimSpace(*latest.PublishTaskNo) == taskNo {
+		logger.Infow(
+			"相同任务结果已被其他流程处理",
+			logx.Field("task_no", taskNo),
+			logx.Field("operator_code", latest.Code),
+		)
 		return latest, true, nil
 	}
 
+	logger.Errorw(
+		"分站发布状态冲突，无法处理",
+		logx.Field("task_no", taskNo),
+		logx.Field("operator_code", latest.Code),
+		logx.Field("latest_status", latest.PublishStatus),
+		logx.Field("task_status", taskData.Status),
+	)
 	return nil, false, xerr.RpcErr(xerr.BadRequest(i18nkey.ConstraintError))
+}
+
+// statusDescription 发布状态描述
+func statusDescription(status int64) string {
+	switch status {
+	case 1:
+		return "未发布"
+	case 2:
+		return "发布中"
+	case 3:
+		return "已发布"
+	case 4:
+		return "发布失败"
+	default:
+		return fmt.Sprintf("unknown(%d)", status)
+	}
 }

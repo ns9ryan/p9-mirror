@@ -1,0 +1,16 @@
+syntax = "v1"
+
+info (
+	title:   "Operator Admin API"
+	desc:    "分站后台CRM HTTP 接口"
+	author:  "p9"
+	version: "1.0.0"
+)
+
+import "base.api"
+import "./public/ping.api"
+import "./agent/common.api"
+import "./agent/level.api"
+import "./agent/config.api"
+import "./agent/manage.api"
+import "./agent/tree.api"

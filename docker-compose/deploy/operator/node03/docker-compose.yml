@@ -68,6 +68,46 @@ services:
     networks:
       - p9-operator-node03-network
 
+  operator-crm-rpc:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-crm-rpc:${VERSION:-1.0.0}
+    container_name: operator-node03-crm-rpc
+    restart: always
+    ports:
+      - "39302:39302"
+    volumes:
+      - ./etc/crm/rpc/operator_crm.yaml:/app/etc/crm.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - p9-operator-node03-network
+
+  operator-admin-api:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-admin-api:${VERSION:-1.0.0}
+    container_name: operator-node03-admin-api
+    restart: always
+    ports:
+      - "38310:38310"
+    volumes:
+      - ./etc/crm/api/operator_admin_api.yaml:/app/etc/operator_admin_api.yaml:ro
+    depends_on:
+      - operator-crm-rpc
+    networks:
+      - p9-operator-node03-network
+
+  agent-admin-api:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/agent-admin-api:${VERSION:-1.0.0}
+    container_name: agent-node03-admin-api
+    restart: always
+    ports:
+      - "38311:38311"
+    volumes:
+      - ./etc/crm/api/agent_admin_api.yaml:/app/etc/agent_admin_api.yaml:ro
+    depends_on:
+      - operator-crm-rpc
+    networks:
+      - p9-operator-node03-network
+
 volumes:
   postgres_operator_node03_data:
   redis_operator_node03_data:

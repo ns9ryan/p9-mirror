@@ -1,0 +1,343 @@
+syntax = "proto3";
+
+package crm_agent;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb";
+
+// AgentLevelItem 代理等级项
+message AgentLevelItem {
+  // 等级 ID，更新响应带回
+  int64 id = 1;
+  // 等级 1~7
+  int32 level = 2;
+  // 等级名称
+  string name = 3;
+  // 等级别名
+  string alias = 4;
+}
+
+// UpdateAgentLevelsReq 批量更新代理等级
+message UpdateAgentLevelsReq {
+  repeated AgentLevelItem items = 1;
+}
+
+// UpdateAgentLevelsResp 批量更新代理等级响应
+message UpdateAgentLevelsResp {
+  repeated AgentLevelItem items = 1;
+}
+
+// UpdateAgentConfigReq 更新代理配置
+message UpdateAgentConfigReq {
+  // 最高占成比例，百分比 0~100
+  int32 max_share_rate = 1;
+  // 申请最低占成比例，百分比 0~100
+  int32 apply_min_share_rate = 2;
+  // 申请最高占成比例，百分比 0~100
+  int32 apply_max_share_rate = 3;
+  // 代理最大会员数（现金）
+  int64 cash_max_member_count = 4;
+  // IP 最大可注册代理数（现金）
+  int64 cash_max_agent_per_ip = 5;
+  // 现金正式线路指定代理，0 表示清空
+  int64 cash_production_agent_id = 6;
+  // 现金试玩线路指定代理，0 表示清空
+  int64 cash_demo_agent_id = 7;
+  // 现金测试线路指定代理，0 表示清空
+  int64 cash_test_agent_id = 8;
+  // 信誉试玩线路指定代理，0 表示清空
+  int64 credit_demo_agent_id = 9;
+  // 信誉测试线路指定代理，0 表示清空
+  int64 credit_test_agent_id = 10;
+}
+
+// GetAgentConfigReq 获取代理配置请求
+message GetAgentConfigReq {}
+
+// AgentConfigResp 代理配置响应
+message AgentConfigResp {
+  int64 id = 1;
+  int32 max_share_rate = 2;
+  int32 apply_min_share_rate = 3;
+  int32 apply_max_share_rate = 4;
+  int64 cash_max_member_count = 5;
+  int64 cash_max_agent_per_ip = 6;
+  int64 cash_production_agent_id = 7;
+  int64 cash_demo_agent_id = 8;
+  int64 cash_test_agent_id = 9;
+  int64 credit_demo_agent_id = 10;
+  int64 credit_test_agent_id = 11;
+}
+
+// AgentCreateFields 创建代理公共字段
+message AgentCreateFields {
+  // 登录账号
+  string account = 1;
+  // 代理编码
+  string code = 2;
+  // 登录密码明文
+  string password = 3;
+  // 1现金代理 2信用代理
+  int32 agent_type = 4;
+  // 代理子线路编码
+  string agent_line_code = 5;
+  // 占成比例，百分比 0~100
+  int32 share_rate = 6;
+  reserved 7, 8;
+  // 对外推广码
+  string promo_code = 9;
+  // 注册 IP，可选
+  string register_ip = 10;
+  // 手机号码，可选
+  optional string mobile = 11;
+  // 邮箱，可选
+  optional string email = 12;
+  // 真实姓名，可选
+  optional string realname = 13;
+}
+
+// AddOperatorAgentReq 分站添加代理
+message AddOperatorAgentReq {
+  AgentCreateFields agent = 1;
+  // 是否初始化代理，true 是，false 否
+  bool is_init = 2;
+  // 指定上级代理 ID，0 则使用 designated_line 对应配置
+  int64 parent_id = 3;
+}
+
+// AddSubAgentReq 代理添加下级
+message AddSubAgentReq {
+  AgentCreateFields agent = 1;
+}
+
+// AddAgentResp 添加代理响应
+message AddAgentResp {
+  int64 id = 1;
+  string account = 2;
+  string code = 3;
+  int64 parent_id = 4;
+  int64 top_id = 5;
+  int32 level = 6;
+  int32 share_rate = 7;
+}
+
+// ListAgentsReq 代理列表请求
+message ListAgentsReq {
+  // 页码，从 1 开始
+  int32 page = 1;
+  // 每页条数，默认 20，上限 100
+  int32 page_size = 2;
+  // 注册来源，0 不限
+  int32 register_source = 3;
+  // 代理层级，0 不限
+  int32 level = 4;
+  // 账号状态，0 不限
+  int32 status = 5;
+  // 出款限制，0 不限
+  int32 payout_restricted = 6;
+  // 时间筛选类型：1 注册时间 2 最后登录，0 不筛
+  int32 time_filter_type = 7;
+  // 时间起始 unix 秒
+  int64 time_start = 8;
+  // 时间结束 unix 秒
+  int64 time_end = 9;
+  // 数值筛选类型：1直属会员 2直属代理 3所有下级代理 4所有会员 5占成 6累计佣金 7已领取佣金，0 不筛
+  int32 number_filter_type = 10;
+  // 数值最小值，>0 才生效
+  int64 number_min = 11;
+  // 数值最大值，>0 才生效
+  int64 number_max = 12;
+  // 代理筛选类型：1 本人 2 上级，0 不筛
+  int32 agent_filter_type = 13;
+  // 代理关键字：纯数字按 ID，否则账号模糊
+  string agent_keyword = 14;
+}
+
+// AgentListItem 代理列表项
+message AgentListItem {
+  int64 id = 1;
+  string account = 2;
+  int32 level = 3;
+  string level_alias = 4;
+  int64 parent_id = 5;
+  string parent_account = 6;
+  int64 top_id = 7;
+  string top_account = 8;
+  int32 register_source = 9;
+  int64 direct_member_count = 10;
+  int64 direct_agent_count = 11;
+  int64 total_member_count = 12;
+  int64 total_agent_count = 13;
+  int32 share_rate = 14;
+  int64 wallet_balance = 15;
+  int64 total_commission = 16;
+  int64 unpaid_commission = 17;
+  int32 status = 18;
+  int32 payout_restricted = 19;
+  string remark = 20;
+  string promo_link = 21;
+  int64 visit_uv = 22;
+  int64 register_at = 23;
+  int64 last_login_at = 24;
+}
+
+// ListAgentsResp 代理列表响应
+message ListAgentsResp {
+  repeated AgentListItem items = 1;
+  int64 total = 2;
+}
+
+// SearchAgentsReq 搜索代理请求（指定代理选择）
+message SearchAgentsReq {
+  // 关键字：纯数字按 ID 或账号模糊，否则账号模糊
+  string keyword = 1;
+  // 层级，<=0 时默认 2
+  int32 level = 2;
+  // 返回条数，默认 20，上限 50
+  int32 limit = 3;
+}
+
+// AgentSearchItem 搜索代理项
+message AgentSearchItem {
+  int64 id = 1;
+  string account = 2;
+  int32 level = 3;
+  string level_alias = 4;
+  string line_code = 5;
+}
+
+// SearchAgentsResp 搜索代理响应
+message SearchAgentsResp {
+  repeated AgentSearchItem items = 1;
+}
+
+// ListOperatorAgentsReq 按层级列出代理并按线路分组
+message ListOperatorAgentsReq {
+  // 代理层级 1~7（不含系统根 0）
+  int32 level = 1;
+}
+
+// OperatorAgentLineGroup 按线路分组的代理
+message OperatorAgentLineGroup {
+  string line_code = 1;
+  repeated AgentSearchItem agents = 2;
+}
+
+// ListOperatorAgentsResp 分站代理分组响应
+message ListOperatorAgentsResp {
+  repeated OperatorAgentLineGroup groups = 1;
+}
+
+// ListAgentLevelsReq 获取等级列表请求
+message ListAgentLevelsReq {}
+
+// ListAgentLevelsResp 获取等级列表响应
+message ListAgentLevelsResp {
+  repeated AgentLevelItem items = 1;
+}
+
+// TreeNodeAgentsReq 按上级 ID 获取直属代理列表
+message TreeNodeAgentsReq {
+  // 上级代理 ID；0 或未传表示查顶层（parent_id IS NULL）
+  int64 parent_id = 1;
+}
+
+// ChildAgentItem 直属代理项
+message TreeNodeAgentItem {
+  int64 id = 1;
+  string account = 2;
+  // agent_line_code
+  string line_code = 3;
+  int32 level = 4;
+  string level_alias = 5;
+  // agent_stats.direct_agent_count
+  int64 direct_agent_count = 6;
+}
+
+// ListChildAgentsResp 直属代理列表响应
+message TreeNodeAgentsResp {
+  repeated TreeNodeAgentItem items = 1;
+}
+
+// AddAgentApplyReq 申请代理添加
+message AddAgentApplyReq {
+  // 申请代理账号
+  string account = 1;
+  // 真实姓名
+  string realname = 2;
+  // 手机号
+  string mobile = 3;
+  // 注册来源：1 PC 2 app 3 管理员 4 代理
+  int32 register_source = 4;
+  // 申请占成比例，百分比 0~100
+  int32 apply_share_rate = 5;
+  // 使用会员账号，可选
+  string member_account = 6;
+  // 使用会员 ID，可选
+  int64 member_id = 7;
+  // 申请备注，可选
+  string apply_remark = 8;
+}
+
+// AgentApplyItem 代理申请项
+message AgentApplyItem {
+  int64 id = 1;
+  string account = 2;
+  string realname = 3;
+  string mobile = 4;
+  int32 register_source = 5;
+  int32 apply_share_rate = 6;
+  string member_account = 7;
+  int64 member_id = 8;
+  // 审核状态：1待审核 2已通过 3人工拒绝 4风控拒绝
+  int32 audit_status = 9;
+  string reject_reason = 10;
+  string apply_remark = 11;
+  // 申请时间 unix 秒
+  int64 register_at = 12;
+  // 审核时间 unix 秒，未审核为 0
+  int64 audited_at = 13;
+  string auditor = 14;
+  // 通过后代理 ID，未通过为 0
+  int64 agent_id = 15;
+}
+
+// ListAgentAppliesReq 申请代理列表
+message ListAgentAppliesReq {
+  // 页码，从 1 开始
+  int32 page = 1;
+  // 每页条数，默认 20，上限 100
+  int32 page_size = 2;
+  // 审核状态，0 不限
+  int32 audit_status = 3;
+  // 账号筛选类型：1 代理账号 2 会员账号，0 不筛
+  int32 account_type = 4;
+  // 账号关键字模糊
+  string account = 5;
+  // 申请时间起始 unix 秒，0 不限
+  int64 time_start = 6;
+  // 申请时间结束 unix 秒，0 不限
+  int64 time_end = 7;
+}
+
+// ListAgentAppliesResp 申请代理列表响应
+message ListAgentAppliesResp {
+  repeated AgentApplyItem items = 1;
+  int64 total = 2;
+}
+
+// ReviewAgentApplyReq 申请代理审批
+message ReviewAgentApplyReq {
+  // 申请单 ID
+  int64 id = 1;
+  // 动作：1 通过 2 人工拒绝 3 风控拒绝
+  int32 action = 2;
+  // 拒绝理由；拒绝时必填
+  string reject_reason = 3;
+}
+
+// ReviewAgentApplyResp 申请代理审批响应
+message ReviewAgentApplyResp {
+  AgentApplyItem apply = 1;
+  // 通过时返回明文密码，仅此一次
+  string password = 2;
+}

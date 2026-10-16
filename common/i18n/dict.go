@@ -19,6 +19,7 @@ const (
 	GroupFront = "front" // 前端多语言组
 	GroupLogin = "login" // 登录多语言组
 	GroupLang  = "lang"  // 语言显示名多语言组
+	GroupLevel = "level" // 等级多语言组
 	GroupError = "error" // 错误多语言组
 )
 

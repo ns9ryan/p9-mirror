@@ -1,0 +1,55 @@
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..f98e8cc940013298fd52fd53bbe08c819f13a0f3
+--- /dev/null
++++ b/dist/index.d.mts
+@@ -0,0 +1,28 @@
++import { Plugin } from 'vite';
++import { ESLint } from 'eslint';
++
++/** Plugin options, extending from ESlint options */
++interface Options extends ESLint.Options {
++    /** Path to ESLint instance that will be used for linting */
++    eslintPath?: string;
++    /** Check all matching files on project startup */
++    lintOnStart?: boolean;
++    /** A single file, or array of files, to include when linting */
++    include?: string | string[];
++    /** A single file, or array of files, to exclude when linting */
++    exclude?: string | string[];
++    /** Custom error formatter or the name of a built-in formatter */
++    formatter?: string | ESLint.Formatter['format'];
++    /** The warings found will be printed */
++    emitWarning?: boolean;
++    /** The errors found will be printed */
++    emitError?: boolean;
++    /** Will cause the module build to fail if there are any warnings, based on emitWarning */
++    failOnWarning?: boolean;
++    /** Will cause the module build to fail if there are any errors, based on emitError */
++    failOnError?: boolean;
++}
++
++declare function eslintPlugin(rawOptions?: Options): Plugin;
++
++export { Options, eslintPlugin as default };
+diff --git a/package.json b/package.json
+index afbc41cee50c18cc12a5fa39d853b8aeaea1d42f..8f00e930631a34e04effd40bc619af1d24c0de09 100644
+--- a/package.json
++++ b/package.json
+@@ -9,8 +9,14 @@
+   "types": "./dist/index.d.ts",
+   "exports": {
+     ".": {
+-      "import": "./dist/index.mjs",
+-      "require": "./dist/index.js"
++      "import": {
++        "types": "./dist/index.d.mts",
++        "default": "./dist/index.mjs"
++      },
++      "require": {
++        "types": "./dist/index.d.ts",
++        "default": "./dist/index.js"
++      }
+     }
+   },
+   "files": [

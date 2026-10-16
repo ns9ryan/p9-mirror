@@ -28,32 +28,47 @@ const file_operator_base_proto_rawDesc = "" +
 	"\n" +
 	"\x13operator_base.proto\x12\roperator_base\x1a\x1etypes/operator_base_ping.proto\x1a\"types/operator_base_operator.proto2X\n" +
 	"\vPingService\x12I\n" +
-	"\x04Ping\x12\x1f.operator_base_ping.PingRequest\x1a .operator_base_ping.PingResponse2\x96\x02\n" +
+	"\x04Ping\x12\x1f.operator_base_ping.PingRequest\x1a .operator_base_ping.PingResponse2\xb3\x05\n" +
 	"\x0fOperatorService\x12s\n" +
 	"\n" +
 	"Initialize\x121.operator_base_operator.InitializeOperatorRequest\x1a2.operator_base_operator.InitializeOperatorResponse\x12\x8d\x01\n" +
-	"\x18InitializeBasicResources\x127.operator_base_operator.InitializeBasicResourcesRequest\x1a8.operator_base_operator.InitializeBasicResourcesResponseB6Z4oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpcb\x06proto3"
+	"\x18InitializeBasicResources\x127.operator_base_operator.InitializeBasicResourcesRequest\x1a8.operator_base_operator.InitializeBasicResourcesResponse\x12x\n" +
+	"\x11InitializeDomains\x120.operator_base_operator.InitializeDomainsRequest\x1a1.operator_base_operator.InitializeDomainsResponse\x12\x99\x01\n" +
+	"\x1cDeleteOperatorBasicResources\x12;.operator_base_operator.DeleteOperatorBasicResourcesRequest\x1a<.operator_base_operator.DeleteOperatorBasicResourcesResponse\x12\x84\x01\n" +
+	"\x15DeleteOperatorDomains\x124.operator_base_operator.DeleteOperatorDomainsRequest\x1a5.operator_base_operator.DeleteOperatorDomainsResponseB6Z4oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpcb\x06proto3"
 
 var file_operator_base_proto_goTypes = []any{
-	(*pingpb.PingRequest)(nil),                          // 0: operator_base_ping.PingRequest
-	(*operatorpb.InitializeOperatorRequest)(nil),        // 1: operator_base_operator.InitializeOperatorRequest
-	(*operatorpb.InitializeBasicResourcesRequest)(nil),  // 2: operator_base_operator.InitializeBasicResourcesRequest
-	(*pingpb.PingResponse)(nil),                         // 3: operator_base_ping.PingResponse
-	(*operatorpb.InitializeOperatorResponse)(nil),       // 4: operator_base_operator.InitializeOperatorResponse
-	(*operatorpb.InitializeBasicResourcesResponse)(nil), // 5: operator_base_operator.InitializeBasicResourcesResponse
+	(*pingpb.PingRequest)(nil),                              // 0: operator_base_ping.PingRequest
+	(*operatorpb.InitializeOperatorRequest)(nil),            // 1: operator_base_operator.InitializeOperatorRequest
+	(*operatorpb.InitializeBasicResourcesRequest)(nil),      // 2: operator_base_operator.InitializeBasicResourcesRequest
+	(*operatorpb.InitializeDomainsRequest)(nil),             // 3: operator_base_operator.InitializeDomainsRequest
+	(*operatorpb.DeleteOperatorBasicResourcesRequest)(nil),  // 4: operator_base_operator.DeleteOperatorBasicResourcesRequest
+	(*operatorpb.DeleteOperatorDomainsRequest)(nil),         // 5: operator_base_operator.DeleteOperatorDomainsRequest
+	(*pingpb.PingResponse)(nil),                             // 6: operator_base_ping.PingResponse
+	(*operatorpb.InitializeOperatorResponse)(nil),           // 7: operator_base_operator.InitializeOperatorResponse
+	(*operatorpb.InitializeBasicResourcesResponse)(nil),     // 8: operator_base_operator.InitializeBasicResourcesResponse
+	(*operatorpb.InitializeDomainsResponse)(nil),            // 9: operator_base_operator.InitializeDomainsResponse
+	(*operatorpb.DeleteOperatorBasicResourcesResponse)(nil), // 10: operator_base_operator.DeleteOperatorBasicResourcesResponse
+	(*operatorpb.DeleteOperatorDomainsResponse)(nil),        // 11: operator_base_operator.DeleteOperatorDomainsResponse
 }
 var file_operator_base_proto_depIdxs = []int32{
-	0, // 0: operator_base.PingService.Ping:input_type -> operator_base_ping.PingRequest
-	1, // 1: operator_base.OperatorService.Initialize:input_type -> operator_base_operator.InitializeOperatorRequest
-	2, // 2: operator_base.OperatorService.InitializeBasicResources:input_type -> operator_base_operator.InitializeBasicResourcesRequest
-	3, // 3: operator_base.PingService.Ping:output_type -> operator_base_ping.PingResponse
-	4, // 4: operator_base.OperatorService.Initialize:output_type -> operator_base_operator.InitializeOperatorResponse
-	5, // 5: operator_base.OperatorService.InitializeBasicResources:output_type -> operator_base_operator.InitializeBasicResourcesResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: operator_base.PingService.Ping:input_type -> operator_base_ping.PingRequest
+	1,  // 1: operator_base.OperatorService.Initialize:input_type -> operator_base_operator.InitializeOperatorRequest
+	2,  // 2: operator_base.OperatorService.InitializeBasicResources:input_type -> operator_base_operator.InitializeBasicResourcesRequest
+	3,  // 3: operator_base.OperatorService.InitializeDomains:input_type -> operator_base_operator.InitializeDomainsRequest
+	4,  // 4: operator_base.OperatorService.DeleteOperatorBasicResources:input_type -> operator_base_operator.DeleteOperatorBasicResourcesRequest
+	5,  // 5: operator_base.OperatorService.DeleteOperatorDomains:input_type -> operator_base_operator.DeleteOperatorDomainsRequest
+	6,  // 6: operator_base.PingService.Ping:output_type -> operator_base_ping.PingResponse
+	7,  // 7: operator_base.OperatorService.Initialize:output_type -> operator_base_operator.InitializeOperatorResponse
+	8,  // 8: operator_base.OperatorService.InitializeBasicResources:output_type -> operator_base_operator.InitializeBasicResourcesResponse
+	9,  // 9: operator_base.OperatorService.InitializeDomains:output_type -> operator_base_operator.InitializeDomainsResponse
+	10, // 10: operator_base.OperatorService.DeleteOperatorBasicResources:output_type -> operator_base_operator.DeleteOperatorBasicResourcesResponse
+	11, // 11: operator_base.OperatorService.DeleteOperatorDomains:output_type -> operator_base_operator.DeleteOperatorDomainsResponse
+	6,  // [6:12] is the sub-list for method output_type
+	0,  // [0:6] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_operator_base_proto_init() }

@@ -105,3 +105,12 @@ message DeleteDomainRequest {
 
 // 删除分站域名响应
 message DeleteDomainResponse {}
+
+// 发布域名请求
+message PublishDomainRequest {
+  // 域名ID
+  int64 id = 1;
+}
+
+// 发布域名响应
+message PublishDomainResponse {}

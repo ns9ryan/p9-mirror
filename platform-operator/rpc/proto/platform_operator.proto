@@ -91,6 +91,9 @@ service OperatorDomainService {
 
   // 删除分站域名
   rpc Delete(platform_operator_domain.DeleteDomainRequest) returns (platform_operator_domain.DeleteDomainResponse);
+
+  // 发布域名
+  rpc Publish(platform_operator_domain.PublishDomainRequest) returns (platform_operator_domain.PublishDomainResponse);
 }
 
 // 分站管理员服务
@@ -124,6 +127,9 @@ service OperatorAdminService {
 service BasicResourceAllocationService {
   // 获取基础资源分配列表
   rpc List(platform_operator_basic_resource_allocation.ListBasicResourceAllocationsRequest) returns (platform_operator_basic_resource_allocation.ListBasicResourceAllocationsResponse);
+
+  // 发布基础资源分配到指定分站
+  rpc Publish(platform_operator_basic_resource_allocation.PublishBasicResourceAllocationRequest) returns (platform_operator_basic_resource_allocation.PublishBasicResourceAllocationResponse);
 }
 
 // 分站语言分配服务

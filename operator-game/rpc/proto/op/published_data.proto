@@ -28,3 +28,20 @@ message SyncStatistic {
     int64 failed = 3;       // 失败数
     string failed_reason = 4; // 失败原因
 }
+
+// DeleteOperatorDataRequest 删除分站数据请求
+message DeleteOperatorDataRequest {
+    string op_code = 1;  // 分站代码
+}
+
+// DeleteOperatorDataResponse 删除分站数据响应
+message DeleteOperatorDataResponse {
+    bool success = 1;
+    string message = 2;
+    
+    // 各表的删除统计信息
+    int64 category_deleted = 3;  // 删除的分类数
+    int64 provider_deleted = 4;  // 删除的供应商数
+    int64 channel_deleted = 5;   // 删除的渠道数
+    int64 game_deleted = 6;      // 删除的游戏数
+}

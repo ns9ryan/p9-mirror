@@ -85,6 +85,7 @@ func apis() []*coreclient.CreateApiReq {
 		{Path: "/admin/operator/domain/get", Method: http.MethodGet, Description: "api.operatorDomainGet", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/domain/list", Method: http.MethodGet, Description: "api.operatorDomainList", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
 		{Path: "/admin/operator/domain/delete", Method: http.MethodPost, Description: "api.operatorDomainDelete", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/domain/publish", Method: http.MethodPost, Description: "api.operatorDomainPublish", ApiGroup: "api.group.operator_domain", ServiceName: "platform-operator-api"},
 
 		// 分站管理员
 		{Path: "/admin/operator/admin/list", Method: http.MethodGet, Description: "api.operatorAdminList", ApiGroup: "api.group.operator_admin", ServiceName: "platform-operator-api"},
@@ -95,6 +96,7 @@ func apis() []*coreclient.CreateApiReq {
 
 		// 基础资源分配
 		{Path: "/admin/operator/basic-resource-allocation/list", Method: http.MethodGet, Description: "api.basicResourceAllocationList", ApiGroup: "api.group.basic_resource_allocation", ServiceName: "platform-operator-api"},
+		{Path: "/admin/operator/basic-resource-allocation/publish", Method: http.MethodPost, Description: "api.operatorBasicResourceAllocationPublish", ApiGroup: "api.group.basic_resource_allocation", ServiceName: "platform-operator-api"},
 
 		// 语言分配
 		{Path: "/admin/operator/language-allocation/list", Method: http.MethodGet, Description: "api.languageAllocationList", ApiGroup: "api.group.language_allocation", ServiceName: "platform-operator-api"},

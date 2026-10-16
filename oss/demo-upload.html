@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload</title>
+  </head>
+
+  <body>
+    <input type="file" id="fileInput" />
+    <button onclick="uploadFile()">Upload</button>
+
+    <div id="resCon"></div>
+
+    <script>
+      function uploadFile() {
+        const fileInput = document.getElementById("fileInput");
+        const resConDiv = document.getElementById("resCon");
+        const file = fileInput.files[0];
+
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("path", "avatar");
+
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "https://resource.crm6688.com/oss/upload", true);
+          xhr.setRequestHeader("accept", "application/json");
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                console.log("Upload successful:", xhr.responseText);
+                try {
+                  const responseData = JSON.parse(xhr.responseText);
+                  // 清空 resConDiv 中的内容
+                  resConDiv.innerHTML = "";
+
+                  // 遍历响应数据的每个键值对
+                  for (const key in responseData) {
+                    if (responseData.hasOwnProperty(key)) {
+                      const value = responseData[key];
+                      const p = document.createElement("p");
+                      p.textContent = `${key}: `;
+
+                      if (key === "url") {
+                        const link = document.createElement("a");
+                        link.href = value;
+                        link.textContent = value;
+                        p.appendChild(link);
+                      } else {
+                        p.textContent += value;
+                      }
+
+                      resConDiv.appendChild(p);
+                    }
+                  }
+                } catch (error) {
+                  resConDiv.textContent = "Failed to parse response as JSON.";
+                }
+              } else {
+                console.error("Upload failed:", xhr.statusText);
+                resConDiv.textContent = `Upload failed: ${xhr.statusText}`;
+              }
+            }
+          };
+
+          xhr.send(formData);
+        } else {
+          console.error("No file selected.");
+          resConDiv.textContent = "No file selected.";
+        }
+      }
+    </script>
+  </body>
+</html>

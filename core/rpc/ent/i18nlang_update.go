@@ -34,26 +34,6 @@ func (_u *I18nLangUpdate) SetUpdatedAt(v time.Time) *I18nLangUpdate {
 	return _u
 }
 
-// SetOperatorCode sets the "operator_code" field.
-func (_u *I18nLangUpdate) SetOperatorCode(v string) *I18nLangUpdate {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *I18nLangUpdate) SetNillableOperatorCode(v *string) *I18nLangUpdate {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *I18nLangUpdate) ClearOperatorCode() *I18nLangUpdate {
-	_u.mutation.ClearOperatorCode()
-	return _u
-}
-
 // SetLang sets the "lang" field.
 func (_u *I18nLangUpdate) SetLang(v string) *I18nLangUpdate {
 	_u.mutation.SetLang(v)
@@ -187,11 +167,6 @@ func (_u *I18nLangUpdate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *I18nLangUpdate) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := i18nlang.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "I18nLang.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Lang(); ok {
 		if err := i18nlang.LangValidator(v); err != nil {
 			return &ValidationError{Name: "lang", err: fmt.Errorf(`ent: validator failed for field "I18nLang.lang": %w`, err)}
@@ -224,9 +199,6 @@ func (_u *I18nLangUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(i18nlang.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(i18nlang.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(i18nlang.FieldOperatorCode, field.TypeString)
@@ -275,26 +247,6 @@ type I18nLangUpdateOne struct {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *I18nLangUpdateOne) SetUpdatedAt(v time.Time) *I18nLangUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetOperatorCode sets the "operator_code" field.
-func (_u *I18nLangUpdateOne) SetOperatorCode(v string) *I18nLangUpdateOne {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *I18nLangUpdateOne) SetNillableOperatorCode(v *string) *I18nLangUpdateOne {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *I18nLangUpdateOne) ClearOperatorCode() *I18nLangUpdateOne {
-	_u.mutation.ClearOperatorCode()
 	return _u
 }
 
@@ -444,11 +396,6 @@ func (_u *I18nLangUpdateOne) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *I18nLangUpdateOne) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := i18nlang.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "I18nLang.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Lang(); ok {
 		if err := i18nlang.LangValidator(v); err != nil {
 			return &ValidationError{Name: "lang", err: fmt.Errorf(`ent: validator failed for field "I18nLang.lang": %w`, err)}
@@ -498,9 +445,6 @@ func (_u *I18nLangUpdateOne) sqlSave(ctx context.Context) (_node *I18nLang, err 
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(i18nlang.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(i18nlang.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(i18nlang.FieldOperatorCode, field.TypeString)

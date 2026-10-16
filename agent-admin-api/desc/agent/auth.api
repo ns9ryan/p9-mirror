@@ -1,0 +1,30 @@
+syntax = "v1"
+
+info (
+	title:   "agent auth api"
+	desc:    "代理后台退出登录"
+	author:  "p9"
+	version: "v1"
+)
+
+import "../base.api"
+
+// Logout request | 退出登录请求
+type LogoutReq {
+	// Refresh token | 刷新令牌
+	RefreshToken string `json:"refresh_token"`
+}
+
+@server (
+	group:      agent/auth
+	middleware: Jwt
+)
+service agent_admin_api {
+	@doc "退出当前登录"
+	@handler logout
+	post /logout (LogoutReq) returns (BaseMsgResp)
+
+	@doc "退出全部登录"
+	@handler logoutAll
+	post /logout/all returns (BaseMsgResp)
+}

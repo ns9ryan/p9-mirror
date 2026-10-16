@@ -1,5 +1,5 @@
 # RPC服务配置
-Name:     operator-base-rpc      # RPC服务名称
+Name:     operator-base-rpc-node01      # RPC服务名称
 ListenOn: 0.0.0.0:39001          # RPC监听地址
 Mode:     dev                    # 运行模式
 
@@ -11,3 +11,10 @@ DatabaseConf:
   Username: root                 # 数据库用户名
   Password: root                 # 数据库密码
   SSLMode:  disable              # SSL模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 192.168.0.15:2379       # Etcd地址
+  Key: operator-base-rpc-node01   # 服务注册Key
+

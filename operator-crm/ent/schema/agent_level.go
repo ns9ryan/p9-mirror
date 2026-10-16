@@ -1,0 +1,76 @@
+package schema
+
+import (
+	"entgo.io/ent"
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
+
+	"oa.98ent.com/p9/common/entmixin"
+)
+
+// AgentLevel 定义代理等级表结构。
+// 同一运营商每个等级一条，level 与代理主表层级范围一致。
+type AgentLevel struct {
+	ent.Schema
+}
+
+// Fields 定义代理等级表字段
+func (AgentLevel) Fields() []ent.Field {
+	return []ent.Field{
+		field.Int64("level").
+			Range(1, 7).
+			SchemaType(map[string]string{
+				dialect.Postgres: "smallint",
+			}).
+			Comment("等级，1~7"),
+
+		field.String("name").
+			NotEmpty().
+			MaxLen(32).
+			Match(trimmedNonEmpty).
+			Comment("等级名称"),
+		field.String("alias").
+			NotEmpty().
+			MaxLen(32).
+			Match(trimmedNonEmpty).
+			Comment("等级别名"),
+	}
+}
+
+// Indexes 定义代理等级表索引
+func (AgentLevel) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("operator_code", "level").
+			Unique().
+			StorageKey("uk_agent_level_operator_level"),
+	}
+}
+
+// Mixin 定义代理等级表公共字段
+func (AgentLevel) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		entmixin.IDMixin{},
+		entmixin.TimeMixin{},
+		entmixin.OperatorCodeMixin{},
+	}
+}
+
+// Annotations 定义代理等级表数据库注解
+func (AgentLevel) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.WithComments(true),
+		schema.Comment("代理等级表"),
+		entsql.Annotation{
+			Table: "agent_level",
+			Checks: map[string]string{
+				"ck_agent_level_operator_code": "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
+				"ck_agent_level_alias":         "BTRIM(alias) <> '' AND alias = BTRIM(alias)",
+				"ck_agent_level_name":          "BTRIM(name) <> '' AND name = BTRIM(name)",
+				"ck_agent_level_level":         "level BETWEEN 1 AND 7",
+			},
+		},
+	}
+}

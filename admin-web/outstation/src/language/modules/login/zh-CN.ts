@@ -1,0 +1,16 @@
+export default {
+  // 'login.brand.title': '智能科技平台',
+  // 'login.brand.subtitle': 'ZHINENGKEJIPINGTAI',
+  // 'login.form.title': '用户登录',
+  // 'login.form.userName': '用户名',
+  // 'login.form.userName.placeholder': '请输入用户名',
+  // 'login.form.userName.errMsg': '请输入用户名',
+  // 'login.form.password': '密码',
+  // 'login.form.password.placeholder': '请输入密码',
+  // 'login.form.password.errMsg': '请输入密码',
+  // 'login.form.rememberPassword': '记住我',
+  // 'login.form.forgetPassword': '忘记密码?',
+  // 'login.form.login': '登录',
+  // 'login.form.login.success': '登录成功',
+  // 'login.locale': '语言',
+};

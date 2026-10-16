@@ -24,8 +24,8 @@ import (
 )
 
 const (
-	ModeOff = "off"
-	ModeOn  = "on"
+	ModeOff = "off" // 总网
+	ModeOn  = "on"  // 分站
 )
 
 const RoleSuperAdmin = "super_admin"
@@ -35,7 +35,7 @@ type Deps struct {
 	Client           *ent.Client
 	Enforcer         *casbin.Enforcer
 	Redis            redis.UniversalClient
-	Mode             string
+	Mode             string // 分站模式开关 on开启分站模式
 	JWTSecret        string
 	JWTExpire        int64
 	JWTRefreshSecret string
@@ -227,6 +227,7 @@ func (d *Deps) tokenClaims(ctx context.Context, u *model.User, roleCodes []strin
 		OperatorCode: code,
 		RoleCodes:    roleCodes,
 		Salt:         u.Salt,
+		IsPlatform:   d.IsPlatformMode(),
 		ClientIP:     utils.NormalizeIP(ctxdata.ClientIPFromCtx(ctx)),
 	}
 }

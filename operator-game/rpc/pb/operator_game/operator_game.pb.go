@@ -41,9 +41,10 @@ const file_operator_game_proto_rawDesc = "" +
 	"\x12GameChannelService\x12Y\n" +
 	"\x0eGetGameChannel\x12$.operator_game.GetGameChannelRequest\x1a!.operator_game.GetGameChannelResp\x12e\n" +
 	"\x12GetGameChannelList\x12(.operator_game.GetGameChannelListRequest\x1a%.operator_game.GetGameChannelListResp\x12b\n" +
-	"\x11UpdateGameChannel\x12'.operator_game.UpdateGameChannelRequest\x1a$.operator_game.UpdateGameChannelResp2x\n" +
+	"\x11UpdateGameChannel\x12'.operator_game.UpdateGameChannelRequest\x1a$.operator_game.UpdateGameChannelResp2\xe3\x01\n" +
 	"\x12PublishDataService\x12b\n" +
-	"\x11SyncPublishedData\x12'.operator_game.SyncPublishedDataRequest\x1a$.operator_game.SyncPublishedDataRespB4Z2oa.98ent.com/p9/operator-game/rpc/pb/operator_gameb\x06proto3"
+	"\x11SyncPublishedData\x12'.operator_game.SyncPublishedDataRequest\x1a$.operator_game.SyncPublishedDataResp\x12i\n" +
+	"\x12DeleteOperatorData\x12(.operator_game.DeleteOperatorDataRequest\x1a).operator_game.DeleteOperatorDataResponseB4Z2oa.98ent.com/p9/operator-game/rpc/pb/operator_gameb\x06proto3"
 
 var file_operator_game_proto_goTypes = []any{
 	(*GetGameListRequest)(nil),         // 0: operator_game.GetGameListRequest
@@ -59,19 +60,21 @@ var file_operator_game_proto_goTypes = []any{
 	(*GetGameChannelListRequest)(nil),  // 10: operator_game.GetGameChannelListRequest
 	(*UpdateGameChannelRequest)(nil),   // 11: operator_game.UpdateGameChannelRequest
 	(*SyncPublishedDataRequest)(nil),   // 12: operator_game.SyncPublishedDataRequest
-	(*GetGameListResp)(nil),            // 13: operator_game.GetGameListResp
-	(*GetGameResp)(nil),                // 14: operator_game.GetGameResp
-	(*UpdateGameResp)(nil),             // 15: operator_game.UpdateGameResp
-	(*GetGameCategoryListResp)(nil),    // 16: operator_game.GetGameCategoryListResp
-	(*GetGameCategoryResp)(nil),        // 17: operator_game.GetGameCategoryResp
-	(*UpdateGameCategoryResp)(nil),     // 18: operator_game.UpdateGameCategoryResp
-	(*GetGameProviderListResp)(nil),    // 19: operator_game.GetGameProviderListResp
-	(*GetGameProviderResp)(nil),        // 20: operator_game.GetGameProviderResp
-	(*UpdateGameProviderResp)(nil),     // 21: operator_game.UpdateGameProviderResp
-	(*GetGameChannelResp)(nil),         // 22: operator_game.GetGameChannelResp
-	(*GetGameChannelListResp)(nil),     // 23: operator_game.GetGameChannelListResp
-	(*UpdateGameChannelResp)(nil),      // 24: operator_game.UpdateGameChannelResp
-	(*SyncPublishedDataResp)(nil),      // 25: operator_game.SyncPublishedDataResp
+	(*DeleteOperatorDataRequest)(nil),  // 13: operator_game.DeleteOperatorDataRequest
+	(*GetGameListResp)(nil),            // 14: operator_game.GetGameListResp
+	(*GetGameResp)(nil),                // 15: operator_game.GetGameResp
+	(*UpdateGameResp)(nil),             // 16: operator_game.UpdateGameResp
+	(*GetGameCategoryListResp)(nil),    // 17: operator_game.GetGameCategoryListResp
+	(*GetGameCategoryResp)(nil),        // 18: operator_game.GetGameCategoryResp
+	(*UpdateGameCategoryResp)(nil),     // 19: operator_game.UpdateGameCategoryResp
+	(*GetGameProviderListResp)(nil),    // 20: operator_game.GetGameProviderListResp
+	(*GetGameProviderResp)(nil),        // 21: operator_game.GetGameProviderResp
+	(*UpdateGameProviderResp)(nil),     // 22: operator_game.UpdateGameProviderResp
+	(*GetGameChannelResp)(nil),         // 23: operator_game.GetGameChannelResp
+	(*GetGameChannelListResp)(nil),     // 24: operator_game.GetGameChannelListResp
+	(*UpdateGameChannelResp)(nil),      // 25: operator_game.UpdateGameChannelResp
+	(*SyncPublishedDataResp)(nil),      // 26: operator_game.SyncPublishedDataResp
+	(*DeleteOperatorDataResponse)(nil), // 27: operator_game.DeleteOperatorDataResponse
 }
 var file_operator_game_proto_depIdxs = []int32{
 	0,  // 0: operator_game.GameService.GetGameList:input_type -> operator_game.GetGameListRequest
@@ -87,21 +90,23 @@ var file_operator_game_proto_depIdxs = []int32{
 	10, // 10: operator_game.GameChannelService.GetGameChannelList:input_type -> operator_game.GetGameChannelListRequest
 	11, // 11: operator_game.GameChannelService.UpdateGameChannel:input_type -> operator_game.UpdateGameChannelRequest
 	12, // 12: operator_game.PublishDataService.SyncPublishedData:input_type -> operator_game.SyncPublishedDataRequest
-	13, // 13: operator_game.GameService.GetGameList:output_type -> operator_game.GetGameListResp
-	14, // 14: operator_game.GameService.GetGame:output_type -> operator_game.GetGameResp
-	15, // 15: operator_game.GameService.UpdateGame:output_type -> operator_game.UpdateGameResp
-	16, // 16: operator_game.GameCategoryService.GetGameCategoryList:output_type -> operator_game.GetGameCategoryListResp
-	17, // 17: operator_game.GameCategoryService.GetGameCategory:output_type -> operator_game.GetGameCategoryResp
-	18, // 18: operator_game.GameCategoryService.UpdateGameCategory:output_type -> operator_game.UpdateGameCategoryResp
-	19, // 19: operator_game.GameProviderService.GetGameProviderList:output_type -> operator_game.GetGameProviderListResp
-	20, // 20: operator_game.GameProviderService.GetGameProvider:output_type -> operator_game.GetGameProviderResp
-	21, // 21: operator_game.GameProviderService.UpdateGameProvider:output_type -> operator_game.UpdateGameProviderResp
-	22, // 22: operator_game.GameChannelService.GetGameChannel:output_type -> operator_game.GetGameChannelResp
-	23, // 23: operator_game.GameChannelService.GetGameChannelList:output_type -> operator_game.GetGameChannelListResp
-	24, // 24: operator_game.GameChannelService.UpdateGameChannel:output_type -> operator_game.UpdateGameChannelResp
-	25, // 25: operator_game.PublishDataService.SyncPublishedData:output_type -> operator_game.SyncPublishedDataResp
-	13, // [13:26] is the sub-list for method output_type
-	0,  // [0:13] is the sub-list for method input_type
+	13, // 13: operator_game.PublishDataService.DeleteOperatorData:input_type -> operator_game.DeleteOperatorDataRequest
+	14, // 14: operator_game.GameService.GetGameList:output_type -> operator_game.GetGameListResp
+	15, // 15: operator_game.GameService.GetGame:output_type -> operator_game.GetGameResp
+	16, // 16: operator_game.GameService.UpdateGame:output_type -> operator_game.UpdateGameResp
+	17, // 17: operator_game.GameCategoryService.GetGameCategoryList:output_type -> operator_game.GetGameCategoryListResp
+	18, // 18: operator_game.GameCategoryService.GetGameCategory:output_type -> operator_game.GetGameCategoryResp
+	19, // 19: operator_game.GameCategoryService.UpdateGameCategory:output_type -> operator_game.UpdateGameCategoryResp
+	20, // 20: operator_game.GameProviderService.GetGameProviderList:output_type -> operator_game.GetGameProviderListResp
+	21, // 21: operator_game.GameProviderService.GetGameProvider:output_type -> operator_game.GetGameProviderResp
+	22, // 22: operator_game.GameProviderService.UpdateGameProvider:output_type -> operator_game.UpdateGameProviderResp
+	23, // 23: operator_game.GameChannelService.GetGameChannel:output_type -> operator_game.GetGameChannelResp
+	24, // 24: operator_game.GameChannelService.GetGameChannelList:output_type -> operator_game.GetGameChannelListResp
+	25, // 25: operator_game.GameChannelService.UpdateGameChannel:output_type -> operator_game.UpdateGameChannelResp
+	26, // 26: operator_game.PublishDataService.SyncPublishedData:output_type -> operator_game.SyncPublishedDataResp
+	27, // 27: operator_game.PublishDataService.DeleteOperatorData:output_type -> operator_game.DeleteOperatorDataResponse
+	14, // [14:28] is the sub-list for method output_type
+	0,  // [0:14] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

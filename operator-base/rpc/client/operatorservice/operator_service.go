@@ -21,6 +21,12 @@ type (
 		Initialize(ctx context.Context, in *operatorpb.InitializeOperatorRequest, opts ...grpc.CallOption) (*operatorpb.InitializeOperatorResponse, error)
 		// 初始化基础资源分配到指定分站
 		InitializeBasicResources(ctx context.Context, in *operatorpb.InitializeBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.InitializeBasicResourcesResponse, error)
+		// 初始化域名到指定分站
+		InitializeDomains(ctx context.Context, in *operatorpb.InitializeDomainsRequest, opts ...grpc.CallOption) (*operatorpb.InitializeDomainsResponse, error)
+		// 删除分站基础资源数据
+		DeleteOperatorBasicResources(ctx context.Context, in *operatorpb.DeleteOperatorBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorBasicResourcesResponse, error)
+		// 删除分站域名
+		DeleteOperatorDomains(ctx context.Context, in *operatorpb.DeleteOperatorDomainsRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorDomainsResponse, error)
 	}
 
 	defaultOperatorService struct {
@@ -44,4 +50,22 @@ func (m *defaultOperatorService) Initialize(ctx context.Context, in *operatorpb.
 func (m *defaultOperatorService) InitializeBasicResources(ctx context.Context, in *operatorpb.InitializeBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.InitializeBasicResourcesResponse, error) {
 	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
 	return client.InitializeBasicResources(ctx, in, opts...)
+}
+
+// 初始化域名到指定分站
+func (m *defaultOperatorService) InitializeDomains(ctx context.Context, in *operatorpb.InitializeDomainsRequest, opts ...grpc.CallOption) (*operatorpb.InitializeDomainsResponse, error) {
+	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
+	return client.InitializeDomains(ctx, in, opts...)
+}
+
+// 删除分站基础资源数据
+func (m *defaultOperatorService) DeleteOperatorBasicResources(ctx context.Context, in *operatorpb.DeleteOperatorBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorBasicResourcesResponse, error) {
+	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
+	return client.DeleteOperatorBasicResources(ctx, in, opts...)
+}
+
+// 删除分站域名
+func (m *defaultOperatorService) DeleteOperatorDomains(ctx context.Context, in *operatorpb.DeleteOperatorDomainsRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorDomainsResponse, error) {
+	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
+	return client.DeleteOperatorDomains(ctx, in, opts...)
 }

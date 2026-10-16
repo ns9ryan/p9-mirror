@@ -1,8 +1,11 @@
 package svc
 
 import (
+	"context"
+
 	coreservice "oa.98ent.com/p9/core/rpc/coreclient"
 	"oa.98ent.com/p9/node-agent/internal/config"
+	"oa.98ent.com/p9/node-agent/internal/domain"
 	"oa.98ent.com/p9/node-agent/internal/task"
 	"oa.98ent.com/p9/node-agent/internal/websocket"
 	operatorbaseservice "oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
@@ -43,6 +46,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	// 创建调度任务执行服务
 	taskService := task.NewService(platformOperatorRpc, operatorBaseRpc, platformCoreRpc, operatorCoreRpc, operatorGameRpc)
+
+	// 初始化 Nginx 管理器
+	ctx := context.Background()
+	domainManager := domain.NewManager(ctx, c)
+	taskService.DomainManager = domainManager
 
 	// 创建节点WebSocket客户端
 	webSocketClient := websocket.NewClient(c, taskService)

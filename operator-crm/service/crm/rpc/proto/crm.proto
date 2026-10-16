@@ -4,10 +4,56 @@ package crm;
 
 option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc";
 
+import "types/crm_auth.proto";
 import "types/crm_ping.proto";
+import "types/crm_agent.proto";
 
 // CRM 健康检查服务
 service PingService {
   // 健康检查
   rpc Ping(crm_ping.PingRequest) returns (crm_ping.PingResponse);
+}
+
+// 代理鉴权服务
+service AuthService {
+  // group: auth
+  rpc login(crm_auth.LoginReq) returns (crm_auth.LoginResp);
+  // group: auth
+  rpc refresh(crm_auth.RefreshReq) returns (crm_auth.LoginResp);
+  // group: auth
+  rpc logout(crm_auth.LogoutReq) returns (crm_auth.Empty);
+  // group: auth
+  rpc logoutAll(crm_auth.Empty) returns (crm_auth.Empty);
+  // group: auth
+  rpc checkToken(crm_auth.CheckTokenReq) returns (crm_auth.CheckTokenResp);
+}
+
+// 代理管理服务
+service AgentService {
+  // group: agent
+  rpc updateAgentLevels(crm_agent.UpdateAgentLevelsReq) returns (crm_agent.UpdateAgentLevelsResp);
+  // group: agent
+  rpc updateAgentConfig(crm_agent.UpdateAgentConfigReq) returns (crm_agent.AgentConfigResp);
+  // group: agent
+  rpc getAgentConfig(crm_agent.GetAgentConfigReq) returns (crm_agent.AgentConfigResp);
+  // group: agent
+  rpc addOperatorAgent(crm_agent.AddOperatorAgentReq) returns (crm_agent.AddAgentResp);
+  // group: agent
+  rpc addSubAgent(crm_agent.AddSubAgentReq) returns (crm_agent.AddAgentResp);
+  // group: agent
+  rpc listAgents(crm_agent.ListAgentsReq) returns (crm_agent.ListAgentsResp);
+  // group: agent
+  rpc searchAgents(crm_agent.SearchAgentsReq) returns (crm_agent.SearchAgentsResp);
+  // group: agent
+  rpc listOperatorAgents(crm_agent.ListOperatorAgentsReq) returns (crm_agent.ListOperatorAgentsResp);
+  // group: agent
+  rpc listAgentLevels(crm_agent.ListAgentLevelsReq) returns (crm_agent.ListAgentLevelsResp);
+  // group: agent
+  rpc treeNodeAgents(crm_agent.TreeNodeAgentsReq) returns (crm_agent.TreeNodeAgentsResp);
+  // group: agent
+  rpc addAgentApply(crm_agent.AddAgentApplyReq) returns (crm_agent.AgentApplyItem);
+  // group: agent
+  rpc listAgentApplies(crm_agent.ListAgentAppliesReq) returns (crm_agent.ListAgentAppliesResp);
+  // group: agent
+  rpc reviewAgentApply(crm_agent.ReviewAgentApplyReq) returns (crm_agent.ReviewAgentApplyResp);
 }

@@ -1,0 +1,11 @@
+syntax = "v1"
+
+info (
+	title:   "integration"
+	desc:    "P9 第三方接入：IP/GEO。路径前缀 /p9/integration/ipgeo。成功 {code:0,msg,data}；失败无 data。全部需 Bearer JWT。"
+	author:  "p9"
+	version: "v1"
+)
+
+import "base.api"
+import "ipgeo.api"

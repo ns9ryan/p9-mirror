@@ -38,11 +38,49 @@ func (s *Service) executePublishGameAllocation(ctx context.Context, params json.
 
 	// 调用分站游戏RPC服务同步已发布的游戏数据
 	// operator-game RPC会调用platform-game RPC获取总网资源数据，并插入到分站数据库
+	logger.Debugw(
+		"准备调用operatorGameRpc.SyncPublishedData",
+		logx.Field("operator_code", operatorCode),
+		logx.Field("ctx", fmt.Sprintf("%+v", ctx)),
+	)
+
+	// 添加详细的RPC调用日志
+	logger.Infow(
+		"operatorGameRpc配置信息",
+		logx.Field("operator_code", operatorCode),
+		logx.Field("rpc_client_type", fmt.Sprintf("%T", s.operatorGameRpc)),
+	)
+
+	logger.Infof("开始RPC调用: operatorGameRpc.SyncPublishedData(operator_code=%s)", operatorCode)
+
+	// 添加上下文超时信息
+	deadline, hasDeadline := ctx.Deadline()
+	logger.Infow(
+		"RPC调用上下文信息",
+		logx.Field("operator_code", operatorCode),
+		logx.Field("has_deadline", hasDeadline),
+		logx.Field("deadline", fmt.Sprintf("%v", deadline)),
+	)
+
+	// 添加网络连接诊断信息
+	logger.Infow(
+		"网络诊断: 准备调用operator-game-rpc服务",
+		logx.Field("operator_code", operatorCode),
+		logx.Field("service", "operator-game"),
+		logx.Field("method", "SyncPublishedData"),
+	)
+
 	rpcResp, err := s.operatorGameRpc.SyncPublishedData(ctx, &operatorgamepb.SyncPublishedDataRequest{
 		OpCode: operatorCode,
 	})
 	if err != nil {
-		logger.Errorf("调用分站游戏RPC同步已发布数据失败: operator_code=%s, error=%v", operatorCode, err)
+		logger.Errorw(
+			"调用分站游戏RPC同步已发布数据失败",
+			logx.Field("operator_code", operatorCode),
+			logx.Field("error_type", fmt.Sprintf("%T", err)),
+			logx.Field("error_message", err.Error()),
+			logx.Field("error_full", fmt.Sprintf("%+v", err)),
+		)
 		return nil, fmt.Errorf("同步已发布数据失败: %w", err)
 	}
 

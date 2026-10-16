@@ -1,0 +1,62 @@
+syntax = "v1"
+
+info (
+	title:   "upload api"
+	desc:    "object upload, presign, resolve url"
+	author:  "p9"
+	version: "v1"
+)
+
+import "../base.api"
+
+type ResolveReq {
+	Key string `form:"key,optional"`
+	Url string `form:"url,optional"`
+}
+
+type PresignReq {
+	Filename string `json:"filename"`
+	Size     int64  `json:"size"`
+	Scene    string `json:"scene,optional"`
+}
+
+type CompleteReq {
+	Key   string `json:"key"`
+	Scene string `json:"scene,optional"`
+}
+
+type PresignData {
+	PutUrl       string            `json:"put_url"`
+	Method       string            `json:"method"`
+	Headers      map[string]string `json:"headers,optional"`
+	Key          string            `json:"key"`
+	Url          string            `json:"url"`
+	ExpiresIn    int               `json:"expires_in"`
+	Scene        string            `json:"scene"`
+	Visibility   string            `json:"visibility,optional"`
+	UrlExpiresIn int               `json:"url_expires_in,optional"`
+}
+
+// multipart：file + 可选 scene。goctl 不描述 file 字段，handler 自行 ReadMultipart。
+type UploadForm {
+	Scene string `form:"scene,optional"`
+}
+
+@server (
+	prefix:     /p9/oss
+	group:      upload
+	middleware: Jwt,ActionLog,Authority
+)
+service Oss {
+	@handler resolve
+	get /url/detail (ResolveReq) returns (FileData)
+
+	@handler upload
+	post /file/upload (UploadForm) returns (FileData)
+
+	@handler presign
+	post /upload/presign (PresignReq) returns (PresignData)
+
+	@handler complete
+	post /upload/complete (CompleteReq) returns (FileData)
+}

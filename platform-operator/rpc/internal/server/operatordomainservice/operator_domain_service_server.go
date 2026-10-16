@@ -53,3 +53,9 @@ func (s *OperatorDomainServiceServer) Delete(ctx context.Context, in *domainpb.D
 	l := operatordomainservicelogic.NewDeleteLogic(ctx, s.svcCtx)
 	return l.Delete(in)
 }
+
+// 发布域名
+func (s *OperatorDomainServiceServer) Publish(ctx context.Context, in *domainpb.PublishDomainRequest) (*domainpb.PublishDomainResponse, error) {
+	l := operatordomainservicelogic.NewPublishLogic(ctx, s.svcCtx)
+	return l.Publish(in)
+}

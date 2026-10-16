@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"oa.98ent.com/p9/core/common/entdb"
-	"oa.98ent.com/p9/core/common/entmixin"
+	"oa.98ent.com/p9/common/entdb"
+	"oa.98ent.com/p9/common/entmixin"
 	"oa.98ent.com/p9/core/rpc/casbinx"
 	"oa.98ent.com/p9/core/rpc/ent"
 	"oa.98ent.com/p9/core/rpc/ent/intercept"

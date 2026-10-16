@@ -72,4 +72,7 @@ service GameChannelService {
 service PublishDataService {
     // 同步已发布的游戏数据到分站
     rpc SyncPublishedData(operator_game.SyncPublishedDataRequest) returns (operator_game.SyncPublishedDataResp);
+    
+    // 删除分站的游戏数据
+    rpc DeleteOperatorData(operator_game.DeleteOperatorDataRequest) returns (operator_game.DeleteOperatorDataResponse);
 }

@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/zeromicro/go-zero/core/logx"
 	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/core/rpc/coreclient"
 	operatorbasepb "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/operatorpb"
@@ -77,6 +78,30 @@ func (s *Service) executeCreateOperator(ctx context.Context, params json.RawMess
 	err = s.initCoreData(ctx, initializationData)
 	if err != nil {
 		return nil, fmt.Errorf("初始化核心数据失败: %w", err)
+	}
+
+	// ==================== 生成 Nginx 配置 ====================
+
+	// 为每个域名生成 nginx 配置
+	for _, domainInfo := range initializationData.GetDomains() {
+		// 只处理分站后台域名（DomainType=1）
+		if domainInfo == nil || domainInfo.DomainName == "" || domainInfo.DomainType != 1 {
+			continue
+		}
+
+		if err := s.DomainManager.GenerateConfig(domainInfo.DomainName); err != nil {
+			logx.WithContext(ctx).Errorf("生成 nginx 配置失败，继续: domain=%s, error=%v",
+				domainInfo.DomainName, err)
+			// 不中断流程，继续处理其他域名
+		}
+	}
+
+	// 验证并重载 nginx（所有配置生成后统一执行）
+	if s.DomainManager != nil {
+		if _, err := s.DomainManager.ReloadNginx(); err != nil {
+			logx.WithContext(ctx).Errorf("Nginx 重载失败: error=%v", err)
+			// 不中断流程，记录错误即可
+		}
 	}
 
 	// 当前任务无需返回业务结果

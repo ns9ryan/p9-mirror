@@ -63,3 +63,11 @@ docker: build-linux # 构建两个独立的 RPC 镜像
 publish-docker: # 发布两个 RPC 镜像
 	docker push $(DOCKER_REPO)/$(CRM_IMAGE):$(VERSION)
 	docker push $(DOCKER_REPO)/$(SETTLEMENT_IMAGE):$(VERSION)
+
+.PHONY: docker-crm
+docker-crm: build-linux # 构建两个独立的 RPC 镜像
+	docker build --platform $(DOCKER_PLATFORM) -f Dockerfile-crm-rpc -t $(DOCKER_REPO)/$(CRM_IMAGE):$(VERSION) .
+
+.PHONY: publish-docker-crm
+publish-docker-crm: # 发布两个 RPC 镜像
+	docker push $(DOCKER_REPO)/$(CRM_IMAGE):$(VERSION)

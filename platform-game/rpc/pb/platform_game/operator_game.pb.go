@@ -572,6 +572,87 @@ func (x *SaveOperatorGameAllocationResp) GetFailed() int64 {
 	return 0
 }
 
+// 根据opcode删除分站游戏分配请求
+type DeleteOperatorGameRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OpCode        string                 `protobuf:"bytes,1,opt,name=op_code,json=opCode,proto3" json:"op_code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorGameRequest) Reset() {
+	*x = DeleteOperatorGameRequest{}
+	mi := &file_types_operator_game_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorGameRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorGameRequest) ProtoMessage() {}
+
+func (x *DeleteOperatorGameRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_game_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorGameRequest.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorGameRequest) Descriptor() ([]byte, []int) {
+	return file_types_operator_game_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DeleteOperatorGameRequest) GetOpCode() string {
+	if x != nil {
+		return x.OpCode
+	}
+	return ""
+}
+
+type DeleteOperatorGameResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorGameResp) Reset() {
+	*x = DeleteOperatorGameResp{}
+	mi := &file_types_operator_game_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorGameResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorGameResp) ProtoMessage() {}
+
+func (x *DeleteOperatorGameResp) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_game_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorGameResp.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorGameResp) Descriptor() ([]byte, []int) {
+	return file_types_operator_game_proto_rawDescGZIP(), []int{9}
+}
+
 var File_types_operator_game_proto protoreflect.FileDescriptor
 
 const file_types_operator_game_proto_rawDesc = "" +
@@ -619,7 +700,10 @@ const file_types_operator_game_proto_rawDesc = "" +
 	"\acreated\x18\x02 \x01(\x03R\acreated\x12\x18\n" +
 	"\adeleted\x18\x03 \x01(\x03R\adeleted\x12\x14\n" +
 	"\x05exist\x18\x04 \x01(\x03R\x05exist\x12\x16\n" +
-	"\x06failed\x18\x05 \x01(\x03R\x06failedB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
+	"\x06failed\x18\x05 \x01(\x03R\x06failed\"4\n" +
+	"\x19DeleteOperatorGameRequest\x12\x17\n" +
+	"\aop_code\x18\x01 \x01(\tR\x06opCode\"\x18\n" +
+	"\x16DeleteOperatorGameRespB4Z2oa.98ent.com/p9/platform-game/rpc/pb/platform_gameb\x06proto3"
 
 var (
 	file_types_operator_game_proto_rawDescOnce sync.Once
@@ -633,7 +717,7 @@ func file_types_operator_game_proto_rawDescGZIP() []byte {
 	return file_types_operator_game_proto_rawDescData
 }
 
-var file_types_operator_game_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_types_operator_game_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_types_operator_game_proto_goTypes = []any{
 	(*OperatorGameInfo)(nil),                     // 0: platform_game.OperatorGameInfo
 	(*GetOperatorGameListRequest)(nil),           // 1: platform_game.GetOperatorGameListRequest
@@ -643,6 +727,8 @@ var file_types_operator_game_proto_goTypes = []any{
 	(*SaveOperatorGameAllocationInfo)(nil),       // 5: platform_game.SaveOperatorGameAllocationInfo
 	(*SaveOperatorGameAllocationRequest)(nil),    // 6: platform_game.SaveOperatorGameAllocationRequest
 	(*SaveOperatorGameAllocationResp)(nil),       // 7: platform_game.SaveOperatorGameAllocationResp
+	(*DeleteOperatorGameRequest)(nil),            // 8: platform_game.DeleteOperatorGameRequest
+	(*DeleteOperatorGameResp)(nil),               // 9: platform_game.DeleteOperatorGameResp
 }
 var file_types_operator_game_proto_depIdxs = []int32{
 	0, // 0: platform_game.GetOperatorGameListResp.items:type_name -> platform_game.OperatorGameInfo
@@ -665,7 +751,7 @@ func file_types_operator_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_operator_game_proto_rawDesc), len(file_types_operator_game_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -1,0 +1,14 @@
+syntax = "v1"
+
+type PingResponse {
+	Message string `json:"message"`
+}
+
+@server (
+	group: ping
+)
+service operator_admin_api {
+	@handler Ping
+	get /ping returns (PingResponse)
+}
+

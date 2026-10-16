@@ -29,3 +29,9 @@ func (s *BasicResourceAllocationServiceServer) List(ctx context.Context, in *bas
 	l := basicresourceallocationservicelogic.NewListLogic(ctx, s.svcCtx)
 	return l.List(in)
 }
+
+// 发布基础资源分配到指定分站
+func (s *BasicResourceAllocationServiceServer) Publish(ctx context.Context, in *basicresourceallocationpb.PublishBasicResourceAllocationRequest) (*basicresourceallocationpb.PublishBasicResourceAllocationResponse, error) {
+	l := basicresourceallocationservicelogic.NewPublishLogic(ctx, s.svcCtx)
+	return l.Publish(in)
+}

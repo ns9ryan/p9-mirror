@@ -1,0 +1,13 @@
+/oss
+.vscode
+.idea
+.env
+.env.*
+
+# 本地编译产物（make build-linux / build-mac / build-win）
+oss_api
+oss_rpc
+oss_api.exe
+oss_rpc.exe
+*.exe
+Makefile.win

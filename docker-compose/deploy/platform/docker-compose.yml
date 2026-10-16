@@ -116,6 +116,8 @@ services:
     restart: always
     ports:
       - "19000:19000"
+    environment:
+      POD_IP: 192.168.0.15
     volumes:
       - ./etc/core/core-rpc.yaml:/app/etc/core.yaml:ro
     depends_on:

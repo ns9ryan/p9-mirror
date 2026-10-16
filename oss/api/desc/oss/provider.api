@@ -1,0 +1,58 @@
+syntax = "v1"
+
+info (
+	title:   "provider api"
+	desc:    "oss_provider CRUD"
+	author:  "p9"
+	version: "v1"
+)
+
+import "../base.api"
+
+type ProviderView {
+	Id           uint64               `json:"id,optional"`
+	Name         string               `json:"name"`
+	IsDefault    bool                 `json:"is_default,optional"`
+	Driver       string               `json:"driver"`
+	Endpoint     string               `json:"endpoint"`
+	FileUrl      string               `json:"file_url"`
+	AccessKey    string               `json:"access_key"`
+	SecretKey    string               `json:"secret_key,optional"`
+	PathStyle    bool                 `json:"path_style,optional"`
+	Region       string               `json:"region,optional"`
+	Buckets map[string]BucketSpec `json:"buckets"`
+	Source  string                `json:"source,optional"`
+}
+
+type ProviderListData {
+	List  []ProviderView `json:"list"`
+	Total int64          `json:"total"`
+}
+
+@server (
+	prefix:     /p9/oss
+	group:      provider
+	middleware: Jwt,ActionLog,Authority
+)
+service Oss {
+	@handler list
+	post /provider/list returns (ProviderListData)
+
+	@handler create
+	post /provider/create (ProviderView) returns (ProviderView)
+
+	@handler active
+	get /provider/active returns (ProviderView)
+
+	@handler detail
+	get /provider/detail (IDQuery) returns (ProviderView)
+
+	@handler update
+	post /provider/update (ProviderView) returns (ProviderView)
+
+	@handler delete
+	post /provider/delete (IDReq)
+
+	@handler enable
+	post /provider/enable (IDReq) returns (ProviderView)
+}

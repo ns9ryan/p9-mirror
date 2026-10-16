@@ -56,6 +56,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/basic-resource-allocation/list",
 					Handler: basic_resource_allocation.ListBasicResourceAllocationsHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/basic-resource-allocation/publish",
+					Handler: basic_resource_allocation.PublishBasicResourceAllocationHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/admin/operator"),
@@ -200,6 +205,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/list",
 					Handler: operator_domain.ListOperatorDomainsHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/publish",
+					Handler: operator_domain.PublishOperatorDomainHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

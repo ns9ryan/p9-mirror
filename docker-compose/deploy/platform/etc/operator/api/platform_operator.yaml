@@ -38,10 +38,10 @@ CoreRpc:
 
 # Platform Game RPC配置
 PlatformGameRpc:
-  Etcd:
-    Hosts:
-      - 192.168.0.15:2379        # Etcd地址
-    Key: platform-game-rpc       # RPC服务注册Key
+  Hosts:
+    - 192.168.0.15:2379
+  Target: platform-game-rpc:19003
+  Timeout: 10000
 
 # 国际化配置
 I18n:

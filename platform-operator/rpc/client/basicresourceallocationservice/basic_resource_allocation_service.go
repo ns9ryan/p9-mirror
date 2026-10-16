@@ -19,6 +19,8 @@ type (
 	BasicResourceAllocationService interface {
 		// 获取基础资源分配列表
 		List(ctx context.Context, in *basicresourceallocationpb.ListBasicResourceAllocationsRequest, opts ...grpc.CallOption) (*basicresourceallocationpb.ListBasicResourceAllocationsResponse, error)
+		// 发布基础资源分配到指定分站
+		Publish(ctx context.Context, in *basicresourceallocationpb.PublishBasicResourceAllocationRequest, opts ...grpc.CallOption) (*basicresourceallocationpb.PublishBasicResourceAllocationResponse, error)
 	}
 
 	defaultBasicResourceAllocationService struct {
@@ -36,4 +38,10 @@ func NewBasicResourceAllocationService(cli zrpc.Client) BasicResourceAllocationS
 func (m *defaultBasicResourceAllocationService) List(ctx context.Context, in *basicresourceallocationpb.ListBasicResourceAllocationsRequest, opts ...grpc.CallOption) (*basicresourceallocationpb.ListBasicResourceAllocationsResponse, error) {
 	client := platformoperatorrpc.NewBasicResourceAllocationServiceClient(m.cli.Conn())
 	return client.List(ctx, in, opts...)
+}
+
+// 发布基础资源分配到指定分站
+func (m *defaultBasicResourceAllocationService) Publish(ctx context.Context, in *basicresourceallocationpb.PublishBasicResourceAllocationRequest, opts ...grpc.CallOption) (*basicresourceallocationpb.PublishBasicResourceAllocationResponse, error) {
+	client := platformoperatorrpc.NewBasicResourceAllocationServiceClient(m.cli.Conn())
+	return client.Publish(ctx, in, opts...)
 }

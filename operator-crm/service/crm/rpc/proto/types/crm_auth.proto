@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package crm_auth;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/authpb";
+
+// LoginReq 登录请求
+message LoginReq {
+  // 登录账号
+  string account = 1;
+  // 登录密码
+  string password = 2;
+  // 分站编码
+  string operator_code = 3;
+  // 客户端 IP
+  string client_ip = 4;
+  // 客户端 User-Agent
+  string user_agent = 5;
+  // 设备码
+  string udid = 6;
+}
+
+// TokenInfo 访问令牌与刷新令牌
+message TokenInfo {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expire = 3;
+  int64 refresh_expire = 4;
+}
+
+// UserPublic 登录后返回的代理公开信息
+message UserPublic {
+  int64 id = 1;
+  string account = 2;
+  string nickname = 3;
+  string realname = 4;
+  int32 status = 5;
+  string operator_code = 6;
+  int32 agent_type = 7;
+  int32 level = 8;
+  int64 created_at = 9;
+  int64 last_login_at = 10;
+  string mobile = 11;
+  string email = 12;
+}
+
+// LoginResp 登录响应
+message LoginResp {
+  TokenInfo token = 1;
+  UserPublic user = 2;
+}
+
+// RefreshReq 刷新令牌请求
+message RefreshReq {
+  string refresh_token = 1;
+}
+
+// LogoutReq 退出登录请求
+message LogoutReq {
+  string refresh_token = 1;
+}
+
+// Empty 空消息
+message Empty {}
+
+// CheckTokenReq 校验访问令牌请求
+message CheckTokenReq {
+  string access_token = 1;
+}
+
+// CheckTokenResp 校验访问令牌响应
+message CheckTokenResp {
+  int64 user_id = 1;
+  string account = 2;
+  string operator_code = 3;
+  string salt = 4;
+  int64 expires_at = 5;
+  string token_type = 6;
+}

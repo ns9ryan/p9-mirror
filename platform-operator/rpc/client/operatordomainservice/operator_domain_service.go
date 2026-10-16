@@ -27,6 +27,8 @@ type (
 		List(ctx context.Context, in *domainpb.ListDomainsRequest, opts ...grpc.CallOption) (*domainpb.ListDomainsResponse, error)
 		// 删除分站域名
 		Delete(ctx context.Context, in *domainpb.DeleteDomainRequest, opts ...grpc.CallOption) (*domainpb.DeleteDomainResponse, error)
+		// 发布域名
+		Publish(ctx context.Context, in *domainpb.PublishDomainRequest, opts ...grpc.CallOption) (*domainpb.PublishDomainResponse, error)
 	}
 
 	defaultOperatorDomainService struct {
@@ -68,4 +70,10 @@ func (m *defaultOperatorDomainService) List(ctx context.Context, in *domainpb.Li
 func (m *defaultOperatorDomainService) Delete(ctx context.Context, in *domainpb.DeleteDomainRequest, opts ...grpc.CallOption) (*domainpb.DeleteDomainResponse, error) {
 	client := platformoperatorrpc.NewOperatorDomainServiceClient(m.cli.Conn())
 	return client.Delete(ctx, in, opts...)
+}
+
+// 发布域名
+func (m *defaultOperatorDomainService) Publish(ctx context.Context, in *domainpb.PublishDomainRequest, opts ...grpc.CallOption) (*domainpb.PublishDomainResponse, error) {
+	client := platformoperatorrpc.NewOperatorDomainServiceClient(m.cli.Conn())
+	return client.Publish(ctx, in, opts...)
 }

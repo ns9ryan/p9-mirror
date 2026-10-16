@@ -1,0 +1,22 @@
+Name: operator_admin_api
+Host: 0.0.0.0
+Port: 38310
+Mode: dev
+
+# 国际化配置
+I18n:
+  DefaultLanguage: zh-CN    # 默认语言
+  
+# 分站Core RPC配置
+OperatorCoreRpc:
+  Etcd:
+    Hosts:
+      - 192.168.0.15:2379
+    Key: operator03-core-rpc
+
+# 后台CRM RPC配置
+CrmRpc:
+  Etcd:
+    Hosts:
+      - 192.168.0.15:2379
+    Key: crm03-rpc

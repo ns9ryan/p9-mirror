@@ -1,0 +1,22 @@
+FROM alpine:3.22
+
+# 镜像作者
+ARG AUTHOR="p9.work@gmail.com"
+
+LABEL org.opencontainers.image.authors=${AUTHOR}
+
+WORKDIR /app
+
+# 设置容器时区并安装运行依赖
+ENV TZ=Asia/Shanghai
+RUN apk add --no-cache tzdata ca-certificates
+
+# 复制API可执行文件
+COPY ./agent_admin_api ./
+RUN chmod +x ./agent_admin_api
+
+# 复制API配置文件
+COPY ./etc/agent_admin_api.yaml ./etc/
+
+ENTRYPOINT ["./agent_admin_api"]
+CMD ["-f", "etc/agent_admin_api.yaml"]

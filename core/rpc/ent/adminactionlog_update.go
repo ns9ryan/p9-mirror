@@ -29,26 +29,6 @@ func (_u *AdminActionLogUpdate) Where(ps ...predicate.AdminActionLog) *AdminActi
 	return _u
 }
 
-// SetOperatorCode sets the "operator_code" field.
-func (_u *AdminActionLogUpdate) SetOperatorCode(v string) *AdminActionLogUpdate {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *AdminActionLogUpdate) SetNillableOperatorCode(v *string) *AdminActionLogUpdate {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *AdminActionLogUpdate) ClearOperatorCode() *AdminActionLogUpdate {
-	_u.mutation.ClearOperatorCode()
-	return _u
-}
-
 // SetUserID sets the "user_id" field.
 func (_u *AdminActionLogUpdate) SetUserID(v int64) *AdminActionLogUpdate {
 	_u.mutation.SetUserID(v)
@@ -307,11 +287,6 @@ func (_u *AdminActionLogUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AdminActionLogUpdate) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := adminactionlog.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AdminActionLog.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.RequestMethod(); ok {
 		if err := adminactionlog.RequestMethodValidator(v); err != nil {
 			return &ValidationError{Name: "request_method", err: fmt.Errorf(`ent: validator failed for field "AdminActionLog.request_method": %w`, err)}
@@ -344,9 +319,6 @@ func (_u *AdminActionLogUpdate) sqlSave(ctx context.Context) (_node int, err err
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(adminactionlog.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(adminactionlog.FieldOperatorCode, field.TypeString)
@@ -452,26 +424,6 @@ type AdminActionLogUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AdminActionLogMutation
-}
-
-// SetOperatorCode sets the "operator_code" field.
-func (_u *AdminActionLogUpdateOne) SetOperatorCode(v string) *AdminActionLogUpdateOne {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *AdminActionLogUpdateOne) SetNillableOperatorCode(v *string) *AdminActionLogUpdateOne {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *AdminActionLogUpdateOne) ClearOperatorCode() *AdminActionLogUpdateOne {
-	_u.mutation.ClearOperatorCode()
-	return _u
 }
 
 // SetUserID sets the "user_id" field.
@@ -745,11 +697,6 @@ func (_u *AdminActionLogUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AdminActionLogUpdateOne) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := adminactionlog.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AdminActionLog.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.RequestMethod(); ok {
 		if err := adminactionlog.RequestMethodValidator(v); err != nil {
 			return &ValidationError{Name: "request_method", err: fmt.Errorf(`ent: validator failed for field "AdminActionLog.request_method": %w`, err)}
@@ -799,9 +746,6 @@ func (_u *AdminActionLogUpdateOne) sqlSave(ctx context.Context) (_node *AdminAct
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(adminactionlog.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(adminactionlog.FieldOperatorCode, field.TypeString)

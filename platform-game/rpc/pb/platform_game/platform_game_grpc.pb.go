@@ -2237,6 +2237,7 @@ var OperatorGameService_ServiceDesc = grpc.ServiceDesc{
 const (
 	OperatorGameAllocationService_GetOperatorGameAllocationList_FullMethodName = "/platform_game.OperatorGameAllocationService/GetOperatorGameAllocationList"
 	OperatorGameAllocationService_PublishOperatorGameAllocation_FullMethodName = "/platform_game.OperatorGameAllocationService/PublishOperatorGameAllocation"
+	OperatorGameAllocationService_DeleteOperatorGame_FullMethodName            = "/platform_game.OperatorGameAllocationService/DeleteOperatorGame"
 )
 
 // OperatorGameAllocationServiceClient is the client API for OperatorGameAllocationService service.
@@ -2247,6 +2248,8 @@ type OperatorGameAllocationServiceClient interface {
 	GetOperatorGameAllocationList(ctx context.Context, in *GetOperatorGameAllocationListRequest, opts ...grpc.CallOption) (*GetOperatorGameAllocationListResp, error)
 	// 发布游戏资源分配到指定分站
 	PublishOperatorGameAllocation(ctx context.Context, in *PublishOperatorGameAllocationRequest, opts ...grpc.CallOption) (*PublishOperatorGameAllocationResponse, error)
+	// 根据opcode删除分站游戏分配
+	DeleteOperatorGame(ctx context.Context, in *DeleteOperatorGameRequest, opts ...grpc.CallOption) (*DeleteOperatorGameResp, error)
 }
 
 type operatorGameAllocationServiceClient struct {
@@ -2277,6 +2280,16 @@ func (c *operatorGameAllocationServiceClient) PublishOperatorGameAllocation(ctx 
 	return out, nil
 }
 
+func (c *operatorGameAllocationServiceClient) DeleteOperatorGame(ctx context.Context, in *DeleteOperatorGameRequest, opts ...grpc.CallOption) (*DeleteOperatorGameResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteOperatorGameResp)
+	err := c.cc.Invoke(ctx, OperatorGameAllocationService_DeleteOperatorGame_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OperatorGameAllocationServiceServer is the server API for OperatorGameAllocationService service.
 // All implementations must embed UnimplementedOperatorGameAllocationServiceServer
 // for forward compatibility.
@@ -2285,6 +2298,8 @@ type OperatorGameAllocationServiceServer interface {
 	GetOperatorGameAllocationList(context.Context, *GetOperatorGameAllocationListRequest) (*GetOperatorGameAllocationListResp, error)
 	// 发布游戏资源分配到指定分站
 	PublishOperatorGameAllocation(context.Context, *PublishOperatorGameAllocationRequest) (*PublishOperatorGameAllocationResponse, error)
+	// 根据opcode删除分站游戏分配
+	DeleteOperatorGame(context.Context, *DeleteOperatorGameRequest) (*DeleteOperatorGameResp, error)
 	mustEmbedUnimplementedOperatorGameAllocationServiceServer()
 }
 
@@ -2300,6 +2315,9 @@ func (UnimplementedOperatorGameAllocationServiceServer) GetOperatorGameAllocatio
 }
 func (UnimplementedOperatorGameAllocationServiceServer) PublishOperatorGameAllocation(context.Context, *PublishOperatorGameAllocationRequest) (*PublishOperatorGameAllocationResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method PublishOperatorGameAllocation not implemented")
+}
+func (UnimplementedOperatorGameAllocationServiceServer) DeleteOperatorGame(context.Context, *DeleteOperatorGameRequest) (*DeleteOperatorGameResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteOperatorGame not implemented")
 }
 func (UnimplementedOperatorGameAllocationServiceServer) mustEmbedUnimplementedOperatorGameAllocationServiceServer() {
 }
@@ -2359,6 +2377,24 @@ func _OperatorGameAllocationService_PublishOperatorGameAllocation_Handler(srv in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OperatorGameAllocationService_DeleteOperatorGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOperatorGameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorGameAllocationServiceServer).DeleteOperatorGame(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorGameAllocationService_DeleteOperatorGame_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorGameAllocationServiceServer).DeleteOperatorGame(ctx, req.(*DeleteOperatorGameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OperatorGameAllocationService_ServiceDesc is the grpc.ServiceDesc for OperatorGameAllocationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2373,6 +2409,10 @@ var OperatorGameAllocationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PublishOperatorGameAllocation",
 			Handler:    _OperatorGameAllocationService_PublishOperatorGameAllocation_Handler,
+		},
+		{
+			MethodName: "DeleteOperatorGame",
+			Handler:    _OperatorGameAllocationService_DeleteOperatorGame_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

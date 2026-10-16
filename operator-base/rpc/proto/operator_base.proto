@@ -20,4 +20,13 @@ service OperatorService {
 
   // 初始化基础资源分配到指定分站
   rpc InitializeBasicResources(operator_base_operator.InitializeBasicResourcesRequest) returns (operator_base_operator.InitializeBasicResourcesResponse);
+
+  // 初始化域名到指定分站
+  rpc InitializeDomains(operator_base_operator.InitializeDomainsRequest) returns (operator_base_operator.InitializeDomainsResponse);
+
+  // 删除分站基础资源数据
+  rpc DeleteOperatorBasicResources(operator_base_operator.DeleteOperatorBasicResourcesRequest) returns (operator_base_operator.DeleteOperatorBasicResourcesResponse);
+
+  // 删除分站域名
+  rpc DeleteOperatorDomains(operator_base_operator.DeleteOperatorDomainsRequest) returns (operator_base_operator.DeleteOperatorDomainsResponse);
 }

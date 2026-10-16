@@ -1,0 +1,120 @@
+# 本地依赖（不需要 Harbor）：在仓库根目录
+#   docker compose -f deploy/docker-compose.yml up -d
+# 然后本机跑服务：
+#   go run ./rpc
+#   go run ./api
+#
+# 若要把 api / rpc 也打进容器：
+#   docker compose -f deploy/docker-compose.yml --profile app up --build
+#
+# 接口：http://127.0.0.1:8020/p9/oss/file/upload
+# gRPC：127.0.0.1:8021（InitTenant）
+# MinIO 控制台：http://127.0.0.1:9201  (minioadmin / minioadmin)
+
+name: oss
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: p9-oss-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: oss
+    ports:
+      - "5433:5432"
+    volumes:
+      - oss-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d oss"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  minio:
+    image: minio/minio:latest
+    container_name: p9-oss-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_API_CORS_ALLOW_ORIGIN: "*"
+    ports:
+      - "9200:9000"
+      - "9201:9001"
+    volumes:
+      - oss-minio:/data
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: p9-oss-minio-init
+    depends_on:
+      - minio
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        i=0
+        until mc alias set local http://minio:9000 minioadmin minioadmin; do
+          i=$$((i+1))
+          if [ "$$i" -gt 30 ]; then echo "minio not ready"; exit 1; fi
+          sleep 1
+        done
+        mc mb -p local/oss-bucket
+        mc anonymous set download local/oss-bucket
+        echo "minio buckets ready"
+
+  oss-api:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: Dockerfile-api
+    image: p9-oss-api:local
+    container_name: p9-oss-api
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8020:8020"
+    environment:
+      POSTGRES_DSN: "host=postgres port=5432 user=root password=root dbname=oss sslmode=disable"
+      OSS_ENDPOINT: "http://host.docker.internal:9200"
+    volumes:
+      - ../api/etc/oss.yaml:/app/etc/oss.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      oss-rpc:
+        condition: service_started
+
+  oss-rpc:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: Dockerfile-rpc
+    image: p9-oss-rpc:local
+    container_name: p9-oss-rpc
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8021:8021"
+    environment:
+      POSTGRES_DSN: "host=postgres port=5432 user=root password=root dbname=oss sslmode=disable"
+      OSS_ENDPOINT: "http://host.docker.internal:9200"
+    volumes:
+      - ../rpc/etc/oss.yaml:/app/etc/oss.yaml:ro
+      - ../rpc/etc/init_default_settings.yaml:/app/etc/init_default_settings.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+
+volumes:
+  oss-postgres:
+  oss-minio:

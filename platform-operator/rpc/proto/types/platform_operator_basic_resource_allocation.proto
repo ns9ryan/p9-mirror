@@ -37,3 +37,12 @@ message ListBasicResourceAllocationsResponse {
   // 基础资源分配列表
   repeated BasicResourceAllocationInfo list = 2;
 }
+
+// 发布基础资源分配请求
+message PublishBasicResourceAllocationRequest {
+  // 分站业务编码
+  string operator_code = 1;
+}
+
+// 发布基础资源分配响应
+message PublishBasicResourceAllocationResponse {}

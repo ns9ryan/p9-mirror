@@ -1,0 +1,32 @@
+# RPC服务配置
+Name:     crm-rpc         # RPC服务名称
+ListenOn: 0.0.0.0:39202   # RPC监听地址
+Mode:     dev             # 运行模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 192.168.0.15:2379     # Etcd地址
+  Key: crm02-rpc            # 服务注册Key
+
+# 数据库配置
+DatabaseConf:
+  Host:     postgres        # 数据库地址
+  Port:     5432           # 数据库端口
+  DBName:   p9_operator     # 数据库名称
+  Username: root            # 数据库用户名
+  Password: root            # 数据库密码
+  SSLMode:  disable         # SSL模式
+
+# 代理后台 JWT配置
+AgentAdminJwt:
+  AccessSecret: operator01-agent-jwt-secret
+  AccessExpire: 86400
+  RefreshSecret: operator01-agent-jwt-refresh-secret
+  RefreshExpire: 604800
+
+# 令牌黑名单 Redis 配置
+DataRedis:
+  Host: redis:6379
+  Pass: ""
+  DB: 0

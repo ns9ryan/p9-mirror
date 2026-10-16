@@ -26,7 +26,7 @@ CoreRpc:
 
 DatabaseConf:
   Host:     192.168.0.15     # 数据库地址
-  Port:     15441          # 数据库端口 所有节点临时使用同一个库
+  Port:     15442          # 数据库端口 所有节点临时使用同一个库
   DBName:   p9_operator           # 数据库名称
   Username: root          # 数据库用户名
   Password: root          # 数据库密码

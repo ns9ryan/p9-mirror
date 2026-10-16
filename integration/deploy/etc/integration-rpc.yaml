@@ -1,0 +1,56 @@
+# integration RPC（compose 内网）
+# 挂载为容器内 etc/integration.yaml
+Name: integration.rpc
+ListenOn: 0.0.0.0:19005
+Timeout: 30000
+
+Log:
+  Mode: console
+  Level: info
+
+DB:
+  Driver: postgres
+  DSN: "host=postgres user=postgres password=app123 dbname=integration port=5432 sslmode=disable TimeZone=UTC"
+
+IpGeo:
+  CacheTTL: 168
+  CacheDriver: table
+  Providers:
+    - Name: local
+      Driver: local
+      Tag: 本地
+      IsEnabled: true
+      Priority: 0
+
+    - Name: maxmind
+      Driver: http
+      Tag: 在线
+      IsEnabled: true
+      Priority: 1
+      Endpoint: https://geoip.maxmind.com/geoip/v2.1/country/{ip}
+      AuthType: basic
+      AccessKey: ""
+      SecretKey: ""
+      TimeoutSec: 5
+      FieldMap:
+        country_code: country.iso_code
+        country_names: country.names
+        continent_code: continent.code
+        continent_names: continent.names
+        isp: traits.isp
+        org: traits.organization
+
+    # 离线库：把文件挂到容器 /app/assets/ 或构建时 COPY assets/
+    - Name: geoip-city
+      Driver: mmdb
+      Tag: 离线
+      IsEnabled: false
+      Priority: 2
+      Endpoint: assets/GeoLite2-City.mmdb
+
+    - Name: ip2region
+      Driver: ip2region
+      Tag: 离线
+      IsEnabled: false
+      Priority: 3
+      Endpoint: assets/ip2region.xdb

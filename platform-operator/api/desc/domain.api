@@ -91,6 +91,13 @@ type (
 	}
 	// 删除分站域名响应
 	DeleteOperatorDomainResponse  {}
+	// 发布分站域名请求
+	PublishOperatorDomainRequest {
+		// 域名ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+	}
+	// 发布分站域名响应
+	PublishOperatorDomainResponse  {}
 )
 
 @server (
@@ -118,5 +125,9 @@ service platform_operator {
 	// 删除分站域名
 	@handler DeleteOperatorDomain
 	post /delete (DeleteOperatorDomainRequest) returns (DeleteOperatorDomainResponse)
+
+	// 发布域名
+	@handler PublishOperatorDomain
+	post /publish (PublishOperatorDomainRequest) returns (PublishOperatorDomainResponse)
 }
 

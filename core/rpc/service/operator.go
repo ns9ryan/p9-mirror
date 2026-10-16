@@ -55,7 +55,7 @@ func (d *Deps) IssuePreviewToken(ctx context.Context, req IssuePreviewTokenReq) 
 		RoleCodes:    []string{RoleSuperAdmin},
 		Salt:         admin.Salt,
 		TokenType:    jwt.TokenPreview,
-		IsPlatform:   true,
+		IsPlatform:   d.IsPlatformMode(),
 		ClientIP:     utils.NormalizeIP(ctxdata.ClientIPFromCtx(ctx)),
 	})
 	if err != nil {

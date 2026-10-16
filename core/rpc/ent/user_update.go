@@ -59,26 +59,6 @@ func (_u *UserUpdate) ClearDeletedAt() *UserUpdate {
 	return _u
 }
 
-// SetOperatorCode sets the "operator_code" field.
-func (_u *UserUpdate) SetOperatorCode(v string) *UserUpdate {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *UserUpdate) SetNillableOperatorCode(v *string) *UserUpdate {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *UserUpdate) ClearOperatorCode() *UserUpdate {
-	_u.mutation.ClearOperatorCode()
-	return _u
-}
-
 // SetUserCode sets the "user_code" field.
 func (_u *UserUpdate) SetUserCode(v string) *UserUpdate {
 	_u.mutation.SetUserCode(v)
@@ -490,11 +470,6 @@ func (_u *UserUpdate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserUpdate) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := user.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "User.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UserCode(); ok {
 		if err := user.UserCodeValidator(v); err != nil {
 			return &ValidationError{Name: "user_code", err: fmt.Errorf(`ent: validator failed for field "User.user_code": %w`, err)}
@@ -553,9 +528,6 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.DeletedAtCleared() {
 		_spec.ClearField(user.FieldDeletedAt, field.TypeTime)
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(user.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(user.FieldOperatorCode, field.TypeString)
@@ -845,26 +817,6 @@ func (_u *UserUpdateOne) SetNillableDeletedAt(v *time.Time) *UserUpdateOne {
 // ClearDeletedAt clears the value of the "deleted_at" field.
 func (_u *UserUpdateOne) ClearDeletedAt() *UserUpdateOne {
 	_u.mutation.ClearDeletedAt()
-	return _u
-}
-
-// SetOperatorCode sets the "operator_code" field.
-func (_u *UserUpdateOne) SetOperatorCode(v string) *UserUpdateOne {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *UserUpdateOne) SetNillableOperatorCode(v *string) *UserUpdateOne {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *UserUpdateOne) ClearOperatorCode() *UserUpdateOne {
-	_u.mutation.ClearOperatorCode()
 	return _u
 }
 
@@ -1292,11 +1244,6 @@ func (_u *UserUpdateOne) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserUpdateOne) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := user.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "User.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UserCode(); ok {
 		if err := user.UserCodeValidator(v); err != nil {
 			return &ValidationError{Name: "user_code", err: fmt.Errorf(`ent: validator failed for field "User.user_code": %w`, err)}
@@ -1372,9 +1319,6 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.DeletedAtCleared() {
 		_spec.ClearField(user.FieldDeletedAt, field.TypeTime)
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(user.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(user.FieldOperatorCode, field.TypeString)

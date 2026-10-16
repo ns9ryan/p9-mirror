@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package integration;
+
+option go_package = "./integration";
+
+message Empty {}
+
+message IDReq {
+  int64 id = 1; // 主键 id
+}
+
+service Integration {
+  // group: base
+  rpc ping (Empty) returns (Empty);
+}

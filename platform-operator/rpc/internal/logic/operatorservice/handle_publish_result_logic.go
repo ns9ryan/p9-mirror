@@ -2,6 +2,7 @@ package operatorservicelogic
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -38,7 +39,14 @@ func (l *HandlePublishResultLogic) HandlePublishResult(in *operatorpb.HandlePubl
 		return nil, xerr.RpcErr(xerr.BadRequest(i18nkey.ValidationError))
 	}
 
+	l.Logger.Infow(
+		"收到调度任务完成回调",
+		logx.Field("task_no", taskNo),
+	)
+
 	// 从调度中心获取实际任务状态
+	l.Logger.Debugw("准备从node-dispatch查询任务详情", logx.Field("task_no", taskNo))
+
 	taskResult, err := l.svcCtx.NodeDispatchDispatchRpc.GetTask(
 		l.ctx,
 		&nodedispatchdispatchpb.GetTaskRequest{
@@ -49,7 +57,8 @@ func (l *HandlePublishResultLogic) HandlePublishResult(in *operatorpb.HandlePubl
 		l.Logger.Errorw(
 			"获取分站发布任务失败",
 			logx.Field("task_no", taskNo),
-			logx.Field("error", err.Error()),
+			logx.Field("error_type", fmt.Sprintf("%T", err)),
+			logx.Field("error_message", err.Error()),
 		)
 		return nil, err
 	}
@@ -63,11 +72,34 @@ func (l *HandlePublishResultLogic) HandlePublishResult(in *operatorpb.HandlePubl
 		return nil, xerr.RpcErr(xerr.InternalServerError(i18nkey.InternalError))
 	}
 
+	// 记录任务详细信息用于调试
+	task := taskResult.Task
+	l.Logger.Infow(
+		"收到任务详情",
+		logx.Field("task_no", task.TaskNo),
+		logx.Field("request_no", task.RequestNo),
+		logx.Field("target", task.Target),
+		logx.Field("task_type", task.TaskType),
+		logx.Field("status", task.Status),
+		logx.Field("message", task.ErrorMessage),
+	)
+
 	// 校验发布任务并获取发布请求编号
 	_, requestNo, err := validatePublishTask(taskResult.Task, taskNo, "")
 	if err != nil {
+		l.Logger.Errorw(
+			"任务校验失败",
+			logx.Field("task_no", taskNo),
+			logx.Field("error", err.Error()),
+		)
 		return nil, err
 	}
+
+	l.Logger.Debugw(
+		"任务校验通过，准备查询当前分站状态",
+		logx.Field("task_no", taskNo),
+		logx.Field("request_no", requestNo),
+	)
 
 	// 根据发布请求编号获取当前分站
 	current, err := l.svcCtx.DB.Operator.
@@ -89,6 +121,14 @@ func (l *HandlePublishResultLogic) HandlePublishResult(in *operatorpb.HandlePubl
 		return nil, enterror.Handle(l.Logger, err)
 	}
 
+	l.Logger.Debugw(
+		"查询到当前分站信息",
+		logx.Field("operator_id", current.ID),
+		logx.Field("operator_code", current.Code),
+		logx.Field("publish_status", current.PublishStatus),
+		logx.Field("publish_request_no", current.PublishRequestNo),
+	)
+
 	// 应用最终发布任务结果
 	updated, handled, err := applyFinalPublishTask(
 		l.ctx,
@@ -98,13 +138,31 @@ func (l *HandlePublishResultLogic) HandlePublishResult(in *operatorpb.HandlePubl
 		taskResult.Task,
 	)
 	if err != nil {
+		l.Logger.Errorw(
+			"应用最终发布任务结果失败",
+			logx.Field("task_no", taskNo),
+			logx.Field("operator_code", current.Code),
+			logx.Field("error", err.Error()),
+		)
 		return nil, err
 	}
 
 	// 当前已经进入新的发布轮次时忽略旧任务结果
 	if !handled {
+		l.Logger.Infow(
+			"任务结果已被其他流程处理或分站进入新的发布轮次",
+			logx.Field("task_no", taskNo),
+			logx.Field("operator_code", updated.Code),
+		)
 		return &operatorpb.HandlePublishResultResponse{}, nil
 	}
+
+	l.Logger.Infow(
+		"分站发布结果处理成功",
+		logx.Field("task_no", taskNo),
+		logx.Field("operator_code", updated.Code),
+		logx.Field("publish_status", updated.PublishStatus),
+	)
 
 	// 返回发布结果
 	return &operatorpb.HandlePublishResultResponse{

@@ -1,0 +1,25 @@
+export default {
+  'menu.threePart.strategy': '策略管理',
+
+  'strategyManage.tip':
+    '调整「启用」与「优先级」后点击保存；优先级数值越小越优先',
+  'strategyManage.search.ip': 'IP：',
+  'strategyManage.search.ipPlaceholder': '请输入 IP，多个用逗号分隔',
+  'strategyManage.search.ipRequired': '请输入 IP',
+  'strategyManage.result.title': 'IP 查询结果',
+  'strategyManage.column.providerId': '服务商 ID',
+  'strategyManage.column.provider': '服务商',
+  'strategyManage.column.tag': '标签',
+  'strategyManage.column.enabled': '启用',
+  'strategyManage.column.priority': '优先级',
+  'strategyManage.column.query': 'IP',
+  'strategyManage.column.country': '国家',
+  'strategyManage.column.countryCode': '国家码',
+  'strategyManage.column.province': '省份',
+  'strategyManage.column.city': '城市',
+  'strategyManage.column.isp': 'ISP',
+  'strategyManage.column.org': '组织',
+  'strategyManage.column.as': 'AS',
+  'strategyManage.column.source': '来源',
+  'strategyManage.message.empty': '暂无策略可保存',
+};

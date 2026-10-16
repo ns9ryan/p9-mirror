@@ -78,3 +78,69 @@ message InitializeBasicResourcesResponse {
   // 代理线路初始化统计
   ResourceStat agent_line_stat = 5;
 }
+
+// 域名模型
+message DomainModel {
+  // 域名, 不包含协议和端口
+  string domain_name = 1;
+  // 域名类型: 1分站后台, 2代理后台, 3会员H5
+  int64 domain_type = 2;
+}
+
+// 初始化域名请求
+message InitializeDomainsRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 分站域名列表
+  repeated DomainModel domain_list = 2;
+}
+
+// 初始化域名响应
+message InitializeDomainsResponse {
+  // 初始化是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 域名初始化统计
+  ResourceStat domain_stat = 3;
+}
+
+// 删除分站数据请求
+message DeleteOperatorBasicResourcesRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+}
+
+// 删除分站数据响应
+message DeleteOperatorBasicResourcesResponse {
+  // 删除是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 删除的域名数量
+  int64 domain_deleted = 3;
+  // 删除的语言数量
+  int64 language_deleted = 4;
+  // 删除的地区数量
+  int64 region_deleted = 5;
+  // 删除的代理线路数量
+  int64 agent_line_deleted = 6;
+}
+
+// 删除分站域名请求
+message DeleteOperatorDomainsRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 要删除的域名列表
+  repeated string domain_names = 2;
+}
+
+// 删除分站域名响应
+message DeleteOperatorDomainsResponse {
+  // 删除是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 删除的域名数量
+  int64 domain_deleted = 3;
+}

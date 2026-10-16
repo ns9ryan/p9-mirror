@@ -1,0 +1,83 @@
+syntax = "v1"
+
+info (
+	title:   "agent manage api"
+	desc:    "代理管理"
+	author:  "p9"
+	version: "v1"
+)
+
+import "common.api"
+
+type AddOperatorAgentReq {
+	Agent    AgentCreateFields `json:"agent"`
+	IsInit   bool              `json:"is_init,optional"`
+	ParentId int64             `json:"parent_id,optional"`
+}
+
+type ListAgentsReq {
+	Page             int32  `json:"page,optional"`
+	PageSize         int32  `json:"page_size,optional"`
+	RegisterSource   int32  `json:"register_source,optional"`
+	Level            int32  `json:"level,optional"`
+	Status           int32  `json:"status,optional"`
+	PayoutRestricted int32  `json:"payout_restricted,optional"`
+	TimeFilterType   int32  `json:"time_filter_type,optional"`
+	TimeStart        int64  `json:"time_start,optional"`
+	TimeEnd          int64  `json:"time_end,optional"`
+	NumberFilterType int32  `json:"number_filter_type,optional"`
+	NumberMin        int64  `json:"number_min,optional"`
+	NumberMax        int64  `json:"number_max,optional"`
+	AgentFilterType  int32  `json:"agent_filter_type,optional"`
+	AgentKeyword     string `json:"agent_keyword,optional"`
+}
+
+type ListAgentsResp {
+	Items []AgentListItem `json:"items"`
+	Total int64           `json:"total"`
+}
+
+type SearchAgentsReq {
+	Keyword string `json:"keyword"`
+	Level   int32  `json:"level,optional"`
+	Limit   int32  `json:"limit,optional"`
+}
+
+type SearchAgentsResp {
+	Items []AgentSearchItem `json:"items"`
+}
+
+type ListOperatorAgentsReq {
+	Level int32 `form:"level"`
+}
+
+type OperatorAgentLineGroup {
+	LineCode string            `json:"line_code"`
+	Agents   []AgentSearchItem `json:"agents"`
+}
+
+type ListOperatorAgentsResp {
+	Groups []OperatorAgentLineGroup `json:"groups"`
+}
+
+@server (
+	group:      agent/manage
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "代理列表"
+	@handler listAgents
+	post /agent/list (ListAgentsReq) returns (ListAgentsResp)
+
+	@doc "分站添加代理"
+	@handler addOperatorAgent
+	post /agent/create (AddOperatorAgentReq) returns (AddAgentResp)
+
+	@doc "搜索代理"
+	@handler searchAgents
+	post /agent/search (SearchAgentsReq) returns (SearchAgentsResp)
+
+	@doc "按层级列出代理并按线路分组"
+	@handler listOperatorAgents
+	get /agent/operator/list (ListOperatorAgentsReq) returns (ListOperatorAgentsResp)
+}

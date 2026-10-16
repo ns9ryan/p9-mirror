@@ -34,8 +34,8 @@ func (l *CreateLogic) Create(in *operatorpb.CreateOperatorRequest) (*operatorpb.
 	settlementCurrencyCode := strings.ToUpper(strings.TrimSpace(in.SettlementCurrencyCode))
 	remark := trimOptionalString(in.Remark)
 
-	// 生成分站业务编码
-	code := "OP_" + strings.ToUpper(strings.ReplaceAll(uuid.NewString(), "-", ""))
+	// 生成6位分站业务编码
+	code := "OP_" + strings.ToUpper(strings.ReplaceAll(uuid.NewString()[:6], "-", ""))
 
 	// 创建分站
 	data, err := l.svcCtx.DB.Operator.

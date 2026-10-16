@@ -14,6 +14,8 @@ import (
 )
 
 type (
+	DeleteOperatorGameRequest             = platform_game.DeleteOperatorGameRequest
+	DeleteOperatorGameResp                = platform_game.DeleteOperatorGameResp
 	GetOperatorGameAllocationListRequest  = platform_game.GetOperatorGameAllocationListRequest
 	GetOperatorGameAllocationListResp     = platform_game.GetOperatorGameAllocationListResp
 	PublishOperatorGameAllocationRequest  = platform_game.PublishOperatorGameAllocationRequest
@@ -24,6 +26,8 @@ type (
 		GetOperatorGameAllocationList(ctx context.Context, in *GetOperatorGameAllocationListRequest, opts ...grpc.CallOption) (*GetOperatorGameAllocationListResp, error)
 		// 发布游戏资源分配到指定分站
 		PublishOperatorGameAllocation(ctx context.Context, in *PublishOperatorGameAllocationRequest, opts ...grpc.CallOption) (*PublishOperatorGameAllocationResponse, error)
+		// 根据opcode删除分站游戏分配
+		DeleteOperatorGame(ctx context.Context, in *DeleteOperatorGameRequest, opts ...grpc.CallOption) (*DeleteOperatorGameResp, error)
 	}
 
 	defaultOperatorGameAllocationService struct {
@@ -47,4 +51,10 @@ func (m *defaultOperatorGameAllocationService) GetOperatorGameAllocationList(ctx
 func (m *defaultOperatorGameAllocationService) PublishOperatorGameAllocation(ctx context.Context, in *PublishOperatorGameAllocationRequest, opts ...grpc.CallOption) (*PublishOperatorGameAllocationResponse, error) {
 	client := platform_game.NewOperatorGameAllocationServiceClient(m.cli.Conn())
 	return client.PublishOperatorGameAllocation(ctx, in, opts...)
+}
+
+// 根据opcode删除分站游戏分配
+func (m *defaultOperatorGameAllocationService) DeleteOperatorGame(ctx context.Context, in *DeleteOperatorGameRequest, opts ...grpc.CallOption) (*DeleteOperatorGameResp, error) {
+	client := platform_game.NewOperatorGameAllocationServiceClient(m.cli.Conn())
+	return client.DeleteOperatorGame(ctx, in, opts...)
 }

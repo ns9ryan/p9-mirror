@@ -1,0 +1,48 @@
+syntax = "v1"
+
+info (
+	title:   "menu api"
+	desc:    "代理后台菜单树"
+	author:  "p9"
+	version: "v1"
+)
+
+// Menu tree node | 菜单树节点
+type MenuNode {
+	// ID | 菜单ID
+	Id         int64      `json:"id"`
+	// Parent ID | 父级ID
+	ParentId   int64      `json:"parent_id"`
+	// Menu type | 菜单类型
+	MenuType   int32      `json:"menu_type"`
+	// Path | 路由路径
+	Path       string     `json:"path"`
+	// Name | 路由名
+	Name       string     `json:"name"`
+	// Component | 前端组件
+	Component  string     `json:"component"`
+	// Redirect | 重定向
+	Redirect   string     `json:"redirect"`
+	// Title | 标题
+	Title      string     `json:"title"`
+	// Icon | 图标
+	Icon       string     `json:"icon"`
+	// Permission | 权限码
+	Permission string     `json:"permission"`
+	// Hide menu | 是否隐藏
+	HideMenu   int32      `json:"hide_menu"`
+	// Sort | 排序
+	Sort       int32      `json:"sort"`
+	// Children | 子菜单
+	Children   []MenuNode `json:"children"`
+}
+
+@server (
+	group:      agent/menu
+	middleware: Jwt
+)
+service agent_admin_api {
+	@doc "当前菜单树"
+	@handler getMenuByRole
+	get /menu/role returns ([]MenuNode)
+}

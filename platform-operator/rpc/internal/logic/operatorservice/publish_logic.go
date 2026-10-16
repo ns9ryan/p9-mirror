@@ -22,6 +22,7 @@ import (
 
 const (
 	dispatchTargetOperatorBase     = "operator-base"   // 分站基础服务
+	dispatchTargetOperatorGame     = "operator-game"   // 分站游戏服务
 	dispatchTaskTypeCreateOperator = "CREATE_OPERATOR" // 创建分站任务
 )
 

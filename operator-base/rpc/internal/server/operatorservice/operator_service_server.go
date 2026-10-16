@@ -35,3 +35,21 @@ func (s *OperatorServiceServer) InitializeBasicResources(ctx context.Context, in
 	l := operatorservicelogic.NewInitializeBasicResourcesLogic(ctx, s.svcCtx)
 	return l.InitializeBasicResources(in)
 }
+
+// 初始化域名到指定分站
+func (s *OperatorServiceServer) InitializeDomains(ctx context.Context, in *operatorpb.InitializeDomainsRequest) (*operatorpb.InitializeDomainsResponse, error) {
+	l := operatorservicelogic.NewInitializeDomainsLogic(ctx, s.svcCtx)
+	return l.InitializeDomains(in)
+}
+
+// 删除分站基础资源数据
+func (s *OperatorServiceServer) DeleteOperatorBasicResources(ctx context.Context, in *operatorpb.DeleteOperatorBasicResourcesRequest) (*operatorpb.DeleteOperatorBasicResourcesResponse, error) {
+	l := operatorservicelogic.NewDeleteOperatorBasicResourcesLogic(ctx, s.svcCtx)
+	return l.DeleteOperatorBasicResources(in)
+}
+
+// 删除分站域名
+func (s *OperatorServiceServer) DeleteOperatorDomains(ctx context.Context, in *operatorpb.DeleteOperatorDomainsRequest) (*operatorpb.DeleteOperatorDomainsResponse, error) {
+	l := operatorservicelogic.NewDeleteOperatorDomainsLogic(ctx, s.svcCtx)
+	return l.DeleteOperatorDomains(in)
+}

@@ -31,6 +31,7 @@ func i18nSeeds(i18nCode string) []*coreclient.I18NItem {
 	items = append(items, frontI18n(i18nCode)...)
 	items = append(items, langI18n(i18nCode)...)
 	items = append(items, errorI18n(i18nCode)...)
+	items = append(items, levelI18n(i18nCode)...)
 	// 如果i18nCode为总网平台，则添加运营商和代理站点的多语言数据
 	if i18nCode == i18n.CodePlatform {
 		items = append(items, menuI18n(i18n.CodeOperator)...)
@@ -56,6 +57,26 @@ func langI18n(i18nCode string) []*coreclient.I18NItem {
 	add("lang.zh-CN", "简体中文", "簡體中文", "Simplified Chinese")
 	add("lang.zh-HK", "繁体中文", "繁體中文", "Traditional Chinese")
 	add("lang.en-US", "英语", "英語", "English")
+	return out
+}
+
+// 等级词条数据
+func levelI18n(i18nCode string) []*coreclient.I18NItem {
+	var out []*coreclient.I18NItem
+	add := func(key, zh, hk, en string) {
+		out = append(out,
+			&coreclient.I18NItem{I18NCode: i18nCode, I18NGroup: i18n.GroupLevel, TransKey: key, Lang: i18n.LangZH, Value: zh},
+			&coreclient.I18NItem{I18NCode: i18nCode, I18NGroup: i18n.GroupLevel, TransKey: key, Lang: i18n.LangHK, Value: hk},
+			&coreclient.I18NItem{I18NCode: i18nCode, I18NGroup: i18n.GroupLevel, TransKey: key, Lang: i18n.LangEN, Value: en},
+		)
+	}
+	add("level.1", "一层", "一層", "Level 1")
+	add("level.2", "二层", "二層", "Level 2")
+	add("level.3", "三层", "三層", "Level 3")
+	add("level.4", "四层", "四層", "Level 4")
+	add("level.5", "五层", "五層", "Level 5")
+	add("level.6", "六层", "六層", "Level 6")
+	add("level.7", "七层", "七層", "Level 7")
 	return out
 }
 

@@ -36,26 +36,6 @@ func (_u *RoleUpdate) SetUpdatedAt(v time.Time) *RoleUpdate {
 	return _u
 }
 
-// SetOperatorCode sets the "operator_code" field.
-func (_u *RoleUpdate) SetOperatorCode(v string) *RoleUpdate {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *RoleUpdate) SetNillableOperatorCode(v *string) *RoleUpdate {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *RoleUpdate) ClearOperatorCode() *RoleUpdate {
-	_u.mutation.ClearOperatorCode()
-	return _u
-}
-
 // SetRoleCode sets the "role_code" field.
 func (_u *RoleUpdate) SetRoleCode(v string) *RoleUpdate {
 	_u.mutation.SetRoleCode(v)
@@ -281,11 +261,6 @@ func (_u *RoleUpdate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *RoleUpdate) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := role.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "Role.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.RoleCode(); ok {
 		if err := role.RoleCodeValidator(v); err != nil {
 			return &ValidationError{Name: "role_code", err: fmt.Errorf(`ent: validator failed for field "Role.role_code": %w`, err)}
@@ -318,9 +293,6 @@ func (_u *RoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(role.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(role.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(role.FieldOperatorCode, field.TypeString)
@@ -465,26 +437,6 @@ type RoleUpdateOne struct {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *RoleUpdateOne) SetUpdatedAt(v time.Time) *RoleUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetOperatorCode sets the "operator_code" field.
-func (_u *RoleUpdateOne) SetOperatorCode(v string) *RoleUpdateOne {
-	_u.mutation.SetOperatorCode(v)
-	return _u
-}
-
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_u *RoleUpdateOne) SetNillableOperatorCode(v *string) *RoleUpdateOne {
-	if v != nil {
-		_u.SetOperatorCode(*v)
-	}
-	return _u
-}
-
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (_u *RoleUpdateOne) ClearOperatorCode() *RoleUpdateOne {
-	_u.mutation.ClearOperatorCode()
 	return _u
 }
 
@@ -726,11 +678,6 @@ func (_u *RoleUpdateOne) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *RoleUpdateOne) check() error {
-	if v, ok := _u.mutation.OperatorCode(); ok {
-		if err := role.OperatorCodeValidator(v); err != nil {
-			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "Role.operator_code": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.RoleCode(); ok {
 		if err := role.RoleCodeValidator(v); err != nil {
 			return &ValidationError{Name: "role_code", err: fmt.Errorf(`ent: validator failed for field "Role.role_code": %w`, err)}
@@ -780,9 +727,6 @@ func (_u *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(role.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.OperatorCode(); ok {
-		_spec.SetField(role.FieldOperatorCode, field.TypeString, value)
 	}
 	if _u.mutation.OperatorCodeCleared() {
 		_spec.ClearField(role.FieldOperatorCode, field.TypeString)

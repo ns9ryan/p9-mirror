@@ -8,6 +8,9 @@ import (
 	"oa.98ent.com/p9/platform-game/rpc/ent"
 	"oa.98ent.com/p9/platform-game/rpc/ent/game"
 	"oa.98ent.com/p9/platform-game/rpc/ent/operatorgame"
+	"oa.98ent.com/p9/platform-game/rpc/ent/operatorgamecategory"
+	"oa.98ent.com/p9/platform-game/rpc/ent/operatorgamechannel"
+	"oa.98ent.com/p9/platform-game/rpc/ent/operatorgameprovider"
 )
 
 type OperatorGameDAO struct {
@@ -214,4 +217,38 @@ func (d *OperatorGameDAO) GetGameCodesByOpCode(ctx context.Context, opCode strin
 		gameCodes = append(gameCodes, record.GameCode)
 	}
 	return gameCodes, nil
+}
+
+// 通过OpCode删除所有游戏相关
+func (d *OperatorGameDAO) DeleteOperatorGameByOpCode(ctx context.Context, opCode string) (map[string]int, error) {
+	countMap := make(map[string]int)
+	affected, err := d.db.OperatorGame.Delete().
+		Where(operatorgame.OpCodeEQ(opCode)).
+		Exec(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("delete by opCode failed: %w", err)
+	}
+	countMap["OperatorGame"] = affected
+	affected, err = d.db.OperatorGameCategory.Delete().
+		Where(operatorgamecategory.OpCodeEQ(opCode)).
+		Exec(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("delete by opCode failed: %w", err)
+	}
+	countMap["OperatorGameCategory"] = affected
+	affected, err = d.db.OperatorGameChannel.Delete().
+		Where(operatorgamechannel.OpCodeEQ(opCode)).
+		Exec(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("delete by opCode failed: %w", err)
+	}
+	countMap["OperatorGameChannel"] = affected
+	affected, err = d.db.OperatorGameProvider.Delete().
+		Where(operatorgameprovider.OpCodeEQ(opCode)).
+		Exec(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("delete by opCode failed: %w", err)
+	}
+	countMap["OperatorGameProvider"] = affected
+	return countMap, nil
 }

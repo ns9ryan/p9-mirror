@@ -32,6 +32,14 @@ type (
 		// 基础资源分配列表
 		List []BasicResourceAllocationInfo `json:"list"`
 	}
+	// 发布基础资源分配请求
+	PublishBasicResourceAllocationRequest {
+		// 分站编码
+		OpCode string `json:"op_code" validate:"required,notblank"`
+	}
+	// 发布基础资源分配响应
+	PublishBasicResourceAllocationResponse {
+	}
 )
 
 @server (
@@ -43,5 +51,9 @@ service platform_operator {
 	// 获取基础资源分配列表
 	@handler ListBasicResourceAllocations
 	get /basic-resource-allocation/list (ListBasicResourceAllocationsRequest) returns (ListBasicResourceAllocationsResponse)
+
+	// 发布基础资源分配
+	@handler PublishBasicResourceAllocation
+	post /basic-resource-allocation/publish (PublishBasicResourceAllocationRequest) returns (PublishBasicResourceAllocationResponse)
 }
 

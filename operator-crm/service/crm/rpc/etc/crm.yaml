@@ -8,3 +8,25 @@ Etcd:
   Hosts:
     - 127.0.0.1:12379     # Etcd地址
   Key: crm-rpc            # 服务注册Key
+
+# 数据库配置
+DatabaseConf:
+  Host:     127.0.0.1       # 数据库地址
+  Port:     15432           # 数据库端口
+  DBName:   p9_operator01     # 数据库名称
+  Username: root            # 数据库用户名
+  Password: root            # 数据库密码
+  SSLMode:  disable         # SSL模式
+
+# 代理后台 JWT配置
+AgentAdminJwt:
+  AccessSecret: operator-agent-jwt-secret
+  AccessExpire: 86400
+  RefreshSecret: operator-agent-jwt-refresh-secret
+  RefreshExpire: 604800
+
+# 令牌黑名单 Redis 配置
+DataRedis:
+  Host: 127.0.0.1:16379
+  Pass: ""
+  DB: 0

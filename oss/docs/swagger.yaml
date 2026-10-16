@@ -1,0 +1,740 @@
+basePath: /
+consumes:
+- application/json
+info:
+  version: "1.0"
+paths:
+  /p9/oss/file/delete:
+    post:
+      consumes:
+      - application/json
+      description: delete
+      operationId: fileDelete
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            key:
+              type: string
+          required:
+          - key
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              key:
+                type: string
+              scene:
+                type: string
+              url:
+                type: string
+              url_expires_in:
+                type: integer
+              visibility:
+                type: string
+            type: object
+      summary: delete
+      tags:
+      - file
+  /p9/oss/file/list:
+    post:
+      consumes:
+      - application/json
+      description: list
+      operationId: fileList
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            page:
+              type: integer
+            page_size:
+              type: integer
+            scene:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    bucket:
+                      type: string
+                    content_type:
+                      type: string
+                    created_at:
+                      type: integer
+                    id:
+                      type: integer
+                    key:
+                      type: string
+                    name:
+                      type: string
+                    scene:
+                      type: string
+                    size:
+                      type: integer
+                    url:
+                      type: string
+                    url_expires_in:
+                      type: integer
+                    visibility:
+                      type: string
+                  required:
+                  - id
+                  - key
+                  - scene
+                  - bucket
+                  - name
+                  - size
+                  - content_type
+                  - url
+                  - created_at
+                  type: object
+                type: array
+              total:
+                type: integer
+            type: object
+      summary: list
+      tags:
+      - file
+  /p9/oss/file/upload:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: upload
+      operationId: uploadUpload
+      parameters:
+      - allowEmptyValue: true
+        in: formData
+        name: scene
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              key:
+                type: string
+              scene:
+                type: string
+              url:
+                type: string
+              url_expires_in:
+                type: integer
+              visibility:
+                type: string
+            type: object
+      summary: upload
+      tags:
+      - upload
+  /p9/oss/provider/active:
+    get:
+      description: active
+      operationId: providerActive
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_key:
+                type: string
+              buckets:
+                additionalProperties:
+                  properties:
+                    mode:
+                      type: string
+                    sign_ttl:
+                      type: integer
+                  required:
+                  - mode
+                  type: object
+                type: object
+              driver:
+                type: string
+              endpoint:
+                type: string
+              file_url:
+                type: string
+              id:
+                type: integer
+              is_default:
+                type: boolean
+              name:
+                type: string
+              path_style:
+                type: boolean
+              region:
+                type: string
+              secret_key:
+                type: string
+              source:
+                type: string
+            type: object
+      summary: active
+      tags:
+      - provider
+  /p9/oss/provider/create:
+    post:
+      consumes:
+      - application/json
+      description: create
+      operationId: providerCreate
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            access_key:
+              type: string
+            buckets:
+              additionalProperties:
+                properties:
+                  mode:
+                    type: string
+                  sign_ttl:
+                    type: integer
+                required:
+                - mode
+                type: object
+              type: object
+            driver:
+              type: string
+            endpoint:
+              type: string
+            file_url:
+              type: string
+            id:
+              type: integer
+            is_default:
+              type: boolean
+            name:
+              type: string
+            path_style:
+              type: boolean
+            region:
+              type: string
+            secret_key:
+              type: string
+            source:
+              type: string
+          required:
+          - name
+          - driver
+          - endpoint
+          - file_url
+          - access_key
+          - buckets
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_key:
+                type: string
+              buckets:
+                additionalProperties:
+                  properties:
+                    mode:
+                      type: string
+                    sign_ttl:
+                      type: integer
+                  required:
+                  - mode
+                  type: object
+                type: object
+              driver:
+                type: string
+              endpoint:
+                type: string
+              file_url:
+                type: string
+              id:
+                type: integer
+              is_default:
+                type: boolean
+              name:
+                type: string
+              path_style:
+                type: boolean
+              region:
+                type: string
+              secret_key:
+                type: string
+              source:
+                type: string
+            type: object
+      summary: create
+      tags:
+      - provider
+  /p9/oss/provider/delete:
+    post:
+      consumes:
+      - application/json
+      description: delete
+      operationId: providerDelete
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            id:
+              type: integer
+            ids:
+              items:
+                type: integer
+              type: array
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema: {}
+      summary: delete
+      tags:
+      - provider
+  /p9/oss/provider/detail:
+    get:
+      description: detail
+      operationId: providerDetail
+      parameters:
+      - in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_key:
+                type: string
+              buckets:
+                additionalProperties:
+                  properties:
+                    mode:
+                      type: string
+                    sign_ttl:
+                      type: integer
+                  required:
+                  - mode
+                  type: object
+                type: object
+              driver:
+                type: string
+              endpoint:
+                type: string
+              file_url:
+                type: string
+              id:
+                type: integer
+              is_default:
+                type: boolean
+              name:
+                type: string
+              path_style:
+                type: boolean
+              region:
+                type: string
+              secret_key:
+                type: string
+              source:
+                type: string
+            type: object
+      summary: detail
+      tags:
+      - provider
+  /p9/oss/provider/enable:
+    post:
+      consumes:
+      - application/json
+      description: enable
+      operationId: providerEnable
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            id:
+              type: integer
+            ids:
+              items:
+                type: integer
+              type: array
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_key:
+                type: string
+              buckets:
+                additionalProperties:
+                  properties:
+                    mode:
+                      type: string
+                    sign_ttl:
+                      type: integer
+                  required:
+                  - mode
+                  type: object
+                type: object
+              driver:
+                type: string
+              endpoint:
+                type: string
+              file_url:
+                type: string
+              id:
+                type: integer
+              is_default:
+                type: boolean
+              name:
+                type: string
+              path_style:
+                type: boolean
+              region:
+                type: string
+              secret_key:
+                type: string
+              source:
+                type: string
+            type: object
+      summary: enable
+      tags:
+      - provider
+  /p9/oss/provider/list:
+    post:
+      description: list
+      operationId: providerList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    access_key:
+                      type: string
+                    buckets:
+                      additionalProperties:
+                        properties:
+                          mode:
+                            type: string
+                          sign_ttl:
+                            type: integer
+                        required:
+                        - mode
+                        type: object
+                      type: object
+                    driver:
+                      type: string
+                    endpoint:
+                      type: string
+                    file_url:
+                      type: string
+                    id:
+                      type: integer
+                    is_default:
+                      type: boolean
+                    name:
+                      type: string
+                    path_style:
+                      type: boolean
+                    region:
+                      type: string
+                    secret_key:
+                      type: string
+                    source:
+                      type: string
+                  required:
+                  - name
+                  - driver
+                  - endpoint
+                  - file_url
+                  - access_key
+                  - buckets
+                  type: object
+                type: array
+              total:
+                type: integer
+            type: object
+      summary: list
+      tags:
+      - provider
+  /p9/oss/provider/update:
+    post:
+      consumes:
+      - application/json
+      description: update
+      operationId: providerUpdate
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            access_key:
+              type: string
+            buckets:
+              additionalProperties:
+                properties:
+                  mode:
+                    type: string
+                  sign_ttl:
+                    type: integer
+                required:
+                - mode
+                type: object
+              type: object
+            driver:
+              type: string
+            endpoint:
+              type: string
+            file_url:
+              type: string
+            id:
+              type: integer
+            is_default:
+              type: boolean
+            name:
+              type: string
+            path_style:
+              type: boolean
+            region:
+              type: string
+            secret_key:
+              type: string
+            source:
+              type: string
+          required:
+          - name
+          - driver
+          - endpoint
+          - file_url
+          - access_key
+          - buckets
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_key:
+                type: string
+              buckets:
+                additionalProperties:
+                  properties:
+                    mode:
+                      type: string
+                    sign_ttl:
+                      type: integer
+                  required:
+                  - mode
+                  type: object
+                type: object
+              driver:
+                type: string
+              endpoint:
+                type: string
+              file_url:
+                type: string
+              id:
+                type: integer
+              is_default:
+                type: boolean
+              name:
+                type: string
+              path_style:
+                type: boolean
+              region:
+                type: string
+              secret_key:
+                type: string
+              source:
+                type: string
+            type: object
+      summary: update
+      tags:
+      - provider
+  /p9/oss/upload/complete:
+    post:
+      consumes:
+      - application/json
+      description: complete
+      operationId: uploadComplete
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            key:
+              type: string
+            scene:
+              type: string
+          required:
+          - key
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              key:
+                type: string
+              scene:
+                type: string
+              url:
+                type: string
+              url_expires_in:
+                type: integer
+              visibility:
+                type: string
+            type: object
+      summary: complete
+      tags:
+      - upload
+  /p9/oss/upload/presign:
+    post:
+      consumes:
+      - application/json
+      description: presign
+      operationId: uploadPresign
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            filename:
+              type: string
+            scene:
+              type: string
+            size:
+              type: integer
+          required:
+          - filename
+          - size
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              expires_in:
+                type: integer
+              headers:
+                additionalProperties:
+                  type: string
+                type: object
+              key:
+                type: string
+              method:
+                type: string
+              put_url:
+                type: string
+              scene:
+                type: string
+              url:
+                type: string
+              url_expires_in:
+                type: integer
+              visibility:
+                type: string
+            type: object
+      summary: presign
+      tags:
+      - upload
+  /p9/oss/url/detail:
+    get:
+      description: resolve
+      operationId: uploadResolve
+      parameters:
+      - allowEmptyValue: true
+        in: query
+        name: key
+        type: string
+      - allowEmptyValue: true
+        in: query
+        name: url
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              key:
+                type: string
+              scene:
+                type: string
+              url:
+                type: string
+              url_expires_in:
+                type: integer
+              visibility:
+                type: string
+            type: object
+      summary: resolve
+      tags:
+      - upload
+produces:
+- application/json
+schemes:
+- http
+- https
+security:
+- BearerAuth: []
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT，Postman 选 Bearer Token，只填 access_token
+openapi: 3.0.3
+x-date: "2026-09-10 16:43:36"
+x-description: This is a goctls generated swagger file.
+x-github: https://github.com/suyuan32/simple-admin-core
+x-goctl-version: v1.14.8
+x-simple-admin-doc: https://doc.ryansu.tech/zh/

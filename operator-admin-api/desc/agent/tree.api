@@ -1,0 +1,38 @@
+syntax = "v1"
+
+info (
+	title:   "agent tree api"
+	desc:    "代理树节点"
+	author:  "p9"
+	version: "v1"
+)
+
+type TreeNodeAgentsReq {
+	// Parent ID | 上级代理 ID，0 为顶层
+	ParentId int64 `form:"parent_id,optional"`
+}
+
+type TreeNodeAgentItem {
+	// ID | 代理ID
+	Id int64 `json:"id"`
+	// Account | 账号
+	Account string `json:"account"`
+	// Line code | 线路编码
+	LineCode string `json:"line_code"`
+	// Level | 层级
+	Level int32 `json:"level"`
+	// Level alias | 等级别名
+	LevelAlias string `json:"level_alias"`
+	// Direct agent count | 直属代理数
+	DirectAgentCount int64 `json:"direct_agent_count"`
+}
+
+@server (
+	group:      agent/tree
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "代理树节点（按上级 ID；0 为顶层）"
+	@handler treeNodeAgents
+	get /agent/tree/node (TreeNodeAgentsReq) returns ([]TreeNodeAgentItem)
+}

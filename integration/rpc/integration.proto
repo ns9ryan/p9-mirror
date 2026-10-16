@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package integration;
+option go_package = "./integration";
+
+message Empty {}
+
+message IDReq {
+  int64 id = 1; // 主键 id
+}
+
+// 单条 IP 查询结果
+message IpInfo {
+  string query = 1;             // 请求中的原始 IP
+  string continent = 2;         // 大洲名（随 lang）
+  string continent_code = 3;    // 大洲代码，如 NA
+  string country = 4;           // 国家名（随 lang）
+  string country_code = 5;      // 国家代码，如 US
+  string province = 6;          // 省/州
+  string province_iso_code = 7; // 省/州 ISO，如 CA
+  string city = 8;              // 城市
+  string zip = 9;               // 邮编（与 postal 同源）
+  double lat = 10;              // 纬度
+  double lon = 11;              // 经度
+  string timezone = 12;         // 时区
+  string isp = 13;              // ISP
+  string org = 14;              // 组织
+  string as = 15;               // ASN 文本
+  string postal = 16;           // 邮编
+  string source = 17;           // 命中服务商 name，或 private
+}
+
+// 本地 IP 表（driver=local）一条记录
+message LocalIP {
+  int64 id = 1;                 // 主键；创建时忽略，更新时必填
+  string ip = 2;                // IPv4/IPv6，全局唯一
+  string continent = 3;         // 大洲名
+  string continent_code = 4;    // 大洲代码
+  string country = 5;           // 国家名
+  string country_code = 6;      // 国家代码
+  string province = 7;          // 省/州
+  string province_iso_code = 8; // 省/州 ISO
+  string city = 9;              // 城市
+  string zip = 10;              // 邮编（与 postal 写入同一列，填其一即可）
+  double lat = 11;              // 纬度
+  double lon = 12;              // 经度
+  string timezone = 13;         // 时区
+  string isp = 14;              // ISP
+  string org = 15;              // 组织
+  string as = 16;               // ASN 文本
+  string postal = 17;           // 邮编
+}
+
+message LocalIPListReq {
+  int32 page = 1;      // 页码，从 1；≤0 用默认
+  int32 page_size = 2; // 每页条数，默认 20、最大 100
+  string ip = 3;       // 按 IP 模糊筛选，可空
+}
+
+message LocalIPListResp {
+  repeated LocalIP list = 1; // 列表，禁止 null
+  int64 total = 2;           // 总数
+}
+
+// 保存策略时的单项（不含 name/tag）
+message PolicyItem {
+  int64 provider_id = 1; // 全局服务商 id
+  bool is_enabled = 2;   // 是否启用
+  int32 priority = 3;    // 优先级，越小越先
+}
+
+message PolicyListResp {
+  repeated PolicyView list = 1; // 全部服务商策略，按 priority、id 升序
+  int64 total = 2;              // 条数
+}
+
+// 租户视角的服务商策略（列表回显）
+message PolicyView {
+  int64 provider_id = 1; // 全局服务商 id，保存时回传
+  string name = 2;       // 服务商名称
+  bool is_enabled = 3;   // 当前租户是否启用；未配策略时为默认
+  int32 priority = 4;    // 当前租户优先级，越小越先
+  string tag = 5;        // 在线 / 本地 / 离线
+}
+
+message SavePolicyReq {
+  repeated PolicyItem list = 1; // 策略列表；savePolicies=租户覆盖，saveDefaultPolicies=写服务商默认
+}
+
+// 查询 IP 地理位置
+message SearchIpReq {
+  repeated string ips = 1; // 待查 IP 列表，最多 100 个
+  string lang = 2;         // 本地化语言，空则 en；允许：en zh-CN pt-BR ru fr ja es de
+}
+
+message SearchIpResp {
+  repeated IpInfo list = 1; // 查询结果列表
+}
+
+service Integration {
+  //  group: base
+  rpc ping(Empty) returns (Empty);
+  //  group: ipgeo
+  rpc searchIp(SearchIpReq) returns (SearchIpResp);
+  //  group: ipgeo
+  //  方法名用 LocalIp 而非 LocalIP，避免 goctl 生成 create_local_i_p_logic.go
+  rpc listLocalIps(LocalIPListReq) returns (LocalIPListResp);
+  //  group: ipgeo
+  rpc getLocalIp(IDReq) returns (LocalIP);
+  //  group: ipgeo
+  rpc createLocalIp(LocalIP) returns (LocalIP);
+  //  group: ipgeo
+  rpc updateLocalIp(LocalIP) returns (LocalIP);
+  //  group: ipgeo
+  rpc deleteLocalIp(IDReq) returns (Empty);
+  //  group: ipgeo
+  rpc listPolicies(Empty) returns (PolicyListResp);
+  //  group: ipgeo
+  rpc savePolicies(SavePolicyReq) returns (PolicyListResp);
+  //  group: ipgeo
+  rpc saveDefaultPolicies(SavePolicyReq) returns (PolicyListResp);
+}

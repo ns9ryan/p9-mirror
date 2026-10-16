@@ -352,6 +352,12 @@ func (_c *UserCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *UserCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "User.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "User.updated_at"`)}
+	}
 	if v, ok := _c.mutation.OperatorCode(); ok {
 		if err := user.OperatorCodeValidator(v); err != nil {
 			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "User.operator_code": %w`, err)}

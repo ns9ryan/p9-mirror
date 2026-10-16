@@ -28,3 +28,9 @@ func (s *PublishDataServiceServer) SyncPublishedData(ctx context.Context, in *op
 	l := publishdataservicelogic.NewSyncPublishedDataLogic(ctx, s.svcCtx)
 	return l.SyncPublishedData(in)
 }
+
+// 删除分站的游戏数据
+func (s *PublishDataServiceServer) DeleteOperatorData(ctx context.Context, in *operator_game.DeleteOperatorDataRequest) (*operator_game.DeleteOperatorDataResponse, error) {
+	l := publishdataservicelogic.NewDeleteOperatorDataLogic(ctx, s.svcCtx)
+	return l.DeleteOperatorData(in)
+}

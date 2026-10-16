@@ -771,7 +771,8 @@ var GameChannelService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	PublishDataService_SyncPublishedData_FullMethodName = "/operator_game.PublishDataService/SyncPublishedData"
+	PublishDataService_SyncPublishedData_FullMethodName  = "/operator_game.PublishDataService/SyncPublishedData"
+	PublishDataService_DeleteOperatorData_FullMethodName = "/operator_game.PublishDataService/DeleteOperatorData"
 )
 
 // PublishDataServiceClient is the client API for PublishDataService service.
@@ -782,6 +783,8 @@ const (
 type PublishDataServiceClient interface {
 	// 同步已发布的游戏数据到分站
 	SyncPublishedData(ctx context.Context, in *SyncPublishedDataRequest, opts ...grpc.CallOption) (*SyncPublishedDataResp, error)
+	// 删除分站的游戏数据
+	DeleteOperatorData(ctx context.Context, in *DeleteOperatorDataRequest, opts ...grpc.CallOption) (*DeleteOperatorDataResponse, error)
 }
 
 type publishDataServiceClient struct {
@@ -802,6 +805,16 @@ func (c *publishDataServiceClient) SyncPublishedData(ctx context.Context, in *Sy
 	return out, nil
 }
 
+func (c *publishDataServiceClient) DeleteOperatorData(ctx context.Context, in *DeleteOperatorDataRequest, opts ...grpc.CallOption) (*DeleteOperatorDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteOperatorDataResponse)
+	err := c.cc.Invoke(ctx, PublishDataService_DeleteOperatorData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PublishDataServiceServer is the server API for PublishDataService service.
 // All implementations must embed UnimplementedPublishDataServiceServer
 // for forward compatibility.
@@ -810,6 +823,8 @@ func (c *publishDataServiceClient) SyncPublishedData(ctx context.Context, in *Sy
 type PublishDataServiceServer interface {
 	// 同步已发布的游戏数据到分站
 	SyncPublishedData(context.Context, *SyncPublishedDataRequest) (*SyncPublishedDataResp, error)
+	// 删除分站的游戏数据
+	DeleteOperatorData(context.Context, *DeleteOperatorDataRequest) (*DeleteOperatorDataResponse, error)
 	mustEmbedUnimplementedPublishDataServiceServer()
 }
 
@@ -822,6 +837,9 @@ type UnimplementedPublishDataServiceServer struct{}
 
 func (UnimplementedPublishDataServiceServer) SyncPublishedData(context.Context, *SyncPublishedDataRequest) (*SyncPublishedDataResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method SyncPublishedData not implemented")
+}
+func (UnimplementedPublishDataServiceServer) DeleteOperatorData(context.Context, *DeleteOperatorDataRequest) (*DeleteOperatorDataResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteOperatorData not implemented")
 }
 func (UnimplementedPublishDataServiceServer) mustEmbedUnimplementedPublishDataServiceServer() {}
 func (UnimplementedPublishDataServiceServer) testEmbeddedByValue()                            {}
@@ -862,6 +880,24 @@ func _PublishDataService_SyncPublishedData_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PublishDataService_DeleteOperatorData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOperatorDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PublishDataServiceServer).DeleteOperatorData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PublishDataService_DeleteOperatorData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PublishDataServiceServer).DeleteOperatorData(ctx, req.(*DeleteOperatorDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PublishDataService_ServiceDesc is the grpc.ServiceDesc for PublishDataService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -872,6 +908,10 @@ var PublishDataService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SyncPublishedData",
 			Handler:    _PublishDataService_SyncPublishedData_Handler,
+		},
+		{
+			MethodName: "DeleteOperatorData",
+			Handler:    _PublishDataService_DeleteOperatorData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

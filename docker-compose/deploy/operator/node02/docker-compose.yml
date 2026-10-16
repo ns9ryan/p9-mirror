@@ -95,16 +95,58 @@ services:
     networks:
       - p9-operator-node02-network
 
+  operator-crm-rpc:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-crm-rpc:${VERSION:-1.0.0}
+    container_name: operator-node02-crm-rpc
+    restart: always
+    ports:
+      - "39202:39202"
+    volumes:
+      - ./etc/crm/rpc/operator_crm.yaml:/app/etc/crm.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - p9-operator-node02-network
+
+  operator-admin-api:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-admin-api:${VERSION:-1.0.0}
+    container_name: operator-node02-admin-api
+    restart: always
+    ports:
+      - "38210:38210"
+    volumes:
+      - ./etc/crm/api/operator_admin_api.yaml:/app/etc/operator_admin_api.yaml:ro
+    depends_on:
+      - operator-crm-rpc
+    networks:
+      - p9-operator-node02-network
+
+  agent-admin-api:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/agent-admin-api:${VERSION:-1.0.0}
+    container_name: agent-node02-admin-api
+    restart: always
+    ports:
+      - "38211:38211"
+    volumes:
+      - ./etc/crm/api/agent_admin_api.yaml:/app/etc/agent_admin_api.yaml:ro
+    depends_on:
+      - operator-crm-rpc
+    networks:
+      - p9-operator-node02-network
+
   node-agent:
     image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/node-agent:${VERSION:-1.0.0}
     container_name: operator-node02-agent
     restart: always
     volumes:
       - ./etc/node-agent/node_agent.yaml:/app/etc/node_agent.yaml:ro
+      - /home/bbs/docker-compose/nginx/conf.d/node02:/app/node02
     depends_on:
       - operator-base-rpc
     networks:
       - p9-operator-node02-network
+      - p9-shared-network
 
   operator-game-rpc:
     image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-game-rpc:${VERSION:-1.0.0}

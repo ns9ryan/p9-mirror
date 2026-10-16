@@ -1,0 +1,7 @@
+Name: platform-message.rpc
+ListenOn: 0.0.0.0:19004
+
+Etcd:
+  Hosts:
+    - 127.0.0.1:12379
+  Key: platform-message.rpc

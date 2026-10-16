@@ -496,6 +496,436 @@ func (x *InitializeBasicResourcesResponse) GetAgentLineStat() *ResourceStat {
 	return nil
 }
 
+// 域名模型
+type DomainModel struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 域名, 不包含协议和端口
+	DomainName string `protobuf:"bytes,1,opt,name=domain_name,json=domainName,proto3" json:"domain_name,omitempty"`
+	// 域名类型: 1分站后台, 2代理后台, 3会员H5
+	DomainType    int64 `protobuf:"varint,2,opt,name=domain_type,json=domainType,proto3" json:"domain_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DomainModel) Reset() {
+	*x = DomainModel{}
+	mi := &file_types_operator_base_operator_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DomainModel) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DomainModel) ProtoMessage() {}
+
+func (x *DomainModel) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_base_operator_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DomainModel.ProtoReflect.Descriptor instead.
+func (*DomainModel) Descriptor() ([]byte, []int) {
+	return file_types_operator_base_operator_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DomainModel) GetDomainName() string {
+	if x != nil {
+		return x.DomainName
+	}
+	return ""
+}
+
+func (x *DomainModel) GetDomainType() int64 {
+	if x != nil {
+		return x.DomainType
+	}
+	return 0
+}
+
+// 初始化域名请求
+type InitializeDomainsRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分站全局唯一业务编码
+	OperatorCode string `protobuf:"bytes,1,opt,name=operator_code,json=operatorCode,proto3" json:"operator_code,omitempty"`
+	// 分站域名列表
+	DomainList    []*DomainModel `protobuf:"bytes,2,rep,name=domain_list,json=domainList,proto3" json:"domain_list,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InitializeDomainsRequest) Reset() {
+	*x = InitializeDomainsRequest{}
+	mi := &file_types_operator_base_operator_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InitializeDomainsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InitializeDomainsRequest) ProtoMessage() {}
+
+func (x *InitializeDomainsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_base_operator_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InitializeDomainsRequest.ProtoReflect.Descriptor instead.
+func (*InitializeDomainsRequest) Descriptor() ([]byte, []int) {
+	return file_types_operator_base_operator_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *InitializeDomainsRequest) GetOperatorCode() string {
+	if x != nil {
+		return x.OperatorCode
+	}
+	return ""
+}
+
+func (x *InitializeDomainsRequest) GetDomainList() []*DomainModel {
+	if x != nil {
+		return x.DomainList
+	}
+	return nil
+}
+
+// 初始化域名响应
+type InitializeDomainsResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 初始化是否成功
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	// 错误或结果信息
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// 域名初始化统计
+	DomainStat    *ResourceStat `protobuf:"bytes,3,opt,name=domain_stat,json=domainStat,proto3" json:"domain_stat,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InitializeDomainsResponse) Reset() {
+	*x = InitializeDomainsResponse{}
+	mi := &file_types_operator_base_operator_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InitializeDomainsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InitializeDomainsResponse) ProtoMessage() {}
+
+func (x *InitializeDomainsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_base_operator_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InitializeDomainsResponse.ProtoReflect.Descriptor instead.
+func (*InitializeDomainsResponse) Descriptor() ([]byte, []int) {
+	return file_types_operator_base_operator_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *InitializeDomainsResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *InitializeDomainsResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *InitializeDomainsResponse) GetDomainStat() *ResourceStat {
+	if x != nil {
+		return x.DomainStat
+	}
+	return nil
+}
+
+// 删除分站数据请求
+type DeleteOperatorBasicResourcesRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分站全局唯一业务编码
+	OperatorCode  string `protobuf:"bytes,1,opt,name=operator_code,json=operatorCode,proto3" json:"operator_code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorBasicResourcesRequest) Reset() {
+	*x = DeleteOperatorBasicResourcesRequest{}
+	mi := &file_types_operator_base_operator_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorBasicResourcesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorBasicResourcesRequest) ProtoMessage() {}
+
+func (x *DeleteOperatorBasicResourcesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_base_operator_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorBasicResourcesRequest.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorBasicResourcesRequest) Descriptor() ([]byte, []int) {
+	return file_types_operator_base_operator_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *DeleteOperatorBasicResourcesRequest) GetOperatorCode() string {
+	if x != nil {
+		return x.OperatorCode
+	}
+	return ""
+}
+
+// 删除分站数据响应
+type DeleteOperatorBasicResourcesResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 删除是否成功
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	// 错误或结果信息
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// 删除的域名数量
+	DomainDeleted int64 `protobuf:"varint,3,opt,name=domain_deleted,json=domainDeleted,proto3" json:"domain_deleted,omitempty"`
+	// 删除的语言数量
+	LanguageDeleted int64 `protobuf:"varint,4,opt,name=language_deleted,json=languageDeleted,proto3" json:"language_deleted,omitempty"`
+	// 删除的地区数量
+	RegionDeleted int64 `protobuf:"varint,5,opt,name=region_deleted,json=regionDeleted,proto3" json:"region_deleted,omitempty"`
+	// 删除的代理线路数量
+	AgentLineDeleted int64 `protobuf:"varint,6,opt,name=agent_line_deleted,json=agentLineDeleted,proto3" json:"agent_line_deleted,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) Reset() {
+	*x = DeleteOperatorBasicResourcesResponse{}
+	mi := &file_types_operator_base_operator_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorBasicResourcesResponse) ProtoMessage() {}
+
+func (x *DeleteOperatorBasicResourcesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_base_operator_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorBasicResourcesResponse.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorBasicResourcesResponse) Descriptor() ([]byte, []int) {
+	return file_types_operator_base_operator_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) GetDomainDeleted() int64 {
+	if x != nil {
+		return x.DomainDeleted
+	}
+	return 0
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) GetLanguageDeleted() int64 {
+	if x != nil {
+		return x.LanguageDeleted
+	}
+	return 0
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) GetRegionDeleted() int64 {
+	if x != nil {
+		return x.RegionDeleted
+	}
+	return 0
+}
+
+func (x *DeleteOperatorBasicResourcesResponse) GetAgentLineDeleted() int64 {
+	if x != nil {
+		return x.AgentLineDeleted
+	}
+	return 0
+}
+
+// 删除分站域名请求
+type DeleteOperatorDomainsRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 分站全局唯一业务编码
+	OperatorCode string `protobuf:"bytes,1,opt,name=operator_code,json=operatorCode,proto3" json:"operator_code,omitempty"`
+	// 要删除的域名列表
+	DomainNames   []string `protobuf:"bytes,2,rep,name=domain_names,json=domainNames,proto3" json:"domain_names,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorDomainsRequest) Reset() {
+	*x = DeleteOperatorDomainsRequest{}
+	mi := &file_types_operator_base_operator_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorDomainsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorDomainsRequest) ProtoMessage() {}
+
+func (x *DeleteOperatorDomainsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_base_operator_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorDomainsRequest.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorDomainsRequest) Descriptor() ([]byte, []int) {
+	return file_types_operator_base_operator_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *DeleteOperatorDomainsRequest) GetOperatorCode() string {
+	if x != nil {
+		return x.OperatorCode
+	}
+	return ""
+}
+
+func (x *DeleteOperatorDomainsRequest) GetDomainNames() []string {
+	if x != nil {
+		return x.DomainNames
+	}
+	return nil
+}
+
+// 删除分站域名响应
+type DeleteOperatorDomainsResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 删除是否成功
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	// 错误或结果信息
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// 删除的域名数量
+	DomainDeleted int64 `protobuf:"varint,3,opt,name=domain_deleted,json=domainDeleted,proto3" json:"domain_deleted,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorDomainsResponse) Reset() {
+	*x = DeleteOperatorDomainsResponse{}
+	mi := &file_types_operator_base_operator_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorDomainsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorDomainsResponse) ProtoMessage() {}
+
+func (x *DeleteOperatorDomainsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_operator_base_operator_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorDomainsResponse.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorDomainsResponse) Descriptor() ([]byte, []int) {
+	return file_types_operator_base_operator_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *DeleteOperatorDomainsResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *DeleteOperatorDomainsResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DeleteOperatorDomainsResponse) GetDomainDeleted() int64 {
+	if x != nil {
+		return x.DomainDeleted
+	}
+	return 0
+}
+
 var File_types_operator_base_operator_proto protoreflect.FileDescriptor
 
 const file_types_operator_base_operator_proto_rawDesc = "" +
@@ -534,7 +964,37 @@ const file_types_operator_base_operator_proto_rawDesc = "" +
 	"\rlanguage_stat\x18\x03 \x01(\v2$.operator_base_operator.ResourceStatR\flanguageStat\x12E\n" +
 	"\vregion_stat\x18\x04 \x01(\v2$.operator_base_operator.ResourceStatR\n" +
 	"regionStat\x12L\n" +
-	"\x0fagent_line_stat\x18\x05 \x01(\v2$.operator_base_operator.ResourceStatR\ragentLineStatBAZ?oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/operatorpbb\x06proto3"
+	"\x0fagent_line_stat\x18\x05 \x01(\v2$.operator_base_operator.ResourceStatR\ragentLineStat\"O\n" +
+	"\vDomainModel\x12\x1f\n" +
+	"\vdomain_name\x18\x01 \x01(\tR\n" +
+	"domainName\x12\x1f\n" +
+	"\vdomain_type\x18\x02 \x01(\x03R\n" +
+	"domainType\"\x85\x01\n" +
+	"\x18InitializeDomainsRequest\x12#\n" +
+	"\roperator_code\x18\x01 \x01(\tR\foperatorCode\x12D\n" +
+	"\vdomain_list\x18\x02 \x03(\v2#.operator_base_operator.DomainModelR\n" +
+	"domainList\"\x96\x01\n" +
+	"\x19InitializeDomainsResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12E\n" +
+	"\vdomain_stat\x18\x03 \x01(\v2$.operator_base_operator.ResourceStatR\n" +
+	"domainStat\"J\n" +
+	"#DeleteOperatorBasicResourcesRequest\x12#\n" +
+	"\roperator_code\x18\x01 \x01(\tR\foperatorCode\"\x81\x02\n" +
+	"$DeleteOperatorBasicResourcesResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +
+	"\x0edomain_deleted\x18\x03 \x01(\x03R\rdomainDeleted\x12)\n" +
+	"\x10language_deleted\x18\x04 \x01(\x03R\x0flanguageDeleted\x12%\n" +
+	"\x0eregion_deleted\x18\x05 \x01(\x03R\rregionDeleted\x12,\n" +
+	"\x12agent_line_deleted\x18\x06 \x01(\x03R\x10agentLineDeleted\"f\n" +
+	"\x1cDeleteOperatorDomainsRequest\x12#\n" +
+	"\roperator_code\x18\x01 \x01(\tR\foperatorCode\x12!\n" +
+	"\fdomain_names\x18\x02 \x03(\tR\vdomainNames\"z\n" +
+	"\x1dDeleteOperatorDomainsResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +
+	"\x0edomain_deleted\x18\x03 \x01(\x03R\rdomainDeletedBAZ?oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/operatorpbb\x06proto3"
 
 var (
 	file_types_operator_base_operator_proto_rawDescOnce sync.Once
@@ -548,15 +1008,22 @@ func file_types_operator_base_operator_proto_rawDescGZIP() []byte {
 	return file_types_operator_base_operator_proto_rawDescData
 }
 
-var file_types_operator_base_operator_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_types_operator_base_operator_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_types_operator_base_operator_proto_goTypes = []any{
-	(*OperatorInitializationInfo)(nil),       // 0: operator_base_operator.OperatorInitializationInfo
-	(*OperatorDomainInitializationInfo)(nil), // 1: operator_base_operator.OperatorDomainInitializationInfo
-	(*InitializeOperatorRequest)(nil),        // 2: operator_base_operator.InitializeOperatorRequest
-	(*InitializeOperatorResponse)(nil),       // 3: operator_base_operator.InitializeOperatorResponse
-	(*ResourceStat)(nil),                     // 4: operator_base_operator.ResourceStat
-	(*InitializeBasicResourcesRequest)(nil),  // 5: operator_base_operator.InitializeBasicResourcesRequest
-	(*InitializeBasicResourcesResponse)(nil), // 6: operator_base_operator.InitializeBasicResourcesResponse
+	(*OperatorInitializationInfo)(nil),           // 0: operator_base_operator.OperatorInitializationInfo
+	(*OperatorDomainInitializationInfo)(nil),     // 1: operator_base_operator.OperatorDomainInitializationInfo
+	(*InitializeOperatorRequest)(nil),            // 2: operator_base_operator.InitializeOperatorRequest
+	(*InitializeOperatorResponse)(nil),           // 3: operator_base_operator.InitializeOperatorResponse
+	(*ResourceStat)(nil),                         // 4: operator_base_operator.ResourceStat
+	(*InitializeBasicResourcesRequest)(nil),      // 5: operator_base_operator.InitializeBasicResourcesRequest
+	(*InitializeBasicResourcesResponse)(nil),     // 6: operator_base_operator.InitializeBasicResourcesResponse
+	(*DomainModel)(nil),                          // 7: operator_base_operator.DomainModel
+	(*InitializeDomainsRequest)(nil),             // 8: operator_base_operator.InitializeDomainsRequest
+	(*InitializeDomainsResponse)(nil),            // 9: operator_base_operator.InitializeDomainsResponse
+	(*DeleteOperatorBasicResourcesRequest)(nil),  // 10: operator_base_operator.DeleteOperatorBasicResourcesRequest
+	(*DeleteOperatorBasicResourcesResponse)(nil), // 11: operator_base_operator.DeleteOperatorBasicResourcesResponse
+	(*DeleteOperatorDomainsRequest)(nil),         // 12: operator_base_operator.DeleteOperatorDomainsRequest
+	(*DeleteOperatorDomainsResponse)(nil),        // 13: operator_base_operator.DeleteOperatorDomainsResponse
 }
 var file_types_operator_base_operator_proto_depIdxs = []int32{
 	0, // 0: operator_base_operator.InitializeOperatorRequest.operator:type_name -> operator_base_operator.OperatorInitializationInfo
@@ -564,11 +1031,13 @@ var file_types_operator_base_operator_proto_depIdxs = []int32{
 	4, // 2: operator_base_operator.InitializeBasicResourcesResponse.language_stat:type_name -> operator_base_operator.ResourceStat
 	4, // 3: operator_base_operator.InitializeBasicResourcesResponse.region_stat:type_name -> operator_base_operator.ResourceStat
 	4, // 4: operator_base_operator.InitializeBasicResourcesResponse.agent_line_stat:type_name -> operator_base_operator.ResourceStat
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	7, // 5: operator_base_operator.InitializeDomainsRequest.domain_list:type_name -> operator_base_operator.DomainModel
+	4, // 6: operator_base_operator.InitializeDomainsResponse.domain_stat:type_name -> operator_base_operator.ResourceStat
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_types_operator_base_operator_proto_init() }
@@ -582,7 +1051,7 @@ func file_types_operator_base_operator_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_operator_base_operator_proto_rawDesc), len(file_types_operator_base_operator_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

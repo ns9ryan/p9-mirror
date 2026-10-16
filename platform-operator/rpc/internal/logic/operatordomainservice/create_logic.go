@@ -6,6 +6,8 @@ import (
 
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/platform-operator/pkg/i18nkey"
+	"oa.98ent.com/p9/platform-operator/rpc/ent"
+	"oa.98ent.com/p9/platform-operator/rpc/ent/operatordomain"
 	"oa.98ent.com/p9/platform-operator/rpc/internal/enterror"
 	"oa.98ent.com/p9/platform-operator/rpc/internal/svc"
 	"oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/domainpb"
@@ -43,6 +45,23 @@ func (l *CreateLogic) Create(in *domainpb.CreateDomainRequest) (*domainpb.Create
 
 	// 标准化域名
 	domainName := strings.ToLower(strings.TrimSpace(in.DomainName))
+
+	// 校验域名是否重复
+	existingDomain, err := l.svcCtx.DB.OperatorDomain.
+		Query().
+		Where(
+			operatordomain.DomainNameEQ(domainName),
+		).
+		Only(l.ctx)
+	if err == nil && existingDomain != nil {
+		l.Errorf("域名已存在: domain_name=%s", domainName)
+		return nil, xerr.RpcErr(xerr.BadRequest("The domain name already exists"))
+	}
+	if err != nil && !ent.IsNotFound(err) {
+		l.Errorf("查询域名是否存在失败: domain_name=%s, error=%v", domainName, err)
+		// 转换Ent错误为gRPC错误
+		return nil, enterror.Handle(l.Logger, err)
+	}
 
 	// 创建分站域名
 	data, err := l.svcCtx.DB.OperatorDomain.

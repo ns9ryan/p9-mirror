@@ -1,0 +1,16 @@
+export default {
+  // 'login.brand.title': 'Intelligent Tech Platform',
+  // 'login.brand.subtitle': 'ZHINENGKEJIPINGTAI',
+  // 'login.form.title': 'Sign In',
+  // 'login.form.userName': 'Username',
+  // 'login.form.userName.placeholder': 'Enter username',
+  // 'login.form.userName.errMsg': 'Please enter username',
+  // 'login.form.password': 'Password',
+  // 'login.form.password.placeholder': 'Enter password',
+  // 'login.form.password.errMsg': 'Please enter password',
+  // 'login.form.rememberPassword': 'Remember me',
+  // 'login.form.forgetPassword': 'Forgot password?',
+  // 'login.form.login': 'Sign In',
+  // 'login.form.login.success': 'Signed in successfully',
+  // 'login.locale': 'Language',
+};

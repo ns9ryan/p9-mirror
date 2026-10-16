@@ -129,8 +129,11 @@ var PingService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	OperatorService_Initialize_FullMethodName               = "/operator_base.OperatorService/Initialize"
-	OperatorService_InitializeBasicResources_FullMethodName = "/operator_base.OperatorService/InitializeBasicResources"
+	OperatorService_Initialize_FullMethodName                   = "/operator_base.OperatorService/Initialize"
+	OperatorService_InitializeBasicResources_FullMethodName     = "/operator_base.OperatorService/InitializeBasicResources"
+	OperatorService_InitializeDomains_FullMethodName            = "/operator_base.OperatorService/InitializeDomains"
+	OperatorService_DeleteOperatorBasicResources_FullMethodName = "/operator_base.OperatorService/DeleteOperatorBasicResources"
+	OperatorService_DeleteOperatorDomains_FullMethodName        = "/operator_base.OperatorService/DeleteOperatorDomains"
 )
 
 // OperatorServiceClient is the client API for OperatorService service.
@@ -143,6 +146,12 @@ type OperatorServiceClient interface {
 	Initialize(ctx context.Context, in *operatorpb.InitializeOperatorRequest, opts ...grpc.CallOption) (*operatorpb.InitializeOperatorResponse, error)
 	// 初始化基础资源分配到指定分站
 	InitializeBasicResources(ctx context.Context, in *operatorpb.InitializeBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.InitializeBasicResourcesResponse, error)
+	// 初始化域名到指定分站
+	InitializeDomains(ctx context.Context, in *operatorpb.InitializeDomainsRequest, opts ...grpc.CallOption) (*operatorpb.InitializeDomainsResponse, error)
+	// 删除分站基础资源数据
+	DeleteOperatorBasicResources(ctx context.Context, in *operatorpb.DeleteOperatorBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorBasicResourcesResponse, error)
+	// 删除分站域名
+	DeleteOperatorDomains(ctx context.Context, in *operatorpb.DeleteOperatorDomainsRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorDomainsResponse, error)
 }
 
 type operatorServiceClient struct {
@@ -173,6 +182,36 @@ func (c *operatorServiceClient) InitializeBasicResources(ctx context.Context, in
 	return out, nil
 }
 
+func (c *operatorServiceClient) InitializeDomains(ctx context.Context, in *operatorpb.InitializeDomainsRequest, opts ...grpc.CallOption) (*operatorpb.InitializeDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(operatorpb.InitializeDomainsResponse)
+	err := c.cc.Invoke(ctx, OperatorService_InitializeDomains_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *operatorServiceClient) DeleteOperatorBasicResources(ctx context.Context, in *operatorpb.DeleteOperatorBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorBasicResourcesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(operatorpb.DeleteOperatorBasicResourcesResponse)
+	err := c.cc.Invoke(ctx, OperatorService_DeleteOperatorBasicResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *operatorServiceClient) DeleteOperatorDomains(ctx context.Context, in *operatorpb.DeleteOperatorDomainsRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(operatorpb.DeleteOperatorDomainsResponse)
+	err := c.cc.Invoke(ctx, OperatorService_DeleteOperatorDomains_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OperatorServiceServer is the server API for OperatorService service.
 // All implementations must embed UnimplementedOperatorServiceServer
 // for forward compatibility.
@@ -183,6 +222,12 @@ type OperatorServiceServer interface {
 	Initialize(context.Context, *operatorpb.InitializeOperatorRequest) (*operatorpb.InitializeOperatorResponse, error)
 	// 初始化基础资源分配到指定分站
 	InitializeBasicResources(context.Context, *operatorpb.InitializeBasicResourcesRequest) (*operatorpb.InitializeBasicResourcesResponse, error)
+	// 初始化域名到指定分站
+	InitializeDomains(context.Context, *operatorpb.InitializeDomainsRequest) (*operatorpb.InitializeDomainsResponse, error)
+	// 删除分站基础资源数据
+	DeleteOperatorBasicResources(context.Context, *operatorpb.DeleteOperatorBasicResourcesRequest) (*operatorpb.DeleteOperatorBasicResourcesResponse, error)
+	// 删除分站域名
+	DeleteOperatorDomains(context.Context, *operatorpb.DeleteOperatorDomainsRequest) (*operatorpb.DeleteOperatorDomainsResponse, error)
 	mustEmbedUnimplementedOperatorServiceServer()
 }
 
@@ -198,6 +243,15 @@ func (UnimplementedOperatorServiceServer) Initialize(context.Context, *operatorp
 }
 func (UnimplementedOperatorServiceServer) InitializeBasicResources(context.Context, *operatorpb.InitializeBasicResourcesRequest) (*operatorpb.InitializeBasicResourcesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method InitializeBasicResources not implemented")
+}
+func (UnimplementedOperatorServiceServer) InitializeDomains(context.Context, *operatorpb.InitializeDomainsRequest) (*operatorpb.InitializeDomainsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method InitializeDomains not implemented")
+}
+func (UnimplementedOperatorServiceServer) DeleteOperatorBasicResources(context.Context, *operatorpb.DeleteOperatorBasicResourcesRequest) (*operatorpb.DeleteOperatorBasicResourcesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteOperatorBasicResources not implemented")
+}
+func (UnimplementedOperatorServiceServer) DeleteOperatorDomains(context.Context, *operatorpb.DeleteOperatorDomainsRequest) (*operatorpb.DeleteOperatorDomainsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteOperatorDomains not implemented")
 }
 func (UnimplementedOperatorServiceServer) mustEmbedUnimplementedOperatorServiceServer() {}
 func (UnimplementedOperatorServiceServer) testEmbeddedByValue()                         {}
@@ -256,6 +310,60 @@ func _OperatorService_InitializeBasicResources_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OperatorService_InitializeDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(operatorpb.InitializeDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorServiceServer).InitializeDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorService_InitializeDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorServiceServer).InitializeDomains(ctx, req.(*operatorpb.InitializeDomainsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OperatorService_DeleteOperatorBasicResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(operatorpb.DeleteOperatorBasicResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorServiceServer).DeleteOperatorBasicResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorService_DeleteOperatorBasicResources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorServiceServer).DeleteOperatorBasicResources(ctx, req.(*operatorpb.DeleteOperatorBasicResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OperatorService_DeleteOperatorDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(operatorpb.DeleteOperatorDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperatorServiceServer).DeleteOperatorDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OperatorService_DeleteOperatorDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperatorServiceServer).DeleteOperatorDomains(ctx, req.(*operatorpb.DeleteOperatorDomainsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OperatorService_ServiceDesc is the grpc.ServiceDesc for OperatorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -270,6 +378,18 @@ var OperatorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "InitializeBasicResources",
 			Handler:    _OperatorService_InitializeBasicResources_Handler,
+		},
+		{
+			MethodName: "InitializeDomains",
+			Handler:    _OperatorService_InitializeDomains_Handler,
+		},
+		{
+			MethodName: "DeleteOperatorBasicResources",
+			Handler:    _OperatorService_DeleteOperatorBasicResources_Handler,
+		},
+		{
+			MethodName: "DeleteOperatorDomains",
+			Handler:    _OperatorService_DeleteOperatorDomains_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

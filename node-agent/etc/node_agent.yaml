@@ -6,6 +6,17 @@ AuthSecret: 4ac2d174414d8e7cf67252c1c10445670d41170ee3a5045d9d77f5a123e66bcb  # 
 Dispatch:
   WebSocketURL: ws://127.0.0.1:28002/ws/node                                  # WebSocket连接地址
 
+# Nginx 配置
+Nginx:
+  ConfDirPath: "/app/node01"    # Nginx 配置目录路径（可选，未配置时不生成 nginx 文件）
+  ContainerName: p9-nginx
+  PortMap:
+    Core: 38000
+    Base: 38001
+    Game: 38003
+    Operator: 18002
+    Dispatch: 28001
+
 # 总网分站RPC配置
 PlatformOperatorRpc:
   Etcd:

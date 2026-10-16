@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"oa.98ent.com/p9/common/ctxdata"
-	"oa.98ent.com/p9/core/common/entmixin"
+	"oa.98ent.com/p9/common/entmixin"
 	coreI18n "oa.98ent.com/p9/core/common/i18n"
 	"oa.98ent.com/p9/core/rpc/ent"
 	"oa.98ent.com/p9/core/rpc/ent/enttest"

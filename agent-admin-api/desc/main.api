@@ -1,0 +1,14 @@
+syntax = "v1"
+
+info (
+	title:   "Agent Admin API"
+	desc:    "代理后台 HTTP 接口"
+	author:  "p9"
+	version: "1.0.0"
+)
+
+import "base.api"
+import "./agent/auth.api"
+import "./agent/menu.api"
+import "./public/ping.api"
+import "./public/public.api"

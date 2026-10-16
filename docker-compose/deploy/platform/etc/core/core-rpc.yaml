@@ -10,7 +10,7 @@ Log:
 # Etcd服务注册配置
 Etcd:
   Hosts:
-    - 127.0.0.1:12379
+    - 192.168.0.15:2379
   Key: platform-core-rpc
 
 # 链路追踪, 生产建议 Sampler 0.01~0.1

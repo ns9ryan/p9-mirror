@@ -1,0 +1,13 @@
+.git
+.idea
+.vscode
+*.md
+docs
+demo-upload.html
+Jenkinsfile
+Makefile
+docker-compose*.yml
+Dockerfile
+Dockerfile.local
+oss
+service

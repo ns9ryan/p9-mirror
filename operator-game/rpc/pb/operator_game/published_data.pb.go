@@ -221,6 +221,137 @@ func (x *SyncStatistic) GetFailedReason() string {
 	return ""
 }
 
+// DeleteOperatorDataRequest 删除分站数据请求
+type DeleteOperatorDataRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OpCode        string                 `protobuf:"bytes,1,opt,name=op_code,json=opCode,proto3" json:"op_code,omitempty"` // 分站代码
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorDataRequest) Reset() {
+	*x = DeleteOperatorDataRequest{}
+	mi := &file_op_published_data_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorDataRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorDataRequest) ProtoMessage() {}
+
+func (x *DeleteOperatorDataRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_op_published_data_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorDataRequest.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorDataRequest) Descriptor() ([]byte, []int) {
+	return file_op_published_data_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DeleteOperatorDataRequest) GetOpCode() string {
+	if x != nil {
+		return x.OpCode
+	}
+	return ""
+}
+
+// DeleteOperatorDataResponse 删除分站数据响应
+type DeleteOperatorDataResponse struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Success bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// 各表的删除统计信息
+	CategoryDeleted int64 `protobuf:"varint,3,opt,name=category_deleted,json=categoryDeleted,proto3" json:"category_deleted,omitempty"` // 删除的分类数
+	ProviderDeleted int64 `protobuf:"varint,4,opt,name=provider_deleted,json=providerDeleted,proto3" json:"provider_deleted,omitempty"` // 删除的供应商数
+	ChannelDeleted  int64 `protobuf:"varint,5,opt,name=channel_deleted,json=channelDeleted,proto3" json:"channel_deleted,omitempty"`    // 删除的渠道数
+	GameDeleted     int64 `protobuf:"varint,6,opt,name=game_deleted,json=gameDeleted,proto3" json:"game_deleted,omitempty"`             // 删除的游戏数
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *DeleteOperatorDataResponse) Reset() {
+	*x = DeleteOperatorDataResponse{}
+	mi := &file_op_published_data_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteOperatorDataResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteOperatorDataResponse) ProtoMessage() {}
+
+func (x *DeleteOperatorDataResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_op_published_data_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteOperatorDataResponse.ProtoReflect.Descriptor instead.
+func (*DeleteOperatorDataResponse) Descriptor() ([]byte, []int) {
+	return file_op_published_data_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DeleteOperatorDataResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *DeleteOperatorDataResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *DeleteOperatorDataResponse) GetCategoryDeleted() int64 {
+	if x != nil {
+		return x.CategoryDeleted
+	}
+	return 0
+}
+
+func (x *DeleteOperatorDataResponse) GetProviderDeleted() int64 {
+	if x != nil {
+		return x.ProviderDeleted
+	}
+	return 0
+}
+
+func (x *DeleteOperatorDataResponse) GetChannelDeleted() int64 {
+	if x != nil {
+		return x.ChannelDeleted
+	}
+	return 0
+}
+
+func (x *DeleteOperatorDataResponse) GetGameDeleted() int64 {
+	if x != nil {
+		return x.GameDeleted
+	}
+	return 0
+}
+
 var File_op_published_data_proto protoreflect.FileDescriptor
 
 const file_op_published_data_proto_rawDesc = "" +
@@ -239,7 +370,16 @@ const file_op_published_data_proto_rawDesc = "" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12\x18\n" +
 	"\asuccess\x18\x02 \x01(\x03R\asuccess\x12\x16\n" +
 	"\x06failed\x18\x03 \x01(\x03R\x06failed\x12#\n" +
-	"\rfailed_reason\x18\x04 \x01(\tR\ffailedReasonB4Z2oa.98ent.com/p9/operator-game/rpc/pb/operator_gameb\x06proto3"
+	"\rfailed_reason\x18\x04 \x01(\tR\ffailedReason\"4\n" +
+	"\x19DeleteOperatorDataRequest\x12\x17\n" +
+	"\aop_code\x18\x01 \x01(\tR\x06opCode\"\xf2\x01\n" +
+	"\x1aDeleteOperatorDataResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12)\n" +
+	"\x10category_deleted\x18\x03 \x01(\x03R\x0fcategoryDeleted\x12)\n" +
+	"\x10provider_deleted\x18\x04 \x01(\x03R\x0fproviderDeleted\x12'\n" +
+	"\x0fchannel_deleted\x18\x05 \x01(\x03R\x0echannelDeleted\x12!\n" +
+	"\fgame_deleted\x18\x06 \x01(\x03R\vgameDeletedB4Z2oa.98ent.com/p9/operator-game/rpc/pb/operator_gameb\x06proto3"
 
 var (
 	file_op_published_data_proto_rawDescOnce sync.Once
@@ -253,11 +393,13 @@ func file_op_published_data_proto_rawDescGZIP() []byte {
 	return file_op_published_data_proto_rawDescData
 }
 
-var file_op_published_data_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_op_published_data_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_op_published_data_proto_goTypes = []any{
-	(*SyncPublishedDataRequest)(nil), // 0: operator_game.SyncPublishedDataRequest
-	(*SyncPublishedDataResp)(nil),    // 1: operator_game.SyncPublishedDataResp
-	(*SyncStatistic)(nil),            // 2: operator_game.SyncStatistic
+	(*SyncPublishedDataRequest)(nil),   // 0: operator_game.SyncPublishedDataRequest
+	(*SyncPublishedDataResp)(nil),      // 1: operator_game.SyncPublishedDataResp
+	(*SyncStatistic)(nil),              // 2: operator_game.SyncStatistic
+	(*DeleteOperatorDataRequest)(nil),  // 3: operator_game.DeleteOperatorDataRequest
+	(*DeleteOperatorDataResponse)(nil), // 4: operator_game.DeleteOperatorDataResponse
 }
 var file_op_published_data_proto_depIdxs = []int32{
 	2, // 0: operator_game.SyncPublishedDataResp.category_stat:type_name -> operator_game.SyncStatistic
@@ -282,7 +424,7 @@ func file_op_published_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_op_published_data_proto_rawDesc), len(file_op_published_data_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -253,7 +253,7 @@ func (d *Deps) requireSupportedLang(ctx context.Context, lang string) error {
 		return err
 	}
 	if !exist {
-		return xerr.BadRequest(coreI18n.I18nLangNotSupported)
+		// return xerr.BadRequest(coreI18n.I18nLangNotSupported)
 	}
 	return nil
 }
