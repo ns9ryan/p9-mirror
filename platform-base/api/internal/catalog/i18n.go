@@ -101,16 +101,54 @@ func baseDataI18n() []*coreclient.I18NItem {
 	addI18n(&out, i18nGroupBase, "base.currency.usdt.name", "泰达币", "泰達幣", "Tether")
 
 	// 国家地区
+
+	// 北美洲
+	addI18n(&out, i18nGroupBase, "base.region.us.name", "美国", "美國", "United States")
+	addI18n(&out, i18nGroupBase, "base.region.ca.name", "加拿大", "加拿大", "Canada")
+	addI18n(&out, i18nGroupBase, "base.region.mx.name", "墨西哥", "墨西哥", "Mexico")
+
+	// 南美洲
+	addI18n(&out, i18nGroupBase, "base.region.br.name", "巴西", "巴西", "Brazil")
+	addI18n(&out, i18nGroupBase, "base.region.ar.name", "阿根廷", "阿根廷", "Argentina")
+	addI18n(&out, i18nGroupBase, "base.region.co.name", "哥伦比亚", "哥倫比亞", "Colombia")
+	addI18n(&out, i18nGroupBase, "base.region.cl.name", "智利", "智利", "Chile")
+	addI18n(&out, i18nGroupBase, "base.region.pe.name", "秘鲁", "秘魯", "Peru")
+
+	// 欧洲
+	addI18n(&out, i18nGroupBase, "base.region.gb.name", "英国", "英國", "United Kingdom")
+	addI18n(&out, i18nGroupBase, "base.region.de.name", "德国", "德國", "Germany")
+	addI18n(&out, i18nGroupBase, "base.region.fr.name", "法国", "法國", "France")
+	addI18n(&out, i18nGroupBase, "base.region.it.name", "意大利", "意大利", "Italy")
+	addI18n(&out, i18nGroupBase, "base.region.es.name", "西班牙", "西班牙", "Spain")
+	addI18n(&out, i18nGroupBase, "base.region.pt.name", "葡萄牙", "葡萄牙", "Portugal")
+	addI18n(&out, i18nGroupBase, "base.region.nl.name", "荷兰", "荷蘭", "Netherlands")
+	addI18n(&out, i18nGroupBase, "base.region.ch.name", "瑞士", "瑞士", "Switzerland")
+	addI18n(&out, i18nGroupBase, "base.region.pl.name", "波兰", "波蘭", "Poland")
+	addI18n(&out, i18nGroupBase, "base.region.se.name", "瑞典", "瑞典", "Sweden")
+
+	// 亚洲
 	addI18n(&out, i18nGroupBase, "base.region.jp.name", "日本", "日本", "Japan")
+	addI18n(&out, i18nGroupBase, "base.region.kr.name", "韩国", "韓國", "South Korea")
+	addI18n(&out, i18nGroupBase, "base.region.in.name", "印度", "印度", "India")
 	addI18n(&out, i18nGroupBase, "base.region.vn.name", "越南", "越南", "Vietnam")
 	addI18n(&out, i18nGroupBase, "base.region.ph.name", "菲律宾", "菲律賓", "Philippines")
+	addI18n(&out, i18nGroupBase, "base.region.id.name", "印度尼西亚", "印度尼西亞", "Indonesia")
 	addI18n(&out, i18nGroupBase, "base.region.my.name", "马来西亚", "馬來西亞", "Malaysia")
 	addI18n(&out, i18nGroupBase, "base.region.th.name", "泰国", "泰國", "Thailand")
-	addI18n(&out, i18nGroupBase, "base.region.id.name", "印度尼西亚", "印度尼西亞", "Indonesia")
 	addI18n(&out, i18nGroupBase, "base.region.sg.name", "新加坡", "新加坡", "Singapore")
-	addI18n(&out, i18nGroupBase, "base.region.kr.name", "韩国", "韓國", "South Korea")
-	addI18n(&out, i18nGroupBase, "base.region.br.name", "巴西", "巴西", "Brazil")
-	addI18n(&out, i18nGroupBase, "base.region.us.name", "美国", "美國", "United States")
+	addI18n(&out, i18nGroupBase, "base.region.ae.name", "阿联酋", "阿聯酋", "United Arab Emirates")
+	addI18n(&out, i18nGroupBase, "base.region.sa.name", "沙特阿拉伯", "沙特阿拉伯", "Saudi Arabia")
+
+	// 非洲
+	addI18n(&out, i18nGroupBase, "base.region.za.name", "南非", "南非", "South Africa")
+	addI18n(&out, i18nGroupBase, "base.region.eg.name", "埃及", "埃及", "Egypt")
+	addI18n(&out, i18nGroupBase, "base.region.ng.name", "尼日利亚", "尼日利亞", "Nigeria")
+	addI18n(&out, i18nGroupBase, "base.region.ke.name", "肯尼亚", "肯尼亞", "Kenya")
+	addI18n(&out, i18nGroupBase, "base.region.ma.name", "摩洛哥", "摩洛哥", "Morocco")
+
+	// 大洋洲
+	addI18n(&out, i18nGroupBase, "base.region.au.name", "澳大利亚", "澳大利亞", "Australia")
+	addI18n(&out, i18nGroupBase, "base.region.nz.name", "新西兰", "新西蘭", "New Zealand")
 
 	return out
 }

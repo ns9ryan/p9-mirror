@@ -132,16 +132,53 @@ func (s *ServiceContext) mustInitRegion(ctx context.Context) {
 		status      int64  // 状态: 1启用, 2停用
 		sortNo      int64  // 排序值, 数值越小越靠前
 	}{
-		{code: "JP", callingCode: "81", nameKey: "region.jp.name", status: 1, sortNo: 10},
-		{code: "VN", callingCode: "84", nameKey: "region.vn.name", status: 1, sortNo: 20},
-		{code: "PH", callingCode: "63", nameKey: "region.ph.name", status: 1, sortNo: 30},
-		{code: "MY", callingCode: "60", nameKey: "region.my.name", status: 1, sortNo: 40},
-		{code: "TH", callingCode: "66", nameKey: "region.th.name", status: 1, sortNo: 50},
-		{code: "ID", callingCode: "62", nameKey: "region.id.name", status: 1, sortNo: 60},
-		{code: "SG", callingCode: "65", nameKey: "region.sg.name", status: 1, sortNo: 70},
-		{code: "KR", callingCode: "82", nameKey: "region.kr.name", status: 1, sortNo: 80},
-		{code: "BR", callingCode: "55", nameKey: "region.br.name", status: 1, sortNo: 90},
-		{code: "US", callingCode: "1", nameKey: "region.us.name", status: 1, sortNo: 100},
+		// 北美洲
+		{code: "US", callingCode: "1", nameKey: "region.us.name", status: 1, sortNo: 10},
+		{code: "CA", callingCode: "1", nameKey: "region.ca.name", status: 1, sortNo: 20},
+		{code: "MX", callingCode: "52", nameKey: "region.mx.name", status: 1, sortNo: 30},
+
+		// 南美洲
+		{code: "BR", callingCode: "55", nameKey: "region.br.name", status: 1, sortNo: 40},
+		{code: "AR", callingCode: "54", nameKey: "region.ar.name", status: 1, sortNo: 50},
+		{code: "CO", callingCode: "57", nameKey: "region.co.name", status: 1, sortNo: 60},
+		{code: "CL", callingCode: "56", nameKey: "region.cl.name", status: 1, sortNo: 70},
+		{code: "PE", callingCode: "51", nameKey: "region.pe.name", status: 1, sortNo: 80},
+
+		// 欧洲
+		{code: "GB", callingCode: "44", nameKey: "region.gb.name", status: 1, sortNo: 90},
+		{code: "DE", callingCode: "49", nameKey: "region.de.name", status: 1, sortNo: 100},
+		{code: "FR", callingCode: "33", nameKey: "region.fr.name", status: 1, sortNo: 110},
+		{code: "IT", callingCode: "39", nameKey: "region.it.name", status: 1, sortNo: 120},
+		{code: "ES", callingCode: "34", nameKey: "region.es.name", status: 1, sortNo: 130},
+		{code: "PT", callingCode: "351", nameKey: "region.pt.name", status: 1, sortNo: 140},
+		{code: "NL", callingCode: "31", nameKey: "region.nl.name", status: 1, sortNo: 150},
+		{code: "CH", callingCode: "41", nameKey: "region.ch.name", status: 1, sortNo: 160},
+		{code: "PL", callingCode: "48", nameKey: "region.pl.name", status: 1, sortNo: 170},
+		{code: "SE", callingCode: "46", nameKey: "region.se.name", status: 1, sortNo: 180},
+
+		// 亚洲
+		{code: "JP", callingCode: "81", nameKey: "region.jp.name", status: 1, sortNo: 190},
+		{code: "KR", callingCode: "82", nameKey: "region.kr.name", status: 1, sortNo: 200},
+		{code: "IN", callingCode: "91", nameKey: "region.in.name", status: 1, sortNo: 210},
+		{code: "VN", callingCode: "84", nameKey: "region.vn.name", status: 1, sortNo: 220},
+		{code: "PH", callingCode: "63", nameKey: "region.ph.name", status: 1, sortNo: 230},
+		{code: "ID", callingCode: "62", nameKey: "region.id.name", status: 1, sortNo: 240},
+		{code: "MY", callingCode: "60", nameKey: "region.my.name", status: 1, sortNo: 250},
+		{code: "TH", callingCode: "66", nameKey: "region.th.name", status: 1, sortNo: 260},
+		{code: "SG", callingCode: "65", nameKey: "region.sg.name", status: 1, sortNo: 270},
+		{code: "AE", callingCode: "971", nameKey: "region.ae.name", status: 1, sortNo: 280},
+		{code: "SA", callingCode: "966", nameKey: "region.sa.name", status: 1, sortNo: 290},
+
+		// 非洲
+		{code: "ZA", callingCode: "27", nameKey: "region.za.name", status: 1, sortNo: 300},
+		{code: "EG", callingCode: "20", nameKey: "region.eg.name", status: 1, sortNo: 310},
+		{code: "NG", callingCode: "234", nameKey: "region.ng.name", status: 1, sortNo: 320},
+		{code: "KE", callingCode: "254", nameKey: "region.ke.name", status: 1, sortNo: 330},
+		{code: "MA", callingCode: "212", nameKey: "region.ma.name", status: 1, sortNo: 340},
+
+		// 大洋洲
+		{code: "AU", callingCode: "61", nameKey: "region.au.name", status: 1, sortNo: 350},
+		{code: "NZ", callingCode: "64", nameKey: "region.nz.name", status: 1, sortNo: 360},
 	}
 
 	builders := make([]*ent.RegionCreate, 0, len(data))
