@@ -75,32 +75,119 @@ func apiI18n() []*coreclient.I18NItem {
 func baseDataI18n() []*coreclient.I18NItem {
 	var out []*coreclient.I18NItem
 
-	// 时区
+	// ==================== 时区 ====================
+
+	// 全球
 	addI18n(&out, i18nGroupBase, "base.timezone.etc_utc.name", "协调世界时", "協調世界時", "Coordinated Universal Time")
+
+	// 北美洲
+	addI18n(&out, i18nGroupBase, "base.timezone.america_new_york.name", "纽约时间", "紐約時間", "New York Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_chicago.name", "芝加哥时间", "芝加哥時間", "Chicago Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_denver.name", "丹佛时间", "丹佛時間", "Denver Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_los_angeles.name", "洛杉矶时间", "洛杉磯時間", "Los Angeles Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_toronto.name", "多伦多时间", "多倫多時間", "Toronto Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_vancouver.name", "温哥华时间", "溫哥華時間", "Vancouver Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_mexico_city.name", "墨西哥城时间", "墨西哥城時間", "Mexico City Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_tijuana.name", "蒂华纳时间", "蒂華納時間", "Tijuana Time")
+
+	// 南美洲
+	addI18n(&out, i18nGroupBase, "base.timezone.america_sao_paulo.name", "巴西利亚时间", "巴西利亞時間", "Brasilia Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_manaus.name", "马瑙斯时间", "馬瑙斯時間", "Manaus Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_argentina_buenos_aires.name", "布宜诺斯艾利斯时间", "布宜諾斯艾利斯時間", "Buenos Aires Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_bogota.name", "波哥大时间", "波哥大時間", "Bogota Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_santiago.name", "圣地亚哥时间", "聖地牙哥時間", "Santiago Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.america_lima.name", "利马时间", "利馬時間", "Lima Time")
+
+	// 欧洲
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_london.name", "伦敦时间", "倫敦時間", "London Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_berlin.name", "柏林时间", "柏林時間", "Berlin Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_paris.name", "巴黎时间", "巴黎時間", "Paris Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_rome.name", "罗马时间", "羅馬時間", "Rome Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_madrid.name", "马德里时间", "馬德里時間", "Madrid Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_lisbon.name", "里斯本时间", "里斯本時間", "Lisbon Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_amsterdam.name", "阿姆斯特丹时间", "阿姆斯特丹時間", "Amsterdam Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_zurich.name", "苏黎世时间", "蘇黎世時間", "Zurich Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_warsaw.name", "华沙时间", "華沙時間", "Warsaw Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.europe_stockholm.name", "斯德哥尔摩时间", "斯德哥爾摩時間", "Stockholm Time")
+
+	// 亚洲
 	addI18n(&out, i18nGroupBase, "base.timezone.asia_tokyo.name", "日本标准时间", "日本標準時間", "Japan Standard Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_seoul.name", "韩国标准时间", "韓國標準時間", "Korea Standard Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_kolkata.name", "印度标准时间", "印度標準時間", "India Standard Time")
 	addI18n(&out, i18nGroupBase, "base.timezone.asia_ho_chi_minh.name", "越南时间", "越南時間", "Vietnam Time")
 	addI18n(&out, i18nGroupBase, "base.timezone.asia_manila.name", "菲律宾时间", "菲律賓時間", "Philippine Time")
-	addI18n(&out, i18nGroupBase, "base.timezone.asia_bangkok.name", "泰国时间", "泰國時間", "Thailand Time")
-	addI18n(&out, i18nGroupBase, "base.timezone.asia_kuala_lumpur.name", "马来西亚时间", "馬來西亞時間", "Malaysia Time")
-	addI18n(&out, i18nGroupBase, "base.timezone.asia_singapore.name", "新加坡标准时间", "新加坡標準時間", "Singapore Standard Time")
 	addI18n(&out, i18nGroupBase, "base.timezone.asia_jakarta.name", "印度尼西亚西部时间", "印度尼西亞西部時間", "Western Indonesia Time")
-	addI18n(&out, i18nGroupBase, "base.timezone.asia_seoul.name", "韩国标准时间", "韓國標準時間", "Korea Standard Time")
-	addI18n(&out, i18nGroupBase, "base.timezone.america_sao_paulo.name", "巴西利亚时间", "巴西利亞時間", "Brasilia Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_makassar.name", "印度尼西亚中部时间", "印度尼西亞中部時間", "Central Indonesia Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_jayapura.name", "印度尼西亚东部时间", "印度尼西亞東部時間", "Eastern Indonesia Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_kuala_lumpur.name", "马来西亚时间", "馬來西亞時間", "Malaysia Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_bangkok.name", "泰国时间", "泰國時間", "Thailand Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_singapore.name", "新加坡标准时间", "新加坡標準時間", "Singapore Standard Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_dubai.name", "迪拜时间", "杜拜時間", "Dubai Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.asia_riyadh.name", "利雅得时间", "利雅得時間", "Riyadh Time")
 
-	// 货币
-	addI18n(&out, i18nGroupBase, "base.currency.usd.name", "美元", "美元", "US Dollar")
-	addI18n(&out, i18nGroupBase, "base.currency.php.name", "菲律宾比索", "菲律賓比索", "Philippine Peso")
-	addI18n(&out, i18nGroupBase, "base.currency.vnd.name", "越南盾", "越南盾", "Vietnamese Dong")
-	addI18n(&out, i18nGroupBase, "base.currency.jpy.name", "日元", "日圓", "Japanese Yen")
-	addI18n(&out, i18nGroupBase, "base.currency.myr.name", "马来西亚林吉特", "馬來西亞林吉特", "Malaysian Ringgit")
-	addI18n(&out, i18nGroupBase, "base.currency.thb.name", "泰铢", "泰銖", "Thai Baht")
-	addI18n(&out, i18nGroupBase, "base.currency.idr.name", "印度尼西亚卢比", "印度尼西亞盧比", "Indonesian Rupiah")
-	addI18n(&out, i18nGroupBase, "base.currency.sgd.name", "新加坡元", "新加坡元", "Singapore Dollar")
-	addI18n(&out, i18nGroupBase, "base.currency.krw.name", "韩元", "韓元", "South Korean Won")
-	addI18n(&out, i18nGroupBase, "base.currency.brl.name", "巴西雷亚尔", "巴西雷亞爾", "Brazilian Real")
+	// 非洲
+	addI18n(&out, i18nGroupBase, "base.timezone.africa_johannesburg.name", "约翰内斯堡时间", "約翰尼斯堡時間", "Johannesburg Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.africa_cairo.name", "开罗时间", "開羅時間", "Cairo Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.africa_lagos.name", "拉各斯时间", "拉各斯時間", "Lagos Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.africa_nairobi.name", "内罗毕时间", "奈洛比時間", "Nairobi Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.africa_casablanca.name", "卡萨布兰卡时间", "卡薩布蘭卡時間", "Casablanca Time")
+
+	// 大洋洲
+	addI18n(&out, i18nGroupBase, "base.timezone.australia_sydney.name", "悉尼时间", "雪梨時間", "Sydney Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.australia_brisbane.name", "布里斯班时间", "布里斯本時間", "Brisbane Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.australia_adelaide.name", "阿德莱德时间", "阿德雷德時間", "Adelaide Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.australia_perth.name", "珀斯时间", "伯斯時間", "Perth Time")
+	addI18n(&out, i18nGroupBase, "base.timezone.pacific_auckland.name", "奥克兰时间", "奧克蘭時間", "Auckland Time")
+
+	// ==================== 货币 ====================
+
+	// 数字货币
 	addI18n(&out, i18nGroupBase, "base.currency.usdt.name", "泰达币", "泰達幣", "Tether")
 
-	// 国家地区
+	// 北美洲
+	addI18n(&out, i18nGroupBase, "base.currency.usd.name", "美元", "美元", "US Dollar")
+	addI18n(&out, i18nGroupBase, "base.currency.cad.name", "加拿大元", "加拿大元", "Canadian Dollar")
+	addI18n(&out, i18nGroupBase, "base.currency.mxn.name", "墨西哥比索", "墨西哥披索", "Mexican Peso")
+
+	// 南美洲
+	addI18n(&out, i18nGroupBase, "base.currency.brl.name", "巴西雷亚尔", "巴西雷亞爾", "Brazilian Real")
+	addI18n(&out, i18nGroupBase, "base.currency.ars.name", "阿根廷比索", "阿根廷披索", "Argentine Peso")
+	addI18n(&out, i18nGroupBase, "base.currency.cop.name", "哥伦比亚比索", "哥倫比亞披索", "Colombian Peso")
+	addI18n(&out, i18nGroupBase, "base.currency.clp.name", "智利比索", "智利披索", "Chilean Peso")
+	addI18n(&out, i18nGroupBase, "base.currency.pen.name", "秘鲁索尔", "秘魯索爾", "Peruvian Sol")
+
+	// 欧洲
+	addI18n(&out, i18nGroupBase, "base.currency.gbp.name", "英镑", "英鎊", "British Pound")
+	addI18n(&out, i18nGroupBase, "base.currency.eur.name", "欧元", "歐元", "Euro")
+	addI18n(&out, i18nGroupBase, "base.currency.chf.name", "瑞士法郎", "瑞士法郎", "Swiss Franc")
+	addI18n(&out, i18nGroupBase, "base.currency.pln.name", "波兰兹罗提", "波蘭茲羅提", "Polish Zloty")
+	addI18n(&out, i18nGroupBase, "base.currency.sek.name", "瑞典克朗", "瑞典克朗", "Swedish Krona")
+
+	// 亚洲
+	addI18n(&out, i18nGroupBase, "base.currency.jpy.name", "日元", "日圓", "Japanese Yen")
+	addI18n(&out, i18nGroupBase, "base.currency.krw.name", "韩元", "韓元", "South Korean Won")
+	addI18n(&out, i18nGroupBase, "base.currency.inr.name", "印度卢比", "印度盧比", "Indian Rupee")
+	addI18n(&out, i18nGroupBase, "base.currency.vnd.name", "越南盾", "越南盾", "Vietnamese Dong")
+	addI18n(&out, i18nGroupBase, "base.currency.php.name", "菲律宾比索", "菲律賓比索", "Philippine Peso")
+	addI18n(&out, i18nGroupBase, "base.currency.idr.name", "印度尼西亚卢比", "印度尼西亞盧比", "Indonesian Rupiah")
+	addI18n(&out, i18nGroupBase, "base.currency.myr.name", "马来西亚林吉特", "馬來西亞林吉特", "Malaysian Ringgit")
+	addI18n(&out, i18nGroupBase, "base.currency.thb.name", "泰铢", "泰銖", "Thai Baht")
+	addI18n(&out, i18nGroupBase, "base.currency.sgd.name", "新加坡元", "新加坡元", "Singapore Dollar")
+	addI18n(&out, i18nGroupBase, "base.currency.aed.name", "阿联酋迪拉姆", "阿聯酋迪拉姆", "UAE Dirham")
+	addI18n(&out, i18nGroupBase, "base.currency.sar.name", "沙特里亚尔", "沙特里亞爾", "Saudi Riyal")
+
+	// 非洲
+	addI18n(&out, i18nGroupBase, "base.currency.zar.name", "南非兰特", "南非蘭特", "South African Rand")
+	addI18n(&out, i18nGroupBase, "base.currency.egp.name", "埃及镑", "埃及鎊", "Egyptian Pound")
+	addI18n(&out, i18nGroupBase, "base.currency.ngn.name", "尼日利亚奈拉", "奈及利亞奈拉", "Nigerian Naira")
+	addI18n(&out, i18nGroupBase, "base.currency.kes.name", "肯尼亚先令", "肯亞先令", "Kenyan Shilling")
+	addI18n(&out, i18nGroupBase, "base.currency.mad.name", "摩洛哥迪拉姆", "摩洛哥迪拉姆", "Moroccan Dirham")
+
+	// 大洋洲
+	addI18n(&out, i18nGroupBase, "base.currency.aud.name", "澳大利亚元", "澳大利亞元", "Australian Dollar")
+	addI18n(&out, i18nGroupBase, "base.currency.nzd.name", "新西兰元", "紐西蘭元", "New Zealand Dollar")
+
+	// ==================== 国家地区 ====================
 
 	// 北美洲
 	addI18n(&out, i18nGroupBase, "base.region.us.name", "美国", "美國", "United States")

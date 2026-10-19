@@ -38,16 +38,67 @@ func (s *ServiceContext) mustInitTimezone(ctx context.Context) {
 		status  int64  // 状态: 1启用, 2停用
 		sortNo  int64  // 排序值, 数值越小越靠前
 	}{
+		// 全球
 		{code: "Etc/UTC", nameKey: "timezone.etc_utc.name", status: 1, sortNo: 10},
-		{code: "Asia/Tokyo", nameKey: "timezone.asia_tokyo.name", status: 1, sortNo: 20},
-		{code: "Asia/Ho_Chi_Minh", nameKey: "timezone.asia_ho_chi_minh.name", status: 1, sortNo: 30},
-		{code: "Asia/Manila", nameKey: "timezone.asia_manila.name", status: 1, sortNo: 40},
-		{code: "Asia/Bangkok", nameKey: "timezone.asia_bangkok.name", status: 1, sortNo: 50},
-		{code: "Asia/Kuala_Lumpur", nameKey: "timezone.asia_kuala_lumpur.name", status: 1, sortNo: 60},
-		{code: "Asia/Singapore", nameKey: "timezone.asia_singapore.name", status: 1, sortNo: 70},
-		{code: "Asia/Jakarta", nameKey: "timezone.asia_jakarta.name", status: 1, sortNo: 80},
-		{code: "Asia/Seoul", nameKey: "timezone.asia_seoul.name", status: 1, sortNo: 90},
+
+		// 北美洲
+		{code: "America/New_York", nameKey: "timezone.america_new_york.name", status: 1, sortNo: 20},
+		{code: "America/Chicago", nameKey: "timezone.america_chicago.name", status: 1, sortNo: 30},
+		{code: "America/Denver", nameKey: "timezone.america_denver.name", status: 1, sortNo: 40},
+		{code: "America/Los_Angeles", nameKey: "timezone.america_los_angeles.name", status: 1, sortNo: 50},
+		{code: "America/Toronto", nameKey: "timezone.america_toronto.name", status: 1, sortNo: 60},
+		{code: "America/Vancouver", nameKey: "timezone.america_vancouver.name", status: 1, sortNo: 70},
+		{code: "America/Mexico_City", nameKey: "timezone.america_mexico_city.name", status: 1, sortNo: 80},
+		{code: "America/Tijuana", nameKey: "timezone.america_tijuana.name", status: 1, sortNo: 90},
+
+		// 南美洲
 		{code: "America/Sao_Paulo", nameKey: "timezone.america_sao_paulo.name", status: 1, sortNo: 100},
+		{code: "America/Manaus", nameKey: "timezone.america_manaus.name", status: 1, sortNo: 110},
+		{code: "America/Argentina/Buenos_Aires", nameKey: "timezone.america_argentina_buenos_aires.name", status: 1, sortNo: 120},
+		{code: "America/Bogota", nameKey: "timezone.america_bogota.name", status: 1, sortNo: 130},
+		{code: "America/Santiago", nameKey: "timezone.america_santiago.name", status: 1, sortNo: 140},
+		{code: "America/Lima", nameKey: "timezone.america_lima.name", status: 1, sortNo: 150},
+
+		// 欧洲
+		{code: "Europe/London", nameKey: "timezone.europe_london.name", status: 1, sortNo: 160},
+		{code: "Europe/Berlin", nameKey: "timezone.europe_berlin.name", status: 1, sortNo: 170},
+		{code: "Europe/Paris", nameKey: "timezone.europe_paris.name", status: 1, sortNo: 180},
+		{code: "Europe/Rome", nameKey: "timezone.europe_rome.name", status: 1, sortNo: 190},
+		{code: "Europe/Madrid", nameKey: "timezone.europe_madrid.name", status: 1, sortNo: 200},
+		{code: "Europe/Lisbon", nameKey: "timezone.europe_lisbon.name", status: 1, sortNo: 210},
+		{code: "Europe/Amsterdam", nameKey: "timezone.europe_amsterdam.name", status: 1, sortNo: 220},
+		{code: "Europe/Zurich", nameKey: "timezone.europe_zurich.name", status: 1, sortNo: 230},
+		{code: "Europe/Warsaw", nameKey: "timezone.europe_warsaw.name", status: 1, sortNo: 240},
+		{code: "Europe/Stockholm", nameKey: "timezone.europe_stockholm.name", status: 1, sortNo: 250},
+
+		// 亚洲
+		{code: "Asia/Tokyo", nameKey: "timezone.asia_tokyo.name", status: 1, sortNo: 260},
+		{code: "Asia/Seoul", nameKey: "timezone.asia_seoul.name", status: 1, sortNo: 270},
+		{code: "Asia/Kolkata", nameKey: "timezone.asia_kolkata.name", status: 1, sortNo: 280},
+		{code: "Asia/Ho_Chi_Minh", nameKey: "timezone.asia_ho_chi_minh.name", status: 1, sortNo: 290},
+		{code: "Asia/Manila", nameKey: "timezone.asia_manila.name", status: 1, sortNo: 300},
+		{code: "Asia/Jakarta", nameKey: "timezone.asia_jakarta.name", status: 1, sortNo: 310},
+		{code: "Asia/Makassar", nameKey: "timezone.asia_makassar.name", status: 1, sortNo: 320},
+		{code: "Asia/Jayapura", nameKey: "timezone.asia_jayapura.name", status: 1, sortNo: 330},
+		{code: "Asia/Kuala_Lumpur", nameKey: "timezone.asia_kuala_lumpur.name", status: 1, sortNo: 340},
+		{code: "Asia/Bangkok", nameKey: "timezone.asia_bangkok.name", status: 1, sortNo: 350},
+		{code: "Asia/Singapore", nameKey: "timezone.asia_singapore.name", status: 1, sortNo: 360},
+		{code: "Asia/Dubai", nameKey: "timezone.asia_dubai.name", status: 1, sortNo: 370},
+		{code: "Asia/Riyadh", nameKey: "timezone.asia_riyadh.name", status: 1, sortNo: 380},
+
+		// 非洲
+		{code: "Africa/Johannesburg", nameKey: "timezone.africa_johannesburg.name", status: 1, sortNo: 390},
+		{code: "Africa/Cairo", nameKey: "timezone.africa_cairo.name", status: 1, sortNo: 400},
+		{code: "Africa/Lagos", nameKey: "timezone.africa_lagos.name", status: 1, sortNo: 410},
+		{code: "Africa/Nairobi", nameKey: "timezone.africa_nairobi.name", status: 1, sortNo: 420},
+		{code: "Africa/Casablanca", nameKey: "timezone.africa_casablanca.name", status: 1, sortNo: 430},
+
+		// 大洋洲
+		{code: "Australia/Sydney", nameKey: "timezone.australia_sydney.name", status: 1, sortNo: 440},
+		{code: "Australia/Brisbane", nameKey: "timezone.australia_brisbane.name", status: 1, sortNo: 450},
+		{code: "Australia/Adelaide", nameKey: "timezone.australia_adelaide.name", status: 1, sortNo: 460},
+		{code: "Australia/Perth", nameKey: "timezone.australia_perth.name", status: 1, sortNo: 470},
+		{code: "Pacific/Auckland", nameKey: "timezone.pacific_auckland.name", status: 1, sortNo: 480},
 	}
 
 	builders := make([]*ent.TimezoneCreate, 0, len(data))
@@ -84,17 +135,51 @@ func (s *ServiceContext) mustInitCurrency(ctx context.Context) {
 		status       int64  // 状态: 1启用, 2停用
 		sortNo       int64  // 排序值, 数值越小越靠前
 	}{
+		// 数字货币
+		{code: "USDT", nameKey: "currency.usdt.name", currencyType: 2, symbol: "USDT", amountFactor: 100, status: 1, sortNo: 0},
+
+		// 北美洲
 		{code: "USD", nameKey: "currency.usd.name", currencyType: 1, symbol: "$", amountFactor: 100, status: 1, sortNo: 10},
-		{code: "PHP", nameKey: "currency.php.name", currencyType: 1, symbol: "₱", amountFactor: 100, status: 1, sortNo: 20},
-		{code: "VND", nameKey: "currency.vnd.name", currencyType: 1, symbol: "₫", amountFactor: 1, status: 1, sortNo: 30},
-		{code: "JPY", nameKey: "currency.jpy.name", currencyType: 1, symbol: "¥", amountFactor: 1, status: 1, sortNo: 40},
-		{code: "MYR", nameKey: "currency.myr.name", currencyType: 1, symbol: "RM", amountFactor: 100, status: 1, sortNo: 50},
-		{code: "THB", nameKey: "currency.thb.name", currencyType: 1, symbol: "฿", amountFactor: 100, status: 1, sortNo: 60},
-		{code: "IDR", nameKey: "currency.idr.name", currencyType: 1, symbol: "Rp", amountFactor: 1, status: 1, sortNo: 70},
-		{code: "SGD", nameKey: "currency.sgd.name", currencyType: 1, symbol: "S$", amountFactor: 100, status: 1, sortNo: 80},
-		{code: "KRW", nameKey: "currency.krw.name", currencyType: 1, symbol: "₩", amountFactor: 1, status: 1, sortNo: 90},
-		{code: "BRL", nameKey: "currency.brl.name", currencyType: 1, symbol: "R$", amountFactor: 100, status: 1, sortNo: 100},
-		{code: "USDT", nameKey: "currency.usdt.name", currencyType: 2, symbol: "USDT", amountFactor: 100, status: 2, sortNo: 110},
+		{code: "CAD", nameKey: "currency.cad.name", currencyType: 1, symbol: "C$", amountFactor: 100, status: 1, sortNo: 20},
+		{code: "MXN", nameKey: "currency.mxn.name", currencyType: 1, symbol: "MX$", amountFactor: 100, status: 1, sortNo: 30},
+
+		// 南美洲
+		{code: "BRL", nameKey: "currency.brl.name", currencyType: 1, symbol: "R$", amountFactor: 100, status: 1, sortNo: 40},
+		{code: "ARS", nameKey: "currency.ars.name", currencyType: 1, symbol: "AR$", amountFactor: 100, status: 1, sortNo: 50},
+		{code: "COP", nameKey: "currency.cop.name", currencyType: 1, symbol: "COL$", amountFactor: 100, status: 1, sortNo: 60},
+		{code: "CLP", nameKey: "currency.clp.name", currencyType: 1, symbol: "CLP$", amountFactor: 1, status: 1, sortNo: 70},
+		{code: "PEN", nameKey: "currency.pen.name", currencyType: 1, symbol: "S/", amountFactor: 100, status: 1, sortNo: 80},
+
+		// 欧洲
+		{code: "GBP", nameKey: "currency.gbp.name", currencyType: 1, symbol: "£", amountFactor: 100, status: 1, sortNo: 90},
+		{code: "EUR", nameKey: "currency.eur.name", currencyType: 1, symbol: "€", amountFactor: 100, status: 1, sortNo: 100},
+		{code: "CHF", nameKey: "currency.chf.name", currencyType: 1, symbol: "CHF", amountFactor: 100, status: 1, sortNo: 110},
+		{code: "PLN", nameKey: "currency.pln.name", currencyType: 1, symbol: "zł", amountFactor: 100, status: 1, sortNo: 120},
+		{code: "SEK", nameKey: "currency.sek.name", currencyType: 1, symbol: "kr", amountFactor: 100, status: 1, sortNo: 130},
+
+		// 亚洲
+		{code: "JPY", nameKey: "currency.jpy.name", currencyType: 1, symbol: "¥", amountFactor: 1, status: 1, sortNo: 140},
+		{code: "KRW", nameKey: "currency.krw.name", currencyType: 1, symbol: "₩", amountFactor: 1, status: 1, sortNo: 150},
+		{code: "INR", nameKey: "currency.inr.name", currencyType: 1, symbol: "₹", amountFactor: 100, status: 1, sortNo: 160},
+		{code: "VND", nameKey: "currency.vnd.name", currencyType: 1, symbol: "₫", amountFactor: 1, status: 1, sortNo: 170},
+		{code: "PHP", nameKey: "currency.php.name", currencyType: 1, symbol: "₱", amountFactor: 100, status: 1, sortNo: 180},
+		{code: "IDR", nameKey: "currency.idr.name", currencyType: 1, symbol: "Rp", amountFactor: 1, status: 1, sortNo: 190},
+		{code: "MYR", nameKey: "currency.myr.name", currencyType: 1, symbol: "RM", amountFactor: 100, status: 1, sortNo: 200},
+		{code: "THB", nameKey: "currency.thb.name", currencyType: 1, symbol: "฿", amountFactor: 100, status: 1, sortNo: 210},
+		{code: "SGD", nameKey: "currency.sgd.name", currencyType: 1, symbol: "S$", amountFactor: 100, status: 1, sortNo: 220},
+		{code: "AED", nameKey: "currency.aed.name", currencyType: 1, symbol: "د.إ", amountFactor: 100, status: 1, sortNo: 230},
+		{code: "SAR", nameKey: "currency.sar.name", currencyType: 1, symbol: "ر.س", amountFactor: 100, status: 1, sortNo: 240},
+
+		// 非洲
+		{code: "ZAR", nameKey: "currency.zar.name", currencyType: 1, symbol: "R", amountFactor: 100, status: 1, sortNo: 250},
+		{code: "EGP", nameKey: "currency.egp.name", currencyType: 1, symbol: "E£", amountFactor: 100, status: 1, sortNo: 260},
+		{code: "NGN", nameKey: "currency.ngn.name", currencyType: 1, symbol: "₦", amountFactor: 100, status: 1, sortNo: 270},
+		{code: "KES", nameKey: "currency.kes.name", currencyType: 1, symbol: "KSh", amountFactor: 100, status: 1, sortNo: 280},
+		{code: "MAD", nameKey: "currency.mad.name", currencyType: 1, symbol: "DH", amountFactor: 100, status: 1, sortNo: 290},
+
+		// 大洋洲
+		{code: "AUD", nameKey: "currency.aud.name", currencyType: 1, symbol: "A$", amountFactor: 100, status: 1, sortNo: 300},
+		{code: "NZD", nameKey: "currency.nzd.name", currencyType: 1, symbol: "NZ$", amountFactor: 100, status: 1, sortNo: 310},
 	}
 
 	builders := make([]*ent.CurrencyCreate, 0, len(data))
