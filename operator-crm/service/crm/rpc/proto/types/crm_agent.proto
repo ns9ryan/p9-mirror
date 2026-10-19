@@ -194,6 +194,8 @@ message SearchAgentsReq {
   int32 level = 2;
   // 返回条数，默认 20，上限 50
   int32 limit = 3;
+  // 线路编码，空字符串不限，否则按线路精确匹配
+  optional string line_code = 4;
 }
 
 // AgentSearchItem 搜索代理项
@@ -203,10 +205,23 @@ message AgentSearchItem {
   int32 level = 3;
   string level_alias = 4;
   string line_code = 5;
+  // 当前占成，百分比 0~100
+  int32 share_rate = 6;
 }
 
 // SearchAgentsResp 搜索代理响应
 message SearchAgentsResp {
+  repeated AgentSearchItem items = 1;
+}
+
+// TreeNodeAncestorAgentsReq 按 ID 或账号精确查找代理及其上级
+message TreeNodeAncestorAgentsReq {
+  // 纯数字先按 ID 精确匹配，没有再按账号精确匹配；否则只按账号精确匹配
+  string keyword = 1;
+}
+
+// TreeNodeAncestorAgentsResp 当前代理在前，其后为直接上级直到顶层
+message TreeNodeAncestorAgentsResp {
   repeated AgentSearchItem items = 1;
 }
 
@@ -270,10 +285,10 @@ message AddAgentApplyReq {
   int32 register_source = 4;
   // 申请占成比例，百分比 0~100
   int32 apply_share_rate = 5;
-  // 使用会员账号，可选
+  // 使用会员账号
   string member_account = 6;
-  // 使用会员 ID，可选
-  int64 member_id = 7;
+  // 使用会员编码
+  string member_code = 7;
   // 申请备注，可选
   string apply_remark = 8;
 }
@@ -287,7 +302,7 @@ message AgentApplyItem {
   int32 register_source = 5;
   int32 apply_share_rate = 6;
   string member_account = 7;
-  int64 member_id = 8;
+  string member_code = 8;
   // 审核状态：1待审核 2已通过 3人工拒绝 4风控拒绝
   int32 audit_status = 9;
   string reject_reason = 10;
@@ -340,4 +355,102 @@ message ReviewAgentApplyResp {
   AgentApplyItem apply = 1;
   // 通过时返回明文密码，仅此一次
   string password = 2;
+}
+
+message Empty {}
+
+// GetAgentProfileReq 按代理 ID 获取资料
+message GetAgentProfileReq {
+  int64 agent_id = 1;
+}
+
+// AgentProfile 代理资料
+message AgentProfile {
+  int64 agent_id = 1;
+  string remark = 2;
+  // 1正常 2冻结 3停用
+  int32 status = 3;
+  // 1 PC 2 app 3 管理员 4 代理
+  int32 register_source = 4;
+  string promo_code = 5;
+  string parent_account = 6;
+  // 账号开通时间 unix 秒
+  int64 register_at = 7;
+  int64 last_login_at = 8;
+  string last_login_ip = 9;
+  string last_login_udid = 10;
+  // 当前占成，百分比 0~100
+  int32 share_rate = 11;
+  int64 login_count = 12;
+  // 邀请用户数，直属会员数
+  int64 invite_member_count = 13;
+  // 1不限制 2限制本人 3限制全线
+  int32 payout_restricted = 14;
+  // 1现金 2信用
+  int32 agent_type = 15;
+  string avatar_url = 16;
+  string realname = 17;
+  string telegram = 18;
+  string facebook = 19;
+  string whatsapp = 20;
+  string mobile = 21;
+  string nickname = 22;
+  string id_document_no = 23;
+  string zalo = 24;
+  string twitter = 25;
+  string line = 26;
+  string email = 27;
+}
+
+message ResetLoginPasswordReq {
+  int64 agent_id = 1;
+}
+
+message ResetLoginPasswordResp {
+  string password = 1;
+}
+
+message UpdateLoginPasswordReq {
+  string old_password = 1;
+  string new_password = 2;
+}
+
+message UpdateWithdrawPasswordReq {
+  int64 agent_id = 1;
+  string password = 2;
+}
+
+message UpdateAgentShareRateReq {
+  int64 agent_id = 1;
+  int32 share_rate = 2;
+}
+
+message UpdateAgentPayoutRestrictedReq {
+  int64 agent_id = 1;
+  int32 payout_restricted = 2;
+}
+
+message UpdateAgentRemarkReq {
+  int64 agent_id = 1;
+  // 空字符串清空
+  string remark = 2;
+}
+
+// UpdateAgentProfileReq 按 field_type 更新资料，不含备注
+message UpdateAgentProfileReq {
+  int64 agent_id = 1;
+  // 0全部 1头像 2真实姓名 3Telegram 4Facebook 5WhatsApp 6手机 7昵称 8证件号 9Zalo 10Twitter 11Line 12邮箱
+  int32 field_type = 2;
+  string avatar_url = 3;
+  string realname = 4;
+  string telegram = 5;
+  string facebook = 6;
+  string whatsapp = 7;
+  string mobile = 8;
+  string nickname = 9;
+  string id_document_no = 10;
+  string zalo = 11;
+  string twitter = 12;
+  string line = 13;
+  string email = 14;
 }

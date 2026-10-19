@@ -11,6 +11,7 @@ import (
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentapply"
+	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/predicate"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
@@ -42,7 +43,9 @@ func (s *Service) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyRe
 	account := strings.TrimSpace(in.Account)
 	realname := strings.TrimSpace(in.Realname)
 	mobile := strings.TrimSpace(in.Mobile)
-	if account == "" || realname == "" || mobile == "" {
+	memberAccount := strings.TrimSpace(in.MemberAccount)
+	memberCode := strings.TrimSpace(in.MemberCode)
+	if account == "" || realname == "" || mobile == "" || memberAccount == "" || memberCode == "" {
 		return nil, xerr.BadRequest(i18n.AgentFieldsRequired)
 	}
 	if in.RegisterSource < 1 || in.RegisterSource > 4 {
@@ -52,7 +55,7 @@ func (s *Service) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyRe
 	if shareRate < 0 || shareRate > maxShareRate {
 		return nil, xerr.BadRequest(i18n.AgentShareRateInvalid)
 	}
-
+	// 查询代理配置是否存在
 	cfg, err := s.DB.AgentConfig.Query().Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
@@ -63,18 +66,36 @@ func (s *Service) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyRe
 	if shareRate < cfg.ApplyMinShareRate || shareRate > cfg.ApplyMaxShareRate {
 		return nil, xerr.BadRequest(i18n.AgentShareRateInvalid)
 	}
-
-	exists, err := s.DB.AgentApply.Query().
-		Where(
-			agentapply.AccountEQ(account),
-			agentapply.AuditStatusEQ(auditStatusPending),
-		).
+	// 查询代理账号是否存在
+	exists, err := s.DB.AgentUser.Query().
+		Where(agentuser.AccountEQ(account)).
 		Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if exists {
-		return nil, xerr.BadRequest(i18n.AgentApplyPendingExists)
+		return nil, xerr.BadRequest(i18n.AgentApplyAccountUsedByOther)
+	}
+	// 查询是否存在相同的申请
+	oldApply, err := s.DB.AgentApply.Query().
+		Where(
+			agentapply.Or(agentapply.AccountEQ(account), agentapply.MemberCodeEQ(memberCode)),
+			agentapply.AuditStatusIn(auditStatusPending, auditStatusApproved),
+		).
+		Only(ctx)
+	if err != nil && !ent.IsNotFound(err) {
+		return nil, err
+	}
+	if oldApply != nil {
+		if oldApply.MemberCode == memberCode {
+			if oldApply.AuditStatus == auditStatusPending {
+				return nil, xerr.BadRequest(i18n.AgentApplyPendingExists)
+			}
+			return nil, xerr.BadRequest(i18n.AgentApplyMemberCodeExists)
+		}
+		if oldApply.Account == account {
+			return nil, xerr.BadRequest(i18n.AgentApplyAccountUsedByOther)
+		}
 	}
 
 	now := time.Now()
@@ -84,14 +105,10 @@ func (s *Service) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyRe
 		SetMobile(mobile).
 		SetRegisterSource(int64(in.RegisterSource)).
 		SetApplyShareRate(shareRate).
+		SetMemberAccount(memberAccount).
+		SetMemberCode(memberCode).
 		SetAuditStatus(auditStatusPending).
 		SetRegisterAt(now)
-	if v := strings.TrimSpace(in.MemberAccount); v != "" {
-		c.SetMemberAccount(v)
-	}
-	if in.MemberId > 0 {
-		c.SetMemberID(in.MemberId)
-	}
 	if v := strings.TrimSpace(in.ApplyRemark); v != "" {
 		c.SetApplyRemark(v)
 	}
@@ -312,14 +329,10 @@ func toApplyItem(row *ent.AgentApply) *agentpb.AgentApplyItem {
 		Mobile:         row.Mobile,
 		RegisterSource: int32(row.RegisterSource),
 		ApplyShareRate: int32(row.ApplyShareRate),
+		MemberAccount:  row.MemberAccount,
+		MemberCode:     row.MemberCode,
 		AuditStatus:    int32(row.AuditStatus),
 		RegisterAt:     row.RegisterAt.Unix(),
-	}
-	if row.MemberAccount != nil {
-		item.MemberAccount = *row.MemberAccount
-	}
-	if row.MemberID != nil {
-		item.MemberId = *row.MemberID
 	}
 	if row.RejectReason != nil {
 		item.RejectReason = *row.RejectReason

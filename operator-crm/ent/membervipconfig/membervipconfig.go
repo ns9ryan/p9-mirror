@@ -23,6 +23,8 @@ const (
 	FieldVipEnabled = "vip_enabled"
 	// FieldUpgradeRewardEnabled holds the string denoting the upgrade_reward_enabled field in the database.
 	FieldUpgradeRewardEnabled = "upgrade_reward_enabled"
+	// FieldRewardWaterMultiplier holds the string denoting the reward_water_multiplier field in the database.
+	FieldRewardWaterMultiplier = "reward_water_multiplier"
 	// FieldRetentionCheckEnabled holds the string denoting the retention_check_enabled field in the database.
 	FieldRetentionCheckEnabled = "retention_check_enabled"
 	// FieldRewardGrantMode holds the string denoting the reward_grant_mode field in the database.
@@ -41,6 +43,7 @@ var Columns = []string{
 	FieldOperatorCode,
 	FieldVipEnabled,
 	FieldUpgradeRewardEnabled,
+	FieldRewardWaterMultiplier,
 	FieldRetentionCheckEnabled,
 	FieldRewardGrantMode,
 	FieldLastEnabledAt,
@@ -69,6 +72,10 @@ var (
 	DefaultVipEnabled bool
 	// DefaultUpgradeRewardEnabled holds the default value on creation for the "upgrade_reward_enabled" field.
 	DefaultUpgradeRewardEnabled bool
+	// DefaultRewardWaterMultiplier holds the default value on creation for the "reward_water_multiplier" field.
+	DefaultRewardWaterMultiplier int64
+	// RewardWaterMultiplierValidator is a validator for the "reward_water_multiplier" field. It is called by the builders before save.
+	RewardWaterMultiplierValidator func(int64) error
 	// DefaultRetentionCheckEnabled holds the default value on creation for the "retention_check_enabled" field.
 	DefaultRetentionCheckEnabled bool
 	// DefaultRewardGrantMode holds the default value on creation for the "reward_grant_mode" field.
@@ -108,6 +115,11 @@ func ByVipEnabled(opts ...sql.OrderTermOption) OrderOption {
 // ByUpgradeRewardEnabled orders the results by the upgrade_reward_enabled field.
 func ByUpgradeRewardEnabled(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpgradeRewardEnabled, opts...).ToFunc()
+}
+
+// ByRewardWaterMultiplier orders the results by the reward_water_multiplier field.
+func ByRewardWaterMultiplier(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRewardWaterMultiplier, opts...).ToFunc()
 }
 
 // ByRetentionCheckEnabled orders the results by the retention_check_enabled field.

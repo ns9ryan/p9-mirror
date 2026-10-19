@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
+
 	"oa.98ent.com/p9/operator-crm/ent/schema/mixins"
 )
 
@@ -31,6 +32,11 @@ func (MemberVipConfig) Fields() []ent.Field {
 		field.Bool("upgrade_reward_enabled").
 			Default(false).
 			Comment("晋级奖励开关"),
+
+		field.Int64("reward_water_multiplier").
+			NonNegative().
+			Default(100000).
+			Comment("VIP晋级奖励洗码倍率，放大100000倍存储"),
 
 		field.Bool("retention_check_enabled").
 			Default(false).

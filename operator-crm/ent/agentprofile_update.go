@@ -175,6 +175,26 @@ func (_u *AgentProfileUpdate) ClearEmail() *AgentProfileUpdate {
 	return _u
 }
 
+// SetIDDocumentNo sets the "id_document_no" field.
+func (_u *AgentProfileUpdate) SetIDDocumentNo(v string) *AgentProfileUpdate {
+	_u.mutation.SetIDDocumentNo(v)
+	return _u
+}
+
+// SetNillableIDDocumentNo sets the "id_document_no" field if the given value is not nil.
+func (_u *AgentProfileUpdate) SetNillableIDDocumentNo(v *string) *AgentProfileUpdate {
+	if v != nil {
+		_u.SetIDDocumentNo(*v)
+	}
+	return _u
+}
+
+// ClearIDDocumentNo clears the value of the "id_document_no" field.
+func (_u *AgentProfileUpdate) ClearIDDocumentNo() *AgentProfileUpdate {
+	_u.mutation.ClearIDDocumentNo()
+	return _u
+}
+
 // SetQq sets the "qq" field.
 func (_u *AgentProfileUpdate) SetQq(v string) *AgentProfileUpdate {
 	_u.mutation.SetQq(v)
@@ -408,6 +428,11 @@ func (_u *AgentProfileUpdate) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.email": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.IDDocumentNo(); ok {
+		if err := agentprofile.IDDocumentNoValidator(v); err != nil {
+			return &ValidationError{Name: "id_document_no", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.id_document_no": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Qq(); ok {
 		if err := agentprofile.QqValidator(v); err != nil {
 			return &ValidationError{Name: "qq", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.qq": %w`, err)}
@@ -510,6 +535,12 @@ func (_u *AgentProfileUpdate) sqlSave(ctx context.Context) (_node int, err error
 	}
 	if _u.mutation.EmailCleared() {
 		_spec.ClearField(agentprofile.FieldEmail, field.TypeString)
+	}
+	if value, ok := _u.mutation.IDDocumentNo(); ok {
+		_spec.SetField(agentprofile.FieldIDDocumentNo, field.TypeString, value)
+	}
+	if _u.mutation.IDDocumentNoCleared() {
+		_spec.ClearField(agentprofile.FieldIDDocumentNo, field.TypeString)
 	}
 	if value, ok := _u.mutation.Qq(); ok {
 		_spec.SetField(agentprofile.FieldQq, field.TypeString, value)
@@ -723,6 +754,26 @@ func (_u *AgentProfileUpdateOne) SetNillableEmail(v *string) *AgentProfileUpdate
 // ClearEmail clears the value of the "email" field.
 func (_u *AgentProfileUpdateOne) ClearEmail() *AgentProfileUpdateOne {
 	_u.mutation.ClearEmail()
+	return _u
+}
+
+// SetIDDocumentNo sets the "id_document_no" field.
+func (_u *AgentProfileUpdateOne) SetIDDocumentNo(v string) *AgentProfileUpdateOne {
+	_u.mutation.SetIDDocumentNo(v)
+	return _u
+}
+
+// SetNillableIDDocumentNo sets the "id_document_no" field if the given value is not nil.
+func (_u *AgentProfileUpdateOne) SetNillableIDDocumentNo(v *string) *AgentProfileUpdateOne {
+	if v != nil {
+		_u.SetIDDocumentNo(*v)
+	}
+	return _u
+}
+
+// ClearIDDocumentNo clears the value of the "id_document_no" field.
+func (_u *AgentProfileUpdateOne) ClearIDDocumentNo() *AgentProfileUpdateOne {
+	_u.mutation.ClearIDDocumentNo()
 	return _u
 }
 
@@ -972,6 +1023,11 @@ func (_u *AgentProfileUpdateOne) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.email": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.IDDocumentNo(); ok {
+		if err := agentprofile.IDDocumentNoValidator(v); err != nil {
+			return &ValidationError{Name: "id_document_no", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.id_document_no": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Qq(); ok {
 		if err := agentprofile.QqValidator(v); err != nil {
 			return &ValidationError{Name: "qq", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.qq": %w`, err)}
@@ -1091,6 +1147,12 @@ func (_u *AgentProfileUpdateOne) sqlSave(ctx context.Context) (_node *AgentProfi
 	}
 	if _u.mutation.EmailCleared() {
 		_spec.ClearField(agentprofile.FieldEmail, field.TypeString)
+	}
+	if value, ok := _u.mutation.IDDocumentNo(); ok {
+		_spec.SetField(agentprofile.FieldIDDocumentNo, field.TypeString, value)
+	}
+	if _u.mutation.IDDocumentNoCleared() {
+		_spec.ClearField(agentprofile.FieldIDDocumentNo, field.TypeString)
 	}
 	if value, ok := _u.mutation.Qq(); ok {
 		_spec.SetField(agentprofile.FieldQq, field.TypeString, value)

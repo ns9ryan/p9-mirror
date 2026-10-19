@@ -116,13 +116,6 @@ func (AgentUser) Fields() []ent.Field {
 			Match(trimmedNonEmpty).
 			Comment("提现密码哈希"),
 
-		field.String("id_document_no").
-			Optional().
-			Nillable().
-			MaxLen(64).
-			Match(trimmedNonEmpty).
-			Comment("CPF/身份证件号"),
-
 		field.String("salt").
 			Sensitive().
 			NotEmpty().
@@ -269,7 +262,6 @@ func (AgentUser) Annotations() []schema.Annotation {
 				"ck_agent_user_promo_code":             "BTRIM(promo_code) <> '' AND promo_code = BTRIM(promo_code)",
 				"ck_agent_user_login_password_hash":    "BTRIM(login_password_hash) <> ''",
 				"ck_agent_user_withdraw_password_hash": "withdraw_password_hash IS NULL OR BTRIM(withdraw_password_hash) <> ''",
-				"ck_agent_user_id_document_no":         "id_document_no IS NULL OR BTRIM(id_document_no) <> ''",
 				"ck_agent_user_remark":                 "remark IS NULL OR BTRIM(remark) <> ''",
 				"ck_agent_user_top_self":               "top_id IS DISTINCT FROM id",
 				"ck_agent_user_top_id":                 "(top_id IS NULL AND level = 0) OR (top_id IS NOT NULL AND level BETWEEN 1 AND 7)",

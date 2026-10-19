@@ -99,9 +99,9 @@ func MemberAccount(v string) predicate.AgentApply {
 	return predicate.AgentApply(sql.FieldEQ(FieldMemberAccount, v))
 }
 
-// MemberID applies equality check predicate on the "member_id" field. It's identical to MemberIDEQ.
-func MemberID(v int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldEQ(FieldMemberID, v))
+// MemberCode applies equality check predicate on the "member_code" field. It's identical to MemberCodeEQ.
+func MemberCode(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldEQ(FieldMemberCode, v))
 }
 
 // AuditStatus applies equality check predicate on the "audit_status" field. It's identical to AuditStatusEQ.
@@ -624,16 +624,6 @@ func MemberAccountHasSuffix(v string) predicate.AgentApply {
 	return predicate.AgentApply(sql.FieldHasSuffix(FieldMemberAccount, v))
 }
 
-// MemberAccountIsNil applies the IsNil predicate on the "member_account" field.
-func MemberAccountIsNil() predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldIsNull(FieldMemberAccount))
-}
-
-// MemberAccountNotNil applies the NotNil predicate on the "member_account" field.
-func MemberAccountNotNil() predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldNotNull(FieldMemberAccount))
-}
-
 // MemberAccountEqualFold applies the EqualFold predicate on the "member_account" field.
 func MemberAccountEqualFold(v string) predicate.AgentApply {
 	return predicate.AgentApply(sql.FieldEqualFold(FieldMemberAccount, v))
@@ -644,54 +634,69 @@ func MemberAccountContainsFold(v string) predicate.AgentApply {
 	return predicate.AgentApply(sql.FieldContainsFold(FieldMemberAccount, v))
 }
 
-// MemberIDEQ applies the EQ predicate on the "member_id" field.
-func MemberIDEQ(v int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldEQ(FieldMemberID, v))
+// MemberCodeEQ applies the EQ predicate on the "member_code" field.
+func MemberCodeEQ(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldEQ(FieldMemberCode, v))
 }
 
-// MemberIDNEQ applies the NEQ predicate on the "member_id" field.
-func MemberIDNEQ(v int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldNEQ(FieldMemberID, v))
+// MemberCodeNEQ applies the NEQ predicate on the "member_code" field.
+func MemberCodeNEQ(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldNEQ(FieldMemberCode, v))
 }
 
-// MemberIDIn applies the In predicate on the "member_id" field.
-func MemberIDIn(vs ...int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldIn(FieldMemberID, vs...))
+// MemberCodeIn applies the In predicate on the "member_code" field.
+func MemberCodeIn(vs ...string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldIn(FieldMemberCode, vs...))
 }
 
-// MemberIDNotIn applies the NotIn predicate on the "member_id" field.
-func MemberIDNotIn(vs ...int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldNotIn(FieldMemberID, vs...))
+// MemberCodeNotIn applies the NotIn predicate on the "member_code" field.
+func MemberCodeNotIn(vs ...string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldNotIn(FieldMemberCode, vs...))
 }
 
-// MemberIDGT applies the GT predicate on the "member_id" field.
-func MemberIDGT(v int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldGT(FieldMemberID, v))
+// MemberCodeGT applies the GT predicate on the "member_code" field.
+func MemberCodeGT(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldGT(FieldMemberCode, v))
 }
 
-// MemberIDGTE applies the GTE predicate on the "member_id" field.
-func MemberIDGTE(v int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldGTE(FieldMemberID, v))
+// MemberCodeGTE applies the GTE predicate on the "member_code" field.
+func MemberCodeGTE(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldGTE(FieldMemberCode, v))
 }
 
-// MemberIDLT applies the LT predicate on the "member_id" field.
-func MemberIDLT(v int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldLT(FieldMemberID, v))
+// MemberCodeLT applies the LT predicate on the "member_code" field.
+func MemberCodeLT(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldLT(FieldMemberCode, v))
 }
 
-// MemberIDLTE applies the LTE predicate on the "member_id" field.
-func MemberIDLTE(v int64) predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldLTE(FieldMemberID, v))
+// MemberCodeLTE applies the LTE predicate on the "member_code" field.
+func MemberCodeLTE(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldLTE(FieldMemberCode, v))
 }
 
-// MemberIDIsNil applies the IsNil predicate on the "member_id" field.
-func MemberIDIsNil() predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldIsNull(FieldMemberID))
+// MemberCodeContains applies the Contains predicate on the "member_code" field.
+func MemberCodeContains(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldContains(FieldMemberCode, v))
 }
 
-// MemberIDNotNil applies the NotNil predicate on the "member_id" field.
-func MemberIDNotNil() predicate.AgentApply {
-	return predicate.AgentApply(sql.FieldNotNull(FieldMemberID))
+// MemberCodeHasPrefix applies the HasPrefix predicate on the "member_code" field.
+func MemberCodeHasPrefix(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldHasPrefix(FieldMemberCode, v))
+}
+
+// MemberCodeHasSuffix applies the HasSuffix predicate on the "member_code" field.
+func MemberCodeHasSuffix(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldHasSuffix(FieldMemberCode, v))
+}
+
+// MemberCodeEqualFold applies the EqualFold predicate on the "member_code" field.
+func MemberCodeEqualFold(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldEqualFold(FieldMemberCode, v))
+}
+
+// MemberCodeContainsFold applies the ContainsFold predicate on the "member_code" field.
+func MemberCodeContainsFold(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldContainsFold(FieldMemberCode, v))
 }
 
 // AuditStatusEQ applies the EQ predicate on the "audit_status" field.

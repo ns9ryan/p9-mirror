@@ -29,8 +29,8 @@ type MemberAutoLevel struct {
 	// 晋级要求的累计有效存款金额
 	MinValidDeposit int64 `json:"min_valid_deposit,omitempty"`
 	// 晋级要求的累计有效洗码量
-	MinValidTurnover int64 `json:"min_valid_turnover,omitempty"`
-	selectValues     sql.SelectValues
+	MinValidWater int64 `json:"min_valid_water,omitempty"`
+	selectValues  sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -38,7 +38,7 @@ func (*MemberAutoLevel) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case memberautolevel.FieldID, memberautolevel.FieldMinValidDeposit, memberautolevel.FieldMinValidTurnover:
+		case memberautolevel.FieldID, memberautolevel.FieldMinValidDeposit, memberautolevel.FieldMinValidWater:
 			values[i] = new(sql.NullInt64)
 		case memberautolevel.FieldOperatorCode, memberautolevel.FieldName:
 			values[i] = new(sql.NullString)
@@ -95,11 +95,11 @@ func (_m *MemberAutoLevel) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.MinValidDeposit = value.Int64
 			}
-		case memberautolevel.FieldMinValidTurnover:
+		case memberautolevel.FieldMinValidWater:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field min_valid_turnover", values[i])
+				return fmt.Errorf("unexpected type %T for field min_valid_water", values[i])
 			} else if value.Valid {
-				_m.MinValidTurnover = value.Int64
+				_m.MinValidWater = value.Int64
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -152,8 +152,8 @@ func (_m *MemberAutoLevel) String() string {
 	builder.WriteString("min_valid_deposit=")
 	builder.WriteString(fmt.Sprintf("%v", _m.MinValidDeposit))
 	builder.WriteString(", ")
-	builder.WriteString("min_valid_turnover=")
-	builder.WriteString(fmt.Sprintf("%v", _m.MinValidTurnover))
+	builder.WriteString("min_valid_water=")
+	builder.WriteString(fmt.Sprintf("%v", _m.MinValidWater))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -100,25 +100,9 @@ func (_c *AgentApplyCreate) SetMemberAccount(v string) *AgentApplyCreate {
 	return _c
 }
 
-// SetNillableMemberAccount sets the "member_account" field if the given value is not nil.
-func (_c *AgentApplyCreate) SetNillableMemberAccount(v *string) *AgentApplyCreate {
-	if v != nil {
-		_c.SetMemberAccount(*v)
-	}
-	return _c
-}
-
-// SetMemberID sets the "member_id" field.
-func (_c *AgentApplyCreate) SetMemberID(v int64) *AgentApplyCreate {
-	_c.mutation.SetMemberID(v)
-	return _c
-}
-
-// SetNillableMemberID sets the "member_id" field if the given value is not nil.
-func (_c *AgentApplyCreate) SetNillableMemberID(v *int64) *AgentApplyCreate {
-	if v != nil {
-		_c.SetMemberID(*v)
-	}
+// SetMemberCode sets the "member_code" field.
+func (_c *AgentApplyCreate) SetMemberCode(v string) *AgentApplyCreate {
+	_c.mutation.SetMemberCode(v)
 	return _c
 }
 
@@ -329,9 +313,20 @@ func (_c *AgentApplyCreate) check() error {
 			return &ValidationError{Name: "apply_share_rate", err: fmt.Errorf(`ent: validator failed for field "AgentApply.apply_share_rate": %w`, err)}
 		}
 	}
+	if _, ok := _c.mutation.MemberAccount(); !ok {
+		return &ValidationError{Name: "member_account", err: errors.New(`ent: missing required field "AgentApply.member_account"`)}
+	}
 	if v, ok := _c.mutation.MemberAccount(); ok {
 		if err := agentapply.MemberAccountValidator(v); err != nil {
 			return &ValidationError{Name: "member_account", err: fmt.Errorf(`ent: validator failed for field "AgentApply.member_account": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.MemberCode(); !ok {
+		return &ValidationError{Name: "member_code", err: errors.New(`ent: missing required field "AgentApply.member_code"`)}
+	}
+	if v, ok := _c.mutation.MemberCode(); ok {
+		if err := agentapply.MemberCodeValidator(v); err != nil {
+			return &ValidationError{Name: "member_code", err: fmt.Errorf(`ent: validator failed for field "AgentApply.member_code": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.AuditStatus(); !ok {
@@ -427,11 +422,11 @@ func (_c *AgentApplyCreate) createSpec() (*AgentApply, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.MemberAccount(); ok {
 		_spec.SetField(agentapply.FieldMemberAccount, field.TypeString, value)
-		_node.MemberAccount = &value
+		_node.MemberAccount = value
 	}
-	if value, ok := _c.mutation.MemberID(); ok {
-		_spec.SetField(agentapply.FieldMemberID, field.TypeInt64, value)
-		_node.MemberID = &value
+	if value, ok := _c.mutation.MemberCode(); ok {
+		_spec.SetField(agentapply.FieldMemberCode, field.TypeString, value)
+		_node.MemberCode = value
 	}
 	if value, ok := _c.mutation.AuditStatus(); ok {
 		_spec.SetField(agentapply.FieldAuditStatus, field.TypeInt64, value)
@@ -609,33 +604,15 @@ func (u *AgentApplyUpsert) UpdateMemberAccount() *AgentApplyUpsert {
 	return u
 }
 
-// ClearMemberAccount clears the value of the "member_account" field.
-func (u *AgentApplyUpsert) ClearMemberAccount() *AgentApplyUpsert {
-	u.SetNull(agentapply.FieldMemberAccount)
+// SetMemberCode sets the "member_code" field.
+func (u *AgentApplyUpsert) SetMemberCode(v string) *AgentApplyUpsert {
+	u.Set(agentapply.FieldMemberCode, v)
 	return u
 }
 
-// SetMemberID sets the "member_id" field.
-func (u *AgentApplyUpsert) SetMemberID(v int64) *AgentApplyUpsert {
-	u.Set(agentapply.FieldMemberID, v)
-	return u
-}
-
-// UpdateMemberID sets the "member_id" field to the value that was provided on create.
-func (u *AgentApplyUpsert) UpdateMemberID() *AgentApplyUpsert {
-	u.SetExcluded(agentapply.FieldMemberID)
-	return u
-}
-
-// AddMemberID adds v to the "member_id" field.
-func (u *AgentApplyUpsert) AddMemberID(v int64) *AgentApplyUpsert {
-	u.Add(agentapply.FieldMemberID, v)
-	return u
-}
-
-// ClearMemberID clears the value of the "member_id" field.
-func (u *AgentApplyUpsert) ClearMemberID() *AgentApplyUpsert {
-	u.SetNull(agentapply.FieldMemberID)
+// UpdateMemberCode sets the "member_code" field to the value that was provided on create.
+func (u *AgentApplyUpsert) UpdateMemberCode() *AgentApplyUpsert {
+	u.SetExcluded(agentapply.FieldMemberCode)
 	return u
 }
 
@@ -931,38 +908,17 @@ func (u *AgentApplyUpsertOne) UpdateMemberAccount() *AgentApplyUpsertOne {
 	})
 }
 
-// ClearMemberAccount clears the value of the "member_account" field.
-func (u *AgentApplyUpsertOne) ClearMemberAccount() *AgentApplyUpsertOne {
+// SetMemberCode sets the "member_code" field.
+func (u *AgentApplyUpsertOne) SetMemberCode(v string) *AgentApplyUpsertOne {
 	return u.Update(func(s *AgentApplyUpsert) {
-		s.ClearMemberAccount()
+		s.SetMemberCode(v)
 	})
 }
 
-// SetMemberID sets the "member_id" field.
-func (u *AgentApplyUpsertOne) SetMemberID(v int64) *AgentApplyUpsertOne {
+// UpdateMemberCode sets the "member_code" field to the value that was provided on create.
+func (u *AgentApplyUpsertOne) UpdateMemberCode() *AgentApplyUpsertOne {
 	return u.Update(func(s *AgentApplyUpsert) {
-		s.SetMemberID(v)
-	})
-}
-
-// AddMemberID adds v to the "member_id" field.
-func (u *AgentApplyUpsertOne) AddMemberID(v int64) *AgentApplyUpsertOne {
-	return u.Update(func(s *AgentApplyUpsert) {
-		s.AddMemberID(v)
-	})
-}
-
-// UpdateMemberID sets the "member_id" field to the value that was provided on create.
-func (u *AgentApplyUpsertOne) UpdateMemberID() *AgentApplyUpsertOne {
-	return u.Update(func(s *AgentApplyUpsert) {
-		s.UpdateMemberID()
-	})
-}
-
-// ClearMemberID clears the value of the "member_id" field.
-func (u *AgentApplyUpsertOne) ClearMemberID() *AgentApplyUpsertOne {
-	return u.Update(func(s *AgentApplyUpsert) {
-		s.ClearMemberID()
+		s.UpdateMemberCode()
 	})
 }
 
@@ -1445,38 +1401,17 @@ func (u *AgentApplyUpsertBulk) UpdateMemberAccount() *AgentApplyUpsertBulk {
 	})
 }
 
-// ClearMemberAccount clears the value of the "member_account" field.
-func (u *AgentApplyUpsertBulk) ClearMemberAccount() *AgentApplyUpsertBulk {
+// SetMemberCode sets the "member_code" field.
+func (u *AgentApplyUpsertBulk) SetMemberCode(v string) *AgentApplyUpsertBulk {
 	return u.Update(func(s *AgentApplyUpsert) {
-		s.ClearMemberAccount()
+		s.SetMemberCode(v)
 	})
 }
 
-// SetMemberID sets the "member_id" field.
-func (u *AgentApplyUpsertBulk) SetMemberID(v int64) *AgentApplyUpsertBulk {
+// UpdateMemberCode sets the "member_code" field to the value that was provided on create.
+func (u *AgentApplyUpsertBulk) UpdateMemberCode() *AgentApplyUpsertBulk {
 	return u.Update(func(s *AgentApplyUpsert) {
-		s.SetMemberID(v)
-	})
-}
-
-// AddMemberID adds v to the "member_id" field.
-func (u *AgentApplyUpsertBulk) AddMemberID(v int64) *AgentApplyUpsertBulk {
-	return u.Update(func(s *AgentApplyUpsert) {
-		s.AddMemberID(v)
-	})
-}
-
-// UpdateMemberID sets the "member_id" field to the value that was provided on create.
-func (u *AgentApplyUpsertBulk) UpdateMemberID() *AgentApplyUpsertBulk {
-	return u.Update(func(s *AgentApplyUpsert) {
-		s.UpdateMemberID()
-	})
-}
-
-// ClearMemberID clears the value of the "member_id" field.
-func (u *AgentApplyUpsertBulk) ClearMemberID() *AgentApplyUpsertBulk {
-	return u.Update(func(s *AgentApplyUpsert) {
-		s.ClearMemberID()
+		s.UpdateMemberCode()
 	})
 }
 

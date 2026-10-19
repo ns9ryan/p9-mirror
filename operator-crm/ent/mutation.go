@@ -79,8 +79,7 @@ type AgentApplyMutation struct {
 	apply_share_rate    *int64
 	addapply_share_rate *int64
 	member_account      *string
-	member_id           *int64
-	addmember_id        *int64
+	member_code         *string
 	audit_status        *int64
 	addaudit_status     *int64
 	reject_reason       *string
@@ -558,7 +557,7 @@ func (m *AgentApplyMutation) MemberAccount() (r string, exists bool) {
 // OldMemberAccount returns the old "member_account" field's value of the AgentApply entity.
 // If the AgentApply object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentApplyMutation) OldMemberAccount(ctx context.Context) (v *string, err error) {
+func (m *AgentApplyMutation) OldMemberAccount(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldMemberAccount is only allowed on UpdateOne operations")
 	}
@@ -572,92 +571,45 @@ func (m *AgentApplyMutation) OldMemberAccount(ctx context.Context) (v *string, e
 	return oldValue.MemberAccount, nil
 }
 
-// ClearMemberAccount clears the value of the "member_account" field.
-func (m *AgentApplyMutation) ClearMemberAccount() {
-	m.member_account = nil
-	m.clearedFields[agentapply.FieldMemberAccount] = struct{}{}
-}
-
-// MemberAccountCleared returns if the "member_account" field was cleared in this mutation.
-func (m *AgentApplyMutation) MemberAccountCleared() bool {
-	_, ok := m.clearedFields[agentapply.FieldMemberAccount]
-	return ok
-}
-
 // ResetMemberAccount resets all changes to the "member_account" field.
 func (m *AgentApplyMutation) ResetMemberAccount() {
 	m.member_account = nil
-	delete(m.clearedFields, agentapply.FieldMemberAccount)
 }
 
-// SetMemberID sets the "member_id" field.
-func (m *AgentApplyMutation) SetMemberID(i int64) {
-	m.member_id = &i
-	m.addmember_id = nil
+// SetMemberCode sets the "member_code" field.
+func (m *AgentApplyMutation) SetMemberCode(s string) {
+	m.member_code = &s
 }
 
-// MemberID returns the value of the "member_id" field in the mutation.
-func (m *AgentApplyMutation) MemberID() (r int64, exists bool) {
-	v := m.member_id
+// MemberCode returns the value of the "member_code" field in the mutation.
+func (m *AgentApplyMutation) MemberCode() (r string, exists bool) {
+	v := m.member_code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMemberID returns the old "member_id" field's value of the AgentApply entity.
+// OldMemberCode returns the old "member_code" field's value of the AgentApply entity.
 // If the AgentApply object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentApplyMutation) OldMemberID(ctx context.Context) (v *int64, err error) {
+func (m *AgentApplyMutation) OldMemberCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMemberID is only allowed on UpdateOne operations")
+		return v, errors.New("OldMemberCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMemberID requires an ID field in the mutation")
+		return v, errors.New("OldMemberCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMemberID: %w", err)
+		return v, fmt.Errorf("querying old value for OldMemberCode: %w", err)
 	}
-	return oldValue.MemberID, nil
+	return oldValue.MemberCode, nil
 }
 
-// AddMemberID adds i to the "member_id" field.
-func (m *AgentApplyMutation) AddMemberID(i int64) {
-	if m.addmember_id != nil {
-		*m.addmember_id += i
-	} else {
-		m.addmember_id = &i
-	}
-}
-
-// AddedMemberID returns the value that was added to the "member_id" field in this mutation.
-func (m *AgentApplyMutation) AddedMemberID() (r int64, exists bool) {
-	v := m.addmember_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearMemberID clears the value of the "member_id" field.
-func (m *AgentApplyMutation) ClearMemberID() {
-	m.member_id = nil
-	m.addmember_id = nil
-	m.clearedFields[agentapply.FieldMemberID] = struct{}{}
-}
-
-// MemberIDCleared returns if the "member_id" field was cleared in this mutation.
-func (m *AgentApplyMutation) MemberIDCleared() bool {
-	_, ok := m.clearedFields[agentapply.FieldMemberID]
-	return ok
-}
-
-// ResetMemberID resets all changes to the "member_id" field.
-func (m *AgentApplyMutation) ResetMemberID() {
-	m.member_id = nil
-	m.addmember_id = nil
-	delete(m.clearedFields, agentapply.FieldMemberID)
+// ResetMemberCode resets all changes to the "member_code" field.
+func (m *AgentApplyMutation) ResetMemberCode() {
+	m.member_code = nil
 }
 
 // SetAuditStatus sets the "audit_status" field.
@@ -1080,8 +1032,8 @@ func (m *AgentApplyMutation) Fields() []string {
 	if m.member_account != nil {
 		fields = append(fields, agentapply.FieldMemberAccount)
 	}
-	if m.member_id != nil {
-		fields = append(fields, agentapply.FieldMemberID)
+	if m.member_code != nil {
+		fields = append(fields, agentapply.FieldMemberCode)
 	}
 	if m.audit_status != nil {
 		fields = append(fields, agentapply.FieldAuditStatus)
@@ -1130,8 +1082,8 @@ func (m *AgentApplyMutation) Field(name string) (ent.Value, bool) {
 		return m.ApplyShareRate()
 	case agentapply.FieldMemberAccount:
 		return m.MemberAccount()
-	case agentapply.FieldMemberID:
-		return m.MemberID()
+	case agentapply.FieldMemberCode:
+		return m.MemberCode()
 	case agentapply.FieldAuditStatus:
 		return m.AuditStatus()
 	case agentapply.FieldRejectReason:
@@ -1173,8 +1125,8 @@ func (m *AgentApplyMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldApplyShareRate(ctx)
 	case agentapply.FieldMemberAccount:
 		return m.OldMemberAccount(ctx)
-	case agentapply.FieldMemberID:
-		return m.OldMemberID(ctx)
+	case agentapply.FieldMemberCode:
+		return m.OldMemberCode(ctx)
 	case agentapply.FieldAuditStatus:
 		return m.OldAuditStatus(ctx)
 	case agentapply.FieldRejectReason:
@@ -1261,12 +1213,12 @@ func (m *AgentApplyMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetMemberAccount(v)
 		return nil
-	case agentapply.FieldMemberID:
-		v, ok := value.(int64)
+	case agentapply.FieldMemberCode:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMemberID(v)
+		m.SetMemberCode(v)
 		return nil
 	case agentapply.FieldAuditStatus:
 		v, ok := value.(int64)
@@ -1331,9 +1283,6 @@ func (m *AgentApplyMutation) AddedFields() []string {
 	if m.addapply_share_rate != nil {
 		fields = append(fields, agentapply.FieldApplyShareRate)
 	}
-	if m.addmember_id != nil {
-		fields = append(fields, agentapply.FieldMemberID)
-	}
 	if m.addaudit_status != nil {
 		fields = append(fields, agentapply.FieldAuditStatus)
 	}
@@ -1352,8 +1301,6 @@ func (m *AgentApplyMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedRegisterSource()
 	case agentapply.FieldApplyShareRate:
 		return m.AddedApplyShareRate()
-	case agentapply.FieldMemberID:
-		return m.AddedMemberID()
 	case agentapply.FieldAuditStatus:
 		return m.AddedAuditStatus()
 	case agentapply.FieldAgentID:
@@ -1381,13 +1328,6 @@ func (m *AgentApplyMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddApplyShareRate(v)
 		return nil
-	case agentapply.FieldMemberID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddMemberID(v)
-		return nil
 	case agentapply.FieldAuditStatus:
 		v, ok := value.(int64)
 		if !ok {
@@ -1412,12 +1352,6 @@ func (m *AgentApplyMutation) ClearedFields() []string {
 	var fields []string
 	if m.FieldCleared(agentapply.FieldOperatorCode) {
 		fields = append(fields, agentapply.FieldOperatorCode)
-	}
-	if m.FieldCleared(agentapply.FieldMemberAccount) {
-		fields = append(fields, agentapply.FieldMemberAccount)
-	}
-	if m.FieldCleared(agentapply.FieldMemberID) {
-		fields = append(fields, agentapply.FieldMemberID)
 	}
 	if m.FieldCleared(agentapply.FieldRejectReason) {
 		fields = append(fields, agentapply.FieldRejectReason)
@@ -1450,12 +1384,6 @@ func (m *AgentApplyMutation) ClearField(name string) error {
 	switch name {
 	case agentapply.FieldOperatorCode:
 		m.ClearOperatorCode()
-		return nil
-	case agentapply.FieldMemberAccount:
-		m.ClearMemberAccount()
-		return nil
-	case agentapply.FieldMemberID:
-		m.ClearMemberID()
 		return nil
 	case agentapply.FieldRejectReason:
 		m.ClearRejectReason()
@@ -1507,8 +1435,8 @@ func (m *AgentApplyMutation) ResetField(name string) error {
 	case agentapply.FieldMemberAccount:
 		m.ResetMemberAccount()
 		return nil
-	case agentapply.FieldMemberID:
-		m.ResetMemberID()
+	case agentapply.FieldMemberCode:
+		m.ResetMemberCode()
 		return nil
 	case agentapply.FieldAuditStatus:
 		m.ResetAuditStatus()
@@ -4131,33 +4059,34 @@ func (m *AgentLevelMutation) ResetEdge(name string) error {
 // AgentProfileMutation represents an operation that mutates the AgentProfile nodes in the graph.
 type AgentProfileMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int64
-	created_at    *time.Time
-	updated_at    *time.Time
-	gender        *int64
-	addgender     *int64
-	birth_date    *time.Time
-	avatar_url    *string
-	nickname      *string
-	realname      *string
-	mobile        *string
-	email         *string
-	qq            *string
-	line          *string
-	wechat        *string
-	whatsapp      *string
-	telegram      *string
-	facebook      *string
-	twitter       *string
-	zalo          *string
-	clearedFields map[string]struct{}
-	agent         *int64
-	clearedagent  bool
-	done          bool
-	oldValue      func(context.Context) (*AgentProfile, error)
-	predicates    []predicate.AgentProfile
+	op             Op
+	typ            string
+	id             *int64
+	created_at     *time.Time
+	updated_at     *time.Time
+	gender         *int64
+	addgender      *int64
+	birth_date     *time.Time
+	avatar_url     *string
+	nickname       *string
+	realname       *string
+	mobile         *string
+	email          *string
+	id_document_no *string
+	qq             *string
+	line           *string
+	wechat         *string
+	whatsapp       *string
+	telegram       *string
+	facebook       *string
+	twitter        *string
+	zalo           *string
+	clearedFields  map[string]struct{}
+	agent          *int64
+	clearedagent   bool
+	done           bool
+	oldValue       func(context.Context) (*AgentProfile, error)
+	predicates     []predicate.AgentProfile
 }
 
 var _ ent.Mutation = (*AgentProfileMutation)(nil)
@@ -4722,6 +4651,55 @@ func (m *AgentProfileMutation) ResetEmail() {
 	delete(m.clearedFields, agentprofile.FieldEmail)
 }
 
+// SetIDDocumentNo sets the "id_document_no" field.
+func (m *AgentProfileMutation) SetIDDocumentNo(s string) {
+	m.id_document_no = &s
+}
+
+// IDDocumentNo returns the value of the "id_document_no" field in the mutation.
+func (m *AgentProfileMutation) IDDocumentNo() (r string, exists bool) {
+	v := m.id_document_no
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIDDocumentNo returns the old "id_document_no" field's value of the AgentProfile entity.
+// If the AgentProfile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentProfileMutation) OldIDDocumentNo(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIDDocumentNo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIDDocumentNo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIDDocumentNo: %w", err)
+	}
+	return oldValue.IDDocumentNo, nil
+}
+
+// ClearIDDocumentNo clears the value of the "id_document_no" field.
+func (m *AgentProfileMutation) ClearIDDocumentNo() {
+	m.id_document_no = nil
+	m.clearedFields[agentprofile.FieldIDDocumentNo] = struct{}{}
+}
+
+// IDDocumentNoCleared returns if the "id_document_no" field was cleared in this mutation.
+func (m *AgentProfileMutation) IDDocumentNoCleared() bool {
+	_, ok := m.clearedFields[agentprofile.FieldIDDocumentNo]
+	return ok
+}
+
+// ResetIDDocumentNo resets all changes to the "id_document_no" field.
+func (m *AgentProfileMutation) ResetIDDocumentNo() {
+	m.id_document_no = nil
+	delete(m.clearedFields, agentprofile.FieldIDDocumentNo)
+}
+
 // SetQq sets the "qq" field.
 func (m *AgentProfileMutation) SetQq(s string) {
 	m.qq = &s
@@ -5175,7 +5153,7 @@ func (m *AgentProfileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentProfileMutation) Fields() []string {
-	fields := make([]string, 0, 18)
+	fields := make([]string, 0, 19)
 	if m.created_at != nil {
 		fields = append(fields, agentprofile.FieldCreatedAt)
 	}
@@ -5205,6 +5183,9 @@ func (m *AgentProfileMutation) Fields() []string {
 	}
 	if m.email != nil {
 		fields = append(fields, agentprofile.FieldEmail)
+	}
+	if m.id_document_no != nil {
+		fields = append(fields, agentprofile.FieldIDDocumentNo)
 	}
 	if m.qq != nil {
 		fields = append(fields, agentprofile.FieldQq)
@@ -5258,6 +5239,8 @@ func (m *AgentProfileMutation) Field(name string) (ent.Value, bool) {
 		return m.Mobile()
 	case agentprofile.FieldEmail:
 		return m.Email()
+	case agentprofile.FieldIDDocumentNo:
+		return m.IDDocumentNo()
 	case agentprofile.FieldQq:
 		return m.Qq()
 	case agentprofile.FieldLine:
@@ -5303,6 +5286,8 @@ func (m *AgentProfileMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldMobile(ctx)
 	case agentprofile.FieldEmail:
 		return m.OldEmail(ctx)
+	case agentprofile.FieldIDDocumentNo:
+		return m.OldIDDocumentNo(ctx)
 	case agentprofile.FieldQq:
 		return m.OldQq(ctx)
 	case agentprofile.FieldLine:
@@ -5397,6 +5382,13 @@ func (m *AgentProfileMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEmail(v)
+		return nil
+	case agentprofile.FieldIDDocumentNo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIDDocumentNo(v)
 		return nil
 	case agentprofile.FieldQq:
 		v, ok := value.(string)
@@ -5517,6 +5509,9 @@ func (m *AgentProfileMutation) ClearedFields() []string {
 	if m.FieldCleared(agentprofile.FieldEmail) {
 		fields = append(fields, agentprofile.FieldEmail)
 	}
+	if m.FieldCleared(agentprofile.FieldIDDocumentNo) {
+		fields = append(fields, agentprofile.FieldIDDocumentNo)
+	}
 	if m.FieldCleared(agentprofile.FieldQq) {
 		fields = append(fields, agentprofile.FieldQq)
 	}
@@ -5572,6 +5567,9 @@ func (m *AgentProfileMutation) ClearField(name string) error {
 		return nil
 	case agentprofile.FieldEmail:
 		m.ClearEmail()
+		return nil
+	case agentprofile.FieldIDDocumentNo:
+		m.ClearIDDocumentNo()
 		return nil
 	case agentprofile.FieldQq:
 		m.ClearQq()
@@ -5634,6 +5632,9 @@ func (m *AgentProfileMutation) ResetField(name string) error {
 		return nil
 	case agentprofile.FieldEmail:
 		m.ResetEmail()
+		return nil
+	case agentprofile.FieldIDDocumentNo:
+		m.ResetIDDocumentNo()
 		return nil
 	case agentprofile.FieldQq:
 		m.ResetQq()
@@ -6957,7 +6958,6 @@ type AgentUserMutation struct {
 	promo_code             *string
 	login_password_hash    *string
 	withdraw_password_hash *string
-	id_document_no         *string
 	salt                   *string
 	remark                 *string
 	register_at            *time.Time
@@ -7881,55 +7881,6 @@ func (m *AgentUserMutation) ResetWithdrawPasswordHash() {
 	delete(m.clearedFields, agentuser.FieldWithdrawPasswordHash)
 }
 
-// SetIDDocumentNo sets the "id_document_no" field.
-func (m *AgentUserMutation) SetIDDocumentNo(s string) {
-	m.id_document_no = &s
-}
-
-// IDDocumentNo returns the value of the "id_document_no" field in the mutation.
-func (m *AgentUserMutation) IDDocumentNo() (r string, exists bool) {
-	v := m.id_document_no
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldIDDocumentNo returns the old "id_document_no" field's value of the AgentUser entity.
-// If the AgentUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentUserMutation) OldIDDocumentNo(ctx context.Context) (v *string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIDDocumentNo is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIDDocumentNo requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIDDocumentNo: %w", err)
-	}
-	return oldValue.IDDocumentNo, nil
-}
-
-// ClearIDDocumentNo clears the value of the "id_document_no" field.
-func (m *AgentUserMutation) ClearIDDocumentNo() {
-	m.id_document_no = nil
-	m.clearedFields[agentuser.FieldIDDocumentNo] = struct{}{}
-}
-
-// IDDocumentNoCleared returns if the "id_document_no" field was cleared in this mutation.
-func (m *AgentUserMutation) IDDocumentNoCleared() bool {
-	_, ok := m.clearedFields[agentuser.FieldIDDocumentNo]
-	return ok
-}
-
-// ResetIDDocumentNo resets all changes to the "id_document_no" field.
-func (m *AgentUserMutation) ResetIDDocumentNo() {
-	m.id_document_no = nil
-	delete(m.clearedFields, agentuser.FieldIDDocumentNo)
-}
-
 // SetSalt sets the "salt" field.
 func (m *AgentUserMutation) SetSalt(s string) {
 	m.salt = &s
@@ -8698,7 +8649,7 @@ func (m *AgentUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentUserMutation) Fields() []string {
-	fields := make([]string, 0, 26)
+	fields := make([]string, 0, 25)
 	if m.created_at != nil {
 		fields = append(fields, agentuser.FieldCreatedAt)
 	}
@@ -8749,9 +8700,6 @@ func (m *AgentUserMutation) Fields() []string {
 	}
 	if m.withdraw_password_hash != nil {
 		fields = append(fields, agentuser.FieldWithdrawPasswordHash)
-	}
-	if m.id_document_no != nil {
-		fields = append(fields, agentuser.FieldIDDocumentNo)
 	}
 	if m.salt != nil {
 		fields = append(fields, agentuser.FieldSalt)
@@ -8819,8 +8767,6 @@ func (m *AgentUserMutation) Field(name string) (ent.Value, bool) {
 		return m.LoginPasswordHash()
 	case agentuser.FieldWithdrawPasswordHash:
 		return m.WithdrawPasswordHash()
-	case agentuser.FieldIDDocumentNo:
-		return m.IDDocumentNo()
 	case agentuser.FieldSalt:
 		return m.Salt()
 	case agentuser.FieldRemark:
@@ -8880,8 +8826,6 @@ func (m *AgentUserMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldLoginPasswordHash(ctx)
 	case agentuser.FieldWithdrawPasswordHash:
 		return m.OldWithdrawPasswordHash(ctx)
-	case agentuser.FieldIDDocumentNo:
-		return m.OldIDDocumentNo(ctx)
 	case agentuser.FieldSalt:
 		return m.OldSalt(ctx)
 	case agentuser.FieldRemark:
@@ -9025,13 +8969,6 @@ func (m *AgentUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWithdrawPasswordHash(v)
-		return nil
-	case agentuser.FieldIDDocumentNo:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetIDDocumentNo(v)
 		return nil
 	case agentuser.FieldSalt:
 		v, ok := value.(string)
@@ -9218,9 +9155,6 @@ func (m *AgentUserMutation) ClearedFields() []string {
 	if m.FieldCleared(agentuser.FieldWithdrawPasswordHash) {
 		fields = append(fields, agentuser.FieldWithdrawPasswordHash)
 	}
-	if m.FieldCleared(agentuser.FieldIDDocumentNo) {
-		fields = append(fields, agentuser.FieldIDDocumentNo)
-	}
 	if m.FieldCleared(agentuser.FieldRemark) {
 		fields = append(fields, agentuser.FieldRemark)
 	}
@@ -9264,9 +9198,6 @@ func (m *AgentUserMutation) ClearField(name string) error {
 		return nil
 	case agentuser.FieldWithdrawPasswordHash:
 		m.ClearWithdrawPasswordHash()
-		return nil
-	case agentuser.FieldIDDocumentNo:
-		m.ClearIDDocumentNo()
 		return nil
 	case agentuser.FieldRemark:
 		m.ClearRemark()
@@ -9344,9 +9275,6 @@ func (m *AgentUserMutation) ResetField(name string) error {
 		return nil
 	case agentuser.FieldWithdrawPasswordHash:
 		m.ResetWithdrawPasswordHash()
-		return nil
-	case agentuser.FieldIDDocumentNo:
-		m.ResetIDDocumentNo()
 		return nil
 	case agentuser.FieldSalt:
 		m.ResetSalt()
@@ -11723,21 +11651,21 @@ func (m *MemberMutation) ResetEdge(name string) error {
 // MemberAutoLevelMutation represents an operation that mutates the MemberAutoLevel nodes in the graph.
 type MemberAutoLevelMutation struct {
 	config
-	op                    Op
-	typ                   string
-	id                    *int64
-	created_at            *time.Time
-	updated_at            *time.Time
-	operator_code         *string
-	name                  *string
-	min_valid_deposit     *int64
-	addmin_valid_deposit  *int64
-	min_valid_turnover    *int64
-	addmin_valid_turnover *int64
-	clearedFields         map[string]struct{}
-	done                  bool
-	oldValue              func(context.Context) (*MemberAutoLevel, error)
-	predicates            []predicate.MemberAutoLevel
+	op                   Op
+	typ                  string
+	id                   *int64
+	created_at           *time.Time
+	updated_at           *time.Time
+	operator_code        *string
+	name                 *string
+	min_valid_deposit    *int64
+	addmin_valid_deposit *int64
+	min_valid_water      *int64
+	addmin_valid_water   *int64
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*MemberAutoLevel, error)
+	predicates           []predicate.MemberAutoLevel
 }
 
 var _ ent.Mutation = (*MemberAutoLevelMutation)(nil)
@@ -12044,60 +11972,60 @@ func (m *MemberAutoLevelMutation) ResetMinValidDeposit() {
 	m.addmin_valid_deposit = nil
 }
 
-// SetMinValidTurnover sets the "min_valid_turnover" field.
-func (m *MemberAutoLevelMutation) SetMinValidTurnover(i int64) {
-	m.min_valid_turnover = &i
-	m.addmin_valid_turnover = nil
+// SetMinValidWater sets the "min_valid_water" field.
+func (m *MemberAutoLevelMutation) SetMinValidWater(i int64) {
+	m.min_valid_water = &i
+	m.addmin_valid_water = nil
 }
 
-// MinValidTurnover returns the value of the "min_valid_turnover" field in the mutation.
-func (m *MemberAutoLevelMutation) MinValidTurnover() (r int64, exists bool) {
-	v := m.min_valid_turnover
+// MinValidWater returns the value of the "min_valid_water" field in the mutation.
+func (m *MemberAutoLevelMutation) MinValidWater() (r int64, exists bool) {
+	v := m.min_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMinValidTurnover returns the old "min_valid_turnover" field's value of the MemberAutoLevel entity.
+// OldMinValidWater returns the old "min_valid_water" field's value of the MemberAutoLevel entity.
 // If the MemberAutoLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberAutoLevelMutation) OldMinValidTurnover(ctx context.Context) (v int64, err error) {
+func (m *MemberAutoLevelMutation) OldMinValidWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMinValidTurnover is only allowed on UpdateOne operations")
+		return v, errors.New("OldMinValidWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMinValidTurnover requires an ID field in the mutation")
+		return v, errors.New("OldMinValidWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMinValidTurnover: %w", err)
+		return v, fmt.Errorf("querying old value for OldMinValidWater: %w", err)
 	}
-	return oldValue.MinValidTurnover, nil
+	return oldValue.MinValidWater, nil
 }
 
-// AddMinValidTurnover adds i to the "min_valid_turnover" field.
-func (m *MemberAutoLevelMutation) AddMinValidTurnover(i int64) {
-	if m.addmin_valid_turnover != nil {
-		*m.addmin_valid_turnover += i
+// AddMinValidWater adds i to the "min_valid_water" field.
+func (m *MemberAutoLevelMutation) AddMinValidWater(i int64) {
+	if m.addmin_valid_water != nil {
+		*m.addmin_valid_water += i
 	} else {
-		m.addmin_valid_turnover = &i
+		m.addmin_valid_water = &i
 	}
 }
 
-// AddedMinValidTurnover returns the value that was added to the "min_valid_turnover" field in this mutation.
-func (m *MemberAutoLevelMutation) AddedMinValidTurnover() (r int64, exists bool) {
-	v := m.addmin_valid_turnover
+// AddedMinValidWater returns the value that was added to the "min_valid_water" field in this mutation.
+func (m *MemberAutoLevelMutation) AddedMinValidWater() (r int64, exists bool) {
+	v := m.addmin_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetMinValidTurnover resets all changes to the "min_valid_turnover" field.
-func (m *MemberAutoLevelMutation) ResetMinValidTurnover() {
-	m.min_valid_turnover = nil
-	m.addmin_valid_turnover = nil
+// ResetMinValidWater resets all changes to the "min_valid_water" field.
+func (m *MemberAutoLevelMutation) ResetMinValidWater() {
+	m.min_valid_water = nil
+	m.addmin_valid_water = nil
 }
 
 // Where appends a list predicates to the MemberAutoLevelMutation builder.
@@ -12150,8 +12078,8 @@ func (m *MemberAutoLevelMutation) Fields() []string {
 	if m.min_valid_deposit != nil {
 		fields = append(fields, memberautolevel.FieldMinValidDeposit)
 	}
-	if m.min_valid_turnover != nil {
-		fields = append(fields, memberautolevel.FieldMinValidTurnover)
+	if m.min_valid_water != nil {
+		fields = append(fields, memberautolevel.FieldMinValidWater)
 	}
 	return fields
 }
@@ -12171,8 +12099,8 @@ func (m *MemberAutoLevelMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case memberautolevel.FieldMinValidDeposit:
 		return m.MinValidDeposit()
-	case memberautolevel.FieldMinValidTurnover:
-		return m.MinValidTurnover()
+	case memberautolevel.FieldMinValidWater:
+		return m.MinValidWater()
 	}
 	return nil, false
 }
@@ -12192,8 +12120,8 @@ func (m *MemberAutoLevelMutation) OldField(ctx context.Context, name string) (en
 		return m.OldName(ctx)
 	case memberautolevel.FieldMinValidDeposit:
 		return m.OldMinValidDeposit(ctx)
-	case memberautolevel.FieldMinValidTurnover:
-		return m.OldMinValidTurnover(ctx)
+	case memberautolevel.FieldMinValidWater:
+		return m.OldMinValidWater(ctx)
 	}
 	return nil, fmt.Errorf("unknown MemberAutoLevel field %s", name)
 }
@@ -12238,12 +12166,12 @@ func (m *MemberAutoLevelMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetMinValidDeposit(v)
 		return nil
-	case memberautolevel.FieldMinValidTurnover:
+	case memberautolevel.FieldMinValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMinValidTurnover(v)
+		m.SetMinValidWater(v)
 		return nil
 	}
 	return fmt.Errorf("unknown MemberAutoLevel field %s", name)
@@ -12256,8 +12184,8 @@ func (m *MemberAutoLevelMutation) AddedFields() []string {
 	if m.addmin_valid_deposit != nil {
 		fields = append(fields, memberautolevel.FieldMinValidDeposit)
 	}
-	if m.addmin_valid_turnover != nil {
-		fields = append(fields, memberautolevel.FieldMinValidTurnover)
+	if m.addmin_valid_water != nil {
+		fields = append(fields, memberautolevel.FieldMinValidWater)
 	}
 	return fields
 }
@@ -12269,8 +12197,8 @@ func (m *MemberAutoLevelMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case memberautolevel.FieldMinValidDeposit:
 		return m.AddedMinValidDeposit()
-	case memberautolevel.FieldMinValidTurnover:
-		return m.AddedMinValidTurnover()
+	case memberautolevel.FieldMinValidWater:
+		return m.AddedMinValidWater()
 	}
 	return nil, false
 }
@@ -12287,12 +12215,12 @@ func (m *MemberAutoLevelMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddMinValidDeposit(v)
 		return nil
-	case memberautolevel.FieldMinValidTurnover:
+	case memberautolevel.FieldMinValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddMinValidTurnover(v)
+		m.AddMinValidWater(v)
 		return nil
 	}
 	return fmt.Errorf("unknown MemberAutoLevel numeric field %s", name)
@@ -12336,8 +12264,8 @@ func (m *MemberAutoLevelMutation) ResetField(name string) error {
 	case memberautolevel.FieldMinValidDeposit:
 		m.ResetMinValidDeposit()
 		return nil
-	case memberautolevel.FieldMinValidTurnover:
-		m.ResetMinValidTurnover()
+	case memberautolevel.FieldMinValidWater:
+		m.ResetMinValidWater()
 		return nil
 	}
 	return fmt.Errorf("unknown MemberAutoLevel field %s", name)
@@ -15578,22 +15506,24 @@ func (m *MemberProfileMutation) ResetEdge(name string) error {
 // MemberVipConfigMutation represents an operation that mutates the MemberVipConfig nodes in the graph.
 type MemberVipConfigMutation struct {
 	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	created_at              *time.Time
-	updated_at              *time.Time
-	operator_code           *string
-	vip_enabled             *bool
-	upgrade_reward_enabled  *bool
-	retention_check_enabled *bool
-	reward_grant_mode       *int64
-	addreward_grant_mode    *int64
-	last_enabled_at         *time.Time
-	clearedFields           map[string]struct{}
-	done                    bool
-	oldValue                func(context.Context) (*MemberVipConfig, error)
-	predicates              []predicate.MemberVipConfig
+	op                         Op
+	typ                        string
+	id                         *int64
+	created_at                 *time.Time
+	updated_at                 *time.Time
+	operator_code              *string
+	vip_enabled                *bool
+	upgrade_reward_enabled     *bool
+	reward_water_multiplier    *int64
+	addreward_water_multiplier *int64
+	retention_check_enabled    *bool
+	reward_grant_mode          *int64
+	addreward_grant_mode       *int64
+	last_enabled_at            *time.Time
+	clearedFields              map[string]struct{}
+	done                       bool
+	oldValue                   func(context.Context) (*MemberVipConfig, error)
+	predicates                 []predicate.MemberVipConfig
 }
 
 var _ ent.Mutation = (*MemberVipConfigMutation)(nil)
@@ -15880,6 +15810,62 @@ func (m *MemberVipConfigMutation) ResetUpgradeRewardEnabled() {
 	m.upgrade_reward_enabled = nil
 }
 
+// SetRewardWaterMultiplier sets the "reward_water_multiplier" field.
+func (m *MemberVipConfigMutation) SetRewardWaterMultiplier(i int64) {
+	m.reward_water_multiplier = &i
+	m.addreward_water_multiplier = nil
+}
+
+// RewardWaterMultiplier returns the value of the "reward_water_multiplier" field in the mutation.
+func (m *MemberVipConfigMutation) RewardWaterMultiplier() (r int64, exists bool) {
+	v := m.reward_water_multiplier
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRewardWaterMultiplier returns the old "reward_water_multiplier" field's value of the MemberVipConfig entity.
+// If the MemberVipConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberVipConfigMutation) OldRewardWaterMultiplier(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRewardWaterMultiplier is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRewardWaterMultiplier requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRewardWaterMultiplier: %w", err)
+	}
+	return oldValue.RewardWaterMultiplier, nil
+}
+
+// AddRewardWaterMultiplier adds i to the "reward_water_multiplier" field.
+func (m *MemberVipConfigMutation) AddRewardWaterMultiplier(i int64) {
+	if m.addreward_water_multiplier != nil {
+		*m.addreward_water_multiplier += i
+	} else {
+		m.addreward_water_multiplier = &i
+	}
+}
+
+// AddedRewardWaterMultiplier returns the value that was added to the "reward_water_multiplier" field in this mutation.
+func (m *MemberVipConfigMutation) AddedRewardWaterMultiplier() (r int64, exists bool) {
+	v := m.addreward_water_multiplier
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRewardWaterMultiplier resets all changes to the "reward_water_multiplier" field.
+func (m *MemberVipConfigMutation) ResetRewardWaterMultiplier() {
+	m.reward_water_multiplier = nil
+	m.addreward_water_multiplier = nil
+}
+
 // SetRetentionCheckEnabled sets the "retention_check_enabled" field.
 func (m *MemberVipConfigMutation) SetRetentionCheckEnabled(b bool) {
 	m.retention_check_enabled = &b
@@ -16055,7 +16041,7 @@ func (m *MemberVipConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MemberVipConfigMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, membervipconfig.FieldCreatedAt)
 	}
@@ -16070,6 +16056,9 @@ func (m *MemberVipConfigMutation) Fields() []string {
 	}
 	if m.upgrade_reward_enabled != nil {
 		fields = append(fields, membervipconfig.FieldUpgradeRewardEnabled)
+	}
+	if m.reward_water_multiplier != nil {
+		fields = append(fields, membervipconfig.FieldRewardWaterMultiplier)
 	}
 	if m.retention_check_enabled != nil {
 		fields = append(fields, membervipconfig.FieldRetentionCheckEnabled)
@@ -16098,6 +16087,8 @@ func (m *MemberVipConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.VipEnabled()
 	case membervipconfig.FieldUpgradeRewardEnabled:
 		return m.UpgradeRewardEnabled()
+	case membervipconfig.FieldRewardWaterMultiplier:
+		return m.RewardWaterMultiplier()
 	case membervipconfig.FieldRetentionCheckEnabled:
 		return m.RetentionCheckEnabled()
 	case membervipconfig.FieldRewardGrantMode:
@@ -16123,6 +16114,8 @@ func (m *MemberVipConfigMutation) OldField(ctx context.Context, name string) (en
 		return m.OldVipEnabled(ctx)
 	case membervipconfig.FieldUpgradeRewardEnabled:
 		return m.OldUpgradeRewardEnabled(ctx)
+	case membervipconfig.FieldRewardWaterMultiplier:
+		return m.OldRewardWaterMultiplier(ctx)
 	case membervipconfig.FieldRetentionCheckEnabled:
 		return m.OldRetentionCheckEnabled(ctx)
 	case membervipconfig.FieldRewardGrantMode:
@@ -16173,6 +16166,13 @@ func (m *MemberVipConfigMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpgradeRewardEnabled(v)
 		return nil
+	case membervipconfig.FieldRewardWaterMultiplier:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRewardWaterMultiplier(v)
+		return nil
 	case membervipconfig.FieldRetentionCheckEnabled:
 		v, ok := value.(bool)
 		if !ok {
@@ -16202,6 +16202,9 @@ func (m *MemberVipConfigMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *MemberVipConfigMutation) AddedFields() []string {
 	var fields []string
+	if m.addreward_water_multiplier != nil {
+		fields = append(fields, membervipconfig.FieldRewardWaterMultiplier)
+	}
 	if m.addreward_grant_mode != nil {
 		fields = append(fields, membervipconfig.FieldRewardGrantMode)
 	}
@@ -16213,6 +16216,8 @@ func (m *MemberVipConfigMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *MemberVipConfigMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case membervipconfig.FieldRewardWaterMultiplier:
+		return m.AddedRewardWaterMultiplier()
 	case membervipconfig.FieldRewardGrantMode:
 		return m.AddedRewardGrantMode()
 	}
@@ -16224,6 +16229,13 @@ func (m *MemberVipConfigMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *MemberVipConfigMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case membervipconfig.FieldRewardWaterMultiplier:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRewardWaterMultiplier(v)
+		return nil
 	case membervipconfig.FieldRewardGrantMode:
 		v, ok := value.(int64)
 		if !ok {
@@ -16281,6 +16293,9 @@ func (m *MemberVipConfigMutation) ResetField(name string) error {
 		return nil
 	case membervipconfig.FieldUpgradeRewardEnabled:
 		m.ResetUpgradeRewardEnabled()
+		return nil
+	case membervipconfig.FieldRewardWaterMultiplier:
+		m.ResetRewardWaterMultiplier()
 		return nil
 	case membervipconfig.FieldRetentionCheckEnabled:
 		m.ResetRetentionCheckEnabled()
@@ -16984,28 +16999,28 @@ func (m *MemberVipIconGroupMutation) ResetEdge(name string) error {
 // MemberVipLevelMutation represents an operation that mutates the MemberVipLevel nodes in the graph.
 type MemberVipLevelMutation struct {
 	config
-	op                          Op
-	typ                         string
-	id                          *int64
-	created_at                  *time.Time
-	updated_at                  *time.Time
-	operator_code               *string
-	level                       *int64
-	addlevel                    *int64
-	upgrade_valid_deposit       *int64
-	addupgrade_valid_deposit    *int64
-	upgrade_valid_turnover      *int64
-	addupgrade_valid_turnover   *int64
-	retention_valid_deposit     *int64
-	addretention_valid_deposit  *int64
-	retention_valid_turnover    *int64
-	addretention_valid_turnover *int64
-	upgrade_reward              *int64
-	addupgrade_reward           *int64
-	clearedFields               map[string]struct{}
-	done                        bool
-	oldValue                    func(context.Context) (*MemberVipLevel, error)
-	predicates                  []predicate.MemberVipLevel
+	op                         Op
+	typ                        string
+	id                         *int64
+	created_at                 *time.Time
+	updated_at                 *time.Time
+	operator_code              *string
+	level                      *int64
+	addlevel                   *int64
+	upgrade_valid_deposit      *int64
+	addupgrade_valid_deposit   *int64
+	upgrade_valid_water        *int64
+	addupgrade_valid_water     *int64
+	retention_valid_deposit    *int64
+	addretention_valid_deposit *int64
+	retention_valid_water      *int64
+	addretention_valid_water   *int64
+	upgrade_reward             *int64
+	addupgrade_reward          *int64
+	clearedFields              map[string]struct{}
+	done                       bool
+	oldValue                   func(context.Context) (*MemberVipLevel, error)
+	predicates                 []predicate.MemberVipLevel
 }
 
 var _ ent.Mutation = (*MemberVipLevelMutation)(nil)
@@ -17332,60 +17347,60 @@ func (m *MemberVipLevelMutation) ResetUpgradeValidDeposit() {
 	m.addupgrade_valid_deposit = nil
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (m *MemberVipLevelMutation) SetUpgradeValidTurnover(i int64) {
-	m.upgrade_valid_turnover = &i
-	m.addupgrade_valid_turnover = nil
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (m *MemberVipLevelMutation) SetUpgradeValidWater(i int64) {
+	m.upgrade_valid_water = &i
+	m.addupgrade_valid_water = nil
 }
 
-// UpgradeValidTurnover returns the value of the "upgrade_valid_turnover" field in the mutation.
-func (m *MemberVipLevelMutation) UpgradeValidTurnover() (r int64, exists bool) {
-	v := m.upgrade_valid_turnover
+// UpgradeValidWater returns the value of the "upgrade_valid_water" field in the mutation.
+func (m *MemberVipLevelMutation) UpgradeValidWater() (r int64, exists bool) {
+	v := m.upgrade_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpgradeValidTurnover returns the old "upgrade_valid_turnover" field's value of the MemberVipLevel entity.
+// OldUpgradeValidWater returns the old "upgrade_valid_water" field's value of the MemberVipLevel entity.
 // If the MemberVipLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipLevelMutation) OldUpgradeValidTurnover(ctx context.Context) (v int64, err error) {
+func (m *MemberVipLevelMutation) OldUpgradeValidWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpgradeValidTurnover is only allowed on UpdateOne operations")
+		return v, errors.New("OldUpgradeValidWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpgradeValidTurnover requires an ID field in the mutation")
+		return v, errors.New("OldUpgradeValidWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpgradeValidTurnover: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpgradeValidWater: %w", err)
 	}
-	return oldValue.UpgradeValidTurnover, nil
+	return oldValue.UpgradeValidWater, nil
 }
 
-// AddUpgradeValidTurnover adds i to the "upgrade_valid_turnover" field.
-func (m *MemberVipLevelMutation) AddUpgradeValidTurnover(i int64) {
-	if m.addupgrade_valid_turnover != nil {
-		*m.addupgrade_valid_turnover += i
+// AddUpgradeValidWater adds i to the "upgrade_valid_water" field.
+func (m *MemberVipLevelMutation) AddUpgradeValidWater(i int64) {
+	if m.addupgrade_valid_water != nil {
+		*m.addupgrade_valid_water += i
 	} else {
-		m.addupgrade_valid_turnover = &i
+		m.addupgrade_valid_water = &i
 	}
 }
 
-// AddedUpgradeValidTurnover returns the value that was added to the "upgrade_valid_turnover" field in this mutation.
-func (m *MemberVipLevelMutation) AddedUpgradeValidTurnover() (r int64, exists bool) {
-	v := m.addupgrade_valid_turnover
+// AddedUpgradeValidWater returns the value that was added to the "upgrade_valid_water" field in this mutation.
+func (m *MemberVipLevelMutation) AddedUpgradeValidWater() (r int64, exists bool) {
+	v := m.addupgrade_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUpgradeValidTurnover resets all changes to the "upgrade_valid_turnover" field.
-func (m *MemberVipLevelMutation) ResetUpgradeValidTurnover() {
-	m.upgrade_valid_turnover = nil
-	m.addupgrade_valid_turnover = nil
+// ResetUpgradeValidWater resets all changes to the "upgrade_valid_water" field.
+func (m *MemberVipLevelMutation) ResetUpgradeValidWater() {
+	m.upgrade_valid_water = nil
+	m.addupgrade_valid_water = nil
 }
 
 // SetRetentionValidDeposit sets the "retention_valid_deposit" field.
@@ -17444,60 +17459,60 @@ func (m *MemberVipLevelMutation) ResetRetentionValidDeposit() {
 	m.addretention_valid_deposit = nil
 }
 
-// SetRetentionValidTurnover sets the "retention_valid_turnover" field.
-func (m *MemberVipLevelMutation) SetRetentionValidTurnover(i int64) {
-	m.retention_valid_turnover = &i
-	m.addretention_valid_turnover = nil
+// SetRetentionValidWater sets the "retention_valid_water" field.
+func (m *MemberVipLevelMutation) SetRetentionValidWater(i int64) {
+	m.retention_valid_water = &i
+	m.addretention_valid_water = nil
 }
 
-// RetentionValidTurnover returns the value of the "retention_valid_turnover" field in the mutation.
-func (m *MemberVipLevelMutation) RetentionValidTurnover() (r int64, exists bool) {
-	v := m.retention_valid_turnover
+// RetentionValidWater returns the value of the "retention_valid_water" field in the mutation.
+func (m *MemberVipLevelMutation) RetentionValidWater() (r int64, exists bool) {
+	v := m.retention_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRetentionValidTurnover returns the old "retention_valid_turnover" field's value of the MemberVipLevel entity.
+// OldRetentionValidWater returns the old "retention_valid_water" field's value of the MemberVipLevel entity.
 // If the MemberVipLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipLevelMutation) OldRetentionValidTurnover(ctx context.Context) (v int64, err error) {
+func (m *MemberVipLevelMutation) OldRetentionValidWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRetentionValidTurnover is only allowed on UpdateOne operations")
+		return v, errors.New("OldRetentionValidWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRetentionValidTurnover requires an ID field in the mutation")
+		return v, errors.New("OldRetentionValidWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRetentionValidTurnover: %w", err)
+		return v, fmt.Errorf("querying old value for OldRetentionValidWater: %w", err)
 	}
-	return oldValue.RetentionValidTurnover, nil
+	return oldValue.RetentionValidWater, nil
 }
 
-// AddRetentionValidTurnover adds i to the "retention_valid_turnover" field.
-func (m *MemberVipLevelMutation) AddRetentionValidTurnover(i int64) {
-	if m.addretention_valid_turnover != nil {
-		*m.addretention_valid_turnover += i
+// AddRetentionValidWater adds i to the "retention_valid_water" field.
+func (m *MemberVipLevelMutation) AddRetentionValidWater(i int64) {
+	if m.addretention_valid_water != nil {
+		*m.addretention_valid_water += i
 	} else {
-		m.addretention_valid_turnover = &i
+		m.addretention_valid_water = &i
 	}
 }
 
-// AddedRetentionValidTurnover returns the value that was added to the "retention_valid_turnover" field in this mutation.
-func (m *MemberVipLevelMutation) AddedRetentionValidTurnover() (r int64, exists bool) {
-	v := m.addretention_valid_turnover
+// AddedRetentionValidWater returns the value that was added to the "retention_valid_water" field in this mutation.
+func (m *MemberVipLevelMutation) AddedRetentionValidWater() (r int64, exists bool) {
+	v := m.addretention_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetRetentionValidTurnover resets all changes to the "retention_valid_turnover" field.
-func (m *MemberVipLevelMutation) ResetRetentionValidTurnover() {
-	m.retention_valid_turnover = nil
-	m.addretention_valid_turnover = nil
+// ResetRetentionValidWater resets all changes to the "retention_valid_water" field.
+func (m *MemberVipLevelMutation) ResetRetentionValidWater() {
+	m.retention_valid_water = nil
+	m.addretention_valid_water = nil
 }
 
 // SetUpgradeReward sets the "upgrade_reward" field.
@@ -17606,14 +17621,14 @@ func (m *MemberVipLevelMutation) Fields() []string {
 	if m.upgrade_valid_deposit != nil {
 		fields = append(fields, memberviplevel.FieldUpgradeValidDeposit)
 	}
-	if m.upgrade_valid_turnover != nil {
-		fields = append(fields, memberviplevel.FieldUpgradeValidTurnover)
+	if m.upgrade_valid_water != nil {
+		fields = append(fields, memberviplevel.FieldUpgradeValidWater)
 	}
 	if m.retention_valid_deposit != nil {
 		fields = append(fields, memberviplevel.FieldRetentionValidDeposit)
 	}
-	if m.retention_valid_turnover != nil {
-		fields = append(fields, memberviplevel.FieldRetentionValidTurnover)
+	if m.retention_valid_water != nil {
+		fields = append(fields, memberviplevel.FieldRetentionValidWater)
 	}
 	if m.upgrade_reward != nil {
 		fields = append(fields, memberviplevel.FieldUpgradeReward)
@@ -17636,12 +17651,12 @@ func (m *MemberVipLevelMutation) Field(name string) (ent.Value, bool) {
 		return m.Level()
 	case memberviplevel.FieldUpgradeValidDeposit:
 		return m.UpgradeValidDeposit()
-	case memberviplevel.FieldUpgradeValidTurnover:
-		return m.UpgradeValidTurnover()
+	case memberviplevel.FieldUpgradeValidWater:
+		return m.UpgradeValidWater()
 	case memberviplevel.FieldRetentionValidDeposit:
 		return m.RetentionValidDeposit()
-	case memberviplevel.FieldRetentionValidTurnover:
-		return m.RetentionValidTurnover()
+	case memberviplevel.FieldRetentionValidWater:
+		return m.RetentionValidWater()
 	case memberviplevel.FieldUpgradeReward:
 		return m.UpgradeReward()
 	}
@@ -17663,12 +17678,12 @@ func (m *MemberVipLevelMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldLevel(ctx)
 	case memberviplevel.FieldUpgradeValidDeposit:
 		return m.OldUpgradeValidDeposit(ctx)
-	case memberviplevel.FieldUpgradeValidTurnover:
-		return m.OldUpgradeValidTurnover(ctx)
+	case memberviplevel.FieldUpgradeValidWater:
+		return m.OldUpgradeValidWater(ctx)
 	case memberviplevel.FieldRetentionValidDeposit:
 		return m.OldRetentionValidDeposit(ctx)
-	case memberviplevel.FieldRetentionValidTurnover:
-		return m.OldRetentionValidTurnover(ctx)
+	case memberviplevel.FieldRetentionValidWater:
+		return m.OldRetentionValidWater(ctx)
 	case memberviplevel.FieldUpgradeReward:
 		return m.OldUpgradeReward(ctx)
 	}
@@ -17715,12 +17730,12 @@ func (m *MemberVipLevelMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpgradeValidDeposit(v)
 		return nil
-	case memberviplevel.FieldUpgradeValidTurnover:
+	case memberviplevel.FieldUpgradeValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpgradeValidTurnover(v)
+		m.SetUpgradeValidWater(v)
 		return nil
 	case memberviplevel.FieldRetentionValidDeposit:
 		v, ok := value.(int64)
@@ -17729,12 +17744,12 @@ func (m *MemberVipLevelMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRetentionValidDeposit(v)
 		return nil
-	case memberviplevel.FieldRetentionValidTurnover:
+	case memberviplevel.FieldRetentionValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRetentionValidTurnover(v)
+		m.SetRetentionValidWater(v)
 		return nil
 	case memberviplevel.FieldUpgradeReward:
 		v, ok := value.(int64)
@@ -17757,14 +17772,14 @@ func (m *MemberVipLevelMutation) AddedFields() []string {
 	if m.addupgrade_valid_deposit != nil {
 		fields = append(fields, memberviplevel.FieldUpgradeValidDeposit)
 	}
-	if m.addupgrade_valid_turnover != nil {
-		fields = append(fields, memberviplevel.FieldUpgradeValidTurnover)
+	if m.addupgrade_valid_water != nil {
+		fields = append(fields, memberviplevel.FieldUpgradeValidWater)
 	}
 	if m.addretention_valid_deposit != nil {
 		fields = append(fields, memberviplevel.FieldRetentionValidDeposit)
 	}
-	if m.addretention_valid_turnover != nil {
-		fields = append(fields, memberviplevel.FieldRetentionValidTurnover)
+	if m.addretention_valid_water != nil {
+		fields = append(fields, memberviplevel.FieldRetentionValidWater)
 	}
 	if m.addupgrade_reward != nil {
 		fields = append(fields, memberviplevel.FieldUpgradeReward)
@@ -17781,12 +17796,12 @@ func (m *MemberVipLevelMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedLevel()
 	case memberviplevel.FieldUpgradeValidDeposit:
 		return m.AddedUpgradeValidDeposit()
-	case memberviplevel.FieldUpgradeValidTurnover:
-		return m.AddedUpgradeValidTurnover()
+	case memberviplevel.FieldUpgradeValidWater:
+		return m.AddedUpgradeValidWater()
 	case memberviplevel.FieldRetentionValidDeposit:
 		return m.AddedRetentionValidDeposit()
-	case memberviplevel.FieldRetentionValidTurnover:
-		return m.AddedRetentionValidTurnover()
+	case memberviplevel.FieldRetentionValidWater:
+		return m.AddedRetentionValidWater()
 	case memberviplevel.FieldUpgradeReward:
 		return m.AddedUpgradeReward()
 	}
@@ -17812,12 +17827,12 @@ func (m *MemberVipLevelMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUpgradeValidDeposit(v)
 		return nil
-	case memberviplevel.FieldUpgradeValidTurnover:
+	case memberviplevel.FieldUpgradeValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUpgradeValidTurnover(v)
+		m.AddUpgradeValidWater(v)
 		return nil
 	case memberviplevel.FieldRetentionValidDeposit:
 		v, ok := value.(int64)
@@ -17826,12 +17841,12 @@ func (m *MemberVipLevelMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddRetentionValidDeposit(v)
 		return nil
-	case memberviplevel.FieldRetentionValidTurnover:
+	case memberviplevel.FieldRetentionValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddRetentionValidTurnover(v)
+		m.AddRetentionValidWater(v)
 		return nil
 	case memberviplevel.FieldUpgradeReward:
 		v, ok := value.(int64)
@@ -17882,14 +17897,14 @@ func (m *MemberVipLevelMutation) ResetField(name string) error {
 	case memberviplevel.FieldUpgradeValidDeposit:
 		m.ResetUpgradeValidDeposit()
 		return nil
-	case memberviplevel.FieldUpgradeValidTurnover:
-		m.ResetUpgradeValidTurnover()
+	case memberviplevel.FieldUpgradeValidWater:
+		m.ResetUpgradeValidWater()
 		return nil
 	case memberviplevel.FieldRetentionValidDeposit:
 		m.ResetRetentionValidDeposit()
 		return nil
-	case memberviplevel.FieldRetentionValidTurnover:
-		m.ResetRetentionValidTurnover()
+	case memberviplevel.FieldRetentionValidWater:
+		m.ResetRetentionValidWater()
 		return nil
 	case memberviplevel.FieldUpgradeReward:
 		m.ResetUpgradeReward()

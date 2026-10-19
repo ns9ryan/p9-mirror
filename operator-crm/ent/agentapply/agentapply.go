@@ -32,8 +32,8 @@ const (
 	FieldApplyShareRate = "apply_share_rate"
 	// FieldMemberAccount holds the string denoting the member_account field in the database.
 	FieldMemberAccount = "member_account"
-	// FieldMemberID holds the string denoting the member_id field in the database.
-	FieldMemberID = "member_id"
+	// FieldMemberCode holds the string denoting the member_code field in the database.
+	FieldMemberCode = "member_code"
 	// FieldAuditStatus holds the string denoting the audit_status field in the database.
 	FieldAuditStatus = "audit_status"
 	// FieldRejectReason holds the string denoting the reject_reason field in the database.
@@ -64,7 +64,7 @@ var Columns = []string{
 	FieldRegisterSource,
 	FieldApplyShareRate,
 	FieldMemberAccount,
-	FieldMemberID,
+	FieldMemberCode,
 	FieldAuditStatus,
 	FieldRejectReason,
 	FieldApplyRemark,
@@ -112,6 +112,8 @@ var (
 	ApplyShareRateValidator func(int64) error
 	// MemberAccountValidator is a validator for the "member_account" field. It is called by the builders before save.
 	MemberAccountValidator func(string) error
+	// MemberCodeValidator is a validator for the "member_code" field. It is called by the builders before save.
+	MemberCodeValidator func(string) error
 	// DefaultAuditStatus holds the default value on creation for the "audit_status" field.
 	DefaultAuditStatus int64
 	// AuditStatusValidator is a validator for the "audit_status" field. It is called by the builders before save.
@@ -177,9 +179,9 @@ func ByMemberAccount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMemberAccount, opts...).ToFunc()
 }
 
-// ByMemberID orders the results by the member_id field.
-func ByMemberID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMemberID, opts...).ToFunc()
+// ByMemberCode orders the results by the member_code field.
+func ByMemberCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMemberCode, opts...).ToFunc()
 }
 
 // ByAuditStatus orders the results by the audit_status field.

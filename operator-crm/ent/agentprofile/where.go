@@ -105,6 +105,11 @@ func Email(v string) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldEQ(FieldEmail, v))
 }
 
+// IDDocumentNo applies equality check predicate on the "id_document_no" field. It's identical to IDDocumentNoEQ.
+func IDDocumentNo(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldEQ(FieldIDDocumentNo, v))
+}
+
 // Qq applies equality check predicate on the "qq" field. It's identical to QqEQ.
 func Qq(v string) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldEQ(FieldQq, v))
@@ -708,6 +713,81 @@ func EmailEqualFold(v string) predicate.AgentProfile {
 // EmailContainsFold applies the ContainsFold predicate on the "email" field.
 func EmailContainsFold(v string) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldContainsFold(FieldEmail, v))
+}
+
+// IDDocumentNoEQ applies the EQ predicate on the "id_document_no" field.
+func IDDocumentNoEQ(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldEQ(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoNEQ applies the NEQ predicate on the "id_document_no" field.
+func IDDocumentNoNEQ(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldNEQ(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoIn applies the In predicate on the "id_document_no" field.
+func IDDocumentNoIn(vs ...string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldIn(FieldIDDocumentNo, vs...))
+}
+
+// IDDocumentNoNotIn applies the NotIn predicate on the "id_document_no" field.
+func IDDocumentNoNotIn(vs ...string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldNotIn(FieldIDDocumentNo, vs...))
+}
+
+// IDDocumentNoGT applies the GT predicate on the "id_document_no" field.
+func IDDocumentNoGT(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldGT(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoGTE applies the GTE predicate on the "id_document_no" field.
+func IDDocumentNoGTE(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldGTE(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoLT applies the LT predicate on the "id_document_no" field.
+func IDDocumentNoLT(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldLT(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoLTE applies the LTE predicate on the "id_document_no" field.
+func IDDocumentNoLTE(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldLTE(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoContains applies the Contains predicate on the "id_document_no" field.
+func IDDocumentNoContains(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldContains(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoHasPrefix applies the HasPrefix predicate on the "id_document_no" field.
+func IDDocumentNoHasPrefix(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldHasPrefix(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoHasSuffix applies the HasSuffix predicate on the "id_document_no" field.
+func IDDocumentNoHasSuffix(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldHasSuffix(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoIsNil applies the IsNil predicate on the "id_document_no" field.
+func IDDocumentNoIsNil() predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldIsNull(FieldIDDocumentNo))
+}
+
+// IDDocumentNoNotNil applies the NotNil predicate on the "id_document_no" field.
+func IDDocumentNoNotNil() predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldNotNull(FieldIDDocumentNo))
+}
+
+// IDDocumentNoEqualFold applies the EqualFold predicate on the "id_document_no" field.
+func IDDocumentNoEqualFold(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldEqualFold(FieldIDDocumentNo, v))
+}
+
+// IDDocumentNoContainsFold applies the ContainsFold predicate on the "id_document_no" field.
+func IDDocumentNoContainsFold(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldContainsFold(FieldIDDocumentNo, v))
 }
 
 // QqEQ applies the EQ predicate on the "qq" field.

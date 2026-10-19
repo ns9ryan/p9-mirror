@@ -5,6 +5,7 @@ import (
 	"time"
 
 	jwtv5 "github.com/golang-jwt/jwt/v5"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 )
 
 func TestSignAndParse(t *testing.T) {
@@ -54,14 +55,14 @@ func TestParseExpired(t *testing.T) {
 }
 
 func TestCheckPassword(t *testing.T) {
-	hash, err := HashPassword("secret")
+	hash, err := dao.HashPassword("secret")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !CheckPassword(hash, "secret") {
+	if !dao.CheckPassword(hash, "secret") {
 		t.Fatal("password should match")
 	}
-	if CheckPassword(hash, "other") {
+	if dao.CheckPassword(hash, "other") {
 		t.Fatal("password should not match")
 	}
 }

@@ -30,6 +30,7 @@ const (
 	AgentLevelExceeded             = "agent.levelExceeded"
 	AgentShareRateExceedParent     = "agent.shareRateExceedParent"
 	AgentShareRateExceedMax        = "agent.shareRateExceedMax"
+	AgentShareRateBelowChild       = "agent.shareRateBelowChild"
 	AgentFieldsRequired            = "agent.fieldsRequired"
 	AgentConflict                  = "agent.conflict"
 	AgentDesignatedAgentInvalid    = "agent.designatedAgentInvalid"
@@ -39,4 +40,7 @@ const (
 	AgentApplyNotPending           = "agent.applyNotPending"
 	AgentApplyRejectReasonRequired = "agent.applyRejectReasonRequired"
 	AgentApplyPendingExists        = "agent.applyPendingExists"
+	AgentApplyAccountUsedByOther   = "agent.applyAccountUsedByOther"
+	AgentApplyMemberCodeExists     = "agent.applyMemberCodeExists"
+	AgentNotFound                  = "agent.notFound"
 )

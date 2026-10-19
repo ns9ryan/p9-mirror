@@ -155,6 +155,20 @@ func (_c *AgentProfileCreate) SetNillableEmail(v *string) *AgentProfileCreate {
 	return _c
 }
 
+// SetIDDocumentNo sets the "id_document_no" field.
+func (_c *AgentProfileCreate) SetIDDocumentNo(v string) *AgentProfileCreate {
+	_c.mutation.SetIDDocumentNo(v)
+	return _c
+}
+
+// SetNillableIDDocumentNo sets the "id_document_no" field if the given value is not nil.
+func (_c *AgentProfileCreate) SetNillableIDDocumentNo(v *string) *AgentProfileCreate {
+	if v != nil {
+		_c.SetIDDocumentNo(*v)
+	}
+	return _c
+}
+
 // SetQq sets the "qq" field.
 func (_c *AgentProfileCreate) SetQq(v string) *AgentProfileCreate {
 	_c.mutation.SetQq(v)
@@ -371,6 +385,11 @@ func (_c *AgentProfileCreate) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.email": %w`, err)}
 		}
 	}
+	if v, ok := _c.mutation.IDDocumentNo(); ok {
+		if err := agentprofile.IDDocumentNoValidator(v); err != nil {
+			return &ValidationError{Name: "id_document_no", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.id_document_no": %w`, err)}
+		}
+	}
 	if v, ok := _c.mutation.Qq(); ok {
 		if err := agentprofile.QqValidator(v); err != nil {
 			return &ValidationError{Name: "qq", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.qq": %w`, err)}
@@ -482,6 +501,10 @@ func (_c *AgentProfileCreate) createSpec() (*AgentProfile, *sqlgraph.CreateSpec)
 	if value, ok := _c.mutation.Email(); ok {
 		_spec.SetField(agentprofile.FieldEmail, field.TypeString, value)
 		_node.Email = &value
+	}
+	if value, ok := _c.mutation.IDDocumentNo(); ok {
+		_spec.SetField(agentprofile.FieldIDDocumentNo, field.TypeString, value)
+		_node.IDDocumentNo = &value
 	}
 	if value, ok := _c.mutation.Qq(); ok {
 		_spec.SetField(agentprofile.FieldQq, field.TypeString, value)
@@ -719,6 +742,24 @@ func (u *AgentProfileUpsert) UpdateEmail() *AgentProfileUpsert {
 // ClearEmail clears the value of the "email" field.
 func (u *AgentProfileUpsert) ClearEmail() *AgentProfileUpsert {
 	u.SetNull(agentprofile.FieldEmail)
+	return u
+}
+
+// SetIDDocumentNo sets the "id_document_no" field.
+func (u *AgentProfileUpsert) SetIDDocumentNo(v string) *AgentProfileUpsert {
+	u.Set(agentprofile.FieldIDDocumentNo, v)
+	return u
+}
+
+// UpdateIDDocumentNo sets the "id_document_no" field to the value that was provided on create.
+func (u *AgentProfileUpsert) UpdateIDDocumentNo() *AgentProfileUpsert {
+	u.SetExcluded(agentprofile.FieldIDDocumentNo)
+	return u
+}
+
+// ClearIDDocumentNo clears the value of the "id_document_no" field.
+func (u *AgentProfileUpsert) ClearIDDocumentNo() *AgentProfileUpsert {
+	u.SetNull(agentprofile.FieldIDDocumentNo)
 	return u
 }
 
@@ -1078,6 +1119,27 @@ func (u *AgentProfileUpsertOne) UpdateEmail() *AgentProfileUpsertOne {
 func (u *AgentProfileUpsertOne) ClearEmail() *AgentProfileUpsertOne {
 	return u.Update(func(s *AgentProfileUpsert) {
 		s.ClearEmail()
+	})
+}
+
+// SetIDDocumentNo sets the "id_document_no" field.
+func (u *AgentProfileUpsertOne) SetIDDocumentNo(v string) *AgentProfileUpsertOne {
+	return u.Update(func(s *AgentProfileUpsert) {
+		s.SetIDDocumentNo(v)
+	})
+}
+
+// UpdateIDDocumentNo sets the "id_document_no" field to the value that was provided on create.
+func (u *AgentProfileUpsertOne) UpdateIDDocumentNo() *AgentProfileUpsertOne {
+	return u.Update(func(s *AgentProfileUpsert) {
+		s.UpdateIDDocumentNo()
+	})
+}
+
+// ClearIDDocumentNo clears the value of the "id_document_no" field.
+func (u *AgentProfileUpsertOne) ClearIDDocumentNo() *AgentProfileUpsertOne {
+	return u.Update(func(s *AgentProfileUpsert) {
+		s.ClearIDDocumentNo()
 	})
 }
 
@@ -1627,6 +1689,27 @@ func (u *AgentProfileUpsertBulk) UpdateEmail() *AgentProfileUpsertBulk {
 func (u *AgentProfileUpsertBulk) ClearEmail() *AgentProfileUpsertBulk {
 	return u.Update(func(s *AgentProfileUpsert) {
 		s.ClearEmail()
+	})
+}
+
+// SetIDDocumentNo sets the "id_document_no" field.
+func (u *AgentProfileUpsertBulk) SetIDDocumentNo(v string) *AgentProfileUpsertBulk {
+	return u.Update(func(s *AgentProfileUpsert) {
+		s.SetIDDocumentNo(v)
+	})
+}
+
+// UpdateIDDocumentNo sets the "id_document_no" field to the value that was provided on create.
+func (u *AgentProfileUpsertBulk) UpdateIDDocumentNo() *AgentProfileUpsertBulk {
+	return u.Update(func(s *AgentProfileUpsert) {
+		s.UpdateIDDocumentNo()
+	})
+}
+
+// ClearIDDocumentNo clears the value of the "id_document_no" field.
+func (u *AgentProfileUpsertBulk) ClearIDDocumentNo() *AgentProfileUpsertBulk {
+	return u.Update(func(s *AgentProfileUpsert) {
+		s.ClearIDDocumentNo()
 	})
 }
 

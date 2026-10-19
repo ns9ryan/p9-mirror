@@ -85,6 +85,12 @@ func (s *AgentServiceServer) TreeNodeAgents(ctx context.Context, in *agentpb.Tre
 }
 
 // group: agent
+func (s *AgentServiceServer) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq) (*agentpb.TreeNodeAncestorAgentsResp, error) {
+	l := agentservicelogic.NewTreeNodeAncestorAgentsLogic(ctx, s.svcCtx)
+	return l.TreeNodeAncestorAgents(in)
+}
+
+// group: agent
 func (s *AgentServiceServer) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq) (*agentpb.AgentApplyItem, error) {
 	l := agentservicelogic.NewAddAgentApplyLogic(ctx, s.svcCtx)
 	return l.AddAgentApply(in)
@@ -100,4 +106,52 @@ func (s *AgentServiceServer) ListAgentApplies(ctx context.Context, in *agentpb.L
 func (s *AgentServiceServer) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentApplyReq) (*agentpb.ReviewAgentApplyResp, error) {
 	l := agentservicelogic.NewReviewAgentApplyLogic(ctx, s.svcCtx)
 	return l.ReviewAgentApply(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq) (*agentpb.AgentProfile, error) {
+	l := agentservicelogic.NewGetAgentProfileLogic(ctx, s.svcCtx)
+	return l.GetAgentProfile(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq) (*agentpb.ResetLoginPasswordResp, error) {
+	l := agentservicelogic.NewResetLoginPasswordLogic(ctx, s.svcCtx)
+	return l.ResetLoginPassword(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq) (*agentpb.Empty, error) {
+	l := agentservicelogic.NewUpdateLoginPasswordLogic(ctx, s.svcCtx)
+	return l.UpdateLoginPassword(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq) (*agentpb.Empty, error) {
+	l := agentservicelogic.NewUpdateWithdrawPasswordLogic(ctx, s.svcCtx)
+	return l.UpdateWithdrawPassword(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq) (*agentpb.Empty, error) {
+	l := agentservicelogic.NewUpdateAgentShareRateLogic(ctx, s.svcCtx)
+	return l.UpdateAgentShareRate(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq) (*agentpb.Empty, error) {
+	l := agentservicelogic.NewUpdateAgentPayoutRestrictedLogic(ctx, s.svcCtx)
+	return l.UpdateAgentPayoutRestricted(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error) {
+	l := agentservicelogic.NewUpdateAgentRemarkLogic(ctx, s.svcCtx)
+	return l.UpdateAgentRemark(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq) (*agentpb.AgentProfile, error) {
+	l := agentservicelogic.NewUpdateAgentProfileLogic(ctx, s.svcCtx)
+	return l.UpdateAgentProfile(in)
 }

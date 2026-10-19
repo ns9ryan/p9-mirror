@@ -34,6 +34,8 @@ const (
 	FieldMobile = "mobile"
 	// FieldEmail holds the string denoting the email field in the database.
 	FieldEmail = "email"
+	// FieldIDDocumentNo holds the string denoting the id_document_no field in the database.
+	FieldIDDocumentNo = "id_document_no"
 	// FieldQq holds the string denoting the qq field in the database.
 	FieldQq = "qq"
 	// FieldLine holds the string denoting the line field in the database.
@@ -76,6 +78,7 @@ var Columns = []string{
 	FieldRealname,
 	FieldMobile,
 	FieldEmail,
+	FieldIDDocumentNo,
 	FieldQq,
 	FieldLine,
 	FieldWechat,
@@ -117,6 +120,8 @@ var (
 	MobileValidator func(string) error
 	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
 	EmailValidator func(string) error
+	// IDDocumentNoValidator is a validator for the "id_document_no" field. It is called by the builders before save.
+	IDDocumentNoValidator func(string) error
 	// QqValidator is a validator for the "qq" field. It is called by the builders before save.
 	QqValidator func(string) error
 	// LineValidator is a validator for the "line" field. It is called by the builders before save.
@@ -191,6 +196,11 @@ func ByMobile(opts ...sql.OrderTermOption) OrderOption {
 // ByEmail orders the results by the email field.
 func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEmail, opts...).ToFunc()
+}
+
+// ByIDDocumentNo orders the results by the id_document_no field.
+func ByIDDocumentNo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIDDocumentNo, opts...).ToFunc()
 }
 
 // ByQq orders the results by the qq field.

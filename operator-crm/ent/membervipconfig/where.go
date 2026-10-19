@@ -79,6 +79,11 @@ func UpgradeRewardEnabled(v bool) predicate.MemberVipConfig {
 	return predicate.MemberVipConfig(sql.FieldEQ(FieldUpgradeRewardEnabled, v))
 }
 
+// RewardWaterMultiplier applies equality check predicate on the "reward_water_multiplier" field. It's identical to RewardWaterMultiplierEQ.
+func RewardWaterMultiplier(v int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldEQ(FieldRewardWaterMultiplier, v))
+}
+
 // RetentionCheckEnabled applies equality check predicate on the "retention_check_enabled" field. It's identical to RetentionCheckEnabledEQ.
 func RetentionCheckEnabled(v bool) predicate.MemberVipConfig {
 	return predicate.MemberVipConfig(sql.FieldEQ(FieldRetentionCheckEnabled, v))
@@ -257,6 +262,46 @@ func UpgradeRewardEnabledEQ(v bool) predicate.MemberVipConfig {
 // UpgradeRewardEnabledNEQ applies the NEQ predicate on the "upgrade_reward_enabled" field.
 func UpgradeRewardEnabledNEQ(v bool) predicate.MemberVipConfig {
 	return predicate.MemberVipConfig(sql.FieldNEQ(FieldUpgradeRewardEnabled, v))
+}
+
+// RewardWaterMultiplierEQ applies the EQ predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierEQ(v int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldEQ(FieldRewardWaterMultiplier, v))
+}
+
+// RewardWaterMultiplierNEQ applies the NEQ predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierNEQ(v int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldNEQ(FieldRewardWaterMultiplier, v))
+}
+
+// RewardWaterMultiplierIn applies the In predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierIn(vs ...int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldIn(FieldRewardWaterMultiplier, vs...))
+}
+
+// RewardWaterMultiplierNotIn applies the NotIn predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierNotIn(vs ...int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldNotIn(FieldRewardWaterMultiplier, vs...))
+}
+
+// RewardWaterMultiplierGT applies the GT predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierGT(v int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldGT(FieldRewardWaterMultiplier, v))
+}
+
+// RewardWaterMultiplierGTE applies the GTE predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierGTE(v int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldGTE(FieldRewardWaterMultiplier, v))
+}
+
+// RewardWaterMultiplierLT applies the LT predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierLT(v int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldLT(FieldRewardWaterMultiplier, v))
+}
+
+// RewardWaterMultiplierLTE applies the LTE predicate on the "reward_water_multiplier" field.
+func RewardWaterMultiplierLTE(v int64) predicate.MemberVipConfig {
+	return predicate.MemberVipConfig(sql.FieldLTE(FieldRewardWaterMultiplier, v))
 }
 
 // RetentionCheckEnabledEQ applies the EQ predicate on the "retention_check_enabled" field.

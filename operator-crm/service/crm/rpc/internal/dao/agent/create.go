@@ -14,7 +14,6 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/pkg/agentline"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
-	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/auth"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
 )
@@ -88,7 +87,7 @@ func (s *Service) createRootAgent(ctx context.Context) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	hash, err := auth.HashPassword(password)
+	hash, err := dao.HashPassword(password)
 	if err != nil {
 		return 0, err
 	}
@@ -192,7 +191,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 		return nil, cerr
 	}
 	// 生成密码哈希
-	hash, err := auth.HashPassword(password)
+	hash, err := dao.HashPassword(password)
 	if err != nil {
 		return nil, err
 	}

@@ -25,3 +25,4 @@ go.work.sum
 # Build binaries
 /crm_rpc
 /settlement_rpc
+/rpc

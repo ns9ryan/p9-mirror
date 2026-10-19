@@ -50,12 +50,16 @@ func (s *Service) SearchAgents(ctx context.Context, in *agentpb.SearchAgentsReq)
 		searchKeywordPred(kw),
 		agentuser.LevelGTE(int64(level)),
 	}
+	// 线路编码不为空时，按线路精确匹配
+	if in.LineCode != nil && *in.LineCode != "" {
+		preds = append(preds, agentuser.AgentLineCodeEQ(*in.LineCode))
+	}
 
 	rows, err := s.DB.AgentUser.Query().
 		Where(preds...).
 		Order(agentuser.ByID(sql.OrderDesc())).
 		Limit(int(limit)).
-		Select(agentuser.FieldID, agentuser.FieldAccount, agentuser.FieldLevel, agentuser.FieldAgentLineCode).
+		Select(agentuser.FieldID, agentuser.FieldAccount, agentuser.FieldLevel, agentuser.FieldAgentLineCode, agentuser.FieldShareRate).
 		All(ctx)
 	if err != nil {
 		return nil, err
@@ -78,6 +82,7 @@ func (s *Service) SearchAgents(ctx context.Context, in *agentpb.SearchAgentsReq)
 			Level:      int32(row.Level),
 			LevelAlias: levelAlias[row.Level],
 			LineCode:   row.AgentLineCode,
+			ShareRate:  int32(row.ShareRate),
 		})
 	}
 	return &agentpb.SearchAgentsResp{Items: items}, nil

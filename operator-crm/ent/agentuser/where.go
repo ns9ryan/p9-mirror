@@ -140,11 +140,6 @@ func WithdrawPasswordHash(v string) predicate.AgentUser {
 	return predicate.AgentUser(sql.FieldEQ(FieldWithdrawPasswordHash, v))
 }
 
-// IDDocumentNo applies equality check predicate on the "id_document_no" field. It's identical to IDDocumentNoEQ.
-func IDDocumentNo(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldEQ(FieldIDDocumentNo, v))
-}
-
 // Salt applies equality check predicate on the "salt" field. It's identical to SaltEQ.
 func Salt(v string) predicate.AgentUser {
 	return predicate.AgentUser(sql.FieldEQ(FieldSalt, v))
@@ -1038,81 +1033,6 @@ func WithdrawPasswordHashEqualFold(v string) predicate.AgentUser {
 // WithdrawPasswordHashContainsFold applies the ContainsFold predicate on the "withdraw_password_hash" field.
 func WithdrawPasswordHashContainsFold(v string) predicate.AgentUser {
 	return predicate.AgentUser(sql.FieldContainsFold(FieldWithdrawPasswordHash, v))
-}
-
-// IDDocumentNoEQ applies the EQ predicate on the "id_document_no" field.
-func IDDocumentNoEQ(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldEQ(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoNEQ applies the NEQ predicate on the "id_document_no" field.
-func IDDocumentNoNEQ(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldNEQ(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoIn applies the In predicate on the "id_document_no" field.
-func IDDocumentNoIn(vs ...string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldIn(FieldIDDocumentNo, vs...))
-}
-
-// IDDocumentNoNotIn applies the NotIn predicate on the "id_document_no" field.
-func IDDocumentNoNotIn(vs ...string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldNotIn(FieldIDDocumentNo, vs...))
-}
-
-// IDDocumentNoGT applies the GT predicate on the "id_document_no" field.
-func IDDocumentNoGT(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldGT(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoGTE applies the GTE predicate on the "id_document_no" field.
-func IDDocumentNoGTE(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldGTE(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoLT applies the LT predicate on the "id_document_no" field.
-func IDDocumentNoLT(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldLT(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoLTE applies the LTE predicate on the "id_document_no" field.
-func IDDocumentNoLTE(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldLTE(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoContains applies the Contains predicate on the "id_document_no" field.
-func IDDocumentNoContains(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldContains(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoHasPrefix applies the HasPrefix predicate on the "id_document_no" field.
-func IDDocumentNoHasPrefix(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldHasPrefix(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoHasSuffix applies the HasSuffix predicate on the "id_document_no" field.
-func IDDocumentNoHasSuffix(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldHasSuffix(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoIsNil applies the IsNil predicate on the "id_document_no" field.
-func IDDocumentNoIsNil() predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldIsNull(FieldIDDocumentNo))
-}
-
-// IDDocumentNoNotNil applies the NotNil predicate on the "id_document_no" field.
-func IDDocumentNoNotNil() predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldNotNull(FieldIDDocumentNo))
-}
-
-// IDDocumentNoEqualFold applies the EqualFold predicate on the "id_document_no" field.
-func IDDocumentNoEqualFold(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldEqualFold(FieldIDDocumentNo, v))
-}
-
-// IDDocumentNoContainsFold applies the ContainsFold predicate on the "id_document_no" field.
-func IDDocumentNoContainsFold(v string) predicate.AgentUser {
-	return predicate.AgentUser(sql.FieldContainsFold(FieldIDDocumentNo, v))
 }
 
 // SaltEQ applies the EQ predicate on the "salt" field.

@@ -292,26 +292,6 @@ func (_u *AgentUserUpdate) ClearWithdrawPasswordHash() *AgentUserUpdate {
 	return _u
 }
 
-// SetIDDocumentNo sets the "id_document_no" field.
-func (_u *AgentUserUpdate) SetIDDocumentNo(v string) *AgentUserUpdate {
-	_u.mutation.SetIDDocumentNo(v)
-	return _u
-}
-
-// SetNillableIDDocumentNo sets the "id_document_no" field if the given value is not nil.
-func (_u *AgentUserUpdate) SetNillableIDDocumentNo(v *string) *AgentUserUpdate {
-	if v != nil {
-		_u.SetIDDocumentNo(*v)
-	}
-	return _u
-}
-
-// ClearIDDocumentNo clears the value of the "id_document_no" field.
-func (_u *AgentUserUpdate) ClearIDDocumentNo() *AgentUserUpdate {
-	_u.mutation.ClearIDDocumentNo()
-	return _u
-}
-
 // SetSalt sets the "salt" field.
 func (_u *AgentUserUpdate) SetSalt(v string) *AgentUserUpdate {
 	_u.mutation.SetSalt(v)
@@ -792,11 +772,6 @@ func (_u *AgentUserUpdate) check() error {
 			return &ValidationError{Name: "withdraw_password_hash", err: fmt.Errorf(`ent: validator failed for field "AgentUser.withdraw_password_hash": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.IDDocumentNo(); ok {
-		if err := agentuser.IDDocumentNoValidator(v); err != nil {
-			return &ValidationError{Name: "id_document_no", err: fmt.Errorf(`ent: validator failed for field "AgentUser.id_document_no": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Salt(); ok {
 		if err := agentuser.SaltValidator(v); err != nil {
 			return &ValidationError{Name: "salt", err: fmt.Errorf(`ent: validator failed for field "AgentUser.salt": %w`, err)}
@@ -894,12 +869,6 @@ func (_u *AgentUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.WithdrawPasswordHashCleared() {
 		_spec.ClearField(agentuser.FieldWithdrawPasswordHash, field.TypeString)
-	}
-	if value, ok := _u.mutation.IDDocumentNo(); ok {
-		_spec.SetField(agentuser.FieldIDDocumentNo, field.TypeString, value)
-	}
-	if _u.mutation.IDDocumentNoCleared() {
-		_spec.ClearField(agentuser.FieldIDDocumentNo, field.TypeString)
 	}
 	if value, ok := _u.mutation.Salt(); ok {
 		_spec.SetField(agentuser.FieldSalt, field.TypeString, value)
@@ -1524,26 +1493,6 @@ func (_u *AgentUserUpdateOne) ClearWithdrawPasswordHash() *AgentUserUpdateOne {
 	return _u
 }
 
-// SetIDDocumentNo sets the "id_document_no" field.
-func (_u *AgentUserUpdateOne) SetIDDocumentNo(v string) *AgentUserUpdateOne {
-	_u.mutation.SetIDDocumentNo(v)
-	return _u
-}
-
-// SetNillableIDDocumentNo sets the "id_document_no" field if the given value is not nil.
-func (_u *AgentUserUpdateOne) SetNillableIDDocumentNo(v *string) *AgentUserUpdateOne {
-	if v != nil {
-		_u.SetIDDocumentNo(*v)
-	}
-	return _u
-}
-
-// ClearIDDocumentNo clears the value of the "id_document_no" field.
-func (_u *AgentUserUpdateOne) ClearIDDocumentNo() *AgentUserUpdateOne {
-	_u.mutation.ClearIDDocumentNo()
-	return _u
-}
-
 // SetSalt sets the "salt" field.
 func (_u *AgentUserUpdateOne) SetSalt(v string) *AgentUserUpdateOne {
 	_u.mutation.SetSalt(v)
@@ -2037,11 +1986,6 @@ func (_u *AgentUserUpdateOne) check() error {
 			return &ValidationError{Name: "withdraw_password_hash", err: fmt.Errorf(`ent: validator failed for field "AgentUser.withdraw_password_hash": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.IDDocumentNo(); ok {
-		if err := agentuser.IDDocumentNoValidator(v); err != nil {
-			return &ValidationError{Name: "id_document_no", err: fmt.Errorf(`ent: validator failed for field "AgentUser.id_document_no": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Salt(); ok {
 		if err := agentuser.SaltValidator(v); err != nil {
 			return &ValidationError{Name: "salt", err: fmt.Errorf(`ent: validator failed for field "AgentUser.salt": %w`, err)}
@@ -2156,12 +2100,6 @@ func (_u *AgentUserUpdateOne) sqlSave(ctx context.Context) (_node *AgentUser, er
 	}
 	if _u.mutation.WithdrawPasswordHashCleared() {
 		_spec.ClearField(agentuser.FieldWithdrawPasswordHash, field.TypeString)
-	}
-	if value, ok := _u.mutation.IDDocumentNo(); ok {
-		_spec.SetField(agentuser.FieldIDDocumentNo, field.TypeString, value)
-	}
-	if _u.mutation.IDDocumentNoCleared() {
-		_spec.ClearField(agentuser.FieldIDDocumentNo, field.TypeString)
 	}
 	if value, ok := _u.mutation.Salt(); ok {
 		_spec.SetField(agentuser.FieldSalt, field.TypeString, value)

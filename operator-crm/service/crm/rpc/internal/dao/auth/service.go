@@ -13,6 +13,7 @@ import (
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/authpb"
 
@@ -67,7 +68,7 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 	}
 
 	u, err := s.DB.AgentUser.Query().
-		Where(agentuser.OperatorCodeEQ(operatorCode), agentuser.AccountEQ(account)).
+		Where(agentuser.AccountEQ(account)).
 		WithProfile().
 		Only(ctx)
 	if err != nil {
@@ -76,7 +77,7 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 		}
 		return nil, err
 	}
-	if !CheckPassword(u.LoginPasswordHash, password) {
+	if !dao.CheckPassword(u.LoginPasswordHash, password) {
 		return nil, xerr.Unauthorized(i18n.AuthPasswordIncorrect)
 	}
 	if u.Status != statusNormal {
@@ -175,7 +176,7 @@ func (s *Service) CheckToken(ctx context.Context, raw string) (*authpb.CheckToke
 	if err := s.ensureActive(ctx, raw); err != nil {
 		return nil, err
 	}
-	u, err := s.agentByID(ctx, c.UserID, c.OperatorCode, false)
+	u, err := s.agentByID(withOperator(ctx, c.OperatorCode), c.UserID, false)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.Forbidden(i18n.AuthUserNotFound)
@@ -202,7 +203,7 @@ func (s *Service) CheckToken(ctx context.Context, raw string) (*authpb.CheckToke
 }
 
 func (s *Service) sessionUser(ctx context.Context, c *Claims) (*ent.AgentUser, error) {
-	u, err := s.agentByID(ctx, c.UserID, c.OperatorCode, true)
+	u, err := s.agentByID(withOperator(ctx, c.OperatorCode), c.UserID, true)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.Unauthorized(i18n.Unauthorized)
@@ -218,14 +219,15 @@ func (s *Service) sessionUser(ctx context.Context, c *Claims) (*ent.AgentUser, e
 	return u, nil
 }
 
-func (s *Service) agentByID(ctx context.Context, id int64, operatorCode string, withProfile bool) (*ent.AgentUser, error) {
+func (s *Service) agentByID(ctx context.Context, id int64, withProfile bool) (*ent.AgentUser, error) {
 	q := s.DB.AgentUser.Query().Where(agentuser.ID(id))
 	if withProfile {
 		q = q.WithProfile()
 	}
-	return q.Only(withOperator(ctx, operatorCode))
+	return q.Only(ctx)
 }
 
+// 更新代理登录信息
 func (s *Service) touchLogin(ctx context.Context, u *ent.AgentUser, udid string) error {
 	now := time.Now()
 	upd := s.DB.AgentUser.UpdateOneID(u.ID).
@@ -300,6 +302,7 @@ func (s *Service) blacklist(ctx context.Context, token string, expUnix int64) er
 	return nil
 }
 
+// 确保令牌未被拉黑
 func (s *Service) ensureActive(ctx context.Context, token string) error {
 	if token == "" {
 		return xerr.Unauthorized(i18n.Unauthorized)
@@ -327,6 +330,7 @@ func tokenClaims(ctx context.Context, u *ent.AgentUser) Claims {
 	}
 }
 
+// 解析自己的刷新令牌
 func parseOwnRefresh(secret string, claims *ctxdata.Claims, refreshToken string) (string, int64, error) {
 	raw := StripBearer(refreshToken)
 	if raw == "" {

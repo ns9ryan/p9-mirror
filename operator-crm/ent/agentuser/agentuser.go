@@ -49,8 +49,6 @@ const (
 	FieldLoginPasswordHash = "login_password_hash"
 	// FieldWithdrawPasswordHash holds the string denoting the withdraw_password_hash field in the database.
 	FieldWithdrawPasswordHash = "withdraw_password_hash"
-	// FieldIDDocumentNo holds the string denoting the id_document_no field in the database.
-	FieldIDDocumentNo = "id_document_no"
 	// FieldSalt holds the string denoting the salt field in the database.
 	FieldSalt = "salt"
 	// FieldRemark holds the string denoting the remark field in the database.
@@ -159,7 +157,6 @@ var Columns = []string{
 	FieldPromoCode,
 	FieldLoginPasswordHash,
 	FieldWithdrawPasswordHash,
-	FieldIDDocumentNo,
 	FieldSalt,
 	FieldRemark,
 	FieldRegisterAt,
@@ -237,8 +234,6 @@ var (
 	LoginPasswordHashValidator func(string) error
 	// WithdrawPasswordHashValidator is a validator for the "withdraw_password_hash" field. It is called by the builders before save.
 	WithdrawPasswordHashValidator func(string) error
-	// IDDocumentNoValidator is a validator for the "id_document_no" field. It is called by the builders before save.
-	IDDocumentNoValidator func(string) error
 	// SaltValidator is a validator for the "salt" field. It is called by the builders before save.
 	SaltValidator func(string) error
 	// RemarkValidator is a validator for the "remark" field. It is called by the builders before save.
@@ -342,11 +337,6 @@ func ByLoginPasswordHash(opts ...sql.OrderTermOption) OrderOption {
 // ByWithdrawPasswordHash orders the results by the withdraw_password_hash field.
 func ByWithdrawPasswordHash(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWithdrawPasswordHash, opts...).ToFunc()
-}
-
-// ByIDDocumentNo orders the results by the id_document_no field.
-func ByIDDocumentNo(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldIDDocumentNo, opts...).ToFunc()
 }
 
 // BySalt orders the results by the salt field.

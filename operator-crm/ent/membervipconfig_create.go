@@ -84,6 +84,20 @@ func (_c *MemberVipConfigCreate) SetNillableUpgradeRewardEnabled(v *bool) *Membe
 	return _c
 }
 
+// SetRewardWaterMultiplier sets the "reward_water_multiplier" field.
+func (_c *MemberVipConfigCreate) SetRewardWaterMultiplier(v int64) *MemberVipConfigCreate {
+	_c.mutation.SetRewardWaterMultiplier(v)
+	return _c
+}
+
+// SetNillableRewardWaterMultiplier sets the "reward_water_multiplier" field if the given value is not nil.
+func (_c *MemberVipConfigCreate) SetNillableRewardWaterMultiplier(v *int64) *MemberVipConfigCreate {
+	if v != nil {
+		_c.SetRewardWaterMultiplier(*v)
+	}
+	return _c
+}
+
 // SetRetentionCheckEnabled sets the "retention_check_enabled" field.
 func (_c *MemberVipConfigCreate) SetRetentionCheckEnabled(v bool) *MemberVipConfigCreate {
 	_c.mutation.SetRetentionCheckEnabled(v)
@@ -183,6 +197,10 @@ func (_c *MemberVipConfigCreate) defaults() {
 		v := membervipconfig.DefaultUpgradeRewardEnabled
 		_c.mutation.SetUpgradeRewardEnabled(v)
 	}
+	if _, ok := _c.mutation.RewardWaterMultiplier(); !ok {
+		v := membervipconfig.DefaultRewardWaterMultiplier
+		_c.mutation.SetRewardWaterMultiplier(v)
+	}
 	if _, ok := _c.mutation.RetentionCheckEnabled(); !ok {
 		v := membervipconfig.DefaultRetentionCheckEnabled
 		_c.mutation.SetRetentionCheckEnabled(v)
@@ -214,6 +232,14 @@ func (_c *MemberVipConfigCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpgradeRewardEnabled(); !ok {
 		return &ValidationError{Name: "upgrade_reward_enabled", err: errors.New(`ent: missing required field "MemberVipConfig.upgrade_reward_enabled"`)}
+	}
+	if _, ok := _c.mutation.RewardWaterMultiplier(); !ok {
+		return &ValidationError{Name: "reward_water_multiplier", err: errors.New(`ent: missing required field "MemberVipConfig.reward_water_multiplier"`)}
+	}
+	if v, ok := _c.mutation.RewardWaterMultiplier(); ok {
+		if err := membervipconfig.RewardWaterMultiplierValidator(v); err != nil {
+			return &ValidationError{Name: "reward_water_multiplier", err: fmt.Errorf(`ent: validator failed for field "MemberVipConfig.reward_water_multiplier": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.RetentionCheckEnabled(); !ok {
 		return &ValidationError{Name: "retention_check_enabled", err: errors.New(`ent: missing required field "MemberVipConfig.retention_check_enabled"`)}
@@ -278,6 +304,10 @@ func (_c *MemberVipConfigCreate) createSpec() (*MemberVipConfig, *sqlgraph.Creat
 	if value, ok := _c.mutation.UpgradeRewardEnabled(); ok {
 		_spec.SetField(membervipconfig.FieldUpgradeRewardEnabled, field.TypeBool, value)
 		_node.UpgradeRewardEnabled = value
+	}
+	if value, ok := _c.mutation.RewardWaterMultiplier(); ok {
+		_spec.SetField(membervipconfig.FieldRewardWaterMultiplier, field.TypeInt64, value)
+		_node.RewardWaterMultiplier = value
 	}
 	if value, ok := _c.mutation.RetentionCheckEnabled(); ok {
 		_spec.SetField(membervipconfig.FieldRetentionCheckEnabled, field.TypeBool, value)
@@ -376,6 +406,24 @@ func (u *MemberVipConfigUpsert) SetUpgradeRewardEnabled(v bool) *MemberVipConfig
 // UpdateUpgradeRewardEnabled sets the "upgrade_reward_enabled" field to the value that was provided on create.
 func (u *MemberVipConfigUpsert) UpdateUpgradeRewardEnabled() *MemberVipConfigUpsert {
 	u.SetExcluded(membervipconfig.FieldUpgradeRewardEnabled)
+	return u
+}
+
+// SetRewardWaterMultiplier sets the "reward_water_multiplier" field.
+func (u *MemberVipConfigUpsert) SetRewardWaterMultiplier(v int64) *MemberVipConfigUpsert {
+	u.Set(membervipconfig.FieldRewardWaterMultiplier, v)
+	return u
+}
+
+// UpdateRewardWaterMultiplier sets the "reward_water_multiplier" field to the value that was provided on create.
+func (u *MemberVipConfigUpsert) UpdateRewardWaterMultiplier() *MemberVipConfigUpsert {
+	u.SetExcluded(membervipconfig.FieldRewardWaterMultiplier)
+	return u
+}
+
+// AddRewardWaterMultiplier adds v to the "reward_water_multiplier" field.
+func (u *MemberVipConfigUpsert) AddRewardWaterMultiplier(v int64) *MemberVipConfigUpsert {
+	u.Add(membervipconfig.FieldRewardWaterMultiplier, v)
 	return u
 }
 
@@ -520,6 +568,27 @@ func (u *MemberVipConfigUpsertOne) SetUpgradeRewardEnabled(v bool) *MemberVipCon
 func (u *MemberVipConfigUpsertOne) UpdateUpgradeRewardEnabled() *MemberVipConfigUpsertOne {
 	return u.Update(func(s *MemberVipConfigUpsert) {
 		s.UpdateUpgradeRewardEnabled()
+	})
+}
+
+// SetRewardWaterMultiplier sets the "reward_water_multiplier" field.
+func (u *MemberVipConfigUpsertOne) SetRewardWaterMultiplier(v int64) *MemberVipConfigUpsertOne {
+	return u.Update(func(s *MemberVipConfigUpsert) {
+		s.SetRewardWaterMultiplier(v)
+	})
+}
+
+// AddRewardWaterMultiplier adds v to the "reward_water_multiplier" field.
+func (u *MemberVipConfigUpsertOne) AddRewardWaterMultiplier(v int64) *MemberVipConfigUpsertOne {
+	return u.Update(func(s *MemberVipConfigUpsert) {
+		s.AddRewardWaterMultiplier(v)
+	})
+}
+
+// UpdateRewardWaterMultiplier sets the "reward_water_multiplier" field to the value that was provided on create.
+func (u *MemberVipConfigUpsertOne) UpdateRewardWaterMultiplier() *MemberVipConfigUpsertOne {
+	return u.Update(func(s *MemberVipConfigUpsert) {
+		s.UpdateRewardWaterMultiplier()
 	})
 }
 
@@ -838,6 +907,27 @@ func (u *MemberVipConfigUpsertBulk) SetUpgradeRewardEnabled(v bool) *MemberVipCo
 func (u *MemberVipConfigUpsertBulk) UpdateUpgradeRewardEnabled() *MemberVipConfigUpsertBulk {
 	return u.Update(func(s *MemberVipConfigUpsert) {
 		s.UpdateUpgradeRewardEnabled()
+	})
+}
+
+// SetRewardWaterMultiplier sets the "reward_water_multiplier" field.
+func (u *MemberVipConfigUpsertBulk) SetRewardWaterMultiplier(v int64) *MemberVipConfigUpsertBulk {
+	return u.Update(func(s *MemberVipConfigUpsert) {
+		s.SetRewardWaterMultiplier(v)
+	})
+}
+
+// AddRewardWaterMultiplier adds v to the "reward_water_multiplier" field.
+func (u *MemberVipConfigUpsertBulk) AddRewardWaterMultiplier(v int64) *MemberVipConfigUpsertBulk {
+	return u.Update(func(s *MemberVipConfigUpsert) {
+		s.AddRewardWaterMultiplier(v)
+	})
+}
+
+// UpdateRewardWaterMultiplier sets the "reward_water_multiplier" field to the value that was provided on create.
+func (u *MemberVipConfigUpsertBulk) UpdateRewardWaterMultiplier() *MemberVipConfigUpsertBulk {
+	return u.Update(func(s *MemberVipConfigUpsert) {
+		s.UpdateRewardWaterMultiplier()
 	})
 }
 

@@ -33,7 +33,7 @@ func (MemberAutoLevel) Fields() []ent.Field {
 			NonNegative().
 			Comment("晋级要求的累计有效存款金额"),
 
-		field.Int64("min_valid_turnover").
+		field.Int64("min_valid_water").
 			NonNegative().
 			Comment("晋级要求的累计有效洗码量"),
 	}
@@ -43,7 +43,7 @@ func (MemberAutoLevel) Fields() []ent.Field {
 func (MemberAutoLevel) Indexes() []ent.Index {
 	return []ent.Index{
 		// 同一个厅不允许存在两个晋升条件完全相同的层级
-		index.Fields("operator_code", "min_valid_deposit", "min_valid_turnover").
+		index.Fields("operator_code", "min_valid_deposit", "min_valid_water").
 			Unique().
 			StorageKey("uk_member_auto_level_threshold"),
 	}

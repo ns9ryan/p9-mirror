@@ -35,9 +35,9 @@ type AgentApply struct {
 	// 申请占成比例，百分比，0~100
 	ApplyShareRate int64 `json:"apply_share_rate,omitempty"`
 	// 使用会员账号
-	MemberAccount *string `json:"member_account,omitempty"`
-	// 使用会员ID
-	MemberID *int64 `json:"member_id,omitempty"`
+	MemberAccount string `json:"member_account,omitempty"`
+	// 使用会员编码
+	MemberCode string `json:"member_code,omitempty"`
 	// 审核状态：1待审核 2已通过 3人工拒绝 4风控拒绝
 	AuditStatus int64 `json:"audit_status,omitempty"`
 	// 拒绝理由
@@ -60,9 +60,9 @@ func (*AgentApply) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case agentapply.FieldID, agentapply.FieldRegisterSource, agentapply.FieldApplyShareRate, agentapply.FieldMemberID, agentapply.FieldAuditStatus, agentapply.FieldAgentID:
+		case agentapply.FieldID, agentapply.FieldRegisterSource, agentapply.FieldApplyShareRate, agentapply.FieldAuditStatus, agentapply.FieldAgentID:
 			values[i] = new(sql.NullInt64)
-		case agentapply.FieldOperatorCode, agentapply.FieldAccount, agentapply.FieldRealname, agentapply.FieldMobile, agentapply.FieldMemberAccount, agentapply.FieldRejectReason, agentapply.FieldApplyRemark, agentapply.FieldAuditor:
+		case agentapply.FieldOperatorCode, agentapply.FieldAccount, agentapply.FieldRealname, agentapply.FieldMobile, agentapply.FieldMemberAccount, agentapply.FieldMemberCode, agentapply.FieldRejectReason, agentapply.FieldApplyRemark, agentapply.FieldAuditor:
 			values[i] = new(sql.NullString)
 		case agentapply.FieldCreatedAt, agentapply.FieldUpdatedAt, agentapply.FieldRegisterAt, agentapply.FieldAuditedAt:
 			values[i] = new(sql.NullTime)
@@ -140,15 +140,13 @@ func (_m *AgentApply) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field member_account", values[i])
 			} else if value.Valid {
-				_m.MemberAccount = new(string)
-				*_m.MemberAccount = value.String
+				_m.MemberAccount = value.String
 			}
-		case agentapply.FieldMemberID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field member_id", values[i])
+		case agentapply.FieldMemberCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field member_code", values[i])
 			} else if value.Valid {
-				_m.MemberID = new(int64)
-				*_m.MemberID = value.Int64
+				_m.MemberCode = value.String
 			}
 		case agentapply.FieldAuditStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -259,15 +257,11 @@ func (_m *AgentApply) String() string {
 	builder.WriteString("apply_share_rate=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ApplyShareRate))
 	builder.WriteString(", ")
-	if v := _m.MemberAccount; v != nil {
-		builder.WriteString("member_account=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("member_account=")
+	builder.WriteString(_m.MemberAccount)
 	builder.WriteString(", ")
-	if v := _m.MemberID; v != nil {
-		builder.WriteString("member_id=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
+	builder.WriteString("member_code=")
+	builder.WriteString(_m.MemberCode)
 	builder.WriteString(", ")
 	builder.WriteString("audit_status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.AuditStatus))

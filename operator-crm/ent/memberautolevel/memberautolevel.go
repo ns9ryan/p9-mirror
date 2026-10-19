@@ -23,8 +23,8 @@ const (
 	FieldName = "name"
 	// FieldMinValidDeposit holds the string denoting the min_valid_deposit field in the database.
 	FieldMinValidDeposit = "min_valid_deposit"
-	// FieldMinValidTurnover holds the string denoting the min_valid_turnover field in the database.
-	FieldMinValidTurnover = "min_valid_turnover"
+	// FieldMinValidWater holds the string denoting the min_valid_water field in the database.
+	FieldMinValidWater = "min_valid_water"
 	// Table holds the table name of the memberautolevel in the database.
 	Table = "member_auto_level"
 )
@@ -37,7 +37,7 @@ var Columns = []string{
 	FieldOperatorCode,
 	FieldName,
 	FieldMinValidDeposit,
-	FieldMinValidTurnover,
+	FieldMinValidWater,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -63,8 +63,8 @@ var (
 	NameValidator func(string) error
 	// MinValidDepositValidator is a validator for the "min_valid_deposit" field. It is called by the builders before save.
 	MinValidDepositValidator func(int64) error
-	// MinValidTurnoverValidator is a validator for the "min_valid_turnover" field. It is called by the builders before save.
-	MinValidTurnoverValidator func(int64) error
+	// MinValidWaterValidator is a validator for the "min_valid_water" field. It is called by the builders before save.
+	MinValidWaterValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the MemberAutoLevel queries.
@@ -100,7 +100,7 @@ func ByMinValidDeposit(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMinValidDeposit, opts...).ToFunc()
 }
 
-// ByMinValidTurnover orders the results by the min_valid_turnover field.
-func ByMinValidTurnover(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMinValidTurnover, opts...).ToFunc()
+// ByMinValidWater orders the results by the min_valid_water field.
+func ByMinValidWater(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMinValidWater, opts...).ToFunc()
 }

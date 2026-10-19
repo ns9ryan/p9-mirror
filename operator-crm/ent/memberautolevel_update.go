@@ -69,24 +69,24 @@ func (_u *MemberAutoLevelUpdate) AddMinValidDeposit(v int64) *MemberAutoLevelUpd
 	return _u
 }
 
-// SetMinValidTurnover sets the "min_valid_turnover" field.
-func (_u *MemberAutoLevelUpdate) SetMinValidTurnover(v int64) *MemberAutoLevelUpdate {
-	_u.mutation.ResetMinValidTurnover()
-	_u.mutation.SetMinValidTurnover(v)
+// SetMinValidWater sets the "min_valid_water" field.
+func (_u *MemberAutoLevelUpdate) SetMinValidWater(v int64) *MemberAutoLevelUpdate {
+	_u.mutation.ResetMinValidWater()
+	_u.mutation.SetMinValidWater(v)
 	return _u
 }
 
-// SetNillableMinValidTurnover sets the "min_valid_turnover" field if the given value is not nil.
-func (_u *MemberAutoLevelUpdate) SetNillableMinValidTurnover(v *int64) *MemberAutoLevelUpdate {
+// SetNillableMinValidWater sets the "min_valid_water" field if the given value is not nil.
+func (_u *MemberAutoLevelUpdate) SetNillableMinValidWater(v *int64) *MemberAutoLevelUpdate {
 	if v != nil {
-		_u.SetMinValidTurnover(*v)
+		_u.SetMinValidWater(*v)
 	}
 	return _u
 }
 
-// AddMinValidTurnover adds value to the "min_valid_turnover" field.
-func (_u *MemberAutoLevelUpdate) AddMinValidTurnover(v int64) *MemberAutoLevelUpdate {
-	_u.mutation.AddMinValidTurnover(v)
+// AddMinValidWater adds value to the "min_valid_water" field.
+func (_u *MemberAutoLevelUpdate) AddMinValidWater(v int64) *MemberAutoLevelUpdate {
+	_u.mutation.AddMinValidWater(v)
 	return _u
 }
 
@@ -143,9 +143,9 @@ func (_u *MemberAutoLevelUpdate) check() error {
 			return &ValidationError{Name: "min_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.MinValidTurnover(); ok {
-		if err := memberautolevel.MinValidTurnoverValidator(v); err != nil {
-			return &ValidationError{Name: "min_valid_turnover", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_turnover": %w`, err)}
+	if v, ok := _u.mutation.MinValidWater(); ok {
+		if err := memberautolevel.MinValidWaterValidator(v); err != nil {
+			return &ValidationError{Name: "min_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_water": %w`, err)}
 		}
 	}
 	return nil
@@ -175,11 +175,11 @@ func (_u *MemberAutoLevelUpdate) sqlSave(ctx context.Context) (_node int, err er
 	if value, ok := _u.mutation.AddedMinValidDeposit(); ok {
 		_spec.AddField(memberautolevel.FieldMinValidDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.MinValidTurnover(); ok {
-		_spec.SetField(memberautolevel.FieldMinValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.MinValidWater(); ok {
+		_spec.SetField(memberautolevel.FieldMinValidWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedMinValidTurnover(); ok {
-		_spec.AddField(memberautolevel.FieldMinValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedMinValidWater(); ok {
+		_spec.AddField(memberautolevel.FieldMinValidWater, field.TypeInt64, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -242,24 +242,24 @@ func (_u *MemberAutoLevelUpdateOne) AddMinValidDeposit(v int64) *MemberAutoLevel
 	return _u
 }
 
-// SetMinValidTurnover sets the "min_valid_turnover" field.
-func (_u *MemberAutoLevelUpdateOne) SetMinValidTurnover(v int64) *MemberAutoLevelUpdateOne {
-	_u.mutation.ResetMinValidTurnover()
-	_u.mutation.SetMinValidTurnover(v)
+// SetMinValidWater sets the "min_valid_water" field.
+func (_u *MemberAutoLevelUpdateOne) SetMinValidWater(v int64) *MemberAutoLevelUpdateOne {
+	_u.mutation.ResetMinValidWater()
+	_u.mutation.SetMinValidWater(v)
 	return _u
 }
 
-// SetNillableMinValidTurnover sets the "min_valid_turnover" field if the given value is not nil.
-func (_u *MemberAutoLevelUpdateOne) SetNillableMinValidTurnover(v *int64) *MemberAutoLevelUpdateOne {
+// SetNillableMinValidWater sets the "min_valid_water" field if the given value is not nil.
+func (_u *MemberAutoLevelUpdateOne) SetNillableMinValidWater(v *int64) *MemberAutoLevelUpdateOne {
 	if v != nil {
-		_u.SetMinValidTurnover(*v)
+		_u.SetMinValidWater(*v)
 	}
 	return _u
 }
 
-// AddMinValidTurnover adds value to the "min_valid_turnover" field.
-func (_u *MemberAutoLevelUpdateOne) AddMinValidTurnover(v int64) *MemberAutoLevelUpdateOne {
-	_u.mutation.AddMinValidTurnover(v)
+// AddMinValidWater adds value to the "min_valid_water" field.
+func (_u *MemberAutoLevelUpdateOne) AddMinValidWater(v int64) *MemberAutoLevelUpdateOne {
+	_u.mutation.AddMinValidWater(v)
 	return _u
 }
 
@@ -329,9 +329,9 @@ func (_u *MemberAutoLevelUpdateOne) check() error {
 			return &ValidationError{Name: "min_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.MinValidTurnover(); ok {
-		if err := memberautolevel.MinValidTurnoverValidator(v); err != nil {
-			return &ValidationError{Name: "min_valid_turnover", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_turnover": %w`, err)}
+	if v, ok := _u.mutation.MinValidWater(); ok {
+		if err := memberautolevel.MinValidWaterValidator(v); err != nil {
+			return &ValidationError{Name: "min_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_water": %w`, err)}
 		}
 	}
 	return nil
@@ -378,11 +378,11 @@ func (_u *MemberAutoLevelUpdateOne) sqlSave(ctx context.Context) (_node *MemberA
 	if value, ok := _u.mutation.AddedMinValidDeposit(); ok {
 		_spec.AddField(memberautolevel.FieldMinValidDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.MinValidTurnover(); ok {
-		_spec.SetField(memberautolevel.FieldMinValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.MinValidWater(); ok {
+		_spec.SetField(memberautolevel.FieldMinValidWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedMinValidTurnover(); ok {
-		_spec.AddField(memberautolevel.FieldMinValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedMinValidWater(); ok {
+		_spec.AddField(memberautolevel.FieldMinValidWater, field.TypeInt64, value)
 	}
 	_node = &MemberAutoLevel{config: _u.config}
 	_spec.Assign = _node.assignValues

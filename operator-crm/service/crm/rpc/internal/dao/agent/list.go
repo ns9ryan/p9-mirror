@@ -50,7 +50,7 @@ func (s *Service) ListOperatorAgents(ctx context.Context, in *agentpb.ListOperat
 	rows, err := s.DB.AgentUser.Query().
 		Where(agentuser.LevelEQ(int64(in.Level))).
 		Order(agentuser.ByID(sql.OrderDesc())).
-		Select(agentuser.FieldID, agentuser.FieldAccount, agentuser.FieldLevel, agentuser.FieldAgentLineCode).
+		Select(agentuser.FieldID, agentuser.FieldAccount, agentuser.FieldLevel, agentuser.FieldAgentLineCode, agentuser.FieldShareRate).
 		All(ctx)
 	if err != nil {
 		return nil, err
@@ -74,6 +74,7 @@ func (s *Service) ListOperatorAgents(ctx context.Context, in *agentpb.ListOperat
 			Level:      int32(row.Level),
 			LevelAlias: levelAlias[row.Level],
 			LineCode:   row.AgentLineCode,
+			ShareRate:  int32(row.ShareRate),
 		}
 		line := row.AgentLineCode
 		if _, ok := byLine[line]; !ok {

@@ -20,8 +20,8 @@ var (
 		{Name: "mobile", Type: field.TypeString, Size: 32, Comment: "手机号"},
 		{Name: "register_source", Type: field.TypeInt64, Comment: "注册来源：1 PC 2 app 3 管理员 4 代理", SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "apply_share_rate", Type: field.TypeInt64, Comment: "申请占成比例，百分比，0~100", SchemaType: map[string]string{"postgres": "integer"}},
-		{Name: "member_account", Type: field.TypeString, Nullable: true, Size: 64, Comment: "使用会员账号"},
-		{Name: "member_id", Type: field.TypeInt64, Nullable: true, Comment: "使用会员ID"},
+		{Name: "member_account", Type: field.TypeString, Size: 64, Comment: "使用会员账号"},
+		{Name: "member_code", Type: field.TypeString, Size: 64, Comment: "使用会员编码"},
 		{Name: "audit_status", Type: field.TypeInt64, Comment: "审核状态：1待审核 2已通过 3人工拒绝 4风控拒绝", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "reject_reason", Type: field.TypeString, Nullable: true, Size: 500, Comment: "拒绝理由"},
 		{Name: "apply_remark", Type: field.TypeString, Nullable: true, Size: 500, Comment: "申请备注"},
@@ -155,6 +155,7 @@ var (
 		{Name: "realname", Type: field.TypeString, Nullable: true, Size: 100, Comment: "真实姓名"},
 		{Name: "mobile", Type: field.TypeString, Nullable: true, Size: 32, Comment: "手机号码"},
 		{Name: "email", Type: field.TypeString, Nullable: true, Size: 255, Comment: "邮箱"},
+		{Name: "id_document_no", Type: field.TypeString, Nullable: true, Size: 64, Comment: "CPF/身份证件号"},
 		{Name: "qq", Type: field.TypeString, Nullable: true, Size: 32, Comment: "QQ"},
 		{Name: "line", Type: field.TypeString, Nullable: true, Size: 64, Comment: "LINE"},
 		{Name: "wechat", Type: field.TypeString, Nullable: true, Size: 64, Comment: "微信"},
@@ -174,7 +175,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "fk_agent_profile_agent",
-				Columns:    []*schema.Column{AgentProfileColumns[18]},
+				Columns:    []*schema.Column{AgentProfileColumns[19]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -183,7 +184,7 @@ var (
 			{
 				Name:    "uk_agent_profile_agent",
 				Unique:  true,
-				Columns: []*schema.Column{AgentProfileColumns[18]},
+				Columns: []*schema.Column{AgentProfileColumns[19]},
 			},
 		},
 	}
@@ -242,7 +243,6 @@ var (
 		{Name: "promo_code", Type: field.TypeString, Size: 64, Comment: "对外推广码"},
 		{Name: "login_password_hash", Type: field.TypeString, Size: 255, Comment: "登录密码哈希"},
 		{Name: "withdraw_password_hash", Type: field.TypeString, Nullable: true, Size: 255, Comment: "提现密码哈希"},
-		{Name: "id_document_no", Type: field.TypeString, Nullable: true, Size: 64, Comment: "CPF/身份证件号"},
 		{Name: "salt", Type: field.TypeString, Size: 16, Comment: "令牌盐"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 1000, Comment: "备注"},
 		{Name: "register_at", Type: field.TypeTime, Nullable: true, Comment: "账号开通时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
@@ -263,13 +263,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "fk_agent_user_parent",
-				Columns:    []*schema.Column{AgentUserColumns[25]},
+				Columns:    []*schema.Column{AgentUserColumns[24]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Restrict,
 			},
 			{
 				Symbol:     "fk_agent_user_top",
-				Columns:    []*schema.Column{AgentUserColumns[26]},
+				Columns:    []*schema.Column{AgentUserColumns[25]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Restrict,
 			},
@@ -298,7 +298,7 @@ var (
 			{
 				Name:    "idx_agent_user_operator_parent",
 				Unique:  false,
-				Columns: []*schema.Column{AgentUserColumns[3], AgentUserColumns[25]},
+				Columns: []*schema.Column{AgentUserColumns[3], AgentUserColumns[24]},
 			},
 		},
 	}
@@ -383,7 +383,7 @@ var (
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "name", Type: field.TypeString, Size: 100, Comment: "自动层级名称"},
 		{Name: "min_valid_deposit", Type: field.TypeInt64, Comment: "晋级要求的累计有效存款金额"},
-		{Name: "min_valid_turnover", Type: field.TypeInt64, Comment: "晋级要求的累计有效洗码量"},
+		{Name: "min_valid_water", Type: field.TypeInt64, Comment: "晋级要求的累计有效洗码量"},
 	}
 	// MemberAutoLevelTable holds the schema information for the "member_auto_level" table.
 	MemberAutoLevelTable = &schema.Table{
@@ -547,6 +547,7 @@ var (
 		{Name: "operator_code", Type: field.TypeString, Unique: true, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "vip_enabled", Type: field.TypeBool, Comment: "VIP总开关", Default: false},
 		{Name: "upgrade_reward_enabled", Type: field.TypeBool, Comment: "晋级奖励开关", Default: false},
+		{Name: "reward_water_multiplier", Type: field.TypeInt64, Comment: "VIP晋级奖励洗码倍率，放大100000倍存储", Default: 100000},
 		{Name: "retention_check_enabled", Type: field.TypeBool, Comment: "保级考核开关", Default: false},
 		{Name: "reward_grant_mode", Type: field.TypeInt64, Comment: "奖励派发模式: 1手动领取, 2自动派发", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "last_enabled_at", Type: field.TypeTime, Nullable: true, Comment: "VIP最近一次开启时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
@@ -590,9 +591,9 @@ var (
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "level", Type: field.TypeInt64, Comment: "VIP等级编号, 从0开始连续递增", SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "upgrade_valid_deposit", Type: field.TypeInt64, Comment: "晋级所需有效存款金额"},
-		{Name: "upgrade_valid_turnover", Type: field.TypeInt64, Comment: "晋级所需有效洗码量"},
+		{Name: "upgrade_valid_water", Type: field.TypeInt64, Comment: "晋级所需有效洗码量"},
 		{Name: "retention_valid_deposit", Type: field.TypeInt64, Comment: "保级所需有效存款金额"},
-		{Name: "retention_valid_turnover", Type: field.TypeInt64, Comment: "保级所需有效洗码量"},
+		{Name: "retention_valid_water", Type: field.TypeInt64, Comment: "保级所需有效洗码量"},
 		{Name: "upgrade_reward", Type: field.TypeInt64, Comment: "晋级奖励金额", Default: 0},
 	}
 	// MemberVipLevelTable holds the schema information for the "member_vip_level" table.
@@ -698,6 +699,8 @@ func init() {
 		"ck_agent_apply_account":          "BTRIM(account) <> '' AND account = BTRIM(account)",
 		"ck_agent_apply_apply_share_rate": "apply_share_rate BETWEEN 0 AND 100",
 		"ck_agent_apply_audit_status":     "audit_status BETWEEN 1 AND 4",
+		"ck_agent_apply_member_account":   "BTRIM(member_account) <> '' AND member_account = BTRIM(member_account)",
+		"ck_agent_apply_member_code":      "BTRIM(member_code) <> '' AND member_code = BTRIM(member_code)",
 		"ck_agent_apply_mobile":           "BTRIM(mobile) <> '' AND mobile = BTRIM(mobile)",
 		"ck_agent_apply_operator_code":    "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
 		"ck_agent_apply_realname":         "BTRIM(realname) <> '' AND realname = BTRIM(realname)",
@@ -737,21 +740,22 @@ func init() {
 		Table: "agent_profile",
 	}
 	AgentProfileTable.Annotation.Checks = map[string]string{
-		"ck_agent_profile_avatar_url": "avatar_url IS NULL OR (BTRIM(avatar_url) <> '' AND avatar_url = BTRIM(avatar_url))",
-		"ck_agent_profile_birth_date": "birth_date IS NULL OR birth_date <= CURRENT_DATE",
-		"ck_agent_profile_email":      "email IS NULL OR (BTRIM(email) <> '' AND email = BTRIM(email))",
-		"ck_agent_profile_facebook":   "facebook IS NULL OR (BTRIM(facebook) <> '' AND facebook = BTRIM(facebook))",
-		"ck_agent_profile_gender":     "gender IN (0, 1, 2)",
-		"ck_agent_profile_line":       "line IS NULL OR (BTRIM(line) <> '' AND line = BTRIM(line))",
-		"ck_agent_profile_mobile":     "mobile IS NULL OR (BTRIM(mobile) <> '' AND mobile = BTRIM(mobile))",
-		"ck_agent_profile_nickname":   "nickname IS NULL OR (BTRIM(nickname) <> '' AND nickname = BTRIM(nickname))",
-		"ck_agent_profile_qq":         "qq IS NULL OR (BTRIM(qq) <> '' AND qq = BTRIM(qq))",
-		"ck_agent_profile_realname":   "realname IS NULL OR (BTRIM(realname) <> '' AND realname = BTRIM(realname))",
-		"ck_agent_profile_telegram":   "telegram IS NULL OR (BTRIM(telegram) <> '' AND telegram = BTRIM(telegram))",
-		"ck_agent_profile_twitter":    "twitter IS NULL OR (BTRIM(twitter) <> '' AND twitter = BTRIM(twitter))",
-		"ck_agent_profile_wechat":     "wechat IS NULL OR (BTRIM(wechat) <> '' AND wechat = BTRIM(wechat))",
-		"ck_agent_profile_whatsapp":   "whatsapp IS NULL OR (BTRIM(whatsapp) <> '' AND whatsapp = BTRIM(whatsapp))",
-		"ck_agent_profile_zalo":       "zalo IS NULL OR (BTRIM(zalo) <> '' AND zalo = BTRIM(zalo))",
+		"ck_agent_profile_avatar_url":     "avatar_url IS NULL OR (BTRIM(avatar_url) <> '' AND avatar_url = BTRIM(avatar_url))",
+		"ck_agent_profile_birth_date":     "birth_date IS NULL OR birth_date <= CURRENT_DATE",
+		"ck_agent_profile_email":          "email IS NULL OR (BTRIM(email) <> '' AND email = BTRIM(email))",
+		"ck_agent_profile_facebook":       "facebook IS NULL OR (BTRIM(facebook) <> '' AND facebook = BTRIM(facebook))",
+		"ck_agent_profile_gender":         "gender IN (0, 1, 2)",
+		"ck_agent_profile_id_document_no": "id_document_no IS NULL OR (BTRIM(id_document_no) <> '' AND id_document_no = BTRIM(id_document_no))",
+		"ck_agent_profile_line":           "line IS NULL OR (BTRIM(line) <> '' AND line = BTRIM(line))",
+		"ck_agent_profile_mobile":         "mobile IS NULL OR (BTRIM(mobile) <> '' AND mobile = BTRIM(mobile))",
+		"ck_agent_profile_nickname":       "nickname IS NULL OR (BTRIM(nickname) <> '' AND nickname = BTRIM(nickname))",
+		"ck_agent_profile_qq":             "qq IS NULL OR (BTRIM(qq) <> '' AND qq = BTRIM(qq))",
+		"ck_agent_profile_realname":       "realname IS NULL OR (BTRIM(realname) <> '' AND realname = BTRIM(realname))",
+		"ck_agent_profile_telegram":       "telegram IS NULL OR (BTRIM(telegram) <> '' AND telegram = BTRIM(telegram))",
+		"ck_agent_profile_twitter":        "twitter IS NULL OR (BTRIM(twitter) <> '' AND twitter = BTRIM(twitter))",
+		"ck_agent_profile_wechat":         "wechat IS NULL OR (BTRIM(wechat) <> '' AND wechat = BTRIM(wechat))",
+		"ck_agent_profile_whatsapp":       "whatsapp IS NULL OR (BTRIM(whatsapp) <> '' AND whatsapp = BTRIM(whatsapp))",
+		"ck_agent_profile_zalo":           "zalo IS NULL OR (BTRIM(zalo) <> '' AND zalo = BTRIM(zalo))",
 	}
 	AgentStatsTable.ForeignKeys[0].RefTable = AgentUserTable
 	AgentStatsTable.Annotation = &entsql.Annotation{
@@ -775,7 +779,6 @@ func init() {
 		"ck_agent_user_agent_line_code":        "BTRIM(agent_line_code) <> '' AND agent_line_code = BTRIM(agent_line_code)",
 		"ck_agent_user_agent_type":             "agent_type IN (1, 2)",
 		"ck_agent_user_code":                   "BTRIM(code) <> '' AND code = BTRIM(code)",
-		"ck_agent_user_id_document_no":         "id_document_no IS NULL OR BTRIM(id_document_no) <> ''",
 		"ck_agent_user_login_count":            "login_count >= 0",
 		"ck_agent_user_login_password_hash":    "BTRIM(login_password_hash) <> ''",
 		"ck_agent_user_operator_code":          "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",

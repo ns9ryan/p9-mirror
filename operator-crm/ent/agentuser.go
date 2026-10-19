@@ -54,8 +54,6 @@ type AgentUser struct {
 	LoginPasswordHash string `json:"-"`
 	// 提现密码哈希
 	WithdrawPasswordHash *string `json:"-"`
-	// CPF/身份证件号
-	IDDocumentNo *string `json:"id_document_no,omitempty"`
 	// 令牌盐
 	Salt string `json:"-"`
 	// 备注
@@ -210,7 +208,7 @@ func (*AgentUser) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case agentuser.FieldID, agentuser.FieldParentID, agentuser.FieldTopID, agentuser.FieldLevel, agentuser.FieldAgentType, agentuser.FieldShareRate, agentuser.FieldStatus, agentuser.FieldPayoutRestricted, agentuser.FieldRegisterSource, agentuser.FieldLoginCount:
 			values[i] = new(sql.NullInt64)
-		case agentuser.FieldOperatorCode, agentuser.FieldAccount, agentuser.FieldCode, agentuser.FieldAgentLineCode, agentuser.FieldPromoCode, agentuser.FieldLoginPasswordHash, agentuser.FieldWithdrawPasswordHash, agentuser.FieldIDDocumentNo, agentuser.FieldSalt, agentuser.FieldRemark, agentuser.FieldRegisterIP, agentuser.FieldLastLoginIP, agentuser.FieldLastLoginUdid:
+		case agentuser.FieldOperatorCode, agentuser.FieldAccount, agentuser.FieldCode, agentuser.FieldAgentLineCode, agentuser.FieldPromoCode, agentuser.FieldLoginPasswordHash, agentuser.FieldWithdrawPasswordHash, agentuser.FieldSalt, agentuser.FieldRemark, agentuser.FieldRegisterIP, agentuser.FieldLastLoginIP, agentuser.FieldLastLoginUdid:
 			values[i] = new(sql.NullString)
 		case agentuser.FieldCreatedAt, agentuser.FieldUpdatedAt, agentuser.FieldRegisterAt, agentuser.FieldLastLoginAt:
 			values[i] = new(sql.NullTime)
@@ -340,13 +338,6 @@ func (_m *AgentUser) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.WithdrawPasswordHash = new(string)
 				*_m.WithdrawPasswordHash = value.String
-			}
-		case agentuser.FieldIDDocumentNo:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id_document_no", values[i])
-			} else if value.Valid {
-				_m.IDDocumentNo = new(string)
-				*_m.IDDocumentNo = value.String
 			}
 		case agentuser.FieldSalt:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -542,11 +533,6 @@ func (_m *AgentUser) String() string {
 	builder.WriteString("login_password_hash=<sensitive>")
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_password_hash=<sensitive>")
-	builder.WriteString(", ")
-	if v := _m.IDDocumentNo; v != nil {
-		builder.WriteString("id_document_no=")
-		builder.WriteString(*v)
-	}
 	builder.WriteString(", ")
 	builder.WriteString("salt=<sensitive>")
 	builder.WriteString(", ")

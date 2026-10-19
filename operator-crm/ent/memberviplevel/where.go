@@ -79,9 +79,9 @@ func UpgradeValidDeposit(v int64) predicate.MemberVipLevel {
 	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidDeposit, v))
 }
 
-// UpgradeValidTurnover applies equality check predicate on the "upgrade_valid_turnover" field. It's identical to UpgradeValidTurnoverEQ.
-func UpgradeValidTurnover(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidTurnover, v))
+// UpgradeValidWater applies equality check predicate on the "upgrade_valid_water" field. It's identical to UpgradeValidWaterEQ.
+func UpgradeValidWater(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidWater, v))
 }
 
 // RetentionValidDeposit applies equality check predicate on the "retention_valid_deposit" field. It's identical to RetentionValidDepositEQ.
@@ -89,9 +89,9 @@ func RetentionValidDeposit(v int64) predicate.MemberVipLevel {
 	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidDeposit, v))
 }
 
-// RetentionValidTurnover applies equality check predicate on the "retention_valid_turnover" field. It's identical to RetentionValidTurnoverEQ.
-func RetentionValidTurnover(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidTurnover, v))
+// RetentionValidWater applies equality check predicate on the "retention_valid_water" field. It's identical to RetentionValidWaterEQ.
+func RetentionValidWater(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidWater, v))
 }
 
 // UpgradeReward applies equality check predicate on the "upgrade_reward" field. It's identical to UpgradeRewardEQ.
@@ -324,44 +324,44 @@ func UpgradeValidDepositLTE(v int64) predicate.MemberVipLevel {
 	return predicate.MemberVipLevel(sql.FieldLTE(FieldUpgradeValidDeposit, v))
 }
 
-// UpgradeValidTurnoverEQ applies the EQ predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidTurnover, v))
+// UpgradeValidWaterEQ applies the EQ predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidWater, v))
 }
 
-// UpgradeValidTurnoverNEQ applies the NEQ predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverNEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNEQ(FieldUpgradeValidTurnover, v))
+// UpgradeValidWaterNEQ applies the NEQ predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterNEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNEQ(FieldUpgradeValidWater, v))
 }
 
-// UpgradeValidTurnoverIn applies the In predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldIn(FieldUpgradeValidTurnover, vs...))
+// UpgradeValidWaterIn applies the In predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldIn(FieldUpgradeValidWater, vs...))
 }
 
-// UpgradeValidTurnoverNotIn applies the NotIn predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverNotIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNotIn(FieldUpgradeValidTurnover, vs...))
+// UpgradeValidWaterNotIn applies the NotIn predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterNotIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNotIn(FieldUpgradeValidWater, vs...))
 }
 
-// UpgradeValidTurnoverGT applies the GT predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverGT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGT(FieldUpgradeValidTurnover, v))
+// UpgradeValidWaterGT applies the GT predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterGT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGT(FieldUpgradeValidWater, v))
 }
 
-// UpgradeValidTurnoverGTE applies the GTE predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverGTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGTE(FieldUpgradeValidTurnover, v))
+// UpgradeValidWaterGTE applies the GTE predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterGTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGTE(FieldUpgradeValidWater, v))
 }
 
-// UpgradeValidTurnoverLT applies the LT predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverLT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLT(FieldUpgradeValidTurnover, v))
+// UpgradeValidWaterLT applies the LT predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterLT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLT(FieldUpgradeValidWater, v))
 }
 
-// UpgradeValidTurnoverLTE applies the LTE predicate on the "upgrade_valid_turnover" field.
-func UpgradeValidTurnoverLTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLTE(FieldUpgradeValidTurnover, v))
+// UpgradeValidWaterLTE applies the LTE predicate on the "upgrade_valid_water" field.
+func UpgradeValidWaterLTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLTE(FieldUpgradeValidWater, v))
 }
 
 // RetentionValidDepositEQ applies the EQ predicate on the "retention_valid_deposit" field.
@@ -404,44 +404,44 @@ func RetentionValidDepositLTE(v int64) predicate.MemberVipLevel {
 	return predicate.MemberVipLevel(sql.FieldLTE(FieldRetentionValidDeposit, v))
 }
 
-// RetentionValidTurnoverEQ applies the EQ predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidTurnover, v))
+// RetentionValidWaterEQ applies the EQ predicate on the "retention_valid_water" field.
+func RetentionValidWaterEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidWater, v))
 }
 
-// RetentionValidTurnoverNEQ applies the NEQ predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverNEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNEQ(FieldRetentionValidTurnover, v))
+// RetentionValidWaterNEQ applies the NEQ predicate on the "retention_valid_water" field.
+func RetentionValidWaterNEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNEQ(FieldRetentionValidWater, v))
 }
 
-// RetentionValidTurnoverIn applies the In predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldIn(FieldRetentionValidTurnover, vs...))
+// RetentionValidWaterIn applies the In predicate on the "retention_valid_water" field.
+func RetentionValidWaterIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldIn(FieldRetentionValidWater, vs...))
 }
 
-// RetentionValidTurnoverNotIn applies the NotIn predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverNotIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNotIn(FieldRetentionValidTurnover, vs...))
+// RetentionValidWaterNotIn applies the NotIn predicate on the "retention_valid_water" field.
+func RetentionValidWaterNotIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNotIn(FieldRetentionValidWater, vs...))
 }
 
-// RetentionValidTurnoverGT applies the GT predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverGT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGT(FieldRetentionValidTurnover, v))
+// RetentionValidWaterGT applies the GT predicate on the "retention_valid_water" field.
+func RetentionValidWaterGT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGT(FieldRetentionValidWater, v))
 }
 
-// RetentionValidTurnoverGTE applies the GTE predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverGTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGTE(FieldRetentionValidTurnover, v))
+// RetentionValidWaterGTE applies the GTE predicate on the "retention_valid_water" field.
+func RetentionValidWaterGTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGTE(FieldRetentionValidWater, v))
 }
 
-// RetentionValidTurnoverLT applies the LT predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverLT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLT(FieldRetentionValidTurnover, v))
+// RetentionValidWaterLT applies the LT predicate on the "retention_valid_water" field.
+func RetentionValidWaterLT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLT(FieldRetentionValidWater, v))
 }
 
-// RetentionValidTurnoverLTE applies the LTE predicate on the "retention_valid_turnover" field.
-func RetentionValidTurnoverLTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLTE(FieldRetentionValidTurnover, v))
+// RetentionValidWaterLTE applies the LTE predicate on the "retention_valid_water" field.
+func RetentionValidWaterLTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLTE(FieldRetentionValidWater, v))
 }
 
 // UpgradeRewardEQ applies the EQ predicate on the "upgrade_reward" field.

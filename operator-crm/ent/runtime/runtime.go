@@ -129,10 +129,30 @@ func init() {
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
+			validators[2].(func(string) error),
 		}
 		return func(member_account string) error {
 			for _, fn := range fns {
 				if err := fn(member_account); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentapplyDescMemberCode is the schema descriptor for member_code field.
+	agentapplyDescMemberCode := agentapplyFields[6].Descriptor()
+	// agentapply.MemberCodeValidator is a validator for the "member_code" field. It is called by the builders before save.
+	agentapply.MemberCodeValidator = func() func(string) error {
+		validators := agentapplyDescMemberCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(member_code string) error {
+			for _, fn := range fns {
+				if err := fn(member_code); err != nil {
 					return err
 				}
 			}
@@ -428,8 +448,26 @@ func init() {
 			return nil
 		}
 	}()
+	// agentprofileDescIDDocumentNo is the schema descriptor for id_document_no field.
+	agentprofileDescIDDocumentNo := agentprofileFields[8].Descriptor()
+	// agentprofile.IDDocumentNoValidator is a validator for the "id_document_no" field. It is called by the builders before save.
+	agentprofile.IDDocumentNoValidator = func() func(string) error {
+		validators := agentprofileDescIDDocumentNo.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(id_document_no string) error {
+			for _, fn := range fns {
+				if err := fn(id_document_no); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentprofileDescQq is the schema descriptor for qq field.
-	agentprofileDescQq := agentprofileFields[8].Descriptor()
+	agentprofileDescQq := agentprofileFields[9].Descriptor()
 	// agentprofile.QqValidator is a validator for the "qq" field. It is called by the builders before save.
 	agentprofile.QqValidator = func() func(string) error {
 		validators := agentprofileDescQq.Validators
@@ -447,7 +485,7 @@ func init() {
 		}
 	}()
 	// agentprofileDescLine is the schema descriptor for line field.
-	agentprofileDescLine := agentprofileFields[9].Descriptor()
+	agentprofileDescLine := agentprofileFields[10].Descriptor()
 	// agentprofile.LineValidator is a validator for the "line" field. It is called by the builders before save.
 	agentprofile.LineValidator = func() func(string) error {
 		validators := agentprofileDescLine.Validators
@@ -465,7 +503,7 @@ func init() {
 		}
 	}()
 	// agentprofileDescWechat is the schema descriptor for wechat field.
-	agentprofileDescWechat := agentprofileFields[10].Descriptor()
+	agentprofileDescWechat := agentprofileFields[11].Descriptor()
 	// agentprofile.WechatValidator is a validator for the "wechat" field. It is called by the builders before save.
 	agentprofile.WechatValidator = func() func(string) error {
 		validators := agentprofileDescWechat.Validators
@@ -483,7 +521,7 @@ func init() {
 		}
 	}()
 	// agentprofileDescWhatsapp is the schema descriptor for whatsapp field.
-	agentprofileDescWhatsapp := agentprofileFields[11].Descriptor()
+	agentprofileDescWhatsapp := agentprofileFields[12].Descriptor()
 	// agentprofile.WhatsappValidator is a validator for the "whatsapp" field. It is called by the builders before save.
 	agentprofile.WhatsappValidator = func() func(string) error {
 		validators := agentprofileDescWhatsapp.Validators
@@ -501,7 +539,7 @@ func init() {
 		}
 	}()
 	// agentprofileDescTelegram is the schema descriptor for telegram field.
-	agentprofileDescTelegram := agentprofileFields[12].Descriptor()
+	agentprofileDescTelegram := agentprofileFields[13].Descriptor()
 	// agentprofile.TelegramValidator is a validator for the "telegram" field. It is called by the builders before save.
 	agentprofile.TelegramValidator = func() func(string) error {
 		validators := agentprofileDescTelegram.Validators
@@ -519,7 +557,7 @@ func init() {
 		}
 	}()
 	// agentprofileDescFacebook is the schema descriptor for facebook field.
-	agentprofileDescFacebook := agentprofileFields[13].Descriptor()
+	agentprofileDescFacebook := agentprofileFields[14].Descriptor()
 	// agentprofile.FacebookValidator is a validator for the "facebook" field. It is called by the builders before save.
 	agentprofile.FacebookValidator = func() func(string) error {
 		validators := agentprofileDescFacebook.Validators
@@ -537,7 +575,7 @@ func init() {
 		}
 	}()
 	// agentprofileDescTwitter is the schema descriptor for twitter field.
-	agentprofileDescTwitter := agentprofileFields[14].Descriptor()
+	agentprofileDescTwitter := agentprofileFields[15].Descriptor()
 	// agentprofile.TwitterValidator is a validator for the "twitter" field. It is called by the builders before save.
 	agentprofile.TwitterValidator = func() func(string) error {
 		validators := agentprofileDescTwitter.Validators
@@ -555,7 +593,7 @@ func init() {
 		}
 	}()
 	// agentprofileDescZalo is the schema descriptor for zalo field.
-	agentprofileDescZalo := agentprofileFields[15].Descriptor()
+	agentprofileDescZalo := agentprofileFields[16].Descriptor()
 	// agentprofile.ZaloValidator is a validator for the "zalo" field. It is called by the builders before save.
 	agentprofile.ZaloValidator = func() func(string) error {
 		validators := agentprofileDescZalo.Validators
@@ -805,26 +843,8 @@ func init() {
 			return nil
 		}
 	}()
-	// agentuserDescIDDocumentNo is the schema descriptor for id_document_no field.
-	agentuserDescIDDocumentNo := agentuserFields[14].Descriptor()
-	// agentuser.IDDocumentNoValidator is a validator for the "id_document_no" field. It is called by the builders before save.
-	agentuser.IDDocumentNoValidator = func() func(string) error {
-		validators := agentuserDescIDDocumentNo.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(id_document_no string) error {
-			for _, fn := range fns {
-				if err := fn(id_document_no); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
 	// agentuserDescSalt is the schema descriptor for salt field.
-	agentuserDescSalt := agentuserFields[15].Descriptor()
+	agentuserDescSalt := agentuserFields[14].Descriptor()
 	// agentuser.SaltValidator is a validator for the "salt" field. It is called by the builders before save.
 	agentuser.SaltValidator = func() func(string) error {
 		validators := agentuserDescSalt.Validators
@@ -842,7 +862,7 @@ func init() {
 		}
 	}()
 	// agentuserDescRemark is the schema descriptor for remark field.
-	agentuserDescRemark := agentuserFields[16].Descriptor()
+	agentuserDescRemark := agentuserFields[15].Descriptor()
 	// agentuser.RemarkValidator is a validator for the "remark" field. It is called by the builders before save.
 	agentuser.RemarkValidator = func() func(string) error {
 		validators := agentuserDescRemark.Validators
@@ -860,13 +880,13 @@ func init() {
 		}
 	}()
 	// agentuserDescLoginCount is the schema descriptor for login_count field.
-	agentuserDescLoginCount := agentuserFields[21].Descriptor()
+	agentuserDescLoginCount := agentuserFields[20].Descriptor()
 	// agentuser.DefaultLoginCount holds the default value on creation for the login_count field.
 	agentuser.DefaultLoginCount = agentuserDescLoginCount.Default.(int64)
 	// agentuser.LoginCountValidator is a validator for the "login_count" field. It is called by the builders before save.
 	agentuser.LoginCountValidator = agentuserDescLoginCount.Validators[0].(func(int64) error)
 	// agentuserDescLastLoginUdid is the schema descriptor for last_login_udid field.
-	agentuserDescLastLoginUdid := agentuserFields[22].Descriptor()
+	agentuserDescLastLoginUdid := agentuserFields[21].Descriptor()
 	// agentuser.LastLoginUdidValidator is a validator for the "last_login_udid" field. It is called by the builders before save.
 	agentuser.LastLoginUdidValidator = agentuserDescLastLoginUdid.Validators[0].(func(string) error)
 	memberMixin := schema.Member{}.Mixin()
@@ -1123,10 +1143,10 @@ func init() {
 	memberautolevelDescMinValidDeposit := memberautolevelFields[2].Descriptor()
 	// memberautolevel.MinValidDepositValidator is a validator for the "min_valid_deposit" field. It is called by the builders before save.
 	memberautolevel.MinValidDepositValidator = memberautolevelDescMinValidDeposit.Validators[0].(func(int64) error)
-	// memberautolevelDescMinValidTurnover is the schema descriptor for min_valid_turnover field.
-	memberautolevelDescMinValidTurnover := memberautolevelFields[3].Descriptor()
-	// memberautolevel.MinValidTurnoverValidator is a validator for the "min_valid_turnover" field. It is called by the builders before save.
-	memberautolevel.MinValidTurnoverValidator = memberautolevelDescMinValidTurnover.Validators[0].(func(int64) error)
+	// memberautolevelDescMinValidWater is the schema descriptor for min_valid_water field.
+	memberautolevelDescMinValidWater := memberautolevelFields[3].Descriptor()
+	// memberautolevel.MinValidWaterValidator is a validator for the "min_valid_water" field. It is called by the builders before save.
+	memberautolevel.MinValidWaterValidator = memberautolevelDescMinValidWater.Validators[0].(func(int64) error)
 	memberfixedlevelMixin := schema.MemberFixedLevel{}.Mixin()
 	memberfixedlevelMixinFields1 := memberfixedlevelMixin[1].Fields()
 	_ = memberfixedlevelMixinFields1
@@ -1433,12 +1453,18 @@ func init() {
 	membervipconfigDescUpgradeRewardEnabled := membervipconfigFields[2].Descriptor()
 	// membervipconfig.DefaultUpgradeRewardEnabled holds the default value on creation for the upgrade_reward_enabled field.
 	membervipconfig.DefaultUpgradeRewardEnabled = membervipconfigDescUpgradeRewardEnabled.Default.(bool)
+	// membervipconfigDescRewardWaterMultiplier is the schema descriptor for reward_water_multiplier field.
+	membervipconfigDescRewardWaterMultiplier := membervipconfigFields[3].Descriptor()
+	// membervipconfig.DefaultRewardWaterMultiplier holds the default value on creation for the reward_water_multiplier field.
+	membervipconfig.DefaultRewardWaterMultiplier = membervipconfigDescRewardWaterMultiplier.Default.(int64)
+	// membervipconfig.RewardWaterMultiplierValidator is a validator for the "reward_water_multiplier" field. It is called by the builders before save.
+	membervipconfig.RewardWaterMultiplierValidator = membervipconfigDescRewardWaterMultiplier.Validators[0].(func(int64) error)
 	// membervipconfigDescRetentionCheckEnabled is the schema descriptor for retention_check_enabled field.
-	membervipconfigDescRetentionCheckEnabled := membervipconfigFields[3].Descriptor()
+	membervipconfigDescRetentionCheckEnabled := membervipconfigFields[4].Descriptor()
 	// membervipconfig.DefaultRetentionCheckEnabled holds the default value on creation for the retention_check_enabled field.
 	membervipconfig.DefaultRetentionCheckEnabled = membervipconfigDescRetentionCheckEnabled.Default.(bool)
 	// membervipconfigDescRewardGrantMode is the schema descriptor for reward_grant_mode field.
-	membervipconfigDescRewardGrantMode := membervipconfigFields[4].Descriptor()
+	membervipconfigDescRewardGrantMode := membervipconfigFields[5].Descriptor()
 	// membervipconfig.DefaultRewardGrantMode holds the default value on creation for the reward_grant_mode field.
 	membervipconfig.DefaultRewardGrantMode = membervipconfigDescRewardGrantMode.Default.(int64)
 	// membervipconfig.RewardGrantModeValidator is a validator for the "reward_grant_mode" field. It is called by the builders before save.
@@ -1529,18 +1555,18 @@ func init() {
 	memberviplevelDescUpgradeValidDeposit := memberviplevelFields[2].Descriptor()
 	// memberviplevel.UpgradeValidDepositValidator is a validator for the "upgrade_valid_deposit" field. It is called by the builders before save.
 	memberviplevel.UpgradeValidDepositValidator = memberviplevelDescUpgradeValidDeposit.Validators[0].(func(int64) error)
-	// memberviplevelDescUpgradeValidTurnover is the schema descriptor for upgrade_valid_turnover field.
-	memberviplevelDescUpgradeValidTurnover := memberviplevelFields[3].Descriptor()
-	// memberviplevel.UpgradeValidTurnoverValidator is a validator for the "upgrade_valid_turnover" field. It is called by the builders before save.
-	memberviplevel.UpgradeValidTurnoverValidator = memberviplevelDescUpgradeValidTurnover.Validators[0].(func(int64) error)
+	// memberviplevelDescUpgradeValidWater is the schema descriptor for upgrade_valid_water field.
+	memberviplevelDescUpgradeValidWater := memberviplevelFields[3].Descriptor()
+	// memberviplevel.UpgradeValidWaterValidator is a validator for the "upgrade_valid_water" field. It is called by the builders before save.
+	memberviplevel.UpgradeValidWaterValidator = memberviplevelDescUpgradeValidWater.Validators[0].(func(int64) error)
 	// memberviplevelDescRetentionValidDeposit is the schema descriptor for retention_valid_deposit field.
 	memberviplevelDescRetentionValidDeposit := memberviplevelFields[4].Descriptor()
 	// memberviplevel.RetentionValidDepositValidator is a validator for the "retention_valid_deposit" field. It is called by the builders before save.
 	memberviplevel.RetentionValidDepositValidator = memberviplevelDescRetentionValidDeposit.Validators[0].(func(int64) error)
-	// memberviplevelDescRetentionValidTurnover is the schema descriptor for retention_valid_turnover field.
-	memberviplevelDescRetentionValidTurnover := memberviplevelFields[5].Descriptor()
-	// memberviplevel.RetentionValidTurnoverValidator is a validator for the "retention_valid_turnover" field. It is called by the builders before save.
-	memberviplevel.RetentionValidTurnoverValidator = memberviplevelDescRetentionValidTurnover.Validators[0].(func(int64) error)
+	// memberviplevelDescRetentionValidWater is the schema descriptor for retention_valid_water field.
+	memberviplevelDescRetentionValidWater := memberviplevelFields[5].Descriptor()
+	// memberviplevel.RetentionValidWaterValidator is a validator for the "retention_valid_water" field. It is called by the builders before save.
+	memberviplevel.RetentionValidWaterValidator = memberviplevelDescRetentionValidWater.Validators[0].(func(int64) error)
 	// memberviplevelDescUpgradeReward is the schema descriptor for upgrade_reward field.
 	memberviplevelDescUpgradeReward := memberviplevelFields[6].Descriptor()
 	// memberviplevel.DefaultUpgradeReward holds the default value on creation for the upgrade_reward field.

@@ -68,9 +68,9 @@ func (_c *MemberAutoLevelCreate) SetMinValidDeposit(v int64) *MemberAutoLevelCre
 	return _c
 }
 
-// SetMinValidTurnover sets the "min_valid_turnover" field.
-func (_c *MemberAutoLevelCreate) SetMinValidTurnover(v int64) *MemberAutoLevelCreate {
-	_c.mutation.SetMinValidTurnover(v)
+// SetMinValidWater sets the "min_valid_water" field.
+func (_c *MemberAutoLevelCreate) SetMinValidWater(v int64) *MemberAutoLevelCreate {
+	_c.mutation.SetMinValidWater(v)
 	return _c
 }
 
@@ -157,12 +157,12 @@ func (_c *MemberAutoLevelCreate) check() error {
 			return &ValidationError{Name: "min_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_deposit": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.MinValidTurnover(); !ok {
-		return &ValidationError{Name: "min_valid_turnover", err: errors.New(`ent: missing required field "MemberAutoLevel.min_valid_turnover"`)}
+	if _, ok := _c.mutation.MinValidWater(); !ok {
+		return &ValidationError{Name: "min_valid_water", err: errors.New(`ent: missing required field "MemberAutoLevel.min_valid_water"`)}
 	}
-	if v, ok := _c.mutation.MinValidTurnover(); ok {
-		if err := memberautolevel.MinValidTurnoverValidator(v); err != nil {
-			return &ValidationError{Name: "min_valid_turnover", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_turnover": %w`, err)}
+	if v, ok := _c.mutation.MinValidWater(); ok {
+		if err := memberautolevel.MinValidWaterValidator(v); err != nil {
+			return &ValidationError{Name: "min_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_water": %w`, err)}
 		}
 	}
 	return nil
@@ -218,9 +218,9 @@ func (_c *MemberAutoLevelCreate) createSpec() (*MemberAutoLevel, *sqlgraph.Creat
 		_spec.SetField(memberautolevel.FieldMinValidDeposit, field.TypeInt64, value)
 		_node.MinValidDeposit = value
 	}
-	if value, ok := _c.mutation.MinValidTurnover(); ok {
-		_spec.SetField(memberautolevel.FieldMinValidTurnover, field.TypeInt64, value)
-		_node.MinValidTurnover = value
+	if value, ok := _c.mutation.MinValidWater(); ok {
+		_spec.SetField(memberautolevel.FieldMinValidWater, field.TypeInt64, value)
+		_node.MinValidWater = value
 	}
 	return _node, _spec
 }
@@ -316,21 +316,21 @@ func (u *MemberAutoLevelUpsert) AddMinValidDeposit(v int64) *MemberAutoLevelUpse
 	return u
 }
 
-// SetMinValidTurnover sets the "min_valid_turnover" field.
-func (u *MemberAutoLevelUpsert) SetMinValidTurnover(v int64) *MemberAutoLevelUpsert {
-	u.Set(memberautolevel.FieldMinValidTurnover, v)
+// SetMinValidWater sets the "min_valid_water" field.
+func (u *MemberAutoLevelUpsert) SetMinValidWater(v int64) *MemberAutoLevelUpsert {
+	u.Set(memberautolevel.FieldMinValidWater, v)
 	return u
 }
 
-// UpdateMinValidTurnover sets the "min_valid_turnover" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsert) UpdateMinValidTurnover() *MemberAutoLevelUpsert {
-	u.SetExcluded(memberautolevel.FieldMinValidTurnover)
+// UpdateMinValidWater sets the "min_valid_water" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsert) UpdateMinValidWater() *MemberAutoLevelUpsert {
+	u.SetExcluded(memberautolevel.FieldMinValidWater)
 	return u
 }
 
-// AddMinValidTurnover adds v to the "min_valid_turnover" field.
-func (u *MemberAutoLevelUpsert) AddMinValidTurnover(v int64) *MemberAutoLevelUpsert {
-	u.Add(memberautolevel.FieldMinValidTurnover, v)
+// AddMinValidWater adds v to the "min_valid_water" field.
+func (u *MemberAutoLevelUpsert) AddMinValidWater(v int64) *MemberAutoLevelUpsert {
+	u.Add(memberautolevel.FieldMinValidWater, v)
 	return u
 }
 
@@ -437,24 +437,24 @@ func (u *MemberAutoLevelUpsertOne) UpdateMinValidDeposit() *MemberAutoLevelUpser
 	})
 }
 
-// SetMinValidTurnover sets the "min_valid_turnover" field.
-func (u *MemberAutoLevelUpsertOne) SetMinValidTurnover(v int64) *MemberAutoLevelUpsertOne {
+// SetMinValidWater sets the "min_valid_water" field.
+func (u *MemberAutoLevelUpsertOne) SetMinValidWater(v int64) *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.SetMinValidTurnover(v)
+		s.SetMinValidWater(v)
 	})
 }
 
-// AddMinValidTurnover adds v to the "min_valid_turnover" field.
-func (u *MemberAutoLevelUpsertOne) AddMinValidTurnover(v int64) *MemberAutoLevelUpsertOne {
+// AddMinValidWater adds v to the "min_valid_water" field.
+func (u *MemberAutoLevelUpsertOne) AddMinValidWater(v int64) *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.AddMinValidTurnover(v)
+		s.AddMinValidWater(v)
 	})
 }
 
-// UpdateMinValidTurnover sets the "min_valid_turnover" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsertOne) UpdateMinValidTurnover() *MemberAutoLevelUpsertOne {
+// UpdateMinValidWater sets the "min_valid_water" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsertOne) UpdateMinValidWater() *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.UpdateMinValidTurnover()
+		s.UpdateMinValidWater()
 	})
 }
 
@@ -727,24 +727,24 @@ func (u *MemberAutoLevelUpsertBulk) UpdateMinValidDeposit() *MemberAutoLevelUpse
 	})
 }
 
-// SetMinValidTurnover sets the "min_valid_turnover" field.
-func (u *MemberAutoLevelUpsertBulk) SetMinValidTurnover(v int64) *MemberAutoLevelUpsertBulk {
+// SetMinValidWater sets the "min_valid_water" field.
+func (u *MemberAutoLevelUpsertBulk) SetMinValidWater(v int64) *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.SetMinValidTurnover(v)
+		s.SetMinValidWater(v)
 	})
 }
 
-// AddMinValidTurnover adds v to the "min_valid_turnover" field.
-func (u *MemberAutoLevelUpsertBulk) AddMinValidTurnover(v int64) *MemberAutoLevelUpsertBulk {
+// AddMinValidWater adds v to the "min_valid_water" field.
+func (u *MemberAutoLevelUpsertBulk) AddMinValidWater(v int64) *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.AddMinValidTurnover(v)
+		s.AddMinValidWater(v)
 	})
 }
 
-// UpdateMinValidTurnover sets the "min_valid_turnover" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsertBulk) UpdateMinValidTurnover() *MemberAutoLevelUpsertBulk {
+// UpdateMinValidWater sets the "min_valid_water" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsertBulk) UpdateMinValidWater() *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.UpdateMinValidTurnover()
+		s.UpdateMinValidWater()
 	})
 }
 

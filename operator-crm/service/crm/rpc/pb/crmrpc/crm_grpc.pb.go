@@ -398,19 +398,28 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	AgentService_UpdateAgentLevels_FullMethodName  = "/crm.AgentService/updateAgentLevels"
-	AgentService_UpdateAgentConfig_FullMethodName  = "/crm.AgentService/updateAgentConfig"
-	AgentService_GetAgentConfig_FullMethodName     = "/crm.AgentService/getAgentConfig"
-	AgentService_AddOperatorAgent_FullMethodName   = "/crm.AgentService/addOperatorAgent"
-	AgentService_AddSubAgent_FullMethodName        = "/crm.AgentService/addSubAgent"
-	AgentService_ListAgents_FullMethodName         = "/crm.AgentService/listAgents"
-	AgentService_SearchAgents_FullMethodName       = "/crm.AgentService/searchAgents"
-	AgentService_ListOperatorAgents_FullMethodName = "/crm.AgentService/listOperatorAgents"
-	AgentService_ListAgentLevels_FullMethodName    = "/crm.AgentService/listAgentLevels"
-	AgentService_TreeNodeAgents_FullMethodName     = "/crm.AgentService/treeNodeAgents"
-	AgentService_AddAgentApply_FullMethodName      = "/crm.AgentService/addAgentApply"
-	AgentService_ListAgentApplies_FullMethodName   = "/crm.AgentService/listAgentApplies"
-	AgentService_ReviewAgentApply_FullMethodName   = "/crm.AgentService/reviewAgentApply"
+	AgentService_UpdateAgentLevels_FullMethodName           = "/crm.AgentService/updateAgentLevels"
+	AgentService_UpdateAgentConfig_FullMethodName           = "/crm.AgentService/updateAgentConfig"
+	AgentService_GetAgentConfig_FullMethodName              = "/crm.AgentService/getAgentConfig"
+	AgentService_AddOperatorAgent_FullMethodName            = "/crm.AgentService/addOperatorAgent"
+	AgentService_AddSubAgent_FullMethodName                 = "/crm.AgentService/addSubAgent"
+	AgentService_ListAgents_FullMethodName                  = "/crm.AgentService/listAgents"
+	AgentService_SearchAgents_FullMethodName                = "/crm.AgentService/searchAgents"
+	AgentService_ListOperatorAgents_FullMethodName          = "/crm.AgentService/listOperatorAgents"
+	AgentService_ListAgentLevels_FullMethodName             = "/crm.AgentService/listAgentLevels"
+	AgentService_TreeNodeAgents_FullMethodName              = "/crm.AgentService/treeNodeAgents"
+	AgentService_TreeNodeAncestorAgents_FullMethodName      = "/crm.AgentService/treeNodeAncestorAgents"
+	AgentService_AddAgentApply_FullMethodName               = "/crm.AgentService/addAgentApply"
+	AgentService_ListAgentApplies_FullMethodName            = "/crm.AgentService/listAgentApplies"
+	AgentService_ReviewAgentApply_FullMethodName            = "/crm.AgentService/reviewAgentApply"
+	AgentService_GetAgentProfile_FullMethodName             = "/crm.AgentService/getAgentProfile"
+	AgentService_ResetLoginPassword_FullMethodName          = "/crm.AgentService/resetLoginPassword"
+	AgentService_UpdateLoginPassword_FullMethodName         = "/crm.AgentService/updateLoginPassword"
+	AgentService_UpdateWithdrawPassword_FullMethodName      = "/crm.AgentService/updateWithdrawPassword"
+	AgentService_UpdateAgentShareRate_FullMethodName        = "/crm.AgentService/updateAgentShareRate"
+	AgentService_UpdateAgentPayoutRestricted_FullMethodName = "/crm.AgentService/updateAgentPayoutRestricted"
+	AgentService_UpdateAgentRemark_FullMethodName           = "/crm.AgentService/updateAgentRemark"
+	AgentService_UpdateAgentProfile_FullMethodName          = "/crm.AgentService/updateAgentProfile"
 )
 
 // AgentServiceClient is the client API for AgentService service.
@@ -440,11 +449,29 @@ type AgentServiceClient interface {
 	// group: agent
 	TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAgentsResp, error)
 	// group: agent
+	TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error)
+	// group: agent
 	AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error)
 	// group: agent
 	ListAgentApplies(ctx context.Context, in *agentpb.ListAgentAppliesReq, opts ...grpc.CallOption) (*agentpb.ListAgentAppliesResp, error)
 	// group: agent
 	ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentApplyReq, opts ...grpc.CallOption) (*agentpb.ReviewAgentApplyResp, error)
+	// group: agent
+	GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
+	// group: agent
+	ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.ResetLoginPasswordResp, error)
+	// group: agent
+	UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+	// group: agent
+	UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
 }
 
 type agentServiceClient struct {
@@ -555,6 +582,16 @@ func (c *agentServiceClient) TreeNodeAgents(ctx context.Context, in *agentpb.Tre
 	return out, nil
 }
 
+func (c *agentServiceClient) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.TreeNodeAncestorAgentsResp)
+	err := c.cc.Invoke(ctx, AgentService_TreeNodeAncestorAgents_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *agentServiceClient) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(agentpb.AgentApplyItem)
@@ -579,6 +616,86 @@ func (c *agentServiceClient) ReviewAgentApply(ctx context.Context, in *agentpb.R
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(agentpb.ReviewAgentApplyResp)
 	err := c.cc.Invoke(ctx, AgentService_ReviewAgentApply_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.AgentProfile)
+	err := c.cc.Invoke(ctx, AgentService_GetAgentProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.ResetLoginPasswordResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.ResetLoginPasswordResp)
+	err := c.cc.Invoke(ctx, AgentService_ResetLoginPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.Empty)
+	err := c.cc.Invoke(ctx, AgentService_UpdateLoginPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.Empty)
+	err := c.cc.Invoke(ctx, AgentService_UpdateWithdrawPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.Empty)
+	err := c.cc.Invoke(ctx, AgentService_UpdateAgentShareRate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.Empty)
+	err := c.cc.Invoke(ctx, AgentService_UpdateAgentPayoutRestricted_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.Empty)
+	err := c.cc.Invoke(ctx, AgentService_UpdateAgentRemark_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.AgentProfile)
+	err := c.cc.Invoke(ctx, AgentService_UpdateAgentProfile_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -612,11 +729,29 @@ type AgentServiceServer interface {
 	// group: agent
 	TreeNodeAgents(context.Context, *agentpb.TreeNodeAgentsReq) (*agentpb.TreeNodeAgentsResp, error)
 	// group: agent
+	TreeNodeAncestorAgents(context.Context, *agentpb.TreeNodeAncestorAgentsReq) (*agentpb.TreeNodeAncestorAgentsResp, error)
+	// group: agent
 	AddAgentApply(context.Context, *agentpb.AddAgentApplyReq) (*agentpb.AgentApplyItem, error)
 	// group: agent
 	ListAgentApplies(context.Context, *agentpb.ListAgentAppliesReq) (*agentpb.ListAgentAppliesResp, error)
 	// group: agent
 	ReviewAgentApply(context.Context, *agentpb.ReviewAgentApplyReq) (*agentpb.ReviewAgentApplyResp, error)
+	// group: agent
+	GetAgentProfile(context.Context, *agentpb.GetAgentProfileReq) (*agentpb.AgentProfile, error)
+	// group: agent
+	ResetLoginPassword(context.Context, *agentpb.ResetLoginPasswordReq) (*agentpb.ResetLoginPasswordResp, error)
+	// group: agent
+	UpdateLoginPassword(context.Context, *agentpb.UpdateLoginPasswordReq) (*agentpb.Empty, error)
+	// group: agent
+	UpdateWithdrawPassword(context.Context, *agentpb.UpdateWithdrawPasswordReq) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentShareRate(context.Context, *agentpb.UpdateAgentShareRateReq) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentPayoutRestricted(context.Context, *agentpb.UpdateAgentPayoutRestrictedReq) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentRemark(context.Context, *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentProfile(context.Context, *agentpb.UpdateAgentProfileReq) (*agentpb.AgentProfile, error)
 	mustEmbedUnimplementedAgentServiceServer()
 }
 
@@ -657,6 +792,9 @@ func (UnimplementedAgentServiceServer) ListAgentLevels(context.Context, *agentpb
 func (UnimplementedAgentServiceServer) TreeNodeAgents(context.Context, *agentpb.TreeNodeAgentsReq) (*agentpb.TreeNodeAgentsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TreeNodeAgents not implemented")
 }
+func (UnimplementedAgentServiceServer) TreeNodeAncestorAgents(context.Context, *agentpb.TreeNodeAncestorAgentsReq) (*agentpb.TreeNodeAncestorAgentsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TreeNodeAncestorAgents not implemented")
+}
 func (UnimplementedAgentServiceServer) AddAgentApply(context.Context, *agentpb.AddAgentApplyReq) (*agentpb.AgentApplyItem, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddAgentApply not implemented")
 }
@@ -665,6 +803,30 @@ func (UnimplementedAgentServiceServer) ListAgentApplies(context.Context, *agentp
 }
 func (UnimplementedAgentServiceServer) ReviewAgentApply(context.Context, *agentpb.ReviewAgentApplyReq) (*agentpb.ReviewAgentApplyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReviewAgentApply not implemented")
+}
+func (UnimplementedAgentServiceServer) GetAgentProfile(context.Context, *agentpb.GetAgentProfileReq) (*agentpb.AgentProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAgentProfile not implemented")
+}
+func (UnimplementedAgentServiceServer) ResetLoginPassword(context.Context, *agentpb.ResetLoginPasswordReq) (*agentpb.ResetLoginPasswordResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetLoginPassword not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateLoginPassword(context.Context, *agentpb.UpdateLoginPasswordReq) (*agentpb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateLoginPassword not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateWithdrawPassword(context.Context, *agentpb.UpdateWithdrawPasswordReq) (*agentpb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateWithdrawPassword not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateAgentShareRate(context.Context, *agentpb.UpdateAgentShareRateReq) (*agentpb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAgentShareRate not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateAgentPayoutRestricted(context.Context, *agentpb.UpdateAgentPayoutRestrictedReq) (*agentpb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAgentPayoutRestricted not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateAgentRemark(context.Context, *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAgentRemark not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateAgentProfile(context.Context, *agentpb.UpdateAgentProfileReq) (*agentpb.AgentProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAgentProfile not implemented")
 }
 func (UnimplementedAgentServiceServer) mustEmbedUnimplementedAgentServiceServer() {}
 func (UnimplementedAgentServiceServer) testEmbeddedByValue()                      {}
@@ -867,6 +1029,24 @@ func _AgentService_TreeNodeAgents_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_TreeNodeAncestorAgents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.TreeNodeAncestorAgentsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).TreeNodeAncestorAgents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_TreeNodeAncestorAgents_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).TreeNodeAncestorAgents(ctx, req.(*agentpb.TreeNodeAncestorAgentsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AgentService_AddAgentApply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(agentpb.AddAgentApplyReq)
 	if err := dec(in); err != nil {
@@ -921,6 +1101,150 @@ func _AgentService_ReviewAgentApply_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_GetAgentProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.GetAgentProfileReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).GetAgentProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_GetAgentProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).GetAgentProfile(ctx, req.(*agentpb.GetAgentProfileReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_ResetLoginPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.ResetLoginPasswordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).ResetLoginPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_ResetLoginPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).ResetLoginPassword(ctx, req.(*agentpb.ResetLoginPasswordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_UpdateLoginPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.UpdateLoginPasswordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateLoginPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateLoginPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateLoginPassword(ctx, req.(*agentpb.UpdateLoginPasswordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_UpdateWithdrawPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.UpdateWithdrawPasswordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateWithdrawPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateWithdrawPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateWithdrawPassword(ctx, req.(*agentpb.UpdateWithdrawPasswordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_UpdateAgentShareRate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.UpdateAgentShareRateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateAgentShareRate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateAgentShareRate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateAgentShareRate(ctx, req.(*agentpb.UpdateAgentShareRateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_UpdateAgentPayoutRestricted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.UpdateAgentPayoutRestrictedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateAgentPayoutRestricted(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateAgentPayoutRestricted_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateAgentPayoutRestricted(ctx, req.(*agentpb.UpdateAgentPayoutRestrictedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_UpdateAgentRemark_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.UpdateAgentRemarkReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateAgentRemark(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateAgentRemark_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateAgentRemark(ctx, req.(*agentpb.UpdateAgentRemarkReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_UpdateAgentProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.UpdateAgentProfileReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateAgentProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateAgentProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateAgentProfile(ctx, req.(*agentpb.UpdateAgentProfileReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AgentService_ServiceDesc is the grpc.ServiceDesc for AgentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -969,6 +1293,10 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AgentService_TreeNodeAgents_Handler,
 		},
 		{
+			MethodName: "treeNodeAncestorAgents",
+			Handler:    _AgentService_TreeNodeAncestorAgents_Handler,
+		},
+		{
 			MethodName: "addAgentApply",
 			Handler:    _AgentService_AddAgentApply_Handler,
 		},
@@ -979,6 +1307,38 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "reviewAgentApply",
 			Handler:    _AgentService_ReviewAgentApply_Handler,
+		},
+		{
+			MethodName: "getAgentProfile",
+			Handler:    _AgentService_GetAgentProfile_Handler,
+		},
+		{
+			MethodName: "resetLoginPassword",
+			Handler:    _AgentService_ResetLoginPassword_Handler,
+		},
+		{
+			MethodName: "updateLoginPassword",
+			Handler:    _AgentService_UpdateLoginPassword_Handler,
+		},
+		{
+			MethodName: "updateWithdrawPassword",
+			Handler:    _AgentService_UpdateWithdrawPassword_Handler,
+		},
+		{
+			MethodName: "updateAgentShareRate",
+			Handler:    _AgentService_UpdateAgentShareRate_Handler,
+		},
+		{
+			MethodName: "updateAgentPayoutRestricted",
+			Handler:    _AgentService_UpdateAgentPayoutRestricted_Handler,
+		},
+		{
+			MethodName: "updateAgentRemark",
+			Handler:    _AgentService_UpdateAgentRemark_Handler,
+		},
+		{
+			MethodName: "updateAgentProfile",
+			Handler:    _AgentService_UpdateAgentProfile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

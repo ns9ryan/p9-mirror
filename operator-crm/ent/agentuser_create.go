@@ -206,20 +206,6 @@ func (_c *AgentUserCreate) SetNillableWithdrawPasswordHash(v *string) *AgentUser
 	return _c
 }
 
-// SetIDDocumentNo sets the "id_document_no" field.
-func (_c *AgentUserCreate) SetIDDocumentNo(v string) *AgentUserCreate {
-	_c.mutation.SetIDDocumentNo(v)
-	return _c
-}
-
-// SetNillableIDDocumentNo sets the "id_document_no" field if the given value is not nil.
-func (_c *AgentUserCreate) SetNillableIDDocumentNo(v *string) *AgentUserCreate {
-	if v != nil {
-		_c.SetIDDocumentNo(*v)
-	}
-	return _c
-}
-
 // SetSalt sets the "salt" field.
 func (_c *AgentUserCreate) SetSalt(v string) *AgentUserCreate {
 	_c.mutation.SetSalt(v)
@@ -618,11 +604,6 @@ func (_c *AgentUserCreate) check() error {
 			return &ValidationError{Name: "withdraw_password_hash", err: fmt.Errorf(`ent: validator failed for field "AgentUser.withdraw_password_hash": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.IDDocumentNo(); ok {
-		if err := agentuser.IDDocumentNoValidator(v); err != nil {
-			return &ValidationError{Name: "id_document_no", err: fmt.Errorf(`ent: validator failed for field "AgentUser.id_document_no": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.Salt(); !ok {
 		return &ValidationError{Name: "salt", err: errors.New(`ent: missing required field "AgentUser.salt"`)}
 	}
@@ -741,10 +722,6 @@ func (_c *AgentUserCreate) createSpec() (*AgentUser, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.WithdrawPasswordHash(); ok {
 		_spec.SetField(agentuser.FieldWithdrawPasswordHash, field.TypeString, value)
 		_node.WithdrawPasswordHash = &value
-	}
-	if value, ok := _c.mutation.IDDocumentNo(); ok {
-		_spec.SetField(agentuser.FieldIDDocumentNo, field.TypeString, value)
-		_node.IDDocumentNo = &value
 	}
 	if value, ok := _c.mutation.Salt(); ok {
 		_spec.SetField(agentuser.FieldSalt, field.TypeString, value)
@@ -1191,24 +1168,6 @@ func (u *AgentUserUpsert) UpdateWithdrawPasswordHash() *AgentUserUpsert {
 // ClearWithdrawPasswordHash clears the value of the "withdraw_password_hash" field.
 func (u *AgentUserUpsert) ClearWithdrawPasswordHash() *AgentUserUpsert {
 	u.SetNull(agentuser.FieldWithdrawPasswordHash)
-	return u
-}
-
-// SetIDDocumentNo sets the "id_document_no" field.
-func (u *AgentUserUpsert) SetIDDocumentNo(v string) *AgentUserUpsert {
-	u.Set(agentuser.FieldIDDocumentNo, v)
-	return u
-}
-
-// UpdateIDDocumentNo sets the "id_document_no" field to the value that was provided on create.
-func (u *AgentUserUpsert) UpdateIDDocumentNo() *AgentUserUpsert {
-	u.SetExcluded(agentuser.FieldIDDocumentNo)
-	return u
-}
-
-// ClearIDDocumentNo clears the value of the "id_document_no" field.
-func (u *AgentUserUpsert) ClearIDDocumentNo() *AgentUserUpsert {
-	u.SetNull(agentuser.FieldIDDocumentNo)
 	return u
 }
 
@@ -1674,27 +1633,6 @@ func (u *AgentUserUpsertOne) UpdateWithdrawPasswordHash() *AgentUserUpsertOne {
 func (u *AgentUserUpsertOne) ClearWithdrawPasswordHash() *AgentUserUpsertOne {
 	return u.Update(func(s *AgentUserUpsert) {
 		s.ClearWithdrawPasswordHash()
-	})
-}
-
-// SetIDDocumentNo sets the "id_document_no" field.
-func (u *AgentUserUpsertOne) SetIDDocumentNo(v string) *AgentUserUpsertOne {
-	return u.Update(func(s *AgentUserUpsert) {
-		s.SetIDDocumentNo(v)
-	})
-}
-
-// UpdateIDDocumentNo sets the "id_document_no" field to the value that was provided on create.
-func (u *AgentUserUpsertOne) UpdateIDDocumentNo() *AgentUserUpsertOne {
-	return u.Update(func(s *AgentUserUpsert) {
-		s.UpdateIDDocumentNo()
-	})
-}
-
-// ClearIDDocumentNo clears the value of the "id_document_no" field.
-func (u *AgentUserUpsertOne) ClearIDDocumentNo() *AgentUserUpsertOne {
-	return u.Update(func(s *AgentUserUpsert) {
-		s.ClearIDDocumentNo()
 	})
 }
 
@@ -2349,27 +2287,6 @@ func (u *AgentUserUpsertBulk) UpdateWithdrawPasswordHash() *AgentUserUpsertBulk 
 func (u *AgentUserUpsertBulk) ClearWithdrawPasswordHash() *AgentUserUpsertBulk {
 	return u.Update(func(s *AgentUserUpsert) {
 		s.ClearWithdrawPasswordHash()
-	})
-}
-
-// SetIDDocumentNo sets the "id_document_no" field.
-func (u *AgentUserUpsertBulk) SetIDDocumentNo(v string) *AgentUserUpsertBulk {
-	return u.Update(func(s *AgentUserUpsert) {
-		s.SetIDDocumentNo(v)
-	})
-}
-
-// UpdateIDDocumentNo sets the "id_document_no" field to the value that was provided on create.
-func (u *AgentUserUpsertBulk) UpdateIDDocumentNo() *AgentUserUpsertBulk {
-	return u.Update(func(s *AgentUserUpsert) {
-		s.UpdateIDDocumentNo()
-	})
-}
-
-// ClearIDDocumentNo clears the value of the "id_document_no" field.
-func (u *AgentUserUpsertBulk) ClearIDDocumentNo() *AgentUserUpsertBulk {
-	return u.Update(func(s *AgentUserUpsert) {
-		s.ClearIDDocumentNo()
 	})
 }
 

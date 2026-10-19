@@ -62,6 +62,27 @@ func (_u *MemberVipConfigUpdate) SetNillableUpgradeRewardEnabled(v *bool) *Membe
 	return _u
 }
 
+// SetRewardWaterMultiplier sets the "reward_water_multiplier" field.
+func (_u *MemberVipConfigUpdate) SetRewardWaterMultiplier(v int64) *MemberVipConfigUpdate {
+	_u.mutation.ResetRewardWaterMultiplier()
+	_u.mutation.SetRewardWaterMultiplier(v)
+	return _u
+}
+
+// SetNillableRewardWaterMultiplier sets the "reward_water_multiplier" field if the given value is not nil.
+func (_u *MemberVipConfigUpdate) SetNillableRewardWaterMultiplier(v *int64) *MemberVipConfigUpdate {
+	if v != nil {
+		_u.SetRewardWaterMultiplier(*v)
+	}
+	return _u
+}
+
+// AddRewardWaterMultiplier adds value to the "reward_water_multiplier" field.
+func (_u *MemberVipConfigUpdate) AddRewardWaterMultiplier(v int64) *MemberVipConfigUpdate {
+	_u.mutation.AddRewardWaterMultiplier(v)
+	return _u
+}
+
 // SetRetentionCheckEnabled sets the "retention_check_enabled" field.
 func (_u *MemberVipConfigUpdate) SetRetentionCheckEnabled(v bool) *MemberVipConfigUpdate {
 	_u.mutation.SetRetentionCheckEnabled(v)
@@ -160,6 +181,11 @@ func (_u *MemberVipConfigUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberVipConfigUpdate) check() error {
+	if v, ok := _u.mutation.RewardWaterMultiplier(); ok {
+		if err := membervipconfig.RewardWaterMultiplierValidator(v); err != nil {
+			return &ValidationError{Name: "reward_water_multiplier", err: fmt.Errorf(`ent: validator failed for field "MemberVipConfig.reward_water_multiplier": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.RewardGrantMode(); ok {
 		if err := membervipconfig.RewardGrantModeValidator(v); err != nil {
 			return &ValidationError{Name: "reward_grant_mode", err: fmt.Errorf(`ent: validator failed for field "MemberVipConfig.reward_grant_mode": %w`, err)}
@@ -188,6 +214,12 @@ func (_u *MemberVipConfigUpdate) sqlSave(ctx context.Context) (_node int, err er
 	}
 	if value, ok := _u.mutation.UpgradeRewardEnabled(); ok {
 		_spec.SetField(membervipconfig.FieldUpgradeRewardEnabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.RewardWaterMultiplier(); ok {
+		_spec.SetField(membervipconfig.FieldRewardWaterMultiplier, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedRewardWaterMultiplier(); ok {
+		_spec.AddField(membervipconfig.FieldRewardWaterMultiplier, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.RetentionCheckEnabled(); ok {
 		_spec.SetField(membervipconfig.FieldRetentionCheckEnabled, field.TypeBool, value)
@@ -255,6 +287,27 @@ func (_u *MemberVipConfigUpdateOne) SetNillableUpgradeRewardEnabled(v *bool) *Me
 	if v != nil {
 		_u.SetUpgradeRewardEnabled(*v)
 	}
+	return _u
+}
+
+// SetRewardWaterMultiplier sets the "reward_water_multiplier" field.
+func (_u *MemberVipConfigUpdateOne) SetRewardWaterMultiplier(v int64) *MemberVipConfigUpdateOne {
+	_u.mutation.ResetRewardWaterMultiplier()
+	_u.mutation.SetRewardWaterMultiplier(v)
+	return _u
+}
+
+// SetNillableRewardWaterMultiplier sets the "reward_water_multiplier" field if the given value is not nil.
+func (_u *MemberVipConfigUpdateOne) SetNillableRewardWaterMultiplier(v *int64) *MemberVipConfigUpdateOne {
+	if v != nil {
+		_u.SetRewardWaterMultiplier(*v)
+	}
+	return _u
+}
+
+// AddRewardWaterMultiplier adds value to the "reward_water_multiplier" field.
+func (_u *MemberVipConfigUpdateOne) AddRewardWaterMultiplier(v int64) *MemberVipConfigUpdateOne {
+	_u.mutation.AddRewardWaterMultiplier(v)
 	return _u
 }
 
@@ -369,6 +422,11 @@ func (_u *MemberVipConfigUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberVipConfigUpdateOne) check() error {
+	if v, ok := _u.mutation.RewardWaterMultiplier(); ok {
+		if err := membervipconfig.RewardWaterMultiplierValidator(v); err != nil {
+			return &ValidationError{Name: "reward_water_multiplier", err: fmt.Errorf(`ent: validator failed for field "MemberVipConfig.reward_water_multiplier": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.RewardGrantMode(); ok {
 		if err := membervipconfig.RewardGrantModeValidator(v); err != nil {
 			return &ValidationError{Name: "reward_grant_mode", err: fmt.Errorf(`ent: validator failed for field "MemberVipConfig.reward_grant_mode": %w`, err)}
@@ -414,6 +472,12 @@ func (_u *MemberVipConfigUpdateOne) sqlSave(ctx context.Context) (_node *MemberV
 	}
 	if value, ok := _u.mutation.UpgradeRewardEnabled(); ok {
 		_spec.SetField(membervipconfig.FieldUpgradeRewardEnabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.RewardWaterMultiplier(); ok {
+		_spec.SetField(membervipconfig.FieldRewardWaterMultiplier, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedRewardWaterMultiplier(); ok {
+		_spec.AddField(membervipconfig.FieldRewardWaterMultiplier, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.RetentionCheckEnabled(); ok {
 		_spec.SetField(membervipconfig.FieldRetentionCheckEnabled, field.TypeBool, value)

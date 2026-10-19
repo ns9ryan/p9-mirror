@@ -28,6 +28,8 @@ type MemberVipConfig struct {
 	VipEnabled bool `json:"vip_enabled,omitempty"`
 	// 晋级奖励开关
 	UpgradeRewardEnabled bool `json:"upgrade_reward_enabled,omitempty"`
+	// VIP晋级奖励洗码倍率，放大100000倍存储
+	RewardWaterMultiplier int64 `json:"reward_water_multiplier,omitempty"`
 	// 保级考核开关
 	RetentionCheckEnabled bool `json:"retention_check_enabled,omitempty"`
 	// 奖励派发模式: 1手动领取, 2自动派发
@@ -44,7 +46,7 @@ func (*MemberVipConfig) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case membervipconfig.FieldVipEnabled, membervipconfig.FieldUpgradeRewardEnabled, membervipconfig.FieldRetentionCheckEnabled:
 			values[i] = new(sql.NullBool)
-		case membervipconfig.FieldID, membervipconfig.FieldRewardGrantMode:
+		case membervipconfig.FieldID, membervipconfig.FieldRewardWaterMultiplier, membervipconfig.FieldRewardGrantMode:
 			values[i] = new(sql.NullInt64)
 		case membervipconfig.FieldOperatorCode:
 			values[i] = new(sql.NullString)
@@ -100,6 +102,12 @@ func (_m *MemberVipConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field upgrade_reward_enabled", values[i])
 			} else if value.Valid {
 				_m.UpgradeRewardEnabled = value.Bool
+			}
+		case membervipconfig.FieldRewardWaterMultiplier:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field reward_water_multiplier", values[i])
+			} else if value.Valid {
+				_m.RewardWaterMultiplier = value.Int64
 			}
 		case membervipconfig.FieldRetentionCheckEnabled:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -170,6 +178,9 @@ func (_m *MemberVipConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("upgrade_reward_enabled=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeRewardEnabled))
+	builder.WriteString(", ")
+	builder.WriteString("reward_water_multiplier=")
+	builder.WriteString(fmt.Sprintf("%v", _m.RewardWaterMultiplier))
 	builder.WriteString(", ")
 	builder.WriteString("retention_check_enabled=")
 	builder.WriteString(fmt.Sprintf("%v", _m.RetentionCheckEnabled))

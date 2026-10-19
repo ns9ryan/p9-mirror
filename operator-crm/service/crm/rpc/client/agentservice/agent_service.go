@@ -38,11 +38,29 @@ type (
 		// group: agent
 		TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAgentsResp, error)
 		// group: agent
+		TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error)
+		// group: agent
 		AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error)
 		// group: agent
 		ListAgentApplies(ctx context.Context, in *agentpb.ListAgentAppliesReq, opts ...grpc.CallOption) (*agentpb.ListAgentAppliesResp, error)
 		// group: agent
 		ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentApplyReq, opts ...grpc.CallOption) (*agentpb.ReviewAgentApplyResp, error)
+		// group: agent
+		GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
+		// group: agent
+		ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.ResetLoginPasswordResp, error)
+		// group: agent
+		UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+		// group: agent
+		UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+		// group: agent
+		UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+		// group: agent
+		UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+		// group: agent
+		UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+		// group: agent
+		UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
 	}
 
 	defaultAgentService struct {
@@ -117,6 +135,12 @@ func (m *defaultAgentService) TreeNodeAgents(ctx context.Context, in *agentpb.Tr
 }
 
 // group: agent
+func (m *defaultAgentService) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.TreeNodeAncestorAgents(ctx, in, opts...)
+}
+
+// group: agent
 func (m *defaultAgentService) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.AddAgentApply(ctx, in, opts...)
@@ -132,4 +156,52 @@ func (m *defaultAgentService) ListAgentApplies(ctx context.Context, in *agentpb.
 func (m *defaultAgentService) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentApplyReq, opts ...grpc.CallOption) (*agentpb.ReviewAgentApplyResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ReviewAgentApply(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.GetAgentProfile(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.ResetLoginPasswordResp, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.ResetLoginPassword(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.UpdateLoginPassword(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.UpdateWithdrawPassword(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.UpdateAgentShareRate(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.UpdateAgentPayoutRestricted(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.UpdateAgentRemark(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.UpdateAgentProfile(ctx, in, opts...)
 }

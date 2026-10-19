@@ -29,11 +29,11 @@ type MemberVipLevel struct {
 	// 晋级所需有效存款金额
 	UpgradeValidDeposit int64 `json:"upgrade_valid_deposit,omitempty"`
 	// 晋级所需有效洗码量
-	UpgradeValidTurnover int64 `json:"upgrade_valid_turnover,omitempty"`
+	UpgradeValidWater int64 `json:"upgrade_valid_water,omitempty"`
 	// 保级所需有效存款金额
 	RetentionValidDeposit int64 `json:"retention_valid_deposit,omitempty"`
 	// 保级所需有效洗码量
-	RetentionValidTurnover int64 `json:"retention_valid_turnover,omitempty"`
+	RetentionValidWater int64 `json:"retention_valid_water,omitempty"`
 	// 晋级奖励金额
 	UpgradeReward int64 `json:"upgrade_reward,omitempty"`
 	selectValues  sql.SelectValues
@@ -44,7 +44,7 @@ func (*MemberVipLevel) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case memberviplevel.FieldID, memberviplevel.FieldLevel, memberviplevel.FieldUpgradeValidDeposit, memberviplevel.FieldUpgradeValidTurnover, memberviplevel.FieldRetentionValidDeposit, memberviplevel.FieldRetentionValidTurnover, memberviplevel.FieldUpgradeReward:
+		case memberviplevel.FieldID, memberviplevel.FieldLevel, memberviplevel.FieldUpgradeValidDeposit, memberviplevel.FieldUpgradeValidWater, memberviplevel.FieldRetentionValidDeposit, memberviplevel.FieldRetentionValidWater, memberviplevel.FieldUpgradeReward:
 			values[i] = new(sql.NullInt64)
 		case memberviplevel.FieldOperatorCode:
 			values[i] = new(sql.NullString)
@@ -101,11 +101,11 @@ func (_m *MemberVipLevel) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpgradeValidDeposit = value.Int64
 			}
-		case memberviplevel.FieldUpgradeValidTurnover:
+		case memberviplevel.FieldUpgradeValidWater:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field upgrade_valid_turnover", values[i])
+				return fmt.Errorf("unexpected type %T for field upgrade_valid_water", values[i])
 			} else if value.Valid {
-				_m.UpgradeValidTurnover = value.Int64
+				_m.UpgradeValidWater = value.Int64
 			}
 		case memberviplevel.FieldRetentionValidDeposit:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -113,11 +113,11 @@ func (_m *MemberVipLevel) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.RetentionValidDeposit = value.Int64
 			}
-		case memberviplevel.FieldRetentionValidTurnover:
+		case memberviplevel.FieldRetentionValidWater:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field retention_valid_turnover", values[i])
+				return fmt.Errorf("unexpected type %T for field retention_valid_water", values[i])
 			} else if value.Valid {
-				_m.RetentionValidTurnover = value.Int64
+				_m.RetentionValidWater = value.Int64
 			}
 		case memberviplevel.FieldUpgradeReward:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -176,14 +176,14 @@ func (_m *MemberVipLevel) String() string {
 	builder.WriteString("upgrade_valid_deposit=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidDeposit))
 	builder.WriteString(", ")
-	builder.WriteString("upgrade_valid_turnover=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidTurnover))
+	builder.WriteString("upgrade_valid_water=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidWater))
 	builder.WriteString(", ")
 	builder.WriteString("retention_valid_deposit=")
 	builder.WriteString(fmt.Sprintf("%v", _m.RetentionValidDeposit))
 	builder.WriteString(", ")
-	builder.WriteString("retention_valid_turnover=")
-	builder.WriteString(fmt.Sprintf("%v", _m.RetentionValidTurnover))
+	builder.WriteString("retention_valid_water=")
+	builder.WriteString(fmt.Sprintf("%v", _m.RetentionValidWater))
 	builder.WriteString(", ")
 	builder.WriteString("upgrade_reward=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeReward))

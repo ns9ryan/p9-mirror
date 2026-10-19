@@ -23,12 +23,12 @@ const (
 	FieldLevel = "level"
 	// FieldUpgradeValidDeposit holds the string denoting the upgrade_valid_deposit field in the database.
 	FieldUpgradeValidDeposit = "upgrade_valid_deposit"
-	// FieldUpgradeValidTurnover holds the string denoting the upgrade_valid_turnover field in the database.
-	FieldUpgradeValidTurnover = "upgrade_valid_turnover"
+	// FieldUpgradeValidWater holds the string denoting the upgrade_valid_water field in the database.
+	FieldUpgradeValidWater = "upgrade_valid_water"
 	// FieldRetentionValidDeposit holds the string denoting the retention_valid_deposit field in the database.
 	FieldRetentionValidDeposit = "retention_valid_deposit"
-	// FieldRetentionValidTurnover holds the string denoting the retention_valid_turnover field in the database.
-	FieldRetentionValidTurnover = "retention_valid_turnover"
+	// FieldRetentionValidWater holds the string denoting the retention_valid_water field in the database.
+	FieldRetentionValidWater = "retention_valid_water"
 	// FieldUpgradeReward holds the string denoting the upgrade_reward field in the database.
 	FieldUpgradeReward = "upgrade_reward"
 	// Table holds the table name of the memberviplevel in the database.
@@ -43,9 +43,9 @@ var Columns = []string{
 	FieldOperatorCode,
 	FieldLevel,
 	FieldUpgradeValidDeposit,
-	FieldUpgradeValidTurnover,
+	FieldUpgradeValidWater,
 	FieldRetentionValidDeposit,
-	FieldRetentionValidTurnover,
+	FieldRetentionValidWater,
 	FieldUpgradeReward,
 }
 
@@ -72,12 +72,12 @@ var (
 	LevelValidator func(int64) error
 	// UpgradeValidDepositValidator is a validator for the "upgrade_valid_deposit" field. It is called by the builders before save.
 	UpgradeValidDepositValidator func(int64) error
-	// UpgradeValidTurnoverValidator is a validator for the "upgrade_valid_turnover" field. It is called by the builders before save.
-	UpgradeValidTurnoverValidator func(int64) error
+	// UpgradeValidWaterValidator is a validator for the "upgrade_valid_water" field. It is called by the builders before save.
+	UpgradeValidWaterValidator func(int64) error
 	// RetentionValidDepositValidator is a validator for the "retention_valid_deposit" field. It is called by the builders before save.
 	RetentionValidDepositValidator func(int64) error
-	// RetentionValidTurnoverValidator is a validator for the "retention_valid_turnover" field. It is called by the builders before save.
-	RetentionValidTurnoverValidator func(int64) error
+	// RetentionValidWaterValidator is a validator for the "retention_valid_water" field. It is called by the builders before save.
+	RetentionValidWaterValidator func(int64) error
 	// DefaultUpgradeReward holds the default value on creation for the "upgrade_reward" field.
 	DefaultUpgradeReward int64
 	// UpgradeRewardValidator is a validator for the "upgrade_reward" field. It is called by the builders before save.
@@ -117,9 +117,9 @@ func ByUpgradeValidDeposit(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpgradeValidDeposit, opts...).ToFunc()
 }
 
-// ByUpgradeValidTurnover orders the results by the upgrade_valid_turnover field.
-func ByUpgradeValidTurnover(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpgradeValidTurnover, opts...).ToFunc()
+// ByUpgradeValidWater orders the results by the upgrade_valid_water field.
+func ByUpgradeValidWater(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpgradeValidWater, opts...).ToFunc()
 }
 
 // ByRetentionValidDeposit orders the results by the retention_valid_deposit field.
@@ -127,9 +127,9 @@ func ByRetentionValidDeposit(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRetentionValidDeposit, opts...).ToFunc()
 }
 
-// ByRetentionValidTurnover orders the results by the retention_valid_turnover field.
-func ByRetentionValidTurnover(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRetentionValidTurnover, opts...).ToFunc()
+// ByRetentionValidWater orders the results by the retention_valid_water field.
+func ByRetentionValidWater(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRetentionValidWater, opts...).ToFunc()
 }
 
 // ByUpgradeReward orders the results by the upgrade_reward field.

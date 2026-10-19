@@ -37,7 +37,7 @@ func (MemberVipLevel) Fields() []ent.Field {
 			NonNegative().
 			Comment("晋级所需有效存款金额"),
 
-		field.Int64("upgrade_valid_turnover").
+		field.Int64("upgrade_valid_water").
 			NonNegative().
 			Comment("晋级所需有效洗码量"),
 
@@ -45,7 +45,7 @@ func (MemberVipLevel) Fields() []ent.Field {
 			NonNegative().
 			Comment("保级所需有效存款金额"),
 
-		field.Int64("retention_valid_turnover").
+		field.Int64("retention_valid_water").
 			NonNegative().
 			Comment("保级所需有效洗码量"),
 

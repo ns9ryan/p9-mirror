@@ -72,7 +72,7 @@ func bumpAgentCounts(ctx context.Context, tx *ent.Tx, parentID int64) error {
 
 // 更新代理统计表 代理直属会员数及总会员数
 func BumpMemberCounts(ctx context.Context, tx *ent.Tx, agentCode string) error {
-	// 通过代理ID查上级ID
+	// 通过代理code查上级ID
 	agentInfo, err := tx.AgentUser.Query().
 		Where(agentuser.CodeEQ(agentCode)).
 		Select(agentuser.FieldParentID).

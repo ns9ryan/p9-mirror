@@ -76,6 +76,13 @@ func (AgentProfile) Fields() []ent.Field {
 			Match(trimmedNonEmpty).
 			Comment("邮箱"),
 
+		field.String("id_document_no").
+			Optional().
+			Nillable().
+			MaxLen(64).
+			Match(trimmedNonEmpty).
+			Comment("CPF/身份证件号"),
+
 		field.String("qq").
 			Optional().
 			Nillable().
@@ -177,7 +184,8 @@ func (AgentProfile) Annotations() []schema.Annotation {
 				"ck_agent_profile_nickname":   "nickname IS NULL OR (BTRIM(nickname) <> '' AND nickname = BTRIM(nickname))",
 				"ck_agent_profile_realname":   "realname IS NULL OR (BTRIM(realname) <> '' AND realname = BTRIM(realname))",
 				"ck_agent_profile_mobile":     "mobile IS NULL OR (BTRIM(mobile) <> '' AND mobile = BTRIM(mobile))",
-				"ck_agent_profile_email":      "email IS NULL OR (BTRIM(email) <> '' AND email = BTRIM(email))",
+				"ck_agent_profile_email":          "email IS NULL OR (BTRIM(email) <> '' AND email = BTRIM(email))",
+				"ck_agent_profile_id_document_no": "id_document_no IS NULL OR (BTRIM(id_document_no) <> '' AND id_document_no = BTRIM(id_document_no))",
 				"ck_agent_profile_qq":         "qq IS NULL OR (BTRIM(qq) <> '' AND qq = BTRIM(qq))",
 				"ck_agent_profile_line":       "line IS NULL OR (BTRIM(line) <> '' AND line = BTRIM(line))",
 				"ck_agent_profile_wechat":     "wechat IS NULL OR (BTRIM(wechat) <> '' AND wechat = BTRIM(wechat))",

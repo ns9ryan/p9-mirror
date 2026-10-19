@@ -51,9 +51,27 @@ service AgentService {
   // group: agent
   rpc treeNodeAgents(crm_agent.TreeNodeAgentsReq) returns (crm_agent.TreeNodeAgentsResp);
   // group: agent
+  rpc treeNodeAncestorAgents(crm_agent.TreeNodeAncestorAgentsReq) returns (crm_agent.TreeNodeAncestorAgentsResp);
+  // group: agent
   rpc addAgentApply(crm_agent.AddAgentApplyReq) returns (crm_agent.AgentApplyItem);
   // group: agent
   rpc listAgentApplies(crm_agent.ListAgentAppliesReq) returns (crm_agent.ListAgentAppliesResp);
   // group: agent
   rpc reviewAgentApply(crm_agent.ReviewAgentApplyReq) returns (crm_agent.ReviewAgentApplyResp);
+  // group: agent
+  rpc getAgentProfile(crm_agent.GetAgentProfileReq) returns (crm_agent.AgentProfile);
+  // group: agent
+  rpc resetLoginPassword(crm_agent.ResetLoginPasswordReq) returns (crm_agent.ResetLoginPasswordResp);
+  // group: agent
+  rpc updateLoginPassword(crm_agent.UpdateLoginPasswordReq) returns (crm_agent.Empty);
+  // group: agent
+  rpc updateWithdrawPassword(crm_agent.UpdateWithdrawPasswordReq) returns (crm_agent.Empty);
+  // group: agent
+  rpc updateAgentShareRate(crm_agent.UpdateAgentShareRateReq) returns (crm_agent.Empty);
+  // group: agent
+  rpc updateAgentPayoutRestricted(crm_agent.UpdateAgentPayoutRestrictedReq) returns (crm_agent.Empty);
+  // group: agent
+  rpc updateAgentRemark(crm_agent.UpdateAgentRemarkReq) returns (crm_agent.Empty);
+  // group: agent
+  rpc updateAgentProfile(crm_agent.UpdateAgentProfileReq) returns (crm_agent.AgentProfile);
 }

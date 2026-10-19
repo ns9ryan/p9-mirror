@@ -79,9 +79,9 @@ func MinValidDeposit(v int64) predicate.MemberAutoLevel {
 	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidDeposit, v))
 }
 
-// MinValidTurnover applies equality check predicate on the "min_valid_turnover" field. It's identical to MinValidTurnoverEQ.
-func MinValidTurnover(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidTurnover, v))
+// MinValidWater applies equality check predicate on the "min_valid_water" field. It's identical to MinValidWaterEQ.
+func MinValidWater(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidWater, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -334,44 +334,44 @@ func MinValidDepositLTE(v int64) predicate.MemberAutoLevel {
 	return predicate.MemberAutoLevel(sql.FieldLTE(FieldMinValidDeposit, v))
 }
 
-// MinValidTurnoverEQ applies the EQ predicate on the "min_valid_turnover" field.
-func MinValidTurnoverEQ(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidTurnover, v))
+// MinValidWaterEQ applies the EQ predicate on the "min_valid_water" field.
+func MinValidWaterEQ(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidWater, v))
 }
 
-// MinValidTurnoverNEQ applies the NEQ predicate on the "min_valid_turnover" field.
-func MinValidTurnoverNEQ(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldNEQ(FieldMinValidTurnover, v))
+// MinValidWaterNEQ applies the NEQ predicate on the "min_valid_water" field.
+func MinValidWaterNEQ(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldNEQ(FieldMinValidWater, v))
 }
 
-// MinValidTurnoverIn applies the In predicate on the "min_valid_turnover" field.
-func MinValidTurnoverIn(vs ...int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldIn(FieldMinValidTurnover, vs...))
+// MinValidWaterIn applies the In predicate on the "min_valid_water" field.
+func MinValidWaterIn(vs ...int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldIn(FieldMinValidWater, vs...))
 }
 
-// MinValidTurnoverNotIn applies the NotIn predicate on the "min_valid_turnover" field.
-func MinValidTurnoverNotIn(vs ...int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldNotIn(FieldMinValidTurnover, vs...))
+// MinValidWaterNotIn applies the NotIn predicate on the "min_valid_water" field.
+func MinValidWaterNotIn(vs ...int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldNotIn(FieldMinValidWater, vs...))
 }
 
-// MinValidTurnoverGT applies the GT predicate on the "min_valid_turnover" field.
-func MinValidTurnoverGT(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldGT(FieldMinValidTurnover, v))
+// MinValidWaterGT applies the GT predicate on the "min_valid_water" field.
+func MinValidWaterGT(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldGT(FieldMinValidWater, v))
 }
 
-// MinValidTurnoverGTE applies the GTE predicate on the "min_valid_turnover" field.
-func MinValidTurnoverGTE(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldGTE(FieldMinValidTurnover, v))
+// MinValidWaterGTE applies the GTE predicate on the "min_valid_water" field.
+func MinValidWaterGTE(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldGTE(FieldMinValidWater, v))
 }
 
-// MinValidTurnoverLT applies the LT predicate on the "min_valid_turnover" field.
-func MinValidTurnoverLT(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldLT(FieldMinValidTurnover, v))
+// MinValidWaterLT applies the LT predicate on the "min_valid_water" field.
+func MinValidWaterLT(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldLT(FieldMinValidWater, v))
 }
 
-// MinValidTurnoverLTE applies the LTE predicate on the "min_valid_turnover" field.
-func MinValidTurnoverLTE(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldLTE(FieldMinValidTurnover, v))
+// MinValidWaterLTE applies the LTE predicate on the "min_valid_water" field.
+func MinValidWaterLTE(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldLTE(FieldMinValidWater, v))
 }
 
 // And groups predicates with the AND operator between them.

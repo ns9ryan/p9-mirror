@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"unicode"
 
+	"golang.org/x/crypto/bcrypt"
 	"oa.98ent.com/p9/operator-crm/ent"
 )
 
@@ -28,6 +29,17 @@ func WithTx(ctx context.Context, client *ent.Client, fn func(tx *ent.Tx) error) 
 		return err
 	}
 	return tx.Commit()
+}
+
+// HashPassword 生成登录密码哈希。
+func HashPassword(pw string) (string, error) {
+	h, err := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
+	return string(h), err
+}
+
+// CheckPassword 比对登录密码和哈希。
+func CheckPassword(hash, pw string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(pw)) == nil
 }
 
 // ParsePureDigitsID 解析纯数字ID。

@@ -132,36 +132,17 @@ func (_u *AgentApplyUpdate) SetNillableMemberAccount(v *string) *AgentApplyUpdat
 	return _u
 }
 
-// ClearMemberAccount clears the value of the "member_account" field.
-func (_u *AgentApplyUpdate) ClearMemberAccount() *AgentApplyUpdate {
-	_u.mutation.ClearMemberAccount()
+// SetMemberCode sets the "member_code" field.
+func (_u *AgentApplyUpdate) SetMemberCode(v string) *AgentApplyUpdate {
+	_u.mutation.SetMemberCode(v)
 	return _u
 }
 
-// SetMemberID sets the "member_id" field.
-func (_u *AgentApplyUpdate) SetMemberID(v int64) *AgentApplyUpdate {
-	_u.mutation.ResetMemberID()
-	_u.mutation.SetMemberID(v)
-	return _u
-}
-
-// SetNillableMemberID sets the "member_id" field if the given value is not nil.
-func (_u *AgentApplyUpdate) SetNillableMemberID(v *int64) *AgentApplyUpdate {
+// SetNillableMemberCode sets the "member_code" field if the given value is not nil.
+func (_u *AgentApplyUpdate) SetNillableMemberCode(v *string) *AgentApplyUpdate {
 	if v != nil {
-		_u.SetMemberID(*v)
+		_u.SetMemberCode(*v)
 	}
-	return _u
-}
-
-// AddMemberID adds value to the "member_id" field.
-func (_u *AgentApplyUpdate) AddMemberID(v int64) *AgentApplyUpdate {
-	_u.mutation.AddMemberID(v)
-	return _u
-}
-
-// ClearMemberID clears the value of the "member_id" field.
-func (_u *AgentApplyUpdate) ClearMemberID() *AgentApplyUpdate {
-	_u.mutation.ClearMemberID()
 	return _u
 }
 
@@ -386,6 +367,11 @@ func (_u *AgentApplyUpdate) check() error {
 			return &ValidationError{Name: "member_account", err: fmt.Errorf(`ent: validator failed for field "AgentApply.member_account": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.MemberCode(); ok {
+		if err := agentapply.MemberCodeValidator(v); err != nil {
+			return &ValidationError{Name: "member_code", err: fmt.Errorf(`ent: validator failed for field "AgentApply.member_code": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.AuditStatus(); ok {
 		if err := agentapply.AuditStatusValidator(v); err != nil {
 			return &ValidationError{Name: "audit_status", err: fmt.Errorf(`ent: validator failed for field "AgentApply.audit_status": %w`, err)}
@@ -451,17 +437,8 @@ func (_u *AgentApplyUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	if value, ok := _u.mutation.MemberAccount(); ok {
 		_spec.SetField(agentapply.FieldMemberAccount, field.TypeString, value)
 	}
-	if _u.mutation.MemberAccountCleared() {
-		_spec.ClearField(agentapply.FieldMemberAccount, field.TypeString)
-	}
-	if value, ok := _u.mutation.MemberID(); ok {
-		_spec.SetField(agentapply.FieldMemberID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedMemberID(); ok {
-		_spec.AddField(agentapply.FieldMemberID, field.TypeInt64, value)
-	}
-	if _u.mutation.MemberIDCleared() {
-		_spec.ClearField(agentapply.FieldMemberID, field.TypeInt64)
+	if value, ok := _u.mutation.MemberCode(); ok {
+		_spec.SetField(agentapply.FieldMemberCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.AuditStatus(); ok {
 		_spec.SetField(agentapply.FieldAuditStatus, field.TypeInt64, value)
@@ -629,36 +606,17 @@ func (_u *AgentApplyUpdateOne) SetNillableMemberAccount(v *string) *AgentApplyUp
 	return _u
 }
 
-// ClearMemberAccount clears the value of the "member_account" field.
-func (_u *AgentApplyUpdateOne) ClearMemberAccount() *AgentApplyUpdateOne {
-	_u.mutation.ClearMemberAccount()
+// SetMemberCode sets the "member_code" field.
+func (_u *AgentApplyUpdateOne) SetMemberCode(v string) *AgentApplyUpdateOne {
+	_u.mutation.SetMemberCode(v)
 	return _u
 }
 
-// SetMemberID sets the "member_id" field.
-func (_u *AgentApplyUpdateOne) SetMemberID(v int64) *AgentApplyUpdateOne {
-	_u.mutation.ResetMemberID()
-	_u.mutation.SetMemberID(v)
-	return _u
-}
-
-// SetNillableMemberID sets the "member_id" field if the given value is not nil.
-func (_u *AgentApplyUpdateOne) SetNillableMemberID(v *int64) *AgentApplyUpdateOne {
+// SetNillableMemberCode sets the "member_code" field if the given value is not nil.
+func (_u *AgentApplyUpdateOne) SetNillableMemberCode(v *string) *AgentApplyUpdateOne {
 	if v != nil {
-		_u.SetMemberID(*v)
+		_u.SetMemberCode(*v)
 	}
-	return _u
-}
-
-// AddMemberID adds value to the "member_id" field.
-func (_u *AgentApplyUpdateOne) AddMemberID(v int64) *AgentApplyUpdateOne {
-	_u.mutation.AddMemberID(v)
-	return _u
-}
-
-// ClearMemberID clears the value of the "member_id" field.
-func (_u *AgentApplyUpdateOne) ClearMemberID() *AgentApplyUpdateOne {
-	_u.mutation.ClearMemberID()
 	return _u
 }
 
@@ -896,6 +854,11 @@ func (_u *AgentApplyUpdateOne) check() error {
 			return &ValidationError{Name: "member_account", err: fmt.Errorf(`ent: validator failed for field "AgentApply.member_account": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.MemberCode(); ok {
+		if err := agentapply.MemberCodeValidator(v); err != nil {
+			return &ValidationError{Name: "member_code", err: fmt.Errorf(`ent: validator failed for field "AgentApply.member_code": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.AuditStatus(); ok {
 		if err := agentapply.AuditStatusValidator(v); err != nil {
 			return &ValidationError{Name: "audit_status", err: fmt.Errorf(`ent: validator failed for field "AgentApply.audit_status": %w`, err)}
@@ -978,17 +941,8 @@ func (_u *AgentApplyUpdateOne) sqlSave(ctx context.Context) (_node *AgentApply, 
 	if value, ok := _u.mutation.MemberAccount(); ok {
 		_spec.SetField(agentapply.FieldMemberAccount, field.TypeString, value)
 	}
-	if _u.mutation.MemberAccountCleared() {
-		_spec.ClearField(agentapply.FieldMemberAccount, field.TypeString)
-	}
-	if value, ok := _u.mutation.MemberID(); ok {
-		_spec.SetField(agentapply.FieldMemberID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedMemberID(); ok {
-		_spec.AddField(agentapply.FieldMemberID, field.TypeInt64, value)
-	}
-	if _u.mutation.MemberIDCleared() {
-		_spec.ClearField(agentapply.FieldMemberID, field.TypeInt64)
+	if value, ok := _u.mutation.MemberCode(); ok {
+		_spec.SetField(agentapply.FieldMemberCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.AuditStatus(); ok {
 		_spec.SetField(agentapply.FieldAuditStatus, field.TypeInt64, value)

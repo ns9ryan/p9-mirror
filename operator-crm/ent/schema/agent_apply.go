@@ -52,16 +52,16 @@ func (AgentApply) Fields() []ent.Field {
 			Comment("申请占成比例，百分比，0~100"),
 
 		field.String("member_account").
-			Optional().
-			Nillable().
+			NotEmpty().
 			MaxLen(64).
 			Match(trimmedNonEmpty).
 			Comment("使用会员账号"),
 
-		field.Int64("member_id").
-			Optional().
-			Nillable().
-			Comment("使用会员ID"),
+		field.String("member_code").
+			NotEmpty().
+			MaxLen(64).
+			Match(trimmedNonEmpty).
+			Comment("使用会员编码"),
 
 		field.Int64("audit_status").
 			Default(1).
@@ -144,6 +144,8 @@ func (AgentApply) Annotations() []schema.Annotation {
 				"ck_agent_apply_account":          "BTRIM(account) <> '' AND account = BTRIM(account)",
 				"ck_agent_apply_realname":         "BTRIM(realname) <> '' AND realname = BTRIM(realname)",
 				"ck_agent_apply_mobile":           "BTRIM(mobile) <> '' AND mobile = BTRIM(mobile)",
+				"ck_agent_apply_member_account":   "BTRIM(member_account) <> '' AND member_account = BTRIM(member_account)",
+				"ck_agent_apply_member_code":      "BTRIM(member_code) <> '' AND member_code = BTRIM(member_code)",
 				"ck_agent_apply_register_source":  "register_source BETWEEN 1 AND 4",
 				"ck_agent_apply_apply_share_rate": "apply_share_rate BETWEEN 0 AND 100",
 				"ck_agent_apply_audit_status":     "audit_status BETWEEN 1 AND 4",

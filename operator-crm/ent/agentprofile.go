@@ -39,6 +39,8 @@ type AgentProfile struct {
 	Mobile *string `json:"mobile,omitempty"`
 	// 邮箱
 	Email *string `json:"email,omitempty"`
+	// CPF/身份证件号
+	IDDocumentNo *string `json:"id_document_no,omitempty"`
 	// QQ
 	Qq *string `json:"qq,omitempty"`
 	// LINE
@@ -88,7 +90,7 @@ func (*AgentProfile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case agentprofile.FieldID, agentprofile.FieldAgentID, agentprofile.FieldGender:
 			values[i] = new(sql.NullInt64)
-		case agentprofile.FieldAvatarURL, agentprofile.FieldNickname, agentprofile.FieldRealname, agentprofile.FieldMobile, agentprofile.FieldEmail, agentprofile.FieldQq, agentprofile.FieldLine, agentprofile.FieldWechat, agentprofile.FieldWhatsapp, agentprofile.FieldTelegram, agentprofile.FieldFacebook, agentprofile.FieldTwitter, agentprofile.FieldZalo:
+		case agentprofile.FieldAvatarURL, agentprofile.FieldNickname, agentprofile.FieldRealname, agentprofile.FieldMobile, agentprofile.FieldEmail, agentprofile.FieldIDDocumentNo, agentprofile.FieldQq, agentprofile.FieldLine, agentprofile.FieldWechat, agentprofile.FieldWhatsapp, agentprofile.FieldTelegram, agentprofile.FieldFacebook, agentprofile.FieldTwitter, agentprofile.FieldZalo:
 			values[i] = new(sql.NullString)
 		case agentprofile.FieldCreatedAt, agentprofile.FieldUpdatedAt, agentprofile.FieldBirthDate:
 			values[i] = new(sql.NullTime)
@@ -178,6 +180,13 @@ func (_m *AgentProfile) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Email = new(string)
 				*_m.Email = value.String
+			}
+		case agentprofile.FieldIDDocumentNo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id_document_no", values[i])
+			} else if value.Valid {
+				_m.IDDocumentNo = new(string)
+				*_m.IDDocumentNo = value.String
 			}
 		case agentprofile.FieldQq:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -315,6 +324,11 @@ func (_m *AgentProfile) String() string {
 	builder.WriteString(", ")
 	if v := _m.Email; v != nil {
 		builder.WriteString("email=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.IDDocumentNo; v != nil {
+		builder.WriteString("id_document_no=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
