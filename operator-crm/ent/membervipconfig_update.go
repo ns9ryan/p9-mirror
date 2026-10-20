@@ -145,7 +145,9 @@ func (_u *MemberVipConfigUpdate) Mutation() *MemberVipConfigMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *MemberVipConfigUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -172,11 +174,15 @@ func (_u *MemberVipConfigUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberVipConfigUpdate) defaults() {
+func (_u *MemberVipConfigUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if membervipconfig.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipconfig.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipconfig.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -386,7 +392,9 @@ func (_u *MemberVipConfigUpdateOne) Select(field string, fields ...string) *Memb
 
 // Save executes the query and returns the updated MemberVipConfig entity.
 func (_u *MemberVipConfigUpdateOne) Save(ctx context.Context) (*MemberVipConfig, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -413,11 +421,15 @@ func (_u *MemberVipConfigUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberVipConfigUpdateOne) defaults() {
+func (_u *MemberVipConfigUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if membervipconfig.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipconfig.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipconfig.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

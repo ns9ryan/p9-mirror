@@ -1532,6 +1532,10 @@ func init() {
 		}
 	}()
 	membervipconfigMixin := schema.MemberVipConfig{}.Mixin()
+	membervipconfigHooks := schema.MemberVipConfig{}.Hooks()
+	membervipconfig.Hooks[0] = membervipconfigHooks[0]
+	membervipconfigInters := schema.MemberVipConfig{}.Interceptors()
+	membervipconfig.Interceptors[0] = membervipconfigInters[0]
 	membervipconfigMixinFields1 := membervipconfigMixin[1].Fields()
 	_ = membervipconfigMixinFields1
 	membervipconfigFields := schema.MemberVipConfig{}.Fields()
@@ -1589,6 +1593,10 @@ func init() {
 	// membervipconfig.RewardGrantModeValidator is a validator for the "reward_grant_mode" field. It is called by the builders before save.
 	membervipconfig.RewardGrantModeValidator = membervipconfigDescRewardGrantMode.Validators[0].(func(int64) error)
 	membervipicongroupMixin := schema.MemberVipIconGroup{}.Mixin()
+	membervipicongroupHooks := schema.MemberVipIconGroup{}.Hooks()
+	membervipicongroup.Hooks[0] = membervipicongroupHooks[0]
+	membervipicongroupInters := schema.MemberVipIconGroup{}.Interceptors()
+	membervipicongroup.Interceptors[0] = membervipicongroupInters[0]
 	membervipicongroupMixinFields1 := membervipicongroupMixin[1].Fields()
 	_ = membervipicongroupMixinFields1
 	membervipicongroupFields := schema.MemberVipIconGroup{}.Fields()
@@ -1634,6 +1642,10 @@ func init() {
 	// membervipicongroup.IconURLValidator is a validator for the "icon_url" field. It is called by the builders before save.
 	membervipicongroup.IconURLValidator = membervipicongroupDescIconURL.Validators[0].(func(string) error)
 	memberviplevelMixin := schema.MemberVipLevel{}.Mixin()
+	memberviplevelHooks := schema.MemberVipLevel{}.Hooks()
+	memberviplevel.Hooks[0] = memberviplevelHooks[0]
+	memberviplevelInters := schema.MemberVipLevel{}.Interceptors()
+	memberviplevel.Interceptors[0] = memberviplevelInters[0]
 	memberviplevelMixinFields1 := memberviplevelMixin[1].Fields()
 	_ = memberviplevelMixinFields1
 	memberviplevelFields := schema.MemberVipLevel{}.Fields()

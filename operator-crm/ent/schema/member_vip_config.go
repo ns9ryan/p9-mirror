@@ -7,6 +7,8 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 
+	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 	"oa.98ent.com/p9/operator-crm/ent/schema/mixins"
 )
 
@@ -70,6 +72,20 @@ func (MemberVipConfig) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
 		mixins.TimeMixin{},
+	}
+}
+
+// Interceptors VIP配置查询隔离
+func (MemberVipConfig) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		entmixin.RequiredOperatorCodeInterceptor(intercept.NewQuery),
+	}
+}
+
+// Hooks VIP配置写入隔离
+func (MemberVipConfig) Hooks() []ent.Hook {
+	return []ent.Hook{
+		entmixin.RequiredOperatorCodeHook(),
 	}
 }
 

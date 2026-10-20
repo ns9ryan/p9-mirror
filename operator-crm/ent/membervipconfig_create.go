@@ -153,7 +153,9 @@ func (_c *MemberVipConfigCreate) Mutation() *MemberVipConfigMutation {
 
 // Save creates the MemberVipConfig in the database.
 func (_c *MemberVipConfigCreate) Save(ctx context.Context) (*MemberVipConfig, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -180,12 +182,18 @@ func (_c *MemberVipConfigCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberVipConfigCreate) defaults() {
+func (_c *MemberVipConfigCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if membervipconfig.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipconfig.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipconfig.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if membervipconfig.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipconfig.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipconfig.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -209,6 +217,7 @@ func (_c *MemberVipConfigCreate) defaults() {
 		v := membervipconfig.DefaultRewardGrantMode
 		_c.mutation.SetRewardGrantMode(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

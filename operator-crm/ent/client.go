@@ -2710,12 +2710,14 @@ func (c *MemberVipConfigClient) GetX(ctx context.Context, id int64) *MemberVipCo
 
 // Hooks returns the client hooks.
 func (c *MemberVipConfigClient) Hooks() []Hook {
-	return c.hooks.MemberVipConfig
+	hooks := c.hooks.MemberVipConfig
+	return append(hooks[:len(hooks):len(hooks)], membervipconfig.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *MemberVipConfigClient) Interceptors() []Interceptor {
-	return c.inters.MemberVipConfig
+	inters := c.inters.MemberVipConfig
+	return append(inters[:len(inters):len(inters)], membervipconfig.Interceptors[:]...)
 }
 
 func (c *MemberVipConfigClient) mutate(ctx context.Context, m *MemberVipConfigMutation) (Value, error) {
@@ -2843,12 +2845,14 @@ func (c *MemberVipIconGroupClient) GetX(ctx context.Context, id int64) *MemberVi
 
 // Hooks returns the client hooks.
 func (c *MemberVipIconGroupClient) Hooks() []Hook {
-	return c.hooks.MemberVipIconGroup
+	hooks := c.hooks.MemberVipIconGroup
+	return append(hooks[:len(hooks):len(hooks)], membervipicongroup.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *MemberVipIconGroupClient) Interceptors() []Interceptor {
-	return c.inters.MemberVipIconGroup
+	inters := c.inters.MemberVipIconGroup
+	return append(inters[:len(inters):len(inters)], membervipicongroup.Interceptors[:]...)
 }
 
 func (c *MemberVipIconGroupClient) mutate(ctx context.Context, m *MemberVipIconGroupMutation) (Value, error) {
@@ -2976,12 +2980,14 @@ func (c *MemberVipLevelClient) GetX(ctx context.Context, id int64) *MemberVipLev
 
 // Hooks returns the client hooks.
 func (c *MemberVipLevelClient) Hooks() []Hook {
-	return c.hooks.MemberVipLevel
+	hooks := c.hooks.MemberVipLevel
+	return append(hooks[:len(hooks):len(hooks)], memberviplevel.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *MemberVipLevelClient) Interceptors() []Interceptor {
-	return c.inters.MemberVipLevel
+	inters := c.inters.MemberVipLevel
+	return append(inters[:len(inters):len(inters)], memberviplevel.Interceptors[:]...)
 }
 
 func (c *MemberVipLevelClient) mutate(ctx context.Context, m *MemberVipLevelMutation) (Value, error) {
