@@ -105,6 +105,15 @@ func OperatorCodeFromCtx(ctx context.Context) string {
 	return c.OperatorCode
 }
 
+// UserIDFromCtx 从上下文中获取用户ID
+func UserIDFromCtx(ctx context.Context) int64 {
+	c := ClaimsFromCtx(ctx)
+	if c == nil {
+		return 0
+	}
+	return c.UserID
+}
+
 // WithOperatorCode 添加分站代码到上下文
 func WithOperatorCode(ctx context.Context, code string) context.Context {
 	if c := ClaimsFromCtx(ctx); c != nil {
