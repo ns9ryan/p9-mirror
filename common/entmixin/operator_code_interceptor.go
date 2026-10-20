@@ -14,13 +14,14 @@ import (
 // newQuery 用于适配各仓库生成的 Ent Query
 func RequiredOperatorCodeInterceptor[T Query](newQuery func(ent.Query) (T, error)) ent.Interceptor {
 	return ent.TraverseFunc(func(ctx context.Context, q ent.Query) error {
-		// 严格隔离不允许跳过厅过滤
+		// 禁止绕过厅隔离
 		if ctxdata.TenantSkipped(ctx) {
 			return xerr.Forbidden("common.unauthorized")
 		}
 
-		// 缺少厅身份时拒绝查询，避免无条件访问数据
-		if strings.TrimSpace(ctxdata.OperatorCodeFromCtx(ctx)) == "" {
+		// 校验当前厅身份
+		operatorCode := ctxdata.OperatorCodeFromCtx(ctx)
+		if operatorCode == "" || strings.TrimSpace(operatorCode) != operatorCode {
 			return xerr.Unauthorized("common.unauthorized")
 		}
 
