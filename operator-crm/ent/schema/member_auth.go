@@ -131,7 +131,8 @@ func (MemberAuth) Fields() []ent.Field {
 // Edges 定义会员认证信息表关联关系
 func (MemberAuth) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("member", Member.Type).
+		edge.From("member", Member.Type).
+			Ref("auth").
 			Field("member_id").
 			Unique().
 			Required().
