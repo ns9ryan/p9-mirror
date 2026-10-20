@@ -23,12 +23,14 @@ type MemberVipProgress struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// 所属厅业务编码
+	OperatorCode string `json:"operator_code,omitempty"`
 	// 所属会员ID
 	MemberID int64 `json:"member_id,omitempty"`
 	// 当前VIP等级已完成的有效充值晋级进度
 	UpgradeValidDeposit int64 `json:"upgrade_valid_deposit,omitempty"`
 	// 当前VIP等级已完成的有效洗码晋级进度
-	UpgradeValidTurnover int64 `json:"upgrade_valid_turnover,omitempty"`
+	UpgradeValidWater int64 `json:"upgrade_valid_water,omitempty"`
 	// 当前VIP晋级周期开始时间
 	ProgressStartedAt time.Time `json:"progress_started_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -62,8 +64,10 @@ func (*MemberVipProgress) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case membervipprogress.FieldID, membervipprogress.FieldMemberID, membervipprogress.FieldUpgradeValidDeposit, membervipprogress.FieldUpgradeValidTurnover:
+		case membervipprogress.FieldID, membervipprogress.FieldMemberID, membervipprogress.FieldUpgradeValidDeposit, membervipprogress.FieldUpgradeValidWater:
 			values[i] = new(sql.NullInt64)
+		case membervipprogress.FieldOperatorCode:
+			values[i] = new(sql.NullString)
 		case membervipprogress.FieldCreatedAt, membervipprogress.FieldUpdatedAt, membervipprogress.FieldProgressStartedAt:
 			values[i] = new(sql.NullTime)
 		default:
@@ -99,6 +103,12 @@ func (_m *MemberVipProgress) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case membervipprogress.FieldOperatorCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
+			} else if value.Valid {
+				_m.OperatorCode = value.String
+			}
 		case membervipprogress.FieldMemberID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field member_id", values[i])
@@ -111,11 +121,11 @@ func (_m *MemberVipProgress) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				_m.UpgradeValidDeposit = value.Int64
 			}
-		case membervipprogress.FieldUpgradeValidTurnover:
+		case membervipprogress.FieldUpgradeValidWater:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field upgrade_valid_turnover", values[i])
+				return fmt.Errorf("unexpected type %T for field upgrade_valid_water", values[i])
 			} else if value.Valid {
-				_m.UpgradeValidTurnover = value.Int64
+				_m.UpgradeValidWater = value.Int64
 			}
 		case membervipprogress.FieldProgressStartedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -170,14 +180,17 @@ func (_m *MemberVipProgress) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
+	builder.WriteString("operator_code=")
+	builder.WriteString(_m.OperatorCode)
+	builder.WriteString(", ")
 	builder.WriteString("member_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.MemberID))
 	builder.WriteString(", ")
 	builder.WriteString("upgrade_valid_deposit=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidDeposit))
 	builder.WriteString(", ")
-	builder.WriteString("upgrade_valid_turnover=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidTurnover))
+	builder.WriteString("upgrade_valid_water=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidWater))
 	builder.WriteString(", ")
 	builder.WriteString("progress_started_at=")
 	builder.WriteString(_m.ProgressStartedAt.Format(time.ANSIC))

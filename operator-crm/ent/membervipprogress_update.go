@@ -55,24 +55,24 @@ func (_u *MemberVipProgressUpdate) AddUpgradeValidDeposit(v int64) *MemberVipPro
 	return _u
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (_u *MemberVipProgressUpdate) SetUpgradeValidTurnover(v int64) *MemberVipProgressUpdate {
-	_u.mutation.ResetUpgradeValidTurnover()
-	_u.mutation.SetUpgradeValidTurnover(v)
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (_u *MemberVipProgressUpdate) SetUpgradeValidWater(v int64) *MemberVipProgressUpdate {
+	_u.mutation.ResetUpgradeValidWater()
+	_u.mutation.SetUpgradeValidWater(v)
 	return _u
 }
 
-// SetNillableUpgradeValidTurnover sets the "upgrade_valid_turnover" field if the given value is not nil.
-func (_u *MemberVipProgressUpdate) SetNillableUpgradeValidTurnover(v *int64) *MemberVipProgressUpdate {
+// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
+func (_u *MemberVipProgressUpdate) SetNillableUpgradeValidWater(v *int64) *MemberVipProgressUpdate {
 	if v != nil {
-		_u.SetUpgradeValidTurnover(*v)
+		_u.SetUpgradeValidWater(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidTurnover adds value to the "upgrade_valid_turnover" field.
-func (_u *MemberVipProgressUpdate) AddUpgradeValidTurnover(v int64) *MemberVipProgressUpdate {
-	_u.mutation.AddUpgradeValidTurnover(v)
+// AddUpgradeValidWater adds value to the "upgrade_valid_water" field.
+func (_u *MemberVipProgressUpdate) AddUpgradeValidWater(v int64) *MemberVipProgressUpdate {
+	_u.mutation.AddUpgradeValidWater(v)
 	return _u
 }
 
@@ -97,7 +97,9 @@ func (_u *MemberVipProgressUpdate) Mutation() *MemberVipProgressMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *MemberVipProgressUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -124,11 +126,15 @@ func (_u *MemberVipProgressUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberVipProgressUpdate) defaults() {
+func (_u *MemberVipProgressUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if membervipprogress.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipprogress.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipprogress.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -138,9 +144,9 @@ func (_u *MemberVipProgressUpdate) check() error {
 			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.UpgradeValidTurnover(); ok {
-		if err := membervipprogress.UpgradeValidTurnoverValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_turnover", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_turnover": %w`, err)}
+	if v, ok := _u.mutation.UpgradeValidWater(); ok {
+		if err := membervipprogress.UpgradeValidWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_water": %w`, err)}
 		}
 	}
 	if _u.mutation.MemberCleared() && len(_u.mutation.MemberIDs()) > 0 {
@@ -170,11 +176,11 @@ func (_u *MemberVipProgressUpdate) sqlSave(ctx context.Context) (_node int, err 
 	if value, ok := _u.mutation.AddedUpgradeValidDeposit(); ok {
 		_spec.AddField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidTurnover(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeValidWater(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidTurnover(); ok {
-		_spec.AddField(membervipprogress.FieldUpgradeValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeValidWater(); ok {
+		_spec.AddField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.ProgressStartedAt(); ok {
 		_spec.SetField(membervipprogress.FieldProgressStartedAt, field.TypeTime, value)
@@ -226,24 +232,24 @@ func (_u *MemberVipProgressUpdateOne) AddUpgradeValidDeposit(v int64) *MemberVip
 	return _u
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (_u *MemberVipProgressUpdateOne) SetUpgradeValidTurnover(v int64) *MemberVipProgressUpdateOne {
-	_u.mutation.ResetUpgradeValidTurnover()
-	_u.mutation.SetUpgradeValidTurnover(v)
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (_u *MemberVipProgressUpdateOne) SetUpgradeValidWater(v int64) *MemberVipProgressUpdateOne {
+	_u.mutation.ResetUpgradeValidWater()
+	_u.mutation.SetUpgradeValidWater(v)
 	return _u
 }
 
-// SetNillableUpgradeValidTurnover sets the "upgrade_valid_turnover" field if the given value is not nil.
-func (_u *MemberVipProgressUpdateOne) SetNillableUpgradeValidTurnover(v *int64) *MemberVipProgressUpdateOne {
+// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
+func (_u *MemberVipProgressUpdateOne) SetNillableUpgradeValidWater(v *int64) *MemberVipProgressUpdateOne {
 	if v != nil {
-		_u.SetUpgradeValidTurnover(*v)
+		_u.SetUpgradeValidWater(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidTurnover adds value to the "upgrade_valid_turnover" field.
-func (_u *MemberVipProgressUpdateOne) AddUpgradeValidTurnover(v int64) *MemberVipProgressUpdateOne {
-	_u.mutation.AddUpgradeValidTurnover(v)
+// AddUpgradeValidWater adds value to the "upgrade_valid_water" field.
+func (_u *MemberVipProgressUpdateOne) AddUpgradeValidWater(v int64) *MemberVipProgressUpdateOne {
+	_u.mutation.AddUpgradeValidWater(v)
 	return _u
 }
 
@@ -281,7 +287,9 @@ func (_u *MemberVipProgressUpdateOne) Select(field string, fields ...string) *Me
 
 // Save executes the query and returns the updated MemberVipProgress entity.
 func (_u *MemberVipProgressUpdateOne) Save(ctx context.Context) (*MemberVipProgress, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -308,11 +316,15 @@ func (_u *MemberVipProgressUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberVipProgressUpdateOne) defaults() {
+func (_u *MemberVipProgressUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if membervipprogress.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipprogress.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipprogress.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -322,9 +334,9 @@ func (_u *MemberVipProgressUpdateOne) check() error {
 			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.UpgradeValidTurnover(); ok {
-		if err := membervipprogress.UpgradeValidTurnoverValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_turnover", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_turnover": %w`, err)}
+	if v, ok := _u.mutation.UpgradeValidWater(); ok {
+		if err := membervipprogress.UpgradeValidWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_water": %w`, err)}
 		}
 	}
 	if _u.mutation.MemberCleared() && len(_u.mutation.MemberIDs()) > 0 {
@@ -371,11 +383,11 @@ func (_u *MemberVipProgressUpdateOne) sqlSave(ctx context.Context) (_node *Membe
 	if value, ok := _u.mutation.AddedUpgradeValidDeposit(); ok {
 		_spec.AddField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidTurnover(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeValidWater(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidTurnover(); ok {
-		_spec.AddField(membervipprogress.FieldUpgradeValidTurnover, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeValidWater(); ok {
+		_spec.AddField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.ProgressStartedAt(); ok {
 		_spec.SetField(membervipprogress.FieldProgressStartedAt, field.TypeTime, value)

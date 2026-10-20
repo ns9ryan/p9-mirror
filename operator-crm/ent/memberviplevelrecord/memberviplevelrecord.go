@@ -5,6 +5,7 @@ package memberviplevelrecord
 import (
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -14,6 +15,8 @@ const (
 	Label = "member_vip_level_record"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldOperatorCode holds the string denoting the operator_code field in the database.
+	FieldOperatorCode = "operator_code"
 	// FieldMemberID holds the string denoting the member_id field in the database.
 	FieldMemberID = "member_id"
 	// FieldBeforeVipLevelID holds the string denoting the before_vip_level_id field in the database.
@@ -44,6 +47,7 @@ const (
 // Columns holds all SQL columns for memberviplevelrecord fields.
 var Columns = []string{
 	FieldID,
+	FieldOperatorCode,
 	FieldMemberID,
 	FieldBeforeVipLevelID,
 	FieldAfterVipLevelID,
@@ -63,7 +67,16 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "oa.98ent.com/p9/operator-crm/ent/runtime"
 var (
+	Hooks        [1]ent.Hook
+	Interceptors [1]ent.Interceptor
+	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	OperatorCodeValidator func(string) error
 	// MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	MemberIDValidator func(int64) error
 	// BeforeVipLevelIDValidator is a validator for the "before_vip_level_id" field. It is called by the builders before save.
@@ -86,6 +99,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByOperatorCode orders the results by the operator_code field.
+func ByOperatorCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOperatorCode, opts...).ToFunc()
 }
 
 // ByMemberID orders the results by the member_id field.

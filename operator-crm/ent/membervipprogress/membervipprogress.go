@@ -5,6 +5,7 @@ package membervipprogress
 import (
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -18,12 +19,14 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldOperatorCode holds the string denoting the operator_code field in the database.
+	FieldOperatorCode = "operator_code"
 	// FieldMemberID holds the string denoting the member_id field in the database.
 	FieldMemberID = "member_id"
 	// FieldUpgradeValidDeposit holds the string denoting the upgrade_valid_deposit field in the database.
 	FieldUpgradeValidDeposit = "upgrade_valid_deposit"
-	// FieldUpgradeValidTurnover holds the string denoting the upgrade_valid_turnover field in the database.
-	FieldUpgradeValidTurnover = "upgrade_valid_turnover"
+	// FieldUpgradeValidWater holds the string denoting the upgrade_valid_water field in the database.
+	FieldUpgradeValidWater = "upgrade_valid_water"
 	// FieldProgressStartedAt holds the string denoting the progress_started_at field in the database.
 	FieldProgressStartedAt = "progress_started_at"
 	// EdgeMember holds the string denoting the member edge name in mutations.
@@ -44,9 +47,10 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldOperatorCode,
 	FieldMemberID,
 	FieldUpgradeValidDeposit,
-	FieldUpgradeValidTurnover,
+	FieldUpgradeValidWater,
 	FieldProgressStartedAt,
 }
 
@@ -60,23 +64,32 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "oa.98ent.com/p9/operator-crm/ent/runtime"
 var (
+	Hooks        [1]ent.Hook
+	Interceptors [1]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	OperatorCodeValidator func(string) error
 	// MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	MemberIDValidator func(int64) error
 	// DefaultUpgradeValidDeposit holds the default value on creation for the "upgrade_valid_deposit" field.
 	DefaultUpgradeValidDeposit int64
 	// UpgradeValidDepositValidator is a validator for the "upgrade_valid_deposit" field. It is called by the builders before save.
 	UpgradeValidDepositValidator func(int64) error
-	// DefaultUpgradeValidTurnover holds the default value on creation for the "upgrade_valid_turnover" field.
-	DefaultUpgradeValidTurnover int64
-	// UpgradeValidTurnoverValidator is a validator for the "upgrade_valid_turnover" field. It is called by the builders before save.
-	UpgradeValidTurnoverValidator func(int64) error
+	// DefaultUpgradeValidWater holds the default value on creation for the "upgrade_valid_water" field.
+	DefaultUpgradeValidWater int64
+	// UpgradeValidWaterValidator is a validator for the "upgrade_valid_water" field. It is called by the builders before save.
+	UpgradeValidWaterValidator func(int64) error
 	// DefaultProgressStartedAt holds the default value on creation for the "progress_started_at" field.
 	DefaultProgressStartedAt func() time.Time
 )
@@ -99,6 +112,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
+// ByOperatorCode orders the results by the operator_code field.
+func ByOperatorCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOperatorCode, opts...).ToFunc()
+}
+
 // ByMemberID orders the results by the member_id field.
 func ByMemberID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMemberID, opts...).ToFunc()
@@ -109,9 +127,9 @@ func ByUpgradeValidDeposit(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpgradeValidDeposit, opts...).ToFunc()
 }
 
-// ByUpgradeValidTurnover orders the results by the upgrade_valid_turnover field.
-func ByUpgradeValidTurnover(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpgradeValidTurnover, opts...).ToFunc()
+// ByUpgradeValidWater orders the results by the upgrade_valid_water field.
+func ByUpgradeValidWater(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpgradeValidWater, opts...).ToFunc()
 }
 
 // ByProgressStartedAt orders the results by the progress_started_at field.

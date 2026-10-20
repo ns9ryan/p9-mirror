@@ -55,6 +55,11 @@ func IDLTE(id int64) predicate.MemberVipLevelRecord {
 	return predicate.MemberVipLevelRecord(sql.FieldLTE(FieldID, id))
 }
 
+// OperatorCode applies equality check predicate on the "operator_code" field. It's identical to OperatorCodeEQ.
+func OperatorCode(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldEQ(FieldOperatorCode, v))
+}
+
 // MemberID applies equality check predicate on the "member_id" field. It's identical to MemberIDEQ.
 func MemberID(v int64) predicate.MemberVipLevelRecord {
 	return predicate.MemberVipLevelRecord(sql.FieldEQ(FieldMemberID, v))
@@ -88,6 +93,71 @@ func OperatorUserCode(v string) predicate.MemberVipLevelRecord {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.MemberVipLevelRecord {
 	return predicate.MemberVipLevelRecord(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// OperatorCodeEQ applies the EQ predicate on the "operator_code" field.
+func OperatorCodeEQ(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeNEQ applies the NEQ predicate on the "operator_code" field.
+func OperatorCodeNEQ(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldNEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeIn applies the In predicate on the "operator_code" field.
+func OperatorCodeIn(vs ...string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeNotIn applies the NotIn predicate on the "operator_code" field.
+func OperatorCodeNotIn(vs ...string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldNotIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeGT applies the GT predicate on the "operator_code" field.
+func OperatorCodeGT(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldGT(FieldOperatorCode, v))
+}
+
+// OperatorCodeGTE applies the GTE predicate on the "operator_code" field.
+func OperatorCodeGTE(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldGTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeLT applies the LT predicate on the "operator_code" field.
+func OperatorCodeLT(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldLT(FieldOperatorCode, v))
+}
+
+// OperatorCodeLTE applies the LTE predicate on the "operator_code" field.
+func OperatorCodeLTE(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldLTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeContains applies the Contains predicate on the "operator_code" field.
+func OperatorCodeContains(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldContains(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasPrefix applies the HasPrefix predicate on the "operator_code" field.
+func OperatorCodeHasPrefix(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldHasPrefix(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasSuffix applies the HasSuffix predicate on the "operator_code" field.
+func OperatorCodeHasSuffix(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldHasSuffix(FieldOperatorCode, v))
+}
+
+// OperatorCodeEqualFold applies the EqualFold predicate on the "operator_code" field.
+func OperatorCodeEqualFold(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldEqualFold(FieldOperatorCode, v))
+}
+
+// OperatorCodeContainsFold applies the ContainsFold predicate on the "operator_code" field.
+func OperatorCodeContainsFold(v string) predicate.MemberVipLevelRecord {
+	return predicate.MemberVipLevelRecord(sql.FieldContainsFold(FieldOperatorCode, v))
 }
 
 // MemberIDEQ applies the EQ predicate on the "member_id" field.

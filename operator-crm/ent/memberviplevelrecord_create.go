@@ -23,6 +23,12 @@ type MemberVipLevelRecordCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetOperatorCode sets the "operator_code" field.
+func (_c *MemberVipLevelRecordCreate) SetOperatorCode(v string) *MemberVipLevelRecordCreate {
+	_c.mutation.SetOperatorCode(v)
+	return _c
+}
+
 // SetMemberID sets the "member_id" field.
 func (_c *MemberVipLevelRecordCreate) SetMemberID(v int64) *MemberVipLevelRecordCreate {
 	_c.mutation.SetMemberID(v)
@@ -107,7 +113,9 @@ func (_c *MemberVipLevelRecordCreate) Mutation() *MemberVipLevelRecordMutation {
 
 // Save creates the MemberVipLevelRecord in the database.
 func (_c *MemberVipLevelRecordCreate) Save(ctx context.Context) (*MemberVipLevelRecord, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -134,15 +142,27 @@ func (_c *MemberVipLevelRecordCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberVipLevelRecordCreate) defaults() {
+func (_c *MemberVipLevelRecordCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if memberviplevelrecord.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberviplevelrecord.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberviplevelrecord.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *MemberVipLevelRecordCreate) check() error {
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "MemberVipLevelRecord.operator_code"`)}
+	}
+	if v, ok := _c.mutation.OperatorCode(); ok {
+		if err := memberviplevelrecord.OperatorCodeValidator(v); err != nil {
+			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevelRecord.operator_code": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.MemberID(); !ok {
 		return &ValidationError{Name: "member_id", err: errors.New(`ent: missing required field "MemberVipLevelRecord.member_id"`)}
 	}
@@ -224,6 +244,10 @@ func (_c *MemberVipLevelRecordCreate) createSpec() (*MemberVipLevelRecord, *sqlg
 		_node.ID = id
 		_spec.ID.Value = id
 	}
+	if value, ok := _c.mutation.OperatorCode(); ok {
+		_spec.SetField(memberviplevelrecord.FieldOperatorCode, field.TypeString, value)
+		_node.OperatorCode = value
+	}
 	if value, ok := _c.mutation.BeforeVipLevelID(); ok {
 		_spec.SetField(memberviplevelrecord.FieldBeforeVipLevelID, field.TypeInt64, value)
 		_node.BeforeVipLevelID = value
@@ -272,7 +296,7 @@ func (_c *MemberVipLevelRecordCreate) createSpec() (*MemberVipLevelRecord, *sqlg
 // of the `INSERT` statement. For example:
 //
 //	client.MemberVipLevelRecord.Create().
-//		SetMemberID(v).
+//		SetOperatorCode(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -281,7 +305,7 @@ func (_c *MemberVipLevelRecordCreate) createSpec() (*MemberVipLevelRecord, *sqlg
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.MemberVipLevelRecordUpsert) {
-//			SetMemberID(v+v).
+//			SetOperatorCode(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *MemberVipLevelRecordCreate) OnConflict(opts ...sql.ConflictOption) *MemberVipLevelRecordUpsertOne {
@@ -333,6 +357,9 @@ func (u *MemberVipLevelRecordUpsertOne) UpdateNewValues() *MemberVipLevelRecordU
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(memberviplevelrecord.FieldID)
+		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(memberviplevelrecord.FieldOperatorCode)
 		}
 		if _, exists := u.create.mutation.MemberID(); exists {
 			s.SetIgnore(memberviplevelrecord.FieldMemberID)
@@ -521,7 +548,7 @@ func (_c *MemberVipLevelRecordCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.MemberVipLevelRecordUpsert) {
-//			SetMemberID(v+v).
+//			SetOperatorCode(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *MemberVipLevelRecordCreateBulk) OnConflict(opts ...sql.ConflictOption) *MemberVipLevelRecordUpsertBulk {
@@ -567,6 +594,9 @@ func (u *MemberVipLevelRecordUpsertBulk) UpdateNewValues() *MemberVipLevelRecord
 		for _, b := range u.create.builders {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(memberviplevelrecord.FieldID)
+			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(memberviplevelrecord.FieldOperatorCode)
 			}
 			if _, exists := b.mutation.MemberID(); exists {
 				s.SetIgnore(memberviplevelrecord.FieldMemberID)

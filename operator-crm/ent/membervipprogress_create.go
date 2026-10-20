@@ -51,6 +51,12 @@ func (_c *MemberVipProgressCreate) SetNillableUpdatedAt(v *time.Time) *MemberVip
 	return _c
 }
 
+// SetOperatorCode sets the "operator_code" field.
+func (_c *MemberVipProgressCreate) SetOperatorCode(v string) *MemberVipProgressCreate {
+	_c.mutation.SetOperatorCode(v)
+	return _c
+}
+
 // SetMemberID sets the "member_id" field.
 func (_c *MemberVipProgressCreate) SetMemberID(v int64) *MemberVipProgressCreate {
 	_c.mutation.SetMemberID(v)
@@ -71,16 +77,16 @@ func (_c *MemberVipProgressCreate) SetNillableUpgradeValidDeposit(v *int64) *Mem
 	return _c
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (_c *MemberVipProgressCreate) SetUpgradeValidTurnover(v int64) *MemberVipProgressCreate {
-	_c.mutation.SetUpgradeValidTurnover(v)
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (_c *MemberVipProgressCreate) SetUpgradeValidWater(v int64) *MemberVipProgressCreate {
+	_c.mutation.SetUpgradeValidWater(v)
 	return _c
 }
 
-// SetNillableUpgradeValidTurnover sets the "upgrade_valid_turnover" field if the given value is not nil.
-func (_c *MemberVipProgressCreate) SetNillableUpgradeValidTurnover(v *int64) *MemberVipProgressCreate {
+// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
+func (_c *MemberVipProgressCreate) SetNillableUpgradeValidWater(v *int64) *MemberVipProgressCreate {
 	if v != nil {
-		_c.SetUpgradeValidTurnover(*v)
+		_c.SetUpgradeValidWater(*v)
 	}
 	return _c
 }
@@ -117,7 +123,9 @@ func (_c *MemberVipProgressCreate) Mutation() *MemberVipProgressMutation {
 
 // Save creates the MemberVipProgress in the database.
 func (_c *MemberVipProgressCreate) Save(ctx context.Context) (*MemberVipProgress, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -144,12 +152,18 @@ func (_c *MemberVipProgressCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberVipProgressCreate) defaults() {
+func (_c *MemberVipProgressCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if membervipprogress.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipprogress.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipprogress.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if membervipprogress.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipprogress.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipprogress.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -157,14 +171,18 @@ func (_c *MemberVipProgressCreate) defaults() {
 		v := membervipprogress.DefaultUpgradeValidDeposit
 		_c.mutation.SetUpgradeValidDeposit(v)
 	}
-	if _, ok := _c.mutation.UpgradeValidTurnover(); !ok {
-		v := membervipprogress.DefaultUpgradeValidTurnover
-		_c.mutation.SetUpgradeValidTurnover(v)
+	if _, ok := _c.mutation.UpgradeValidWater(); !ok {
+		v := membervipprogress.DefaultUpgradeValidWater
+		_c.mutation.SetUpgradeValidWater(v)
 	}
 	if _, ok := _c.mutation.ProgressStartedAt(); !ok {
+		if membervipprogress.DefaultProgressStartedAt == nil {
+			return fmt.Errorf("ent: uninitialized membervipprogress.DefaultProgressStartedAt (forgotten import ent/runtime?)")
+		}
 		v := membervipprogress.DefaultProgressStartedAt()
 		_c.mutation.SetProgressStartedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -174,6 +192,14 @@ func (_c *MemberVipProgressCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "MemberVipProgress.updated_at"`)}
+	}
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "MemberVipProgress.operator_code"`)}
+	}
+	if v, ok := _c.mutation.OperatorCode(); ok {
+		if err := membervipprogress.OperatorCodeValidator(v); err != nil {
+			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.operator_code": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.MemberID(); !ok {
 		return &ValidationError{Name: "member_id", err: errors.New(`ent: missing required field "MemberVipProgress.member_id"`)}
@@ -191,12 +217,12 @@ func (_c *MemberVipProgressCreate) check() error {
 			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_deposit": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.UpgradeValidTurnover(); !ok {
-		return &ValidationError{Name: "upgrade_valid_turnover", err: errors.New(`ent: missing required field "MemberVipProgress.upgrade_valid_turnover"`)}
+	if _, ok := _c.mutation.UpgradeValidWater(); !ok {
+		return &ValidationError{Name: "upgrade_valid_water", err: errors.New(`ent: missing required field "MemberVipProgress.upgrade_valid_water"`)}
 	}
-	if v, ok := _c.mutation.UpgradeValidTurnover(); ok {
-		if err := membervipprogress.UpgradeValidTurnoverValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_turnover", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_turnover": %w`, err)}
+	if v, ok := _c.mutation.UpgradeValidWater(); ok {
+		if err := membervipprogress.UpgradeValidWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_water": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.ProgressStartedAt(); !ok {
@@ -246,13 +272,17 @@ func (_c *MemberVipProgressCreate) createSpec() (*MemberVipProgress, *sqlgraph.C
 		_spec.SetField(membervipprogress.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
+	if value, ok := _c.mutation.OperatorCode(); ok {
+		_spec.SetField(membervipprogress.FieldOperatorCode, field.TypeString, value)
+		_node.OperatorCode = value
+	}
 	if value, ok := _c.mutation.UpgradeValidDeposit(); ok {
 		_spec.SetField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
 		_node.UpgradeValidDeposit = value
 	}
-	if value, ok := _c.mutation.UpgradeValidTurnover(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidTurnover, field.TypeInt64, value)
-		_node.UpgradeValidTurnover = value
+	if value, ok := _c.mutation.UpgradeValidWater(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
+		_node.UpgradeValidWater = value
 	}
 	if value, ok := _c.mutation.ProgressStartedAt(); ok {
 		_spec.SetField(membervipprogress.FieldProgressStartedAt, field.TypeTime, value)
@@ -357,21 +387,21 @@ func (u *MemberVipProgressUpsert) AddUpgradeValidDeposit(v int64) *MemberVipProg
 	return u
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (u *MemberVipProgressUpsert) SetUpgradeValidTurnover(v int64) *MemberVipProgressUpsert {
-	u.Set(membervipprogress.FieldUpgradeValidTurnover, v)
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (u *MemberVipProgressUpsert) SetUpgradeValidWater(v int64) *MemberVipProgressUpsert {
+	u.Set(membervipprogress.FieldUpgradeValidWater, v)
 	return u
 }
 
-// UpdateUpgradeValidTurnover sets the "upgrade_valid_turnover" field to the value that was provided on create.
-func (u *MemberVipProgressUpsert) UpdateUpgradeValidTurnover() *MemberVipProgressUpsert {
-	u.SetExcluded(membervipprogress.FieldUpgradeValidTurnover)
+// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
+func (u *MemberVipProgressUpsert) UpdateUpgradeValidWater() *MemberVipProgressUpsert {
+	u.SetExcluded(membervipprogress.FieldUpgradeValidWater)
 	return u
 }
 
-// AddUpgradeValidTurnover adds v to the "upgrade_valid_turnover" field.
-func (u *MemberVipProgressUpsert) AddUpgradeValidTurnover(v int64) *MemberVipProgressUpsert {
-	u.Add(membervipprogress.FieldUpgradeValidTurnover, v)
+// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
+func (u *MemberVipProgressUpsert) AddUpgradeValidWater(v int64) *MemberVipProgressUpsert {
+	u.Add(membervipprogress.FieldUpgradeValidWater, v)
 	return u
 }
 
@@ -406,6 +436,9 @@ func (u *MemberVipProgressUpsertOne) UpdateNewValues() *MemberVipProgressUpsertO
 		}
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(membervipprogress.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(membervipprogress.FieldOperatorCode)
 		}
 		if _, exists := u.create.mutation.MemberID(); exists {
 			s.SetIgnore(membervipprogress.FieldMemberID)
@@ -476,24 +509,24 @@ func (u *MemberVipProgressUpsertOne) UpdateUpgradeValidDeposit() *MemberVipProgr
 	})
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (u *MemberVipProgressUpsertOne) SetUpgradeValidTurnover(v int64) *MemberVipProgressUpsertOne {
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (u *MemberVipProgressUpsertOne) SetUpgradeValidWater(v int64) *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.SetUpgradeValidTurnover(v)
+		s.SetUpgradeValidWater(v)
 	})
 }
 
-// AddUpgradeValidTurnover adds v to the "upgrade_valid_turnover" field.
-func (u *MemberVipProgressUpsertOne) AddUpgradeValidTurnover(v int64) *MemberVipProgressUpsertOne {
+// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
+func (u *MemberVipProgressUpsertOne) AddUpgradeValidWater(v int64) *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.AddUpgradeValidTurnover(v)
+		s.AddUpgradeValidWater(v)
 	})
 }
 
-// UpdateUpgradeValidTurnover sets the "upgrade_valid_turnover" field to the value that was provided on create.
-func (u *MemberVipProgressUpsertOne) UpdateUpgradeValidTurnover() *MemberVipProgressUpsertOne {
+// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
+func (u *MemberVipProgressUpsertOne) UpdateUpgradeValidWater() *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.UpdateUpgradeValidTurnover()
+		s.UpdateUpgradeValidWater()
 	})
 }
 
@@ -696,6 +729,9 @@ func (u *MemberVipProgressUpsertBulk) UpdateNewValues() *MemberVipProgressUpsert
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(membervipprogress.FieldCreatedAt)
 			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(membervipprogress.FieldOperatorCode)
+			}
 			if _, exists := b.mutation.MemberID(); exists {
 				s.SetIgnore(membervipprogress.FieldMemberID)
 			}
@@ -766,24 +802,24 @@ func (u *MemberVipProgressUpsertBulk) UpdateUpgradeValidDeposit() *MemberVipProg
 	})
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (u *MemberVipProgressUpsertBulk) SetUpgradeValidTurnover(v int64) *MemberVipProgressUpsertBulk {
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (u *MemberVipProgressUpsertBulk) SetUpgradeValidWater(v int64) *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.SetUpgradeValidTurnover(v)
+		s.SetUpgradeValidWater(v)
 	})
 }
 
-// AddUpgradeValidTurnover adds v to the "upgrade_valid_turnover" field.
-func (u *MemberVipProgressUpsertBulk) AddUpgradeValidTurnover(v int64) *MemberVipProgressUpsertBulk {
+// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
+func (u *MemberVipProgressUpsertBulk) AddUpgradeValidWater(v int64) *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.AddUpgradeValidTurnover(v)
+		s.AddUpgradeValidWater(v)
 	})
 }
 
-// UpdateUpgradeValidTurnover sets the "upgrade_valid_turnover" field to the value that was provided on create.
-func (u *MemberVipProgressUpsertBulk) UpdateUpgradeValidTurnover() *MemberVipProgressUpsertBulk {
+// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
+func (u *MemberVipProgressUpsertBulk) UpdateUpgradeValidWater() *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.UpdateUpgradeValidTurnover()
+		s.UpdateUpgradeValidWater()
 	})
 }
 

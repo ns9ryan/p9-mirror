@@ -670,6 +670,7 @@ var (
 	// MemberVipLevelRecordColumns holds the columns for the "member_vip_level_record" table.
 	MemberVipLevelRecordColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "before_vip_level_id", Type: field.TypeInt64, Comment: "变更前VIP等级ID"},
 		{Name: "after_vip_level_id", Type: field.TypeInt64, Comment: "变更后VIP等级ID"},
 		{Name: "change_type", Type: field.TypeInt64, Comment: "变化类型: 1系统晋级, 2系统降级, 3后台调整, 4规则重新计算", SchemaType: map[string]string{"postgres": "smallint"}},
@@ -687,9 +688,21 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "member_vip_level_record_member_vip_level_records",
-				Columns:    []*schema.Column{MemberVipLevelRecordColumns[7]},
+				Columns:    []*schema.Column{MemberVipLevelRecordColumns[8]},
 				RefColumns: []*schema.Column{MemberColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_member_vip_level_record_operator_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{MemberVipLevelRecordColumns[1], MemberVipLevelRecordColumns[7]},
+			},
+			{
+				Name:    "idx_member_vip_level_record_member",
+				Unique:  false,
+				Columns: []*schema.Column{MemberVipLevelRecordColumns[8]},
 			},
 		},
 	}
@@ -698,8 +711,9 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "upgrade_valid_deposit", Type: field.TypeInt64, Comment: "当前VIP等级已完成的有效充值晋级进度", Default: 0},
-		{Name: "upgrade_valid_turnover", Type: field.TypeInt64, Comment: "当前VIP等级已完成的有效洗码晋级进度", Default: 0},
+		{Name: "upgrade_valid_water", Type: field.TypeInt64, Comment: "当前VIP等级已完成的有效洗码晋级进度", Default: 0},
 		{Name: "progress_started_at", Type: field.TypeTime, Comment: "当前VIP晋级周期开始时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "member_id", Type: field.TypeInt64, Unique: true, Comment: "所属会员ID", SchemaType: map[string]string{"postgres": "bigint"}},
 	}
@@ -712,7 +726,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "member_vip_progress_member_vip_progress",
-				Columns:    []*schema.Column{MemberVipProgressColumns[6]},
+				Columns:    []*schema.Column{MemberVipProgressColumns[7]},
 				RefColumns: []*schema.Column{MemberColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -721,7 +735,12 @@ var (
 			{
 				Name:    "uk_member_vip_progress_member",
 				Unique:  true,
-				Columns: []*schema.Column{MemberVipProgressColumns[6]},
+				Columns: []*schema.Column{MemberVipProgressColumns[7]},
+			},
+			{
+				Name:    "idx_member_vip_progress_operator_code",
+				Unique:  false,
+				Columns: []*schema.Column{MemberVipProgressColumns[3]},
 			},
 		},
 	}

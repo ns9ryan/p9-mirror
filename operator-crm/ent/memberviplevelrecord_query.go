@@ -298,12 +298,12 @@ func (_q *MemberVipLevelRecordQuery) WithMember(opts ...func(*MemberQuery)) *Mem
 // Example:
 //
 //	var v []struct {
-//		MemberID int64 `json:"member_id,omitempty"`
+//		OperatorCode string `json:"operator_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.MemberVipLevelRecord.Query().
-//		GroupBy(memberviplevelrecord.FieldMemberID).
+//		GroupBy(memberviplevelrecord.FieldOperatorCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *MemberVipLevelRecordQuery) GroupBy(field string, fields ...string) *MemberVipLevelRecordGroupBy {
@@ -321,11 +321,11 @@ func (_q *MemberVipLevelRecordQuery) GroupBy(field string, fields ...string) *Me
 // Example:
 //
 //	var v []struct {
-//		MemberID int64 `json:"member_id,omitempty"`
+//		OperatorCode string `json:"operator_code,omitempty"`
 //	}
 //
 //	client.MemberVipLevelRecord.Query().
-//		Select(memberviplevelrecord.FieldMemberID).
+//		Select(memberviplevelrecord.FieldOperatorCode).
 //		Scan(ctx, &v)
 func (_q *MemberVipLevelRecordQuery) Select(fields ...string) *MemberVipLevelRecordSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

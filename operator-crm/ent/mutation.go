@@ -19309,6 +19309,7 @@ type MemberVipLevelRecordMutation struct {
 	op                     Op
 	typ                    string
 	id                     *int64
+	operator_code          *string
 	before_vip_level_id    *int64
 	addbefore_vip_level_id *int64
 	after_vip_level_id     *int64
@@ -19428,6 +19429,42 @@ func (m *MemberVipLevelRecordMutation) IDs(ctx context.Context) ([]int64, error)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *MemberVipLevelRecordMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *MemberVipLevelRecordMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the MemberVipLevelRecord entity.
+// If the MemberVipLevelRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberVipLevelRecordMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *MemberVipLevelRecordMutation) ResetOperatorCode() {
+	m.operator_code = nil
 }
 
 // SetMemberID sets the "member_id" field.
@@ -19829,7 +19866,10 @@ func (m *MemberVipLevelRecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MemberVipLevelRecordMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
+	if m.operator_code != nil {
+		fields = append(fields, memberviplevelrecord.FieldOperatorCode)
+	}
 	if m.member != nil {
 		fields = append(fields, memberviplevelrecord.FieldMemberID)
 	}
@@ -19859,6 +19899,8 @@ func (m *MemberVipLevelRecordMutation) Fields() []string {
 // schema.
 func (m *MemberVipLevelRecordMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case memberviplevelrecord.FieldOperatorCode:
+		return m.OperatorCode()
 	case memberviplevelrecord.FieldMemberID:
 		return m.MemberID()
 	case memberviplevelrecord.FieldBeforeVipLevelID:
@@ -19882,6 +19924,8 @@ func (m *MemberVipLevelRecordMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *MemberVipLevelRecordMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case memberviplevelrecord.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
 	case memberviplevelrecord.FieldMemberID:
 		return m.OldMemberID(ctx)
 	case memberviplevelrecord.FieldBeforeVipLevelID:
@@ -19905,6 +19949,13 @@ func (m *MemberVipLevelRecordMutation) OldField(ctx context.Context, name string
 // type.
 func (m *MemberVipLevelRecordMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case memberviplevelrecord.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
+		return nil
 	case memberviplevelrecord.FieldMemberID:
 		v, ok := value.(int64)
 		if !ok {
@@ -20057,6 +20108,9 @@ func (m *MemberVipLevelRecordMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *MemberVipLevelRecordMutation) ResetField(name string) error {
 	switch name {
+	case memberviplevelrecord.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
 	case memberviplevelrecord.FieldMemberID:
 		m.ResetMemberID()
 		return nil
@@ -20159,22 +20213,23 @@ func (m *MemberVipLevelRecordMutation) ResetEdge(name string) error {
 // MemberVipProgressMutation represents an operation that mutates the MemberVipProgress nodes in the graph.
 type MemberVipProgressMutation struct {
 	config
-	op                        Op
-	typ                       string
-	id                        *int64
-	created_at                *time.Time
-	updated_at                *time.Time
-	upgrade_valid_deposit     *int64
-	addupgrade_valid_deposit  *int64
-	upgrade_valid_turnover    *int64
-	addupgrade_valid_turnover *int64
-	progress_started_at       *time.Time
-	clearedFields             map[string]struct{}
-	member                    *int64
-	clearedmember             bool
-	done                      bool
-	oldValue                  func(context.Context) (*MemberVipProgress, error)
-	predicates                []predicate.MemberVipProgress
+	op                       Op
+	typ                      string
+	id                       *int64
+	created_at               *time.Time
+	updated_at               *time.Time
+	operator_code            *string
+	upgrade_valid_deposit    *int64
+	addupgrade_valid_deposit *int64
+	upgrade_valid_water      *int64
+	addupgrade_valid_water   *int64
+	progress_started_at      *time.Time
+	clearedFields            map[string]struct{}
+	member                   *int64
+	clearedmember            bool
+	done                     bool
+	oldValue                 func(context.Context) (*MemberVipProgress, error)
+	predicates               []predicate.MemberVipProgress
 }
 
 var _ ent.Mutation = (*MemberVipProgressMutation)(nil)
@@ -20353,6 +20408,42 @@ func (m *MemberVipProgressMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
+// SetOperatorCode sets the "operator_code" field.
+func (m *MemberVipProgressMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *MemberVipProgressMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the MemberVipProgress entity.
+// If the MemberVipProgress object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberVipProgressMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *MemberVipProgressMutation) ResetOperatorCode() {
+	m.operator_code = nil
+}
+
 // SetMemberID sets the "member_id" field.
 func (m *MemberVipProgressMutation) SetMemberID(i int64) {
 	m.member = &i
@@ -20445,60 +20536,60 @@ func (m *MemberVipProgressMutation) ResetUpgradeValidDeposit() {
 	m.addupgrade_valid_deposit = nil
 }
 
-// SetUpgradeValidTurnover sets the "upgrade_valid_turnover" field.
-func (m *MemberVipProgressMutation) SetUpgradeValidTurnover(i int64) {
-	m.upgrade_valid_turnover = &i
-	m.addupgrade_valid_turnover = nil
+// SetUpgradeValidWater sets the "upgrade_valid_water" field.
+func (m *MemberVipProgressMutation) SetUpgradeValidWater(i int64) {
+	m.upgrade_valid_water = &i
+	m.addupgrade_valid_water = nil
 }
 
-// UpgradeValidTurnover returns the value of the "upgrade_valid_turnover" field in the mutation.
-func (m *MemberVipProgressMutation) UpgradeValidTurnover() (r int64, exists bool) {
-	v := m.upgrade_valid_turnover
+// UpgradeValidWater returns the value of the "upgrade_valid_water" field in the mutation.
+func (m *MemberVipProgressMutation) UpgradeValidWater() (r int64, exists bool) {
+	v := m.upgrade_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpgradeValidTurnover returns the old "upgrade_valid_turnover" field's value of the MemberVipProgress entity.
+// OldUpgradeValidWater returns the old "upgrade_valid_water" field's value of the MemberVipProgress entity.
 // If the MemberVipProgress object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipProgressMutation) OldUpgradeValidTurnover(ctx context.Context) (v int64, err error) {
+func (m *MemberVipProgressMutation) OldUpgradeValidWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpgradeValidTurnover is only allowed on UpdateOne operations")
+		return v, errors.New("OldUpgradeValidWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpgradeValidTurnover requires an ID field in the mutation")
+		return v, errors.New("OldUpgradeValidWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpgradeValidTurnover: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpgradeValidWater: %w", err)
 	}
-	return oldValue.UpgradeValidTurnover, nil
+	return oldValue.UpgradeValidWater, nil
 }
 
-// AddUpgradeValidTurnover adds i to the "upgrade_valid_turnover" field.
-func (m *MemberVipProgressMutation) AddUpgradeValidTurnover(i int64) {
-	if m.addupgrade_valid_turnover != nil {
-		*m.addupgrade_valid_turnover += i
+// AddUpgradeValidWater adds i to the "upgrade_valid_water" field.
+func (m *MemberVipProgressMutation) AddUpgradeValidWater(i int64) {
+	if m.addupgrade_valid_water != nil {
+		*m.addupgrade_valid_water += i
 	} else {
-		m.addupgrade_valid_turnover = &i
+		m.addupgrade_valid_water = &i
 	}
 }
 
-// AddedUpgradeValidTurnover returns the value that was added to the "upgrade_valid_turnover" field in this mutation.
-func (m *MemberVipProgressMutation) AddedUpgradeValidTurnover() (r int64, exists bool) {
-	v := m.addupgrade_valid_turnover
+// AddedUpgradeValidWater returns the value that was added to the "upgrade_valid_water" field in this mutation.
+func (m *MemberVipProgressMutation) AddedUpgradeValidWater() (r int64, exists bool) {
+	v := m.addupgrade_valid_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUpgradeValidTurnover resets all changes to the "upgrade_valid_turnover" field.
-func (m *MemberVipProgressMutation) ResetUpgradeValidTurnover() {
-	m.upgrade_valid_turnover = nil
-	m.addupgrade_valid_turnover = nil
+// ResetUpgradeValidWater resets all changes to the "upgrade_valid_water" field.
+func (m *MemberVipProgressMutation) ResetUpgradeValidWater() {
+	m.upgrade_valid_water = nil
+	m.addupgrade_valid_water = nil
 }
 
 // SetProgressStartedAt sets the "progress_started_at" field.
@@ -20598,12 +20689,15 @@ func (m *MemberVipProgressMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MemberVipProgressMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, membervipprogress.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, membervipprogress.FieldUpdatedAt)
+	}
+	if m.operator_code != nil {
+		fields = append(fields, membervipprogress.FieldOperatorCode)
 	}
 	if m.member != nil {
 		fields = append(fields, membervipprogress.FieldMemberID)
@@ -20611,8 +20705,8 @@ func (m *MemberVipProgressMutation) Fields() []string {
 	if m.upgrade_valid_deposit != nil {
 		fields = append(fields, membervipprogress.FieldUpgradeValidDeposit)
 	}
-	if m.upgrade_valid_turnover != nil {
-		fields = append(fields, membervipprogress.FieldUpgradeValidTurnover)
+	if m.upgrade_valid_water != nil {
+		fields = append(fields, membervipprogress.FieldUpgradeValidWater)
 	}
 	if m.progress_started_at != nil {
 		fields = append(fields, membervipprogress.FieldProgressStartedAt)
@@ -20629,12 +20723,14 @@ func (m *MemberVipProgressMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case membervipprogress.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case membervipprogress.FieldOperatorCode:
+		return m.OperatorCode()
 	case membervipprogress.FieldMemberID:
 		return m.MemberID()
 	case membervipprogress.FieldUpgradeValidDeposit:
 		return m.UpgradeValidDeposit()
-	case membervipprogress.FieldUpgradeValidTurnover:
-		return m.UpgradeValidTurnover()
+	case membervipprogress.FieldUpgradeValidWater:
+		return m.UpgradeValidWater()
 	case membervipprogress.FieldProgressStartedAt:
 		return m.ProgressStartedAt()
 	}
@@ -20650,12 +20746,14 @@ func (m *MemberVipProgressMutation) OldField(ctx context.Context, name string) (
 		return m.OldCreatedAt(ctx)
 	case membervipprogress.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case membervipprogress.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
 	case membervipprogress.FieldMemberID:
 		return m.OldMemberID(ctx)
 	case membervipprogress.FieldUpgradeValidDeposit:
 		return m.OldUpgradeValidDeposit(ctx)
-	case membervipprogress.FieldUpgradeValidTurnover:
-		return m.OldUpgradeValidTurnover(ctx)
+	case membervipprogress.FieldUpgradeValidWater:
+		return m.OldUpgradeValidWater(ctx)
 	case membervipprogress.FieldProgressStartedAt:
 		return m.OldProgressStartedAt(ctx)
 	}
@@ -20681,6 +20779,13 @@ func (m *MemberVipProgressMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case membervipprogress.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
+		return nil
 	case membervipprogress.FieldMemberID:
 		v, ok := value.(int64)
 		if !ok {
@@ -20695,12 +20800,12 @@ func (m *MemberVipProgressMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetUpgradeValidDeposit(v)
 		return nil
-	case membervipprogress.FieldUpgradeValidTurnover:
+	case membervipprogress.FieldUpgradeValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpgradeValidTurnover(v)
+		m.SetUpgradeValidWater(v)
 		return nil
 	case membervipprogress.FieldProgressStartedAt:
 		v, ok := value.(time.Time)
@@ -20720,8 +20825,8 @@ func (m *MemberVipProgressMutation) AddedFields() []string {
 	if m.addupgrade_valid_deposit != nil {
 		fields = append(fields, membervipprogress.FieldUpgradeValidDeposit)
 	}
-	if m.addupgrade_valid_turnover != nil {
-		fields = append(fields, membervipprogress.FieldUpgradeValidTurnover)
+	if m.addupgrade_valid_water != nil {
+		fields = append(fields, membervipprogress.FieldUpgradeValidWater)
 	}
 	return fields
 }
@@ -20733,8 +20838,8 @@ func (m *MemberVipProgressMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case membervipprogress.FieldUpgradeValidDeposit:
 		return m.AddedUpgradeValidDeposit()
-	case membervipprogress.FieldUpgradeValidTurnover:
-		return m.AddedUpgradeValidTurnover()
+	case membervipprogress.FieldUpgradeValidWater:
+		return m.AddedUpgradeValidWater()
 	}
 	return nil, false
 }
@@ -20751,12 +20856,12 @@ func (m *MemberVipProgressMutation) AddField(name string, value ent.Value) error
 		}
 		m.AddUpgradeValidDeposit(v)
 		return nil
-	case membervipprogress.FieldUpgradeValidTurnover:
+	case membervipprogress.FieldUpgradeValidWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUpgradeValidTurnover(v)
+		m.AddUpgradeValidWater(v)
 		return nil
 	}
 	return fmt.Errorf("unknown MemberVipProgress numeric field %s", name)
@@ -20791,14 +20896,17 @@ func (m *MemberVipProgressMutation) ResetField(name string) error {
 	case membervipprogress.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case membervipprogress.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
 	case membervipprogress.FieldMemberID:
 		m.ResetMemberID()
 		return nil
 	case membervipprogress.FieldUpgradeValidDeposit:
 		m.ResetUpgradeValidDeposit()
 		return nil
-	case membervipprogress.FieldUpgradeValidTurnover:
-		m.ResetUpgradeValidTurnover()
+	case membervipprogress.FieldUpgradeValidWater:
+		m.ResetUpgradeValidWater()
 		return nil
 	case membervipprogress.FieldProgressStartedAt:
 		m.ResetProgressStartedAt()

@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package crm_member_auto_level;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberautolevelpb";
+
+// 会员自动层级信息
+message MemberAutoLevelInfo {
+  // 层级ID
+  int64 id = 1;
+  // 层级名称
+  string name = 2;
+  // 最低累计有效存款
+  int64 min_valid_deposit = 3;
+  // 最低累计有效洗码量
+  int64 min_valid_water = 4;
+}
+
+// 创建自动层级请求
+message CreateMemberAutoLevelRequest {
+  // 层级名称
+  string name = 1;
+  // 最低累计有效存款
+  int64 min_valid_deposit = 2;
+  // 最低累计有效洗码量
+  int64 min_valid_water = 3;
+}
+
+// 创建自动层级响应
+message CreateMemberAutoLevelResponse {
+  // 层级ID
+  int64 id = 1;
+}
+
+// 修改自动层级请求
+message UpdateMemberAutoLevelRequest {
+  // 层级ID
+  int64 id = 1;
+  // 层级名称
+  string name = 2;
+  // 最低累计有效存款
+  int64 min_valid_deposit = 3;
+  // 最低累计有效洗码量
+  int64 min_valid_water = 4;
+}
+
+// 修改自动层级响应
+message UpdateMemberAutoLevelResponse {}
+
+// 获取自动层级列表请求
+message ListMemberAutoLevelsRequest {
+  // 页码, 从1开始
+  int64 page = 1;
+  // 每页数量
+  int64 page_size = 2;
+  // 层级名称, 模糊查询
+  optional string name = 3;
+}
+
+// 获取自动层级列表响应
+message ListMemberAutoLevelsResponse {
+  // 数据总数
+  int64 total = 1;
+  // 自动层级列表
+  repeated MemberAutoLevelInfo list = 2;
+}
+
+// 删除自动层级请求
+message DeleteMemberAutoLevelRequest {
+  // 层级ID
+  int64 id = 1;
+}
+
+// 删除自动层级响应
+message DeleteMemberAutoLevelResponse {}

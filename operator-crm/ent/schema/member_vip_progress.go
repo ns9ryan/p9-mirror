@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 
+	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 	"oa.98ent.com/p9/operator-crm/ent/schema/mixins"
 )
 
@@ -25,6 +27,12 @@ func (MemberVipProgress) Fields() []ent.Field {
 
 		// ==================== 会员关联 ====================
 
+		field.String("operator_code").
+			NotEmpty().
+			MaxLen(64).
+			Immutable().
+			Comment("所属厅业务编码"),
+
 		field.Int64("member_id").
 			Positive().
 			Immutable().
@@ -37,7 +45,7 @@ func (MemberVipProgress) Fields() []ent.Field {
 			Default(0).
 			Comment("当前VIP等级已完成的有效充值晋级进度"),
 
-		field.Int64("upgrade_valid_turnover").
+		field.Int64("upgrade_valid_water").
 			NonNegative().
 			Default(0).
 			Comment("当前VIP等级已完成的有效洗码晋级进度"),
@@ -72,6 +80,10 @@ func (MemberVipProgress) Indexes() []ent.Index {
 		index.Fields("member_id").
 			Unique().
 			StorageKey("uk_member_vip_progress_member"),
+
+		// 按厅编码查询晋级进度
+		index.Fields("operator_code").
+			StorageKey("idx_member_vip_progress_operator_code"),
 	}
 }
 
@@ -80,6 +92,20 @@ func (MemberVipProgress) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
 		mixins.TimeMixin{},
+	}
+}
+
+// Interceptors VIP晋级进度查询隔离
+func (MemberVipProgress) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		entmixin.RequiredOperatorCodeInterceptor(intercept.NewQuery),
+	}
+}
+
+// Hooks VIP晋级进度写入隔离
+func (MemberVipProgress) Hooks() []ent.Hook {
+	return []ent.Hook{
+		entmixin.RequiredOperatorCodeHook(),
 	}
 }
 

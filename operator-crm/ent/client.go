@@ -3131,12 +3131,14 @@ func (c *MemberVipLevelRecordClient) QueryMember(_m *MemberVipLevelRecord) *Memb
 
 // Hooks returns the client hooks.
 func (c *MemberVipLevelRecordClient) Hooks() []Hook {
-	return c.hooks.MemberVipLevelRecord
+	hooks := c.hooks.MemberVipLevelRecord
+	return append(hooks[:len(hooks):len(hooks)], memberviplevelrecord.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *MemberVipLevelRecordClient) Interceptors() []Interceptor {
-	return c.inters.MemberVipLevelRecord
+	inters := c.inters.MemberVipLevelRecord
+	return append(inters[:len(inters):len(inters)], memberviplevelrecord.Interceptors[:]...)
 }
 
 func (c *MemberVipLevelRecordClient) mutate(ctx context.Context, m *MemberVipLevelRecordMutation) (Value, error) {
@@ -3280,12 +3282,14 @@ func (c *MemberVipProgressClient) QueryMember(_m *MemberVipProgress) *MemberQuer
 
 // Hooks returns the client hooks.
 func (c *MemberVipProgressClient) Hooks() []Hook {
-	return c.hooks.MemberVipProgress
+	hooks := c.hooks.MemberVipProgress
+	return append(hooks[:len(hooks):len(hooks)], membervipprogress.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *MemberVipProgressClient) Interceptors() []Interceptor {
-	return c.inters.MemberVipProgress
+	inters := c.inters.MemberVipProgress
+	return append(inters[:len(inters):len(inters)], membervipprogress.Interceptors[:]...)
 }
 
 func (c *MemberVipProgressClient) mutate(ctx context.Context, m *MemberVipProgressMutation) (Value, error) {

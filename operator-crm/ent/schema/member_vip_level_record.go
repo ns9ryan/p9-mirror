@@ -9,7 +9,10 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 
+	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 	"oa.98ent.com/p9/operator-crm/ent/schema/mixins"
 )
 
@@ -23,6 +26,12 @@ func (MemberVipLevelRecord) Fields() []ent.Field {
 	return []ent.Field{
 
 		// ==================== 会员关联 ====================
+
+		field.String("operator_code").
+			NotEmpty().
+			MaxLen(64).
+			Immutable().
+			Comment("所属厅业务编码"),
 
 		field.Int64("member_id").
 			Positive().
@@ -89,10 +98,37 @@ func (MemberVipLevelRecord) Edges() []ent.Edge {
 	}
 }
 
+// Indexes 定义会员VIP等级变更记录表索引
+func (MemberVipLevelRecord) Indexes() []ent.Index {
+	return []ent.Index{
+		// 按厅和时间查询等级变更记录
+		index.Fields("operator_code", "created_at").
+			StorageKey("idx_member_vip_level_record_operator_created_at"),
+
+		// 查询指定会员的等级变更记录
+		index.Fields("member_id").
+			StorageKey("idx_member_vip_level_record_member"),
+	}
+}
+
 // Mixin 定义会员VIP等级变更记录表公共字段
 func (MemberVipLevelRecord) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
+	}
+}
+
+// Interceptors VIP等级变更记录查询隔离
+func (MemberVipLevelRecord) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		entmixin.RequiredOperatorCodeInterceptor(intercept.NewQuery),
+	}
+}
+
+// Hooks VIP等级变更记录写入隔离
+func (MemberVipLevelRecord) Hooks() []ent.Hook {
+	return []ent.Hook{
+		entmixin.RequiredOperatorCodeHook(),
 	}
 }
 

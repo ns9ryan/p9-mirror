@@ -19,6 +19,8 @@ type MemberVipLevelRecord struct {
 	// ID of the ent.
 	// 主键ID
 	ID int64 `json:"id,omitempty"`
+	// 所属厅业务编码
+	OperatorCode string `json:"operator_code,omitempty"`
 	// 所属会员ID
 	MemberID int64 `json:"member_id,omitempty"`
 	// 变更前VIP等级ID
@@ -66,7 +68,7 @@ func (*MemberVipLevelRecord) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case memberviplevelrecord.FieldID, memberviplevelrecord.FieldMemberID, memberviplevelrecord.FieldBeforeVipLevelID, memberviplevelrecord.FieldAfterVipLevelID, memberviplevelrecord.FieldChangeType:
 			values[i] = new(sql.NullInt64)
-		case memberviplevelrecord.FieldChangeReason, memberviplevelrecord.FieldOperatorUserCode:
+		case memberviplevelrecord.FieldOperatorCode, memberviplevelrecord.FieldChangeReason, memberviplevelrecord.FieldOperatorUserCode:
 			values[i] = new(sql.NullString)
 		case memberviplevelrecord.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -91,6 +93,12 @@ func (_m *MemberVipLevelRecord) assignValues(columns []string, values []any) err
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case memberviplevelrecord.FieldOperatorCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
+			} else if value.Valid {
+				_m.OperatorCode = value.String
+			}
 		case memberviplevelrecord.FieldMemberID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field member_id", values[i])
@@ -176,6 +184,9 @@ func (_m *MemberVipLevelRecord) String() string {
 	var builder strings.Builder
 	builder.WriteString("MemberVipLevelRecord(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("operator_code=")
+	builder.WriteString(_m.OperatorCode)
+	builder.WriteString(", ")
 	builder.WriteString("member_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.MemberID))
 	builder.WriteString(", ")

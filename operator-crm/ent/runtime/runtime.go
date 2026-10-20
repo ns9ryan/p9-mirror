@@ -1704,37 +1704,63 @@ func init() {
 	memberviplevel.DefaultUpgradeReward = memberviplevelDescUpgradeReward.Default.(int64)
 	// memberviplevel.UpgradeRewardValidator is a validator for the "upgrade_reward" field. It is called by the builders before save.
 	memberviplevel.UpgradeRewardValidator = memberviplevelDescUpgradeReward.Validators[0].(func(int64) error)
+	memberviplevelrecordHooks := schema.MemberVipLevelRecord{}.Hooks()
+	memberviplevelrecord.Hooks[0] = memberviplevelrecordHooks[0]
+	memberviplevelrecordInters := schema.MemberVipLevelRecord{}.Interceptors()
+	memberviplevelrecord.Interceptors[0] = memberviplevelrecordInters[0]
 	memberviplevelrecordFields := schema.MemberVipLevelRecord{}.Fields()
 	_ = memberviplevelrecordFields
+	// memberviplevelrecordDescOperatorCode is the schema descriptor for operator_code field.
+	memberviplevelrecordDescOperatorCode := memberviplevelrecordFields[0].Descriptor()
+	// memberviplevelrecord.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	memberviplevelrecord.OperatorCodeValidator = func() func(string) error {
+		validators := memberviplevelrecordDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// memberviplevelrecordDescMemberID is the schema descriptor for member_id field.
-	memberviplevelrecordDescMemberID := memberviplevelrecordFields[0].Descriptor()
+	memberviplevelrecordDescMemberID := memberviplevelrecordFields[1].Descriptor()
 	// memberviplevelrecord.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	memberviplevelrecord.MemberIDValidator = memberviplevelrecordDescMemberID.Validators[0].(func(int64) error)
 	// memberviplevelrecordDescBeforeVipLevelID is the schema descriptor for before_vip_level_id field.
-	memberviplevelrecordDescBeforeVipLevelID := memberviplevelrecordFields[1].Descriptor()
+	memberviplevelrecordDescBeforeVipLevelID := memberviplevelrecordFields[2].Descriptor()
 	// memberviplevelrecord.BeforeVipLevelIDValidator is a validator for the "before_vip_level_id" field. It is called by the builders before save.
 	memberviplevelrecord.BeforeVipLevelIDValidator = memberviplevelrecordDescBeforeVipLevelID.Validators[0].(func(int64) error)
 	// memberviplevelrecordDescAfterVipLevelID is the schema descriptor for after_vip_level_id field.
-	memberviplevelrecordDescAfterVipLevelID := memberviplevelrecordFields[2].Descriptor()
+	memberviplevelrecordDescAfterVipLevelID := memberviplevelrecordFields[3].Descriptor()
 	// memberviplevelrecord.AfterVipLevelIDValidator is a validator for the "after_vip_level_id" field. It is called by the builders before save.
 	memberviplevelrecord.AfterVipLevelIDValidator = memberviplevelrecordDescAfterVipLevelID.Validators[0].(func(int64) error)
 	// memberviplevelrecordDescChangeType is the schema descriptor for change_type field.
-	memberviplevelrecordDescChangeType := memberviplevelrecordFields[3].Descriptor()
+	memberviplevelrecordDescChangeType := memberviplevelrecordFields[4].Descriptor()
 	// memberviplevelrecord.ChangeTypeValidator is a validator for the "change_type" field. It is called by the builders before save.
 	memberviplevelrecord.ChangeTypeValidator = memberviplevelrecordDescChangeType.Validators[0].(func(int64) error)
 	// memberviplevelrecordDescChangeReason is the schema descriptor for change_reason field.
-	memberviplevelrecordDescChangeReason := memberviplevelrecordFields[4].Descriptor()
+	memberviplevelrecordDescChangeReason := memberviplevelrecordFields[5].Descriptor()
 	// memberviplevelrecord.ChangeReasonValidator is a validator for the "change_reason" field. It is called by the builders before save.
 	memberviplevelrecord.ChangeReasonValidator = memberviplevelrecordDescChangeReason.Validators[0].(func(string) error)
 	// memberviplevelrecordDescOperatorUserCode is the schema descriptor for operator_user_code field.
-	memberviplevelrecordDescOperatorUserCode := memberviplevelrecordFields[5].Descriptor()
+	memberviplevelrecordDescOperatorUserCode := memberviplevelrecordFields[6].Descriptor()
 	// memberviplevelrecord.OperatorUserCodeValidator is a validator for the "operator_user_code" field. It is called by the builders before save.
 	memberviplevelrecord.OperatorUserCodeValidator = memberviplevelrecordDescOperatorUserCode.Validators[0].(func(string) error)
 	// memberviplevelrecordDescCreatedAt is the schema descriptor for created_at field.
-	memberviplevelrecordDescCreatedAt := memberviplevelrecordFields[6].Descriptor()
+	memberviplevelrecordDescCreatedAt := memberviplevelrecordFields[7].Descriptor()
 	// memberviplevelrecord.DefaultCreatedAt holds the default value on creation for the created_at field.
 	memberviplevelrecord.DefaultCreatedAt = memberviplevelrecordDescCreatedAt.Default.(func() time.Time)
 	membervipprogressMixin := schema.MemberVipProgress{}.Mixin()
+	membervipprogressHooks := schema.MemberVipProgress{}.Hooks()
+	membervipprogress.Hooks[0] = membervipprogressHooks[0]
+	membervipprogressInters := schema.MemberVipProgress{}.Interceptors()
+	membervipprogress.Interceptors[0] = membervipprogressInters[0]
 	membervipprogressMixinFields1 := membervipprogressMixin[1].Fields()
 	_ = membervipprogressMixinFields1
 	membervipprogressFields := schema.MemberVipProgress{}.Fields()
@@ -1749,24 +1775,42 @@ func init() {
 	membervipprogress.DefaultUpdatedAt = membervipprogressDescUpdatedAt.Default.(func() time.Time)
 	// membervipprogress.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	membervipprogress.UpdateDefaultUpdatedAt = membervipprogressDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// membervipprogressDescOperatorCode is the schema descriptor for operator_code field.
+	membervipprogressDescOperatorCode := membervipprogressFields[0].Descriptor()
+	// membervipprogress.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	membervipprogress.OperatorCodeValidator = func() func(string) error {
+		validators := membervipprogressDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// membervipprogressDescMemberID is the schema descriptor for member_id field.
-	membervipprogressDescMemberID := membervipprogressFields[0].Descriptor()
+	membervipprogressDescMemberID := membervipprogressFields[1].Descriptor()
 	// membervipprogress.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	membervipprogress.MemberIDValidator = membervipprogressDescMemberID.Validators[0].(func(int64) error)
 	// membervipprogressDescUpgradeValidDeposit is the schema descriptor for upgrade_valid_deposit field.
-	membervipprogressDescUpgradeValidDeposit := membervipprogressFields[1].Descriptor()
+	membervipprogressDescUpgradeValidDeposit := membervipprogressFields[2].Descriptor()
 	// membervipprogress.DefaultUpgradeValidDeposit holds the default value on creation for the upgrade_valid_deposit field.
 	membervipprogress.DefaultUpgradeValidDeposit = membervipprogressDescUpgradeValidDeposit.Default.(int64)
 	// membervipprogress.UpgradeValidDepositValidator is a validator for the "upgrade_valid_deposit" field. It is called by the builders before save.
 	membervipprogress.UpgradeValidDepositValidator = membervipprogressDescUpgradeValidDeposit.Validators[0].(func(int64) error)
-	// membervipprogressDescUpgradeValidTurnover is the schema descriptor for upgrade_valid_turnover field.
-	membervipprogressDescUpgradeValidTurnover := membervipprogressFields[2].Descriptor()
-	// membervipprogress.DefaultUpgradeValidTurnover holds the default value on creation for the upgrade_valid_turnover field.
-	membervipprogress.DefaultUpgradeValidTurnover = membervipprogressDescUpgradeValidTurnover.Default.(int64)
-	// membervipprogress.UpgradeValidTurnoverValidator is a validator for the "upgrade_valid_turnover" field. It is called by the builders before save.
-	membervipprogress.UpgradeValidTurnoverValidator = membervipprogressDescUpgradeValidTurnover.Validators[0].(func(int64) error)
+	// membervipprogressDescUpgradeValidWater is the schema descriptor for upgrade_valid_water field.
+	membervipprogressDescUpgradeValidWater := membervipprogressFields[3].Descriptor()
+	// membervipprogress.DefaultUpgradeValidWater holds the default value on creation for the upgrade_valid_water field.
+	membervipprogress.DefaultUpgradeValidWater = membervipprogressDescUpgradeValidWater.Default.(int64)
+	// membervipprogress.UpgradeValidWaterValidator is a validator for the "upgrade_valid_water" field. It is called by the builders before save.
+	membervipprogress.UpgradeValidWaterValidator = membervipprogressDescUpgradeValidWater.Validators[0].(func(int64) error)
 	// membervipprogressDescProgressStartedAt is the schema descriptor for progress_started_at field.
-	membervipprogressDescProgressStartedAt := membervipprogressFields[3].Descriptor()
+	membervipprogressDescProgressStartedAt := membervipprogressFields[4].Descriptor()
 	// membervipprogress.DefaultProgressStartedAt holds the default value on creation for the progress_started_at field.
 	membervipprogress.DefaultProgressStartedAt = membervipprogressDescProgressStartedAt.Default.(func() time.Time)
 }
