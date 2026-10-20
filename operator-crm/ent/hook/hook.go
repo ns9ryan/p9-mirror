@@ -57,6 +57,18 @@ func (f AgentLevelFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AgentLevelMutation", m)
 }
 
+// The AgentLoginLogFunc type is an adapter to allow the use of ordinary
+// function as AgentLoginLog mutator.
+type AgentLoginLogFunc func(context.Context, *ent.AgentLoginLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AgentLoginLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AgentLoginLogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AgentLoginLogMutation", m)
+}
+
 // The AgentProfileFunc type is an adapter to allow the use of ordinary
 // function as AgentProfile mutator.
 type AgentProfileFunc func(context.Context, *ent.AgentProfileMutation) (ent.Value, error)

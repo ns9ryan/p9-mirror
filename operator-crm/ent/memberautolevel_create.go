@@ -87,7 +87,9 @@ func (_c *MemberAutoLevelCreate) Mutation() *MemberAutoLevelMutation {
 
 // Save creates the MemberAutoLevel in the database.
 func (_c *MemberAutoLevelCreate) Save(ctx context.Context) (*MemberAutoLevel, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -114,15 +116,22 @@ func (_c *MemberAutoLevelCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberAutoLevelCreate) defaults() {
+func (_c *MemberAutoLevelCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if memberautolevel.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberautolevel.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberautolevel.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if memberautolevel.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberautolevel.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberautolevel.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

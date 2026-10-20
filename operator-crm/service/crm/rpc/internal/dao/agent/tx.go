@@ -6,7 +6,6 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
-	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 )
 
 // 插入闭包 维护代理关系树
@@ -71,25 +70,15 @@ func bumpAgentCounts(ctx context.Context, tx *ent.Tx, parentID int64) error {
 }
 
 // 更新代理统计表 代理直属会员数及总会员数
-func BumpMemberCounts(ctx context.Context, tx *ent.Tx, agentCode string) error {
-	// 通过代理code查上级ID
-	agentInfo, err := tx.AgentUser.Query().
-		Where(agentuser.CodeEQ(agentCode)).
-		Select(agentuser.FieldParentID).
-		Only(ctx)
-	if err != nil {
-		return err
-	}
-	// 上级ID
-	parentID := *agentInfo.ParentID
+func BumpMemberCounts(ctx context.Context, tx *ent.Tx, agentID int64) error {
 	if _, err := tx.AgentStats.Update().
-		Where(agentstats.AgentIDEQ(parentID)).
+		Where(agentstats.AgentIDEQ(agentID)).
 		AddDirectMemberCount(1).
 		Save(ctx); err != nil {
 		return err
 	}
 	rows, err := tx.AgentClosure.Query().
-		Where(agentclosure.DescendantIDEQ(parentID)).
+		Where(agentclosure.DescendantIDEQ(agentID)).
 		All(ctx)
 	if err != nil {
 		return err

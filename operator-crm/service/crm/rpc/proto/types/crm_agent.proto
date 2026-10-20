@@ -454,3 +454,92 @@ message UpdateAgentProfileReq {
   string line = 13;
   string email = 14;
 }
+
+// ListAgentLoginLogsReq 代理登录日志列表
+message ListAgentLoginLogsReq {
+  // 页码，从 1 开始
+  int32 page = 1;
+  // 每页条数，默认 20，上限 100
+  int32 page_size = 2;
+  // 登录时间起始 unix 秒，0 不限
+  int64 time_start = 3;
+  // 登录时间结束 unix 秒，0 不限
+  int64 time_end = 4;
+  // 登录类型：0 不限 1 账号密码 2 注册
+  int32 login_type = 5;
+  // 设备类型：0 不限 1 PC网页 2 H5 3 Android 4 iOS 5 PC客户端
+  int32 device_type = 6;
+  // 关键字类型：0 不筛 1 代理ID 2 登录IP 3 设备码 4 登录地点 5 登录账号
+  int32 keyword_type = 7;
+  // 关键字，与 keyword_type 配合；空则不筛
+  string keyword = 8;
+  // 父代理ID，0 不限
+  int64 parent_id = 9;
+}
+
+// AgentLoginLogItem 代理登录日志项
+message AgentLoginLogItem {
+  int64 id = 1;
+  int64 agent_id = 2;
+  string account = 3;
+  int32 login_type = 4;
+  string login_ip = 5;
+  string login_location = 6;
+  string udid = 7;
+  string login_device = 8;
+  int32 device_type = 9;
+  // 登录时间 unix 秒
+  int64 login_at = 10;
+  // 1成功 2密码错误 3账号停用 4账号不存在
+  int32 result = 11;
+}
+
+// ListAgentLoginLogsResp 代理登录日志列表响应
+message ListAgentLoginLogsResp {
+  repeated AgentLoginLogItem items = 1;
+  int64 total = 2;
+}
+
+// ListAgentLoginAssociationsReq 关联检索登录日志
+message ListAgentLoginAssociationsReq {
+  // 页码，从 1 开始
+  int32 page = 1;
+  // 每页条数，默认 20，上限 100
+  int32 page_size = 2;
+  // 登录时间起始 unix 秒，0 不限
+  int64 time_start = 3;
+  // 登录时间结束 unix 秒，0 不限
+  int64 time_end = 4;
+  // 代理 ID，0 不限
+  int64 agent_id = 5;
+  // 设备类型：0 不限 1 PC网页 2 H5 3 Android 4 iOS 5 PC客户端
+  int32 device_type = 6;
+  // 关键字类型：0 不筛 1 登录IP 2 设备码
+  int32 keyword_type = 7;
+  // 关键字，与 keyword_type 配合；空则不筛
+  string keyword = 8;
+}
+
+// AgentLoginAssociationItem 关联检索登录日志项
+message AgentLoginAssociationItem {
+  int64 id = 1;
+  int64 agent_id = 2;
+  string account = 3;
+  string login_ip = 4;
+  string login_location = 5;
+  string udid = 6;
+  string login_device = 7;
+  int32 device_type = 8;
+  // 登录时间 unix 秒
+  int64 login_at = 9;
+  // 同登录 IP 的不同代理数（统计不含 agent_id/关键字）
+  int64 same_ip_agent_count = 10;
+  // 同设备码的不同代理数（统计不含 agent_id/关键字）
+  int64 same_device_agent_count = 11;
+}
+
+// ListAgentLoginAssociationsResp 关联检索登录日志响应
+message ListAgentLoginAssociationsResp {
+  repeated AgentLoginAssociationItem items = 1;
+  int64 total = 2;
+}

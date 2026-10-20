@@ -10,6 +10,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
+	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
 	"oa.98ent.com/p9/operator-crm/ent/agentprofile"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
@@ -337,6 +338,116 @@ func init() {
 			return nil
 		}
 	}()
+	agentloginlogMixin := schema.AgentLoginLog{}.Mixin()
+	agentloginlogMixinHooks2 := agentloginlogMixin[2].Hooks()
+	agentloginlog.Hooks[0] = agentloginlogMixinHooks2[0]
+	agentloginlogMixinInters2 := agentloginlogMixin[2].Interceptors()
+	agentloginlog.Interceptors[0] = agentloginlogMixinInters2[0]
+	agentloginlogMixinFields1 := agentloginlogMixin[1].Fields()
+	_ = agentloginlogMixinFields1
+	agentloginlogMixinFields2 := agentloginlogMixin[2].Fields()
+	_ = agentloginlogMixinFields2
+	agentloginlogFields := schema.AgentLoginLog{}.Fields()
+	_ = agentloginlogFields
+	// agentloginlogDescCreatedAt is the schema descriptor for created_at field.
+	agentloginlogDescCreatedAt := agentloginlogMixinFields1[0].Descriptor()
+	// agentloginlog.DefaultCreatedAt holds the default value on creation for the created_at field.
+	agentloginlog.DefaultCreatedAt = agentloginlogDescCreatedAt.Default.(func() time.Time)
+	// agentloginlogDescUpdatedAt is the schema descriptor for updated_at field.
+	agentloginlogDescUpdatedAt := agentloginlogMixinFields1[1].Descriptor()
+	// agentloginlog.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	agentloginlog.DefaultUpdatedAt = agentloginlogDescUpdatedAt.Default.(func() time.Time)
+	// agentloginlog.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	agentloginlog.UpdateDefaultUpdatedAt = agentloginlogDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// agentloginlogDescOperatorCode is the schema descriptor for operator_code field.
+	agentloginlogDescOperatorCode := agentloginlogMixinFields2[0].Descriptor()
+	// agentloginlog.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	agentloginlog.OperatorCodeValidator = agentloginlogDescOperatorCode.Validators[0].(func(string) error)
+	// agentloginlogDescAccount is the schema descriptor for account field.
+	agentloginlogDescAccount := agentloginlogFields[2].Descriptor()
+	// agentloginlog.AccountValidator is a validator for the "account" field. It is called by the builders before save.
+	agentloginlog.AccountValidator = func() func(string) error {
+		validators := agentloginlogDescAccount.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(account string) error {
+			for _, fn := range fns {
+				if err := fn(account); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentloginlogDescLoginType is the schema descriptor for login_type field.
+	agentloginlogDescLoginType := agentloginlogFields[3].Descriptor()
+	// agentloginlog.LoginTypeValidator is a validator for the "login_type" field. It is called by the builders before save.
+	agentloginlog.LoginTypeValidator = agentloginlogDescLoginType.Validators[0].(func(int64) error)
+	// agentloginlogDescLoginLocation is the schema descriptor for login_location field.
+	agentloginlogDescLoginLocation := agentloginlogFields[5].Descriptor()
+	// agentloginlog.LoginLocationValidator is a validator for the "login_location" field. It is called by the builders before save.
+	agentloginlog.LoginLocationValidator = func() func(string) error {
+		validators := agentloginlogDescLoginLocation.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(login_location string) error {
+			for _, fn := range fns {
+				if err := fn(login_location); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentloginlogDescUdid is the schema descriptor for udid field.
+	agentloginlogDescUdid := agentloginlogFields[6].Descriptor()
+	// agentloginlog.UdidValidator is a validator for the "udid" field. It is called by the builders before save.
+	agentloginlog.UdidValidator = func() func(string) error {
+		validators := agentloginlogDescUdid.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(udid string) error {
+			for _, fn := range fns {
+				if err := fn(udid); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentloginlogDescLoginDevice is the schema descriptor for login_device field.
+	agentloginlogDescLoginDevice := agentloginlogFields[7].Descriptor()
+	// agentloginlog.LoginDeviceValidator is a validator for the "login_device" field. It is called by the builders before save.
+	agentloginlog.LoginDeviceValidator = func() func(string) error {
+		validators := agentloginlogDescLoginDevice.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(login_device string) error {
+			for _, fn := range fns {
+				if err := fn(login_device); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentloginlogDescDeviceType is the schema descriptor for device_type field.
+	agentloginlogDescDeviceType := agentloginlogFields[8].Descriptor()
+	// agentloginlog.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
+	agentloginlog.DeviceTypeValidator = agentloginlogDescDeviceType.Validators[0].(func(int64) error)
+	// agentloginlogDescResult is the schema descriptor for result field.
+	agentloginlogDescResult := agentloginlogFields[10].Descriptor()
+	// agentloginlog.ResultValidator is a validator for the "result" field. It is called by the builders before save.
+	agentloginlog.ResultValidator = agentloginlogDescResult.Validators[0].(func(int64) error)
 	agentprofileMixin := schema.AgentProfile{}.Mixin()
 	agentprofileMixinFields1 := agentprofileMixin[1].Fields()
 	_ = agentprofileMixinFields1
@@ -1089,6 +1200,10 @@ func init() {
 	// member.LastLoginDeviceCodeValidator is a validator for the "last_login_device_code" field. It is called by the builders before save.
 	member.LastLoginDeviceCodeValidator = memberDescLastLoginDeviceCode.Validators[0].(func(string) error)
 	memberautolevelMixin := schema.MemberAutoLevel{}.Mixin()
+	memberautolevelHooks := schema.MemberAutoLevel{}.Hooks()
+	memberautolevel.Hooks[0] = memberautolevelHooks[0]
+	memberautolevelInters := schema.MemberAutoLevel{}.Interceptors()
+	memberautolevel.Interceptors[0] = memberautolevelInters[0]
 	memberautolevelMixinFields1 := memberautolevelMixin[1].Fields()
 	_ = memberautolevelMixinFields1
 	memberautolevelFields := schema.MemberAutoLevel{}.Fields()
@@ -1148,6 +1263,10 @@ func init() {
 	// memberautolevel.MinValidWaterValidator is a validator for the "min_valid_water" field. It is called by the builders before save.
 	memberautolevel.MinValidWaterValidator = memberautolevelDescMinValidWater.Validators[0].(func(int64) error)
 	memberfixedlevelMixin := schema.MemberFixedLevel{}.Mixin()
+	memberfixedlevelHooks := schema.MemberFixedLevel{}.Hooks()
+	memberfixedlevel.Hooks[0] = memberfixedlevelHooks[0]
+	memberfixedlevelInters := schema.MemberFixedLevel{}.Interceptors()
+	memberfixedlevel.Interceptors[0] = memberfixedlevelInters[0]
 	memberfixedlevelMixinFields1 := memberfixedlevelMixin[1].Fields()
 	_ = memberfixedlevelMixinFields1
 	memberfixedlevelFields := schema.MemberFixedLevel{}.Fields()

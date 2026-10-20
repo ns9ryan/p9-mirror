@@ -20,6 +20,8 @@ type Tx struct {
 	AgentConfig *AgentConfigClient
 	// AgentLevel is the client for interacting with the AgentLevel builders.
 	AgentLevel *AgentLevelClient
+	// AgentLoginLog is the client for interacting with the AgentLoginLog builders.
+	AgentLoginLog *AgentLoginLogClient
 	// AgentProfile is the client for interacting with the AgentProfile builders.
 	AgentProfile *AgentProfileClient
 	// AgentStats is the client for interacting with the AgentStats builders.
@@ -183,6 +185,7 @@ func (tx *Tx) init() {
 	tx.AgentClosure = NewAgentClosureClient(tx.config)
 	tx.AgentConfig = NewAgentConfigClient(tx.config)
 	tx.AgentLevel = NewAgentLevelClient(tx.config)
+	tx.AgentLoginLog = NewAgentLoginLogClient(tx.config)
 	tx.AgentProfile = NewAgentProfileClient(tx.config)
 	tx.AgentStats = NewAgentStatsClient(tx.config)
 	tx.AgentUser = NewAgentUserClient(tx.config)

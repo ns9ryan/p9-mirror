@@ -155,3 +155,15 @@ func (s *AgentServiceServer) UpdateAgentProfile(ctx context.Context, in *agentpb
 	l := agentservicelogic.NewUpdateAgentProfileLogic(ctx, s.svcCtx)
 	return l.UpdateAgentProfile(in)
 }
+
+// group: agent
+func (s *AgentServiceServer) ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq) (*agentpb.ListAgentLoginLogsResp, error) {
+	l := agentservicelogic.NewListAgentLoginLogsLogic(ctx, s.svcCtx)
+	return l.ListAgentLoginLogs(in)
+}
+
+// group: agent
+func (s *AgentServiceServer) ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq) (*agentpb.ListAgentLoginAssociationsResp, error) {
+	l := agentservicelogic.NewListAgentLoginAssociationsLogic(ctx, s.svcCtx)
+	return l.ListAgentLoginAssociations(in)
+}

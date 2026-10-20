@@ -119,7 +119,9 @@ func (_c *MemberFixedLevelCreate) Mutation() *MemberFixedLevelMutation {
 
 // Save creates the MemberFixedLevel in the database.
 func (_c *MemberFixedLevelCreate) Save(ctx context.Context) (*MemberFixedLevel, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -146,15 +148,22 @@ func (_c *MemberFixedLevelCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberFixedLevelCreate) defaults() {
+func (_c *MemberFixedLevelCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if memberfixedlevel.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberfixedlevel.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberfixedlevel.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if memberfixedlevel.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberfixedlevel.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberfixedlevel.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

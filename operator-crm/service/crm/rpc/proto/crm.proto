@@ -74,4 +74,8 @@ service AgentService {
   rpc updateAgentRemark(crm_agent.UpdateAgentRemarkReq) returns (crm_agent.Empty);
   // group: agent
   rpc updateAgentProfile(crm_agent.UpdateAgentProfileReq) returns (crm_agent.AgentProfile);
+  // group: agent
+  rpc listAgentLoginLogs(crm_agent.ListAgentLoginLogsReq) returns (crm_agent.ListAgentLoginLogsResp);
+  // group: agent
+  rpc listAgentLoginAssociations(crm_agent.ListAgentLoginAssociationsReq) returns (crm_agent.ListAgentLoginAssociationsResp);
 }

@@ -143,6 +143,63 @@ var (
 			},
 		},
 	}
+	// AgentLoginLogColumns holds the columns for the "agent_login_log" table.
+	AgentLoginLogColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Nullable: true, Size: 64, Comment: "Operator Code | 分站编码"},
+		{Name: "agent_id", Type: field.TypeInt64, Nullable: true, Comment: "代理ID，账号不存在时为空"},
+		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父代理ID，账号不存在时为空"},
+		{Name: "account", Type: field.TypeString, Size: 64, Comment: "登录账号"},
+		{Name: "login_type", Type: field.TypeInt64, Comment: "登录类型：1账号密码", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "login_ip", Type: field.TypeString, Nullable: true, Comment: "登录IP", SchemaType: map[string]string{"postgres": "inet"}},
+		{Name: "login_location", Type: field.TypeString, Nullable: true, Size: 128, Comment: "登录地点"},
+		{Name: "udid", Type: field.TypeString, Nullable: true, Size: 128, Comment: "设备码"},
+		{Name: "login_device", Type: field.TypeString, Nullable: true, Size: 512, Comment: "登录设备，User-Agent"},
+		{Name: "device_type", Type: field.TypeInt64, Comment: "设备类型：1 PC网页 2 H5 3 Android 4 iOS 5 PC客户端", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "login_at", Type: field.TypeTime, Comment: "登录时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "result", Type: field.TypeInt64, Comment: "登录结果：1成功 2密码错误 3账号停用 4账号不存在", SchemaType: map[string]string{"postgres": "smallint"}},
+	}
+	// AgentLoginLogTable holds the schema information for the "agent_login_log" table.
+	AgentLoginLogTable = &schema.Table{
+		Name:       "agent_login_log",
+		Comment:    "代理登录日志表",
+		Columns:    AgentLoginLogColumns,
+		PrimaryKey: []*schema.Column{AgentLoginLogColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_agent_login_log_operator_login_at",
+				Unique:  false,
+				Columns: []*schema.Column{AgentLoginLogColumns[3], AgentLoginLogColumns[13]},
+			},
+			{
+				Name:    "idx_agent_login_log_agent_id",
+				Unique:  false,
+				Columns: []*schema.Column{AgentLoginLogColumns[4]},
+			},
+			{
+				Name:    "idx_agent_login_log_operator_account",
+				Unique:  false,
+				Columns: []*schema.Column{AgentLoginLogColumns[3], AgentLoginLogColumns[6]},
+			},
+			{
+				Name:    "idx_agent_login_log_operator_parent_id",
+				Unique:  false,
+				Columns: []*schema.Column{AgentLoginLogColumns[3], AgentLoginLogColumns[5]},
+			},
+			{
+				Name:    "idx_agent_login_log_login_ip",
+				Unique:  false,
+				Columns: []*schema.Column{AgentLoginLogColumns[8]},
+			},
+			{
+				Name:    "idx_agent_login_log_udid",
+				Unique:  false,
+				Columns: []*schema.Column{AgentLoginLogColumns[10]},
+			},
+		},
+	}
 	// AgentProfileColumns holds the columns for the "agent_profile" table.
 	AgentProfileColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
@@ -674,6 +731,7 @@ var (
 		AgentClosureTable,
 		AgentConfigTable,
 		AgentLevelTable,
+		AgentLoginLogTable,
 		AgentProfileTable,
 		AgentStatsTable,
 		AgentUserTable,
@@ -734,6 +792,17 @@ func init() {
 		"ck_agent_level_level":         "level BETWEEN 1 AND 7",
 		"ck_agent_level_name":          "BTRIM(name) <> '' AND name = BTRIM(name)",
 		"ck_agent_level_operator_code": "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
+	}
+	AgentLoginLogTable.Annotation = &entsql.Annotation{
+		Table: "agent_login_log",
+	}
+	AgentLoginLogTable.Annotation.Checks = map[string]string{
+		"ck_agent_login_log_account":        "BTRIM(account) <> '' AND account = BTRIM(account)",
+		"ck_agent_login_log_login_device":   "login_device IS NULL OR (BTRIM(login_device) <> '' AND login_device = BTRIM(login_device))",
+		"ck_agent_login_log_login_location": "login_location IS NULL OR (BTRIM(login_location) <> '' AND login_location = BTRIM(login_location))",
+		"ck_agent_login_log_login_type":     "login_type = 1",
+		"ck_agent_login_log_operator_code":  "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
+		"ck_agent_login_log_udid":           "udid IS NULL OR (BTRIM(udid) <> '' AND udid = BTRIM(udid))",
 	}
 	AgentProfileTable.ForeignKeys[0].RefTable = AgentUserTable
 	AgentProfileTable.Annotation = &entsql.Annotation{

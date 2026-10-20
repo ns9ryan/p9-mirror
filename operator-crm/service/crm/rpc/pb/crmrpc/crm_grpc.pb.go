@@ -420,6 +420,8 @@ const (
 	AgentService_UpdateAgentPayoutRestricted_FullMethodName = "/crm.AgentService/updateAgentPayoutRestricted"
 	AgentService_UpdateAgentRemark_FullMethodName           = "/crm.AgentService/updateAgentRemark"
 	AgentService_UpdateAgentProfile_FullMethodName          = "/crm.AgentService/updateAgentProfile"
+	AgentService_ListAgentLoginLogs_FullMethodName          = "/crm.AgentService/listAgentLoginLogs"
+	AgentService_ListAgentLoginAssociations_FullMethodName  = "/crm.AgentService/listAgentLoginAssociations"
 )
 
 // AgentServiceClient is the client API for AgentService service.
@@ -472,6 +474,10 @@ type AgentServiceClient interface {
 	UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
 	// group: agent
 	UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
+	// group: agent
+	ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginLogsResp, error)
+	// group: agent
+	ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginAssociationsResp, error)
 }
 
 type agentServiceClient struct {
@@ -702,6 +708,26 @@ func (c *agentServiceClient) UpdateAgentProfile(ctx context.Context, in *agentpb
 	return out, nil
 }
 
+func (c *agentServiceClient) ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginLogsResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.ListAgentLoginLogsResp)
+	err := c.cc.Invoke(ctx, AgentService_ListAgentLoginLogs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginAssociationsResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.ListAgentLoginAssociationsResp)
+	err := c.cc.Invoke(ctx, AgentService_ListAgentLoginAssociations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentServiceServer is the server API for AgentService service.
 // All implementations must embed UnimplementedAgentServiceServer
 // for forward compatibility.
@@ -752,6 +778,10 @@ type AgentServiceServer interface {
 	UpdateAgentRemark(context.Context, *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error)
 	// group: agent
 	UpdateAgentProfile(context.Context, *agentpb.UpdateAgentProfileReq) (*agentpb.AgentProfile, error)
+	// group: agent
+	ListAgentLoginLogs(context.Context, *agentpb.ListAgentLoginLogsReq) (*agentpb.ListAgentLoginLogsResp, error)
+	// group: agent
+	ListAgentLoginAssociations(context.Context, *agentpb.ListAgentLoginAssociationsReq) (*agentpb.ListAgentLoginAssociationsResp, error)
 	mustEmbedUnimplementedAgentServiceServer()
 }
 
@@ -827,6 +857,12 @@ func (UnimplementedAgentServiceServer) UpdateAgentRemark(context.Context, *agent
 }
 func (UnimplementedAgentServiceServer) UpdateAgentProfile(context.Context, *agentpb.UpdateAgentProfileReq) (*agentpb.AgentProfile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAgentProfile not implemented")
+}
+func (UnimplementedAgentServiceServer) ListAgentLoginLogs(context.Context, *agentpb.ListAgentLoginLogsReq) (*agentpb.ListAgentLoginLogsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAgentLoginLogs not implemented")
+}
+func (UnimplementedAgentServiceServer) ListAgentLoginAssociations(context.Context, *agentpb.ListAgentLoginAssociationsReq) (*agentpb.ListAgentLoginAssociationsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAgentLoginAssociations not implemented")
 }
 func (UnimplementedAgentServiceServer) mustEmbedUnimplementedAgentServiceServer() {}
 func (UnimplementedAgentServiceServer) testEmbeddedByValue()                      {}
@@ -1245,6 +1281,42 @@ func _AgentService_UpdateAgentProfile_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_ListAgentLoginLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.ListAgentLoginLogsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).ListAgentLoginLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_ListAgentLoginLogs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).ListAgentLoginLogs(ctx, req.(*agentpb.ListAgentLoginLogsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_ListAgentLoginAssociations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.ListAgentLoginAssociationsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).ListAgentLoginAssociations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_ListAgentLoginAssociations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).ListAgentLoginAssociations(ctx, req.(*agentpb.ListAgentLoginAssociationsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AgentService_ServiceDesc is the grpc.ServiceDesc for AgentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1339,6 +1411,14 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "updateAgentProfile",
 			Handler:    _AgentService_UpdateAgentProfile_Handler,
+		},
+		{
+			MethodName: "listAgentLoginLogs",
+			Handler:    _AgentService_ListAgentLoginLogs_Handler,
+		},
+		{
+			MethodName: "listAgentLoginAssociations",
+			Handler:    _AgentService_ListAgentLoginAssociations_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

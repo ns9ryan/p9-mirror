@@ -97,7 +97,9 @@ func (_u *MemberAutoLevelUpdate) Mutation() *MemberAutoLevelMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *MemberAutoLevelUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -124,11 +126,15 @@ func (_u *MemberAutoLevelUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberAutoLevelUpdate) defaults() {
+func (_u *MemberAutoLevelUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if memberautolevel.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberautolevel.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberautolevel.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -283,7 +289,9 @@ func (_u *MemberAutoLevelUpdateOne) Select(field string, fields ...string) *Memb
 
 // Save executes the query and returns the updated MemberAutoLevel entity.
 func (_u *MemberAutoLevelUpdateOne) Save(ctx context.Context) (*MemberAutoLevel, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -310,11 +318,15 @@ func (_u *MemberAutoLevelUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberAutoLevelUpdateOne) defaults() {
+func (_u *MemberAutoLevelUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if memberautolevel.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberautolevel.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberautolevel.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

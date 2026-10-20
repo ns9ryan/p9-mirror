@@ -18,6 +18,12 @@ message LoginReq {
   string user_agent = 5;
   // 设备码
   string udid = 6;
+  // 登录类型：1账号密码
+  int32 login_type = 7;
+  // 设备类型：1 PC网页 2 H5 3 Android 4 iOS 5 PC客户端
+  int32 device_type = 8;
+  // 登录地点
+  string login_location = 9;
 }
 
 // TokenInfo 访问令牌与刷新令牌

@@ -16,6 +16,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
+	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
 	"oa.98ent.com/p9/operator-crm/ent/agentprofile"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
@@ -94,6 +95,7 @@ func checkColumn(t, c string) error {
 			agentclosure.Table:               agentclosure.ValidColumn,
 			agentconfig.Table:                agentconfig.ValidColumn,
 			agentlevel.Table:                 agentlevel.ValidColumn,
+			agentloginlog.Table:              agentloginlog.ValidColumn,
 			agentprofile.Table:               agentprofile.ValidColumn,
 			agentstats.Table:                 agentstats.ValidColumn,
 			agentuser.Table:                  agentuser.ValidColumn,

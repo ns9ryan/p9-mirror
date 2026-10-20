@@ -53,7 +53,7 @@ var file_crm_proto_rawDesc = string([]byte{
 	0x2e, 0x63, 0x72, 0x6d, 0x5f, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54,
 	0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x18, 0x2e, 0x63, 0x72, 0x6d, 0x5f, 0x61, 0x75,
 	0x74, 0x68, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x73,
-	0x70, 0x32, 0xfd, 0x0d, 0x0a, 0x0c, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69,
+	0x70, 0x32, 0xcb, 0x0f, 0x0a, 0x0c, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69,
 	0x63, 0x65, 0x12, 0x56, 0x0a, 0x11, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x67, 0x65, 0x6e,
 	0x74, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x73, 0x12, 0x1f, 0x2e, 0x63, 0x72, 0x6d, 0x5f, 0x61, 0x67,
 	0x65, 0x6e, 0x74, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x4c,
@@ -165,11 +165,24 @@ var file_crm_proto_rawDesc = string([]byte{
 	0x6e, 0x74, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x50, 0x72,
 	0x6f, 0x66, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e, 0x63, 0x72, 0x6d, 0x5f, 0x61,
 	0x67, 0x65, 0x6e, 0x74, 0x2e, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x6c,
-	0x65, 0x42, 0x38, 0x5a, 0x36, 0x6f, 0x61, 0x2e, 0x39, 0x38, 0x65, 0x6e, 0x74, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x70, 0x39, 0x2f, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x2d, 0x63, 0x72,
-	0x6d, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x63, 0x72, 0x6d, 0x2f, 0x72, 0x70,
-	0x63, 0x2f, 0x70, 0x62, 0x2f, 0x63, 0x72, 0x6d, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x65, 0x12, 0x59, 0x0a, 0x12, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x4c, 0x6f,
+	0x67, 0x69, 0x6e, 0x4c, 0x6f, 0x67, 0x73, 0x12, 0x20, 0x2e, 0x63, 0x72, 0x6d, 0x5f, 0x61, 0x67,
+	0x65, 0x6e, 0x74, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x4c, 0x6f, 0x67,
+	0x69, 0x6e, 0x4c, 0x6f, 0x67, 0x73, 0x52, 0x65, 0x71, 0x1a, 0x21, 0x2e, 0x63, 0x72, 0x6d, 0x5f,
+	0x61, 0x67, 0x65, 0x6e, 0x74, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x4c,
+	0x6f, 0x67, 0x69, 0x6e, 0x4c, 0x6f, 0x67, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x71, 0x0a, 0x1a,
+	0x6c, 0x69, 0x73, 0x74, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x73,
+	0x73, 0x6f, 0x63, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x28, 0x2e, 0x63, 0x72, 0x6d,
+	0x5f, 0x61, 0x67, 0x65, 0x6e, 0x74, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x67, 0x65, 0x6e, 0x74,
+	0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41, 0x73, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x52, 0x65, 0x71, 0x1a, 0x29, 0x2e, 0x63, 0x72, 0x6d, 0x5f, 0x61, 0x67, 0x65, 0x6e, 0x74,
+	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x67, 0x65, 0x6e, 0x74, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x41,
+	0x73, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x42,
+	0x38, 0x5a, 0x36, 0x6f, 0x61, 0x2e, 0x39, 0x38, 0x65, 0x6e, 0x74, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x70, 0x39, 0x2f, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x2d, 0x63, 0x72, 0x6d, 0x2f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x63, 0x72, 0x6d, 0x2f, 0x72, 0x70, 0x63, 0x2f,
+	0x70, 0x62, 0x2f, 0x63, 0x72, 0x6d, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 })
 
 var file_crm_proto_goTypes = []any{
@@ -201,24 +214,28 @@ var file_crm_proto_goTypes = []any{
 	(*agentpb.UpdateAgentPayoutRestrictedReq)(nil), // 25: crm_agent.UpdateAgentPayoutRestrictedReq
 	(*agentpb.UpdateAgentRemarkReq)(nil),           // 26: crm_agent.UpdateAgentRemarkReq
 	(*agentpb.UpdateAgentProfileReq)(nil),          // 27: crm_agent.UpdateAgentProfileReq
-	(*pingpb.PingResponse)(nil),                    // 28: crm_ping.PingResponse
-	(*authpb.LoginResp)(nil),                       // 29: crm_auth.LoginResp
-	(*authpb.CheckTokenResp)(nil),                  // 30: crm_auth.CheckTokenResp
-	(*agentpb.UpdateAgentLevelsResp)(nil),          // 31: crm_agent.UpdateAgentLevelsResp
-	(*agentpb.AgentConfigResp)(nil),                // 32: crm_agent.AgentConfigResp
-	(*agentpb.AddAgentResp)(nil),                   // 33: crm_agent.AddAgentResp
-	(*agentpb.ListAgentsResp)(nil),                 // 34: crm_agent.ListAgentsResp
-	(*agentpb.SearchAgentsResp)(nil),               // 35: crm_agent.SearchAgentsResp
-	(*agentpb.ListOperatorAgentsResp)(nil),         // 36: crm_agent.ListOperatorAgentsResp
-	(*agentpb.ListAgentLevelsResp)(nil),            // 37: crm_agent.ListAgentLevelsResp
-	(*agentpb.TreeNodeAgentsResp)(nil),             // 38: crm_agent.TreeNodeAgentsResp
-	(*agentpb.TreeNodeAncestorAgentsResp)(nil),     // 39: crm_agent.TreeNodeAncestorAgentsResp
-	(*agentpb.AgentApplyItem)(nil),                 // 40: crm_agent.AgentApplyItem
-	(*agentpb.ListAgentAppliesResp)(nil),           // 41: crm_agent.ListAgentAppliesResp
-	(*agentpb.ReviewAgentApplyResp)(nil),           // 42: crm_agent.ReviewAgentApplyResp
-	(*agentpb.AgentProfile)(nil),                   // 43: crm_agent.AgentProfile
-	(*agentpb.ResetLoginPasswordResp)(nil),         // 44: crm_agent.ResetLoginPasswordResp
-	(*agentpb.Empty)(nil),                          // 45: crm_agent.Empty
+	(*agentpb.ListAgentLoginLogsReq)(nil),          // 28: crm_agent.ListAgentLoginLogsReq
+	(*agentpb.ListAgentLoginAssociationsReq)(nil),  // 29: crm_agent.ListAgentLoginAssociationsReq
+	(*pingpb.PingResponse)(nil),                    // 30: crm_ping.PingResponse
+	(*authpb.LoginResp)(nil),                       // 31: crm_auth.LoginResp
+	(*authpb.CheckTokenResp)(nil),                  // 32: crm_auth.CheckTokenResp
+	(*agentpb.UpdateAgentLevelsResp)(nil),          // 33: crm_agent.UpdateAgentLevelsResp
+	(*agentpb.AgentConfigResp)(nil),                // 34: crm_agent.AgentConfigResp
+	(*agentpb.AddAgentResp)(nil),                   // 35: crm_agent.AddAgentResp
+	(*agentpb.ListAgentsResp)(nil),                 // 36: crm_agent.ListAgentsResp
+	(*agentpb.SearchAgentsResp)(nil),               // 37: crm_agent.SearchAgentsResp
+	(*agentpb.ListOperatorAgentsResp)(nil),         // 38: crm_agent.ListOperatorAgentsResp
+	(*agentpb.ListAgentLevelsResp)(nil),            // 39: crm_agent.ListAgentLevelsResp
+	(*agentpb.TreeNodeAgentsResp)(nil),             // 40: crm_agent.TreeNodeAgentsResp
+	(*agentpb.TreeNodeAncestorAgentsResp)(nil),     // 41: crm_agent.TreeNodeAncestorAgentsResp
+	(*agentpb.AgentApplyItem)(nil),                 // 42: crm_agent.AgentApplyItem
+	(*agentpb.ListAgentAppliesResp)(nil),           // 43: crm_agent.ListAgentAppliesResp
+	(*agentpb.ReviewAgentApplyResp)(nil),           // 44: crm_agent.ReviewAgentApplyResp
+	(*agentpb.AgentProfile)(nil),                   // 45: crm_agent.AgentProfile
+	(*agentpb.ResetLoginPasswordResp)(nil),         // 46: crm_agent.ResetLoginPasswordResp
+	(*agentpb.Empty)(nil),                          // 47: crm_agent.Empty
+	(*agentpb.ListAgentLoginLogsResp)(nil),         // 48: crm_agent.ListAgentLoginLogsResp
+	(*agentpb.ListAgentLoginAssociationsResp)(nil), // 49: crm_agent.ListAgentLoginAssociationsResp
 }
 var file_crm_proto_depIdxs = []int32{
 	0,  // 0: crm.PingService.Ping:input_type -> crm_ping.PingRequest
@@ -249,36 +266,40 @@ var file_crm_proto_depIdxs = []int32{
 	25, // 25: crm.AgentService.updateAgentPayoutRestricted:input_type -> crm_agent.UpdateAgentPayoutRestrictedReq
 	26, // 26: crm.AgentService.updateAgentRemark:input_type -> crm_agent.UpdateAgentRemarkReq
 	27, // 27: crm.AgentService.updateAgentProfile:input_type -> crm_agent.UpdateAgentProfileReq
-	28, // 28: crm.PingService.Ping:output_type -> crm_ping.PingResponse
-	29, // 29: crm.AuthService.login:output_type -> crm_auth.LoginResp
-	29, // 30: crm.AuthService.refresh:output_type -> crm_auth.LoginResp
-	4,  // 31: crm.AuthService.logout:output_type -> crm_auth.Empty
-	4,  // 32: crm.AuthService.logoutAll:output_type -> crm_auth.Empty
-	30, // 33: crm.AuthService.checkToken:output_type -> crm_auth.CheckTokenResp
-	31, // 34: crm.AgentService.updateAgentLevels:output_type -> crm_agent.UpdateAgentLevelsResp
-	32, // 35: crm.AgentService.updateAgentConfig:output_type -> crm_agent.AgentConfigResp
-	32, // 36: crm.AgentService.getAgentConfig:output_type -> crm_agent.AgentConfigResp
-	33, // 37: crm.AgentService.addOperatorAgent:output_type -> crm_agent.AddAgentResp
-	33, // 38: crm.AgentService.addSubAgent:output_type -> crm_agent.AddAgentResp
-	34, // 39: crm.AgentService.listAgents:output_type -> crm_agent.ListAgentsResp
-	35, // 40: crm.AgentService.searchAgents:output_type -> crm_agent.SearchAgentsResp
-	36, // 41: crm.AgentService.listOperatorAgents:output_type -> crm_agent.ListOperatorAgentsResp
-	37, // 42: crm.AgentService.listAgentLevels:output_type -> crm_agent.ListAgentLevelsResp
-	38, // 43: crm.AgentService.treeNodeAgents:output_type -> crm_agent.TreeNodeAgentsResp
-	39, // 44: crm.AgentService.treeNodeAncestorAgents:output_type -> crm_agent.TreeNodeAncestorAgentsResp
-	40, // 45: crm.AgentService.addAgentApply:output_type -> crm_agent.AgentApplyItem
-	41, // 46: crm.AgentService.listAgentApplies:output_type -> crm_agent.ListAgentAppliesResp
-	42, // 47: crm.AgentService.reviewAgentApply:output_type -> crm_agent.ReviewAgentApplyResp
-	43, // 48: crm.AgentService.getAgentProfile:output_type -> crm_agent.AgentProfile
-	44, // 49: crm.AgentService.resetLoginPassword:output_type -> crm_agent.ResetLoginPasswordResp
-	45, // 50: crm.AgentService.updateLoginPassword:output_type -> crm_agent.Empty
-	45, // 51: crm.AgentService.updateWithdrawPassword:output_type -> crm_agent.Empty
-	45, // 52: crm.AgentService.updateAgentShareRate:output_type -> crm_agent.Empty
-	45, // 53: crm.AgentService.updateAgentPayoutRestricted:output_type -> crm_agent.Empty
-	45, // 54: crm.AgentService.updateAgentRemark:output_type -> crm_agent.Empty
-	43, // 55: crm.AgentService.updateAgentProfile:output_type -> crm_agent.AgentProfile
-	28, // [28:56] is the sub-list for method output_type
-	0,  // [0:28] is the sub-list for method input_type
+	28, // 28: crm.AgentService.listAgentLoginLogs:input_type -> crm_agent.ListAgentLoginLogsReq
+	29, // 29: crm.AgentService.listAgentLoginAssociations:input_type -> crm_agent.ListAgentLoginAssociationsReq
+	30, // 30: crm.PingService.Ping:output_type -> crm_ping.PingResponse
+	31, // 31: crm.AuthService.login:output_type -> crm_auth.LoginResp
+	31, // 32: crm.AuthService.refresh:output_type -> crm_auth.LoginResp
+	4,  // 33: crm.AuthService.logout:output_type -> crm_auth.Empty
+	4,  // 34: crm.AuthService.logoutAll:output_type -> crm_auth.Empty
+	32, // 35: crm.AuthService.checkToken:output_type -> crm_auth.CheckTokenResp
+	33, // 36: crm.AgentService.updateAgentLevels:output_type -> crm_agent.UpdateAgentLevelsResp
+	34, // 37: crm.AgentService.updateAgentConfig:output_type -> crm_agent.AgentConfigResp
+	34, // 38: crm.AgentService.getAgentConfig:output_type -> crm_agent.AgentConfigResp
+	35, // 39: crm.AgentService.addOperatorAgent:output_type -> crm_agent.AddAgentResp
+	35, // 40: crm.AgentService.addSubAgent:output_type -> crm_agent.AddAgentResp
+	36, // 41: crm.AgentService.listAgents:output_type -> crm_agent.ListAgentsResp
+	37, // 42: crm.AgentService.searchAgents:output_type -> crm_agent.SearchAgentsResp
+	38, // 43: crm.AgentService.listOperatorAgents:output_type -> crm_agent.ListOperatorAgentsResp
+	39, // 44: crm.AgentService.listAgentLevels:output_type -> crm_agent.ListAgentLevelsResp
+	40, // 45: crm.AgentService.treeNodeAgents:output_type -> crm_agent.TreeNodeAgentsResp
+	41, // 46: crm.AgentService.treeNodeAncestorAgents:output_type -> crm_agent.TreeNodeAncestorAgentsResp
+	42, // 47: crm.AgentService.addAgentApply:output_type -> crm_agent.AgentApplyItem
+	43, // 48: crm.AgentService.listAgentApplies:output_type -> crm_agent.ListAgentAppliesResp
+	44, // 49: crm.AgentService.reviewAgentApply:output_type -> crm_agent.ReviewAgentApplyResp
+	45, // 50: crm.AgentService.getAgentProfile:output_type -> crm_agent.AgentProfile
+	46, // 51: crm.AgentService.resetLoginPassword:output_type -> crm_agent.ResetLoginPasswordResp
+	47, // 52: crm.AgentService.updateLoginPassword:output_type -> crm_agent.Empty
+	47, // 53: crm.AgentService.updateWithdrawPassword:output_type -> crm_agent.Empty
+	47, // 54: crm.AgentService.updateAgentShareRate:output_type -> crm_agent.Empty
+	47, // 55: crm.AgentService.updateAgentPayoutRestricted:output_type -> crm_agent.Empty
+	47, // 56: crm.AgentService.updateAgentRemark:output_type -> crm_agent.Empty
+	45, // 57: crm.AgentService.updateAgentProfile:output_type -> crm_agent.AgentProfile
+	48, // 58: crm.AgentService.listAgentLoginLogs:output_type -> crm_agent.ListAgentLoginLogsResp
+	49, // 59: crm.AgentService.listAgentLoginAssociations:output_type -> crm_agent.ListAgentLoginAssociationsResp
+	30, // [30:60] is the sub-list for method output_type
+	0,  // [0:30] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

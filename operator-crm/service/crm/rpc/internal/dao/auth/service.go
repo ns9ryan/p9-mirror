@@ -21,10 +21,21 @@ import (
 )
 
 const (
-	statusNormal    int64 = 1
-	blacklistPrefix       = "crm:agent:jwt:bl:"
-	saltByteLen           = 8
-	udidMaxLen            = 128
+	statusNormal    int64 = 1                   // 正常
+	blacklistPrefix       = "crm:agent:jwt:bl:" // 黑名单前缀
+	saltByteLen           = 8                   // 盐字节长度
+	udidMaxLen            = 128                 // 设备码最大长度
+	uaMaxLen              = 512                 // 用户代理最大长度
+
+	loginTypePassword int32 = 1 // 账号密码
+
+	deviceTypePCWeb    int32 = 1 // PC网页
+	deviceTypePCClient int32 = 5 // PC客户端
+
+	loginResultSuccess     int64 = 1 // 成功
+	loginResultBadPassword int64 = 2 // 密码错误
+	loginResultDisabled    int64 = 3 // 账号禁用
+	loginResultNotFound    int64 = 4 // 账号不存在
 )
 
 // Config 是签发令牌使用的密钥和有效期。
@@ -66,6 +77,9 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 	if ctxdata.ClientIPFromCtx(ctx) == "" && strings.TrimSpace(in.ClientIp) != "" {
 		ctx = ctxdata.WithClientIP(ctx, in.ClientIp)
 	}
+	if in.LoginType != loginTypePassword || in.DeviceType < deviceTypePCWeb || in.DeviceType > deviceTypePCClient {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
 
 	u, err := s.DB.AgentUser.Query().
 		Where(agentuser.AccountEQ(account)).
@@ -73,17 +87,33 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 		Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
+			if werr := s.writeLoginLog(ctx, in, 0, 0, loginResultNotFound); werr != nil {
+				return nil, werr
+			}
 			return nil, xerr.Unauthorized(i18n.AuthPasswordIncorrect)
 		}
 		return nil, err
 	}
+	parentID := int64(0)
+	if u.ParentID != nil {
+		parentID = *u.ParentID
+	}
 	if !dao.CheckPassword(u.LoginPasswordHash, password) {
+		if werr := s.writeLoginLog(ctx, in, u.ID, parentID, loginResultBadPassword); werr != nil {
+			return nil, werr
+		}
 		return nil, xerr.Unauthorized(i18n.AuthPasswordIncorrect)
 	}
 	if u.Status != statusNormal {
+		if werr := s.writeLoginLog(ctx, in, u.ID, parentID, loginResultDisabled); werr != nil {
+			return nil, werr
+		}
 		return nil, xerr.Forbidden(i18n.AuthUserDisabled)
 	}
 
+	if err := s.writeLoginLog(ctx, in, u.ID, parentID, loginResultSuccess); err != nil {
+		return nil, err
+	}
 	if err := s.touchLogin(ctx, u, in.Udid); err != nil {
 		return nil, err
 	}
@@ -247,6 +277,35 @@ func (s *Service) touchLogin(ctx context.Context, u *ent.AgentUser, udid string)
 	u.LastLoginAt = &now
 	u.LoginCount++
 	return nil
+}
+
+// 写入代理登录日志
+func (s *Service) writeLoginLog(ctx context.Context, in *authpb.LoginReq, agentID, parentID, result int64) error {
+	create := s.DB.AgentLoginLog.Create().
+		SetAccount(strings.TrimSpace(in.Account)).
+		SetLoginType(int64(in.LoginType)).
+		SetDeviceType(int64(in.DeviceType)).
+		SetLoginAt(time.Now()).
+		SetResult(result)
+	if parentID > 0 {
+		create.SetParentID(parentID)
+	}
+	if agentID > 0 {
+		create.SetAgentID(agentID)
+	}
+	if ip := utils.NormalizeIP(ctxdata.ClientIPFromCtx(ctx)); net.ParseIP(ip) != nil {
+		create.SetLoginIP(ip)
+	}
+	if loc := clip(strings.TrimSpace(in.LoginLocation), 128); loc != "" {
+		create.SetLoginLocation(loc)
+	}
+	if udid := clip(strings.TrimSpace(in.Udid), udidMaxLen); udid != "" {
+		create.SetUdid(udid)
+	}
+	if ua := clip(strings.TrimSpace(in.UserAgent), uaMaxLen); ua != "" {
+		create.SetLoginDevice(ua)
+	}
+	return create.Exec(ctx)
 }
 
 func (s *Service) signPair(ctx context.Context, u *ent.AgentUser) (*authpb.TokenInfo, error) {
