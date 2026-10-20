@@ -7,10 +7,13 @@ require (
 	github.com/zeromicro/go-zero v1.10.3
 	oa.98ent.com/p9/common v1.0.5
 	oa.98ent.com/p9/core v1.2.2
+	oa.98ent.com/p9/operator-base v0.0.0
 	oa.98ent.com/p9/operator-crm v0.0.0
 )
 
 replace oa.98ent.com/p9/operator-crm => ../operator-crm
+
+replace oa.98ent.com/p9/operator-base => ../operator-base
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect

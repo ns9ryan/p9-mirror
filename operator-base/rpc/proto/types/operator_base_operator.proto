@@ -144,3 +144,15 @@ message DeleteOperatorDomainsResponse {
   // 删除的域名数量
   int64 domain_deleted = 3;
 }
+
+// 获取分站已分配代理子线路请求
+message GetAgentLinesRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+}
+
+// 获取分站已分配代理子线路响应
+message GetAgentLinesResponse {
+  // 当前有效代理子线路编码
+  repeated string agent_line_codes = 1;
+}

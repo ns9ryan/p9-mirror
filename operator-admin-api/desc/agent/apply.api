@@ -1,0 +1,66 @@
+syntax = "v1"
+
+info (
+	title:   "agent apply api"
+	desc:    "代理申请"
+	author:  "p9"
+	version: "v1"
+)
+
+type AgentApplyItem {
+	Id             int64  `json:"id"`
+	Account        string `json:"account"`
+	Realname       string `json:"realname"`
+	Mobile         string `json:"mobile"`
+	RegisterSource int32  `json:"register_source"`
+	ApplyShareRate int32  `json:"apply_share_rate"`
+	MemberAccount  string `json:"member_account"`
+	MemberCode     string `json:"member_code"`
+	AuditStatus    int32  `json:"audit_status"`
+	RejectReason   string `json:"reject_reason"`
+	ApplyRemark    string `json:"apply_remark"`
+	RegisterAt     int64  `json:"register_at"`
+	AuditedAt      int64  `json:"audited_at"`
+	Auditor        string `json:"auditor"`
+	AgentId        int64  `json:"agent_id"`
+}
+
+type ListAgentAppliesReq {
+	Page        int32  `json:"page,optional"`
+	PageSize    int32  `json:"page_size,optional"`
+	AuditStatus int32  `json:"audit_status,optional"`
+	AccountType int32  `json:"account_type,optional"`
+	Account     string `json:"account,optional"`
+	TimeStart   int64  `json:"time_start,optional"`
+	TimeEnd     int64  `json:"time_end,optional"`
+}
+
+type ListAgentAppliesResp {
+	Items []AgentApplyItem `json:"items"`
+	Total int64            `json:"total"`
+}
+
+type ReviewAgentApplyReq {
+	Id           int64  `json:"id"`
+	Action       int32  `json:"action"`
+	RejectReason string `json:"reject_reason,optional"`
+}
+
+type ReviewAgentApplyResp {
+	Apply    AgentApplyItem `json:"apply"`
+	Password string         `json:"password"`
+}
+
+@server (
+	group:      agent/apply
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "代理申请列表"
+	@handler listAgentApplies
+	post /agent/apply/list (ListAgentAppliesReq) returns (ListAgentAppliesResp)
+
+	@doc "代理申请审批"
+	@handler reviewAgentApply
+	post /agent/apply/review (ReviewAgentApplyReq) returns (ReviewAgentApplyResp)
+}

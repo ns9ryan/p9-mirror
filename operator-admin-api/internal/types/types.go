@@ -19,6 +19,24 @@ type AddOperatorAgentReq struct {
 	ParentId int64             `json:"parent_id,optional"`
 }
 
+type AgentApplyItem struct {
+	Id             int64  `json:"id"`
+	Account        string `json:"account"`
+	Realname       string `json:"realname"`
+	Mobile         string `json:"mobile"`
+	RegisterSource int32  `json:"register_source"`
+	ApplyShareRate int32  `json:"apply_share_rate"`
+	MemberAccount  string `json:"member_account"`
+	MemberCode     string `json:"member_code"`
+	AuditStatus    int32  `json:"audit_status"`
+	RejectReason   string `json:"reject_reason"`
+	ApplyRemark    string `json:"apply_remark"`
+	RegisterAt     int64  `json:"register_at"`
+	AuditedAt      int64  `json:"audited_at"`
+	Auditor        string `json:"auditor"`
+	AgentId        int64  `json:"agent_id"`
+}
+
 type AgentConfig struct {
 	Id                    int64 `json:"id,optional"`
 	MaxShareRate          int32 `json:"max_share_rate"`
@@ -35,13 +53,23 @@ type AgentConfig struct {
 
 type AgentCreateFields struct {
 	Account       string `json:"account"`
-	Code          string `json:"code"`
+	Code          string `json:"code,optional"`
 	Password      string `json:"password"`
 	AgentType     int32  `json:"agent_type"`
 	AgentLineCode string `json:"agent_line_code,optional"`
 	ShareRate     int32  `json:"share_rate"`
-	PromoCode     string `json:"promo_code"`
+	PromoCode     string `json:"promo_code,optional"`
 	RegisterIp    string `json:"register_ip,optional"`
+}
+
+type AgentEmpty struct {
+}
+
+type AgentInitStatusResp struct {
+	Ready       bool             `json:"ready"`
+	LevelsReady bool             `json:"levels_ready"`
+	LevelCount  int32            `json:"level_count"`
+	Lines       []LineInitStatus `json:"lines"`
 }
 
 type AgentLevelItem struct {
@@ -78,16 +106,51 @@ type AgentListItem struct {
 	LastLoginAt       int64  `json:"last_login_at"`
 }
 
+type AgentProfile struct {
+	AgentId           int64  `json:"agent_id"`
+	Remark            string `json:"remark"`
+	Status            int32  `json:"status"`
+	RegisterSource    int32  `json:"register_source"`
+	PromoCode         string `json:"promo_code"`
+	ParentAccount     string `json:"parent_account"`
+	RegisterAt        int64  `json:"register_at"`
+	LastLoginAt       int64  `json:"last_login_at"`
+	LastLoginIp       string `json:"last_login_ip"`
+	LastLoginUdid     string `json:"last_login_udid"`
+	ShareRate         int32  `json:"share_rate"`
+	LoginCount        int64  `json:"login_count"`
+	InviteMemberCount int64  `json:"invite_member_count"`
+	PayoutRestricted  int32  `json:"payout_restricted"`
+	AgentType         int32  `json:"agent_type"`
+	AvatarUrl         string `json:"avatar_url"`
+	Realname          string `json:"realname"`
+	Telegram          string `json:"telegram"`
+	Facebook          string `json:"facebook"`
+	Whatsapp          string `json:"whatsapp"`
+	Mobile            string `json:"mobile"`
+	Nickname          string `json:"nickname"`
+	IdDocumentNo      string `json:"id_document_no"`
+	Zalo              string `json:"zalo"`
+	Twitter           string `json:"twitter"`
+	Line              string `json:"line"`
+	Email             string `json:"email"`
+}
+
 type AgentSearchItem struct {
 	Id         int64  `json:"id"`
 	Account    string `json:"account"`
 	Level      int32  `json:"level"`
 	LevelAlias string `json:"level_alias"`
 	LineCode   string `json:"line_code"`
+	ShareRate  int32  `json:"share_rate"`
 }
 
 type BaseMsgResp struct {
 	Result string `json:"result"`
+}
+
+type GetAgentProfileReq struct {
+	AgentId int64 `form:"agent_id"`
 }
 
 type IDQuery struct {
@@ -97,6 +160,36 @@ type IDQuery struct {
 type IDsReq struct {
 	Id  int64   `json:"id,optional"`
 	Ids []int64 `json:"ids,optional"`
+}
+
+type LineDefaultAgent struct {
+	LineCode  string `json:"line_code"`
+	AgentId   int64  `json:"agent_id"`
+	ShareRate int32  `json:"share_rate"`
+}
+
+type LineDefaultAgentsResp struct {
+	Items []LineDefaultAgent `json:"items"`
+}
+
+type LineInitStatus struct {
+	LineCode    string `json:"line_code"`
+	Initialized bool   `json:"initialized"`
+}
+
+type ListAgentAppliesReq struct {
+	Page        int32  `json:"page,optional"`
+	PageSize    int32  `json:"page_size,optional"`
+	AuditStatus int32  `json:"audit_status,optional"`
+	AccountType int32  `json:"account_type,optional"`
+	Account     string `json:"account,optional"`
+	TimeStart   int64  `json:"time_start,optional"`
+	TimeEnd     int64  `json:"time_end,optional"`
+}
+
+type ListAgentAppliesResp struct {
+	Items []AgentApplyItem `json:"items"`
+	Total int64            `json:"total"`
 }
 
 type ListAgentLevelsResp struct {
@@ -147,10 +240,30 @@ type PingResponse struct {
 	Message string `json:"message"`
 }
 
+type ResetLoginPasswordReq struct {
+	AgentId int64 `json:"agent_id"`
+}
+
+type ResetLoginPasswordResp struct {
+	Password string `json:"password"`
+}
+
+type ReviewAgentApplyReq struct {
+	Id           int64  `json:"id"`
+	Action       int32  `json:"action"`
+	RejectReason string `json:"reject_reason,optional"`
+}
+
+type ReviewAgentApplyResp struct {
+	Apply    AgentApplyItem `json:"apply"`
+	Password string         `json:"password"`
+}
+
 type SearchAgentsReq struct {
-	Keyword string `json:"keyword"`
-	Level   int32  `json:"level,optional"`
-	Limit   int32  `json:"limit,optional"`
+	Keyword  string `json:"keyword"`
+	LineCode string `json:"line_code,optional"`
+	Level    int32  `json:"level,optional"`
+	Limit    int32  `json:"limit,optional"`
 }
 
 type SearchAgentsResp struct {
@@ -168,6 +281,10 @@ type TreeNodeAgentItem struct {
 
 type TreeNodeAgentsReq struct {
 	ParentId int64 `form:"parent_id,optional"`
+}
+
+type TreeNodeAncestorAgentsReq struct {
+	Keyword string `form:"keyword"`
 }
 
 type UpdateAgentConfigReq struct {
@@ -189,4 +306,41 @@ type UpdateAgentLevelsReq struct {
 
 type UpdateAgentLevelsResp struct {
 	Items []AgentLevelItem `json:"items"`
+}
+
+type UpdateAgentPayoutRestrictedReq struct {
+	AgentId          int64 `json:"agent_id"`
+	PayoutRestricted int32 `json:"payout_restricted"`
+}
+
+type UpdateAgentProfileReq struct {
+	AgentId      int64  `json:"agent_id"`
+	FieldType    int32  `json:"field_type"`
+	AvatarUrl    string `json:"avatar_url,optional"`
+	Realname     string `json:"realname,optional"`
+	Telegram     string `json:"telegram,optional"`
+	Facebook     string `json:"facebook,optional"`
+	Whatsapp     string `json:"whatsapp,optional"`
+	Mobile       string `json:"mobile,optional"`
+	Nickname     string `json:"nickname,optional"`
+	IdDocumentNo string `json:"id_document_no,optional"`
+	Zalo         string `json:"zalo,optional"`
+	Twitter      string `json:"twitter,optional"`
+	Line         string `json:"line,optional"`
+	Email        string `json:"email,optional"`
+}
+
+type UpdateAgentRemarkReq struct {
+	AgentId int64  `json:"agent_id"`
+	Remark  string `json:"remark,optional"`
+}
+
+type UpdateAgentShareRateReq struct {
+	AgentId   int64 `json:"agent_id"`
+	ShareRate int32 `json:"share_rate"`
+}
+
+type UpdateWithdrawPasswordReq struct {
+	AgentId  int64  `json:"agent_id"`
+	Password string `json:"password"`
 }

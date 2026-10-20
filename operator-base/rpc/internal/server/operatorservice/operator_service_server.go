@@ -53,3 +53,9 @@ func (s *OperatorServiceServer) DeleteOperatorDomains(ctx context.Context, in *o
 	l := operatorservicelogic.NewDeleteOperatorDomainsLogic(ctx, s.svcCtx)
 	return l.DeleteOperatorDomains(in)
 }
+
+// 获取分站已分配代理子线路
+func (s *OperatorServiceServer) GetAgentLines(ctx context.Context, in *operatorpb.GetAgentLinesRequest) (*operatorpb.GetAgentLinesResponse, error) {
+	l := operatorservicelogic.NewGetAgentLinesLogic(ctx, s.svcCtx)
+	return l.GetAgentLines(in)
+}

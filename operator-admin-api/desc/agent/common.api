@@ -33,12 +33,12 @@ type AgentConfig {
 // Agent create fields | 创建代理字段
 type AgentCreateFields {
 	Account       string `json:"account"`
-	Code          string `json:"code"`
+	Code          string `json:"code,optional"`
 	Password      string `json:"password"`
 	AgentType     int32  `json:"agent_type"`
 	AgentLineCode string `json:"agent_line_code,optional"`
 	ShareRate     int32  `json:"share_rate"`
-	PromoCode     string `json:"promo_code"`
+	PromoCode     string `json:"promo_code,optional"`
 	RegisterIp    string `json:"register_ip,optional"`
 }
 
@@ -60,6 +60,7 @@ type AgentSearchItem {
 	Level      int32  `json:"level"`
 	LevelAlias string `json:"level_alias"`
 	LineCode   string `json:"line_code"`
+	ShareRate  int32  `json:"share_rate"`
 }
 
 // Agent list item | 代理列表项

@@ -7,9 +7,16 @@ info (
 	version: "v1"
 )
 
+import "common.api"
+
 type TreeNodeAgentsReq {
 	// Parent ID | 上级代理 ID，0 为顶层
 	ParentId int64 `form:"parent_id,optional"`
+}
+
+type TreeNodeAncestorAgentsReq {
+	// Keyword | 代理 ID 或账号，精确匹配
+	Keyword string `form:"keyword"`
 }
 
 type TreeNodeAgentItem {
@@ -35,4 +42,8 @@ service operator_admin_api {
 	@doc "代理树节点（按上级 ID；0 为顶层）"
 	@handler treeNodeAgents
 	get /agent/tree/node (TreeNodeAgentsReq) returns ([]TreeNodeAgentItem)
+
+	@doc "按 ID 或账号精确查找代理及其上级"
+	@handler treeNodeAncestorAgents
+	get /agent/tree/ancestors (TreeNodeAncestorAgentsReq) returns ([]AgentSearchItem)
 }

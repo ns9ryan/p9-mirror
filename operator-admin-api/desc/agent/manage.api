@@ -38,9 +38,10 @@ type ListAgentsResp {
 }
 
 type SearchAgentsReq {
-	Keyword string `json:"keyword"`
-	Level   int32  `json:"level,optional"`
-	Limit   int32  `json:"limit,optional"`
+	Keyword  string `json:"keyword"`
+	LineCode string `json:"line_code,optional"`
+	Level    int32  `json:"level,optional"`
+	Limit    int32  `json:"limit,optional"`
 }
 
 type SearchAgentsResp {

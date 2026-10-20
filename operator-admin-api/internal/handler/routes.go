@@ -6,9 +6,11 @@ package handler
 import (
 	"net/http"
 
+	agentapply "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/apply"
 	agentconfig "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/config"
 	agentlevel "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/level"
 	agentmanage "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/manage"
+	agentprofile "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/profile"
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
 	ping "oa.98ent.com/p9/operator-admin-api/internal/handler/ping"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
@@ -17,6 +19,26 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					// 代理申请列表
+					Method:  http.MethodPost,
+					Path:    "/agent/apply/list",
+					Handler: agentapply.ListAgentAppliesHandler(serverCtx),
+				},
+				{
+					// 代理申请审批
+					Method:  http.MethodPost,
+					Path:    "/agent/apply/review",
+					Handler: agentapply.ReviewAgentApplyHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
 	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
@@ -32,6 +54,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/agent/config/update",
 					Handler: agentconfig.UpdateAgentConfigHandler(serverCtx),
+				},
+				{
+					// 检测分站代理线与等级是否完成初始化
+					Method:  http.MethodGet,
+					Path:    "/agent/init/status",
+					Handler: agentconfig.GetAgentInitStatusHandler(serverCtx),
+				},
+				{
+					// 已开通代理线的默认代理
+					Method:  http.MethodGet,
+					Path:    "/agent/line/defaults",
+					Handler: agentconfig.GetLineDefaultAgentsHandler(serverCtx),
 				},
 			}...,
 		),
@@ -93,6 +127,62 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
 			[]rest.Route{
+				{
+					// 重置登录密码
+					Method:  http.MethodPost,
+					Path:    "/agent/password/reset",
+					Handler: agentprofile.ResetLoginPasswordHandler(serverCtx),
+				},
+				{
+					// 修改出款限制
+					Method:  http.MethodPost,
+					Path:    "/agent/payout-restricted/update",
+					Handler: agentprofile.UpdateAgentPayoutRestrictedHandler(serverCtx),
+				},
+				{
+					// 获取代理资料
+					Method:  http.MethodGet,
+					Path:    "/agent/profile",
+					Handler: agentprofile.GetAgentProfileHandler(serverCtx),
+				},
+				{
+					// 按字段更新代理资料
+					Method:  http.MethodPost,
+					Path:    "/agent/profile/update",
+					Handler: agentprofile.UpdateAgentProfileHandler(serverCtx),
+				},
+				{
+					// 修改代理备注
+					Method:  http.MethodPost,
+					Path:    "/agent/remark/update",
+					Handler: agentprofile.UpdateAgentRemarkHandler(serverCtx),
+				},
+				{
+					// 修改占成
+					Method:  http.MethodPost,
+					Path:    "/agent/share-rate/update",
+					Handler: agentprofile.UpdateAgentShareRateHandler(serverCtx),
+				},
+				{
+					// 修改提款密码
+					Method:  http.MethodPost,
+					Path:    "/agent/withdraw-password/reset",
+					Handler: agentprofile.UpdateWithdrawPasswordHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					// 按 ID 或账号精确查找代理及其上级
+					Method:  http.MethodGet,
+					Path:    "/agent/tree/ancestors",
+					Handler: agenttree.TreeNodeAncestorAgentsHandler(serverCtx),
+				},
 				{
 					// 代理树节点（按上级 ID；0 为顶层）
 					Method:  http.MethodGet,

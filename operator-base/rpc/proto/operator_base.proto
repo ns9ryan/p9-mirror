@@ -29,4 +29,7 @@ service OperatorService {
 
   // 删除分站域名
   rpc DeleteOperatorDomains(operator_base_operator.DeleteOperatorDomainsRequest) returns (operator_base_operator.DeleteOperatorDomainsResponse);
+
+  // 获取分站已分配代理子线路
+  rpc GetAgentLines(operator_base_operator.GetAgentLinesRequest) returns (operator_base_operator.GetAgentLinesResponse);
 }

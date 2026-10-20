@@ -14,6 +14,13 @@ OperatorCoreRpc:
       - 127.0.0.1:12379
     Key: operator-core-rpc
 
+# 后台基础服务 RPC配置
+OperatorBaseRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379
+    Key: operator-base-rpc
+
 # 后台CRM RPC配置
 CrmRpc:
   Etcd:

@@ -25,24 +25,40 @@ func NewListOperatorAgentsLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
+// ListOperatorAgents 按线路分组获取指定层级的代理商列表
 func (l *ListOperatorAgentsLogic) ListOperatorAgents(req *types.ListOperatorAgentsReq) (*types.ListOperatorAgentsResp, error) {
 	if req == nil {
 		req = &types.ListOperatorAgentsReq{}
 	}
+	// 获取已开通的线路
+	openedLines, err := agentconv.OpenedLineCodes(l.ctx, l.svcCtx)
+	if err != nil {
+		return nil, err
+	}
+	// 获取线路下的代理商
 	rpcResp, err := l.svcCtx.AgentRpc.ListOperatorAgents(l.ctx, &agentpb.ListOperatorAgentsReq{
 		Level: req.Level,
 	})
 	if err != nil {
 		return nil, err
 	}
-	groups := make([]types.OperatorAgentLineGroup, 0, len(rpcResp.GetGroups()))
+	// 按线路分组
+	byLine := make(map[string][]types.AgentSearchItem, len(rpcResp.GetGroups()))
 	for _, g := range rpcResp.GetGroups() {
 		if g == nil {
 			continue
 		}
+		byLine[g.LineCode] = agentconv.SearchItemsFromPB(g.Agents)
+	}
+	groups := make([]types.OperatorAgentLineGroup, 0, len(openedLines))
+	for _, code := range openedLines {
+		agents := byLine[code]
+		if agents == nil {
+			agents = []types.AgentSearchItem{}
+		}
 		groups = append(groups, types.OperatorAgentLineGroup{
-			LineCode: g.LineCode,
-			Agents:   agentconv.SearchItemsFromPB(g.Agents),
+			LineCode: code,
+			Agents:   agents,
 		})
 	}
 	return &types.ListOperatorAgentsResp{Groups: groups}, nil

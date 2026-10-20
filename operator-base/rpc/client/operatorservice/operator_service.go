@@ -27,6 +27,8 @@ type (
 		DeleteOperatorBasicResources(ctx context.Context, in *operatorpb.DeleteOperatorBasicResourcesRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorBasicResourcesResponse, error)
 		// 删除分站域名
 		DeleteOperatorDomains(ctx context.Context, in *operatorpb.DeleteOperatorDomainsRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorDomainsResponse, error)
+		// 获取分站已分配代理子线路
+		GetAgentLines(ctx context.Context, in *operatorpb.GetAgentLinesRequest, opts ...grpc.CallOption) (*operatorpb.GetAgentLinesResponse, error)
 	}
 
 	defaultOperatorService struct {
@@ -68,4 +70,10 @@ func (m *defaultOperatorService) DeleteOperatorBasicResources(ctx context.Contex
 func (m *defaultOperatorService) DeleteOperatorDomains(ctx context.Context, in *operatorpb.DeleteOperatorDomainsRequest, opts ...grpc.CallOption) (*operatorpb.DeleteOperatorDomainsResponse, error) {
 	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
 	return client.DeleteOperatorDomains(ctx, in, opts...)
+}
+
+// 获取分站已分配代理子线路
+func (m *defaultOperatorService) GetAgentLines(ctx context.Context, in *operatorpb.GetAgentLinesRequest, opts ...grpc.CallOption) (*operatorpb.GetAgentLinesResponse, error) {
+	client := operatorbaserpc.NewOperatorServiceClient(m.cli.Conn())
+	return client.GetAgentLines(ctx, in, opts...)
 }

@@ -14,6 +14,8 @@ type Config struct {
 	rest.RestConf
 	// 分站Core RPC配置
 	OperatorCoreRpc zrpc.RpcClientConf
+	// 后台基础服务 RPC配置
+	OperatorBaseRpc zrpc.RpcClientConf
 	// 后台CRM RPC配置
 	CrmRpc zrpc.RpcClientConf
 	// 国际化配置

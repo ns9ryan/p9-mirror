@@ -30,9 +30,10 @@ func (l *SearchAgentsLogic) SearchAgents(req *types.SearchAgentsReq) (*types.Sea
 		req = &types.SearchAgentsReq{}
 	}
 	rpcResp, err := l.svcCtx.AgentRpc.SearchAgents(l.ctx, &agentpb.SearchAgentsReq{
-		Keyword: req.Keyword,
-		Level:   req.Level,
-		Limit:   req.Limit,
+		LineCode: &req.LineCode,
+		Keyword:  req.Keyword,
+		Level:    req.Level,
+		Limit:    req.Limit,
 	})
 	if err != nil {
 		return nil, err

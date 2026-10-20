@@ -13,6 +13,7 @@ import (
 	"oa.98ent.com/p9/core/rpc/coreclient"
 	"oa.98ent.com/p9/operator-admin-api/internal/config"
 	"oa.98ent.com/p9/operator-admin-api/internal/locales"
+	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
 )
 
@@ -20,6 +21,7 @@ type ServiceContext struct {
 	Config          config.Config
 	Trans           *i18n.Translator
 	OperatorCoreRpc coreclient.Core
+	OperatorBaseRpc operatorservice.OperatorService
 	AgentRpc        agentservice.AgentService
 	Jwt             rest.Middleware // Core JWT
 	Authority       rest.Middleware // Casbin 权限
@@ -35,6 +37,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// 创建分站Core RPC客户端
 	operatorCoreCli := zrpc.MustNewClient(c.OperatorCoreRpc)
 	operatorCoreRpc := coreclient.NewCore(operatorCoreCli)
+
+	// 创建后台基础服务 RPC客户端
+	operatorBaseCli := zrpc.MustNewClient(c.OperatorBaseRpc)
+	operatorBaseRpc := operatorservice.NewOperatorService(operatorBaseCli)
+
 	// 设置多语言字典加载器
 	coreadapt.SetDictLoader(operatorCoreRpc)
 
@@ -49,6 +56,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:          c,
 		Trans:           trans,
 		OperatorCoreRpc: operatorCoreRpc,
+		OperatorBaseRpc: operatorBaseRpc,
 		AgentRpc:        agentRpc,
 		Jwt:             middleware.JWT(authAdapter),
 		Authority:       middleware.Authority(authAdapter),

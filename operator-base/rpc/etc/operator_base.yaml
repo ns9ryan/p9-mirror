@@ -12,8 +12,8 @@ Etcd:
 # 数据库配置
 DatabaseConf:
   Host:     127.0.0.1             # 当前节点数据库地址
-  Port:     15441                 # node-01 PostgreSQL宿主机端口
-  DBName:   p9_operator           # 厅数据库名称
+  Port:     15432                 # node-01 PostgreSQL宿主机端口
+  DBName:   p9_operator01           # 厅数据库名称
   Username: root                  # 数据库用户名
   Password: root                  # 数据库密码
   SSLMode:  disable               # SSL模式

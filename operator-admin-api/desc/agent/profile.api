@@ -1,0 +1,123 @@
+syntax = "v1"
+
+info (
+	title:   "agent profile api"
+	desc:    "代理资料"
+	author:  "p9"
+	version: "v1"
+)
+
+type GetAgentProfileReq {
+	AgentId int64 `form:"agent_id"`
+}
+
+type AgentProfile {
+	AgentId           int64  `json:"agent_id"`
+	Remark            string `json:"remark"`
+	Status            int32  `json:"status"`
+	RegisterSource    int32  `json:"register_source"`
+	PromoCode         string `json:"promo_code"`
+	ParentAccount     string `json:"parent_account"`
+	RegisterAt        int64  `json:"register_at"`
+	LastLoginAt       int64  `json:"last_login_at"`
+	LastLoginIp       string `json:"last_login_ip"`
+	LastLoginUdid     string `json:"last_login_udid"`
+	ShareRate         int32  `json:"share_rate"`
+	LoginCount        int64  `json:"login_count"`
+	InviteMemberCount int64  `json:"invite_member_count"`
+	PayoutRestricted  int32  `json:"payout_restricted"`
+	AgentType         int32  `json:"agent_type"`
+	AvatarUrl         string `json:"avatar_url"`
+	Realname          string `json:"realname"`
+	Telegram          string `json:"telegram"`
+	Facebook          string `json:"facebook"`
+	Whatsapp          string `json:"whatsapp"`
+	Mobile            string `json:"mobile"`
+	Nickname          string `json:"nickname"`
+	IdDocumentNo      string `json:"id_document_no"`
+	Zalo              string `json:"zalo"`
+	Twitter           string `json:"twitter"`
+	Line              string `json:"line"`
+	Email             string `json:"email"`
+}
+
+type ResetLoginPasswordReq {
+	AgentId int64 `json:"agent_id"`
+}
+
+type ResetLoginPasswordResp {
+	Password string `json:"password"`
+}
+
+type UpdateWithdrawPasswordReq {
+	AgentId  int64  `json:"agent_id"`
+	Password string `json:"password"`
+}
+
+type UpdateAgentShareRateReq {
+	AgentId   int64 `json:"agent_id"`
+	ShareRate int32 `json:"share_rate"`
+}
+
+type UpdateAgentPayoutRestrictedReq {
+	AgentId          int64 `json:"agent_id"`
+	PayoutRestricted int32 `json:"payout_restricted"`
+}
+
+type UpdateAgentRemarkReq {
+	AgentId int64  `json:"agent_id"`
+	Remark  string `json:"remark,optional"`
+}
+
+type UpdateAgentProfileReq {
+	AgentId      int64  `json:"agent_id"`
+	FieldType    int32  `json:"field_type"`
+	AvatarUrl    string `json:"avatar_url,optional"`
+	Realname     string `json:"realname,optional"`
+	Telegram     string `json:"telegram,optional"`
+	Facebook     string `json:"facebook,optional"`
+	Whatsapp     string `json:"whatsapp,optional"`
+	Mobile       string `json:"mobile,optional"`
+	Nickname     string `json:"nickname,optional"`
+	IdDocumentNo string `json:"id_document_no,optional"`
+	Zalo         string `json:"zalo,optional"`
+	Twitter      string `json:"twitter,optional"`
+	Line         string `json:"line,optional"`
+	Email        string `json:"email,optional"`
+}
+
+type AgentEmpty {}
+
+@server (
+	group:      agent/profile
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "获取代理资料"
+	@handler getAgentProfile
+	get /agent/profile (GetAgentProfileReq) returns (AgentProfile)
+
+	@doc "重置登录密码"
+	@handler resetLoginPassword
+	post /agent/password/reset (ResetLoginPasswordReq) returns (ResetLoginPasswordResp)
+
+	@doc "修改提款密码"
+	@handler updateWithdrawPassword
+	post /agent/withdraw-password/reset (UpdateWithdrawPasswordReq) returns (AgentEmpty)
+
+	@doc "修改占成"
+	@handler updateAgentShareRate
+	post /agent/share-rate/update (UpdateAgentShareRateReq) returns (AgentEmpty)
+
+	@doc "修改出款限制"
+	@handler updateAgentPayoutRestricted
+	post /agent/payout-restricted/update (UpdateAgentPayoutRestrictedReq) returns (AgentEmpty)
+
+	@doc "修改代理备注"
+	@handler updateAgentRemark
+	post /agent/remark/update (UpdateAgentRemarkReq) returns (AgentEmpty)
+
+	@doc "按字段更新代理资料"
+	@handler updateAgentProfile
+	post /agent/profile/update (UpdateAgentProfileReq) returns (AgentProfile)
+}

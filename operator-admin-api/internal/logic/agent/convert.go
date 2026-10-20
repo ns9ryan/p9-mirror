@@ -102,6 +102,7 @@ func SearchItemFromPB(in *agentpb.AgentSearchItem) types.AgentSearchItem {
 		Level:      in.Level,
 		LevelAlias: in.LevelAlias,
 		LineCode:   in.LineCode,
+		ShareRate:  in.ShareRate,
 	}
 }
 
@@ -155,6 +156,75 @@ func ListItemsFromPB(in []*agentpb.AgentListItem) []types.AgentListItem {
 			continue
 		}
 		out = append(out, ListItemFromPB(it))
+	}
+	return out
+}
+
+func ApplyItemFromPB(in *agentpb.AgentApplyItem) types.AgentApplyItem {
+	if in == nil {
+		return types.AgentApplyItem{}
+	}
+	return types.AgentApplyItem{
+		Id:             in.Id,
+		Account:        in.Account,
+		Realname:       in.Realname,
+		Mobile:         in.Mobile,
+		RegisterSource: in.RegisterSource,
+		ApplyShareRate: in.ApplyShareRate,
+		MemberAccount:  in.MemberAccount,
+		MemberCode:     in.MemberCode,
+		AuditStatus:    in.AuditStatus,
+		RejectReason:   in.RejectReason,
+		ApplyRemark:    in.ApplyRemark,
+		RegisterAt:     in.RegisterAt,
+		AuditedAt:      in.AuditedAt,
+		Auditor:        in.Auditor,
+		AgentId:        in.AgentId,
+	}
+}
+
+func ProfileFromPB(in *agentpb.AgentProfile) types.AgentProfile {
+	if in == nil {
+		return types.AgentProfile{}
+	}
+	return types.AgentProfile{
+		AgentId:           in.AgentId,
+		Remark:            in.Remark,
+		Status:            in.Status,
+		RegisterSource:    in.RegisterSource,
+		PromoCode:         in.PromoCode,
+		ParentAccount:     in.ParentAccount,
+		RegisterAt:        in.RegisterAt,
+		LastLoginAt:       in.LastLoginAt,
+		LastLoginIp:       in.LastLoginIp,
+		LastLoginUdid:     in.LastLoginUdid,
+		ShareRate:         in.ShareRate,
+		LoginCount:        in.LoginCount,
+		InviteMemberCount: in.InviteMemberCount,
+		PayoutRestricted:  in.PayoutRestricted,
+		AgentType:         in.AgentType,
+		AvatarUrl:         in.AvatarUrl,
+		Realname:          in.Realname,
+		Telegram:          in.Telegram,
+		Facebook:          in.Facebook,
+		Whatsapp:          in.Whatsapp,
+		Mobile:            in.Mobile,
+		Nickname:          in.Nickname,
+		IdDocumentNo:      in.IdDocumentNo,
+		Zalo:              in.Zalo,
+		Twitter:           in.Twitter,
+		Line:              in.Line,
+		Email:             in.Email,
+	}
+}
+
+func ApplyItemsFromPB(in []*agentpb.AgentApplyItem) []types.AgentApplyItem {
+	out := make([]types.AgentApplyItem, 0, len(in))
+	for _, it := range in {
+		if it == nil {
+			continue
+		}
+		out = append(out, ApplyItemFromPB(it))
 	}
 	return out
 }
