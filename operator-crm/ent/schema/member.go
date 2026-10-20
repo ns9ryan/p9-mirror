@@ -12,6 +12,8 @@ import (
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 
+	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 	"oa.98ent.com/p9/operator-crm/ent/schema/mixins"
 )
 
@@ -46,45 +48,34 @@ func (Member) Fields() []ent.Field {
 			Immutable().
 			Comment("会员对外编号, 12位数字"),
 
-		// ==================== 登录身份 ====================
+		// ==================== 代理归属与身份 ====================
 
-		field.String("username").
+		field.Int64("agent_id").
+			Positive().
+			Immutable().
+			Comment("会员所属分层代理ID"),
+
+		field.Int64("agent_account_id").
+			Positive().
+			Optional().
+			Nillable().
+			Comment("会员自身的分层代理账号ID"),
+
+		// ==================== 会员邀请 ====================
+
+		field.Int64("inviter_member_id").
+			Positive().
+			Optional().
+			Nillable().
+			Immutable().
+			Comment("邀请当前会员注册的会员ID"),
+
+		field.String("invite_code").
 			NotEmpty().
 			MaxLen(64).
-			Optional().
-			Nillable().
-			SchemaType(map[string]string{
-				dialect.Postgres: "citext",
-			}).
-			Comment("会员登录账号, 保留原始大小写"),
-
-		field.String("phone").
-			NotEmpty().
-			MaxLen(16).
-			Optional().
-			Nillable().
-			Comment("绑定手机号, 国际E.164格式"),
-
-		field.String("email").
-			NotEmpty().
-			MaxLen(254).
-			Optional().
-			Nillable().
-			Comment("绑定邮箱"),
-
-		field.String("password_hash").
-			NotEmpty().
-			MaxLen(255).
-			Optional().
-			Nillable().
-			Sensitive().
-			Comment("登录密码哈希"),
-
-		// ==================== 代理归属 ====================
-
-		field.UUID("agent_global_id", uuid.UUID{}).
+			Match(trimmedNonEmpty).
 			Immutable().
-			Comment("所属分层代理全局标识"),
+			Comment("会员专属邀请码"),
 
 		// ==================== 会员等级 ====================
 
@@ -96,7 +87,7 @@ func (Member) Fields() []ent.Field {
 			Positive().
 			Comment("当前VIP等级ID"),
 
-		// ==================== 会员状态 ====================
+		// ==================== 会员状态与业务限制 ====================
 
 		field.Int64("status").
 			Default(1).
@@ -105,6 +96,18 @@ func (Member) Fields() []ent.Field {
 				dialect.Postgres: "smallint",
 			}).
 			Comment("会员状态: 1正常, 2冻结, 3禁用"),
+
+		field.Bool("chat_disabled").
+			Default(false).
+			Comment("是否禁止发言"),
+
+		field.Bool("betting_disabled").
+			Default(false).
+			Comment("是否禁止投注"),
+
+		field.Bool("withdrawal_disabled").
+			Default(false).
+			Comment("是否禁止提款"),
 
 		// ==================== 注册信息 ====================
 
@@ -168,6 +171,31 @@ func (Member) Fields() []ent.Field {
 // Edges 定义会员主体表关联关系
 func (Member) Edges() []ent.Edge {
 	return []ent.Edge{
+
+		// ==================== 代理归属与身份 ====================
+
+		edge.To("agent", AgentUser.Type).
+			Field("agent_id").
+			Unique().
+			Required().
+			Immutable(),
+
+		edge.To("agent_account", AgentUser.Type).
+			Field("agent_account_id").
+			Unique(),
+
+		// ==================== 会员邀请 ====================
+
+		edge.To("invited_members", Member.Type),
+
+		edge.From("inviter", Member.Type).
+			Ref("invited_members").
+			Field("inviter_member_id").
+			Unique().
+			Immutable(),
+
+		// ==================== 会员等级 ====================
+
 		edge.To("auto_level", MemberAutoLevel.Type).
 			Field("auto_level_id").
 			Unique().
@@ -178,12 +206,19 @@ func (Member) Edges() []ent.Edge {
 			Unique().
 			Required(),
 
+		edge.To("fixed_level_assignments", MemberFixedLevelAssignment.Type),
+
+		// ==================== 认证与个人资料 ====================
+
+		edge.To("auth", MemberAuth.Type).
+			Unique(),
+
 		edge.To("profile", MemberProfile.Type).
 			Unique(),
 
 		edge.To("oauth_identities", MemberOAuthIdentity.Type),
 
-		edge.To("fixed_level_assignments", MemberFixedLevelAssignment.Type),
+		// ==================== VIP业务记录 ====================
 
 		edge.To("vip_progress", MemberVipProgress.Type).
 			Unique(),
@@ -195,29 +230,33 @@ func (Member) Edges() []ent.Edge {
 // Indexes 定义会员主体表索引
 func (Member) Indexes() []ent.Index {
 	return []ent.Index{
+
+		// ==================== 唯一约束 ====================
+
 		// 同一个厅的会员对外编号唯一
 		index.Fields("operator_code", "code").
 			Unique().
 			StorageKey("uk_member_operator_code"),
 
-		// 同一个厅的会员账号唯一, 不区分大小写
-		index.Fields("operator_code", "username").
+		// 同一个厅的会员邀请码唯一
+		index.Fields("operator_code", "invite_code").
 			Unique().
-			StorageKey("uk_member_operator_username"),
+			StorageKey("uk_member_operator_invite_code"),
 
-		// 同一个厅的手机号唯一
-		index.Fields("operator_code", "phone").
+		// 一个代理账号最多绑定一个会员身份
+		index.Fields("agent_account_id").
 			Unique().
-			StorageKey("uk_member_operator_phone"),
+			StorageKey("uk_member_agent_account"),
 
-		// 同一个厅的邮箱唯一
-		index.Fields("operator_code", "email").
-			Unique().
-			StorageKey("uk_member_operator_email"),
+		// ==================== 业务查询 ====================
 
 		// 查询指定分层代理下的会员
-		index.Fields("operator_code", "agent_global_id").
+		index.Fields("operator_code", "agent_id").
 			StorageKey("idx_member_operator_agent"),
+
+		// 查询指定会员邀请的下级会员
+		index.Fields("operator_code", "inviter_member_id").
+			StorageKey("idx_member_operator_inviter"),
 	}
 }
 
@@ -226,6 +265,20 @@ func (Member) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
 		mixins.TimeMixin{},
+	}
+}
+
+// Interceptors 定义会员主体表查询隔离
+func (Member) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		entmixin.RequiredOperatorCodeInterceptor(intercept.NewQuery),
+	}
+}
+
+// Hooks 定义会员主体表写入隔离
+func (Member) Hooks() []ent.Hook {
+	return []ent.Hook{
+		entmixin.RequiredOperatorCodeHook(),
 	}
 }
 
