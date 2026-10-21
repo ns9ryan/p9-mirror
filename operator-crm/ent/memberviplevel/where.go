@@ -74,24 +74,24 @@ func Level(v int64) predicate.MemberVipLevel {
 	return predicate.MemberVipLevel(sql.FieldEQ(FieldLevel, v))
 }
 
-// UpgradeValidDeposit applies equality check predicate on the "upgrade_valid_deposit" field. It's identical to UpgradeValidDepositEQ.
-func UpgradeValidDeposit(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidDeposit, v))
+// UpgradeDeposit applies equality check predicate on the "upgrade_deposit" field. It's identical to UpgradeDepositEQ.
+func UpgradeDeposit(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidWater applies equality check predicate on the "upgrade_valid_water" field. It's identical to UpgradeValidWaterEQ.
-func UpgradeValidWater(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidWater, v))
+// UpgradeWater applies equality check predicate on the "upgrade_water" field. It's identical to UpgradeWaterEQ.
+func UpgradeWater(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeWater, v))
 }
 
-// RetentionValidDeposit applies equality check predicate on the "retention_valid_deposit" field. It's identical to RetentionValidDepositEQ.
-func RetentionValidDeposit(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidDeposit, v))
+// RetentionDeposit applies equality check predicate on the "retention_deposit" field. It's identical to RetentionDepositEQ.
+func RetentionDeposit(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionDeposit, v))
 }
 
-// RetentionValidWater applies equality check predicate on the "retention_valid_water" field. It's identical to RetentionValidWaterEQ.
-func RetentionValidWater(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidWater, v))
+// RetentionWater applies equality check predicate on the "retention_water" field. It's identical to RetentionWaterEQ.
+func RetentionWater(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionWater, v))
 }
 
 // UpgradeReward applies equality check predicate on the "upgrade_reward" field. It's identical to UpgradeRewardEQ.
@@ -284,164 +284,164 @@ func LevelLTE(v int64) predicate.MemberVipLevel {
 	return predicate.MemberVipLevel(sql.FieldLTE(FieldLevel, v))
 }
 
-// UpgradeValidDepositEQ applies the EQ predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidDeposit, v))
+// UpgradeDepositEQ applies the EQ predicate on the "upgrade_deposit" field.
+func UpgradeDepositEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositNEQ applies the NEQ predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositNEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNEQ(FieldUpgradeValidDeposit, v))
+// UpgradeDepositNEQ applies the NEQ predicate on the "upgrade_deposit" field.
+func UpgradeDepositNEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNEQ(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositIn applies the In predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldIn(FieldUpgradeValidDeposit, vs...))
+// UpgradeDepositIn applies the In predicate on the "upgrade_deposit" field.
+func UpgradeDepositIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldIn(FieldUpgradeDeposit, vs...))
 }
 
-// UpgradeValidDepositNotIn applies the NotIn predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositNotIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNotIn(FieldUpgradeValidDeposit, vs...))
+// UpgradeDepositNotIn applies the NotIn predicate on the "upgrade_deposit" field.
+func UpgradeDepositNotIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNotIn(FieldUpgradeDeposit, vs...))
 }
 
-// UpgradeValidDepositGT applies the GT predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositGT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGT(FieldUpgradeValidDeposit, v))
+// UpgradeDepositGT applies the GT predicate on the "upgrade_deposit" field.
+func UpgradeDepositGT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGT(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositGTE applies the GTE predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositGTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGTE(FieldUpgradeValidDeposit, v))
+// UpgradeDepositGTE applies the GTE predicate on the "upgrade_deposit" field.
+func UpgradeDepositGTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGTE(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositLT applies the LT predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositLT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLT(FieldUpgradeValidDeposit, v))
+// UpgradeDepositLT applies the LT predicate on the "upgrade_deposit" field.
+func UpgradeDepositLT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLT(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositLTE applies the LTE predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositLTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLTE(FieldUpgradeValidDeposit, v))
+// UpgradeDepositLTE applies the LTE predicate on the "upgrade_deposit" field.
+func UpgradeDepositLTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLTE(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidWaterEQ applies the EQ predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeValidWater, v))
+// UpgradeWaterEQ applies the EQ predicate on the "upgrade_water" field.
+func UpgradeWaterEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterNEQ applies the NEQ predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterNEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNEQ(FieldUpgradeValidWater, v))
+// UpgradeWaterNEQ applies the NEQ predicate on the "upgrade_water" field.
+func UpgradeWaterNEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNEQ(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterIn applies the In predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldIn(FieldUpgradeValidWater, vs...))
+// UpgradeWaterIn applies the In predicate on the "upgrade_water" field.
+func UpgradeWaterIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldIn(FieldUpgradeWater, vs...))
 }
 
-// UpgradeValidWaterNotIn applies the NotIn predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterNotIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNotIn(FieldUpgradeValidWater, vs...))
+// UpgradeWaterNotIn applies the NotIn predicate on the "upgrade_water" field.
+func UpgradeWaterNotIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNotIn(FieldUpgradeWater, vs...))
 }
 
-// UpgradeValidWaterGT applies the GT predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterGT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGT(FieldUpgradeValidWater, v))
+// UpgradeWaterGT applies the GT predicate on the "upgrade_water" field.
+func UpgradeWaterGT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGT(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterGTE applies the GTE predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterGTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGTE(FieldUpgradeValidWater, v))
+// UpgradeWaterGTE applies the GTE predicate on the "upgrade_water" field.
+func UpgradeWaterGTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGTE(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterLT applies the LT predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterLT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLT(FieldUpgradeValidWater, v))
+// UpgradeWaterLT applies the LT predicate on the "upgrade_water" field.
+func UpgradeWaterLT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLT(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterLTE applies the LTE predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterLTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLTE(FieldUpgradeValidWater, v))
+// UpgradeWaterLTE applies the LTE predicate on the "upgrade_water" field.
+func UpgradeWaterLTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLTE(FieldUpgradeWater, v))
 }
 
-// RetentionValidDepositEQ applies the EQ predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidDeposit, v))
+// RetentionDepositEQ applies the EQ predicate on the "retention_deposit" field.
+func RetentionDepositEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionDeposit, v))
 }
 
-// RetentionValidDepositNEQ applies the NEQ predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositNEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNEQ(FieldRetentionValidDeposit, v))
+// RetentionDepositNEQ applies the NEQ predicate on the "retention_deposit" field.
+func RetentionDepositNEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNEQ(FieldRetentionDeposit, v))
 }
 
-// RetentionValidDepositIn applies the In predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldIn(FieldRetentionValidDeposit, vs...))
+// RetentionDepositIn applies the In predicate on the "retention_deposit" field.
+func RetentionDepositIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldIn(FieldRetentionDeposit, vs...))
 }
 
-// RetentionValidDepositNotIn applies the NotIn predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositNotIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNotIn(FieldRetentionValidDeposit, vs...))
+// RetentionDepositNotIn applies the NotIn predicate on the "retention_deposit" field.
+func RetentionDepositNotIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNotIn(FieldRetentionDeposit, vs...))
 }
 
-// RetentionValidDepositGT applies the GT predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositGT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGT(FieldRetentionValidDeposit, v))
+// RetentionDepositGT applies the GT predicate on the "retention_deposit" field.
+func RetentionDepositGT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGT(FieldRetentionDeposit, v))
 }
 
-// RetentionValidDepositGTE applies the GTE predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositGTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGTE(FieldRetentionValidDeposit, v))
+// RetentionDepositGTE applies the GTE predicate on the "retention_deposit" field.
+func RetentionDepositGTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGTE(FieldRetentionDeposit, v))
 }
 
-// RetentionValidDepositLT applies the LT predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositLT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLT(FieldRetentionValidDeposit, v))
+// RetentionDepositLT applies the LT predicate on the "retention_deposit" field.
+func RetentionDepositLT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLT(FieldRetentionDeposit, v))
 }
 
-// RetentionValidDepositLTE applies the LTE predicate on the "retention_valid_deposit" field.
-func RetentionValidDepositLTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLTE(FieldRetentionValidDeposit, v))
+// RetentionDepositLTE applies the LTE predicate on the "retention_deposit" field.
+func RetentionDepositLTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLTE(FieldRetentionDeposit, v))
 }
 
-// RetentionValidWaterEQ applies the EQ predicate on the "retention_valid_water" field.
-func RetentionValidWaterEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionValidWater, v))
+// RetentionWaterEQ applies the EQ predicate on the "retention_water" field.
+func RetentionWaterEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldEQ(FieldRetentionWater, v))
 }
 
-// RetentionValidWaterNEQ applies the NEQ predicate on the "retention_valid_water" field.
-func RetentionValidWaterNEQ(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNEQ(FieldRetentionValidWater, v))
+// RetentionWaterNEQ applies the NEQ predicate on the "retention_water" field.
+func RetentionWaterNEQ(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNEQ(FieldRetentionWater, v))
 }
 
-// RetentionValidWaterIn applies the In predicate on the "retention_valid_water" field.
-func RetentionValidWaterIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldIn(FieldRetentionValidWater, vs...))
+// RetentionWaterIn applies the In predicate on the "retention_water" field.
+func RetentionWaterIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldIn(FieldRetentionWater, vs...))
 }
 
-// RetentionValidWaterNotIn applies the NotIn predicate on the "retention_valid_water" field.
-func RetentionValidWaterNotIn(vs ...int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldNotIn(FieldRetentionValidWater, vs...))
+// RetentionWaterNotIn applies the NotIn predicate on the "retention_water" field.
+func RetentionWaterNotIn(vs ...int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldNotIn(FieldRetentionWater, vs...))
 }
 
-// RetentionValidWaterGT applies the GT predicate on the "retention_valid_water" field.
-func RetentionValidWaterGT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGT(FieldRetentionValidWater, v))
+// RetentionWaterGT applies the GT predicate on the "retention_water" field.
+func RetentionWaterGT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGT(FieldRetentionWater, v))
 }
 
-// RetentionValidWaterGTE applies the GTE predicate on the "retention_valid_water" field.
-func RetentionValidWaterGTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldGTE(FieldRetentionValidWater, v))
+// RetentionWaterGTE applies the GTE predicate on the "retention_water" field.
+func RetentionWaterGTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldGTE(FieldRetentionWater, v))
 }
 
-// RetentionValidWaterLT applies the LT predicate on the "retention_valid_water" field.
-func RetentionValidWaterLT(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLT(FieldRetentionValidWater, v))
+// RetentionWaterLT applies the LT predicate on the "retention_water" field.
+func RetentionWaterLT(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLT(FieldRetentionWater, v))
 }
 
-// RetentionValidWaterLTE applies the LTE predicate on the "retention_valid_water" field.
-func RetentionValidWaterLTE(v int64) predicate.MemberVipLevel {
-	return predicate.MemberVipLevel(sql.FieldLTE(FieldRetentionValidWater, v))
+// RetentionWaterLTE applies the LTE predicate on the "retention_water" field.
+func RetentionWaterLTE(v int64) predicate.MemberVipLevel {
+	return predicate.MemberVipLevel(sql.FieldLTE(FieldRetentionWater, v))
 }
 
 // UpgradeRewardEQ applies the EQ predicate on the "upgrade_reward" field.

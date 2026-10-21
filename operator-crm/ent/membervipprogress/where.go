@@ -75,14 +75,14 @@ func MemberID(v int64) predicate.MemberVipProgress {
 	return predicate.MemberVipProgress(sql.FieldEQ(FieldMemberID, v))
 }
 
-// UpgradeValidDeposit applies equality check predicate on the "upgrade_valid_deposit" field. It's identical to UpgradeValidDepositEQ.
-func UpgradeValidDeposit(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeValidDeposit, v))
+// UpgradeDeposit applies equality check predicate on the "upgrade_deposit" field. It's identical to UpgradeDepositEQ.
+func UpgradeDeposit(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidWater applies equality check predicate on the "upgrade_valid_water" field. It's identical to UpgradeValidWaterEQ.
-func UpgradeValidWater(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeValidWater, v))
+// UpgradeWater applies equality check predicate on the "upgrade_water" field. It's identical to UpgradeWaterEQ.
+func UpgradeWater(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeWater, v))
 }
 
 // ProgressStartedAt applies equality check predicate on the "progress_started_at" field. It's identical to ProgressStartedAtEQ.
@@ -255,84 +255,84 @@ func MemberIDNotIn(vs ...int64) predicate.MemberVipProgress {
 	return predicate.MemberVipProgress(sql.FieldNotIn(FieldMemberID, vs...))
 }
 
-// UpgradeValidDepositEQ applies the EQ predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositEQ(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeValidDeposit, v))
+// UpgradeDepositEQ applies the EQ predicate on the "upgrade_deposit" field.
+func UpgradeDepositEQ(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositNEQ applies the NEQ predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositNEQ(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldNEQ(FieldUpgradeValidDeposit, v))
+// UpgradeDepositNEQ applies the NEQ predicate on the "upgrade_deposit" field.
+func UpgradeDepositNEQ(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldNEQ(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositIn applies the In predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositIn(vs ...int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldIn(FieldUpgradeValidDeposit, vs...))
+// UpgradeDepositIn applies the In predicate on the "upgrade_deposit" field.
+func UpgradeDepositIn(vs ...int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldIn(FieldUpgradeDeposit, vs...))
 }
 
-// UpgradeValidDepositNotIn applies the NotIn predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositNotIn(vs ...int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldNotIn(FieldUpgradeValidDeposit, vs...))
+// UpgradeDepositNotIn applies the NotIn predicate on the "upgrade_deposit" field.
+func UpgradeDepositNotIn(vs ...int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldNotIn(FieldUpgradeDeposit, vs...))
 }
 
-// UpgradeValidDepositGT applies the GT predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositGT(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldGT(FieldUpgradeValidDeposit, v))
+// UpgradeDepositGT applies the GT predicate on the "upgrade_deposit" field.
+func UpgradeDepositGT(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldGT(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositGTE applies the GTE predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositGTE(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldGTE(FieldUpgradeValidDeposit, v))
+// UpgradeDepositGTE applies the GTE predicate on the "upgrade_deposit" field.
+func UpgradeDepositGTE(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldGTE(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositLT applies the LT predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositLT(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldLT(FieldUpgradeValidDeposit, v))
+// UpgradeDepositLT applies the LT predicate on the "upgrade_deposit" field.
+func UpgradeDepositLT(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldLT(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidDepositLTE applies the LTE predicate on the "upgrade_valid_deposit" field.
-func UpgradeValidDepositLTE(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldLTE(FieldUpgradeValidDeposit, v))
+// UpgradeDepositLTE applies the LTE predicate on the "upgrade_deposit" field.
+func UpgradeDepositLTE(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldLTE(FieldUpgradeDeposit, v))
 }
 
-// UpgradeValidWaterEQ applies the EQ predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterEQ(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeValidWater, v))
+// UpgradeWaterEQ applies the EQ predicate on the "upgrade_water" field.
+func UpgradeWaterEQ(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldEQ(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterNEQ applies the NEQ predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterNEQ(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldNEQ(FieldUpgradeValidWater, v))
+// UpgradeWaterNEQ applies the NEQ predicate on the "upgrade_water" field.
+func UpgradeWaterNEQ(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldNEQ(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterIn applies the In predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterIn(vs ...int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldIn(FieldUpgradeValidWater, vs...))
+// UpgradeWaterIn applies the In predicate on the "upgrade_water" field.
+func UpgradeWaterIn(vs ...int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldIn(FieldUpgradeWater, vs...))
 }
 
-// UpgradeValidWaterNotIn applies the NotIn predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterNotIn(vs ...int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldNotIn(FieldUpgradeValidWater, vs...))
+// UpgradeWaterNotIn applies the NotIn predicate on the "upgrade_water" field.
+func UpgradeWaterNotIn(vs ...int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldNotIn(FieldUpgradeWater, vs...))
 }
 
-// UpgradeValidWaterGT applies the GT predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterGT(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldGT(FieldUpgradeValidWater, v))
+// UpgradeWaterGT applies the GT predicate on the "upgrade_water" field.
+func UpgradeWaterGT(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldGT(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterGTE applies the GTE predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterGTE(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldGTE(FieldUpgradeValidWater, v))
+// UpgradeWaterGTE applies the GTE predicate on the "upgrade_water" field.
+func UpgradeWaterGTE(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldGTE(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterLT applies the LT predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterLT(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldLT(FieldUpgradeValidWater, v))
+// UpgradeWaterLT applies the LT predicate on the "upgrade_water" field.
+func UpgradeWaterLT(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldLT(FieldUpgradeWater, v))
 }
 
-// UpgradeValidWaterLTE applies the LTE predicate on the "upgrade_valid_water" field.
-func UpgradeValidWaterLTE(v int64) predicate.MemberVipProgress {
-	return predicate.MemberVipProgress(sql.FieldLTE(FieldUpgradeValidWater, v))
+// UpgradeWaterLTE applies the LTE predicate on the "upgrade_water" field.
+func UpgradeWaterLTE(v int64) predicate.MemberVipProgress {
+	return predicate.MemberVipProgress(sql.FieldLTE(FieldUpgradeWater, v))
 }
 
 // ProgressStartedAtEQ applies the EQ predicate on the "progress_started_at" field.

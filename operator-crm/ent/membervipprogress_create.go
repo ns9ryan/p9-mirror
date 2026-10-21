@@ -63,30 +63,30 @@ func (_c *MemberVipProgressCreate) SetMemberID(v int64) *MemberVipProgressCreate
 	return _c
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (_c *MemberVipProgressCreate) SetUpgradeValidDeposit(v int64) *MemberVipProgressCreate {
-	_c.mutation.SetUpgradeValidDeposit(v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (_c *MemberVipProgressCreate) SetUpgradeDeposit(v int64) *MemberVipProgressCreate {
+	_c.mutation.SetUpgradeDeposit(v)
 	return _c
 }
 
-// SetNillableUpgradeValidDeposit sets the "upgrade_valid_deposit" field if the given value is not nil.
-func (_c *MemberVipProgressCreate) SetNillableUpgradeValidDeposit(v *int64) *MemberVipProgressCreate {
+// SetNillableUpgradeDeposit sets the "upgrade_deposit" field if the given value is not nil.
+func (_c *MemberVipProgressCreate) SetNillableUpgradeDeposit(v *int64) *MemberVipProgressCreate {
 	if v != nil {
-		_c.SetUpgradeValidDeposit(*v)
+		_c.SetUpgradeDeposit(*v)
 	}
 	return _c
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (_c *MemberVipProgressCreate) SetUpgradeValidWater(v int64) *MemberVipProgressCreate {
-	_c.mutation.SetUpgradeValidWater(v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (_c *MemberVipProgressCreate) SetUpgradeWater(v int64) *MemberVipProgressCreate {
+	_c.mutation.SetUpgradeWater(v)
 	return _c
 }
 
-// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
-func (_c *MemberVipProgressCreate) SetNillableUpgradeValidWater(v *int64) *MemberVipProgressCreate {
+// SetNillableUpgradeWater sets the "upgrade_water" field if the given value is not nil.
+func (_c *MemberVipProgressCreate) SetNillableUpgradeWater(v *int64) *MemberVipProgressCreate {
 	if v != nil {
-		_c.SetUpgradeValidWater(*v)
+		_c.SetUpgradeWater(*v)
 	}
 	return _c
 }
@@ -167,13 +167,13 @@ func (_c *MemberVipProgressCreate) defaults() error {
 		v := membervipprogress.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := _c.mutation.UpgradeValidDeposit(); !ok {
-		v := membervipprogress.DefaultUpgradeValidDeposit
-		_c.mutation.SetUpgradeValidDeposit(v)
+	if _, ok := _c.mutation.UpgradeDeposit(); !ok {
+		v := membervipprogress.DefaultUpgradeDeposit
+		_c.mutation.SetUpgradeDeposit(v)
 	}
-	if _, ok := _c.mutation.UpgradeValidWater(); !ok {
-		v := membervipprogress.DefaultUpgradeValidWater
-		_c.mutation.SetUpgradeValidWater(v)
+	if _, ok := _c.mutation.UpgradeWater(); !ok {
+		v := membervipprogress.DefaultUpgradeWater
+		_c.mutation.SetUpgradeWater(v)
 	}
 	if _, ok := _c.mutation.ProgressStartedAt(); !ok {
 		if membervipprogress.DefaultProgressStartedAt == nil {
@@ -209,20 +209,20 @@ func (_c *MemberVipProgressCreate) check() error {
 			return &ValidationError{Name: "member_id", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.member_id": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.UpgradeValidDeposit(); !ok {
-		return &ValidationError{Name: "upgrade_valid_deposit", err: errors.New(`ent: missing required field "MemberVipProgress.upgrade_valid_deposit"`)}
+	if _, ok := _c.mutation.UpgradeDeposit(); !ok {
+		return &ValidationError{Name: "upgrade_deposit", err: errors.New(`ent: missing required field "MemberVipProgress.upgrade_deposit"`)}
 	}
-	if v, ok := _c.mutation.UpgradeValidDeposit(); ok {
-		if err := membervipprogress.UpgradeValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_deposit": %w`, err)}
+	if v, ok := _c.mutation.UpgradeDeposit(); ok {
+		if err := membervipprogress.UpgradeDepositValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_deposit": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.UpgradeValidWater(); !ok {
-		return &ValidationError{Name: "upgrade_valid_water", err: errors.New(`ent: missing required field "MemberVipProgress.upgrade_valid_water"`)}
+	if _, ok := _c.mutation.UpgradeWater(); !ok {
+		return &ValidationError{Name: "upgrade_water", err: errors.New(`ent: missing required field "MemberVipProgress.upgrade_water"`)}
 	}
-	if v, ok := _c.mutation.UpgradeValidWater(); ok {
-		if err := membervipprogress.UpgradeValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_water": %w`, err)}
+	if v, ok := _c.mutation.UpgradeWater(); ok {
+		if err := membervipprogress.UpgradeWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_water": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.ProgressStartedAt(); !ok {
@@ -276,13 +276,13 @@ func (_c *MemberVipProgressCreate) createSpec() (*MemberVipProgress, *sqlgraph.C
 		_spec.SetField(membervipprogress.FieldOperatorCode, field.TypeString, value)
 		_node.OperatorCode = value
 	}
-	if value, ok := _c.mutation.UpgradeValidDeposit(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
-		_node.UpgradeValidDeposit = value
+	if value, ok := _c.mutation.UpgradeDeposit(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeDeposit, field.TypeInt64, value)
+		_node.UpgradeDeposit = value
 	}
-	if value, ok := _c.mutation.UpgradeValidWater(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
-		_node.UpgradeValidWater = value
+	if value, ok := _c.mutation.UpgradeWater(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeWater, field.TypeInt64, value)
+		_node.UpgradeWater = value
 	}
 	if value, ok := _c.mutation.ProgressStartedAt(); ok {
 		_spec.SetField(membervipprogress.FieldProgressStartedAt, field.TypeTime, value)
@@ -369,39 +369,39 @@ func (u *MemberVipProgressUpsert) UpdateUpdatedAt() *MemberVipProgressUpsert {
 	return u
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (u *MemberVipProgressUpsert) SetUpgradeValidDeposit(v int64) *MemberVipProgressUpsert {
-	u.Set(membervipprogress.FieldUpgradeValidDeposit, v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (u *MemberVipProgressUpsert) SetUpgradeDeposit(v int64) *MemberVipProgressUpsert {
+	u.Set(membervipprogress.FieldUpgradeDeposit, v)
 	return u
 }
 
-// UpdateUpgradeValidDeposit sets the "upgrade_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipProgressUpsert) UpdateUpgradeValidDeposit() *MemberVipProgressUpsert {
-	u.SetExcluded(membervipprogress.FieldUpgradeValidDeposit)
+// UpdateUpgradeDeposit sets the "upgrade_deposit" field to the value that was provided on create.
+func (u *MemberVipProgressUpsert) UpdateUpgradeDeposit() *MemberVipProgressUpsert {
+	u.SetExcluded(membervipprogress.FieldUpgradeDeposit)
 	return u
 }
 
-// AddUpgradeValidDeposit adds v to the "upgrade_valid_deposit" field.
-func (u *MemberVipProgressUpsert) AddUpgradeValidDeposit(v int64) *MemberVipProgressUpsert {
-	u.Add(membervipprogress.FieldUpgradeValidDeposit, v)
+// AddUpgradeDeposit adds v to the "upgrade_deposit" field.
+func (u *MemberVipProgressUpsert) AddUpgradeDeposit(v int64) *MemberVipProgressUpsert {
+	u.Add(membervipprogress.FieldUpgradeDeposit, v)
 	return u
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (u *MemberVipProgressUpsert) SetUpgradeValidWater(v int64) *MemberVipProgressUpsert {
-	u.Set(membervipprogress.FieldUpgradeValidWater, v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (u *MemberVipProgressUpsert) SetUpgradeWater(v int64) *MemberVipProgressUpsert {
+	u.Set(membervipprogress.FieldUpgradeWater, v)
 	return u
 }
 
-// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
-func (u *MemberVipProgressUpsert) UpdateUpgradeValidWater() *MemberVipProgressUpsert {
-	u.SetExcluded(membervipprogress.FieldUpgradeValidWater)
+// UpdateUpgradeWater sets the "upgrade_water" field to the value that was provided on create.
+func (u *MemberVipProgressUpsert) UpdateUpgradeWater() *MemberVipProgressUpsert {
+	u.SetExcluded(membervipprogress.FieldUpgradeWater)
 	return u
 }
 
-// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
-func (u *MemberVipProgressUpsert) AddUpgradeValidWater(v int64) *MemberVipProgressUpsert {
-	u.Add(membervipprogress.FieldUpgradeValidWater, v)
+// AddUpgradeWater adds v to the "upgrade_water" field.
+func (u *MemberVipProgressUpsert) AddUpgradeWater(v int64) *MemberVipProgressUpsert {
+	u.Add(membervipprogress.FieldUpgradeWater, v)
 	return u
 }
 
@@ -488,45 +488,45 @@ func (u *MemberVipProgressUpsertOne) UpdateUpdatedAt() *MemberVipProgressUpsertO
 	})
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (u *MemberVipProgressUpsertOne) SetUpgradeValidDeposit(v int64) *MemberVipProgressUpsertOne {
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (u *MemberVipProgressUpsertOne) SetUpgradeDeposit(v int64) *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.SetUpgradeValidDeposit(v)
+		s.SetUpgradeDeposit(v)
 	})
 }
 
-// AddUpgradeValidDeposit adds v to the "upgrade_valid_deposit" field.
-func (u *MemberVipProgressUpsertOne) AddUpgradeValidDeposit(v int64) *MemberVipProgressUpsertOne {
+// AddUpgradeDeposit adds v to the "upgrade_deposit" field.
+func (u *MemberVipProgressUpsertOne) AddUpgradeDeposit(v int64) *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.AddUpgradeValidDeposit(v)
+		s.AddUpgradeDeposit(v)
 	})
 }
 
-// UpdateUpgradeValidDeposit sets the "upgrade_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipProgressUpsertOne) UpdateUpgradeValidDeposit() *MemberVipProgressUpsertOne {
+// UpdateUpgradeDeposit sets the "upgrade_deposit" field to the value that was provided on create.
+func (u *MemberVipProgressUpsertOne) UpdateUpgradeDeposit() *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.UpdateUpgradeValidDeposit()
+		s.UpdateUpgradeDeposit()
 	})
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (u *MemberVipProgressUpsertOne) SetUpgradeValidWater(v int64) *MemberVipProgressUpsertOne {
+// SetUpgradeWater sets the "upgrade_water" field.
+func (u *MemberVipProgressUpsertOne) SetUpgradeWater(v int64) *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.SetUpgradeValidWater(v)
+		s.SetUpgradeWater(v)
 	})
 }
 
-// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
-func (u *MemberVipProgressUpsertOne) AddUpgradeValidWater(v int64) *MemberVipProgressUpsertOne {
+// AddUpgradeWater adds v to the "upgrade_water" field.
+func (u *MemberVipProgressUpsertOne) AddUpgradeWater(v int64) *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.AddUpgradeValidWater(v)
+		s.AddUpgradeWater(v)
 	})
 }
 
-// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
-func (u *MemberVipProgressUpsertOne) UpdateUpgradeValidWater() *MemberVipProgressUpsertOne {
+// UpdateUpgradeWater sets the "upgrade_water" field to the value that was provided on create.
+func (u *MemberVipProgressUpsertOne) UpdateUpgradeWater() *MemberVipProgressUpsertOne {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.UpdateUpgradeValidWater()
+		s.UpdateUpgradeWater()
 	})
 }
 
@@ -781,45 +781,45 @@ func (u *MemberVipProgressUpsertBulk) UpdateUpdatedAt() *MemberVipProgressUpsert
 	})
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (u *MemberVipProgressUpsertBulk) SetUpgradeValidDeposit(v int64) *MemberVipProgressUpsertBulk {
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (u *MemberVipProgressUpsertBulk) SetUpgradeDeposit(v int64) *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.SetUpgradeValidDeposit(v)
+		s.SetUpgradeDeposit(v)
 	})
 }
 
-// AddUpgradeValidDeposit adds v to the "upgrade_valid_deposit" field.
-func (u *MemberVipProgressUpsertBulk) AddUpgradeValidDeposit(v int64) *MemberVipProgressUpsertBulk {
+// AddUpgradeDeposit adds v to the "upgrade_deposit" field.
+func (u *MemberVipProgressUpsertBulk) AddUpgradeDeposit(v int64) *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.AddUpgradeValidDeposit(v)
+		s.AddUpgradeDeposit(v)
 	})
 }
 
-// UpdateUpgradeValidDeposit sets the "upgrade_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipProgressUpsertBulk) UpdateUpgradeValidDeposit() *MemberVipProgressUpsertBulk {
+// UpdateUpgradeDeposit sets the "upgrade_deposit" field to the value that was provided on create.
+func (u *MemberVipProgressUpsertBulk) UpdateUpgradeDeposit() *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.UpdateUpgradeValidDeposit()
+		s.UpdateUpgradeDeposit()
 	})
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (u *MemberVipProgressUpsertBulk) SetUpgradeValidWater(v int64) *MemberVipProgressUpsertBulk {
+// SetUpgradeWater sets the "upgrade_water" field.
+func (u *MemberVipProgressUpsertBulk) SetUpgradeWater(v int64) *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.SetUpgradeValidWater(v)
+		s.SetUpgradeWater(v)
 	})
 }
 
-// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
-func (u *MemberVipProgressUpsertBulk) AddUpgradeValidWater(v int64) *MemberVipProgressUpsertBulk {
+// AddUpgradeWater adds v to the "upgrade_water" field.
+func (u *MemberVipProgressUpsertBulk) AddUpgradeWater(v int64) *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.AddUpgradeValidWater(v)
+		s.AddUpgradeWater(v)
 	})
 }
 
-// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
-func (u *MemberVipProgressUpsertBulk) UpdateUpgradeValidWater() *MemberVipProgressUpsertBulk {
+// UpdateUpgradeWater sets the "upgrade_water" field to the value that was provided on create.
+func (u *MemberVipProgressUpsertBulk) UpdateUpgradeWater() *MemberVipProgressUpsertBulk {
 	return u.Update(func(s *MemberVipProgressUpsert) {
-		s.UpdateUpgradeValidWater()
+		s.UpdateUpgradeWater()
 	})
 }
 

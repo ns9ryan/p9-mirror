@@ -35,21 +35,21 @@ func (MemberVipLevel) Fields() []ent.Field {
 			}).
 			Comment("VIP等级编号, 从0开始连续递增"),
 
-		field.Int64("upgrade_valid_deposit").
+		field.Int64("upgrade_deposit").
 			NonNegative().
-			Comment("晋级所需有效存款金额"),
+			Comment("晋级所需存款金额"),
 
-		field.Int64("upgrade_valid_water").
+		field.Int64("upgrade_water").
 			NonNegative().
-			Comment("晋级所需有效洗码量"),
+			Comment("晋级所需洗码量"),
 
-		field.Int64("retention_valid_deposit").
+		field.Int64("retention_deposit").
 			NonNegative().
-			Comment("保级所需有效存款金额"),
+			Comment("保级所需存款金额"),
 
-		field.Int64("retention_valid_water").
+		field.Int64("retention_water").
 			NonNegative().
-			Comment("保级所需有效洗码量"),
+			Comment("保级所需洗码量"),
 
 		field.Int64("upgrade_reward").
 			NonNegative().

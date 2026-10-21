@@ -26,14 +26,14 @@ type MemberVipLevel struct {
 	OperatorCode string `json:"operator_code,omitempty"`
 	// VIP等级编号, 从0开始连续递增
 	Level int64 `json:"level,omitempty"`
-	// 晋级所需有效存款金额
-	UpgradeValidDeposit int64 `json:"upgrade_valid_deposit,omitempty"`
-	// 晋级所需有效洗码量
-	UpgradeValidWater int64 `json:"upgrade_valid_water,omitempty"`
-	// 保级所需有效存款金额
-	RetentionValidDeposit int64 `json:"retention_valid_deposit,omitempty"`
-	// 保级所需有效洗码量
-	RetentionValidWater int64 `json:"retention_valid_water,omitempty"`
+	// 晋级所需存款金额
+	UpgradeDeposit int64 `json:"upgrade_deposit,omitempty"`
+	// 晋级所需洗码量
+	UpgradeWater int64 `json:"upgrade_water,omitempty"`
+	// 保级所需存款金额
+	RetentionDeposit int64 `json:"retention_deposit,omitempty"`
+	// 保级所需洗码量
+	RetentionWater int64 `json:"retention_water,omitempty"`
 	// 晋级奖励金额
 	UpgradeReward int64 `json:"upgrade_reward,omitempty"`
 	selectValues  sql.SelectValues
@@ -44,7 +44,7 @@ func (*MemberVipLevel) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case memberviplevel.FieldID, memberviplevel.FieldLevel, memberviplevel.FieldUpgradeValidDeposit, memberviplevel.FieldUpgradeValidWater, memberviplevel.FieldRetentionValidDeposit, memberviplevel.FieldRetentionValidWater, memberviplevel.FieldUpgradeReward:
+		case memberviplevel.FieldID, memberviplevel.FieldLevel, memberviplevel.FieldUpgradeDeposit, memberviplevel.FieldUpgradeWater, memberviplevel.FieldRetentionDeposit, memberviplevel.FieldRetentionWater, memberviplevel.FieldUpgradeReward:
 			values[i] = new(sql.NullInt64)
 		case memberviplevel.FieldOperatorCode:
 			values[i] = new(sql.NullString)
@@ -95,29 +95,29 @@ func (_m *MemberVipLevel) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Level = value.Int64
 			}
-		case memberviplevel.FieldUpgradeValidDeposit:
+		case memberviplevel.FieldUpgradeDeposit:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field upgrade_valid_deposit", values[i])
+				return fmt.Errorf("unexpected type %T for field upgrade_deposit", values[i])
 			} else if value.Valid {
-				_m.UpgradeValidDeposit = value.Int64
+				_m.UpgradeDeposit = value.Int64
 			}
-		case memberviplevel.FieldUpgradeValidWater:
+		case memberviplevel.FieldUpgradeWater:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field upgrade_valid_water", values[i])
+				return fmt.Errorf("unexpected type %T for field upgrade_water", values[i])
 			} else if value.Valid {
-				_m.UpgradeValidWater = value.Int64
+				_m.UpgradeWater = value.Int64
 			}
-		case memberviplevel.FieldRetentionValidDeposit:
+		case memberviplevel.FieldRetentionDeposit:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field retention_valid_deposit", values[i])
+				return fmt.Errorf("unexpected type %T for field retention_deposit", values[i])
 			} else if value.Valid {
-				_m.RetentionValidDeposit = value.Int64
+				_m.RetentionDeposit = value.Int64
 			}
-		case memberviplevel.FieldRetentionValidWater:
+		case memberviplevel.FieldRetentionWater:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field retention_valid_water", values[i])
+				return fmt.Errorf("unexpected type %T for field retention_water", values[i])
 			} else if value.Valid {
-				_m.RetentionValidWater = value.Int64
+				_m.RetentionWater = value.Int64
 			}
 		case memberviplevel.FieldUpgradeReward:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -173,17 +173,17 @@ func (_m *MemberVipLevel) String() string {
 	builder.WriteString("level=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Level))
 	builder.WriteString(", ")
-	builder.WriteString("upgrade_valid_deposit=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidDeposit))
+	builder.WriteString("upgrade_deposit=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeDeposit))
 	builder.WriteString(", ")
-	builder.WriteString("upgrade_valid_water=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeValidWater))
+	builder.WriteString("upgrade_water=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeWater))
 	builder.WriteString(", ")
-	builder.WriteString("retention_valid_deposit=")
-	builder.WriteString(fmt.Sprintf("%v", _m.RetentionValidDeposit))
+	builder.WriteString("retention_deposit=")
+	builder.WriteString(fmt.Sprintf("%v", _m.RetentionDeposit))
 	builder.WriteString(", ")
-	builder.WriteString("retention_valid_water=")
-	builder.WriteString(fmt.Sprintf("%v", _m.RetentionValidWater))
+	builder.WriteString("retention_water=")
+	builder.WriteString(fmt.Sprintf("%v", _m.RetentionWater))
 	builder.WriteString(", ")
 	builder.WriteString("upgrade_reward=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UpgradeReward))

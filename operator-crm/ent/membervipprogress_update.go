@@ -34,45 +34,45 @@ func (_u *MemberVipProgressUpdate) SetUpdatedAt(v time.Time) *MemberVipProgressU
 	return _u
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (_u *MemberVipProgressUpdate) SetUpgradeValidDeposit(v int64) *MemberVipProgressUpdate {
-	_u.mutation.ResetUpgradeValidDeposit()
-	_u.mutation.SetUpgradeValidDeposit(v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (_u *MemberVipProgressUpdate) SetUpgradeDeposit(v int64) *MemberVipProgressUpdate {
+	_u.mutation.ResetUpgradeDeposit()
+	_u.mutation.SetUpgradeDeposit(v)
 	return _u
 }
 
-// SetNillableUpgradeValidDeposit sets the "upgrade_valid_deposit" field if the given value is not nil.
-func (_u *MemberVipProgressUpdate) SetNillableUpgradeValidDeposit(v *int64) *MemberVipProgressUpdate {
+// SetNillableUpgradeDeposit sets the "upgrade_deposit" field if the given value is not nil.
+func (_u *MemberVipProgressUpdate) SetNillableUpgradeDeposit(v *int64) *MemberVipProgressUpdate {
 	if v != nil {
-		_u.SetUpgradeValidDeposit(*v)
+		_u.SetUpgradeDeposit(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidDeposit adds value to the "upgrade_valid_deposit" field.
-func (_u *MemberVipProgressUpdate) AddUpgradeValidDeposit(v int64) *MemberVipProgressUpdate {
-	_u.mutation.AddUpgradeValidDeposit(v)
+// AddUpgradeDeposit adds value to the "upgrade_deposit" field.
+func (_u *MemberVipProgressUpdate) AddUpgradeDeposit(v int64) *MemberVipProgressUpdate {
+	_u.mutation.AddUpgradeDeposit(v)
 	return _u
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (_u *MemberVipProgressUpdate) SetUpgradeValidWater(v int64) *MemberVipProgressUpdate {
-	_u.mutation.ResetUpgradeValidWater()
-	_u.mutation.SetUpgradeValidWater(v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (_u *MemberVipProgressUpdate) SetUpgradeWater(v int64) *MemberVipProgressUpdate {
+	_u.mutation.ResetUpgradeWater()
+	_u.mutation.SetUpgradeWater(v)
 	return _u
 }
 
-// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
-func (_u *MemberVipProgressUpdate) SetNillableUpgradeValidWater(v *int64) *MemberVipProgressUpdate {
+// SetNillableUpgradeWater sets the "upgrade_water" field if the given value is not nil.
+func (_u *MemberVipProgressUpdate) SetNillableUpgradeWater(v *int64) *MemberVipProgressUpdate {
 	if v != nil {
-		_u.SetUpgradeValidWater(*v)
+		_u.SetUpgradeWater(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidWater adds value to the "upgrade_valid_water" field.
-func (_u *MemberVipProgressUpdate) AddUpgradeValidWater(v int64) *MemberVipProgressUpdate {
-	_u.mutation.AddUpgradeValidWater(v)
+// AddUpgradeWater adds value to the "upgrade_water" field.
+func (_u *MemberVipProgressUpdate) AddUpgradeWater(v int64) *MemberVipProgressUpdate {
+	_u.mutation.AddUpgradeWater(v)
 	return _u
 }
 
@@ -139,14 +139,14 @@ func (_u *MemberVipProgressUpdate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberVipProgressUpdate) check() error {
-	if v, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		if err := membervipprogress.UpgradeValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_deposit": %w`, err)}
+	if v, ok := _u.mutation.UpgradeDeposit(); ok {
+		if err := membervipprogress.UpgradeDepositValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.UpgradeValidWater(); ok {
-		if err := membervipprogress.UpgradeValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_water": %w`, err)}
+	if v, ok := _u.mutation.UpgradeWater(); ok {
+		if err := membervipprogress.UpgradeWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_water": %w`, err)}
 		}
 	}
 	if _u.mutation.MemberCleared() && len(_u.mutation.MemberIDs()) > 0 {
@@ -170,17 +170,17 @@ func (_u *MemberVipProgressUpdate) sqlSave(ctx context.Context) (_node int, err 
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(membervipprogress.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeDeposit(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidDeposit(); ok {
-		_spec.AddField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeDeposit(); ok {
+		_spec.AddField(membervipprogress.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidWater(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeWater(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidWater(); ok {
-		_spec.AddField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeWater(); ok {
+		_spec.AddField(membervipprogress.FieldUpgradeWater, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.ProgressStartedAt(); ok {
 		_spec.SetField(membervipprogress.FieldProgressStartedAt, field.TypeTime, value)
@@ -211,45 +211,45 @@ func (_u *MemberVipProgressUpdateOne) SetUpdatedAt(v time.Time) *MemberVipProgre
 	return _u
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (_u *MemberVipProgressUpdateOne) SetUpgradeValidDeposit(v int64) *MemberVipProgressUpdateOne {
-	_u.mutation.ResetUpgradeValidDeposit()
-	_u.mutation.SetUpgradeValidDeposit(v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (_u *MemberVipProgressUpdateOne) SetUpgradeDeposit(v int64) *MemberVipProgressUpdateOne {
+	_u.mutation.ResetUpgradeDeposit()
+	_u.mutation.SetUpgradeDeposit(v)
 	return _u
 }
 
-// SetNillableUpgradeValidDeposit sets the "upgrade_valid_deposit" field if the given value is not nil.
-func (_u *MemberVipProgressUpdateOne) SetNillableUpgradeValidDeposit(v *int64) *MemberVipProgressUpdateOne {
+// SetNillableUpgradeDeposit sets the "upgrade_deposit" field if the given value is not nil.
+func (_u *MemberVipProgressUpdateOne) SetNillableUpgradeDeposit(v *int64) *MemberVipProgressUpdateOne {
 	if v != nil {
-		_u.SetUpgradeValidDeposit(*v)
+		_u.SetUpgradeDeposit(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidDeposit adds value to the "upgrade_valid_deposit" field.
-func (_u *MemberVipProgressUpdateOne) AddUpgradeValidDeposit(v int64) *MemberVipProgressUpdateOne {
-	_u.mutation.AddUpgradeValidDeposit(v)
+// AddUpgradeDeposit adds value to the "upgrade_deposit" field.
+func (_u *MemberVipProgressUpdateOne) AddUpgradeDeposit(v int64) *MemberVipProgressUpdateOne {
+	_u.mutation.AddUpgradeDeposit(v)
 	return _u
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (_u *MemberVipProgressUpdateOne) SetUpgradeValidWater(v int64) *MemberVipProgressUpdateOne {
-	_u.mutation.ResetUpgradeValidWater()
-	_u.mutation.SetUpgradeValidWater(v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (_u *MemberVipProgressUpdateOne) SetUpgradeWater(v int64) *MemberVipProgressUpdateOne {
+	_u.mutation.ResetUpgradeWater()
+	_u.mutation.SetUpgradeWater(v)
 	return _u
 }
 
-// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
-func (_u *MemberVipProgressUpdateOne) SetNillableUpgradeValidWater(v *int64) *MemberVipProgressUpdateOne {
+// SetNillableUpgradeWater sets the "upgrade_water" field if the given value is not nil.
+func (_u *MemberVipProgressUpdateOne) SetNillableUpgradeWater(v *int64) *MemberVipProgressUpdateOne {
 	if v != nil {
-		_u.SetUpgradeValidWater(*v)
+		_u.SetUpgradeWater(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidWater adds value to the "upgrade_valid_water" field.
-func (_u *MemberVipProgressUpdateOne) AddUpgradeValidWater(v int64) *MemberVipProgressUpdateOne {
-	_u.mutation.AddUpgradeValidWater(v)
+// AddUpgradeWater adds value to the "upgrade_water" field.
+func (_u *MemberVipProgressUpdateOne) AddUpgradeWater(v int64) *MemberVipProgressUpdateOne {
+	_u.mutation.AddUpgradeWater(v)
 	return _u
 }
 
@@ -329,14 +329,14 @@ func (_u *MemberVipProgressUpdateOne) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberVipProgressUpdateOne) check() error {
-	if v, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		if err := membervipprogress.UpgradeValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_deposit": %w`, err)}
+	if v, ok := _u.mutation.UpgradeDeposit(); ok {
+		if err := membervipprogress.UpgradeDepositValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.UpgradeValidWater(); ok {
-		if err := membervipprogress.UpgradeValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_valid_water": %w`, err)}
+	if v, ok := _u.mutation.UpgradeWater(); ok {
+		if err := membervipprogress.UpgradeWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipProgress.upgrade_water": %w`, err)}
 		}
 	}
 	if _u.mutation.MemberCleared() && len(_u.mutation.MemberIDs()) > 0 {
@@ -377,17 +377,17 @@ func (_u *MemberVipProgressUpdateOne) sqlSave(ctx context.Context) (_node *Membe
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(membervipprogress.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeDeposit(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidDeposit(); ok {
-		_spec.AddField(membervipprogress.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeDeposit(); ok {
+		_spec.AddField(membervipprogress.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidWater(); ok {
-		_spec.SetField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeWater(); ok {
+		_spec.SetField(membervipprogress.FieldUpgradeWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidWater(); ok {
-		_spec.AddField(membervipprogress.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeWater(); ok {
+		_spec.AddField(membervipprogress.FieldUpgradeWater, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.ProgressStartedAt(); ok {
 		_spec.SetField(membervipprogress.FieldProgressStartedAt, field.TypeTime, value)

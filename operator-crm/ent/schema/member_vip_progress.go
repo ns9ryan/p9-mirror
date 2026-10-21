@@ -40,15 +40,15 @@ func (MemberVipProgress) Fields() []ent.Field {
 
 		// ==================== 晋级进度 ====================
 
-		field.Int64("upgrade_valid_deposit").
+		field.Int64("upgrade_deposit").
 			NonNegative().
 			Default(0).
-			Comment("当前VIP等级已完成的有效充值晋级进度"),
+			Comment("当前VIP等级已完成的存款晋级进度"),
 
-		field.Int64("upgrade_valid_water").
+		field.Int64("upgrade_water").
 			NonNegative().
 			Default(0).
-			Comment("当前VIP等级已完成的有效洗码晋级进度"),
+			Comment("当前VIP等级已完成的洗码晋级进度"),
 
 		// ==================== 进度时间 ====================
 

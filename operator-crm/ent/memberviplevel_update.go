@@ -34,87 +34,87 @@ func (_u *MemberVipLevelUpdate) SetUpdatedAt(v time.Time) *MemberVipLevelUpdate 
 	return _u
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (_u *MemberVipLevelUpdate) SetUpgradeValidDeposit(v int64) *MemberVipLevelUpdate {
-	_u.mutation.ResetUpgradeValidDeposit()
-	_u.mutation.SetUpgradeValidDeposit(v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (_u *MemberVipLevelUpdate) SetUpgradeDeposit(v int64) *MemberVipLevelUpdate {
+	_u.mutation.ResetUpgradeDeposit()
+	_u.mutation.SetUpgradeDeposit(v)
 	return _u
 }
 
-// SetNillableUpgradeValidDeposit sets the "upgrade_valid_deposit" field if the given value is not nil.
-func (_u *MemberVipLevelUpdate) SetNillableUpgradeValidDeposit(v *int64) *MemberVipLevelUpdate {
+// SetNillableUpgradeDeposit sets the "upgrade_deposit" field if the given value is not nil.
+func (_u *MemberVipLevelUpdate) SetNillableUpgradeDeposit(v *int64) *MemberVipLevelUpdate {
 	if v != nil {
-		_u.SetUpgradeValidDeposit(*v)
+		_u.SetUpgradeDeposit(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidDeposit adds value to the "upgrade_valid_deposit" field.
-func (_u *MemberVipLevelUpdate) AddUpgradeValidDeposit(v int64) *MemberVipLevelUpdate {
-	_u.mutation.AddUpgradeValidDeposit(v)
+// AddUpgradeDeposit adds value to the "upgrade_deposit" field.
+func (_u *MemberVipLevelUpdate) AddUpgradeDeposit(v int64) *MemberVipLevelUpdate {
+	_u.mutation.AddUpgradeDeposit(v)
 	return _u
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (_u *MemberVipLevelUpdate) SetUpgradeValidWater(v int64) *MemberVipLevelUpdate {
-	_u.mutation.ResetUpgradeValidWater()
-	_u.mutation.SetUpgradeValidWater(v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (_u *MemberVipLevelUpdate) SetUpgradeWater(v int64) *MemberVipLevelUpdate {
+	_u.mutation.ResetUpgradeWater()
+	_u.mutation.SetUpgradeWater(v)
 	return _u
 }
 
-// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
-func (_u *MemberVipLevelUpdate) SetNillableUpgradeValidWater(v *int64) *MemberVipLevelUpdate {
+// SetNillableUpgradeWater sets the "upgrade_water" field if the given value is not nil.
+func (_u *MemberVipLevelUpdate) SetNillableUpgradeWater(v *int64) *MemberVipLevelUpdate {
 	if v != nil {
-		_u.SetUpgradeValidWater(*v)
+		_u.SetUpgradeWater(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidWater adds value to the "upgrade_valid_water" field.
-func (_u *MemberVipLevelUpdate) AddUpgradeValidWater(v int64) *MemberVipLevelUpdate {
-	_u.mutation.AddUpgradeValidWater(v)
+// AddUpgradeWater adds value to the "upgrade_water" field.
+func (_u *MemberVipLevelUpdate) AddUpgradeWater(v int64) *MemberVipLevelUpdate {
+	_u.mutation.AddUpgradeWater(v)
 	return _u
 }
 
-// SetRetentionValidDeposit sets the "retention_valid_deposit" field.
-func (_u *MemberVipLevelUpdate) SetRetentionValidDeposit(v int64) *MemberVipLevelUpdate {
-	_u.mutation.ResetRetentionValidDeposit()
-	_u.mutation.SetRetentionValidDeposit(v)
+// SetRetentionDeposit sets the "retention_deposit" field.
+func (_u *MemberVipLevelUpdate) SetRetentionDeposit(v int64) *MemberVipLevelUpdate {
+	_u.mutation.ResetRetentionDeposit()
+	_u.mutation.SetRetentionDeposit(v)
 	return _u
 }
 
-// SetNillableRetentionValidDeposit sets the "retention_valid_deposit" field if the given value is not nil.
-func (_u *MemberVipLevelUpdate) SetNillableRetentionValidDeposit(v *int64) *MemberVipLevelUpdate {
+// SetNillableRetentionDeposit sets the "retention_deposit" field if the given value is not nil.
+func (_u *MemberVipLevelUpdate) SetNillableRetentionDeposit(v *int64) *MemberVipLevelUpdate {
 	if v != nil {
-		_u.SetRetentionValidDeposit(*v)
+		_u.SetRetentionDeposit(*v)
 	}
 	return _u
 }
 
-// AddRetentionValidDeposit adds value to the "retention_valid_deposit" field.
-func (_u *MemberVipLevelUpdate) AddRetentionValidDeposit(v int64) *MemberVipLevelUpdate {
-	_u.mutation.AddRetentionValidDeposit(v)
+// AddRetentionDeposit adds value to the "retention_deposit" field.
+func (_u *MemberVipLevelUpdate) AddRetentionDeposit(v int64) *MemberVipLevelUpdate {
+	_u.mutation.AddRetentionDeposit(v)
 	return _u
 }
 
-// SetRetentionValidWater sets the "retention_valid_water" field.
-func (_u *MemberVipLevelUpdate) SetRetentionValidWater(v int64) *MemberVipLevelUpdate {
-	_u.mutation.ResetRetentionValidWater()
-	_u.mutation.SetRetentionValidWater(v)
+// SetRetentionWater sets the "retention_water" field.
+func (_u *MemberVipLevelUpdate) SetRetentionWater(v int64) *MemberVipLevelUpdate {
+	_u.mutation.ResetRetentionWater()
+	_u.mutation.SetRetentionWater(v)
 	return _u
 }
 
-// SetNillableRetentionValidWater sets the "retention_valid_water" field if the given value is not nil.
-func (_u *MemberVipLevelUpdate) SetNillableRetentionValidWater(v *int64) *MemberVipLevelUpdate {
+// SetNillableRetentionWater sets the "retention_water" field if the given value is not nil.
+func (_u *MemberVipLevelUpdate) SetNillableRetentionWater(v *int64) *MemberVipLevelUpdate {
 	if v != nil {
-		_u.SetRetentionValidWater(*v)
+		_u.SetRetentionWater(*v)
 	}
 	return _u
 }
 
-// AddRetentionValidWater adds value to the "retention_valid_water" field.
-func (_u *MemberVipLevelUpdate) AddRetentionValidWater(v int64) *MemberVipLevelUpdate {
-	_u.mutation.AddRetentionValidWater(v)
+// AddRetentionWater adds value to the "retention_water" field.
+func (_u *MemberVipLevelUpdate) AddRetentionWater(v int64) *MemberVipLevelUpdate {
+	_u.mutation.AddRetentionWater(v)
 	return _u
 }
 
@@ -188,24 +188,24 @@ func (_u *MemberVipLevelUpdate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberVipLevelUpdate) check() error {
-	if v, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		if err := memberviplevel.UpgradeValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_valid_deposit": %w`, err)}
+	if v, ok := _u.mutation.UpgradeDeposit(); ok {
+		if err := memberviplevel.UpgradeDepositValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.UpgradeValidWater(); ok {
-		if err := memberviplevel.UpgradeValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_valid_water": %w`, err)}
+	if v, ok := _u.mutation.UpgradeWater(); ok {
+		if err := memberviplevel.UpgradeWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_water": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.RetentionValidDeposit(); ok {
-		if err := memberviplevel.RetentionValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "retention_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_valid_deposit": %w`, err)}
+	if v, ok := _u.mutation.RetentionDeposit(); ok {
+		if err := memberviplevel.RetentionDepositValidator(v); err != nil {
+			return &ValidationError{Name: "retention_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.RetentionValidWater(); ok {
-		if err := memberviplevel.RetentionValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "retention_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_valid_water": %w`, err)}
+	if v, ok := _u.mutation.RetentionWater(); ok {
+		if err := memberviplevel.RetentionWaterValidator(v); err != nil {
+			return &ValidationError{Name: "retention_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_water": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.UpgradeReward(); ok {
@@ -231,29 +231,29 @@ func (_u *MemberVipLevelUpdate) sqlSave(ctx context.Context) (_node int, err err
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(memberviplevel.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		_spec.SetField(memberviplevel.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeDeposit(); ok {
+		_spec.SetField(memberviplevel.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidDeposit(); ok {
-		_spec.AddField(memberviplevel.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeDeposit(); ok {
+		_spec.AddField(memberviplevel.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidWater(); ok {
-		_spec.SetField(memberviplevel.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeWater(); ok {
+		_spec.SetField(memberviplevel.FieldUpgradeWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidWater(); ok {
-		_spec.AddField(memberviplevel.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeWater(); ok {
+		_spec.AddField(memberviplevel.FieldUpgradeWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.RetentionValidDeposit(); ok {
-		_spec.SetField(memberviplevel.FieldRetentionValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.RetentionDeposit(); ok {
+		_spec.SetField(memberviplevel.FieldRetentionDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedRetentionValidDeposit(); ok {
-		_spec.AddField(memberviplevel.FieldRetentionValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedRetentionDeposit(); ok {
+		_spec.AddField(memberviplevel.FieldRetentionDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.RetentionValidWater(); ok {
-		_spec.SetField(memberviplevel.FieldRetentionValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.RetentionWater(); ok {
+		_spec.SetField(memberviplevel.FieldRetentionWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedRetentionValidWater(); ok {
-		_spec.AddField(memberviplevel.FieldRetentionValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedRetentionWater(); ok {
+		_spec.AddField(memberviplevel.FieldRetentionWater, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpgradeReward(); ok {
 		_spec.SetField(memberviplevel.FieldUpgradeReward, field.TypeInt64, value)
@@ -287,87 +287,87 @@ func (_u *MemberVipLevelUpdateOne) SetUpdatedAt(v time.Time) *MemberVipLevelUpda
 	return _u
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (_u *MemberVipLevelUpdateOne) SetUpgradeValidDeposit(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.ResetUpgradeValidDeposit()
-	_u.mutation.SetUpgradeValidDeposit(v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (_u *MemberVipLevelUpdateOne) SetUpgradeDeposit(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.ResetUpgradeDeposit()
+	_u.mutation.SetUpgradeDeposit(v)
 	return _u
 }
 
-// SetNillableUpgradeValidDeposit sets the "upgrade_valid_deposit" field if the given value is not nil.
-func (_u *MemberVipLevelUpdateOne) SetNillableUpgradeValidDeposit(v *int64) *MemberVipLevelUpdateOne {
+// SetNillableUpgradeDeposit sets the "upgrade_deposit" field if the given value is not nil.
+func (_u *MemberVipLevelUpdateOne) SetNillableUpgradeDeposit(v *int64) *MemberVipLevelUpdateOne {
 	if v != nil {
-		_u.SetUpgradeValidDeposit(*v)
+		_u.SetUpgradeDeposit(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidDeposit adds value to the "upgrade_valid_deposit" field.
-func (_u *MemberVipLevelUpdateOne) AddUpgradeValidDeposit(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.AddUpgradeValidDeposit(v)
+// AddUpgradeDeposit adds value to the "upgrade_deposit" field.
+func (_u *MemberVipLevelUpdateOne) AddUpgradeDeposit(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.AddUpgradeDeposit(v)
 	return _u
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (_u *MemberVipLevelUpdateOne) SetUpgradeValidWater(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.ResetUpgradeValidWater()
-	_u.mutation.SetUpgradeValidWater(v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (_u *MemberVipLevelUpdateOne) SetUpgradeWater(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.ResetUpgradeWater()
+	_u.mutation.SetUpgradeWater(v)
 	return _u
 }
 
-// SetNillableUpgradeValidWater sets the "upgrade_valid_water" field if the given value is not nil.
-func (_u *MemberVipLevelUpdateOne) SetNillableUpgradeValidWater(v *int64) *MemberVipLevelUpdateOne {
+// SetNillableUpgradeWater sets the "upgrade_water" field if the given value is not nil.
+func (_u *MemberVipLevelUpdateOne) SetNillableUpgradeWater(v *int64) *MemberVipLevelUpdateOne {
 	if v != nil {
-		_u.SetUpgradeValidWater(*v)
+		_u.SetUpgradeWater(*v)
 	}
 	return _u
 }
 
-// AddUpgradeValidWater adds value to the "upgrade_valid_water" field.
-func (_u *MemberVipLevelUpdateOne) AddUpgradeValidWater(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.AddUpgradeValidWater(v)
+// AddUpgradeWater adds value to the "upgrade_water" field.
+func (_u *MemberVipLevelUpdateOne) AddUpgradeWater(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.AddUpgradeWater(v)
 	return _u
 }
 
-// SetRetentionValidDeposit sets the "retention_valid_deposit" field.
-func (_u *MemberVipLevelUpdateOne) SetRetentionValidDeposit(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.ResetRetentionValidDeposit()
-	_u.mutation.SetRetentionValidDeposit(v)
+// SetRetentionDeposit sets the "retention_deposit" field.
+func (_u *MemberVipLevelUpdateOne) SetRetentionDeposit(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.ResetRetentionDeposit()
+	_u.mutation.SetRetentionDeposit(v)
 	return _u
 }
 
-// SetNillableRetentionValidDeposit sets the "retention_valid_deposit" field if the given value is not nil.
-func (_u *MemberVipLevelUpdateOne) SetNillableRetentionValidDeposit(v *int64) *MemberVipLevelUpdateOne {
+// SetNillableRetentionDeposit sets the "retention_deposit" field if the given value is not nil.
+func (_u *MemberVipLevelUpdateOne) SetNillableRetentionDeposit(v *int64) *MemberVipLevelUpdateOne {
 	if v != nil {
-		_u.SetRetentionValidDeposit(*v)
+		_u.SetRetentionDeposit(*v)
 	}
 	return _u
 }
 
-// AddRetentionValidDeposit adds value to the "retention_valid_deposit" field.
-func (_u *MemberVipLevelUpdateOne) AddRetentionValidDeposit(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.AddRetentionValidDeposit(v)
+// AddRetentionDeposit adds value to the "retention_deposit" field.
+func (_u *MemberVipLevelUpdateOne) AddRetentionDeposit(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.AddRetentionDeposit(v)
 	return _u
 }
 
-// SetRetentionValidWater sets the "retention_valid_water" field.
-func (_u *MemberVipLevelUpdateOne) SetRetentionValidWater(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.ResetRetentionValidWater()
-	_u.mutation.SetRetentionValidWater(v)
+// SetRetentionWater sets the "retention_water" field.
+func (_u *MemberVipLevelUpdateOne) SetRetentionWater(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.ResetRetentionWater()
+	_u.mutation.SetRetentionWater(v)
 	return _u
 }
 
-// SetNillableRetentionValidWater sets the "retention_valid_water" field if the given value is not nil.
-func (_u *MemberVipLevelUpdateOne) SetNillableRetentionValidWater(v *int64) *MemberVipLevelUpdateOne {
+// SetNillableRetentionWater sets the "retention_water" field if the given value is not nil.
+func (_u *MemberVipLevelUpdateOne) SetNillableRetentionWater(v *int64) *MemberVipLevelUpdateOne {
 	if v != nil {
-		_u.SetRetentionValidWater(*v)
+		_u.SetRetentionWater(*v)
 	}
 	return _u
 }
 
-// AddRetentionValidWater adds value to the "retention_valid_water" field.
-func (_u *MemberVipLevelUpdateOne) AddRetentionValidWater(v int64) *MemberVipLevelUpdateOne {
-	_u.mutation.AddRetentionValidWater(v)
+// AddRetentionWater adds value to the "retention_water" field.
+func (_u *MemberVipLevelUpdateOne) AddRetentionWater(v int64) *MemberVipLevelUpdateOne {
+	_u.mutation.AddRetentionWater(v)
 	return _u
 }
 
@@ -454,24 +454,24 @@ func (_u *MemberVipLevelUpdateOne) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberVipLevelUpdateOne) check() error {
-	if v, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		if err := memberviplevel.UpgradeValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_valid_deposit": %w`, err)}
+	if v, ok := _u.mutation.UpgradeDeposit(); ok {
+		if err := memberviplevel.UpgradeDepositValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.UpgradeValidWater(); ok {
-		if err := memberviplevel.UpgradeValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_valid_water": %w`, err)}
+	if v, ok := _u.mutation.UpgradeWater(); ok {
+		if err := memberviplevel.UpgradeWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_water": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.RetentionValidDeposit(); ok {
-		if err := memberviplevel.RetentionValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "retention_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_valid_deposit": %w`, err)}
+	if v, ok := _u.mutation.RetentionDeposit(); ok {
+		if err := memberviplevel.RetentionDepositValidator(v); err != nil {
+			return &ValidationError{Name: "retention_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_deposit": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.RetentionValidWater(); ok {
-		if err := memberviplevel.RetentionValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "retention_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_valid_water": %w`, err)}
+	if v, ok := _u.mutation.RetentionWater(); ok {
+		if err := memberviplevel.RetentionWaterValidator(v); err != nil {
+			return &ValidationError{Name: "retention_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_water": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.UpgradeReward(); ok {
@@ -514,29 +514,29 @@ func (_u *MemberVipLevelUpdateOne) sqlSave(ctx context.Context) (_node *MemberVi
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(memberviplevel.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidDeposit(); ok {
-		_spec.SetField(memberviplevel.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeDeposit(); ok {
+		_spec.SetField(memberviplevel.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidDeposit(); ok {
-		_spec.AddField(memberviplevel.FieldUpgradeValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeDeposit(); ok {
+		_spec.AddField(memberviplevel.FieldUpgradeDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.UpgradeValidWater(); ok {
-		_spec.SetField(memberviplevel.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.UpgradeWater(); ok {
+		_spec.SetField(memberviplevel.FieldUpgradeWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedUpgradeValidWater(); ok {
-		_spec.AddField(memberviplevel.FieldUpgradeValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedUpgradeWater(); ok {
+		_spec.AddField(memberviplevel.FieldUpgradeWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.RetentionValidDeposit(); ok {
-		_spec.SetField(memberviplevel.FieldRetentionValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.RetentionDeposit(); ok {
+		_spec.SetField(memberviplevel.FieldRetentionDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedRetentionValidDeposit(); ok {
-		_spec.AddField(memberviplevel.FieldRetentionValidDeposit, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedRetentionDeposit(); ok {
+		_spec.AddField(memberviplevel.FieldRetentionDeposit, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.RetentionValidWater(); ok {
-		_spec.SetField(memberviplevel.FieldRetentionValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.RetentionWater(); ok {
+		_spec.SetField(memberviplevel.FieldRetentionWater, field.TypeInt64, value)
 	}
-	if value, ok := _u.mutation.AddedRetentionValidWater(); ok {
-		_spec.AddField(memberviplevel.FieldRetentionValidWater, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedRetentionWater(); ok {
+		_spec.AddField(memberviplevel.FieldRetentionWater, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpgradeReward(); ok {
 		_spec.SetField(memberviplevel.FieldUpgradeReward, field.TypeInt64, value)

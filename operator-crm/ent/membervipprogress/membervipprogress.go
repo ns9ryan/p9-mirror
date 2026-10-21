@@ -23,10 +23,10 @@ const (
 	FieldOperatorCode = "operator_code"
 	// FieldMemberID holds the string denoting the member_id field in the database.
 	FieldMemberID = "member_id"
-	// FieldUpgradeValidDeposit holds the string denoting the upgrade_valid_deposit field in the database.
-	FieldUpgradeValidDeposit = "upgrade_valid_deposit"
-	// FieldUpgradeValidWater holds the string denoting the upgrade_valid_water field in the database.
-	FieldUpgradeValidWater = "upgrade_valid_water"
+	// FieldUpgradeDeposit holds the string denoting the upgrade_deposit field in the database.
+	FieldUpgradeDeposit = "upgrade_deposit"
+	// FieldUpgradeWater holds the string denoting the upgrade_water field in the database.
+	FieldUpgradeWater = "upgrade_water"
 	// FieldProgressStartedAt holds the string denoting the progress_started_at field in the database.
 	FieldProgressStartedAt = "progress_started_at"
 	// EdgeMember holds the string denoting the member edge name in mutations.
@@ -49,8 +49,8 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldOperatorCode,
 	FieldMemberID,
-	FieldUpgradeValidDeposit,
-	FieldUpgradeValidWater,
+	FieldUpgradeDeposit,
+	FieldUpgradeWater,
 	FieldProgressStartedAt,
 }
 
@@ -82,14 +82,14 @@ var (
 	OperatorCodeValidator func(string) error
 	// MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	MemberIDValidator func(int64) error
-	// DefaultUpgradeValidDeposit holds the default value on creation for the "upgrade_valid_deposit" field.
-	DefaultUpgradeValidDeposit int64
-	// UpgradeValidDepositValidator is a validator for the "upgrade_valid_deposit" field. It is called by the builders before save.
-	UpgradeValidDepositValidator func(int64) error
-	// DefaultUpgradeValidWater holds the default value on creation for the "upgrade_valid_water" field.
-	DefaultUpgradeValidWater int64
-	// UpgradeValidWaterValidator is a validator for the "upgrade_valid_water" field. It is called by the builders before save.
-	UpgradeValidWaterValidator func(int64) error
+	// DefaultUpgradeDeposit holds the default value on creation for the "upgrade_deposit" field.
+	DefaultUpgradeDeposit int64
+	// UpgradeDepositValidator is a validator for the "upgrade_deposit" field. It is called by the builders before save.
+	UpgradeDepositValidator func(int64) error
+	// DefaultUpgradeWater holds the default value on creation for the "upgrade_water" field.
+	DefaultUpgradeWater int64
+	// UpgradeWaterValidator is a validator for the "upgrade_water" field. It is called by the builders before save.
+	UpgradeWaterValidator func(int64) error
 	// DefaultProgressStartedAt holds the default value on creation for the "progress_started_at" field.
 	DefaultProgressStartedAt func() time.Time
 )
@@ -122,14 +122,14 @@ func ByMemberID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMemberID, opts...).ToFunc()
 }
 
-// ByUpgradeValidDeposit orders the results by the upgrade_valid_deposit field.
-func ByUpgradeValidDeposit(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpgradeValidDeposit, opts...).ToFunc()
+// ByUpgradeDeposit orders the results by the upgrade_deposit field.
+func ByUpgradeDeposit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpgradeDeposit, opts...).ToFunc()
 }
 
-// ByUpgradeValidWater orders the results by the upgrade_valid_water field.
-func ByUpgradeValidWater(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpgradeValidWater, opts...).ToFunc()
+// ByUpgradeWater orders the results by the upgrade_water field.
+func ByUpgradeWater(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpgradeWater, opts...).ToFunc()
 }
 
 // ByProgressStartedAt orders the results by the progress_started_at field.

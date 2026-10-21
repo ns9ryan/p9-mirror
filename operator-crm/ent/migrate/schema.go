@@ -729,10 +729,10 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "level", Type: field.TypeInt64, Comment: "VIP等级编号, 从0开始连续递增", SchemaType: map[string]string{"postgres": "smallint"}},
-		{Name: "upgrade_valid_deposit", Type: field.TypeInt64, Comment: "晋级所需有效存款金额"},
-		{Name: "upgrade_valid_water", Type: field.TypeInt64, Comment: "晋级所需有效洗码量"},
-		{Name: "retention_valid_deposit", Type: field.TypeInt64, Comment: "保级所需有效存款金额"},
-		{Name: "retention_valid_water", Type: field.TypeInt64, Comment: "保级所需有效洗码量"},
+		{Name: "upgrade_deposit", Type: field.TypeInt64, Comment: "晋级所需存款金额"},
+		{Name: "upgrade_water", Type: field.TypeInt64, Comment: "晋级所需洗码量"},
+		{Name: "retention_deposit", Type: field.TypeInt64, Comment: "保级所需存款金额"},
+		{Name: "retention_water", Type: field.TypeInt64, Comment: "保级所需洗码量"},
 		{Name: "upgrade_reward", Type: field.TypeInt64, Comment: "晋级奖励金额", Default: 0},
 	}
 	// MemberVipLevelTable holds the schema information for the "member_vip_level" table.
@@ -794,8 +794,8 @@ var (
 		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
-		{Name: "upgrade_valid_deposit", Type: field.TypeInt64, Comment: "当前VIP等级已完成的有效充值晋级进度", Default: 0},
-		{Name: "upgrade_valid_water", Type: field.TypeInt64, Comment: "当前VIP等级已完成的有效洗码晋级进度", Default: 0},
+		{Name: "upgrade_deposit", Type: field.TypeInt64, Comment: "当前VIP等级已完成的存款晋级进度", Default: 0},
+		{Name: "upgrade_water", Type: field.TypeInt64, Comment: "当前VIP等级已完成的洗码晋级进度", Default: 0},
 		{Name: "progress_started_at", Type: field.TypeTime, Comment: "当前VIP晋级周期开始时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "member_id", Type: field.TypeInt64, Unique: true, Comment: "所属会员ID", SchemaType: map[string]string{"postgres": "bigint"}},
 	}

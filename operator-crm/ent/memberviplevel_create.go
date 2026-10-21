@@ -62,27 +62,27 @@ func (_c *MemberVipLevelCreate) SetLevel(v int64) *MemberVipLevelCreate {
 	return _c
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (_c *MemberVipLevelCreate) SetUpgradeValidDeposit(v int64) *MemberVipLevelCreate {
-	_c.mutation.SetUpgradeValidDeposit(v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (_c *MemberVipLevelCreate) SetUpgradeDeposit(v int64) *MemberVipLevelCreate {
+	_c.mutation.SetUpgradeDeposit(v)
 	return _c
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (_c *MemberVipLevelCreate) SetUpgradeValidWater(v int64) *MemberVipLevelCreate {
-	_c.mutation.SetUpgradeValidWater(v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (_c *MemberVipLevelCreate) SetUpgradeWater(v int64) *MemberVipLevelCreate {
+	_c.mutation.SetUpgradeWater(v)
 	return _c
 }
 
-// SetRetentionValidDeposit sets the "retention_valid_deposit" field.
-func (_c *MemberVipLevelCreate) SetRetentionValidDeposit(v int64) *MemberVipLevelCreate {
-	_c.mutation.SetRetentionValidDeposit(v)
+// SetRetentionDeposit sets the "retention_deposit" field.
+func (_c *MemberVipLevelCreate) SetRetentionDeposit(v int64) *MemberVipLevelCreate {
+	_c.mutation.SetRetentionDeposit(v)
 	return _c
 }
 
-// SetRetentionValidWater sets the "retention_valid_water" field.
-func (_c *MemberVipLevelCreate) SetRetentionValidWater(v int64) *MemberVipLevelCreate {
-	_c.mutation.SetRetentionValidWater(v)
+// SetRetentionWater sets the "retention_water" field.
+func (_c *MemberVipLevelCreate) SetRetentionWater(v int64) *MemberVipLevelCreate {
+	_c.mutation.SetRetentionWater(v)
 	return _c
 }
 
@@ -188,36 +188,36 @@ func (_c *MemberVipLevelCreate) check() error {
 			return &ValidationError{Name: "level", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.level": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.UpgradeValidDeposit(); !ok {
-		return &ValidationError{Name: "upgrade_valid_deposit", err: errors.New(`ent: missing required field "MemberVipLevel.upgrade_valid_deposit"`)}
+	if _, ok := _c.mutation.UpgradeDeposit(); !ok {
+		return &ValidationError{Name: "upgrade_deposit", err: errors.New(`ent: missing required field "MemberVipLevel.upgrade_deposit"`)}
 	}
-	if v, ok := _c.mutation.UpgradeValidDeposit(); ok {
-		if err := memberviplevel.UpgradeValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_valid_deposit": %w`, err)}
+	if v, ok := _c.mutation.UpgradeDeposit(); ok {
+		if err := memberviplevel.UpgradeDepositValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_deposit": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.UpgradeValidWater(); !ok {
-		return &ValidationError{Name: "upgrade_valid_water", err: errors.New(`ent: missing required field "MemberVipLevel.upgrade_valid_water"`)}
+	if _, ok := _c.mutation.UpgradeWater(); !ok {
+		return &ValidationError{Name: "upgrade_water", err: errors.New(`ent: missing required field "MemberVipLevel.upgrade_water"`)}
 	}
-	if v, ok := _c.mutation.UpgradeValidWater(); ok {
-		if err := memberviplevel.UpgradeValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "upgrade_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_valid_water": %w`, err)}
+	if v, ok := _c.mutation.UpgradeWater(); ok {
+		if err := memberviplevel.UpgradeWaterValidator(v); err != nil {
+			return &ValidationError{Name: "upgrade_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.upgrade_water": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.RetentionValidDeposit(); !ok {
-		return &ValidationError{Name: "retention_valid_deposit", err: errors.New(`ent: missing required field "MemberVipLevel.retention_valid_deposit"`)}
+	if _, ok := _c.mutation.RetentionDeposit(); !ok {
+		return &ValidationError{Name: "retention_deposit", err: errors.New(`ent: missing required field "MemberVipLevel.retention_deposit"`)}
 	}
-	if v, ok := _c.mutation.RetentionValidDeposit(); ok {
-		if err := memberviplevel.RetentionValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "retention_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_valid_deposit": %w`, err)}
+	if v, ok := _c.mutation.RetentionDeposit(); ok {
+		if err := memberviplevel.RetentionDepositValidator(v); err != nil {
+			return &ValidationError{Name: "retention_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_deposit": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.RetentionValidWater(); !ok {
-		return &ValidationError{Name: "retention_valid_water", err: errors.New(`ent: missing required field "MemberVipLevel.retention_valid_water"`)}
+	if _, ok := _c.mutation.RetentionWater(); !ok {
+		return &ValidationError{Name: "retention_water", err: errors.New(`ent: missing required field "MemberVipLevel.retention_water"`)}
 	}
-	if v, ok := _c.mutation.RetentionValidWater(); ok {
-		if err := memberviplevel.RetentionValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "retention_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_valid_water": %w`, err)}
+	if v, ok := _c.mutation.RetentionWater(); ok {
+		if err := memberviplevel.RetentionWaterValidator(v); err != nil {
+			return &ValidationError{Name: "retention_water", err: fmt.Errorf(`ent: validator failed for field "MemberVipLevel.retention_water": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.UpgradeReward(); !ok {
@@ -277,21 +277,21 @@ func (_c *MemberVipLevelCreate) createSpec() (*MemberVipLevel, *sqlgraph.CreateS
 		_spec.SetField(memberviplevel.FieldLevel, field.TypeInt64, value)
 		_node.Level = value
 	}
-	if value, ok := _c.mutation.UpgradeValidDeposit(); ok {
-		_spec.SetField(memberviplevel.FieldUpgradeValidDeposit, field.TypeInt64, value)
-		_node.UpgradeValidDeposit = value
+	if value, ok := _c.mutation.UpgradeDeposit(); ok {
+		_spec.SetField(memberviplevel.FieldUpgradeDeposit, field.TypeInt64, value)
+		_node.UpgradeDeposit = value
 	}
-	if value, ok := _c.mutation.UpgradeValidWater(); ok {
-		_spec.SetField(memberviplevel.FieldUpgradeValidWater, field.TypeInt64, value)
-		_node.UpgradeValidWater = value
+	if value, ok := _c.mutation.UpgradeWater(); ok {
+		_spec.SetField(memberviplevel.FieldUpgradeWater, field.TypeInt64, value)
+		_node.UpgradeWater = value
 	}
-	if value, ok := _c.mutation.RetentionValidDeposit(); ok {
-		_spec.SetField(memberviplevel.FieldRetentionValidDeposit, field.TypeInt64, value)
-		_node.RetentionValidDeposit = value
+	if value, ok := _c.mutation.RetentionDeposit(); ok {
+		_spec.SetField(memberviplevel.FieldRetentionDeposit, field.TypeInt64, value)
+		_node.RetentionDeposit = value
 	}
-	if value, ok := _c.mutation.RetentionValidWater(); ok {
-		_spec.SetField(memberviplevel.FieldRetentionValidWater, field.TypeInt64, value)
-		_node.RetentionValidWater = value
+	if value, ok := _c.mutation.RetentionWater(); ok {
+		_spec.SetField(memberviplevel.FieldRetentionWater, field.TypeInt64, value)
+		_node.RetentionWater = value
 	}
 	if value, ok := _c.mutation.UpgradeReward(); ok {
 		_spec.SetField(memberviplevel.FieldUpgradeReward, field.TypeInt64, value)
@@ -361,75 +361,75 @@ func (u *MemberVipLevelUpsert) UpdateUpdatedAt() *MemberVipLevelUpsert {
 	return u
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (u *MemberVipLevelUpsert) SetUpgradeValidDeposit(v int64) *MemberVipLevelUpsert {
-	u.Set(memberviplevel.FieldUpgradeValidDeposit, v)
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (u *MemberVipLevelUpsert) SetUpgradeDeposit(v int64) *MemberVipLevelUpsert {
+	u.Set(memberviplevel.FieldUpgradeDeposit, v)
 	return u
 }
 
-// UpdateUpgradeValidDeposit sets the "upgrade_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipLevelUpsert) UpdateUpgradeValidDeposit() *MemberVipLevelUpsert {
-	u.SetExcluded(memberviplevel.FieldUpgradeValidDeposit)
+// UpdateUpgradeDeposit sets the "upgrade_deposit" field to the value that was provided on create.
+func (u *MemberVipLevelUpsert) UpdateUpgradeDeposit() *MemberVipLevelUpsert {
+	u.SetExcluded(memberviplevel.FieldUpgradeDeposit)
 	return u
 }
 
-// AddUpgradeValidDeposit adds v to the "upgrade_valid_deposit" field.
-func (u *MemberVipLevelUpsert) AddUpgradeValidDeposit(v int64) *MemberVipLevelUpsert {
-	u.Add(memberviplevel.FieldUpgradeValidDeposit, v)
+// AddUpgradeDeposit adds v to the "upgrade_deposit" field.
+func (u *MemberVipLevelUpsert) AddUpgradeDeposit(v int64) *MemberVipLevelUpsert {
+	u.Add(memberviplevel.FieldUpgradeDeposit, v)
 	return u
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (u *MemberVipLevelUpsert) SetUpgradeValidWater(v int64) *MemberVipLevelUpsert {
-	u.Set(memberviplevel.FieldUpgradeValidWater, v)
+// SetUpgradeWater sets the "upgrade_water" field.
+func (u *MemberVipLevelUpsert) SetUpgradeWater(v int64) *MemberVipLevelUpsert {
+	u.Set(memberviplevel.FieldUpgradeWater, v)
 	return u
 }
 
-// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
-func (u *MemberVipLevelUpsert) UpdateUpgradeValidWater() *MemberVipLevelUpsert {
-	u.SetExcluded(memberviplevel.FieldUpgradeValidWater)
+// UpdateUpgradeWater sets the "upgrade_water" field to the value that was provided on create.
+func (u *MemberVipLevelUpsert) UpdateUpgradeWater() *MemberVipLevelUpsert {
+	u.SetExcluded(memberviplevel.FieldUpgradeWater)
 	return u
 }
 
-// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
-func (u *MemberVipLevelUpsert) AddUpgradeValidWater(v int64) *MemberVipLevelUpsert {
-	u.Add(memberviplevel.FieldUpgradeValidWater, v)
+// AddUpgradeWater adds v to the "upgrade_water" field.
+func (u *MemberVipLevelUpsert) AddUpgradeWater(v int64) *MemberVipLevelUpsert {
+	u.Add(memberviplevel.FieldUpgradeWater, v)
 	return u
 }
 
-// SetRetentionValidDeposit sets the "retention_valid_deposit" field.
-func (u *MemberVipLevelUpsert) SetRetentionValidDeposit(v int64) *MemberVipLevelUpsert {
-	u.Set(memberviplevel.FieldRetentionValidDeposit, v)
+// SetRetentionDeposit sets the "retention_deposit" field.
+func (u *MemberVipLevelUpsert) SetRetentionDeposit(v int64) *MemberVipLevelUpsert {
+	u.Set(memberviplevel.FieldRetentionDeposit, v)
 	return u
 }
 
-// UpdateRetentionValidDeposit sets the "retention_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipLevelUpsert) UpdateRetentionValidDeposit() *MemberVipLevelUpsert {
-	u.SetExcluded(memberviplevel.FieldRetentionValidDeposit)
+// UpdateRetentionDeposit sets the "retention_deposit" field to the value that was provided on create.
+func (u *MemberVipLevelUpsert) UpdateRetentionDeposit() *MemberVipLevelUpsert {
+	u.SetExcluded(memberviplevel.FieldRetentionDeposit)
 	return u
 }
 
-// AddRetentionValidDeposit adds v to the "retention_valid_deposit" field.
-func (u *MemberVipLevelUpsert) AddRetentionValidDeposit(v int64) *MemberVipLevelUpsert {
-	u.Add(memberviplevel.FieldRetentionValidDeposit, v)
+// AddRetentionDeposit adds v to the "retention_deposit" field.
+func (u *MemberVipLevelUpsert) AddRetentionDeposit(v int64) *MemberVipLevelUpsert {
+	u.Add(memberviplevel.FieldRetentionDeposit, v)
 	return u
 }
 
-// SetRetentionValidWater sets the "retention_valid_water" field.
-func (u *MemberVipLevelUpsert) SetRetentionValidWater(v int64) *MemberVipLevelUpsert {
-	u.Set(memberviplevel.FieldRetentionValidWater, v)
+// SetRetentionWater sets the "retention_water" field.
+func (u *MemberVipLevelUpsert) SetRetentionWater(v int64) *MemberVipLevelUpsert {
+	u.Set(memberviplevel.FieldRetentionWater, v)
 	return u
 }
 
-// UpdateRetentionValidWater sets the "retention_valid_water" field to the value that was provided on create.
-func (u *MemberVipLevelUpsert) UpdateRetentionValidWater() *MemberVipLevelUpsert {
-	u.SetExcluded(memberviplevel.FieldRetentionValidWater)
+// UpdateRetentionWater sets the "retention_water" field to the value that was provided on create.
+func (u *MemberVipLevelUpsert) UpdateRetentionWater() *MemberVipLevelUpsert {
+	u.SetExcluded(memberviplevel.FieldRetentionWater)
 	return u
 }
 
-// AddRetentionValidWater adds v to the "retention_valid_water" field.
-func (u *MemberVipLevelUpsert) AddRetentionValidWater(v int64) *MemberVipLevelUpsert {
-	u.Add(memberviplevel.FieldRetentionValidWater, v)
+// AddRetentionWater adds v to the "retention_water" field.
+func (u *MemberVipLevelUpsert) AddRetentionWater(v int64) *MemberVipLevelUpsert {
+	u.Add(memberviplevel.FieldRetentionWater, v)
 	return u
 }
 
@@ -522,87 +522,87 @@ func (u *MemberVipLevelUpsertOne) UpdateUpdatedAt() *MemberVipLevelUpsertOne {
 	})
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (u *MemberVipLevelUpsertOne) SetUpgradeValidDeposit(v int64) *MemberVipLevelUpsertOne {
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (u *MemberVipLevelUpsertOne) SetUpgradeDeposit(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetUpgradeValidDeposit(v)
+		s.SetUpgradeDeposit(v)
 	})
 }
 
-// AddUpgradeValidDeposit adds v to the "upgrade_valid_deposit" field.
-func (u *MemberVipLevelUpsertOne) AddUpgradeValidDeposit(v int64) *MemberVipLevelUpsertOne {
+// AddUpgradeDeposit adds v to the "upgrade_deposit" field.
+func (u *MemberVipLevelUpsertOne) AddUpgradeDeposit(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddUpgradeValidDeposit(v)
+		s.AddUpgradeDeposit(v)
 	})
 }
 
-// UpdateUpgradeValidDeposit sets the "upgrade_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertOne) UpdateUpgradeValidDeposit() *MemberVipLevelUpsertOne {
+// UpdateUpgradeDeposit sets the "upgrade_deposit" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertOne) UpdateUpgradeDeposit() *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateUpgradeValidDeposit()
+		s.UpdateUpgradeDeposit()
 	})
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (u *MemberVipLevelUpsertOne) SetUpgradeValidWater(v int64) *MemberVipLevelUpsertOne {
+// SetUpgradeWater sets the "upgrade_water" field.
+func (u *MemberVipLevelUpsertOne) SetUpgradeWater(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetUpgradeValidWater(v)
+		s.SetUpgradeWater(v)
 	})
 }
 
-// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
-func (u *MemberVipLevelUpsertOne) AddUpgradeValidWater(v int64) *MemberVipLevelUpsertOne {
+// AddUpgradeWater adds v to the "upgrade_water" field.
+func (u *MemberVipLevelUpsertOne) AddUpgradeWater(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddUpgradeValidWater(v)
+		s.AddUpgradeWater(v)
 	})
 }
 
-// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertOne) UpdateUpgradeValidWater() *MemberVipLevelUpsertOne {
+// UpdateUpgradeWater sets the "upgrade_water" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertOne) UpdateUpgradeWater() *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateUpgradeValidWater()
+		s.UpdateUpgradeWater()
 	})
 }
 
-// SetRetentionValidDeposit sets the "retention_valid_deposit" field.
-func (u *MemberVipLevelUpsertOne) SetRetentionValidDeposit(v int64) *MemberVipLevelUpsertOne {
+// SetRetentionDeposit sets the "retention_deposit" field.
+func (u *MemberVipLevelUpsertOne) SetRetentionDeposit(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetRetentionValidDeposit(v)
+		s.SetRetentionDeposit(v)
 	})
 }
 
-// AddRetentionValidDeposit adds v to the "retention_valid_deposit" field.
-func (u *MemberVipLevelUpsertOne) AddRetentionValidDeposit(v int64) *MemberVipLevelUpsertOne {
+// AddRetentionDeposit adds v to the "retention_deposit" field.
+func (u *MemberVipLevelUpsertOne) AddRetentionDeposit(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddRetentionValidDeposit(v)
+		s.AddRetentionDeposit(v)
 	})
 }
 
-// UpdateRetentionValidDeposit sets the "retention_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertOne) UpdateRetentionValidDeposit() *MemberVipLevelUpsertOne {
+// UpdateRetentionDeposit sets the "retention_deposit" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertOne) UpdateRetentionDeposit() *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateRetentionValidDeposit()
+		s.UpdateRetentionDeposit()
 	})
 }
 
-// SetRetentionValidWater sets the "retention_valid_water" field.
-func (u *MemberVipLevelUpsertOne) SetRetentionValidWater(v int64) *MemberVipLevelUpsertOne {
+// SetRetentionWater sets the "retention_water" field.
+func (u *MemberVipLevelUpsertOne) SetRetentionWater(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetRetentionValidWater(v)
+		s.SetRetentionWater(v)
 	})
 }
 
-// AddRetentionValidWater adds v to the "retention_valid_water" field.
-func (u *MemberVipLevelUpsertOne) AddRetentionValidWater(v int64) *MemberVipLevelUpsertOne {
+// AddRetentionWater adds v to the "retention_water" field.
+func (u *MemberVipLevelUpsertOne) AddRetentionWater(v int64) *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddRetentionValidWater(v)
+		s.AddRetentionWater(v)
 	})
 }
 
-// UpdateRetentionValidWater sets the "retention_valid_water" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertOne) UpdateRetentionValidWater() *MemberVipLevelUpsertOne {
+// UpdateRetentionWater sets the "retention_water" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertOne) UpdateRetentionWater() *MemberVipLevelUpsertOne {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateRetentionValidWater()
+		s.UpdateRetentionWater()
 	})
 }
 
@@ -864,87 +864,87 @@ func (u *MemberVipLevelUpsertBulk) UpdateUpdatedAt() *MemberVipLevelUpsertBulk {
 	})
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (u *MemberVipLevelUpsertBulk) SetUpgradeValidDeposit(v int64) *MemberVipLevelUpsertBulk {
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (u *MemberVipLevelUpsertBulk) SetUpgradeDeposit(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetUpgradeValidDeposit(v)
+		s.SetUpgradeDeposit(v)
 	})
 }
 
-// AddUpgradeValidDeposit adds v to the "upgrade_valid_deposit" field.
-func (u *MemberVipLevelUpsertBulk) AddUpgradeValidDeposit(v int64) *MemberVipLevelUpsertBulk {
+// AddUpgradeDeposit adds v to the "upgrade_deposit" field.
+func (u *MemberVipLevelUpsertBulk) AddUpgradeDeposit(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddUpgradeValidDeposit(v)
+		s.AddUpgradeDeposit(v)
 	})
 }
 
-// UpdateUpgradeValidDeposit sets the "upgrade_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertBulk) UpdateUpgradeValidDeposit() *MemberVipLevelUpsertBulk {
+// UpdateUpgradeDeposit sets the "upgrade_deposit" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertBulk) UpdateUpgradeDeposit() *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateUpgradeValidDeposit()
+		s.UpdateUpgradeDeposit()
 	})
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (u *MemberVipLevelUpsertBulk) SetUpgradeValidWater(v int64) *MemberVipLevelUpsertBulk {
+// SetUpgradeWater sets the "upgrade_water" field.
+func (u *MemberVipLevelUpsertBulk) SetUpgradeWater(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetUpgradeValidWater(v)
+		s.SetUpgradeWater(v)
 	})
 }
 
-// AddUpgradeValidWater adds v to the "upgrade_valid_water" field.
-func (u *MemberVipLevelUpsertBulk) AddUpgradeValidWater(v int64) *MemberVipLevelUpsertBulk {
+// AddUpgradeWater adds v to the "upgrade_water" field.
+func (u *MemberVipLevelUpsertBulk) AddUpgradeWater(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddUpgradeValidWater(v)
+		s.AddUpgradeWater(v)
 	})
 }
 
-// UpdateUpgradeValidWater sets the "upgrade_valid_water" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertBulk) UpdateUpgradeValidWater() *MemberVipLevelUpsertBulk {
+// UpdateUpgradeWater sets the "upgrade_water" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertBulk) UpdateUpgradeWater() *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateUpgradeValidWater()
+		s.UpdateUpgradeWater()
 	})
 }
 
-// SetRetentionValidDeposit sets the "retention_valid_deposit" field.
-func (u *MemberVipLevelUpsertBulk) SetRetentionValidDeposit(v int64) *MemberVipLevelUpsertBulk {
+// SetRetentionDeposit sets the "retention_deposit" field.
+func (u *MemberVipLevelUpsertBulk) SetRetentionDeposit(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetRetentionValidDeposit(v)
+		s.SetRetentionDeposit(v)
 	})
 }
 
-// AddRetentionValidDeposit adds v to the "retention_valid_deposit" field.
-func (u *MemberVipLevelUpsertBulk) AddRetentionValidDeposit(v int64) *MemberVipLevelUpsertBulk {
+// AddRetentionDeposit adds v to the "retention_deposit" field.
+func (u *MemberVipLevelUpsertBulk) AddRetentionDeposit(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddRetentionValidDeposit(v)
+		s.AddRetentionDeposit(v)
 	})
 }
 
-// UpdateRetentionValidDeposit sets the "retention_valid_deposit" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertBulk) UpdateRetentionValidDeposit() *MemberVipLevelUpsertBulk {
+// UpdateRetentionDeposit sets the "retention_deposit" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertBulk) UpdateRetentionDeposit() *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateRetentionValidDeposit()
+		s.UpdateRetentionDeposit()
 	})
 }
 
-// SetRetentionValidWater sets the "retention_valid_water" field.
-func (u *MemberVipLevelUpsertBulk) SetRetentionValidWater(v int64) *MemberVipLevelUpsertBulk {
+// SetRetentionWater sets the "retention_water" field.
+func (u *MemberVipLevelUpsertBulk) SetRetentionWater(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.SetRetentionValidWater(v)
+		s.SetRetentionWater(v)
 	})
 }
 
-// AddRetentionValidWater adds v to the "retention_valid_water" field.
-func (u *MemberVipLevelUpsertBulk) AddRetentionValidWater(v int64) *MemberVipLevelUpsertBulk {
+// AddRetentionWater adds v to the "retention_water" field.
+func (u *MemberVipLevelUpsertBulk) AddRetentionWater(v int64) *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.AddRetentionValidWater(v)
+		s.AddRetentionWater(v)
 	})
 }
 
-// UpdateRetentionValidWater sets the "retention_valid_water" field to the value that was provided on create.
-func (u *MemberVipLevelUpsertBulk) UpdateRetentionValidWater() *MemberVipLevelUpsertBulk {
+// UpdateRetentionWater sets the "retention_water" field to the value that was provided on create.
+func (u *MemberVipLevelUpsertBulk) UpdateRetentionWater() *MemberVipLevelUpsertBulk {
 	return u.Update(func(s *MemberVipLevelUpsert) {
-		s.UpdateRetentionValidWater()
+		s.UpdateRetentionWater()
 	})
 }
 

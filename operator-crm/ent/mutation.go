@@ -20154,28 +20154,28 @@ func (m *MemberVipIconGroupMutation) ResetEdge(name string) error {
 // MemberVipLevelMutation represents an operation that mutates the MemberVipLevel nodes in the graph.
 type MemberVipLevelMutation struct {
 	config
-	op                         Op
-	typ                        string
-	id                         *int64
-	created_at                 *time.Time
-	updated_at                 *time.Time
-	operator_code              *string
-	level                      *int64
-	addlevel                   *int64
-	upgrade_valid_deposit      *int64
-	addupgrade_valid_deposit   *int64
-	upgrade_valid_water        *int64
-	addupgrade_valid_water     *int64
-	retention_valid_deposit    *int64
-	addretention_valid_deposit *int64
-	retention_valid_water      *int64
-	addretention_valid_water   *int64
-	upgrade_reward             *int64
-	addupgrade_reward          *int64
-	clearedFields              map[string]struct{}
-	done                       bool
-	oldValue                   func(context.Context) (*MemberVipLevel, error)
-	predicates                 []predicate.MemberVipLevel
+	op                   Op
+	typ                  string
+	id                   *int64
+	created_at           *time.Time
+	updated_at           *time.Time
+	operator_code        *string
+	level                *int64
+	addlevel             *int64
+	upgrade_deposit      *int64
+	addupgrade_deposit   *int64
+	upgrade_water        *int64
+	addupgrade_water     *int64
+	retention_deposit    *int64
+	addretention_deposit *int64
+	retention_water      *int64
+	addretention_water   *int64
+	upgrade_reward       *int64
+	addupgrade_reward    *int64
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*MemberVipLevel, error)
+	predicates           []predicate.MemberVipLevel
 }
 
 var _ ent.Mutation = (*MemberVipLevelMutation)(nil)
@@ -20446,228 +20446,228 @@ func (m *MemberVipLevelMutation) ResetLevel() {
 	m.addlevel = nil
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (m *MemberVipLevelMutation) SetUpgradeValidDeposit(i int64) {
-	m.upgrade_valid_deposit = &i
-	m.addupgrade_valid_deposit = nil
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (m *MemberVipLevelMutation) SetUpgradeDeposit(i int64) {
+	m.upgrade_deposit = &i
+	m.addupgrade_deposit = nil
 }
 
-// UpgradeValidDeposit returns the value of the "upgrade_valid_deposit" field in the mutation.
-func (m *MemberVipLevelMutation) UpgradeValidDeposit() (r int64, exists bool) {
-	v := m.upgrade_valid_deposit
+// UpgradeDeposit returns the value of the "upgrade_deposit" field in the mutation.
+func (m *MemberVipLevelMutation) UpgradeDeposit() (r int64, exists bool) {
+	v := m.upgrade_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpgradeValidDeposit returns the old "upgrade_valid_deposit" field's value of the MemberVipLevel entity.
+// OldUpgradeDeposit returns the old "upgrade_deposit" field's value of the MemberVipLevel entity.
 // If the MemberVipLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipLevelMutation) OldUpgradeValidDeposit(ctx context.Context) (v int64, err error) {
+func (m *MemberVipLevelMutation) OldUpgradeDeposit(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpgradeValidDeposit is only allowed on UpdateOne operations")
+		return v, errors.New("OldUpgradeDeposit is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpgradeValidDeposit requires an ID field in the mutation")
+		return v, errors.New("OldUpgradeDeposit requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpgradeValidDeposit: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpgradeDeposit: %w", err)
 	}
-	return oldValue.UpgradeValidDeposit, nil
+	return oldValue.UpgradeDeposit, nil
 }
 
-// AddUpgradeValidDeposit adds i to the "upgrade_valid_deposit" field.
-func (m *MemberVipLevelMutation) AddUpgradeValidDeposit(i int64) {
-	if m.addupgrade_valid_deposit != nil {
-		*m.addupgrade_valid_deposit += i
+// AddUpgradeDeposit adds i to the "upgrade_deposit" field.
+func (m *MemberVipLevelMutation) AddUpgradeDeposit(i int64) {
+	if m.addupgrade_deposit != nil {
+		*m.addupgrade_deposit += i
 	} else {
-		m.addupgrade_valid_deposit = &i
+		m.addupgrade_deposit = &i
 	}
 }
 
-// AddedUpgradeValidDeposit returns the value that was added to the "upgrade_valid_deposit" field in this mutation.
-func (m *MemberVipLevelMutation) AddedUpgradeValidDeposit() (r int64, exists bool) {
-	v := m.addupgrade_valid_deposit
+// AddedUpgradeDeposit returns the value that was added to the "upgrade_deposit" field in this mutation.
+func (m *MemberVipLevelMutation) AddedUpgradeDeposit() (r int64, exists bool) {
+	v := m.addupgrade_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUpgradeValidDeposit resets all changes to the "upgrade_valid_deposit" field.
-func (m *MemberVipLevelMutation) ResetUpgradeValidDeposit() {
-	m.upgrade_valid_deposit = nil
-	m.addupgrade_valid_deposit = nil
+// ResetUpgradeDeposit resets all changes to the "upgrade_deposit" field.
+func (m *MemberVipLevelMutation) ResetUpgradeDeposit() {
+	m.upgrade_deposit = nil
+	m.addupgrade_deposit = nil
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (m *MemberVipLevelMutation) SetUpgradeValidWater(i int64) {
-	m.upgrade_valid_water = &i
-	m.addupgrade_valid_water = nil
+// SetUpgradeWater sets the "upgrade_water" field.
+func (m *MemberVipLevelMutation) SetUpgradeWater(i int64) {
+	m.upgrade_water = &i
+	m.addupgrade_water = nil
 }
 
-// UpgradeValidWater returns the value of the "upgrade_valid_water" field in the mutation.
-func (m *MemberVipLevelMutation) UpgradeValidWater() (r int64, exists bool) {
-	v := m.upgrade_valid_water
+// UpgradeWater returns the value of the "upgrade_water" field in the mutation.
+func (m *MemberVipLevelMutation) UpgradeWater() (r int64, exists bool) {
+	v := m.upgrade_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpgradeValidWater returns the old "upgrade_valid_water" field's value of the MemberVipLevel entity.
+// OldUpgradeWater returns the old "upgrade_water" field's value of the MemberVipLevel entity.
 // If the MemberVipLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipLevelMutation) OldUpgradeValidWater(ctx context.Context) (v int64, err error) {
+func (m *MemberVipLevelMutation) OldUpgradeWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpgradeValidWater is only allowed on UpdateOne operations")
+		return v, errors.New("OldUpgradeWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpgradeValidWater requires an ID field in the mutation")
+		return v, errors.New("OldUpgradeWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpgradeValidWater: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpgradeWater: %w", err)
 	}
-	return oldValue.UpgradeValidWater, nil
+	return oldValue.UpgradeWater, nil
 }
 
-// AddUpgradeValidWater adds i to the "upgrade_valid_water" field.
-func (m *MemberVipLevelMutation) AddUpgradeValidWater(i int64) {
-	if m.addupgrade_valid_water != nil {
-		*m.addupgrade_valid_water += i
+// AddUpgradeWater adds i to the "upgrade_water" field.
+func (m *MemberVipLevelMutation) AddUpgradeWater(i int64) {
+	if m.addupgrade_water != nil {
+		*m.addupgrade_water += i
 	} else {
-		m.addupgrade_valid_water = &i
+		m.addupgrade_water = &i
 	}
 }
 
-// AddedUpgradeValidWater returns the value that was added to the "upgrade_valid_water" field in this mutation.
-func (m *MemberVipLevelMutation) AddedUpgradeValidWater() (r int64, exists bool) {
-	v := m.addupgrade_valid_water
+// AddedUpgradeWater returns the value that was added to the "upgrade_water" field in this mutation.
+func (m *MemberVipLevelMutation) AddedUpgradeWater() (r int64, exists bool) {
+	v := m.addupgrade_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUpgradeValidWater resets all changes to the "upgrade_valid_water" field.
-func (m *MemberVipLevelMutation) ResetUpgradeValidWater() {
-	m.upgrade_valid_water = nil
-	m.addupgrade_valid_water = nil
+// ResetUpgradeWater resets all changes to the "upgrade_water" field.
+func (m *MemberVipLevelMutation) ResetUpgradeWater() {
+	m.upgrade_water = nil
+	m.addupgrade_water = nil
 }
 
-// SetRetentionValidDeposit sets the "retention_valid_deposit" field.
-func (m *MemberVipLevelMutation) SetRetentionValidDeposit(i int64) {
-	m.retention_valid_deposit = &i
-	m.addretention_valid_deposit = nil
+// SetRetentionDeposit sets the "retention_deposit" field.
+func (m *MemberVipLevelMutation) SetRetentionDeposit(i int64) {
+	m.retention_deposit = &i
+	m.addretention_deposit = nil
 }
 
-// RetentionValidDeposit returns the value of the "retention_valid_deposit" field in the mutation.
-func (m *MemberVipLevelMutation) RetentionValidDeposit() (r int64, exists bool) {
-	v := m.retention_valid_deposit
+// RetentionDeposit returns the value of the "retention_deposit" field in the mutation.
+func (m *MemberVipLevelMutation) RetentionDeposit() (r int64, exists bool) {
+	v := m.retention_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRetentionValidDeposit returns the old "retention_valid_deposit" field's value of the MemberVipLevel entity.
+// OldRetentionDeposit returns the old "retention_deposit" field's value of the MemberVipLevel entity.
 // If the MemberVipLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipLevelMutation) OldRetentionValidDeposit(ctx context.Context) (v int64, err error) {
+func (m *MemberVipLevelMutation) OldRetentionDeposit(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRetentionValidDeposit is only allowed on UpdateOne operations")
+		return v, errors.New("OldRetentionDeposit is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRetentionValidDeposit requires an ID field in the mutation")
+		return v, errors.New("OldRetentionDeposit requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRetentionValidDeposit: %w", err)
+		return v, fmt.Errorf("querying old value for OldRetentionDeposit: %w", err)
 	}
-	return oldValue.RetentionValidDeposit, nil
+	return oldValue.RetentionDeposit, nil
 }
 
-// AddRetentionValidDeposit adds i to the "retention_valid_deposit" field.
-func (m *MemberVipLevelMutation) AddRetentionValidDeposit(i int64) {
-	if m.addretention_valid_deposit != nil {
-		*m.addretention_valid_deposit += i
+// AddRetentionDeposit adds i to the "retention_deposit" field.
+func (m *MemberVipLevelMutation) AddRetentionDeposit(i int64) {
+	if m.addretention_deposit != nil {
+		*m.addretention_deposit += i
 	} else {
-		m.addretention_valid_deposit = &i
+		m.addretention_deposit = &i
 	}
 }
 
-// AddedRetentionValidDeposit returns the value that was added to the "retention_valid_deposit" field in this mutation.
-func (m *MemberVipLevelMutation) AddedRetentionValidDeposit() (r int64, exists bool) {
-	v := m.addretention_valid_deposit
+// AddedRetentionDeposit returns the value that was added to the "retention_deposit" field in this mutation.
+func (m *MemberVipLevelMutation) AddedRetentionDeposit() (r int64, exists bool) {
+	v := m.addretention_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetRetentionValidDeposit resets all changes to the "retention_valid_deposit" field.
-func (m *MemberVipLevelMutation) ResetRetentionValidDeposit() {
-	m.retention_valid_deposit = nil
-	m.addretention_valid_deposit = nil
+// ResetRetentionDeposit resets all changes to the "retention_deposit" field.
+func (m *MemberVipLevelMutation) ResetRetentionDeposit() {
+	m.retention_deposit = nil
+	m.addretention_deposit = nil
 }
 
-// SetRetentionValidWater sets the "retention_valid_water" field.
-func (m *MemberVipLevelMutation) SetRetentionValidWater(i int64) {
-	m.retention_valid_water = &i
-	m.addretention_valid_water = nil
+// SetRetentionWater sets the "retention_water" field.
+func (m *MemberVipLevelMutation) SetRetentionWater(i int64) {
+	m.retention_water = &i
+	m.addretention_water = nil
 }
 
-// RetentionValidWater returns the value of the "retention_valid_water" field in the mutation.
-func (m *MemberVipLevelMutation) RetentionValidWater() (r int64, exists bool) {
-	v := m.retention_valid_water
+// RetentionWater returns the value of the "retention_water" field in the mutation.
+func (m *MemberVipLevelMutation) RetentionWater() (r int64, exists bool) {
+	v := m.retention_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRetentionValidWater returns the old "retention_valid_water" field's value of the MemberVipLevel entity.
+// OldRetentionWater returns the old "retention_water" field's value of the MemberVipLevel entity.
 // If the MemberVipLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipLevelMutation) OldRetentionValidWater(ctx context.Context) (v int64, err error) {
+func (m *MemberVipLevelMutation) OldRetentionWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRetentionValidWater is only allowed on UpdateOne operations")
+		return v, errors.New("OldRetentionWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRetentionValidWater requires an ID field in the mutation")
+		return v, errors.New("OldRetentionWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRetentionValidWater: %w", err)
+		return v, fmt.Errorf("querying old value for OldRetentionWater: %w", err)
 	}
-	return oldValue.RetentionValidWater, nil
+	return oldValue.RetentionWater, nil
 }
 
-// AddRetentionValidWater adds i to the "retention_valid_water" field.
-func (m *MemberVipLevelMutation) AddRetentionValidWater(i int64) {
-	if m.addretention_valid_water != nil {
-		*m.addretention_valid_water += i
+// AddRetentionWater adds i to the "retention_water" field.
+func (m *MemberVipLevelMutation) AddRetentionWater(i int64) {
+	if m.addretention_water != nil {
+		*m.addretention_water += i
 	} else {
-		m.addretention_valid_water = &i
+		m.addretention_water = &i
 	}
 }
 
-// AddedRetentionValidWater returns the value that was added to the "retention_valid_water" field in this mutation.
-func (m *MemberVipLevelMutation) AddedRetentionValidWater() (r int64, exists bool) {
-	v := m.addretention_valid_water
+// AddedRetentionWater returns the value that was added to the "retention_water" field in this mutation.
+func (m *MemberVipLevelMutation) AddedRetentionWater() (r int64, exists bool) {
+	v := m.addretention_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetRetentionValidWater resets all changes to the "retention_valid_water" field.
-func (m *MemberVipLevelMutation) ResetRetentionValidWater() {
-	m.retention_valid_water = nil
-	m.addretention_valid_water = nil
+// ResetRetentionWater resets all changes to the "retention_water" field.
+func (m *MemberVipLevelMutation) ResetRetentionWater() {
+	m.retention_water = nil
+	m.addretention_water = nil
 }
 
 // SetUpgradeReward sets the "upgrade_reward" field.
@@ -20773,17 +20773,17 @@ func (m *MemberVipLevelMutation) Fields() []string {
 	if m.level != nil {
 		fields = append(fields, memberviplevel.FieldLevel)
 	}
-	if m.upgrade_valid_deposit != nil {
-		fields = append(fields, memberviplevel.FieldUpgradeValidDeposit)
+	if m.upgrade_deposit != nil {
+		fields = append(fields, memberviplevel.FieldUpgradeDeposit)
 	}
-	if m.upgrade_valid_water != nil {
-		fields = append(fields, memberviplevel.FieldUpgradeValidWater)
+	if m.upgrade_water != nil {
+		fields = append(fields, memberviplevel.FieldUpgradeWater)
 	}
-	if m.retention_valid_deposit != nil {
-		fields = append(fields, memberviplevel.FieldRetentionValidDeposit)
+	if m.retention_deposit != nil {
+		fields = append(fields, memberviplevel.FieldRetentionDeposit)
 	}
-	if m.retention_valid_water != nil {
-		fields = append(fields, memberviplevel.FieldRetentionValidWater)
+	if m.retention_water != nil {
+		fields = append(fields, memberviplevel.FieldRetentionWater)
 	}
 	if m.upgrade_reward != nil {
 		fields = append(fields, memberviplevel.FieldUpgradeReward)
@@ -20804,14 +20804,14 @@ func (m *MemberVipLevelMutation) Field(name string) (ent.Value, bool) {
 		return m.OperatorCode()
 	case memberviplevel.FieldLevel:
 		return m.Level()
-	case memberviplevel.FieldUpgradeValidDeposit:
-		return m.UpgradeValidDeposit()
-	case memberviplevel.FieldUpgradeValidWater:
-		return m.UpgradeValidWater()
-	case memberviplevel.FieldRetentionValidDeposit:
-		return m.RetentionValidDeposit()
-	case memberviplevel.FieldRetentionValidWater:
-		return m.RetentionValidWater()
+	case memberviplevel.FieldUpgradeDeposit:
+		return m.UpgradeDeposit()
+	case memberviplevel.FieldUpgradeWater:
+		return m.UpgradeWater()
+	case memberviplevel.FieldRetentionDeposit:
+		return m.RetentionDeposit()
+	case memberviplevel.FieldRetentionWater:
+		return m.RetentionWater()
 	case memberviplevel.FieldUpgradeReward:
 		return m.UpgradeReward()
 	}
@@ -20831,14 +20831,14 @@ func (m *MemberVipLevelMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldOperatorCode(ctx)
 	case memberviplevel.FieldLevel:
 		return m.OldLevel(ctx)
-	case memberviplevel.FieldUpgradeValidDeposit:
-		return m.OldUpgradeValidDeposit(ctx)
-	case memberviplevel.FieldUpgradeValidWater:
-		return m.OldUpgradeValidWater(ctx)
-	case memberviplevel.FieldRetentionValidDeposit:
-		return m.OldRetentionValidDeposit(ctx)
-	case memberviplevel.FieldRetentionValidWater:
-		return m.OldRetentionValidWater(ctx)
+	case memberviplevel.FieldUpgradeDeposit:
+		return m.OldUpgradeDeposit(ctx)
+	case memberviplevel.FieldUpgradeWater:
+		return m.OldUpgradeWater(ctx)
+	case memberviplevel.FieldRetentionDeposit:
+		return m.OldRetentionDeposit(ctx)
+	case memberviplevel.FieldRetentionWater:
+		return m.OldRetentionWater(ctx)
 	case memberviplevel.FieldUpgradeReward:
 		return m.OldUpgradeReward(ctx)
 	}
@@ -20878,33 +20878,33 @@ func (m *MemberVipLevelMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLevel(v)
 		return nil
-	case memberviplevel.FieldUpgradeValidDeposit:
+	case memberviplevel.FieldUpgradeDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpgradeValidDeposit(v)
+		m.SetUpgradeDeposit(v)
 		return nil
-	case memberviplevel.FieldUpgradeValidWater:
+	case memberviplevel.FieldUpgradeWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpgradeValidWater(v)
+		m.SetUpgradeWater(v)
 		return nil
-	case memberviplevel.FieldRetentionValidDeposit:
+	case memberviplevel.FieldRetentionDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRetentionValidDeposit(v)
+		m.SetRetentionDeposit(v)
 		return nil
-	case memberviplevel.FieldRetentionValidWater:
+	case memberviplevel.FieldRetentionWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRetentionValidWater(v)
+		m.SetRetentionWater(v)
 		return nil
 	case memberviplevel.FieldUpgradeReward:
 		v, ok := value.(int64)
@@ -20924,17 +20924,17 @@ func (m *MemberVipLevelMutation) AddedFields() []string {
 	if m.addlevel != nil {
 		fields = append(fields, memberviplevel.FieldLevel)
 	}
-	if m.addupgrade_valid_deposit != nil {
-		fields = append(fields, memberviplevel.FieldUpgradeValidDeposit)
+	if m.addupgrade_deposit != nil {
+		fields = append(fields, memberviplevel.FieldUpgradeDeposit)
 	}
-	if m.addupgrade_valid_water != nil {
-		fields = append(fields, memberviplevel.FieldUpgradeValidWater)
+	if m.addupgrade_water != nil {
+		fields = append(fields, memberviplevel.FieldUpgradeWater)
 	}
-	if m.addretention_valid_deposit != nil {
-		fields = append(fields, memberviplevel.FieldRetentionValidDeposit)
+	if m.addretention_deposit != nil {
+		fields = append(fields, memberviplevel.FieldRetentionDeposit)
 	}
-	if m.addretention_valid_water != nil {
-		fields = append(fields, memberviplevel.FieldRetentionValidWater)
+	if m.addretention_water != nil {
+		fields = append(fields, memberviplevel.FieldRetentionWater)
 	}
 	if m.addupgrade_reward != nil {
 		fields = append(fields, memberviplevel.FieldUpgradeReward)
@@ -20949,14 +20949,14 @@ func (m *MemberVipLevelMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case memberviplevel.FieldLevel:
 		return m.AddedLevel()
-	case memberviplevel.FieldUpgradeValidDeposit:
-		return m.AddedUpgradeValidDeposit()
-	case memberviplevel.FieldUpgradeValidWater:
-		return m.AddedUpgradeValidWater()
-	case memberviplevel.FieldRetentionValidDeposit:
-		return m.AddedRetentionValidDeposit()
-	case memberviplevel.FieldRetentionValidWater:
-		return m.AddedRetentionValidWater()
+	case memberviplevel.FieldUpgradeDeposit:
+		return m.AddedUpgradeDeposit()
+	case memberviplevel.FieldUpgradeWater:
+		return m.AddedUpgradeWater()
+	case memberviplevel.FieldRetentionDeposit:
+		return m.AddedRetentionDeposit()
+	case memberviplevel.FieldRetentionWater:
+		return m.AddedRetentionWater()
 	case memberviplevel.FieldUpgradeReward:
 		return m.AddedUpgradeReward()
 	}
@@ -20975,33 +20975,33 @@ func (m *MemberVipLevelMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddLevel(v)
 		return nil
-	case memberviplevel.FieldUpgradeValidDeposit:
+	case memberviplevel.FieldUpgradeDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUpgradeValidDeposit(v)
+		m.AddUpgradeDeposit(v)
 		return nil
-	case memberviplevel.FieldUpgradeValidWater:
+	case memberviplevel.FieldUpgradeWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUpgradeValidWater(v)
+		m.AddUpgradeWater(v)
 		return nil
-	case memberviplevel.FieldRetentionValidDeposit:
+	case memberviplevel.FieldRetentionDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddRetentionValidDeposit(v)
+		m.AddRetentionDeposit(v)
 		return nil
-	case memberviplevel.FieldRetentionValidWater:
+	case memberviplevel.FieldRetentionWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddRetentionValidWater(v)
+		m.AddRetentionWater(v)
 		return nil
 	case memberviplevel.FieldUpgradeReward:
 		v, ok := value.(int64)
@@ -21049,17 +21049,17 @@ func (m *MemberVipLevelMutation) ResetField(name string) error {
 	case memberviplevel.FieldLevel:
 		m.ResetLevel()
 		return nil
-	case memberviplevel.FieldUpgradeValidDeposit:
-		m.ResetUpgradeValidDeposit()
+	case memberviplevel.FieldUpgradeDeposit:
+		m.ResetUpgradeDeposit()
 		return nil
-	case memberviplevel.FieldUpgradeValidWater:
-		m.ResetUpgradeValidWater()
+	case memberviplevel.FieldUpgradeWater:
+		m.ResetUpgradeWater()
 		return nil
-	case memberviplevel.FieldRetentionValidDeposit:
-		m.ResetRetentionValidDeposit()
+	case memberviplevel.FieldRetentionDeposit:
+		m.ResetRetentionDeposit()
 		return nil
-	case memberviplevel.FieldRetentionValidWater:
-		m.ResetRetentionValidWater()
+	case memberviplevel.FieldRetentionWater:
+		m.ResetRetentionWater()
 		return nil
 	case memberviplevel.FieldUpgradeReward:
 		m.ResetUpgradeReward()
@@ -22026,23 +22026,23 @@ func (m *MemberVipLevelRecordMutation) ResetEdge(name string) error {
 // MemberVipProgressMutation represents an operation that mutates the MemberVipProgress nodes in the graph.
 type MemberVipProgressMutation struct {
 	config
-	op                       Op
-	typ                      string
-	id                       *int64
-	created_at               *time.Time
-	updated_at               *time.Time
-	operator_code            *string
-	upgrade_valid_deposit    *int64
-	addupgrade_valid_deposit *int64
-	upgrade_valid_water      *int64
-	addupgrade_valid_water   *int64
-	progress_started_at      *time.Time
-	clearedFields            map[string]struct{}
-	member                   *int64
-	clearedmember            bool
-	done                     bool
-	oldValue                 func(context.Context) (*MemberVipProgress, error)
-	predicates               []predicate.MemberVipProgress
+	op                  Op
+	typ                 string
+	id                  *int64
+	created_at          *time.Time
+	updated_at          *time.Time
+	operator_code       *string
+	upgrade_deposit     *int64
+	addupgrade_deposit  *int64
+	upgrade_water       *int64
+	addupgrade_water    *int64
+	progress_started_at *time.Time
+	clearedFields       map[string]struct{}
+	member              *int64
+	clearedmember       bool
+	done                bool
+	oldValue            func(context.Context) (*MemberVipProgress, error)
+	predicates          []predicate.MemberVipProgress
 }
 
 var _ ent.Mutation = (*MemberVipProgressMutation)(nil)
@@ -22293,116 +22293,116 @@ func (m *MemberVipProgressMutation) ResetMemberID() {
 	m.member = nil
 }
 
-// SetUpgradeValidDeposit sets the "upgrade_valid_deposit" field.
-func (m *MemberVipProgressMutation) SetUpgradeValidDeposit(i int64) {
-	m.upgrade_valid_deposit = &i
-	m.addupgrade_valid_deposit = nil
+// SetUpgradeDeposit sets the "upgrade_deposit" field.
+func (m *MemberVipProgressMutation) SetUpgradeDeposit(i int64) {
+	m.upgrade_deposit = &i
+	m.addupgrade_deposit = nil
 }
 
-// UpgradeValidDeposit returns the value of the "upgrade_valid_deposit" field in the mutation.
-func (m *MemberVipProgressMutation) UpgradeValidDeposit() (r int64, exists bool) {
-	v := m.upgrade_valid_deposit
+// UpgradeDeposit returns the value of the "upgrade_deposit" field in the mutation.
+func (m *MemberVipProgressMutation) UpgradeDeposit() (r int64, exists bool) {
+	v := m.upgrade_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpgradeValidDeposit returns the old "upgrade_valid_deposit" field's value of the MemberVipProgress entity.
+// OldUpgradeDeposit returns the old "upgrade_deposit" field's value of the MemberVipProgress entity.
 // If the MemberVipProgress object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipProgressMutation) OldUpgradeValidDeposit(ctx context.Context) (v int64, err error) {
+func (m *MemberVipProgressMutation) OldUpgradeDeposit(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpgradeValidDeposit is only allowed on UpdateOne operations")
+		return v, errors.New("OldUpgradeDeposit is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpgradeValidDeposit requires an ID field in the mutation")
+		return v, errors.New("OldUpgradeDeposit requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpgradeValidDeposit: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpgradeDeposit: %w", err)
 	}
-	return oldValue.UpgradeValidDeposit, nil
+	return oldValue.UpgradeDeposit, nil
 }
 
-// AddUpgradeValidDeposit adds i to the "upgrade_valid_deposit" field.
-func (m *MemberVipProgressMutation) AddUpgradeValidDeposit(i int64) {
-	if m.addupgrade_valid_deposit != nil {
-		*m.addupgrade_valid_deposit += i
+// AddUpgradeDeposit adds i to the "upgrade_deposit" field.
+func (m *MemberVipProgressMutation) AddUpgradeDeposit(i int64) {
+	if m.addupgrade_deposit != nil {
+		*m.addupgrade_deposit += i
 	} else {
-		m.addupgrade_valid_deposit = &i
+		m.addupgrade_deposit = &i
 	}
 }
 
-// AddedUpgradeValidDeposit returns the value that was added to the "upgrade_valid_deposit" field in this mutation.
-func (m *MemberVipProgressMutation) AddedUpgradeValidDeposit() (r int64, exists bool) {
-	v := m.addupgrade_valid_deposit
+// AddedUpgradeDeposit returns the value that was added to the "upgrade_deposit" field in this mutation.
+func (m *MemberVipProgressMutation) AddedUpgradeDeposit() (r int64, exists bool) {
+	v := m.addupgrade_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUpgradeValidDeposit resets all changes to the "upgrade_valid_deposit" field.
-func (m *MemberVipProgressMutation) ResetUpgradeValidDeposit() {
-	m.upgrade_valid_deposit = nil
-	m.addupgrade_valid_deposit = nil
+// ResetUpgradeDeposit resets all changes to the "upgrade_deposit" field.
+func (m *MemberVipProgressMutation) ResetUpgradeDeposit() {
+	m.upgrade_deposit = nil
+	m.addupgrade_deposit = nil
 }
 
-// SetUpgradeValidWater sets the "upgrade_valid_water" field.
-func (m *MemberVipProgressMutation) SetUpgradeValidWater(i int64) {
-	m.upgrade_valid_water = &i
-	m.addupgrade_valid_water = nil
+// SetUpgradeWater sets the "upgrade_water" field.
+func (m *MemberVipProgressMutation) SetUpgradeWater(i int64) {
+	m.upgrade_water = &i
+	m.addupgrade_water = nil
 }
 
-// UpgradeValidWater returns the value of the "upgrade_valid_water" field in the mutation.
-func (m *MemberVipProgressMutation) UpgradeValidWater() (r int64, exists bool) {
-	v := m.upgrade_valid_water
+// UpgradeWater returns the value of the "upgrade_water" field in the mutation.
+func (m *MemberVipProgressMutation) UpgradeWater() (r int64, exists bool) {
+	v := m.upgrade_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpgradeValidWater returns the old "upgrade_valid_water" field's value of the MemberVipProgress entity.
+// OldUpgradeWater returns the old "upgrade_water" field's value of the MemberVipProgress entity.
 // If the MemberVipProgress object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberVipProgressMutation) OldUpgradeValidWater(ctx context.Context) (v int64, err error) {
+func (m *MemberVipProgressMutation) OldUpgradeWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpgradeValidWater is only allowed on UpdateOne operations")
+		return v, errors.New("OldUpgradeWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpgradeValidWater requires an ID field in the mutation")
+		return v, errors.New("OldUpgradeWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpgradeValidWater: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpgradeWater: %w", err)
 	}
-	return oldValue.UpgradeValidWater, nil
+	return oldValue.UpgradeWater, nil
 }
 
-// AddUpgradeValidWater adds i to the "upgrade_valid_water" field.
-func (m *MemberVipProgressMutation) AddUpgradeValidWater(i int64) {
-	if m.addupgrade_valid_water != nil {
-		*m.addupgrade_valid_water += i
+// AddUpgradeWater adds i to the "upgrade_water" field.
+func (m *MemberVipProgressMutation) AddUpgradeWater(i int64) {
+	if m.addupgrade_water != nil {
+		*m.addupgrade_water += i
 	} else {
-		m.addupgrade_valid_water = &i
+		m.addupgrade_water = &i
 	}
 }
 
-// AddedUpgradeValidWater returns the value that was added to the "upgrade_valid_water" field in this mutation.
-func (m *MemberVipProgressMutation) AddedUpgradeValidWater() (r int64, exists bool) {
-	v := m.addupgrade_valid_water
+// AddedUpgradeWater returns the value that was added to the "upgrade_water" field in this mutation.
+func (m *MemberVipProgressMutation) AddedUpgradeWater() (r int64, exists bool) {
+	v := m.addupgrade_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUpgradeValidWater resets all changes to the "upgrade_valid_water" field.
-func (m *MemberVipProgressMutation) ResetUpgradeValidWater() {
-	m.upgrade_valid_water = nil
-	m.addupgrade_valid_water = nil
+// ResetUpgradeWater resets all changes to the "upgrade_water" field.
+func (m *MemberVipProgressMutation) ResetUpgradeWater() {
+	m.upgrade_water = nil
+	m.addupgrade_water = nil
 }
 
 // SetProgressStartedAt sets the "progress_started_at" field.
@@ -22515,11 +22515,11 @@ func (m *MemberVipProgressMutation) Fields() []string {
 	if m.member != nil {
 		fields = append(fields, membervipprogress.FieldMemberID)
 	}
-	if m.upgrade_valid_deposit != nil {
-		fields = append(fields, membervipprogress.FieldUpgradeValidDeposit)
+	if m.upgrade_deposit != nil {
+		fields = append(fields, membervipprogress.FieldUpgradeDeposit)
 	}
-	if m.upgrade_valid_water != nil {
-		fields = append(fields, membervipprogress.FieldUpgradeValidWater)
+	if m.upgrade_water != nil {
+		fields = append(fields, membervipprogress.FieldUpgradeWater)
 	}
 	if m.progress_started_at != nil {
 		fields = append(fields, membervipprogress.FieldProgressStartedAt)
@@ -22540,10 +22540,10 @@ func (m *MemberVipProgressMutation) Field(name string) (ent.Value, bool) {
 		return m.OperatorCode()
 	case membervipprogress.FieldMemberID:
 		return m.MemberID()
-	case membervipprogress.FieldUpgradeValidDeposit:
-		return m.UpgradeValidDeposit()
-	case membervipprogress.FieldUpgradeValidWater:
-		return m.UpgradeValidWater()
+	case membervipprogress.FieldUpgradeDeposit:
+		return m.UpgradeDeposit()
+	case membervipprogress.FieldUpgradeWater:
+		return m.UpgradeWater()
 	case membervipprogress.FieldProgressStartedAt:
 		return m.ProgressStartedAt()
 	}
@@ -22563,10 +22563,10 @@ func (m *MemberVipProgressMutation) OldField(ctx context.Context, name string) (
 		return m.OldOperatorCode(ctx)
 	case membervipprogress.FieldMemberID:
 		return m.OldMemberID(ctx)
-	case membervipprogress.FieldUpgradeValidDeposit:
-		return m.OldUpgradeValidDeposit(ctx)
-	case membervipprogress.FieldUpgradeValidWater:
-		return m.OldUpgradeValidWater(ctx)
+	case membervipprogress.FieldUpgradeDeposit:
+		return m.OldUpgradeDeposit(ctx)
+	case membervipprogress.FieldUpgradeWater:
+		return m.OldUpgradeWater(ctx)
 	case membervipprogress.FieldProgressStartedAt:
 		return m.OldProgressStartedAt(ctx)
 	}
@@ -22606,19 +22606,19 @@ func (m *MemberVipProgressMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetMemberID(v)
 		return nil
-	case membervipprogress.FieldUpgradeValidDeposit:
+	case membervipprogress.FieldUpgradeDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpgradeValidDeposit(v)
+		m.SetUpgradeDeposit(v)
 		return nil
-	case membervipprogress.FieldUpgradeValidWater:
+	case membervipprogress.FieldUpgradeWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpgradeValidWater(v)
+		m.SetUpgradeWater(v)
 		return nil
 	case membervipprogress.FieldProgressStartedAt:
 		v, ok := value.(time.Time)
@@ -22635,11 +22635,11 @@ func (m *MemberVipProgressMutation) SetField(name string, value ent.Value) error
 // this mutation.
 func (m *MemberVipProgressMutation) AddedFields() []string {
 	var fields []string
-	if m.addupgrade_valid_deposit != nil {
-		fields = append(fields, membervipprogress.FieldUpgradeValidDeposit)
+	if m.addupgrade_deposit != nil {
+		fields = append(fields, membervipprogress.FieldUpgradeDeposit)
 	}
-	if m.addupgrade_valid_water != nil {
-		fields = append(fields, membervipprogress.FieldUpgradeValidWater)
+	if m.addupgrade_water != nil {
+		fields = append(fields, membervipprogress.FieldUpgradeWater)
 	}
 	return fields
 }
@@ -22649,10 +22649,10 @@ func (m *MemberVipProgressMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *MemberVipProgressMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case membervipprogress.FieldUpgradeValidDeposit:
-		return m.AddedUpgradeValidDeposit()
-	case membervipprogress.FieldUpgradeValidWater:
-		return m.AddedUpgradeValidWater()
+	case membervipprogress.FieldUpgradeDeposit:
+		return m.AddedUpgradeDeposit()
+	case membervipprogress.FieldUpgradeWater:
+		return m.AddedUpgradeWater()
 	}
 	return nil, false
 }
@@ -22662,19 +22662,19 @@ func (m *MemberVipProgressMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *MemberVipProgressMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case membervipprogress.FieldUpgradeValidDeposit:
+	case membervipprogress.FieldUpgradeDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUpgradeValidDeposit(v)
+		m.AddUpgradeDeposit(v)
 		return nil
-	case membervipprogress.FieldUpgradeValidWater:
+	case membervipprogress.FieldUpgradeWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUpgradeValidWater(v)
+		m.AddUpgradeWater(v)
 		return nil
 	}
 	return fmt.Errorf("unknown MemberVipProgress numeric field %s", name)
@@ -22715,11 +22715,11 @@ func (m *MemberVipProgressMutation) ResetField(name string) error {
 	case membervipprogress.FieldMemberID:
 		m.ResetMemberID()
 		return nil
-	case membervipprogress.FieldUpgradeValidDeposit:
-		m.ResetUpgradeValidDeposit()
+	case membervipprogress.FieldUpgradeDeposit:
+		m.ResetUpgradeDeposit()
 		return nil
-	case membervipprogress.FieldUpgradeValidWater:
-		m.ResetUpgradeValidWater()
+	case membervipprogress.FieldUpgradeWater:
+		m.ResetUpgradeWater()
 		return nil
 	case membervipprogress.FieldProgressStartedAt:
 		m.ResetProgressStartedAt()

@@ -1823,22 +1823,22 @@ func init() {
 	memberviplevelDescLevel := memberviplevelFields[1].Descriptor()
 	// memberviplevel.LevelValidator is a validator for the "level" field. It is called by the builders before save.
 	memberviplevel.LevelValidator = memberviplevelDescLevel.Validators[0].(func(int64) error)
-	// memberviplevelDescUpgradeValidDeposit is the schema descriptor for upgrade_valid_deposit field.
-	memberviplevelDescUpgradeValidDeposit := memberviplevelFields[2].Descriptor()
-	// memberviplevel.UpgradeValidDepositValidator is a validator for the "upgrade_valid_deposit" field. It is called by the builders before save.
-	memberviplevel.UpgradeValidDepositValidator = memberviplevelDescUpgradeValidDeposit.Validators[0].(func(int64) error)
-	// memberviplevelDescUpgradeValidWater is the schema descriptor for upgrade_valid_water field.
-	memberviplevelDescUpgradeValidWater := memberviplevelFields[3].Descriptor()
-	// memberviplevel.UpgradeValidWaterValidator is a validator for the "upgrade_valid_water" field. It is called by the builders before save.
-	memberviplevel.UpgradeValidWaterValidator = memberviplevelDescUpgradeValidWater.Validators[0].(func(int64) error)
-	// memberviplevelDescRetentionValidDeposit is the schema descriptor for retention_valid_deposit field.
-	memberviplevelDescRetentionValidDeposit := memberviplevelFields[4].Descriptor()
-	// memberviplevel.RetentionValidDepositValidator is a validator for the "retention_valid_deposit" field. It is called by the builders before save.
-	memberviplevel.RetentionValidDepositValidator = memberviplevelDescRetentionValidDeposit.Validators[0].(func(int64) error)
-	// memberviplevelDescRetentionValidWater is the schema descriptor for retention_valid_water field.
-	memberviplevelDescRetentionValidWater := memberviplevelFields[5].Descriptor()
-	// memberviplevel.RetentionValidWaterValidator is a validator for the "retention_valid_water" field. It is called by the builders before save.
-	memberviplevel.RetentionValidWaterValidator = memberviplevelDescRetentionValidWater.Validators[0].(func(int64) error)
+	// memberviplevelDescUpgradeDeposit is the schema descriptor for upgrade_deposit field.
+	memberviplevelDescUpgradeDeposit := memberviplevelFields[2].Descriptor()
+	// memberviplevel.UpgradeDepositValidator is a validator for the "upgrade_deposit" field. It is called by the builders before save.
+	memberviplevel.UpgradeDepositValidator = memberviplevelDescUpgradeDeposit.Validators[0].(func(int64) error)
+	// memberviplevelDescUpgradeWater is the schema descriptor for upgrade_water field.
+	memberviplevelDescUpgradeWater := memberviplevelFields[3].Descriptor()
+	// memberviplevel.UpgradeWaterValidator is a validator for the "upgrade_water" field. It is called by the builders before save.
+	memberviplevel.UpgradeWaterValidator = memberviplevelDescUpgradeWater.Validators[0].(func(int64) error)
+	// memberviplevelDescRetentionDeposit is the schema descriptor for retention_deposit field.
+	memberviplevelDescRetentionDeposit := memberviplevelFields[4].Descriptor()
+	// memberviplevel.RetentionDepositValidator is a validator for the "retention_deposit" field. It is called by the builders before save.
+	memberviplevel.RetentionDepositValidator = memberviplevelDescRetentionDeposit.Validators[0].(func(int64) error)
+	// memberviplevelDescRetentionWater is the schema descriptor for retention_water field.
+	memberviplevelDescRetentionWater := memberviplevelFields[5].Descriptor()
+	// memberviplevel.RetentionWaterValidator is a validator for the "retention_water" field. It is called by the builders before save.
+	memberviplevel.RetentionWaterValidator = memberviplevelDescRetentionWater.Validators[0].(func(int64) error)
 	// memberviplevelDescUpgradeReward is the schema descriptor for upgrade_reward field.
 	memberviplevelDescUpgradeReward := memberviplevelFields[6].Descriptor()
 	// memberviplevel.DefaultUpgradeReward holds the default value on creation for the upgrade_reward field.
@@ -1938,18 +1938,18 @@ func init() {
 	membervipprogressDescMemberID := membervipprogressFields[1].Descriptor()
 	// membervipprogress.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	membervipprogress.MemberIDValidator = membervipprogressDescMemberID.Validators[0].(func(int64) error)
-	// membervipprogressDescUpgradeValidDeposit is the schema descriptor for upgrade_valid_deposit field.
-	membervipprogressDescUpgradeValidDeposit := membervipprogressFields[2].Descriptor()
-	// membervipprogress.DefaultUpgradeValidDeposit holds the default value on creation for the upgrade_valid_deposit field.
-	membervipprogress.DefaultUpgradeValidDeposit = membervipprogressDescUpgradeValidDeposit.Default.(int64)
-	// membervipprogress.UpgradeValidDepositValidator is a validator for the "upgrade_valid_deposit" field. It is called by the builders before save.
-	membervipprogress.UpgradeValidDepositValidator = membervipprogressDescUpgradeValidDeposit.Validators[0].(func(int64) error)
-	// membervipprogressDescUpgradeValidWater is the schema descriptor for upgrade_valid_water field.
-	membervipprogressDescUpgradeValidWater := membervipprogressFields[3].Descriptor()
-	// membervipprogress.DefaultUpgradeValidWater holds the default value on creation for the upgrade_valid_water field.
-	membervipprogress.DefaultUpgradeValidWater = membervipprogressDescUpgradeValidWater.Default.(int64)
-	// membervipprogress.UpgradeValidWaterValidator is a validator for the "upgrade_valid_water" field. It is called by the builders before save.
-	membervipprogress.UpgradeValidWaterValidator = membervipprogressDescUpgradeValidWater.Validators[0].(func(int64) error)
+	// membervipprogressDescUpgradeDeposit is the schema descriptor for upgrade_deposit field.
+	membervipprogressDescUpgradeDeposit := membervipprogressFields[2].Descriptor()
+	// membervipprogress.DefaultUpgradeDeposit holds the default value on creation for the upgrade_deposit field.
+	membervipprogress.DefaultUpgradeDeposit = membervipprogressDescUpgradeDeposit.Default.(int64)
+	// membervipprogress.UpgradeDepositValidator is a validator for the "upgrade_deposit" field. It is called by the builders before save.
+	membervipprogress.UpgradeDepositValidator = membervipprogressDescUpgradeDeposit.Validators[0].(func(int64) error)
+	// membervipprogressDescUpgradeWater is the schema descriptor for upgrade_water field.
+	membervipprogressDescUpgradeWater := membervipprogressFields[3].Descriptor()
+	// membervipprogress.DefaultUpgradeWater holds the default value on creation for the upgrade_water field.
+	membervipprogress.DefaultUpgradeWater = membervipprogressDescUpgradeWater.Default.(int64)
+	// membervipprogress.UpgradeWaterValidator is a validator for the "upgrade_water" field. It is called by the builders before save.
+	membervipprogress.UpgradeWaterValidator = membervipprogressDescUpgradeWater.Validators[0].(func(int64) error)
 	// membervipprogressDescProgressStartedAt is the schema descriptor for progress_started_at field.
 	membervipprogressDescProgressStartedAt := membervipprogressFields[4].Descriptor()
 	// membervipprogress.DefaultProgressStartedAt holds the default value on creation for the progress_started_at field.
