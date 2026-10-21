@@ -177,6 +177,18 @@ func (f MemberOAuthIdentityFunc) Mutate(ctx context.Context, m ent.Mutation) (en
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MemberOAuthIdentityMutation", m)
 }
 
+// The MemberPeriodStatsFunc type is an adapter to allow the use of ordinary
+// function as MemberPeriodStats mutator.
+type MemberPeriodStatsFunc func(context.Context, *ent.MemberPeriodStatsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MemberPeriodStatsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MemberPeriodStatsMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MemberPeriodStatsMutation", m)
+}
+
 // The MemberProfileFunc type is an adapter to allow the use of ordinary
 // function as MemberProfile mutator.
 type MemberProfileFunc func(context.Context, *ent.MemberProfileMutation) (ent.Value, error)

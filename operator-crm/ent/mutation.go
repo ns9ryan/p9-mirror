@@ -26,6 +26,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
+	"oa.98ent.com/p9/operator-crm/ent/memberperiodstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
 	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/membervipconfig"
@@ -59,6 +60,7 @@ const (
 	TypeMemberFixedLevel           = "MemberFixedLevel"
 	TypeMemberFixedLevelAssignment = "MemberFixedLevelAssignment"
 	TypeMemberOAuthIdentity        = "MemberOAuthIdentity"
+	TypeMemberPeriodStats          = "MemberPeriodStats"
 	TypeMemberProfile              = "MemberProfile"
 	TypeMemberStats                = "MemberStats"
 	TypeMemberVipConfig            = "MemberVipConfig"
@@ -10935,6 +10937,9 @@ type MemberMutation struct {
 	clearedoauth_identities        bool
 	stats                          *int64
 	clearedstats                   bool
+	period_stats                   map[int64]struct{}
+	removedperiod_stats            map[int64]struct{}
+	clearedperiod_stats            bool
 	vip_progress                   *int64
 	clearedvip_progress            bool
 	vip_level_records              map[int64]struct{}
@@ -12428,6 +12433,60 @@ func (m *MemberMutation) ResetStats() {
 	m.clearedstats = false
 }
 
+// AddPeriodStatIDs adds the "period_stats" edge to the MemberPeriodStats entity by ids.
+func (m *MemberMutation) AddPeriodStatIDs(ids ...int64) {
+	if m.period_stats == nil {
+		m.period_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.period_stats[ids[i]] = struct{}{}
+	}
+}
+
+// ClearPeriodStats clears the "period_stats" edge to the MemberPeriodStats entity.
+func (m *MemberMutation) ClearPeriodStats() {
+	m.clearedperiod_stats = true
+}
+
+// PeriodStatsCleared reports if the "period_stats" edge to the MemberPeriodStats entity was cleared.
+func (m *MemberMutation) PeriodStatsCleared() bool {
+	return m.clearedperiod_stats
+}
+
+// RemovePeriodStatIDs removes the "period_stats" edge to the MemberPeriodStats entity by IDs.
+func (m *MemberMutation) RemovePeriodStatIDs(ids ...int64) {
+	if m.removedperiod_stats == nil {
+		m.removedperiod_stats = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.period_stats, ids[i])
+		m.removedperiod_stats[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPeriodStats returns the removed IDs of the "period_stats" edge to the MemberPeriodStats entity.
+func (m *MemberMutation) RemovedPeriodStatsIDs() (ids []int64) {
+	for id := range m.removedperiod_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// PeriodStatsIDs returns the "period_stats" edge IDs in the mutation.
+func (m *MemberMutation) PeriodStatsIDs() (ids []int64) {
+	for id := range m.period_stats {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetPeriodStats resets all changes to the "period_stats" edge.
+func (m *MemberMutation) ResetPeriodStats() {
+	m.period_stats = nil
+	m.clearedperiod_stats = false
+	m.removedperiod_stats = nil
+}
+
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by id.
 func (m *MemberMutation) SetVipProgressID(id int64) {
 	m.vip_progress = &id
@@ -13094,7 +13153,7 @@ func (m *MemberMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *MemberMutation) AddedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 14)
 	if m.agent != nil {
 		edges = append(edges, member.EdgeAgent)
 	}
@@ -13127,6 +13186,9 @@ func (m *MemberMutation) AddedEdges() []string {
 	}
 	if m.stats != nil {
 		edges = append(edges, member.EdgeStats)
+	}
+	if m.period_stats != nil {
+		edges = append(edges, member.EdgePeriodStats)
 	}
 	if m.vip_progress != nil {
 		edges = append(edges, member.EdgeVipProgress)
@@ -13191,6 +13253,12 @@ func (m *MemberMutation) AddedIDs(name string) []ent.Value {
 		if id := m.stats; id != nil {
 			return []ent.Value{*id}
 		}
+	case member.EdgePeriodStats:
+		ids := make([]ent.Value, 0, len(m.period_stats))
+		for id := range m.period_stats {
+			ids = append(ids, id)
+		}
+		return ids
 	case member.EdgeVipProgress:
 		if id := m.vip_progress; id != nil {
 			return []ent.Value{*id}
@@ -13207,7 +13275,7 @@ func (m *MemberMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MemberMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 14)
 	if m.removedinvited_members != nil {
 		edges = append(edges, member.EdgeInvitedMembers)
 	}
@@ -13216,6 +13284,9 @@ func (m *MemberMutation) RemovedEdges() []string {
 	}
 	if m.removedoauth_identities != nil {
 		edges = append(edges, member.EdgeOauthIdentities)
+	}
+	if m.removedperiod_stats != nil {
+		edges = append(edges, member.EdgePeriodStats)
 	}
 	if m.removedvip_level_records != nil {
 		edges = append(edges, member.EdgeVipLevelRecords)
@@ -13245,6 +13316,12 @@ func (m *MemberMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case member.EdgePeriodStats:
+		ids := make([]ent.Value, 0, len(m.removedperiod_stats))
+		for id := range m.removedperiod_stats {
+			ids = append(ids, id)
+		}
+		return ids
 	case member.EdgeVipLevelRecords:
 		ids := make([]ent.Value, 0, len(m.removedvip_level_records))
 		for id := range m.removedvip_level_records {
@@ -13257,7 +13334,7 @@ func (m *MemberMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *MemberMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 14)
 	if m.clearedagent {
 		edges = append(edges, member.EdgeAgent)
 	}
@@ -13290,6 +13367,9 @@ func (m *MemberMutation) ClearedEdges() []string {
 	}
 	if m.clearedstats {
 		edges = append(edges, member.EdgeStats)
+	}
+	if m.clearedperiod_stats {
+		edges = append(edges, member.EdgePeriodStats)
 	}
 	if m.clearedvip_progress {
 		edges = append(edges, member.EdgeVipProgress)
@@ -13326,6 +13406,8 @@ func (m *MemberMutation) EdgeCleared(name string) bool {
 		return m.clearedoauth_identities
 	case member.EdgeStats:
 		return m.clearedstats
+	case member.EdgePeriodStats:
+		return m.clearedperiod_stats
 	case member.EdgeVipProgress:
 		return m.clearedvip_progress
 	case member.EdgeVipLevelRecords:
@@ -13405,6 +13487,9 @@ func (m *MemberMutation) ResetEdge(name string) error {
 		return nil
 	case member.EdgeStats:
 		m.ResetStats()
+		return nil
+	case member.EdgePeriodStats:
+		m.ResetPeriodStats()
 		return nil
 	case member.EdgeVipProgress:
 		m.ResetVipProgress()
@@ -17549,6 +17634,1361 @@ func (m *MemberOAuthIdentityMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown MemberOAuthIdentity edge %s", name)
+}
+
+// MemberPeriodStatsMutation represents an operation that mutates the MemberPeriodStats nodes in the graph.
+type MemberPeriodStatsMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *int64
+	created_at          *time.Time
+	updated_at          *time.Time
+	operator_code       *string
+	period_started_at   *time.Time
+	period_ended_at     *time.Time
+	deposit             *int64
+	adddeposit          *int64
+	deposit_count       *int64
+	adddeposit_count    *int64
+	withdrawal          *int64
+	addwithdrawal       *int64
+	withdrawal_count    *int64
+	addwithdrawal_count *int64
+	bet                 *int64
+	addbet              *int64
+	valid_bet           *int64
+	addvalid_bet        *int64
+	water               *int64
+	addwater            *int64
+	win_loss            *int64
+	addwin_loss         *int64
+	clearedFields       map[string]struct{}
+	member              *int64
+	clearedmember       bool
+	done                bool
+	oldValue            func(context.Context) (*MemberPeriodStats, error)
+	predicates          []predicate.MemberPeriodStats
+}
+
+var _ ent.Mutation = (*MemberPeriodStatsMutation)(nil)
+
+// memberperiodstatsOption allows management of the mutation configuration using functional options.
+type memberperiodstatsOption func(*MemberPeriodStatsMutation)
+
+// newMemberPeriodStatsMutation creates new mutation for the MemberPeriodStats entity.
+func newMemberPeriodStatsMutation(c config, op Op, opts ...memberperiodstatsOption) *MemberPeriodStatsMutation {
+	m := &MemberPeriodStatsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeMemberPeriodStats,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withMemberPeriodStatsID sets the ID field of the mutation.
+func withMemberPeriodStatsID(id int64) memberperiodstatsOption {
+	return func(m *MemberPeriodStatsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *MemberPeriodStats
+		)
+		m.oldValue = func(ctx context.Context) (*MemberPeriodStats, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().MemberPeriodStats.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withMemberPeriodStats sets the old MemberPeriodStats of the mutation.
+func withMemberPeriodStats(node *MemberPeriodStats) memberperiodstatsOption {
+	return func(m *MemberPeriodStatsMutation) {
+		m.oldValue = func(context.Context) (*MemberPeriodStats, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m MemberPeriodStatsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m MemberPeriodStatsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of MemberPeriodStats entities.
+func (m *MemberPeriodStatsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *MemberPeriodStatsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *MemberPeriodStatsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().MemberPeriodStats.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *MemberPeriodStatsMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *MemberPeriodStatsMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *MemberPeriodStatsMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *MemberPeriodStatsMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *MemberPeriodStatsMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *MemberPeriodStatsMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *MemberPeriodStatsMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *MemberPeriodStatsMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *MemberPeriodStatsMutation) ResetOperatorCode() {
+	m.operator_code = nil
+}
+
+// SetMemberID sets the "member_id" field.
+func (m *MemberPeriodStatsMutation) SetMemberID(i int64) {
+	m.member = &i
+}
+
+// MemberID returns the value of the "member_id" field in the mutation.
+func (m *MemberPeriodStatsMutation) MemberID() (r int64, exists bool) {
+	v := m.member
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMemberID returns the old "member_id" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldMemberID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMemberID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMemberID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMemberID: %w", err)
+	}
+	return oldValue.MemberID, nil
+}
+
+// ResetMemberID resets all changes to the "member_id" field.
+func (m *MemberPeriodStatsMutation) ResetMemberID() {
+	m.member = nil
+}
+
+// SetPeriodStartedAt sets the "period_started_at" field.
+func (m *MemberPeriodStatsMutation) SetPeriodStartedAt(t time.Time) {
+	m.period_started_at = &t
+}
+
+// PeriodStartedAt returns the value of the "period_started_at" field in the mutation.
+func (m *MemberPeriodStatsMutation) PeriodStartedAt() (r time.Time, exists bool) {
+	v := m.period_started_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPeriodStartedAt returns the old "period_started_at" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldPeriodStartedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPeriodStartedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPeriodStartedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPeriodStartedAt: %w", err)
+	}
+	return oldValue.PeriodStartedAt, nil
+}
+
+// ResetPeriodStartedAt resets all changes to the "period_started_at" field.
+func (m *MemberPeriodStatsMutation) ResetPeriodStartedAt() {
+	m.period_started_at = nil
+}
+
+// SetPeriodEndedAt sets the "period_ended_at" field.
+func (m *MemberPeriodStatsMutation) SetPeriodEndedAt(t time.Time) {
+	m.period_ended_at = &t
+}
+
+// PeriodEndedAt returns the value of the "period_ended_at" field in the mutation.
+func (m *MemberPeriodStatsMutation) PeriodEndedAt() (r time.Time, exists bool) {
+	v := m.period_ended_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPeriodEndedAt returns the old "period_ended_at" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldPeriodEndedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPeriodEndedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPeriodEndedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPeriodEndedAt: %w", err)
+	}
+	return oldValue.PeriodEndedAt, nil
+}
+
+// ResetPeriodEndedAt resets all changes to the "period_ended_at" field.
+func (m *MemberPeriodStatsMutation) ResetPeriodEndedAt() {
+	m.period_ended_at = nil
+}
+
+// SetDeposit sets the "deposit" field.
+func (m *MemberPeriodStatsMutation) SetDeposit(i int64) {
+	m.deposit = &i
+	m.adddeposit = nil
+}
+
+// Deposit returns the value of the "deposit" field in the mutation.
+func (m *MemberPeriodStatsMutation) Deposit() (r int64, exists bool) {
+	v := m.deposit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeposit returns the old "deposit" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldDeposit(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeposit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeposit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeposit: %w", err)
+	}
+	return oldValue.Deposit, nil
+}
+
+// AddDeposit adds i to the "deposit" field.
+func (m *MemberPeriodStatsMutation) AddDeposit(i int64) {
+	if m.adddeposit != nil {
+		*m.adddeposit += i
+	} else {
+		m.adddeposit = &i
+	}
+}
+
+// AddedDeposit returns the value that was added to the "deposit" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedDeposit() (r int64, exists bool) {
+	v := m.adddeposit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeposit resets all changes to the "deposit" field.
+func (m *MemberPeriodStatsMutation) ResetDeposit() {
+	m.deposit = nil
+	m.adddeposit = nil
+}
+
+// SetDepositCount sets the "deposit_count" field.
+func (m *MemberPeriodStatsMutation) SetDepositCount(i int64) {
+	m.deposit_count = &i
+	m.adddeposit_count = nil
+}
+
+// DepositCount returns the value of the "deposit_count" field in the mutation.
+func (m *MemberPeriodStatsMutation) DepositCount() (r int64, exists bool) {
+	v := m.deposit_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDepositCount returns the old "deposit_count" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldDepositCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDepositCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDepositCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDepositCount: %w", err)
+	}
+	return oldValue.DepositCount, nil
+}
+
+// AddDepositCount adds i to the "deposit_count" field.
+func (m *MemberPeriodStatsMutation) AddDepositCount(i int64) {
+	if m.adddeposit_count != nil {
+		*m.adddeposit_count += i
+	} else {
+		m.adddeposit_count = &i
+	}
+}
+
+// AddedDepositCount returns the value that was added to the "deposit_count" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedDepositCount() (r int64, exists bool) {
+	v := m.adddeposit_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDepositCount resets all changes to the "deposit_count" field.
+func (m *MemberPeriodStatsMutation) ResetDepositCount() {
+	m.deposit_count = nil
+	m.adddeposit_count = nil
+}
+
+// SetWithdrawal sets the "withdrawal" field.
+func (m *MemberPeriodStatsMutation) SetWithdrawal(i int64) {
+	m.withdrawal = &i
+	m.addwithdrawal = nil
+}
+
+// Withdrawal returns the value of the "withdrawal" field in the mutation.
+func (m *MemberPeriodStatsMutation) Withdrawal() (r int64, exists bool) {
+	v := m.withdrawal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWithdrawal returns the old "withdrawal" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldWithdrawal(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWithdrawal is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWithdrawal requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWithdrawal: %w", err)
+	}
+	return oldValue.Withdrawal, nil
+}
+
+// AddWithdrawal adds i to the "withdrawal" field.
+func (m *MemberPeriodStatsMutation) AddWithdrawal(i int64) {
+	if m.addwithdrawal != nil {
+		*m.addwithdrawal += i
+	} else {
+		m.addwithdrawal = &i
+	}
+}
+
+// AddedWithdrawal returns the value that was added to the "withdrawal" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedWithdrawal() (r int64, exists bool) {
+	v := m.addwithdrawal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWithdrawal resets all changes to the "withdrawal" field.
+func (m *MemberPeriodStatsMutation) ResetWithdrawal() {
+	m.withdrawal = nil
+	m.addwithdrawal = nil
+}
+
+// SetWithdrawalCount sets the "withdrawal_count" field.
+func (m *MemberPeriodStatsMutation) SetWithdrawalCount(i int64) {
+	m.withdrawal_count = &i
+	m.addwithdrawal_count = nil
+}
+
+// WithdrawalCount returns the value of the "withdrawal_count" field in the mutation.
+func (m *MemberPeriodStatsMutation) WithdrawalCount() (r int64, exists bool) {
+	v := m.withdrawal_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWithdrawalCount returns the old "withdrawal_count" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldWithdrawalCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWithdrawalCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWithdrawalCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWithdrawalCount: %w", err)
+	}
+	return oldValue.WithdrawalCount, nil
+}
+
+// AddWithdrawalCount adds i to the "withdrawal_count" field.
+func (m *MemberPeriodStatsMutation) AddWithdrawalCount(i int64) {
+	if m.addwithdrawal_count != nil {
+		*m.addwithdrawal_count += i
+	} else {
+		m.addwithdrawal_count = &i
+	}
+}
+
+// AddedWithdrawalCount returns the value that was added to the "withdrawal_count" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedWithdrawalCount() (r int64, exists bool) {
+	v := m.addwithdrawal_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWithdrawalCount resets all changes to the "withdrawal_count" field.
+func (m *MemberPeriodStatsMutation) ResetWithdrawalCount() {
+	m.withdrawal_count = nil
+	m.addwithdrawal_count = nil
+}
+
+// SetBet sets the "bet" field.
+func (m *MemberPeriodStatsMutation) SetBet(i int64) {
+	m.bet = &i
+	m.addbet = nil
+}
+
+// Bet returns the value of the "bet" field in the mutation.
+func (m *MemberPeriodStatsMutation) Bet() (r int64, exists bool) {
+	v := m.bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBet returns the old "bet" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldBet(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBet is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBet requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBet: %w", err)
+	}
+	return oldValue.Bet, nil
+}
+
+// AddBet adds i to the "bet" field.
+func (m *MemberPeriodStatsMutation) AddBet(i int64) {
+	if m.addbet != nil {
+		*m.addbet += i
+	} else {
+		m.addbet = &i
+	}
+}
+
+// AddedBet returns the value that was added to the "bet" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedBet() (r int64, exists bool) {
+	v := m.addbet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBet resets all changes to the "bet" field.
+func (m *MemberPeriodStatsMutation) ResetBet() {
+	m.bet = nil
+	m.addbet = nil
+}
+
+// SetValidBet sets the "valid_bet" field.
+func (m *MemberPeriodStatsMutation) SetValidBet(i int64) {
+	m.valid_bet = &i
+	m.addvalid_bet = nil
+}
+
+// ValidBet returns the value of the "valid_bet" field in the mutation.
+func (m *MemberPeriodStatsMutation) ValidBet() (r int64, exists bool) {
+	v := m.valid_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldValidBet returns the old "valid_bet" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldValidBet(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldValidBet is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldValidBet requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldValidBet: %w", err)
+	}
+	return oldValue.ValidBet, nil
+}
+
+// AddValidBet adds i to the "valid_bet" field.
+func (m *MemberPeriodStatsMutation) AddValidBet(i int64) {
+	if m.addvalid_bet != nil {
+		*m.addvalid_bet += i
+	} else {
+		m.addvalid_bet = &i
+	}
+}
+
+// AddedValidBet returns the value that was added to the "valid_bet" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedValidBet() (r int64, exists bool) {
+	v := m.addvalid_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetValidBet resets all changes to the "valid_bet" field.
+func (m *MemberPeriodStatsMutation) ResetValidBet() {
+	m.valid_bet = nil
+	m.addvalid_bet = nil
+}
+
+// SetWater sets the "water" field.
+func (m *MemberPeriodStatsMutation) SetWater(i int64) {
+	m.water = &i
+	m.addwater = nil
+}
+
+// Water returns the value of the "water" field in the mutation.
+func (m *MemberPeriodStatsMutation) Water() (r int64, exists bool) {
+	v := m.water
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWater returns the old "water" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldWater(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWater is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWater requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWater: %w", err)
+	}
+	return oldValue.Water, nil
+}
+
+// AddWater adds i to the "water" field.
+func (m *MemberPeriodStatsMutation) AddWater(i int64) {
+	if m.addwater != nil {
+		*m.addwater += i
+	} else {
+		m.addwater = &i
+	}
+}
+
+// AddedWater returns the value that was added to the "water" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedWater() (r int64, exists bool) {
+	v := m.addwater
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWater resets all changes to the "water" field.
+func (m *MemberPeriodStatsMutation) ResetWater() {
+	m.water = nil
+	m.addwater = nil
+}
+
+// SetWinLoss sets the "win_loss" field.
+func (m *MemberPeriodStatsMutation) SetWinLoss(i int64) {
+	m.win_loss = &i
+	m.addwin_loss = nil
+}
+
+// WinLoss returns the value of the "win_loss" field in the mutation.
+func (m *MemberPeriodStatsMutation) WinLoss() (r int64, exists bool) {
+	v := m.win_loss
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWinLoss returns the old "win_loss" field's value of the MemberPeriodStats entity.
+// If the MemberPeriodStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberPeriodStatsMutation) OldWinLoss(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWinLoss is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWinLoss requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWinLoss: %w", err)
+	}
+	return oldValue.WinLoss, nil
+}
+
+// AddWinLoss adds i to the "win_loss" field.
+func (m *MemberPeriodStatsMutation) AddWinLoss(i int64) {
+	if m.addwin_loss != nil {
+		*m.addwin_loss += i
+	} else {
+		m.addwin_loss = &i
+	}
+}
+
+// AddedWinLoss returns the value that was added to the "win_loss" field in this mutation.
+func (m *MemberPeriodStatsMutation) AddedWinLoss() (r int64, exists bool) {
+	v := m.addwin_loss
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWinLoss resets all changes to the "win_loss" field.
+func (m *MemberPeriodStatsMutation) ResetWinLoss() {
+	m.win_loss = nil
+	m.addwin_loss = nil
+}
+
+// ClearMember clears the "member" edge to the Member entity.
+func (m *MemberPeriodStatsMutation) ClearMember() {
+	m.clearedmember = true
+	m.clearedFields[memberperiodstats.FieldMemberID] = struct{}{}
+}
+
+// MemberCleared reports if the "member" edge to the Member entity was cleared.
+func (m *MemberPeriodStatsMutation) MemberCleared() bool {
+	return m.clearedmember
+}
+
+// MemberIDs returns the "member" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MemberID instead. It exists only for internal usage by the builders.
+func (m *MemberPeriodStatsMutation) MemberIDs() (ids []int64) {
+	if id := m.member; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetMember resets all changes to the "member" edge.
+func (m *MemberPeriodStatsMutation) ResetMember() {
+	m.member = nil
+	m.clearedmember = false
+}
+
+// Where appends a list predicates to the MemberPeriodStatsMutation builder.
+func (m *MemberPeriodStatsMutation) Where(ps ...predicate.MemberPeriodStats) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the MemberPeriodStatsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *MemberPeriodStatsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.MemberPeriodStats, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *MemberPeriodStatsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *MemberPeriodStatsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (MemberPeriodStats).
+func (m *MemberPeriodStatsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *MemberPeriodStatsMutation) Fields() []string {
+	fields := make([]string, 0, 14)
+	if m.created_at != nil {
+		fields = append(fields, memberperiodstats.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, memberperiodstats.FieldUpdatedAt)
+	}
+	if m.operator_code != nil {
+		fields = append(fields, memberperiodstats.FieldOperatorCode)
+	}
+	if m.member != nil {
+		fields = append(fields, memberperiodstats.FieldMemberID)
+	}
+	if m.period_started_at != nil {
+		fields = append(fields, memberperiodstats.FieldPeriodStartedAt)
+	}
+	if m.period_ended_at != nil {
+		fields = append(fields, memberperiodstats.FieldPeriodEndedAt)
+	}
+	if m.deposit != nil {
+		fields = append(fields, memberperiodstats.FieldDeposit)
+	}
+	if m.deposit_count != nil {
+		fields = append(fields, memberperiodstats.FieldDepositCount)
+	}
+	if m.withdrawal != nil {
+		fields = append(fields, memberperiodstats.FieldWithdrawal)
+	}
+	if m.withdrawal_count != nil {
+		fields = append(fields, memberperiodstats.FieldWithdrawalCount)
+	}
+	if m.bet != nil {
+		fields = append(fields, memberperiodstats.FieldBet)
+	}
+	if m.valid_bet != nil {
+		fields = append(fields, memberperiodstats.FieldValidBet)
+	}
+	if m.water != nil {
+		fields = append(fields, memberperiodstats.FieldWater)
+	}
+	if m.win_loss != nil {
+		fields = append(fields, memberperiodstats.FieldWinLoss)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *MemberPeriodStatsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case memberperiodstats.FieldCreatedAt:
+		return m.CreatedAt()
+	case memberperiodstats.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case memberperiodstats.FieldOperatorCode:
+		return m.OperatorCode()
+	case memberperiodstats.FieldMemberID:
+		return m.MemberID()
+	case memberperiodstats.FieldPeriodStartedAt:
+		return m.PeriodStartedAt()
+	case memberperiodstats.FieldPeriodEndedAt:
+		return m.PeriodEndedAt()
+	case memberperiodstats.FieldDeposit:
+		return m.Deposit()
+	case memberperiodstats.FieldDepositCount:
+		return m.DepositCount()
+	case memberperiodstats.FieldWithdrawal:
+		return m.Withdrawal()
+	case memberperiodstats.FieldWithdrawalCount:
+		return m.WithdrawalCount()
+	case memberperiodstats.FieldBet:
+		return m.Bet()
+	case memberperiodstats.FieldValidBet:
+		return m.ValidBet()
+	case memberperiodstats.FieldWater:
+		return m.Water()
+	case memberperiodstats.FieldWinLoss:
+		return m.WinLoss()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *MemberPeriodStatsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case memberperiodstats.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case memberperiodstats.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case memberperiodstats.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
+	case memberperiodstats.FieldMemberID:
+		return m.OldMemberID(ctx)
+	case memberperiodstats.FieldPeriodStartedAt:
+		return m.OldPeriodStartedAt(ctx)
+	case memberperiodstats.FieldPeriodEndedAt:
+		return m.OldPeriodEndedAt(ctx)
+	case memberperiodstats.FieldDeposit:
+		return m.OldDeposit(ctx)
+	case memberperiodstats.FieldDepositCount:
+		return m.OldDepositCount(ctx)
+	case memberperiodstats.FieldWithdrawal:
+		return m.OldWithdrawal(ctx)
+	case memberperiodstats.FieldWithdrawalCount:
+		return m.OldWithdrawalCount(ctx)
+	case memberperiodstats.FieldBet:
+		return m.OldBet(ctx)
+	case memberperiodstats.FieldValidBet:
+		return m.OldValidBet(ctx)
+	case memberperiodstats.FieldWater:
+		return m.OldWater(ctx)
+	case memberperiodstats.FieldWinLoss:
+		return m.OldWinLoss(ctx)
+	}
+	return nil, fmt.Errorf("unknown MemberPeriodStats field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberPeriodStatsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case memberperiodstats.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case memberperiodstats.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case memberperiodstats.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
+		return nil
+	case memberperiodstats.FieldMemberID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMemberID(v)
+		return nil
+	case memberperiodstats.FieldPeriodStartedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPeriodStartedAt(v)
+		return nil
+	case memberperiodstats.FieldPeriodEndedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPeriodEndedAt(v)
+		return nil
+	case memberperiodstats.FieldDeposit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeposit(v)
+		return nil
+	case memberperiodstats.FieldDepositCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDepositCount(v)
+		return nil
+	case memberperiodstats.FieldWithdrawal:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWithdrawal(v)
+		return nil
+	case memberperiodstats.FieldWithdrawalCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWithdrawalCount(v)
+		return nil
+	case memberperiodstats.FieldBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBet(v)
+		return nil
+	case memberperiodstats.FieldValidBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetValidBet(v)
+		return nil
+	case memberperiodstats.FieldWater:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWater(v)
+		return nil
+	case memberperiodstats.FieldWinLoss:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWinLoss(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberPeriodStats field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *MemberPeriodStatsMutation) AddedFields() []string {
+	var fields []string
+	if m.adddeposit != nil {
+		fields = append(fields, memberperiodstats.FieldDeposit)
+	}
+	if m.adddeposit_count != nil {
+		fields = append(fields, memberperiodstats.FieldDepositCount)
+	}
+	if m.addwithdrawal != nil {
+		fields = append(fields, memberperiodstats.FieldWithdrawal)
+	}
+	if m.addwithdrawal_count != nil {
+		fields = append(fields, memberperiodstats.FieldWithdrawalCount)
+	}
+	if m.addbet != nil {
+		fields = append(fields, memberperiodstats.FieldBet)
+	}
+	if m.addvalid_bet != nil {
+		fields = append(fields, memberperiodstats.FieldValidBet)
+	}
+	if m.addwater != nil {
+		fields = append(fields, memberperiodstats.FieldWater)
+	}
+	if m.addwin_loss != nil {
+		fields = append(fields, memberperiodstats.FieldWinLoss)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *MemberPeriodStatsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case memberperiodstats.FieldDeposit:
+		return m.AddedDeposit()
+	case memberperiodstats.FieldDepositCount:
+		return m.AddedDepositCount()
+	case memberperiodstats.FieldWithdrawal:
+		return m.AddedWithdrawal()
+	case memberperiodstats.FieldWithdrawalCount:
+		return m.AddedWithdrawalCount()
+	case memberperiodstats.FieldBet:
+		return m.AddedBet()
+	case memberperiodstats.FieldValidBet:
+		return m.AddedValidBet()
+	case memberperiodstats.FieldWater:
+		return m.AddedWater()
+	case memberperiodstats.FieldWinLoss:
+		return m.AddedWinLoss()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberPeriodStatsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case memberperiodstats.FieldDeposit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeposit(v)
+		return nil
+	case memberperiodstats.FieldDepositCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDepositCount(v)
+		return nil
+	case memberperiodstats.FieldWithdrawal:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWithdrawal(v)
+		return nil
+	case memberperiodstats.FieldWithdrawalCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWithdrawalCount(v)
+		return nil
+	case memberperiodstats.FieldBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBet(v)
+		return nil
+	case memberperiodstats.FieldValidBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddValidBet(v)
+		return nil
+	case memberperiodstats.FieldWater:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWater(v)
+		return nil
+	case memberperiodstats.FieldWinLoss:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWinLoss(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberPeriodStats numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *MemberPeriodStatsMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *MemberPeriodStatsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *MemberPeriodStatsMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown MemberPeriodStats nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *MemberPeriodStatsMutation) ResetField(name string) error {
+	switch name {
+	case memberperiodstats.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case memberperiodstats.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case memberperiodstats.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
+	case memberperiodstats.FieldMemberID:
+		m.ResetMemberID()
+		return nil
+	case memberperiodstats.FieldPeriodStartedAt:
+		m.ResetPeriodStartedAt()
+		return nil
+	case memberperiodstats.FieldPeriodEndedAt:
+		m.ResetPeriodEndedAt()
+		return nil
+	case memberperiodstats.FieldDeposit:
+		m.ResetDeposit()
+		return nil
+	case memberperiodstats.FieldDepositCount:
+		m.ResetDepositCount()
+		return nil
+	case memberperiodstats.FieldWithdrawal:
+		m.ResetWithdrawal()
+		return nil
+	case memberperiodstats.FieldWithdrawalCount:
+		m.ResetWithdrawalCount()
+		return nil
+	case memberperiodstats.FieldBet:
+		m.ResetBet()
+		return nil
+	case memberperiodstats.FieldValidBet:
+		m.ResetValidBet()
+		return nil
+	case memberperiodstats.FieldWater:
+		m.ResetWater()
+		return nil
+	case memberperiodstats.FieldWinLoss:
+		m.ResetWinLoss()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberPeriodStats field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *MemberPeriodStatsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.member != nil {
+		edges = append(edges, memberperiodstats.EdgeMember)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *MemberPeriodStatsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case memberperiodstats.EdgeMember:
+		if id := m.member; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *MemberPeriodStatsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *MemberPeriodStatsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *MemberPeriodStatsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedmember {
+		edges = append(edges, memberperiodstats.EdgeMember)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *MemberPeriodStatsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case memberperiodstats.EdgeMember:
+		return m.clearedmember
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *MemberPeriodStatsMutation) ClearEdge(name string) error {
+	switch name {
+	case memberperiodstats.EdgeMember:
+		m.ClearMember()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberPeriodStats unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *MemberPeriodStatsMutation) ResetEdge(name string) error {
+	switch name {
+	case memberperiodstats.EdgeMember:
+		m.ResetMember()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberPeriodStats edge %s", name)
 }
 
 // MemberProfileMutation represents an operation that mutates the MemberProfile nodes in the graph.

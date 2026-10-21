@@ -84,6 +84,8 @@ const (
 	EdgeOauthIdentities = "oauth_identities"
 	// EdgeStats holds the string denoting the stats edge name in mutations.
 	EdgeStats = "stats"
+	// EdgePeriodStats holds the string denoting the period_stats edge name in mutations.
+	EdgePeriodStats = "period_stats"
 	// EdgeVipProgress holds the string denoting the vip_progress edge name in mutations.
 	EdgeVipProgress = "vip_progress"
 	// EdgeVipLevelRecords holds the string denoting the vip_level_records edge name in mutations.
@@ -161,6 +163,13 @@ const (
 	StatsInverseTable = "member_stats"
 	// StatsColumn is the table column denoting the stats relation/edge.
 	StatsColumn = "member_id"
+	// PeriodStatsTable is the table that holds the period_stats relation/edge.
+	PeriodStatsTable = "member_period_stats"
+	// PeriodStatsInverseTable is the table name for the MemberPeriodStats entity.
+	// It exists in this package in order to avoid circular dependency with the "memberperiodstats" package.
+	PeriodStatsInverseTable = "member_period_stats"
+	// PeriodStatsColumn is the table column denoting the period_stats relation/edge.
+	PeriodStatsColumn = "member_id"
 	// VipProgressTable is the table that holds the vip_progress relation/edge.
 	VipProgressTable = "member_vip_progress"
 	// VipProgressInverseTable is the table name for the MemberVipProgress entity.
@@ -494,6 +503,20 @@ func ByStatsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
+// ByPeriodStatsCount orders the results by period_stats count.
+func ByPeriodStatsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPeriodStatsStep(), opts...)
+	}
+}
+
+// ByPeriodStats orders the results by period_stats terms.
+func ByPeriodStats(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPeriodStatsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByVipProgressField orders the results by vip_progress field.
 func ByVipProgressField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -589,6 +612,13 @@ func newStatsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(StatsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, false, StatsTable, StatsColumn),
+	)
+}
+func newPeriodStatsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PeriodStatsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PeriodStatsTable, PeriodStatsColumn),
 	)
 }
 func newVipProgressStep() *sqlgraph.Step {

@@ -17,6 +17,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
+	"oa.98ent.com/p9/operator-crm/ent/memberperiodstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
 	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
@@ -332,6 +333,21 @@ func (_u *MemberUpdate) SetStats(v *MemberStats) *MemberUpdate {
 	return _u.SetStatsID(v.ID)
 }
 
+// AddPeriodStatIDs adds the "period_stats" edge to the MemberPeriodStats entity by IDs.
+func (_u *MemberUpdate) AddPeriodStatIDs(ids ...int64) *MemberUpdate {
+	_u.mutation.AddPeriodStatIDs(ids...)
+	return _u
+}
+
+// AddPeriodStats adds the "period_stats" edges to the MemberPeriodStats entity.
+func (_u *MemberUpdate) AddPeriodStats(v ...*MemberPeriodStats) *MemberUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPeriodStatIDs(ids...)
+}
+
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
 func (_u *MemberUpdate) SetVipProgressID(id int64) *MemberUpdate {
 	_u.mutation.SetVipProgressID(id)
@@ -468,6 +484,27 @@ func (_u *MemberUpdate) RemoveOauthIdentities(v ...*MemberOAuthIdentity) *Member
 func (_u *MemberUpdate) ClearStats() *MemberUpdate {
 	_u.mutation.ClearStats()
 	return _u
+}
+
+// ClearPeriodStats clears all "period_stats" edges to the MemberPeriodStats entity.
+func (_u *MemberUpdate) ClearPeriodStats() *MemberUpdate {
+	_u.mutation.ClearPeriodStats()
+	return _u
+}
+
+// RemovePeriodStatIDs removes the "period_stats" edge to MemberPeriodStats entities by IDs.
+func (_u *MemberUpdate) RemovePeriodStatIDs(ids ...int64) *MemberUpdate {
+	_u.mutation.RemovePeriodStatIDs(ids...)
+	return _u
+}
+
+// RemovePeriodStats removes "period_stats" edges to MemberPeriodStats entities.
+func (_u *MemberUpdate) RemovePeriodStats(v ...*MemberPeriodStats) *MemberUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePeriodStatIDs(ids...)
 }
 
 // ClearVipProgress clears the "vip_progress" edge to the MemberVipProgress entity.
@@ -949,6 +986,51 @@ func (_u *MemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.PeriodStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.PeriodStatsTable,
+			Columns: []string{member.PeriodStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberperiodstats.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPeriodStatsIDs(); len(nodes) > 0 && !_u.mutation.PeriodStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.PeriodStatsTable,
+			Columns: []string{member.PeriodStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberperiodstats.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PeriodStatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.PeriodStatsTable,
+			Columns: []string{member.PeriodStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberperiodstats.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _u.mutation.VipProgressCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -1337,6 +1419,21 @@ func (_u *MemberUpdateOne) SetStats(v *MemberStats) *MemberUpdateOne {
 	return _u.SetStatsID(v.ID)
 }
 
+// AddPeriodStatIDs adds the "period_stats" edge to the MemberPeriodStats entity by IDs.
+func (_u *MemberUpdateOne) AddPeriodStatIDs(ids ...int64) *MemberUpdateOne {
+	_u.mutation.AddPeriodStatIDs(ids...)
+	return _u
+}
+
+// AddPeriodStats adds the "period_stats" edges to the MemberPeriodStats entity.
+func (_u *MemberUpdateOne) AddPeriodStats(v ...*MemberPeriodStats) *MemberUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPeriodStatIDs(ids...)
+}
+
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
 func (_u *MemberUpdateOne) SetVipProgressID(id int64) *MemberUpdateOne {
 	_u.mutation.SetVipProgressID(id)
@@ -1473,6 +1570,27 @@ func (_u *MemberUpdateOne) RemoveOauthIdentities(v ...*MemberOAuthIdentity) *Mem
 func (_u *MemberUpdateOne) ClearStats() *MemberUpdateOne {
 	_u.mutation.ClearStats()
 	return _u
+}
+
+// ClearPeriodStats clears all "period_stats" edges to the MemberPeriodStats entity.
+func (_u *MemberUpdateOne) ClearPeriodStats() *MemberUpdateOne {
+	_u.mutation.ClearPeriodStats()
+	return _u
+}
+
+// RemovePeriodStatIDs removes the "period_stats" edge to MemberPeriodStats entities by IDs.
+func (_u *MemberUpdateOne) RemovePeriodStatIDs(ids ...int64) *MemberUpdateOne {
+	_u.mutation.RemovePeriodStatIDs(ids...)
+	return _u
+}
+
+// RemovePeriodStats removes "period_stats" edges to MemberPeriodStats entities.
+func (_u *MemberUpdateOne) RemovePeriodStats(v ...*MemberPeriodStats) *MemberUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePeriodStatIDs(ids...)
 }
 
 // ClearVipProgress clears the "vip_progress" edge to the MemberVipProgress entity.
@@ -1977,6 +2095,51 @@ func (_u *MemberUpdateOne) sqlSave(ctx context.Context) (_node *Member, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberstats.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PeriodStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.PeriodStatsTable,
+			Columns: []string{member.PeriodStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberperiodstats.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPeriodStatsIDs(); len(nodes) > 0 && !_u.mutation.PeriodStatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.PeriodStatsTable,
+			Columns: []string{member.PeriodStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberperiodstats.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PeriodStatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.PeriodStatsTable,
+			Columns: []string{member.PeriodStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberperiodstats.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

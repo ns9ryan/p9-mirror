@@ -634,6 +634,51 @@ var (
 			},
 		},
 	}
+	// MemberPeriodStatsColumns holds the columns for the "member_period_stats" table.
+	MemberPeriodStatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
+		{Name: "period_started_at", Type: field.TypeTime, Comment: "结算周期开始时间, 包含", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "period_ended_at", Type: field.TypeTime, Comment: "结算周期结束时间, 不包含", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "deposit", Type: field.TypeInt64, Comment: "本周期充值金额", Default: 0},
+		{Name: "deposit_count", Type: field.TypeInt64, Comment: "本周期充值成功次数", Default: 0},
+		{Name: "withdrawal", Type: field.TypeInt64, Comment: "本周期提现金额", Default: 0},
+		{Name: "withdrawal_count", Type: field.TypeInt64, Comment: "本周期提现成功次数", Default: 0},
+		{Name: "bet", Type: field.TypeInt64, Comment: "本周期投注金额", Default: 0},
+		{Name: "valid_bet", Type: field.TypeInt64, Comment: "本周期有效投注金额", Default: 0},
+		{Name: "water", Type: field.TypeInt64, Comment: "本周期洗码量", Default: 0},
+		{Name: "win_loss", Type: field.TypeInt64, Comment: "本周期会员净输赢金额, 正数盈利, 负数亏损", Default: 0},
+		{Name: "member_id", Type: field.TypeInt64, Comment: "所属会员ID", SchemaType: map[string]string{"postgres": "bigint"}},
+	}
+	// MemberPeriodStatsTable holds the schema information for the "member_period_stats" table.
+	MemberPeriodStatsTable = &schema.Table{
+		Name:       "member_period_stats",
+		Comment:    "会员结算周期历史统计表",
+		Columns:    MemberPeriodStatsColumns,
+		PrimaryKey: []*schema.Column{MemberPeriodStatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "member_period_stats_member_period_stats",
+				Columns:    []*schema.Column{MemberPeriodStatsColumns[14]},
+				RefColumns: []*schema.Column{MemberColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uk_member_period_stats_member_period",
+				Unique:  true,
+				Columns: []*schema.Column{MemberPeriodStatsColumns[14], MemberPeriodStatsColumns[4]},
+			},
+			{
+				Name:    "idx_member_period_stats_operator_period",
+				Unique:  false,
+				Columns: []*schema.Column{MemberPeriodStatsColumns[3], MemberPeriodStatsColumns[4]},
+			},
+		},
+	}
 	// MemberProfileColumns holds the columns for the "member_profile" table.
 	MemberProfileColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
@@ -894,6 +939,7 @@ var (
 		MemberFixedLevelTable,
 		MemberFixedLevelAssignmentTable,
 		MemberOauthIdentityTable,
+		MemberPeriodStatsTable,
 		MemberProfileTable,
 		MemberStatsTable,
 		MemberVipConfigTable,
@@ -1044,6 +1090,10 @@ func init() {
 	MemberOauthIdentityTable.ForeignKeys[0].RefTable = MemberTable
 	MemberOauthIdentityTable.Annotation = &entsql.Annotation{
 		Table: "member_oauth_identity",
+	}
+	MemberPeriodStatsTable.ForeignKeys[0].RefTable = MemberTable
+	MemberPeriodStatsTable.Annotation = &entsql.Annotation{
+		Table: "member_period_stats",
 	}
 	MemberProfileTable.ForeignKeys[0].RefTable = MemberTable
 	MemberProfileTable.Annotation = &entsql.Annotation{

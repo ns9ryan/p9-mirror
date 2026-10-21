@@ -22,6 +22,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
+	"oa.98ent.com/p9/operator-crm/ent/memberperiodstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
 	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/membervipconfig"
@@ -466,6 +467,33 @@ func (f TraverseMemberOAuthIdentity) Traverse(ctx context.Context, q ent.Query) 
 	return fmt.Errorf("unexpected query type %T. expect *ent.MemberOAuthIdentityQuery", q)
 }
 
+// The MemberPeriodStatsFunc type is an adapter to allow the use of ordinary function as a Querier.
+type MemberPeriodStatsFunc func(context.Context, *ent.MemberPeriodStatsQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f MemberPeriodStatsFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.MemberPeriodStatsQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.MemberPeriodStatsQuery", q)
+}
+
+// The TraverseMemberPeriodStats type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseMemberPeriodStats func(context.Context, *ent.MemberPeriodStatsQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseMemberPeriodStats) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseMemberPeriodStats) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.MemberPeriodStatsQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.MemberPeriodStatsQuery", q)
+}
+
 // The MemberProfileFunc type is an adapter to allow the use of ordinary function as a Querier.
 type MemberProfileFunc func(context.Context, *ent.MemberProfileQuery) (ent.Value, error)
 
@@ -686,6 +714,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.MemberFixedLevelAssignmentQuery, predicate.MemberFixedLevelAssignment, memberfixedlevelassignment.OrderOption]{typ: ent.TypeMemberFixedLevelAssignment, tq: q}, nil
 	case *ent.MemberOAuthIdentityQuery:
 		return &query[*ent.MemberOAuthIdentityQuery, predicate.MemberOAuthIdentity, memberoauthidentity.OrderOption]{typ: ent.TypeMemberOAuthIdentity, tq: q}, nil
+	case *ent.MemberPeriodStatsQuery:
+		return &query[*ent.MemberPeriodStatsQuery, predicate.MemberPeriodStats, memberperiodstats.OrderOption]{typ: ent.TypeMemberPeriodStats, tq: q}, nil
 	case *ent.MemberProfileQuery:
 		return &query[*ent.MemberProfileQuery, predicate.MemberProfile, memberprofile.OrderOption]{typ: ent.TypeMemberProfile, tq: q}, nil
 	case *ent.MemberStatsQuery:

@@ -18,6 +18,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
+	"oa.98ent.com/p9/operator-crm/ent/memberperiodstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
 	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
@@ -436,6 +437,21 @@ func (_c *MemberCreate) SetNillableStatsID(id *int64) *MemberCreate {
 // SetStats sets the "stats" edge to the MemberStats entity.
 func (_c *MemberCreate) SetStats(v *MemberStats) *MemberCreate {
 	return _c.SetStatsID(v.ID)
+}
+
+// AddPeriodStatIDs adds the "period_stats" edge to the MemberPeriodStats entity by IDs.
+func (_c *MemberCreate) AddPeriodStatIDs(ids ...int64) *MemberCreate {
+	_c.mutation.AddPeriodStatIDs(ids...)
+	return _c
+}
+
+// AddPeriodStats adds the "period_stats" edges to the MemberPeriodStats entity.
+func (_c *MemberCreate) AddPeriodStats(v ...*MemberPeriodStats) *MemberCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddPeriodStatIDs(ids...)
 }
 
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
@@ -964,6 +980,22 @@ func (_c *MemberCreate) createSpec() (*Member, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberstats.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.PeriodStatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.PeriodStatsTable,
+			Columns: []string{member.PeriodStatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberperiodstats.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

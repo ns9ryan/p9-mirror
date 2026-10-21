@@ -48,6 +48,9 @@ type MemberFixedLevelAssignment func(*sql.Selector)
 // MemberOAuthIdentity is the predicate function for memberoauthidentity builders.
 type MemberOAuthIdentity func(*sql.Selector)
 
+// MemberPeriodStats is the predicate function for memberperiodstats builders.
+type MemberPeriodStats func(*sql.Selector)
+
 // MemberProfile is the predicate function for memberprofile builders.
 type MemberProfile func(*sql.Selector)
 

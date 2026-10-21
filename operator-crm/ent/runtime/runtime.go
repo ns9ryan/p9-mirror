@@ -20,6 +20,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
+	"oa.98ent.com/p9/operator-crm/ent/memberperiodstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
 	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/membervipconfig"
@@ -1582,6 +1583,93 @@ func init() {
 			return nil
 		}
 	}()
+	memberperiodstatsMixin := schema.MemberPeriodStats{}.Mixin()
+	memberperiodstatsHooks := schema.MemberPeriodStats{}.Hooks()
+	memberperiodstats.Hooks[0] = memberperiodstatsHooks[0]
+	memberperiodstatsInters := schema.MemberPeriodStats{}.Interceptors()
+	memberperiodstats.Interceptors[0] = memberperiodstatsInters[0]
+	memberperiodstatsMixinFields1 := memberperiodstatsMixin[1].Fields()
+	_ = memberperiodstatsMixinFields1
+	memberperiodstatsFields := schema.MemberPeriodStats{}.Fields()
+	_ = memberperiodstatsFields
+	// memberperiodstatsDescCreatedAt is the schema descriptor for created_at field.
+	memberperiodstatsDescCreatedAt := memberperiodstatsMixinFields1[0].Descriptor()
+	// memberperiodstats.DefaultCreatedAt holds the default value on creation for the created_at field.
+	memberperiodstats.DefaultCreatedAt = memberperiodstatsDescCreatedAt.Default.(func() time.Time)
+	// memberperiodstatsDescUpdatedAt is the schema descriptor for updated_at field.
+	memberperiodstatsDescUpdatedAt := memberperiodstatsMixinFields1[1].Descriptor()
+	// memberperiodstats.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	memberperiodstats.DefaultUpdatedAt = memberperiodstatsDescUpdatedAt.Default.(func() time.Time)
+	// memberperiodstats.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	memberperiodstats.UpdateDefaultUpdatedAt = memberperiodstatsDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// memberperiodstatsDescOperatorCode is the schema descriptor for operator_code field.
+	memberperiodstatsDescOperatorCode := memberperiodstatsFields[0].Descriptor()
+	// memberperiodstats.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	memberperiodstats.OperatorCodeValidator = func() func(string) error {
+		validators := memberperiodstatsDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberperiodstatsDescMemberID is the schema descriptor for member_id field.
+	memberperiodstatsDescMemberID := memberperiodstatsFields[1].Descriptor()
+	// memberperiodstats.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
+	memberperiodstats.MemberIDValidator = memberperiodstatsDescMemberID.Validators[0].(func(int64) error)
+	// memberperiodstatsDescDeposit is the schema descriptor for deposit field.
+	memberperiodstatsDescDeposit := memberperiodstatsFields[4].Descriptor()
+	// memberperiodstats.DefaultDeposit holds the default value on creation for the deposit field.
+	memberperiodstats.DefaultDeposit = memberperiodstatsDescDeposit.Default.(int64)
+	// memberperiodstats.DepositValidator is a validator for the "deposit" field. It is called by the builders before save.
+	memberperiodstats.DepositValidator = memberperiodstatsDescDeposit.Validators[0].(func(int64) error)
+	// memberperiodstatsDescDepositCount is the schema descriptor for deposit_count field.
+	memberperiodstatsDescDepositCount := memberperiodstatsFields[5].Descriptor()
+	// memberperiodstats.DefaultDepositCount holds the default value on creation for the deposit_count field.
+	memberperiodstats.DefaultDepositCount = memberperiodstatsDescDepositCount.Default.(int64)
+	// memberperiodstats.DepositCountValidator is a validator for the "deposit_count" field. It is called by the builders before save.
+	memberperiodstats.DepositCountValidator = memberperiodstatsDescDepositCount.Validators[0].(func(int64) error)
+	// memberperiodstatsDescWithdrawal is the schema descriptor for withdrawal field.
+	memberperiodstatsDescWithdrawal := memberperiodstatsFields[6].Descriptor()
+	// memberperiodstats.DefaultWithdrawal holds the default value on creation for the withdrawal field.
+	memberperiodstats.DefaultWithdrawal = memberperiodstatsDescWithdrawal.Default.(int64)
+	// memberperiodstats.WithdrawalValidator is a validator for the "withdrawal" field. It is called by the builders before save.
+	memberperiodstats.WithdrawalValidator = memberperiodstatsDescWithdrawal.Validators[0].(func(int64) error)
+	// memberperiodstatsDescWithdrawalCount is the schema descriptor for withdrawal_count field.
+	memberperiodstatsDescWithdrawalCount := memberperiodstatsFields[7].Descriptor()
+	// memberperiodstats.DefaultWithdrawalCount holds the default value on creation for the withdrawal_count field.
+	memberperiodstats.DefaultWithdrawalCount = memberperiodstatsDescWithdrawalCount.Default.(int64)
+	// memberperiodstats.WithdrawalCountValidator is a validator for the "withdrawal_count" field. It is called by the builders before save.
+	memberperiodstats.WithdrawalCountValidator = memberperiodstatsDescWithdrawalCount.Validators[0].(func(int64) error)
+	// memberperiodstatsDescBet is the schema descriptor for bet field.
+	memberperiodstatsDescBet := memberperiodstatsFields[8].Descriptor()
+	// memberperiodstats.DefaultBet holds the default value on creation for the bet field.
+	memberperiodstats.DefaultBet = memberperiodstatsDescBet.Default.(int64)
+	// memberperiodstats.BetValidator is a validator for the "bet" field. It is called by the builders before save.
+	memberperiodstats.BetValidator = memberperiodstatsDescBet.Validators[0].(func(int64) error)
+	// memberperiodstatsDescValidBet is the schema descriptor for valid_bet field.
+	memberperiodstatsDescValidBet := memberperiodstatsFields[9].Descriptor()
+	// memberperiodstats.DefaultValidBet holds the default value on creation for the valid_bet field.
+	memberperiodstats.DefaultValidBet = memberperiodstatsDescValidBet.Default.(int64)
+	// memberperiodstats.ValidBetValidator is a validator for the "valid_bet" field. It is called by the builders before save.
+	memberperiodstats.ValidBetValidator = memberperiodstatsDescValidBet.Validators[0].(func(int64) error)
+	// memberperiodstatsDescWater is the schema descriptor for water field.
+	memberperiodstatsDescWater := memberperiodstatsFields[10].Descriptor()
+	// memberperiodstats.DefaultWater holds the default value on creation for the water field.
+	memberperiodstats.DefaultWater = memberperiodstatsDescWater.Default.(int64)
+	// memberperiodstats.WaterValidator is a validator for the "water" field. It is called by the builders before save.
+	memberperiodstats.WaterValidator = memberperiodstatsDescWater.Validators[0].(func(int64) error)
+	// memberperiodstatsDescWinLoss is the schema descriptor for win_loss field.
+	memberperiodstatsDescWinLoss := memberperiodstatsFields[11].Descriptor()
+	// memberperiodstats.DefaultWinLoss holds the default value on creation for the win_loss field.
+	memberperiodstats.DefaultWinLoss = memberperiodstatsDescWinLoss.Default.(int64)
 	memberprofileMixin := schema.MemberProfile{}.Mixin()
 	memberprofileHooks := schema.MemberProfile{}.Hooks()
 	memberprofile.Hooks[0] = memberprofileHooks[0]

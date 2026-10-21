@@ -223,6 +223,8 @@ func (Member) Edges() []ent.Edge {
 		edge.To("stats", MemberStats.Type).
 			Unique(),
 
+		edge.To("period_stats", MemberPeriodStats.Type),
+
 		// ==================== VIP业务记录 ====================
 
 		edge.To("vip_progress", MemberVipProgress.Type).

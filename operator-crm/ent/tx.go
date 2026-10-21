@@ -40,6 +40,8 @@ type Tx struct {
 	MemberFixedLevelAssignment *MemberFixedLevelAssignmentClient
 	// MemberOAuthIdentity is the client for interacting with the MemberOAuthIdentity builders.
 	MemberOAuthIdentity *MemberOAuthIdentityClient
+	// MemberPeriodStats is the client for interacting with the MemberPeriodStats builders.
+	MemberPeriodStats *MemberPeriodStatsClient
 	// MemberProfile is the client for interacting with the MemberProfile builders.
 	MemberProfile *MemberProfileClient
 	// MemberStats is the client for interacting with the MemberStats builders.
@@ -199,6 +201,7 @@ func (tx *Tx) init() {
 	tx.MemberFixedLevel = NewMemberFixedLevelClient(tx.config)
 	tx.MemberFixedLevelAssignment = NewMemberFixedLevelAssignmentClient(tx.config)
 	tx.MemberOAuthIdentity = NewMemberOAuthIdentityClient(tx.config)
+	tx.MemberPeriodStats = NewMemberPeriodStatsClient(tx.config)
 	tx.MemberProfile = NewMemberProfileClient(tx.config)
 	tx.MemberStats = NewMemberStatsClient(tx.config)
 	tx.MemberVipConfig = NewMemberVipConfigClient(tx.config)
