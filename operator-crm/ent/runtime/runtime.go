@@ -1481,6 +1481,10 @@ func init() {
 	// memberfixedlevelassignment.DefaultCreatedAt holds the default value on creation for the created_at field.
 	memberfixedlevelassignment.DefaultCreatedAt = memberfixedlevelassignmentDescCreatedAt.Default.(func() time.Time)
 	memberoauthidentityMixin := schema.MemberOAuthIdentity{}.Mixin()
+	memberoauthidentityHooks := schema.MemberOAuthIdentity{}.Hooks()
+	memberoauthidentity.Hooks[0] = memberoauthidentityHooks[0]
+	memberoauthidentityInters := schema.MemberOAuthIdentity{}.Interceptors()
+	memberoauthidentity.Interceptors[0] = memberoauthidentityInters[0]
 	memberoauthidentityMixinFields1 := memberoauthidentityMixin[1].Fields()
 	_ = memberoauthidentityMixinFields1
 	memberoauthidentityFields := schema.MemberOAuthIdentity{}.Fields()

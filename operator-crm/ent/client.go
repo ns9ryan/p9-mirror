@@ -2671,12 +2671,14 @@ func (c *MemberOAuthIdentityClient) QueryMember(_m *MemberOAuthIdentity) *Member
 
 // Hooks returns the client hooks.
 func (c *MemberOAuthIdentityClient) Hooks() []Hook {
-	return c.hooks.MemberOAuthIdentity
+	hooks := c.hooks.MemberOAuthIdentity
+	return append(hooks[:len(hooks):len(hooks)], memberoauthidentity.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *MemberOAuthIdentityClient) Interceptors() []Interceptor {
-	return c.inters.MemberOAuthIdentity
+	inters := c.inters.MemberOAuthIdentity
+	return append(inters[:len(inters):len(inters)], memberoauthidentity.Interceptors[:]...)
 }
 
 func (c *MemberOAuthIdentityClient) mutate(ctx context.Context, m *MemberOAuthIdentityMutation) (Value, error) {

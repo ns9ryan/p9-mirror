@@ -107,7 +107,9 @@ func (_c *MemberOAuthIdentityCreate) Mutation() *MemberOAuthIdentityMutation {
 
 // Save creates the MemberOAuthIdentity in the database.
 func (_c *MemberOAuthIdentityCreate) Save(ctx context.Context) (*MemberOAuthIdentity, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -134,15 +136,22 @@ func (_c *MemberOAuthIdentityCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberOAuthIdentityCreate) defaults() {
+func (_c *MemberOAuthIdentityCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if memberoauthidentity.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberoauthidentity.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberoauthidentity.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if memberoauthidentity.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberoauthidentity.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberoauthidentity.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

@@ -8,6 +8,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 
+	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 	"oa.98ent.com/p9/operator-crm/ent/schema/mixins"
 )
 
@@ -19,6 +21,9 @@ type MemberOAuthIdentity struct {
 // Fields 定义会员第三方授权身份表字段
 func (MemberOAuthIdentity) Fields() []ent.Field {
 	return []ent.Field{
+
+		// ==================== 会员归属 ====================
+
 		field.String("operator_code").
 			NotEmpty().
 			MaxLen(64).
@@ -29,6 +34,8 @@ func (MemberOAuthIdentity) Fields() []ent.Field {
 			Positive().
 			Immutable().
 			Comment("所属会员ID"),
+
+		// ==================== 第三方授权身份 ====================
 
 		field.String("provider").
 			NotEmpty().
@@ -66,6 +73,9 @@ func (MemberOAuthIdentity) Edges() []ent.Edge {
 // Indexes 定义会员第三方授权身份表索引
 func (MemberOAuthIdentity) Indexes() []ent.Index {
 	return []ent.Index{
+
+		// ==================== 会员绑定约束 ====================
+
 		// 同一个会员在同一平台只能绑定一个账号
 		index.Fields("member_id", "provider").
 			Unique().
@@ -83,6 +93,20 @@ func (MemberOAuthIdentity) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
 		mixins.TimeMixin{},
+	}
+}
+
+// Interceptors 定义会员第三方授权身份表查询隔离
+func (MemberOAuthIdentity) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		entmixin.RequiredOperatorCodeInterceptor(intercept.NewQuery),
+	}
+}
+
+// Hooks 定义会员第三方授权身份表写入隔离
+func (MemberOAuthIdentity) Hooks() []ent.Hook {
+	return []ent.Hook{
+		entmixin.RequiredOperatorCodeHook(),
 	}
 }
 
