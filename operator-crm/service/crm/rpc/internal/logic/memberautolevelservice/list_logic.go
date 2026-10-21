@@ -61,7 +61,7 @@ func (l *ListLogic) List(in *memberautolevelpb.ListMemberAutoLevelsRequest) (*me
 		return nil, xerr.RpcErr(err)
 	}
 
-	// 批量统计当前页的会员数
+	// 获取当前页层级ID
 	levelIDs := make([]int64, 0, len(levels))
 	for _, level := range levels {
 		levelIDs = append(levelIDs, level.ID)

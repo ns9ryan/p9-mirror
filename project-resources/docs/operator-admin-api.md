@@ -12,6 +12,8 @@
 - [约定](#约定)
 - [公开（无 JWT）](#公开无-jwt)
   - [GET /ping](#get-ping)
+- [需登录（仅 Jwt）](#需登录仅-jwt)
+  - [GET /phone-calling-codes](#get-phone-calling-codes)
 - [受保护（Jwt + ActionLog + Authority）](#受保护jwt--actionlog--authority)
   - [代理列表 / 开户](#代理列表--开户)
     - [POST /agent/list](#post-agentlist)
@@ -29,6 +31,9 @@
   - [代理树](#代理树)
     - [GET /agent/tree/node](#get-agenttreenode)
     - [GET /agent/tree/ancestors](#get-agenttreeancestors)
+  - [代理登录日志](#代理登录日志)
+    - [POST /agent/login-log/list](#post-agentlogin-loglist)
+    - [POST /agent/login-log/associations](#post-agentlogin-logassociations)
   - [代理申请](#代理申请)
     - [POST /agent/apply/list](#post-agentapplylist)
     - [POST /agent/apply/review](#post-agentapplyreview)
@@ -73,15 +78,16 @@ access 过期（前端用 refresh 后续请求）：
 
 ### 鉴权
 
-除 `GET /ping` 外，受保护接口中间件为 **Jwt + ActionLog + Authority**：
-
 ```http
 Authorization: Bearer <access_token>
 ```
 
-- **Jwt**：分站 Core `CheckToken`
-- **ActionLog**：记录操作日志
-- **Authority**：按 method + path 调 Core `Enforce`（Casbin）；依赖 Catalog 已注册的 `/agent/`* path，超管角色启动时会补授权
+- **公开**：无 JWT，如 `GET /ping`
+- **仅 Jwt**：需登录，无 ActionLog / Authority，如 `GET /common/phone-calling-codes`
+- **Jwt + ActionLog + Authority**：业务受保护接口
+  - **Jwt**：分站 Core `CheckToken`
+  - **ActionLog**：记录操作日志
+  - **Authority**：按 method + path 调 Core `Enforce`（Casbin）；依赖 Catalog 已注册的 `/agent/`* path，超管角色启动时会补授权
 
 Token 获取见 [core-api.md](./core-api.md)。Dev 模式下 Jwt / Authority 透传，便于本地联调。
 
@@ -248,6 +254,34 @@ X-Lang: zh-CN
 
 
 
+## 需登录（仅 Jwt）
+
+需 Header：`Authorization: Bearer <access_token>`，不校验 Casbin 权限、不写操作日志。
+
+### GET /phone-calling-codes
+
+返回 common 包支持的国际手机区号列表（`utils.CallingCodes`）。`code` 为国际区号，**不含**加号；`region` 为 ISO 3166-1 alpha-2。
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "items": [
+      { "region": "US", "code": "1" },
+      { "region": "MY", "code": "60" },
+      { "region": "SG", "code": "65" }
+    ]
+  }
+}
+```
+
+---
+
+
+
 ## 受保护（Jwt + ActionLog + Authority）
 
 需 Header：`Authorization: Bearer <access_token>`，且角色需具备对应 API 权限。
@@ -279,7 +313,7 @@ X-Lang: zh-CN
 | `agent_keyword`             | json | 否   | string | 纯数字按 ID，否则账号模糊           |
 
 
-`number_filter_type`：`1` 直属会员，`2` 直属代理，`3` 全部下级代理，`4` 全部会员，`5` 占成，`6` 累计佣金，`7` 已领取佣金（累计−未领）。
+`number_filter_type`：`1` 直属会员数，`2` 直属代理数，`3` 所有下级总数，`4` 所有会员总数，`5` 占成比例，`6` 累计佣金，`7` 已领取佣金（累计−未领）。
 
 ```json
 {
@@ -350,12 +384,10 @@ X-Lang: zh-CN
 {
   "agent": {
     "account": "agent01",
-    "code": "A001",
     "password": "Passw0rd!",
     "agent_type": 1,
     "agent_line_code": "CASH_PRODUCTION",
-    "share_rate": 50,
-    "promo_code": "ABC123"
+    "share_rate": 50
   },
   "is_init": false,
   "parent_id": 1001
@@ -427,7 +459,11 @@ X-Lang: zh-CN
 
 
 
-### GET /agent/operator/list (用于设置分站代理线路默认代理)
+### GET /agent/operator/list
+
+
+
+### PS: 用于设置分站代理线路默认代理
 
 按层级查询代理，并按 `agent_line_code` 分组。对应 RPC `listOperatorAgents`。下发 operator-base `GetAgentLines` 的全部已开通线路，顺序与其一致。该层级没有代理时 `agents` 为 `[]`。未开通线路和未知线路不下发。
 
@@ -613,7 +649,11 @@ GET /agent/operator/list?level=2
 
 同 [GET /agent/config](#get-agentconfig) 的 `data`。
 
-### GET /agent/line/defaults (用于新增代理的默认代理选择)
+### GET /agent/line/defaults
+
+
+
+### PS: 用于新增代理的默认代理选择
 
 返回当前分站已开通代理线在配置中的默认代理及占成。先取 operator-base `GetAgentLines`，再取 `getAgentConfig`。`agent_id` 大于 0 时用 `getAgentProfile` 取 `share_rate`（百分比 0~100）。未配置时 `agent_id` 与 `share_rate` 为 `0`。顺序与已开通线路一致。
 
@@ -749,6 +789,138 @@ GET /agent/tree/ancestors?keyword=agent01
       "share_rate": 80
     }
   ]
+}
+```
+
+---
+
+
+
+## 代理登录日志
+
+对应 RPC `listAgentLoginLogs`。登录类型、设备类型、登录结果数值码保留，并额外下发当前语言的 `*_label`（front 词典）。
+
+### POST /agent/login-log/list
+
+分页查询代理登录日志。
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型     | 说明                                               |
+| -------------- | ---- | --- | ------ | ------------------------------------------------ |
+| `page`         | body | 否   | int32  | 页码，默认 1                                          |
+| `page_size`    | body | 否   | int32  | 每页条数，默认 20，上限 100                                |
+| `time_start`   | body | 否   | int64  | 登录时间起始 unix 秒，`0` 不限                             |
+| `time_end`     | body | 否   | int64  | 登录时间结束 unix 秒，`0` 不限                             |
+| `login_type`   | body | 否   | int32  | `0` 不限，`1` 登录，`2` 注册                             |
+| `device_type`  | body | 否   | int32  | `0` 不限，`1`~`5` PC网页 / H5 / Android / iOS / PC客户端 |
+| `keyword_type` | body | 否   | int32  | `0` 不筛，`1` 代理 ID，`2` 登录 IP，`3` 设备码，`4` 登录地点      |
+| `keyword`      | body | 否   | string | 与 `keyword_type` 配合                              |
+
+
+```json
+{
+  "page": 1,
+  "page_size": 20,
+  "time_start": 1760256000,
+  "time_end": 1760342399,
+  "login_type": 0,
+  "device_type": 0,
+  "keyword_type": 1,
+  "keyword": "61339567"
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "total": 1,
+    "items": [
+      {
+        "id": 1,
+        "agent_id": 61339567,
+        "account": "agent01",
+        "login_type": 1,
+        "login_type_label": "登录",
+        "login_ip": "38.54.14.228",
+        "login_location": "Vietnam",
+        "udid": "4001297567",
+        "login_device": "Chrome 149.0.0.0",
+        "device_type": 1,
+        "device_type_label": "PC网页",
+        "login_at": 1760262518,
+        "result": 1,
+        "result_label": "成功"
+      }
+    ]
+  }
+}
+```
+
+
+
+### POST /agent/login-log/associations
+
+关联检索登录日志。对应 RPC `listAgentLoginAssociations`。同 IP / 同设备代理数仅在时间范围与设备类型范围内统计（不计 `agent_id` / keyword）。设备类型数值码保留，并额外下发当前语言的 `device_type_label`（front 词典）。
+
+**请求**
+
+
+| 字段             | 位置   | 必填  | 类型     | 说明                                               |
+| -------------- | ---- | --- | ------ | ------------------------------------------------ |
+| `page`         | body | 否   | int32  | 页码，默认 1                                          |
+| `page_size`    | body | 否   | int32  | 每页条数，默认 20，上限 100                                |
+| `time_start`   | body | 否   | int64  | 登录时间起始 unix 秒，`0` 不限                             |
+| `time_end`     | body | 否   | int64  | 登录时间结束 unix 秒，`0` 不限                             |
+| `agent_id`     | body | 否   | int64  | 代理 ID，`0` 不限                                     |
+| `device_type`  | body | 否   | int32  | `0` 不限，`1`~`5` PC网页 / H5 / Android / iOS / PC客户端 |
+| `keyword_type` | body | 否   | int32  | `0` 不筛，`1` 登录 IP，`2` 设备码                         |
+| `keyword`      | body | 否   | string | 与 `keyword_type` 配合                              |
+
+
+```json
+{
+  "page": 1,
+  "page_size": 20,
+  "time_start": 1760256000,
+  "time_end": 1760342399,
+  "agent_id": 0,
+  "device_type": 0,
+  "keyword_type": 1,
+  "keyword": "38.54.14.228"
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "total": 1,
+    "items": [
+      {
+        "id": 1,
+        "agent_id": 61339567,
+        "account": "agent01",
+        "login_ip": "38.54.14.228",
+        "login_location": "Vietnam",
+        "udid": "4001297567",
+        "login_device": "Chrome 149.0.0.0",
+        "device_type": 1,
+        "device_type_label": "PC网页",
+        "login_at": 1760262518,
+        "same_ip_agent_count": 3,
+        "same_device_agent_count": 2
+      }
+    ]
+  }
 }
 ```
 
