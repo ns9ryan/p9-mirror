@@ -11,15 +11,15 @@ message VipLevelInfo {
   // VIP等级编号, 从0开始
   int64 level = 2;
 
-  // 晋级所需有效存款
-  int64 upgrade_valid_deposit = 3;
-  // 晋级所需有效洗码量
-  int64 upgrade_valid_water = 4;
+  // 晋级所需存款
+  int64 upgrade_deposit = 3;
+  // 晋级所需洗码量
+  int64 upgrade_water = 4;
 
-  // 保级所需有效存款
-  int64 retention_valid_deposit = 5;
-  // 保级所需有效洗码量
-  int64 retention_valid_water = 6;
+  // 保级所需存款
+  int64 retention_deposit = 5;
+  // 保级所需洗码量
+  int64 retention_water = 6;
 
   // 晋级奖励金额
   int64 upgrade_reward = 7;
@@ -59,15 +59,15 @@ message GetVipLevelResponse {
 
 // 新增VIP等级请求
 message CreateVipLevelRequest {
-  // 晋级所需有效存款
-  int64 upgrade_valid_deposit = 1;
-  // 晋级所需有效洗码量
-  int64 upgrade_valid_water = 2;
+  // 晋级所需存款
+  int64 upgrade_deposit = 1;
+  // 晋级所需洗码量
+  int64 upgrade_water = 2;
 
-  // 保级所需有效存款
-  int64 retention_valid_deposit = 3;
-  // 保级所需有效洗码量
-  int64 retention_valid_water = 4;
+  // 保级所需存款
+  int64 retention_deposit = 3;
+  // 保级所需洗码量
+  int64 retention_water = 4;
 
   // 晋级奖励金额
   int64 upgrade_reward = 5;
@@ -86,15 +86,15 @@ message UpdateVipLevelRequest {
   // VIP等级ID
   int64 id = 1;
 
-  // 晋级所需有效存款
-  optional int64 upgrade_valid_deposit = 2;
-  // 晋级所需有效洗码量
-  optional int64 upgrade_valid_water = 3;
+  // 晋级所需存款
+  optional int64 upgrade_deposit = 2;
+  // 晋级所需洗码量
+  optional int64 upgrade_water = 3;
 
-  // 保级所需有效存款
-  optional int64 retention_valid_deposit = 4;
-  // 保级所需有效洗码量
-  optional int64 retention_valid_water = 5;
+  // 保级所需存款
+  optional int64 retention_deposit = 4;
+  // 保级所需洗码量
+  optional int64 retention_water = 5;
 
   // 晋级奖励金额
   optional int64 upgrade_reward = 6;
