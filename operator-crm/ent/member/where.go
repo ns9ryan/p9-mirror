@@ -1461,6 +1461,29 @@ func HasOauthIdentitiesWith(preds ...predicate.MemberOAuthIdentity) predicate.Me
 	})
 }
 
+// HasStats applies the HasEdge predicate on the "stats" edge.
+func HasStats() predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, StatsTable, StatsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStatsWith applies the HasEdge predicate on the "stats" edge with a given conditions (other predicates).
+func HasStatsWith(preds ...predicate.MemberStats) predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := newStatsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasVipProgress applies the HasEdge predicate on the "vip_progress" edge.
 func HasVipProgress() predicate.Member {
 	return predicate.Member(func(s *sql.Selector) {

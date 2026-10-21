@@ -218,6 +218,11 @@ func (Member) Edges() []ent.Edge {
 
 		edge.To("oauth_identities", MemberOAuthIdentity.Type),
 
+		// ==================== 会员统计 ====================
+
+		edge.To("stats", MemberStats.Type).
+			Unique(),
+
 		// ==================== VIP业务记录 ====================
 
 		edge.To("vip_progress", MemberVipProgress.Type).

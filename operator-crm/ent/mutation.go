@@ -27,6 +27,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/membervipconfig"
 	"oa.98ent.com/p9/operator-crm/ent/membervipicongroup"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
@@ -59,6 +60,7 @@ const (
 	TypeMemberFixedLevelAssignment = "MemberFixedLevelAssignment"
 	TypeMemberOAuthIdentity        = "MemberOAuthIdentity"
 	TypeMemberProfile              = "MemberProfile"
+	TypeMemberStats                = "MemberStats"
 	TypeMemberVipConfig            = "MemberVipConfig"
 	TypeMemberVipIconGroup         = "MemberVipIconGroup"
 	TypeMemberVipLevel             = "MemberVipLevel"
@@ -10931,6 +10933,8 @@ type MemberMutation struct {
 	oauth_identities               map[int64]struct{}
 	removedoauth_identities        map[int64]struct{}
 	clearedoauth_identities        bool
+	stats                          *int64
+	clearedstats                   bool
 	vip_progress                   *int64
 	clearedvip_progress            bool
 	vip_level_records              map[int64]struct{}
@@ -12385,6 +12389,45 @@ func (m *MemberMutation) ResetOauthIdentities() {
 	m.removedoauth_identities = nil
 }
 
+// SetStatsID sets the "stats" edge to the MemberStats entity by id.
+func (m *MemberMutation) SetStatsID(id int64) {
+	m.stats = &id
+}
+
+// ClearStats clears the "stats" edge to the MemberStats entity.
+func (m *MemberMutation) ClearStats() {
+	m.clearedstats = true
+}
+
+// StatsCleared reports if the "stats" edge to the MemberStats entity was cleared.
+func (m *MemberMutation) StatsCleared() bool {
+	return m.clearedstats
+}
+
+// StatsID returns the "stats" edge ID in the mutation.
+func (m *MemberMutation) StatsID() (id int64, exists bool) {
+	if m.stats != nil {
+		return *m.stats, true
+	}
+	return
+}
+
+// StatsIDs returns the "stats" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// StatsID instead. It exists only for internal usage by the builders.
+func (m *MemberMutation) StatsIDs() (ids []int64) {
+	if id := m.stats; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStats resets all changes to the "stats" edge.
+func (m *MemberMutation) ResetStats() {
+	m.stats = nil
+	m.clearedstats = false
+}
+
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by id.
 func (m *MemberMutation) SetVipProgressID(id int64) {
 	m.vip_progress = &id
@@ -13051,7 +13094,7 @@ func (m *MemberMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *MemberMutation) AddedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.agent != nil {
 		edges = append(edges, member.EdgeAgent)
 	}
@@ -13081,6 +13124,9 @@ func (m *MemberMutation) AddedEdges() []string {
 	}
 	if m.oauth_identities != nil {
 		edges = append(edges, member.EdgeOauthIdentities)
+	}
+	if m.stats != nil {
+		edges = append(edges, member.EdgeStats)
 	}
 	if m.vip_progress != nil {
 		edges = append(edges, member.EdgeVipProgress)
@@ -13141,6 +13187,10 @@ func (m *MemberMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case member.EdgeStats:
+		if id := m.stats; id != nil {
+			return []ent.Value{*id}
+		}
 	case member.EdgeVipProgress:
 		if id := m.vip_progress; id != nil {
 			return []ent.Value{*id}
@@ -13157,7 +13207,7 @@ func (m *MemberMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MemberMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.removedinvited_members != nil {
 		edges = append(edges, member.EdgeInvitedMembers)
 	}
@@ -13207,7 +13257,7 @@ func (m *MemberMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *MemberMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.clearedagent {
 		edges = append(edges, member.EdgeAgent)
 	}
@@ -13237,6 +13287,9 @@ func (m *MemberMutation) ClearedEdges() []string {
 	}
 	if m.clearedoauth_identities {
 		edges = append(edges, member.EdgeOauthIdentities)
+	}
+	if m.clearedstats {
+		edges = append(edges, member.EdgeStats)
 	}
 	if m.clearedvip_progress {
 		edges = append(edges, member.EdgeVipProgress)
@@ -13271,6 +13324,8 @@ func (m *MemberMutation) EdgeCleared(name string) bool {
 		return m.clearedprofile
 	case member.EdgeOauthIdentities:
 		return m.clearedoauth_identities
+	case member.EdgeStats:
+		return m.clearedstats
 	case member.EdgeVipProgress:
 		return m.clearedvip_progress
 	case member.EdgeVipLevelRecords:
@@ -13303,6 +13358,9 @@ func (m *MemberMutation) ClearEdge(name string) error {
 		return nil
 	case member.EdgeProfile:
 		m.ClearProfile()
+		return nil
+	case member.EdgeStats:
+		m.ClearStats()
 		return nil
 	case member.EdgeVipProgress:
 		m.ClearVipProgress()
@@ -13344,6 +13402,9 @@ func (m *MemberMutation) ResetEdge(name string) error {
 		return nil
 	case member.EdgeOauthIdentities:
 		m.ResetOauthIdentities()
+		return nil
+	case member.EdgeStats:
+		m.ResetStats()
 		return nil
 	case member.EdgeVipProgress:
 		m.ResetVipProgress()
@@ -18656,6 +18717,2003 @@ func (m *MemberProfileMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown MemberProfile edge %s", name)
+}
+
+// MemberStatsMutation represents an operation that mutates the MemberStats nodes in the graph.
+type MemberStatsMutation struct {
+	config
+	op                        Op
+	typ                       string
+	id                        *int64
+	created_at                *time.Time
+	updated_at                *time.Time
+	operator_code             *string
+	total_deposit             *int64
+	addtotal_deposit          *int64
+	total_deposit_count       *int64
+	addtotal_deposit_count    *int64
+	total_withdrawal          *int64
+	addtotal_withdrawal       *int64
+	total_withdrawal_count    *int64
+	addtotal_withdrawal_count *int64
+	total_bet                 *int64
+	addtotal_bet              *int64
+	total_valid_bet           *int64
+	addtotal_valid_bet        *int64
+	total_water               *int64
+	addtotal_water            *int64
+	total_win_loss            *int64
+	addtotal_win_loss         *int64
+	last_deposit              *int64
+	addlast_deposit           *int64
+	last_deposit_count        *int64
+	addlast_deposit_count     *int64
+	last_withdrawal           *int64
+	addlast_withdrawal        *int64
+	last_withdrawal_count     *int64
+	addlast_withdrawal_count  *int64
+	last_bet                  *int64
+	addlast_bet               *int64
+	last_valid_bet            *int64
+	addlast_valid_bet         *int64
+	last_water                *int64
+	addlast_water             *int64
+	last_win_loss             *int64
+	addlast_win_loss          *int64
+	period_started_at         *time.Time
+	clearedFields             map[string]struct{}
+	member                    *int64
+	clearedmember             bool
+	done                      bool
+	oldValue                  func(context.Context) (*MemberStats, error)
+	predicates                []predicate.MemberStats
+}
+
+var _ ent.Mutation = (*MemberStatsMutation)(nil)
+
+// memberstatsOption allows management of the mutation configuration using functional options.
+type memberstatsOption func(*MemberStatsMutation)
+
+// newMemberStatsMutation creates new mutation for the MemberStats entity.
+func newMemberStatsMutation(c config, op Op, opts ...memberstatsOption) *MemberStatsMutation {
+	m := &MemberStatsMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeMemberStats,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withMemberStatsID sets the ID field of the mutation.
+func withMemberStatsID(id int64) memberstatsOption {
+	return func(m *MemberStatsMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *MemberStats
+		)
+		m.oldValue = func(ctx context.Context) (*MemberStats, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().MemberStats.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withMemberStats sets the old MemberStats of the mutation.
+func withMemberStats(node *MemberStats) memberstatsOption {
+	return func(m *MemberStatsMutation) {
+		m.oldValue = func(context.Context) (*MemberStats, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m MemberStatsMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m MemberStatsMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of MemberStats entities.
+func (m *MemberStatsMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *MemberStatsMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *MemberStatsMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().MemberStats.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *MemberStatsMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *MemberStatsMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *MemberStatsMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *MemberStatsMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *MemberStatsMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *MemberStatsMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *MemberStatsMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *MemberStatsMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *MemberStatsMutation) ResetOperatorCode() {
+	m.operator_code = nil
+}
+
+// SetMemberID sets the "member_id" field.
+func (m *MemberStatsMutation) SetMemberID(i int64) {
+	m.member = &i
+}
+
+// MemberID returns the value of the "member_id" field in the mutation.
+func (m *MemberStatsMutation) MemberID() (r int64, exists bool) {
+	v := m.member
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMemberID returns the old "member_id" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldMemberID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMemberID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMemberID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMemberID: %w", err)
+	}
+	return oldValue.MemberID, nil
+}
+
+// ResetMemberID resets all changes to the "member_id" field.
+func (m *MemberStatsMutation) ResetMemberID() {
+	m.member = nil
+}
+
+// SetTotalDeposit sets the "total_deposit" field.
+func (m *MemberStatsMutation) SetTotalDeposit(i int64) {
+	m.total_deposit = &i
+	m.addtotal_deposit = nil
+}
+
+// TotalDeposit returns the value of the "total_deposit" field in the mutation.
+func (m *MemberStatsMutation) TotalDeposit() (r int64, exists bool) {
+	v := m.total_deposit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalDeposit returns the old "total_deposit" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalDeposit(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalDeposit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalDeposit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalDeposit: %w", err)
+	}
+	return oldValue.TotalDeposit, nil
+}
+
+// AddTotalDeposit adds i to the "total_deposit" field.
+func (m *MemberStatsMutation) AddTotalDeposit(i int64) {
+	if m.addtotal_deposit != nil {
+		*m.addtotal_deposit += i
+	} else {
+		m.addtotal_deposit = &i
+	}
+}
+
+// AddedTotalDeposit returns the value that was added to the "total_deposit" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalDeposit() (r int64, exists bool) {
+	v := m.addtotal_deposit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalDeposit resets all changes to the "total_deposit" field.
+func (m *MemberStatsMutation) ResetTotalDeposit() {
+	m.total_deposit = nil
+	m.addtotal_deposit = nil
+}
+
+// SetTotalDepositCount sets the "total_deposit_count" field.
+func (m *MemberStatsMutation) SetTotalDepositCount(i int64) {
+	m.total_deposit_count = &i
+	m.addtotal_deposit_count = nil
+}
+
+// TotalDepositCount returns the value of the "total_deposit_count" field in the mutation.
+func (m *MemberStatsMutation) TotalDepositCount() (r int64, exists bool) {
+	v := m.total_deposit_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalDepositCount returns the old "total_deposit_count" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalDepositCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalDepositCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalDepositCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalDepositCount: %w", err)
+	}
+	return oldValue.TotalDepositCount, nil
+}
+
+// AddTotalDepositCount adds i to the "total_deposit_count" field.
+func (m *MemberStatsMutation) AddTotalDepositCount(i int64) {
+	if m.addtotal_deposit_count != nil {
+		*m.addtotal_deposit_count += i
+	} else {
+		m.addtotal_deposit_count = &i
+	}
+}
+
+// AddedTotalDepositCount returns the value that was added to the "total_deposit_count" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalDepositCount() (r int64, exists bool) {
+	v := m.addtotal_deposit_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalDepositCount resets all changes to the "total_deposit_count" field.
+func (m *MemberStatsMutation) ResetTotalDepositCount() {
+	m.total_deposit_count = nil
+	m.addtotal_deposit_count = nil
+}
+
+// SetTotalWithdrawal sets the "total_withdrawal" field.
+func (m *MemberStatsMutation) SetTotalWithdrawal(i int64) {
+	m.total_withdrawal = &i
+	m.addtotal_withdrawal = nil
+}
+
+// TotalWithdrawal returns the value of the "total_withdrawal" field in the mutation.
+func (m *MemberStatsMutation) TotalWithdrawal() (r int64, exists bool) {
+	v := m.total_withdrawal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalWithdrawal returns the old "total_withdrawal" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalWithdrawal(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalWithdrawal is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalWithdrawal requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalWithdrawal: %w", err)
+	}
+	return oldValue.TotalWithdrawal, nil
+}
+
+// AddTotalWithdrawal adds i to the "total_withdrawal" field.
+func (m *MemberStatsMutation) AddTotalWithdrawal(i int64) {
+	if m.addtotal_withdrawal != nil {
+		*m.addtotal_withdrawal += i
+	} else {
+		m.addtotal_withdrawal = &i
+	}
+}
+
+// AddedTotalWithdrawal returns the value that was added to the "total_withdrawal" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalWithdrawal() (r int64, exists bool) {
+	v := m.addtotal_withdrawal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalWithdrawal resets all changes to the "total_withdrawal" field.
+func (m *MemberStatsMutation) ResetTotalWithdrawal() {
+	m.total_withdrawal = nil
+	m.addtotal_withdrawal = nil
+}
+
+// SetTotalWithdrawalCount sets the "total_withdrawal_count" field.
+func (m *MemberStatsMutation) SetTotalWithdrawalCount(i int64) {
+	m.total_withdrawal_count = &i
+	m.addtotal_withdrawal_count = nil
+}
+
+// TotalWithdrawalCount returns the value of the "total_withdrawal_count" field in the mutation.
+func (m *MemberStatsMutation) TotalWithdrawalCount() (r int64, exists bool) {
+	v := m.total_withdrawal_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalWithdrawalCount returns the old "total_withdrawal_count" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalWithdrawalCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalWithdrawalCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalWithdrawalCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalWithdrawalCount: %w", err)
+	}
+	return oldValue.TotalWithdrawalCount, nil
+}
+
+// AddTotalWithdrawalCount adds i to the "total_withdrawal_count" field.
+func (m *MemberStatsMutation) AddTotalWithdrawalCount(i int64) {
+	if m.addtotal_withdrawal_count != nil {
+		*m.addtotal_withdrawal_count += i
+	} else {
+		m.addtotal_withdrawal_count = &i
+	}
+}
+
+// AddedTotalWithdrawalCount returns the value that was added to the "total_withdrawal_count" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalWithdrawalCount() (r int64, exists bool) {
+	v := m.addtotal_withdrawal_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalWithdrawalCount resets all changes to the "total_withdrawal_count" field.
+func (m *MemberStatsMutation) ResetTotalWithdrawalCount() {
+	m.total_withdrawal_count = nil
+	m.addtotal_withdrawal_count = nil
+}
+
+// SetTotalBet sets the "total_bet" field.
+func (m *MemberStatsMutation) SetTotalBet(i int64) {
+	m.total_bet = &i
+	m.addtotal_bet = nil
+}
+
+// TotalBet returns the value of the "total_bet" field in the mutation.
+func (m *MemberStatsMutation) TotalBet() (r int64, exists bool) {
+	v := m.total_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalBet returns the old "total_bet" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalBet(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalBet is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalBet requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalBet: %w", err)
+	}
+	return oldValue.TotalBet, nil
+}
+
+// AddTotalBet adds i to the "total_bet" field.
+func (m *MemberStatsMutation) AddTotalBet(i int64) {
+	if m.addtotal_bet != nil {
+		*m.addtotal_bet += i
+	} else {
+		m.addtotal_bet = &i
+	}
+}
+
+// AddedTotalBet returns the value that was added to the "total_bet" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalBet() (r int64, exists bool) {
+	v := m.addtotal_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalBet resets all changes to the "total_bet" field.
+func (m *MemberStatsMutation) ResetTotalBet() {
+	m.total_bet = nil
+	m.addtotal_bet = nil
+}
+
+// SetTotalValidBet sets the "total_valid_bet" field.
+func (m *MemberStatsMutation) SetTotalValidBet(i int64) {
+	m.total_valid_bet = &i
+	m.addtotal_valid_bet = nil
+}
+
+// TotalValidBet returns the value of the "total_valid_bet" field in the mutation.
+func (m *MemberStatsMutation) TotalValidBet() (r int64, exists bool) {
+	v := m.total_valid_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalValidBet returns the old "total_valid_bet" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalValidBet(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalValidBet is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalValidBet requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalValidBet: %w", err)
+	}
+	return oldValue.TotalValidBet, nil
+}
+
+// AddTotalValidBet adds i to the "total_valid_bet" field.
+func (m *MemberStatsMutation) AddTotalValidBet(i int64) {
+	if m.addtotal_valid_bet != nil {
+		*m.addtotal_valid_bet += i
+	} else {
+		m.addtotal_valid_bet = &i
+	}
+}
+
+// AddedTotalValidBet returns the value that was added to the "total_valid_bet" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalValidBet() (r int64, exists bool) {
+	v := m.addtotal_valid_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalValidBet resets all changes to the "total_valid_bet" field.
+func (m *MemberStatsMutation) ResetTotalValidBet() {
+	m.total_valid_bet = nil
+	m.addtotal_valid_bet = nil
+}
+
+// SetTotalWater sets the "total_water" field.
+func (m *MemberStatsMutation) SetTotalWater(i int64) {
+	m.total_water = &i
+	m.addtotal_water = nil
+}
+
+// TotalWater returns the value of the "total_water" field in the mutation.
+func (m *MemberStatsMutation) TotalWater() (r int64, exists bool) {
+	v := m.total_water
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalWater returns the old "total_water" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalWater(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalWater is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalWater requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalWater: %w", err)
+	}
+	return oldValue.TotalWater, nil
+}
+
+// AddTotalWater adds i to the "total_water" field.
+func (m *MemberStatsMutation) AddTotalWater(i int64) {
+	if m.addtotal_water != nil {
+		*m.addtotal_water += i
+	} else {
+		m.addtotal_water = &i
+	}
+}
+
+// AddedTotalWater returns the value that was added to the "total_water" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalWater() (r int64, exists bool) {
+	v := m.addtotal_water
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalWater resets all changes to the "total_water" field.
+func (m *MemberStatsMutation) ResetTotalWater() {
+	m.total_water = nil
+	m.addtotal_water = nil
+}
+
+// SetTotalWinLoss sets the "total_win_loss" field.
+func (m *MemberStatsMutation) SetTotalWinLoss(i int64) {
+	m.total_win_loss = &i
+	m.addtotal_win_loss = nil
+}
+
+// TotalWinLoss returns the value of the "total_win_loss" field in the mutation.
+func (m *MemberStatsMutation) TotalWinLoss() (r int64, exists bool) {
+	v := m.total_win_loss
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalWinLoss returns the old "total_win_loss" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldTotalWinLoss(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalWinLoss is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalWinLoss requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalWinLoss: %w", err)
+	}
+	return oldValue.TotalWinLoss, nil
+}
+
+// AddTotalWinLoss adds i to the "total_win_loss" field.
+func (m *MemberStatsMutation) AddTotalWinLoss(i int64) {
+	if m.addtotal_win_loss != nil {
+		*m.addtotal_win_loss += i
+	} else {
+		m.addtotal_win_loss = &i
+	}
+}
+
+// AddedTotalWinLoss returns the value that was added to the "total_win_loss" field in this mutation.
+func (m *MemberStatsMutation) AddedTotalWinLoss() (r int64, exists bool) {
+	v := m.addtotal_win_loss
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalWinLoss resets all changes to the "total_win_loss" field.
+func (m *MemberStatsMutation) ResetTotalWinLoss() {
+	m.total_win_loss = nil
+	m.addtotal_win_loss = nil
+}
+
+// SetLastDeposit sets the "last_deposit" field.
+func (m *MemberStatsMutation) SetLastDeposit(i int64) {
+	m.last_deposit = &i
+	m.addlast_deposit = nil
+}
+
+// LastDeposit returns the value of the "last_deposit" field in the mutation.
+func (m *MemberStatsMutation) LastDeposit() (r int64, exists bool) {
+	v := m.last_deposit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastDeposit returns the old "last_deposit" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastDeposit(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastDeposit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastDeposit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastDeposit: %w", err)
+	}
+	return oldValue.LastDeposit, nil
+}
+
+// AddLastDeposit adds i to the "last_deposit" field.
+func (m *MemberStatsMutation) AddLastDeposit(i int64) {
+	if m.addlast_deposit != nil {
+		*m.addlast_deposit += i
+	} else {
+		m.addlast_deposit = &i
+	}
+}
+
+// AddedLastDeposit returns the value that was added to the "last_deposit" field in this mutation.
+func (m *MemberStatsMutation) AddedLastDeposit() (r int64, exists bool) {
+	v := m.addlast_deposit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastDeposit resets all changes to the "last_deposit" field.
+func (m *MemberStatsMutation) ResetLastDeposit() {
+	m.last_deposit = nil
+	m.addlast_deposit = nil
+}
+
+// SetLastDepositCount sets the "last_deposit_count" field.
+func (m *MemberStatsMutation) SetLastDepositCount(i int64) {
+	m.last_deposit_count = &i
+	m.addlast_deposit_count = nil
+}
+
+// LastDepositCount returns the value of the "last_deposit_count" field in the mutation.
+func (m *MemberStatsMutation) LastDepositCount() (r int64, exists bool) {
+	v := m.last_deposit_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastDepositCount returns the old "last_deposit_count" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastDepositCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastDepositCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastDepositCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastDepositCount: %w", err)
+	}
+	return oldValue.LastDepositCount, nil
+}
+
+// AddLastDepositCount adds i to the "last_deposit_count" field.
+func (m *MemberStatsMutation) AddLastDepositCount(i int64) {
+	if m.addlast_deposit_count != nil {
+		*m.addlast_deposit_count += i
+	} else {
+		m.addlast_deposit_count = &i
+	}
+}
+
+// AddedLastDepositCount returns the value that was added to the "last_deposit_count" field in this mutation.
+func (m *MemberStatsMutation) AddedLastDepositCount() (r int64, exists bool) {
+	v := m.addlast_deposit_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastDepositCount resets all changes to the "last_deposit_count" field.
+func (m *MemberStatsMutation) ResetLastDepositCount() {
+	m.last_deposit_count = nil
+	m.addlast_deposit_count = nil
+}
+
+// SetLastWithdrawal sets the "last_withdrawal" field.
+func (m *MemberStatsMutation) SetLastWithdrawal(i int64) {
+	m.last_withdrawal = &i
+	m.addlast_withdrawal = nil
+}
+
+// LastWithdrawal returns the value of the "last_withdrawal" field in the mutation.
+func (m *MemberStatsMutation) LastWithdrawal() (r int64, exists bool) {
+	v := m.last_withdrawal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastWithdrawal returns the old "last_withdrawal" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastWithdrawal(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastWithdrawal is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastWithdrawal requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastWithdrawal: %w", err)
+	}
+	return oldValue.LastWithdrawal, nil
+}
+
+// AddLastWithdrawal adds i to the "last_withdrawal" field.
+func (m *MemberStatsMutation) AddLastWithdrawal(i int64) {
+	if m.addlast_withdrawal != nil {
+		*m.addlast_withdrawal += i
+	} else {
+		m.addlast_withdrawal = &i
+	}
+}
+
+// AddedLastWithdrawal returns the value that was added to the "last_withdrawal" field in this mutation.
+func (m *MemberStatsMutation) AddedLastWithdrawal() (r int64, exists bool) {
+	v := m.addlast_withdrawal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastWithdrawal resets all changes to the "last_withdrawal" field.
+func (m *MemberStatsMutation) ResetLastWithdrawal() {
+	m.last_withdrawal = nil
+	m.addlast_withdrawal = nil
+}
+
+// SetLastWithdrawalCount sets the "last_withdrawal_count" field.
+func (m *MemberStatsMutation) SetLastWithdrawalCount(i int64) {
+	m.last_withdrawal_count = &i
+	m.addlast_withdrawal_count = nil
+}
+
+// LastWithdrawalCount returns the value of the "last_withdrawal_count" field in the mutation.
+func (m *MemberStatsMutation) LastWithdrawalCount() (r int64, exists bool) {
+	v := m.last_withdrawal_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastWithdrawalCount returns the old "last_withdrawal_count" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastWithdrawalCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastWithdrawalCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastWithdrawalCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastWithdrawalCount: %w", err)
+	}
+	return oldValue.LastWithdrawalCount, nil
+}
+
+// AddLastWithdrawalCount adds i to the "last_withdrawal_count" field.
+func (m *MemberStatsMutation) AddLastWithdrawalCount(i int64) {
+	if m.addlast_withdrawal_count != nil {
+		*m.addlast_withdrawal_count += i
+	} else {
+		m.addlast_withdrawal_count = &i
+	}
+}
+
+// AddedLastWithdrawalCount returns the value that was added to the "last_withdrawal_count" field in this mutation.
+func (m *MemberStatsMutation) AddedLastWithdrawalCount() (r int64, exists bool) {
+	v := m.addlast_withdrawal_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastWithdrawalCount resets all changes to the "last_withdrawal_count" field.
+func (m *MemberStatsMutation) ResetLastWithdrawalCount() {
+	m.last_withdrawal_count = nil
+	m.addlast_withdrawal_count = nil
+}
+
+// SetLastBet sets the "last_bet" field.
+func (m *MemberStatsMutation) SetLastBet(i int64) {
+	m.last_bet = &i
+	m.addlast_bet = nil
+}
+
+// LastBet returns the value of the "last_bet" field in the mutation.
+func (m *MemberStatsMutation) LastBet() (r int64, exists bool) {
+	v := m.last_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastBet returns the old "last_bet" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastBet(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastBet is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastBet requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastBet: %w", err)
+	}
+	return oldValue.LastBet, nil
+}
+
+// AddLastBet adds i to the "last_bet" field.
+func (m *MemberStatsMutation) AddLastBet(i int64) {
+	if m.addlast_bet != nil {
+		*m.addlast_bet += i
+	} else {
+		m.addlast_bet = &i
+	}
+}
+
+// AddedLastBet returns the value that was added to the "last_bet" field in this mutation.
+func (m *MemberStatsMutation) AddedLastBet() (r int64, exists bool) {
+	v := m.addlast_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastBet resets all changes to the "last_bet" field.
+func (m *MemberStatsMutation) ResetLastBet() {
+	m.last_bet = nil
+	m.addlast_bet = nil
+}
+
+// SetLastValidBet sets the "last_valid_bet" field.
+func (m *MemberStatsMutation) SetLastValidBet(i int64) {
+	m.last_valid_bet = &i
+	m.addlast_valid_bet = nil
+}
+
+// LastValidBet returns the value of the "last_valid_bet" field in the mutation.
+func (m *MemberStatsMutation) LastValidBet() (r int64, exists bool) {
+	v := m.last_valid_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastValidBet returns the old "last_valid_bet" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastValidBet(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastValidBet is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastValidBet requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastValidBet: %w", err)
+	}
+	return oldValue.LastValidBet, nil
+}
+
+// AddLastValidBet adds i to the "last_valid_bet" field.
+func (m *MemberStatsMutation) AddLastValidBet(i int64) {
+	if m.addlast_valid_bet != nil {
+		*m.addlast_valid_bet += i
+	} else {
+		m.addlast_valid_bet = &i
+	}
+}
+
+// AddedLastValidBet returns the value that was added to the "last_valid_bet" field in this mutation.
+func (m *MemberStatsMutation) AddedLastValidBet() (r int64, exists bool) {
+	v := m.addlast_valid_bet
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastValidBet resets all changes to the "last_valid_bet" field.
+func (m *MemberStatsMutation) ResetLastValidBet() {
+	m.last_valid_bet = nil
+	m.addlast_valid_bet = nil
+}
+
+// SetLastWater sets the "last_water" field.
+func (m *MemberStatsMutation) SetLastWater(i int64) {
+	m.last_water = &i
+	m.addlast_water = nil
+}
+
+// LastWater returns the value of the "last_water" field in the mutation.
+func (m *MemberStatsMutation) LastWater() (r int64, exists bool) {
+	v := m.last_water
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastWater returns the old "last_water" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastWater(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastWater is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastWater requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastWater: %w", err)
+	}
+	return oldValue.LastWater, nil
+}
+
+// AddLastWater adds i to the "last_water" field.
+func (m *MemberStatsMutation) AddLastWater(i int64) {
+	if m.addlast_water != nil {
+		*m.addlast_water += i
+	} else {
+		m.addlast_water = &i
+	}
+}
+
+// AddedLastWater returns the value that was added to the "last_water" field in this mutation.
+func (m *MemberStatsMutation) AddedLastWater() (r int64, exists bool) {
+	v := m.addlast_water
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastWater resets all changes to the "last_water" field.
+func (m *MemberStatsMutation) ResetLastWater() {
+	m.last_water = nil
+	m.addlast_water = nil
+}
+
+// SetLastWinLoss sets the "last_win_loss" field.
+func (m *MemberStatsMutation) SetLastWinLoss(i int64) {
+	m.last_win_loss = &i
+	m.addlast_win_loss = nil
+}
+
+// LastWinLoss returns the value of the "last_win_loss" field in the mutation.
+func (m *MemberStatsMutation) LastWinLoss() (r int64, exists bool) {
+	v := m.last_win_loss
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastWinLoss returns the old "last_win_loss" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldLastWinLoss(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastWinLoss is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastWinLoss requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastWinLoss: %w", err)
+	}
+	return oldValue.LastWinLoss, nil
+}
+
+// AddLastWinLoss adds i to the "last_win_loss" field.
+func (m *MemberStatsMutation) AddLastWinLoss(i int64) {
+	if m.addlast_win_loss != nil {
+		*m.addlast_win_loss += i
+	} else {
+		m.addlast_win_loss = &i
+	}
+}
+
+// AddedLastWinLoss returns the value that was added to the "last_win_loss" field in this mutation.
+func (m *MemberStatsMutation) AddedLastWinLoss() (r int64, exists bool) {
+	v := m.addlast_win_loss
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastWinLoss resets all changes to the "last_win_loss" field.
+func (m *MemberStatsMutation) ResetLastWinLoss() {
+	m.last_win_loss = nil
+	m.addlast_win_loss = nil
+}
+
+// SetPeriodStartedAt sets the "period_started_at" field.
+func (m *MemberStatsMutation) SetPeriodStartedAt(t time.Time) {
+	m.period_started_at = &t
+}
+
+// PeriodStartedAt returns the value of the "period_started_at" field in the mutation.
+func (m *MemberStatsMutation) PeriodStartedAt() (r time.Time, exists bool) {
+	v := m.period_started_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPeriodStartedAt returns the old "period_started_at" field's value of the MemberStats entity.
+// If the MemberStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberStatsMutation) OldPeriodStartedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPeriodStartedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPeriodStartedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPeriodStartedAt: %w", err)
+	}
+	return oldValue.PeriodStartedAt, nil
+}
+
+// ResetPeriodStartedAt resets all changes to the "period_started_at" field.
+func (m *MemberStatsMutation) ResetPeriodStartedAt() {
+	m.period_started_at = nil
+}
+
+// ClearMember clears the "member" edge to the Member entity.
+func (m *MemberStatsMutation) ClearMember() {
+	m.clearedmember = true
+	m.clearedFields[memberstats.FieldMemberID] = struct{}{}
+}
+
+// MemberCleared reports if the "member" edge to the Member entity was cleared.
+func (m *MemberStatsMutation) MemberCleared() bool {
+	return m.clearedmember
+}
+
+// MemberIDs returns the "member" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MemberID instead. It exists only for internal usage by the builders.
+func (m *MemberStatsMutation) MemberIDs() (ids []int64) {
+	if id := m.member; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetMember resets all changes to the "member" edge.
+func (m *MemberStatsMutation) ResetMember() {
+	m.member = nil
+	m.clearedmember = false
+}
+
+// Where appends a list predicates to the MemberStatsMutation builder.
+func (m *MemberStatsMutation) Where(ps ...predicate.MemberStats) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the MemberStatsMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *MemberStatsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.MemberStats, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *MemberStatsMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *MemberStatsMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (MemberStats).
+func (m *MemberStatsMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *MemberStatsMutation) Fields() []string {
+	fields := make([]string, 0, 21)
+	if m.created_at != nil {
+		fields = append(fields, memberstats.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, memberstats.FieldUpdatedAt)
+	}
+	if m.operator_code != nil {
+		fields = append(fields, memberstats.FieldOperatorCode)
+	}
+	if m.member != nil {
+		fields = append(fields, memberstats.FieldMemberID)
+	}
+	if m.total_deposit != nil {
+		fields = append(fields, memberstats.FieldTotalDeposit)
+	}
+	if m.total_deposit_count != nil {
+		fields = append(fields, memberstats.FieldTotalDepositCount)
+	}
+	if m.total_withdrawal != nil {
+		fields = append(fields, memberstats.FieldTotalWithdrawal)
+	}
+	if m.total_withdrawal_count != nil {
+		fields = append(fields, memberstats.FieldTotalWithdrawalCount)
+	}
+	if m.total_bet != nil {
+		fields = append(fields, memberstats.FieldTotalBet)
+	}
+	if m.total_valid_bet != nil {
+		fields = append(fields, memberstats.FieldTotalValidBet)
+	}
+	if m.total_water != nil {
+		fields = append(fields, memberstats.FieldTotalWater)
+	}
+	if m.total_win_loss != nil {
+		fields = append(fields, memberstats.FieldTotalWinLoss)
+	}
+	if m.last_deposit != nil {
+		fields = append(fields, memberstats.FieldLastDeposit)
+	}
+	if m.last_deposit_count != nil {
+		fields = append(fields, memberstats.FieldLastDepositCount)
+	}
+	if m.last_withdrawal != nil {
+		fields = append(fields, memberstats.FieldLastWithdrawal)
+	}
+	if m.last_withdrawal_count != nil {
+		fields = append(fields, memberstats.FieldLastWithdrawalCount)
+	}
+	if m.last_bet != nil {
+		fields = append(fields, memberstats.FieldLastBet)
+	}
+	if m.last_valid_bet != nil {
+		fields = append(fields, memberstats.FieldLastValidBet)
+	}
+	if m.last_water != nil {
+		fields = append(fields, memberstats.FieldLastWater)
+	}
+	if m.last_win_loss != nil {
+		fields = append(fields, memberstats.FieldLastWinLoss)
+	}
+	if m.period_started_at != nil {
+		fields = append(fields, memberstats.FieldPeriodStartedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *MemberStatsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case memberstats.FieldCreatedAt:
+		return m.CreatedAt()
+	case memberstats.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case memberstats.FieldOperatorCode:
+		return m.OperatorCode()
+	case memberstats.FieldMemberID:
+		return m.MemberID()
+	case memberstats.FieldTotalDeposit:
+		return m.TotalDeposit()
+	case memberstats.FieldTotalDepositCount:
+		return m.TotalDepositCount()
+	case memberstats.FieldTotalWithdrawal:
+		return m.TotalWithdrawal()
+	case memberstats.FieldTotalWithdrawalCount:
+		return m.TotalWithdrawalCount()
+	case memberstats.FieldTotalBet:
+		return m.TotalBet()
+	case memberstats.FieldTotalValidBet:
+		return m.TotalValidBet()
+	case memberstats.FieldTotalWater:
+		return m.TotalWater()
+	case memberstats.FieldTotalWinLoss:
+		return m.TotalWinLoss()
+	case memberstats.FieldLastDeposit:
+		return m.LastDeposit()
+	case memberstats.FieldLastDepositCount:
+		return m.LastDepositCount()
+	case memberstats.FieldLastWithdrawal:
+		return m.LastWithdrawal()
+	case memberstats.FieldLastWithdrawalCount:
+		return m.LastWithdrawalCount()
+	case memberstats.FieldLastBet:
+		return m.LastBet()
+	case memberstats.FieldLastValidBet:
+		return m.LastValidBet()
+	case memberstats.FieldLastWater:
+		return m.LastWater()
+	case memberstats.FieldLastWinLoss:
+		return m.LastWinLoss()
+	case memberstats.FieldPeriodStartedAt:
+		return m.PeriodStartedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *MemberStatsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case memberstats.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case memberstats.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case memberstats.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
+	case memberstats.FieldMemberID:
+		return m.OldMemberID(ctx)
+	case memberstats.FieldTotalDeposit:
+		return m.OldTotalDeposit(ctx)
+	case memberstats.FieldTotalDepositCount:
+		return m.OldTotalDepositCount(ctx)
+	case memberstats.FieldTotalWithdrawal:
+		return m.OldTotalWithdrawal(ctx)
+	case memberstats.FieldTotalWithdrawalCount:
+		return m.OldTotalWithdrawalCount(ctx)
+	case memberstats.FieldTotalBet:
+		return m.OldTotalBet(ctx)
+	case memberstats.FieldTotalValidBet:
+		return m.OldTotalValidBet(ctx)
+	case memberstats.FieldTotalWater:
+		return m.OldTotalWater(ctx)
+	case memberstats.FieldTotalWinLoss:
+		return m.OldTotalWinLoss(ctx)
+	case memberstats.FieldLastDeposit:
+		return m.OldLastDeposit(ctx)
+	case memberstats.FieldLastDepositCount:
+		return m.OldLastDepositCount(ctx)
+	case memberstats.FieldLastWithdrawal:
+		return m.OldLastWithdrawal(ctx)
+	case memberstats.FieldLastWithdrawalCount:
+		return m.OldLastWithdrawalCount(ctx)
+	case memberstats.FieldLastBet:
+		return m.OldLastBet(ctx)
+	case memberstats.FieldLastValidBet:
+		return m.OldLastValidBet(ctx)
+	case memberstats.FieldLastWater:
+		return m.OldLastWater(ctx)
+	case memberstats.FieldLastWinLoss:
+		return m.OldLastWinLoss(ctx)
+	case memberstats.FieldPeriodStartedAt:
+		return m.OldPeriodStartedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown MemberStats field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberStatsMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case memberstats.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case memberstats.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case memberstats.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
+		return nil
+	case memberstats.FieldMemberID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMemberID(v)
+		return nil
+	case memberstats.FieldTotalDeposit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalDeposit(v)
+		return nil
+	case memberstats.FieldTotalDepositCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalDepositCount(v)
+		return nil
+	case memberstats.FieldTotalWithdrawal:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalWithdrawal(v)
+		return nil
+	case memberstats.FieldTotalWithdrawalCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalWithdrawalCount(v)
+		return nil
+	case memberstats.FieldTotalBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalBet(v)
+		return nil
+	case memberstats.FieldTotalValidBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalValidBet(v)
+		return nil
+	case memberstats.FieldTotalWater:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalWater(v)
+		return nil
+	case memberstats.FieldTotalWinLoss:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalWinLoss(v)
+		return nil
+	case memberstats.FieldLastDeposit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastDeposit(v)
+		return nil
+	case memberstats.FieldLastDepositCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastDepositCount(v)
+		return nil
+	case memberstats.FieldLastWithdrawal:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastWithdrawal(v)
+		return nil
+	case memberstats.FieldLastWithdrawalCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastWithdrawalCount(v)
+		return nil
+	case memberstats.FieldLastBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastBet(v)
+		return nil
+	case memberstats.FieldLastValidBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastValidBet(v)
+		return nil
+	case memberstats.FieldLastWater:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastWater(v)
+		return nil
+	case memberstats.FieldLastWinLoss:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastWinLoss(v)
+		return nil
+	case memberstats.FieldPeriodStartedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPeriodStartedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberStats field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *MemberStatsMutation) AddedFields() []string {
+	var fields []string
+	if m.addtotal_deposit != nil {
+		fields = append(fields, memberstats.FieldTotalDeposit)
+	}
+	if m.addtotal_deposit_count != nil {
+		fields = append(fields, memberstats.FieldTotalDepositCount)
+	}
+	if m.addtotal_withdrawal != nil {
+		fields = append(fields, memberstats.FieldTotalWithdrawal)
+	}
+	if m.addtotal_withdrawal_count != nil {
+		fields = append(fields, memberstats.FieldTotalWithdrawalCount)
+	}
+	if m.addtotal_bet != nil {
+		fields = append(fields, memberstats.FieldTotalBet)
+	}
+	if m.addtotal_valid_bet != nil {
+		fields = append(fields, memberstats.FieldTotalValidBet)
+	}
+	if m.addtotal_water != nil {
+		fields = append(fields, memberstats.FieldTotalWater)
+	}
+	if m.addtotal_win_loss != nil {
+		fields = append(fields, memberstats.FieldTotalWinLoss)
+	}
+	if m.addlast_deposit != nil {
+		fields = append(fields, memberstats.FieldLastDeposit)
+	}
+	if m.addlast_deposit_count != nil {
+		fields = append(fields, memberstats.FieldLastDepositCount)
+	}
+	if m.addlast_withdrawal != nil {
+		fields = append(fields, memberstats.FieldLastWithdrawal)
+	}
+	if m.addlast_withdrawal_count != nil {
+		fields = append(fields, memberstats.FieldLastWithdrawalCount)
+	}
+	if m.addlast_bet != nil {
+		fields = append(fields, memberstats.FieldLastBet)
+	}
+	if m.addlast_valid_bet != nil {
+		fields = append(fields, memberstats.FieldLastValidBet)
+	}
+	if m.addlast_water != nil {
+		fields = append(fields, memberstats.FieldLastWater)
+	}
+	if m.addlast_win_loss != nil {
+		fields = append(fields, memberstats.FieldLastWinLoss)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *MemberStatsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case memberstats.FieldTotalDeposit:
+		return m.AddedTotalDeposit()
+	case memberstats.FieldTotalDepositCount:
+		return m.AddedTotalDepositCount()
+	case memberstats.FieldTotalWithdrawal:
+		return m.AddedTotalWithdrawal()
+	case memberstats.FieldTotalWithdrawalCount:
+		return m.AddedTotalWithdrawalCount()
+	case memberstats.FieldTotalBet:
+		return m.AddedTotalBet()
+	case memberstats.FieldTotalValidBet:
+		return m.AddedTotalValidBet()
+	case memberstats.FieldTotalWater:
+		return m.AddedTotalWater()
+	case memberstats.FieldTotalWinLoss:
+		return m.AddedTotalWinLoss()
+	case memberstats.FieldLastDeposit:
+		return m.AddedLastDeposit()
+	case memberstats.FieldLastDepositCount:
+		return m.AddedLastDepositCount()
+	case memberstats.FieldLastWithdrawal:
+		return m.AddedLastWithdrawal()
+	case memberstats.FieldLastWithdrawalCount:
+		return m.AddedLastWithdrawalCount()
+	case memberstats.FieldLastBet:
+		return m.AddedLastBet()
+	case memberstats.FieldLastValidBet:
+		return m.AddedLastValidBet()
+	case memberstats.FieldLastWater:
+		return m.AddedLastWater()
+	case memberstats.FieldLastWinLoss:
+		return m.AddedLastWinLoss()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberStatsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case memberstats.FieldTotalDeposit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalDeposit(v)
+		return nil
+	case memberstats.FieldTotalDepositCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalDepositCount(v)
+		return nil
+	case memberstats.FieldTotalWithdrawal:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalWithdrawal(v)
+		return nil
+	case memberstats.FieldTotalWithdrawalCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalWithdrawalCount(v)
+		return nil
+	case memberstats.FieldTotalBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalBet(v)
+		return nil
+	case memberstats.FieldTotalValidBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalValidBet(v)
+		return nil
+	case memberstats.FieldTotalWater:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalWater(v)
+		return nil
+	case memberstats.FieldTotalWinLoss:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalWinLoss(v)
+		return nil
+	case memberstats.FieldLastDeposit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastDeposit(v)
+		return nil
+	case memberstats.FieldLastDepositCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastDepositCount(v)
+		return nil
+	case memberstats.FieldLastWithdrawal:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastWithdrawal(v)
+		return nil
+	case memberstats.FieldLastWithdrawalCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastWithdrawalCount(v)
+		return nil
+	case memberstats.FieldLastBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastBet(v)
+		return nil
+	case memberstats.FieldLastValidBet:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastValidBet(v)
+		return nil
+	case memberstats.FieldLastWater:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastWater(v)
+		return nil
+	case memberstats.FieldLastWinLoss:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastWinLoss(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberStats numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *MemberStatsMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *MemberStatsMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *MemberStatsMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown MemberStats nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *MemberStatsMutation) ResetField(name string) error {
+	switch name {
+	case memberstats.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case memberstats.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case memberstats.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
+	case memberstats.FieldMemberID:
+		m.ResetMemberID()
+		return nil
+	case memberstats.FieldTotalDeposit:
+		m.ResetTotalDeposit()
+		return nil
+	case memberstats.FieldTotalDepositCount:
+		m.ResetTotalDepositCount()
+		return nil
+	case memberstats.FieldTotalWithdrawal:
+		m.ResetTotalWithdrawal()
+		return nil
+	case memberstats.FieldTotalWithdrawalCount:
+		m.ResetTotalWithdrawalCount()
+		return nil
+	case memberstats.FieldTotalBet:
+		m.ResetTotalBet()
+		return nil
+	case memberstats.FieldTotalValidBet:
+		m.ResetTotalValidBet()
+		return nil
+	case memberstats.FieldTotalWater:
+		m.ResetTotalWater()
+		return nil
+	case memberstats.FieldTotalWinLoss:
+		m.ResetTotalWinLoss()
+		return nil
+	case memberstats.FieldLastDeposit:
+		m.ResetLastDeposit()
+		return nil
+	case memberstats.FieldLastDepositCount:
+		m.ResetLastDepositCount()
+		return nil
+	case memberstats.FieldLastWithdrawal:
+		m.ResetLastWithdrawal()
+		return nil
+	case memberstats.FieldLastWithdrawalCount:
+		m.ResetLastWithdrawalCount()
+		return nil
+	case memberstats.FieldLastBet:
+		m.ResetLastBet()
+		return nil
+	case memberstats.FieldLastValidBet:
+		m.ResetLastValidBet()
+		return nil
+	case memberstats.FieldLastWater:
+		m.ResetLastWater()
+		return nil
+	case memberstats.FieldLastWinLoss:
+		m.ResetLastWinLoss()
+		return nil
+	case memberstats.FieldPeriodStartedAt:
+		m.ResetPeriodStartedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberStats field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *MemberStatsMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.member != nil {
+		edges = append(edges, memberstats.EdgeMember)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *MemberStatsMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case memberstats.EdgeMember:
+		if id := m.member; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *MemberStatsMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *MemberStatsMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *MemberStatsMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedmember {
+		edges = append(edges, memberstats.EdgeMember)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *MemberStatsMutation) EdgeCleared(name string) bool {
+	switch name {
+	case memberstats.EdgeMember:
+		return m.clearedmember
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *MemberStatsMutation) ClearEdge(name string) error {
+	switch name {
+	case memberstats.EdgeMember:
+		m.ClearMember()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberStats unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *MemberStatsMutation) ResetEdge(name string) error {
+	switch name {
+	case memberstats.EdgeMember:
+		m.ResetMember()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberStats edge %s", name)
 }
 
 // MemberVipConfigMutation represents an operation that mutates the MemberVipConfig nodes in the graph.

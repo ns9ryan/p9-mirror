@@ -26,7 +26,7 @@ type AgentUser struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Operator Code | 分站编码
 	OperatorCode *string `json:"operator_code,omitempty"`
-	// 登录账号
+	// 登录账号, 保留原始大小写
 	Account string `json:"account,omitempty"`
 	// 代理编码
 	Code string `json:"code,omitempty"`

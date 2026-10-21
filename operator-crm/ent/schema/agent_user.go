@@ -28,7 +28,10 @@ func (AgentUser) Fields() []ent.Field {
 			NotEmpty().
 			MaxLen(64).
 			Match(trimmedNonEmpty).
-			Comment("登录账号"),
+			SchemaType(map[string]string{
+				dialect.Postgres: "citext",
+			}).
+			Comment("登录账号, 保留原始大小写"),
 
 		field.String("code").
 			NotEmpty().

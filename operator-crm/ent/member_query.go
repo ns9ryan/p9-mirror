@@ -19,6 +19,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevelrecord"
 	"oa.98ent.com/p9/operator-crm/ent/membervipprogress"
@@ -42,6 +43,7 @@ type MemberQuery struct {
 	withAuth                  *MemberAuthQuery
 	withProfile               *MemberProfileQuery
 	withOauthIdentities       *MemberOAuthIdentityQuery
+	withStats                 *MemberStatsQuery
 	withVipProgress           *MemberVipProgressQuery
 	withVipLevelRecords       *MemberVipLevelRecordQuery
 	// intermediate query (i.e. traversal path).
@@ -300,6 +302,28 @@ func (_q *MemberQuery) QueryOauthIdentities() *MemberOAuthIdentityQuery {
 	return query
 }
 
+// QueryStats chains the current query on the "stats" edge.
+func (_q *MemberQuery) QueryStats() *MemberStatsQuery {
+	query := (&MemberStatsClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, selector),
+			sqlgraph.To(memberstats.Table, memberstats.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, member.StatsTable, member.StatsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryVipProgress chains the current query on the "vip_progress" edge.
 func (_q *MemberQuery) QueryVipProgress() *MemberVipProgressQuery {
 	query := (&MemberVipProgressClient{config: _q.config}).Query()
@@ -546,6 +570,7 @@ func (_q *MemberQuery) Clone() *MemberQuery {
 		withAuth:                  _q.withAuth.Clone(),
 		withProfile:               _q.withProfile.Clone(),
 		withOauthIdentities:       _q.withOauthIdentities.Clone(),
+		withStats:                 _q.withStats.Clone(),
 		withVipProgress:           _q.withVipProgress.Clone(),
 		withVipLevelRecords:       _q.withVipLevelRecords.Clone(),
 		// clone intermediate query.
@@ -664,6 +689,17 @@ func (_q *MemberQuery) WithOauthIdentities(opts ...func(*MemberOAuthIdentityQuer
 	return _q
 }
 
+// WithStats tells the query-builder to eager-load the nodes that are connected to
+// the "stats" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberQuery) WithStats(opts ...func(*MemberStatsQuery)) *MemberQuery {
+	query := (&MemberStatsClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withStats = query
+	return _q
+}
+
 // WithVipProgress tells the query-builder to eager-load the nodes that are connected to
 // the "vip_progress" edge. The optional arguments are used to configure the query builder of the edge.
 func (_q *MemberQuery) WithVipProgress(opts ...func(*MemberVipProgressQuery)) *MemberQuery {
@@ -764,7 +800,7 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 	var (
 		nodes       = []*Member{}
 		_spec       = _q.querySpec()
-		loadedTypes = [12]bool{
+		loadedTypes = [13]bool{
 			_q.withAgent != nil,
 			_q.withAgentAccount != nil,
 			_q.withInvitedMembers != nil,
@@ -775,6 +811,7 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 			_q.withAuth != nil,
 			_q.withProfile != nil,
 			_q.withOauthIdentities != nil,
+			_q.withStats != nil,
 			_q.withVipProgress != nil,
 			_q.withVipLevelRecords != nil,
 		}
@@ -859,6 +896,12 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 		if err := _q.loadOauthIdentities(ctx, query, nodes,
 			func(n *Member) { n.Edges.OauthIdentities = []*MemberOAuthIdentity{} },
 			func(n *Member, e *MemberOAuthIdentity) { n.Edges.OauthIdentities = append(n.Edges.OauthIdentities, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withStats; query != nil {
+		if err := _q.loadStats(ctx, query, nodes, nil,
+			func(n *Member, e *MemberStats) { n.Edges.Stats = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -1161,6 +1204,33 @@ func (_q *MemberQuery) loadOauthIdentities(ctx context.Context, query *MemberOAu
 	}
 	query.Where(predicate.MemberOAuthIdentity(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(member.OauthIdentitiesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.MemberID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "member_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *MemberQuery) loadStats(ctx context.Context, query *MemberStatsQuery, nodes []*Member, init func(*Member), assign func(*Member, *MemberStats)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Member)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(memberstats.FieldMemberID)
+	}
+	query.Where(predicate.MemberStats(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(member.StatsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

@@ -30,6 +30,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/membervipconfig"
 	"oa.98ent.com/p9/operator-crm/ent/membervipicongroup"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
@@ -72,6 +73,8 @@ type Client struct {
 	MemberOAuthIdentity *MemberOAuthIdentityClient
 	// MemberProfile is the client for interacting with the MemberProfile builders.
 	MemberProfile *MemberProfileClient
+	// MemberStats is the client for interacting with the MemberStats builders.
+	MemberStats *MemberStatsClient
 	// MemberVipConfig is the client for interacting with the MemberVipConfig builders.
 	MemberVipConfig *MemberVipConfigClient
 	// MemberVipIconGroup is the client for interacting with the MemberVipIconGroup builders.
@@ -108,6 +111,7 @@ func (c *Client) init() {
 	c.MemberFixedLevelAssignment = NewMemberFixedLevelAssignmentClient(c.config)
 	c.MemberOAuthIdentity = NewMemberOAuthIdentityClient(c.config)
 	c.MemberProfile = NewMemberProfileClient(c.config)
+	c.MemberStats = NewMemberStatsClient(c.config)
 	c.MemberVipConfig = NewMemberVipConfigClient(c.config)
 	c.MemberVipIconGroup = NewMemberVipIconGroupClient(c.config)
 	c.MemberVipLevel = NewMemberVipLevelClient(c.config)
@@ -220,6 +224,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		MemberFixedLevelAssignment: NewMemberFixedLevelAssignmentClient(cfg),
 		MemberOAuthIdentity:        NewMemberOAuthIdentityClient(cfg),
 		MemberProfile:              NewMemberProfileClient(cfg),
+		MemberStats:                NewMemberStatsClient(cfg),
 		MemberVipConfig:            NewMemberVipConfigClient(cfg),
 		MemberVipIconGroup:         NewMemberVipIconGroupClient(cfg),
 		MemberVipLevel:             NewMemberVipLevelClient(cfg),
@@ -259,6 +264,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		MemberFixedLevelAssignment: NewMemberFixedLevelAssignmentClient(cfg),
 		MemberOAuthIdentity:        NewMemberOAuthIdentityClient(cfg),
 		MemberProfile:              NewMemberProfileClient(cfg),
+		MemberStats:                NewMemberStatsClient(cfg),
 		MemberVipConfig:            NewMemberVipConfigClient(cfg),
 		MemberVipIconGroup:         NewMemberVipIconGroupClient(cfg),
 		MemberVipLevel:             NewMemberVipLevelClient(cfg),
@@ -296,7 +302,7 @@ func (c *Client) Use(hooks ...Hook) {
 		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentLevel, c.AgentLoginLog,
 		c.AgentProfile, c.AgentStats, c.AgentUser, c.Member, c.MemberAuth,
 		c.MemberAutoLevel, c.MemberFixedLevel, c.MemberFixedLevelAssignment,
-		c.MemberOAuthIdentity, c.MemberProfile, c.MemberVipConfig,
+		c.MemberOAuthIdentity, c.MemberProfile, c.MemberStats, c.MemberVipConfig,
 		c.MemberVipIconGroup, c.MemberVipLevel, c.MemberVipLevelRecord,
 		c.MemberVipProgress,
 	} {
@@ -311,7 +317,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentLevel, c.AgentLoginLog,
 		c.AgentProfile, c.AgentStats, c.AgentUser, c.Member, c.MemberAuth,
 		c.MemberAutoLevel, c.MemberFixedLevel, c.MemberFixedLevelAssignment,
-		c.MemberOAuthIdentity, c.MemberProfile, c.MemberVipConfig,
+		c.MemberOAuthIdentity, c.MemberProfile, c.MemberStats, c.MemberVipConfig,
 		c.MemberVipIconGroup, c.MemberVipLevel, c.MemberVipLevelRecord,
 		c.MemberVipProgress,
 	} {
@@ -352,6 +358,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.MemberOAuthIdentity.mutate(ctx, m)
 	case *MemberProfileMutation:
 		return c.MemberProfile.mutate(ctx, m)
+	case *MemberStatsMutation:
+		return c.MemberStats.mutate(ctx, m)
 	case *MemberVipConfigMutation:
 		return c.MemberVipConfig.mutate(ctx, m)
 	case *MemberVipIconGroupMutation:
@@ -1884,6 +1892,22 @@ func (c *MemberClient) QueryOauthIdentities(_m *Member) *MemberOAuthIdentityQuer
 	return query
 }
 
+// QueryStats queries the stats edge of a Member.
+func (c *MemberClient) QueryStats(_m *Member) *MemberStatsQuery {
+	query := (&MemberStatsClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, id),
+			sqlgraph.To(memberstats.Table, memberstats.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, member.StatsTable, member.StatsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryVipProgress queries the vip_progress edge of a Member.
 func (c *MemberClient) QueryVipProgress(_m *Member) *MemberVipProgressQuery {
 	query := (&MemberVipProgressClient{config: c.config}).Query()
@@ -2847,6 +2871,157 @@ func (c *MemberProfileClient) mutate(ctx context.Context, m *MemberProfileMutati
 	}
 }
 
+// MemberStatsClient is a client for the MemberStats schema.
+type MemberStatsClient struct {
+	config
+}
+
+// NewMemberStatsClient returns a client for the MemberStats from the given config.
+func NewMemberStatsClient(c config) *MemberStatsClient {
+	return &MemberStatsClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `memberstats.Hooks(f(g(h())))`.
+func (c *MemberStatsClient) Use(hooks ...Hook) {
+	c.hooks.MemberStats = append(c.hooks.MemberStats, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `memberstats.Intercept(f(g(h())))`.
+func (c *MemberStatsClient) Intercept(interceptors ...Interceptor) {
+	c.inters.MemberStats = append(c.inters.MemberStats, interceptors...)
+}
+
+// Create returns a builder for creating a MemberStats entity.
+func (c *MemberStatsClient) Create() *MemberStatsCreate {
+	mutation := newMemberStatsMutation(c.config, OpCreate)
+	return &MemberStatsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of MemberStats entities.
+func (c *MemberStatsClient) CreateBulk(builders ...*MemberStatsCreate) *MemberStatsCreateBulk {
+	return &MemberStatsCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *MemberStatsClient) MapCreateBulk(slice any, setFunc func(*MemberStatsCreate, int)) *MemberStatsCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &MemberStatsCreateBulk{err: fmt.Errorf("calling to MemberStatsClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*MemberStatsCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &MemberStatsCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for MemberStats.
+func (c *MemberStatsClient) Update() *MemberStatsUpdate {
+	mutation := newMemberStatsMutation(c.config, OpUpdate)
+	return &MemberStatsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *MemberStatsClient) UpdateOne(_m *MemberStats) *MemberStatsUpdateOne {
+	mutation := newMemberStatsMutation(c.config, OpUpdateOne, withMemberStats(_m))
+	return &MemberStatsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *MemberStatsClient) UpdateOneID(id int64) *MemberStatsUpdateOne {
+	mutation := newMemberStatsMutation(c.config, OpUpdateOne, withMemberStatsID(id))
+	return &MemberStatsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for MemberStats.
+func (c *MemberStatsClient) Delete() *MemberStatsDelete {
+	mutation := newMemberStatsMutation(c.config, OpDelete)
+	return &MemberStatsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *MemberStatsClient) DeleteOne(_m *MemberStats) *MemberStatsDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *MemberStatsClient) DeleteOneID(id int64) *MemberStatsDeleteOne {
+	builder := c.Delete().Where(memberstats.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &MemberStatsDeleteOne{builder}
+}
+
+// Query returns a query builder for MemberStats.
+func (c *MemberStatsClient) Query() *MemberStatsQuery {
+	return &MemberStatsQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeMemberStats},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a MemberStats entity by its id.
+func (c *MemberStatsClient) Get(ctx context.Context, id int64) (*MemberStats, error) {
+	return c.Query().Where(memberstats.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *MemberStatsClient) GetX(ctx context.Context, id int64) *MemberStats {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryMember queries the member edge of a MemberStats.
+func (c *MemberStatsClient) QueryMember(_m *MemberStats) *MemberQuery {
+	query := (&MemberClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(memberstats.Table, memberstats.FieldID, id),
+			sqlgraph.To(member.Table, member.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, memberstats.MemberTable, memberstats.MemberColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *MemberStatsClient) Hooks() []Hook {
+	hooks := c.hooks.MemberStats
+	return append(hooks[:len(hooks):len(hooks)], memberstats.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *MemberStatsClient) Interceptors() []Interceptor {
+	inters := c.inters.MemberStats
+	return append(inters[:len(inters):len(inters)], memberstats.Interceptors[:]...)
+}
+
+func (c *MemberStatsClient) mutate(ctx context.Context, m *MemberStatsMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&MemberStatsCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&MemberStatsUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&MemberStatsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&MemberStatsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown MemberStats mutation op: %q", m.Op())
+	}
+}
+
 // MemberVipConfigClient is a client for the MemberVipConfig schema.
 type MemberVipConfigClient struct {
 	config
@@ -3559,14 +3734,14 @@ type (
 	hooks struct {
 		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentProfile,
 		AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel, MemberFixedLevel,
-		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberProfile,
+		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberProfile, MemberStats,
 		MemberVipConfig, MemberVipIconGroup, MemberVipLevel, MemberVipLevelRecord,
 		MemberVipProgress []ent.Hook
 	}
 	inters struct {
 		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentProfile,
 		AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel, MemberFixedLevel,
-		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberProfile,
+		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberProfile, MemberStats,
 		MemberVipConfig, MemberVipIconGroup, MemberVipLevel, MemberVipLevelRecord,
 		MemberVipProgress []ent.Interceptor
 	}

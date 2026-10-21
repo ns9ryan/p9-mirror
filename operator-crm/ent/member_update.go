@@ -18,6 +18,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevelrecord"
 	"oa.98ent.com/p9/operator-crm/ent/membervipprogress"
@@ -312,6 +313,25 @@ func (_u *MemberUpdate) AddOauthIdentities(v ...*MemberOAuthIdentity) *MemberUpd
 	return _u.AddOauthIdentityIDs(ids...)
 }
 
+// SetStatsID sets the "stats" edge to the MemberStats entity by ID.
+func (_u *MemberUpdate) SetStatsID(id int64) *MemberUpdate {
+	_u.mutation.SetStatsID(id)
+	return _u
+}
+
+// SetNillableStatsID sets the "stats" edge to the MemberStats entity by ID if the given value is not nil.
+func (_u *MemberUpdate) SetNillableStatsID(id *int64) *MemberUpdate {
+	if id != nil {
+		_u = _u.SetStatsID(*id)
+	}
+	return _u
+}
+
+// SetStats sets the "stats" edge to the MemberStats entity.
+func (_u *MemberUpdate) SetStats(v *MemberStats) *MemberUpdate {
+	return _u.SetStatsID(v.ID)
+}
+
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
 func (_u *MemberUpdate) SetVipProgressID(id int64) *MemberUpdate {
 	_u.mutation.SetVipProgressID(id)
@@ -442,6 +462,12 @@ func (_u *MemberUpdate) RemoveOauthIdentities(v ...*MemberOAuthIdentity) *Member
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveOauthIdentityIDs(ids...)
+}
+
+// ClearStats clears the "stats" edge to the MemberStats entity.
+func (_u *MemberUpdate) ClearStats() *MemberUpdate {
+	_u.mutation.ClearStats()
+	return _u
 }
 
 // ClearVipProgress clears the "vip_progress" edge to the MemberVipProgress entity.
@@ -894,6 +920,35 @@ func (_u *MemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.StatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.StatsTable,
+			Columns: []string{member.StatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberstats.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.StatsTable,
+			Columns: []string{member.StatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberstats.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _u.mutation.VipProgressCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -1263,6 +1318,25 @@ func (_u *MemberUpdateOne) AddOauthIdentities(v ...*MemberOAuthIdentity) *Member
 	return _u.AddOauthIdentityIDs(ids...)
 }
 
+// SetStatsID sets the "stats" edge to the MemberStats entity by ID.
+func (_u *MemberUpdateOne) SetStatsID(id int64) *MemberUpdateOne {
+	_u.mutation.SetStatsID(id)
+	return _u
+}
+
+// SetNillableStatsID sets the "stats" edge to the MemberStats entity by ID if the given value is not nil.
+func (_u *MemberUpdateOne) SetNillableStatsID(id *int64) *MemberUpdateOne {
+	if id != nil {
+		_u = _u.SetStatsID(*id)
+	}
+	return _u
+}
+
+// SetStats sets the "stats" edge to the MemberStats entity.
+func (_u *MemberUpdateOne) SetStats(v *MemberStats) *MemberUpdateOne {
+	return _u.SetStatsID(v.ID)
+}
+
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
 func (_u *MemberUpdateOne) SetVipProgressID(id int64) *MemberUpdateOne {
 	_u.mutation.SetVipProgressID(id)
@@ -1393,6 +1467,12 @@ func (_u *MemberUpdateOne) RemoveOauthIdentities(v ...*MemberOAuthIdentity) *Mem
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveOauthIdentityIDs(ids...)
+}
+
+// ClearStats clears the "stats" edge to the MemberStats entity.
+func (_u *MemberUpdateOne) ClearStats() *MemberUpdateOne {
+	_u.mutation.ClearStats()
+	return _u
 }
 
 // ClearVipProgress clears the "vip_progress" edge to the MemberVipProgress entity.
@@ -1868,6 +1948,35 @@ func (_u *MemberUpdateOne) sqlSave(ctx context.Context) (_node *Member, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberoauthidentity.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.StatsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.StatsTable,
+			Columns: []string{member.StatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberstats.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StatsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.StatsTable,
+			Columns: []string{member.StatsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberstats.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

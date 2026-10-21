@@ -23,6 +23,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/membervipconfig"
 	"oa.98ent.com/p9/operator-crm/ent/membervipicongroup"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
@@ -492,6 +493,33 @@ func (f TraverseMemberProfile) Traverse(ctx context.Context, q ent.Query) error 
 	return fmt.Errorf("unexpected query type %T. expect *ent.MemberProfileQuery", q)
 }
 
+// The MemberStatsFunc type is an adapter to allow the use of ordinary function as a Querier.
+type MemberStatsFunc func(context.Context, *ent.MemberStatsQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f MemberStatsFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.MemberStatsQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.MemberStatsQuery", q)
+}
+
+// The TraverseMemberStats type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseMemberStats func(context.Context, *ent.MemberStatsQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseMemberStats) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseMemberStats) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.MemberStatsQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.MemberStatsQuery", q)
+}
+
 // The MemberVipConfigFunc type is an adapter to allow the use of ordinary function as a Querier.
 type MemberVipConfigFunc func(context.Context, *ent.MemberVipConfigQuery) (ent.Value, error)
 
@@ -660,6 +688,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.MemberOAuthIdentityQuery, predicate.MemberOAuthIdentity, memberoauthidentity.OrderOption]{typ: ent.TypeMemberOAuthIdentity, tq: q}, nil
 	case *ent.MemberProfileQuery:
 		return &query[*ent.MemberProfileQuery, predicate.MemberProfile, memberprofile.OrderOption]{typ: ent.TypeMemberProfile, tq: q}, nil
+	case *ent.MemberStatsQuery:
+		return &query[*ent.MemberStatsQuery, predicate.MemberStats, memberstats.OrderOption]{typ: ent.TypeMemberStats, tq: q}, nil
 	case *ent.MemberVipConfigQuery:
 		return &query[*ent.MemberVipConfigQuery, predicate.MemberVipConfig, membervipconfig.OrderOption]{typ: ent.TypeMemberVipConfig, tq: q}, nil
 	case *ent.MemberVipIconGroupQuery:

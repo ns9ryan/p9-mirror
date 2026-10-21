@@ -42,6 +42,8 @@ type Tx struct {
 	MemberOAuthIdentity *MemberOAuthIdentityClient
 	// MemberProfile is the client for interacting with the MemberProfile builders.
 	MemberProfile *MemberProfileClient
+	// MemberStats is the client for interacting with the MemberStats builders.
+	MemberStats *MemberStatsClient
 	// MemberVipConfig is the client for interacting with the MemberVipConfig builders.
 	MemberVipConfig *MemberVipConfigClient
 	// MemberVipIconGroup is the client for interacting with the MemberVipIconGroup builders.
@@ -198,6 +200,7 @@ func (tx *Tx) init() {
 	tx.MemberFixedLevelAssignment = NewMemberFixedLevelAssignmentClient(tx.config)
 	tx.MemberOAuthIdentity = NewMemberOAuthIdentityClient(tx.config)
 	tx.MemberProfile = NewMemberProfileClient(tx.config)
+	tx.MemberStats = NewMemberStatsClient(tx.config)
 	tx.MemberVipConfig = NewMemberVipConfigClient(tx.config)
 	tx.MemberVipIconGroup = NewMemberVipIconGroupClient(tx.config)
 	tx.MemberVipLevel = NewMemberVipLevelClient(tx.config)

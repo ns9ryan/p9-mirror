@@ -27,6 +27,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/membervipconfig"
 	"oa.98ent.com/p9/operator-crm/ent/membervipicongroup"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
@@ -107,6 +108,7 @@ func checkColumn(t, c string) error {
 			memberfixedlevelassignment.Table: memberfixedlevelassignment.ValidColumn,
 			memberoauthidentity.Table:        memberoauthidentity.ValidColumn,
 			memberprofile.Table:              memberprofile.ValidColumn,
+			memberstats.Table:                memberstats.ValidColumn,
 			membervipconfig.Table:            membervipconfig.ValidColumn,
 			membervipicongroup.Table:         membervipicongroup.ValidColumn,
 			memberviplevel.Table:             memberviplevel.ValidColumn,

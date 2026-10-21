@@ -51,6 +51,9 @@ type MemberOAuthIdentity func(*sql.Selector)
 // MemberProfile is the predicate function for memberprofile builders.
 type MemberProfile func(*sql.Selector)
 
+// MemberStats is the predicate function for memberstats builders.
+type MemberStats func(*sql.Selector)
+
 // MemberVipConfig is the predicate function for membervipconfig builders.
 type MemberVipConfig func(*sql.Selector)
 

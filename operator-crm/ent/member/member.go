@@ -82,6 +82,8 @@ const (
 	EdgeProfile = "profile"
 	// EdgeOauthIdentities holds the string denoting the oauth_identities edge name in mutations.
 	EdgeOauthIdentities = "oauth_identities"
+	// EdgeStats holds the string denoting the stats edge name in mutations.
+	EdgeStats = "stats"
 	// EdgeVipProgress holds the string denoting the vip_progress edge name in mutations.
 	EdgeVipProgress = "vip_progress"
 	// EdgeVipLevelRecords holds the string denoting the vip_level_records edge name in mutations.
@@ -152,6 +154,13 @@ const (
 	OauthIdentitiesInverseTable = "member_oauth_identity"
 	// OauthIdentitiesColumn is the table column denoting the oauth_identities relation/edge.
 	OauthIdentitiesColumn = "member_id"
+	// StatsTable is the table that holds the stats relation/edge.
+	StatsTable = "member_stats"
+	// StatsInverseTable is the table name for the MemberStats entity.
+	// It exists in this package in order to avoid circular dependency with the "memberstats" package.
+	StatsInverseTable = "member_stats"
+	// StatsColumn is the table column denoting the stats relation/edge.
+	StatsColumn = "member_id"
 	// VipProgressTable is the table that holds the vip_progress relation/edge.
 	VipProgressTable = "member_vip_progress"
 	// VipProgressInverseTable is the table name for the MemberVipProgress entity.
@@ -478,6 +487,13 @@ func ByOauthIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByStatsField orders the results by stats field.
+func ByStatsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStatsStep(), sql.OrderByField(field, opts...))
+	}
+}
+
 // ByVipProgressField orders the results by vip_progress field.
 func ByVipProgressField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -566,6 +582,13 @@ func newOauthIdentitiesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OauthIdentitiesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, OauthIdentitiesTable, OauthIdentitiesColumn),
+	)
+}
+func newStatsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StatsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, StatsTable, StatsColumn),
 	)
 }
 func newVipProgressStep() *sqlgraph.Step {

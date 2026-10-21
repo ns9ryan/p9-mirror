@@ -288,7 +288,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "operator_code", Type: field.TypeString, Nullable: true, Size: 64, Comment: "Operator Code | 分站编码"},
-		{Name: "account", Type: field.TypeString, Size: 64, Comment: "登录账号"},
+		{Name: "account", Type: field.TypeString, Size: 64, Comment: "登录账号, 保留原始大小写", SchemaType: map[string]string{"postgres": "citext"}},
 		{Name: "code", Type: field.TypeString, Size: 64, Comment: "代理编码"},
 		{Name: "level", Type: field.TypeInt64, Comment: "树层级，顶层为0，最大7", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "agent_type", Type: field.TypeInt64, Comment: "1现金代理 2信用代理", SchemaType: map[string]string{"postgres": "smallint"}},
@@ -678,6 +678,58 @@ var (
 			},
 		},
 	}
+	// MemberStatsColumns holds the columns for the "member_stats" table.
+	MemberStatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
+		{Name: "total_deposit", Type: field.TypeInt64, Comment: "累计充值金额", Default: 0},
+		{Name: "total_deposit_count", Type: field.TypeInt64, Comment: "累计充值成功次数", Default: 0},
+		{Name: "total_withdrawal", Type: field.TypeInt64, Comment: "累计提现金额", Default: 0},
+		{Name: "total_withdrawal_count", Type: field.TypeInt64, Comment: "累计提现成功次数", Default: 0},
+		{Name: "total_bet", Type: field.TypeInt64, Comment: "累计投注金额", Default: 0},
+		{Name: "total_valid_bet", Type: field.TypeInt64, Comment: "累计有效投注金额", Default: 0},
+		{Name: "total_water", Type: field.TypeInt64, Comment: "累计洗码量", Default: 0},
+		{Name: "total_win_loss", Type: field.TypeInt64, Comment: "累计会员净输赢金额, 正数盈利, 负数亏损", Default: 0},
+		{Name: "last_deposit", Type: field.TypeInt64, Comment: "当前结算周期充值金额", Default: 0},
+		{Name: "last_deposit_count", Type: field.TypeInt64, Comment: "当前结算周期充值成功次数", Default: 0},
+		{Name: "last_withdrawal", Type: field.TypeInt64, Comment: "当前结算周期提现金额", Default: 0},
+		{Name: "last_withdrawal_count", Type: field.TypeInt64, Comment: "当前结算周期提现成功次数", Default: 0},
+		{Name: "last_bet", Type: field.TypeInt64, Comment: "当前结算周期投注金额", Default: 0},
+		{Name: "last_valid_bet", Type: field.TypeInt64, Comment: "当前结算周期有效投注金额", Default: 0},
+		{Name: "last_water", Type: field.TypeInt64, Comment: "当前结算周期洗码量", Default: 0},
+		{Name: "last_win_loss", Type: field.TypeInt64, Comment: "当前结算周期会员净输赢金额, 正数盈利, 负数亏损", Default: 0},
+		{Name: "period_started_at", Type: field.TypeTime, Comment: "当前结算周期开始时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "member_id", Type: field.TypeInt64, Unique: true, Comment: "所属会员ID", SchemaType: map[string]string{"postgres": "bigint"}},
+	}
+	// MemberStatsTable holds the schema information for the "member_stats" table.
+	MemberStatsTable = &schema.Table{
+		Name:       "member_stats",
+		Comment:    "会员统计表",
+		Columns:    MemberStatsColumns,
+		PrimaryKey: []*schema.Column{MemberStatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "member_stats_member_stats",
+				Columns:    []*schema.Column{MemberStatsColumns[21]},
+				RefColumns: []*schema.Column{MemberColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uk_member_stats_member",
+				Unique:  true,
+				Columns: []*schema.Column{MemberStatsColumns[21]},
+			},
+			{
+				Name:    "idx_member_stats_operator_code",
+				Unique:  false,
+				Columns: []*schema.Column{MemberStatsColumns[3]},
+			},
+		},
+	}
 	// MemberVipConfigColumns holds the columns for the "member_vip_config" table.
 	MemberVipConfigColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
@@ -843,6 +895,7 @@ var (
 		MemberFixedLevelAssignmentTable,
 		MemberOauthIdentityTable,
 		MemberProfileTable,
+		MemberStatsTable,
 		MemberVipConfigTable,
 		MemberVipIconGroupTable,
 		MemberVipLevelTable,
@@ -995,6 +1048,10 @@ func init() {
 	MemberProfileTable.ForeignKeys[0].RefTable = MemberTable
 	MemberProfileTable.Annotation = &entsql.Annotation{
 		Table: "member_profile",
+	}
+	MemberStatsTable.ForeignKeys[0].RefTable = MemberTable
+	MemberStatsTable.Annotation = &entsql.Annotation{
+		Table: "member_stats",
 	}
 	MemberVipConfigTable.Annotation = &entsql.Annotation{
 		Table: "member_vip_config",

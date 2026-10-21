@@ -15,6 +15,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 	"oa.98ent.com/p9/operator-crm/ent/membervipprogress"
 )
@@ -99,13 +100,15 @@ type MemberEdges struct {
 	Profile *MemberProfile `json:"profile,omitempty"`
 	// OauthIdentities holds the value of the oauth_identities edge.
 	OauthIdentities []*MemberOAuthIdentity `json:"oauth_identities,omitempty"`
+	// Stats holds the value of the stats edge.
+	Stats *MemberStats `json:"stats,omitempty"`
 	// VipProgress holds the value of the vip_progress edge.
 	VipProgress *MemberVipProgress `json:"vip_progress,omitempty"`
 	// VipLevelRecords holds the value of the vip_level_records edge.
 	VipLevelRecords []*MemberVipLevelRecord `json:"vip_level_records,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [12]bool
+	loadedTypes [13]bool
 }
 
 // AgentOrErr returns the Agent value or an error if the edge
@@ -212,12 +215,23 @@ func (e MemberEdges) OauthIdentitiesOrErr() ([]*MemberOAuthIdentity, error) {
 	return nil, &NotLoadedError{edge: "oauth_identities"}
 }
 
+// StatsOrErr returns the Stats value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MemberEdges) StatsOrErr() (*MemberStats, error) {
+	if e.Stats != nil {
+		return e.Stats, nil
+	} else if e.loadedTypes[10] {
+		return nil, &NotFoundError{label: memberstats.Label}
+	}
+	return nil, &NotLoadedError{edge: "stats"}
+}
+
 // VipProgressOrErr returns the VipProgress value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e MemberEdges) VipProgressOrErr() (*MemberVipProgress, error) {
 	if e.VipProgress != nil {
 		return e.VipProgress, nil
-	} else if e.loadedTypes[10] {
+	} else if e.loadedTypes[11] {
 		return nil, &NotFoundError{label: membervipprogress.Label}
 	}
 	return nil, &NotLoadedError{edge: "vip_progress"}
@@ -226,7 +240,7 @@ func (e MemberEdges) VipProgressOrErr() (*MemberVipProgress, error) {
 // VipLevelRecordsOrErr returns the VipLevelRecords value or an error if the edge
 // was not loaded in eager-loading.
 func (e MemberEdges) VipLevelRecordsOrErr() ([]*MemberVipLevelRecord, error) {
-	if e.loadedTypes[11] {
+	if e.loadedTypes[12] {
 		return e.VipLevelRecords, nil
 	}
 	return nil, &NotLoadedError{edge: "vip_level_records"}
@@ -475,6 +489,11 @@ func (_m *Member) QueryProfile() *MemberProfileQuery {
 // QueryOauthIdentities queries the "oauth_identities" edge of the Member entity.
 func (_m *Member) QueryOauthIdentities() *MemberOAuthIdentityQuery {
 	return NewMemberClient(_m.config).QueryOauthIdentities(_m)
+}
+
+// QueryStats queries the "stats" edge of the Member entity.
+func (_m *Member) QueryStats() *MemberStatsQuery {
+	return NewMemberClient(_m.config).QueryStats(_m)
 }
 
 // QueryVipProgress queries the "vip_progress" edge of the Member entity.
