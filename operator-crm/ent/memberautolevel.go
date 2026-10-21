@@ -26,11 +26,11 @@ type MemberAutoLevel struct {
 	OperatorCode string `json:"operator_code,omitempty"`
 	// 自动层级名称
 	Name string `json:"name,omitempty"`
-	// 晋级要求的累计有效存款金额
-	MinValidDeposit int64 `json:"min_valid_deposit,omitempty"`
-	// 晋级要求的累计有效洗码量
-	MinValidWater int64 `json:"min_valid_water,omitempty"`
-	selectValues  sql.SelectValues
+	// 晋级要求的累计存款金额
+	MinDeposit int64 `json:"min_deposit,omitempty"`
+	// 晋级要求的累计洗码量
+	MinWater     int64 `json:"min_water,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -38,7 +38,7 @@ func (*MemberAutoLevel) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case memberautolevel.FieldID, memberautolevel.FieldMinValidDeposit, memberautolevel.FieldMinValidWater:
+		case memberautolevel.FieldID, memberautolevel.FieldMinDeposit, memberautolevel.FieldMinWater:
 			values[i] = new(sql.NullInt64)
 		case memberautolevel.FieldOperatorCode, memberautolevel.FieldName:
 			values[i] = new(sql.NullString)
@@ -89,17 +89,17 @@ func (_m *MemberAutoLevel) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Name = value.String
 			}
-		case memberautolevel.FieldMinValidDeposit:
+		case memberautolevel.FieldMinDeposit:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field min_valid_deposit", values[i])
+				return fmt.Errorf("unexpected type %T for field min_deposit", values[i])
 			} else if value.Valid {
-				_m.MinValidDeposit = value.Int64
+				_m.MinDeposit = value.Int64
 			}
-		case memberautolevel.FieldMinValidWater:
+		case memberautolevel.FieldMinWater:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field min_valid_water", values[i])
+				return fmt.Errorf("unexpected type %T for field min_water", values[i])
 			} else if value.Valid {
-				_m.MinValidWater = value.Int64
+				_m.MinWater = value.Int64
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -149,11 +149,11 @@ func (_m *MemberAutoLevel) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
-	builder.WriteString("min_valid_deposit=")
-	builder.WriteString(fmt.Sprintf("%v", _m.MinValidDeposit))
+	builder.WriteString("min_deposit=")
+	builder.WriteString(fmt.Sprintf("%v", _m.MinDeposit))
 	builder.WriteString(", ")
-	builder.WriteString("min_valid_water=")
-	builder.WriteString(fmt.Sprintf("%v", _m.MinValidWater))
+	builder.WriteString("min_water=")
+	builder.WriteString(fmt.Sprintf("%v", _m.MinWater))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -40,6 +40,8 @@ type (
 		// group: agent
 		TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error)
 		// group: agent
+		AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq, opts ...grpc.CallOption) (*agentpb.AncestorsByIDResp, error)
+		// group: agent
 		AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error)
 		// group: agent
 		ListAgentApplies(ctx context.Context, in *agentpb.ListAgentAppliesReq, opts ...grpc.CallOption) (*agentpb.ListAgentAppliesResp, error)
@@ -142,6 +144,12 @@ func (m *defaultAgentService) TreeNodeAgents(ctx context.Context, in *agentpb.Tr
 func (m *defaultAgentService) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.TreeNodeAncestorAgents(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq, opts ...grpc.CallOption) (*agentpb.AncestorsByIDResp, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.AncestorsById(ctx, in, opts...)
 }
 
 // group: agent

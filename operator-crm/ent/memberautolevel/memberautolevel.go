@@ -22,10 +22,10 @@ const (
 	FieldOperatorCode = "operator_code"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldMinValidDeposit holds the string denoting the min_valid_deposit field in the database.
-	FieldMinValidDeposit = "min_valid_deposit"
-	// FieldMinValidWater holds the string denoting the min_valid_water field in the database.
-	FieldMinValidWater = "min_valid_water"
+	// FieldMinDeposit holds the string denoting the min_deposit field in the database.
+	FieldMinDeposit = "min_deposit"
+	// FieldMinWater holds the string denoting the min_water field in the database.
+	FieldMinWater = "min_water"
 	// Table holds the table name of the memberautolevel in the database.
 	Table = "member_auto_level"
 )
@@ -37,8 +37,8 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldOperatorCode,
 	FieldName,
-	FieldMinValidDeposit,
-	FieldMinValidWater,
+	FieldMinDeposit,
+	FieldMinWater,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -69,10 +69,10 @@ var (
 	OperatorCodeValidator func(string) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
-	// MinValidDepositValidator is a validator for the "min_valid_deposit" field. It is called by the builders before save.
-	MinValidDepositValidator func(int64) error
-	// MinValidWaterValidator is a validator for the "min_valid_water" field. It is called by the builders before save.
-	MinValidWaterValidator func(int64) error
+	// MinDepositValidator is a validator for the "min_deposit" field. It is called by the builders before save.
+	MinDepositValidator func(int64) error
+	// MinWaterValidator is a validator for the "min_water" field. It is called by the builders before save.
+	MinWaterValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the MemberAutoLevel queries.
@@ -103,12 +103,12 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
-// ByMinValidDeposit orders the results by the min_valid_deposit field.
-func ByMinValidDeposit(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMinValidDeposit, opts...).ToFunc()
+// ByMinDeposit orders the results by the min_deposit field.
+func ByMinDeposit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMinDeposit, opts...).ToFunc()
 }
 
-// ByMinValidWater orders the results by the min_valid_water field.
-func ByMinValidWater(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMinValidWater, opts...).ToFunc()
+// ByMinWater orders the results by the min_water field.
+func ByMinWater(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMinWater, opts...).ToFunc()
 }

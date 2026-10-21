@@ -184,6 +184,10 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 		Exec(ctx); err != nil {
 		return nil, mapEntErr(err)
 	}
+	// 修改占层比例后，刷新内存树缓存
+	if _, op, oerr := requireOperator(ctx); oerr == nil {
+		s.invalidateTree(op)
+	}
 	return &agentpb.Empty{}, nil
 }
 

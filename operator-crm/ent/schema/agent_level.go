@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"context"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
@@ -9,6 +11,7 @@ import (
 	"entgo.io/ent/schema/index"
 
 	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 )
 
 // AgentLevel 定义代理等级表结构。
@@ -55,6 +58,16 @@ func (AgentLevel) Mixin() []ent.Mixin {
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
 		entmixin.OperatorCodeMixin{},
+	}
+}
+
+// Interceptors 定义代理等级表查询隔离
+func (AgentLevel) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
 	}
 }
 

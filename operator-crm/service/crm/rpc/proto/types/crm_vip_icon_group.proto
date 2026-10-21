@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package crm_vip_icon_group;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb";
+
+// VIP图标组信息
+message VipIconGroupInfo {
+  // 图标组ID
+  int64 id = 1;
+  // 图标组编号
+  int64 group_no = 2;
+  // 起始VIP等级
+  int64 start_level = 3;
+  // 结束VIP等级
+  int64 end_level = 4;
+  // 系统默认图标URL
+  string default_icon_url = 5;
+  // 当前使用的图标URL
+  string icon_url = 6;
+  // 更新时间, Unix毫秒时间戳
+  int64 updated_at = 7;
+}
+
+// 获取VIP图标组列表请求
+message ListVipIconGroupsRequest {}
+
+// 获取VIP图标组列表响应
+message ListVipIconGroupsResponse {
+  // VIP图标组列表
+  repeated VipIconGroupInfo list = 1;
+}
+
+// 修改VIP图标请求
+message UpdateVipIconGroupRequest {
+  // 图标组编号
+  int64 group_no = 1;
+  // 自定义图标URL
+  string icon_url = 2;
+}
+
+// 修改VIP图标响应
+message UpdateVipIconGroupResponse {}
+
+// 恢复默认VIP图标请求
+message ResetVipIconGroupRequest {
+  // 图标组编号
+  int64 group_no = 1;
+}
+
+// 恢复默认VIP图标响应
+message ResetVipIconGroupResponse {}

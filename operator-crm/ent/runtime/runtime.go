@@ -231,7 +231,9 @@ func init() {
 	agentconfigMixinHooks2 := agentconfigMixin[2].Hooks()
 	agentconfig.Hooks[0] = agentconfigMixinHooks2[0]
 	agentconfigMixinInters2 := agentconfigMixin[2].Interceptors()
+	agentconfigInters := schema.AgentConfig{}.Interceptors()
 	agentconfig.Interceptors[0] = agentconfigMixinInters2[0]
+	agentconfig.Interceptors[1] = agentconfigInters[0]
 	agentconfigMixinFields1 := agentconfigMixin[1].Fields()
 	_ = agentconfigMixinFields1
 	agentconfigMixinFields2 := agentconfigMixin[2].Fields()
@@ -276,7 +278,9 @@ func init() {
 	agentlevelMixinHooks2 := agentlevelMixin[2].Hooks()
 	agentlevel.Hooks[0] = agentlevelMixinHooks2[0]
 	agentlevelMixinInters2 := agentlevelMixin[2].Interceptors()
+	agentlevelInters := schema.AgentLevel{}.Interceptors()
 	agentlevel.Interceptors[0] = agentlevelMixinInters2[0]
+	agentlevel.Interceptors[1] = agentlevelInters[0]
 	agentlevelMixinFields1 := agentlevelMixin[1].Fields()
 	_ = agentlevelMixinFields1
 	agentlevelMixinFields2 := agentlevelMixin[2].Fields()
@@ -789,7 +793,9 @@ func init() {
 	agentuserMixinHooks2 := agentuserMixin[2].Hooks()
 	agentuser.Hooks[0] = agentuserMixinHooks2[0]
 	agentuserMixinInters2 := agentuserMixin[2].Interceptors()
+	agentuserInters := schema.AgentUser{}.Interceptors()
 	agentuser.Interceptors[0] = agentuserMixinInters2[0]
+	agentuser.Interceptors[1] = agentuserInters[0]
 	agentuserMixinFields1 := agentuserMixin[1].Fields()
 	_ = agentuserMixinFields1
 	agentuserMixinFields2 := agentuserMixin[2].Fields()
@@ -1395,14 +1401,14 @@ func init() {
 			return nil
 		}
 	}()
-	// memberautolevelDescMinValidDeposit is the schema descriptor for min_valid_deposit field.
-	memberautolevelDescMinValidDeposit := memberautolevelFields[2].Descriptor()
-	// memberautolevel.MinValidDepositValidator is a validator for the "min_valid_deposit" field. It is called by the builders before save.
-	memberautolevel.MinValidDepositValidator = memberautolevelDescMinValidDeposit.Validators[0].(func(int64) error)
-	// memberautolevelDescMinValidWater is the schema descriptor for min_valid_water field.
-	memberautolevelDescMinValidWater := memberautolevelFields[3].Descriptor()
-	// memberautolevel.MinValidWaterValidator is a validator for the "min_valid_water" field. It is called by the builders before save.
-	memberautolevel.MinValidWaterValidator = memberautolevelDescMinValidWater.Validators[0].(func(int64) error)
+	// memberautolevelDescMinDeposit is the schema descriptor for min_deposit field.
+	memberautolevelDescMinDeposit := memberautolevelFields[2].Descriptor()
+	// memberautolevel.MinDepositValidator is a validator for the "min_deposit" field. It is called by the builders before save.
+	memberautolevel.MinDepositValidator = memberautolevelDescMinDeposit.Validators[0].(func(int64) error)
+	// memberautolevelDescMinWater is the schema descriptor for min_water field.
+	memberautolevelDescMinWater := memberautolevelFields[3].Descriptor()
+	// memberautolevel.MinWaterValidator is a validator for the "min_water" field. It is called by the builders before save.
+	memberautolevel.MinWaterValidator = memberautolevelDescMinWater.Validators[0].(func(int64) error)
 	memberfixedlevelMixin := schema.MemberFixedLevel{}.Mixin()
 	memberfixedlevelHooks := schema.MemberFixedLevel{}.Hooks()
 	memberfixedlevel.Hooks[0] = memberfixedlevelHooks[0]

@@ -225,6 +225,32 @@ message TreeNodeAncestorAgentsResp {
   repeated AgentSearchItem items = 1;
 }
 
+// AncestorsByIDReq 按代理 ID 获取本人及上级链（内存树缓存）
+message AncestorsByIDReq {
+  int64 agent_id = 1;
+}
+
+// AgentAncestorItem 祖先链节点
+message AgentAncestorItem {
+  int64 id = 1;
+  // 直接上级 ID，顶层为 0
+  int64 parent_id = 2;
+  string account = 3;
+  // 绝对占成，百分比 0~100
+  int32 share_rate = 4;
+  // 本层占成（相对链上下一级的差分），百分比
+  int32 layer_rate = 5;
+  // 层级
+  int32 level = 6;
+  // 代理线代码
+  string agent_line_code = 7;
+}
+
+// AncestorsByIDResp 当前代理在前，其后为直接上级直到顶层
+message AncestorsByIDResp {
+  repeated AgentAncestorItem items = 1;
+}
+
 // ListOperatorAgentsReq 按层级列出代理并按线路分组
 message ListOperatorAgentsReq {
   // 代理层级 1~7（不含系统根 0）

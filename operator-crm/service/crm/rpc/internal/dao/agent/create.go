@@ -136,6 +136,9 @@ func (s *Service) createRootAgent(ctx context.Context) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	if _, op, oerr := requireOperator(ctx); oerr == nil {
+		s.invalidateTree(op)
+	}
 	return rootID, nil
 }
 
@@ -268,6 +271,10 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 	})
 	if err != nil {
 		return nil, err
+	}
+	// 创建代理后，刷新内存树缓存
+	if _, op, oerr := requireOperator(ctx); oerr == nil {
+		s.invalidateTree(op)
 	}
 	resp := &agentpb.AddAgentResp{
 		Id:        created.ID,

@@ -91,6 +91,12 @@ func (s *AgentServiceServer) TreeNodeAncestorAgents(ctx context.Context, in *age
 }
 
 // group: agent
+func (s *AgentServiceServer) AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq) (*agentpb.AncestorsByIDResp, error) {
+	l := agentservicelogic.NewAncestorsByIdLogic(ctx, s.svcCtx)
+	return l.AncestorsById(in)
+}
+
+// group: agent
 func (s *AgentServiceServer) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq) (*agentpb.AgentApplyItem, error) {
 	l := agentservicelogic.NewAddAgentApplyLogic(ctx, s.svcCtx)
 	return l.AddAgentApply(in)

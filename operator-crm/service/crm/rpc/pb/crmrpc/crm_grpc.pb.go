@@ -409,6 +409,7 @@ const (
 	AgentService_ListAgentLevels_FullMethodName             = "/crm.AgentService/listAgentLevels"
 	AgentService_TreeNodeAgents_FullMethodName              = "/crm.AgentService/treeNodeAgents"
 	AgentService_TreeNodeAncestorAgents_FullMethodName      = "/crm.AgentService/treeNodeAncestorAgents"
+	AgentService_AncestorsById_FullMethodName               = "/crm.AgentService/ancestorsById"
 	AgentService_AddAgentApply_FullMethodName               = "/crm.AgentService/addAgentApply"
 	AgentService_ListAgentApplies_FullMethodName            = "/crm.AgentService/listAgentApplies"
 	AgentService_ReviewAgentApply_FullMethodName            = "/crm.AgentService/reviewAgentApply"
@@ -452,6 +453,8 @@ type AgentServiceClient interface {
 	TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAgentsResp, error)
 	// group: agent
 	TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error)
+	// group: agent
+	AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq, opts ...grpc.CallOption) (*agentpb.AncestorsByIDResp, error)
 	// group: agent
 	AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error)
 	// group: agent
@@ -592,6 +595,16 @@ func (c *agentServiceClient) TreeNodeAncestorAgents(ctx context.Context, in *age
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(agentpb.TreeNodeAncestorAgentsResp)
 	err := c.cc.Invoke(ctx, AgentService_TreeNodeAncestorAgents_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq, opts ...grpc.CallOption) (*agentpb.AncestorsByIDResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.AncestorsByIDResp)
+	err := c.cc.Invoke(ctx, AgentService_AncestorsById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -757,6 +770,8 @@ type AgentServiceServer interface {
 	// group: agent
 	TreeNodeAncestorAgents(context.Context, *agentpb.TreeNodeAncestorAgentsReq) (*agentpb.TreeNodeAncestorAgentsResp, error)
 	// group: agent
+	AncestorsById(context.Context, *agentpb.AncestorsByIDReq) (*agentpb.AncestorsByIDResp, error)
+	// group: agent
 	AddAgentApply(context.Context, *agentpb.AddAgentApplyReq) (*agentpb.AgentApplyItem, error)
 	// group: agent
 	ListAgentApplies(context.Context, *agentpb.ListAgentAppliesReq) (*agentpb.ListAgentAppliesResp, error)
@@ -824,6 +839,9 @@ func (UnimplementedAgentServiceServer) TreeNodeAgents(context.Context, *agentpb.
 }
 func (UnimplementedAgentServiceServer) TreeNodeAncestorAgents(context.Context, *agentpb.TreeNodeAncestorAgentsReq) (*agentpb.TreeNodeAncestorAgentsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TreeNodeAncestorAgents not implemented")
+}
+func (UnimplementedAgentServiceServer) AncestorsById(context.Context, *agentpb.AncestorsByIDReq) (*agentpb.AncestorsByIDResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AncestorsById not implemented")
 }
 func (UnimplementedAgentServiceServer) AddAgentApply(context.Context, *agentpb.AddAgentApplyReq) (*agentpb.AgentApplyItem, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddAgentApply not implemented")
@@ -1079,6 +1097,24 @@ func _AgentService_TreeNodeAncestorAgents_Handler(srv interface{}, ctx context.C
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AgentServiceServer).TreeNodeAncestorAgents(ctx, req.(*agentpb.TreeNodeAncestorAgentsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_AncestorsById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.AncestorsByIDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).AncestorsById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_AncestorsById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).AncestorsById(ctx, req.(*agentpb.AncestorsByIDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1367,6 +1403,10 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "treeNodeAncestorAgents",
 			Handler:    _AgentService_TreeNodeAncestorAgents_Handler,
+		},
+		{
+			MethodName: "ancestorsById",
+			Handler:    _AgentService_AncestorsById_Handler,
 		},
 		{
 			MethodName: "addAgentApply",

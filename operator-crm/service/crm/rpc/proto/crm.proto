@@ -7,6 +7,9 @@ option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc";
 import "types/crm_auth.proto";
 import "types/crm_ping.proto";
 import "types/crm_agent.proto";
+import "types/crm_vip_config.proto";
+import "types/crm_vip_level.proto";
+import "types/crm_vip_icon_group.proto";
 
 // CRM 健康检查服务
 service PingService {
@@ -53,6 +56,8 @@ service AgentService {
   // group: agent
   rpc treeNodeAncestorAgents(crm_agent.TreeNodeAncestorAgentsReq) returns (crm_agent.TreeNodeAncestorAgentsResp);
   // group: agent
+  rpc ancestorsById(crm_agent.AncestorsByIDReq) returns (crm_agent.AncestorsByIDResp);
+  // group: agent
   rpc addAgentApply(crm_agent.AddAgentApplyReq) returns (crm_agent.AgentApplyItem);
   // group: agent
   rpc listAgentApplies(crm_agent.ListAgentAppliesReq) returns (crm_agent.ListAgentAppliesResp);
@@ -79,3 +84,46 @@ service AgentService {
   // group: agent
   rpc listAgentLoginAssociations(crm_agent.ListAgentLoginAssociationsReq) returns (crm_agent.ListAgentLoginAssociationsResp);
 }
+
+// VIP基础配置服务
+service VipConfigService {
+  // 获取VIP基础配置
+  rpc Get(crm_vip_config.GetVipConfigRequest) returns (crm_vip_config.GetVipConfigResponse);
+
+  // 修改VIP基础配置
+  rpc Update(crm_vip_config.UpdateVipConfigRequest) returns (crm_vip_config.UpdateVipConfigResponse);
+}
+
+// VIP等级服务
+service VipLevelService {
+  // 获取VIP等级列表
+  rpc List(crm_vip_level.ListVipLevelsRequest) returns (crm_vip_level.ListVipLevelsResponse);
+
+  // 获取VIP等级
+  rpc Get(crm_vip_level.GetVipLevelRequest) returns (crm_vip_level.GetVipLevelResponse);
+
+  // 新增VIP等级
+  rpc Create(crm_vip_level.CreateVipLevelRequest) returns (crm_vip_level.CreateVipLevelResponse);
+
+  // 修改VIP等级
+  rpc Update(crm_vip_level.UpdateVipLevelRequest) returns (crm_vip_level.UpdateVipLevelResponse);
+
+  // 删除VIP等级
+  // TODO: 会员等级重新计算及等级变更记录完成后，实现完整删除流程
+  rpc Delete(crm_vip_level.DeleteVipLevelRequest) returns (crm_vip_level.DeleteVipLevelResponse);
+}
+
+// VIP图标组服务
+service VipIconGroupService {
+  // 获取VIP图标组列表
+  rpc List(crm_vip_icon_group.ListVipIconGroupsRequest) returns (crm_vip_icon_group.ListVipIconGroupsResponse);
+
+  // 修改VIP图标
+  rpc Update(crm_vip_icon_group.UpdateVipIconGroupRequest) returns (crm_vip_icon_group.UpdateVipIconGroupResponse);
+
+  // 恢复默认VIP图标
+  rpc Reset(crm_vip_icon_group.ResetVipIconGroupRequest) returns (crm_vip_icon_group.ResetVipIconGroupResponse);
+}
+
+// TODO: VIP等级变更记录列表、详情，待会员等级变更业务完善后实现
+// TODO: VIP晋级奖励记录列表、详情及发放，待奖励记录和资金业务完善后实现

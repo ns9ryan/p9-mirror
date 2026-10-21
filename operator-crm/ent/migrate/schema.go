@@ -515,8 +515,8 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "name", Type: field.TypeString, Size: 100, Comment: "自动层级名称"},
-		{Name: "min_valid_deposit", Type: field.TypeInt64, Comment: "晋级要求的累计有效存款金额"},
-		{Name: "min_valid_water", Type: field.TypeInt64, Comment: "晋级要求的累计有效洗码量"},
+		{Name: "min_deposit", Type: field.TypeInt64, Comment: "晋级要求的累计存款金额"},
+		{Name: "min_water", Type: field.TypeInt64, Comment: "晋级要求的累计洗码量"},
 	}
 	// MemberAutoLevelTable holds the schema information for the "member_auto_level" table.
 	MemberAutoLevelTable = &schema.Table{

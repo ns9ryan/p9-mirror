@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package crm_vip_level;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/viplevelpb";
+
+// VIP等级信息
+message VipLevelInfo {
+  // VIP等级ID
+  int64 id = 1;
+  // VIP等级编号, 从0开始
+  int64 level = 2;
+
+  // 晋级所需有效存款
+  int64 upgrade_valid_deposit = 3;
+  // 晋级所需有效洗码量
+  int64 upgrade_valid_water = 4;
+
+  // 保级所需有效存款
+  int64 retention_valid_deposit = 5;
+  // 保级所需有效洗码量
+  int64 retention_valid_water = 6;
+
+  // 晋级奖励金额
+  int64 upgrade_reward = 7;
+  // 当前会员数
+  int64 member_count = 8;
+  // 更新时间, Unix毫秒时间戳
+  int64 updated_at = 9;
+}
+
+// 获取VIP等级列表请求
+message ListVipLevelsRequest {
+  // 页码, 从1开始
+  int64 page = 1;
+  // 每页数量
+  int64 page_size = 2;
+}
+
+// 获取VIP等级列表响应
+message ListVipLevelsResponse {
+  // 数据总数
+  int64 total = 1;
+  // VIP等级列表
+  repeated VipLevelInfo list = 2;
+}
+
+// 获取VIP等级请求
+message GetVipLevelRequest {
+  // VIP等级ID
+  int64 id = 1;
+}
+
+// 获取VIP等级响应
+message GetVipLevelResponse {
+  // VIP等级信息
+  VipLevelInfo level = 1;
+}
+
+// 新增VIP等级请求
+message CreateVipLevelRequest {
+  // 晋级所需有效存款
+  int64 upgrade_valid_deposit = 1;
+  // 晋级所需有效洗码量
+  int64 upgrade_valid_water = 2;
+
+  // 保级所需有效存款
+  int64 retention_valid_deposit = 3;
+  // 保级所需有效洗码量
+  int64 retention_valid_water = 4;
+
+  // 晋级奖励金额
+  int64 upgrade_reward = 5;
+}
+
+// 新增VIP等级响应
+message CreateVipLevelResponse {
+  // VIP等级ID
+  int64 id = 1;
+  // 服务端自动分配的等级编号
+  int64 level = 2;
+}
+
+// 修改VIP等级请求
+message UpdateVipLevelRequest {
+  // VIP等级ID
+  int64 id = 1;
+
+  // 晋级所需有效存款
+  optional int64 upgrade_valid_deposit = 2;
+  // 晋级所需有效洗码量
+  optional int64 upgrade_valid_water = 3;
+
+  // 保级所需有效存款
+  optional int64 retention_valid_deposit = 4;
+  // 保级所需有效洗码量
+  optional int64 retention_valid_water = 5;
+
+  // 晋级奖励金额
+  optional int64 upgrade_reward = 6;
+}
+
+// 修改VIP等级响应
+message UpdateVipLevelResponse {}
+
+// 删除VIP等级请求
+message DeleteVipLevelRequest {
+  // VIP等级ID
+  int64 id = 1;
+}
+
+// 删除VIP等级响应
+message DeleteVipLevelResponse {}

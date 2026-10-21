@@ -14771,21 +14771,21 @@ func (m *MemberAuthMutation) ResetEdge(name string) error {
 // MemberAutoLevelMutation represents an operation that mutates the MemberAutoLevel nodes in the graph.
 type MemberAutoLevelMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *int64
-	created_at           *time.Time
-	updated_at           *time.Time
-	operator_code        *string
-	name                 *string
-	min_valid_deposit    *int64
-	addmin_valid_deposit *int64
-	min_valid_water      *int64
-	addmin_valid_water   *int64
-	clearedFields        map[string]struct{}
-	done                 bool
-	oldValue             func(context.Context) (*MemberAutoLevel, error)
-	predicates           []predicate.MemberAutoLevel
+	op             Op
+	typ            string
+	id             *int64
+	created_at     *time.Time
+	updated_at     *time.Time
+	operator_code  *string
+	name           *string
+	min_deposit    *int64
+	addmin_deposit *int64
+	min_water      *int64
+	addmin_water   *int64
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*MemberAutoLevel, error)
+	predicates     []predicate.MemberAutoLevel
 }
 
 var _ ent.Mutation = (*MemberAutoLevelMutation)(nil)
@@ -15036,116 +15036,116 @@ func (m *MemberAutoLevelMutation) ResetName() {
 	m.name = nil
 }
 
-// SetMinValidDeposit sets the "min_valid_deposit" field.
-func (m *MemberAutoLevelMutation) SetMinValidDeposit(i int64) {
-	m.min_valid_deposit = &i
-	m.addmin_valid_deposit = nil
+// SetMinDeposit sets the "min_deposit" field.
+func (m *MemberAutoLevelMutation) SetMinDeposit(i int64) {
+	m.min_deposit = &i
+	m.addmin_deposit = nil
 }
 
-// MinValidDeposit returns the value of the "min_valid_deposit" field in the mutation.
-func (m *MemberAutoLevelMutation) MinValidDeposit() (r int64, exists bool) {
-	v := m.min_valid_deposit
+// MinDeposit returns the value of the "min_deposit" field in the mutation.
+func (m *MemberAutoLevelMutation) MinDeposit() (r int64, exists bool) {
+	v := m.min_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMinValidDeposit returns the old "min_valid_deposit" field's value of the MemberAutoLevel entity.
+// OldMinDeposit returns the old "min_deposit" field's value of the MemberAutoLevel entity.
 // If the MemberAutoLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberAutoLevelMutation) OldMinValidDeposit(ctx context.Context) (v int64, err error) {
+func (m *MemberAutoLevelMutation) OldMinDeposit(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMinValidDeposit is only allowed on UpdateOne operations")
+		return v, errors.New("OldMinDeposit is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMinValidDeposit requires an ID field in the mutation")
+		return v, errors.New("OldMinDeposit requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMinValidDeposit: %w", err)
+		return v, fmt.Errorf("querying old value for OldMinDeposit: %w", err)
 	}
-	return oldValue.MinValidDeposit, nil
+	return oldValue.MinDeposit, nil
 }
 
-// AddMinValidDeposit adds i to the "min_valid_deposit" field.
-func (m *MemberAutoLevelMutation) AddMinValidDeposit(i int64) {
-	if m.addmin_valid_deposit != nil {
-		*m.addmin_valid_deposit += i
+// AddMinDeposit adds i to the "min_deposit" field.
+func (m *MemberAutoLevelMutation) AddMinDeposit(i int64) {
+	if m.addmin_deposit != nil {
+		*m.addmin_deposit += i
 	} else {
-		m.addmin_valid_deposit = &i
+		m.addmin_deposit = &i
 	}
 }
 
-// AddedMinValidDeposit returns the value that was added to the "min_valid_deposit" field in this mutation.
-func (m *MemberAutoLevelMutation) AddedMinValidDeposit() (r int64, exists bool) {
-	v := m.addmin_valid_deposit
+// AddedMinDeposit returns the value that was added to the "min_deposit" field in this mutation.
+func (m *MemberAutoLevelMutation) AddedMinDeposit() (r int64, exists bool) {
+	v := m.addmin_deposit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetMinValidDeposit resets all changes to the "min_valid_deposit" field.
-func (m *MemberAutoLevelMutation) ResetMinValidDeposit() {
-	m.min_valid_deposit = nil
-	m.addmin_valid_deposit = nil
+// ResetMinDeposit resets all changes to the "min_deposit" field.
+func (m *MemberAutoLevelMutation) ResetMinDeposit() {
+	m.min_deposit = nil
+	m.addmin_deposit = nil
 }
 
-// SetMinValidWater sets the "min_valid_water" field.
-func (m *MemberAutoLevelMutation) SetMinValidWater(i int64) {
-	m.min_valid_water = &i
-	m.addmin_valid_water = nil
+// SetMinWater sets the "min_water" field.
+func (m *MemberAutoLevelMutation) SetMinWater(i int64) {
+	m.min_water = &i
+	m.addmin_water = nil
 }
 
-// MinValidWater returns the value of the "min_valid_water" field in the mutation.
-func (m *MemberAutoLevelMutation) MinValidWater() (r int64, exists bool) {
-	v := m.min_valid_water
+// MinWater returns the value of the "min_water" field in the mutation.
+func (m *MemberAutoLevelMutation) MinWater() (r int64, exists bool) {
+	v := m.min_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMinValidWater returns the old "min_valid_water" field's value of the MemberAutoLevel entity.
+// OldMinWater returns the old "min_water" field's value of the MemberAutoLevel entity.
 // If the MemberAutoLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberAutoLevelMutation) OldMinValidWater(ctx context.Context) (v int64, err error) {
+func (m *MemberAutoLevelMutation) OldMinWater(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMinValidWater is only allowed on UpdateOne operations")
+		return v, errors.New("OldMinWater is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMinValidWater requires an ID field in the mutation")
+		return v, errors.New("OldMinWater requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMinValidWater: %w", err)
+		return v, fmt.Errorf("querying old value for OldMinWater: %w", err)
 	}
-	return oldValue.MinValidWater, nil
+	return oldValue.MinWater, nil
 }
 
-// AddMinValidWater adds i to the "min_valid_water" field.
-func (m *MemberAutoLevelMutation) AddMinValidWater(i int64) {
-	if m.addmin_valid_water != nil {
-		*m.addmin_valid_water += i
+// AddMinWater adds i to the "min_water" field.
+func (m *MemberAutoLevelMutation) AddMinWater(i int64) {
+	if m.addmin_water != nil {
+		*m.addmin_water += i
 	} else {
-		m.addmin_valid_water = &i
+		m.addmin_water = &i
 	}
 }
 
-// AddedMinValidWater returns the value that was added to the "min_valid_water" field in this mutation.
-func (m *MemberAutoLevelMutation) AddedMinValidWater() (r int64, exists bool) {
-	v := m.addmin_valid_water
+// AddedMinWater returns the value that was added to the "min_water" field in this mutation.
+func (m *MemberAutoLevelMutation) AddedMinWater() (r int64, exists bool) {
+	v := m.addmin_water
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetMinValidWater resets all changes to the "min_valid_water" field.
-func (m *MemberAutoLevelMutation) ResetMinValidWater() {
-	m.min_valid_water = nil
-	m.addmin_valid_water = nil
+// ResetMinWater resets all changes to the "min_water" field.
+func (m *MemberAutoLevelMutation) ResetMinWater() {
+	m.min_water = nil
+	m.addmin_water = nil
 }
 
 // Where appends a list predicates to the MemberAutoLevelMutation builder.
@@ -15195,11 +15195,11 @@ func (m *MemberAutoLevelMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, memberautolevel.FieldName)
 	}
-	if m.min_valid_deposit != nil {
-		fields = append(fields, memberautolevel.FieldMinValidDeposit)
+	if m.min_deposit != nil {
+		fields = append(fields, memberautolevel.FieldMinDeposit)
 	}
-	if m.min_valid_water != nil {
-		fields = append(fields, memberautolevel.FieldMinValidWater)
+	if m.min_water != nil {
+		fields = append(fields, memberautolevel.FieldMinWater)
 	}
 	return fields
 }
@@ -15217,10 +15217,10 @@ func (m *MemberAutoLevelMutation) Field(name string) (ent.Value, bool) {
 		return m.OperatorCode()
 	case memberautolevel.FieldName:
 		return m.Name()
-	case memberautolevel.FieldMinValidDeposit:
-		return m.MinValidDeposit()
-	case memberautolevel.FieldMinValidWater:
-		return m.MinValidWater()
+	case memberautolevel.FieldMinDeposit:
+		return m.MinDeposit()
+	case memberautolevel.FieldMinWater:
+		return m.MinWater()
 	}
 	return nil, false
 }
@@ -15238,10 +15238,10 @@ func (m *MemberAutoLevelMutation) OldField(ctx context.Context, name string) (en
 		return m.OldOperatorCode(ctx)
 	case memberautolevel.FieldName:
 		return m.OldName(ctx)
-	case memberautolevel.FieldMinValidDeposit:
-		return m.OldMinValidDeposit(ctx)
-	case memberautolevel.FieldMinValidWater:
-		return m.OldMinValidWater(ctx)
+	case memberautolevel.FieldMinDeposit:
+		return m.OldMinDeposit(ctx)
+	case memberautolevel.FieldMinWater:
+		return m.OldMinWater(ctx)
 	}
 	return nil, fmt.Errorf("unknown MemberAutoLevel field %s", name)
 }
@@ -15279,19 +15279,19 @@ func (m *MemberAutoLevelMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case memberautolevel.FieldMinValidDeposit:
+	case memberautolevel.FieldMinDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMinValidDeposit(v)
+		m.SetMinDeposit(v)
 		return nil
-	case memberautolevel.FieldMinValidWater:
+	case memberautolevel.FieldMinWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMinValidWater(v)
+		m.SetMinWater(v)
 		return nil
 	}
 	return fmt.Errorf("unknown MemberAutoLevel field %s", name)
@@ -15301,11 +15301,11 @@ func (m *MemberAutoLevelMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *MemberAutoLevelMutation) AddedFields() []string {
 	var fields []string
-	if m.addmin_valid_deposit != nil {
-		fields = append(fields, memberautolevel.FieldMinValidDeposit)
+	if m.addmin_deposit != nil {
+		fields = append(fields, memberautolevel.FieldMinDeposit)
 	}
-	if m.addmin_valid_water != nil {
-		fields = append(fields, memberautolevel.FieldMinValidWater)
+	if m.addmin_water != nil {
+		fields = append(fields, memberautolevel.FieldMinWater)
 	}
 	return fields
 }
@@ -15315,10 +15315,10 @@ func (m *MemberAutoLevelMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *MemberAutoLevelMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case memberautolevel.FieldMinValidDeposit:
-		return m.AddedMinValidDeposit()
-	case memberautolevel.FieldMinValidWater:
-		return m.AddedMinValidWater()
+	case memberautolevel.FieldMinDeposit:
+		return m.AddedMinDeposit()
+	case memberautolevel.FieldMinWater:
+		return m.AddedMinWater()
 	}
 	return nil, false
 }
@@ -15328,19 +15328,19 @@ func (m *MemberAutoLevelMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *MemberAutoLevelMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case memberautolevel.FieldMinValidDeposit:
+	case memberautolevel.FieldMinDeposit:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddMinValidDeposit(v)
+		m.AddMinDeposit(v)
 		return nil
-	case memberautolevel.FieldMinValidWater:
+	case memberautolevel.FieldMinWater:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddMinValidWater(v)
+		m.AddMinWater(v)
 		return nil
 	}
 	return fmt.Errorf("unknown MemberAutoLevel numeric field %s", name)
@@ -15381,11 +15381,11 @@ func (m *MemberAutoLevelMutation) ResetField(name string) error {
 	case memberautolevel.FieldName:
 		m.ResetName()
 		return nil
-	case memberautolevel.FieldMinValidDeposit:
-		m.ResetMinValidDeposit()
+	case memberautolevel.FieldMinDeposit:
+		m.ResetMinDeposit()
 		return nil
-	case memberautolevel.FieldMinValidWater:
-		m.ResetMinValidWater()
+	case memberautolevel.FieldMinWater:
+		m.ResetMinWater()
 		return nil
 	}
 	return fmt.Errorf("unknown MemberAutoLevel field %s", name)

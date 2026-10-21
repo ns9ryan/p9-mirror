@@ -74,14 +74,14 @@ func Name(v string) predicate.MemberAutoLevel {
 	return predicate.MemberAutoLevel(sql.FieldEQ(FieldName, v))
 }
 
-// MinValidDeposit applies equality check predicate on the "min_valid_deposit" field. It's identical to MinValidDepositEQ.
-func MinValidDeposit(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidDeposit, v))
+// MinDeposit applies equality check predicate on the "min_deposit" field. It's identical to MinDepositEQ.
+func MinDeposit(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinDeposit, v))
 }
 
-// MinValidWater applies equality check predicate on the "min_valid_water" field. It's identical to MinValidWaterEQ.
-func MinValidWater(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidWater, v))
+// MinWater applies equality check predicate on the "min_water" field. It's identical to MinWaterEQ.
+func MinWater(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinWater, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -294,84 +294,84 @@ func NameContainsFold(v string) predicate.MemberAutoLevel {
 	return predicate.MemberAutoLevel(sql.FieldContainsFold(FieldName, v))
 }
 
-// MinValidDepositEQ applies the EQ predicate on the "min_valid_deposit" field.
-func MinValidDepositEQ(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidDeposit, v))
+// MinDepositEQ applies the EQ predicate on the "min_deposit" field.
+func MinDepositEQ(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinDeposit, v))
 }
 
-// MinValidDepositNEQ applies the NEQ predicate on the "min_valid_deposit" field.
-func MinValidDepositNEQ(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldNEQ(FieldMinValidDeposit, v))
+// MinDepositNEQ applies the NEQ predicate on the "min_deposit" field.
+func MinDepositNEQ(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldNEQ(FieldMinDeposit, v))
 }
 
-// MinValidDepositIn applies the In predicate on the "min_valid_deposit" field.
-func MinValidDepositIn(vs ...int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldIn(FieldMinValidDeposit, vs...))
+// MinDepositIn applies the In predicate on the "min_deposit" field.
+func MinDepositIn(vs ...int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldIn(FieldMinDeposit, vs...))
 }
 
-// MinValidDepositNotIn applies the NotIn predicate on the "min_valid_deposit" field.
-func MinValidDepositNotIn(vs ...int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldNotIn(FieldMinValidDeposit, vs...))
+// MinDepositNotIn applies the NotIn predicate on the "min_deposit" field.
+func MinDepositNotIn(vs ...int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldNotIn(FieldMinDeposit, vs...))
 }
 
-// MinValidDepositGT applies the GT predicate on the "min_valid_deposit" field.
-func MinValidDepositGT(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldGT(FieldMinValidDeposit, v))
+// MinDepositGT applies the GT predicate on the "min_deposit" field.
+func MinDepositGT(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldGT(FieldMinDeposit, v))
 }
 
-// MinValidDepositGTE applies the GTE predicate on the "min_valid_deposit" field.
-func MinValidDepositGTE(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldGTE(FieldMinValidDeposit, v))
+// MinDepositGTE applies the GTE predicate on the "min_deposit" field.
+func MinDepositGTE(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldGTE(FieldMinDeposit, v))
 }
 
-// MinValidDepositLT applies the LT predicate on the "min_valid_deposit" field.
-func MinValidDepositLT(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldLT(FieldMinValidDeposit, v))
+// MinDepositLT applies the LT predicate on the "min_deposit" field.
+func MinDepositLT(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldLT(FieldMinDeposit, v))
 }
 
-// MinValidDepositLTE applies the LTE predicate on the "min_valid_deposit" field.
-func MinValidDepositLTE(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldLTE(FieldMinValidDeposit, v))
+// MinDepositLTE applies the LTE predicate on the "min_deposit" field.
+func MinDepositLTE(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldLTE(FieldMinDeposit, v))
 }
 
-// MinValidWaterEQ applies the EQ predicate on the "min_valid_water" field.
-func MinValidWaterEQ(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinValidWater, v))
+// MinWaterEQ applies the EQ predicate on the "min_water" field.
+func MinWaterEQ(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldEQ(FieldMinWater, v))
 }
 
-// MinValidWaterNEQ applies the NEQ predicate on the "min_valid_water" field.
-func MinValidWaterNEQ(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldNEQ(FieldMinValidWater, v))
+// MinWaterNEQ applies the NEQ predicate on the "min_water" field.
+func MinWaterNEQ(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldNEQ(FieldMinWater, v))
 }
 
-// MinValidWaterIn applies the In predicate on the "min_valid_water" field.
-func MinValidWaterIn(vs ...int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldIn(FieldMinValidWater, vs...))
+// MinWaterIn applies the In predicate on the "min_water" field.
+func MinWaterIn(vs ...int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldIn(FieldMinWater, vs...))
 }
 
-// MinValidWaterNotIn applies the NotIn predicate on the "min_valid_water" field.
-func MinValidWaterNotIn(vs ...int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldNotIn(FieldMinValidWater, vs...))
+// MinWaterNotIn applies the NotIn predicate on the "min_water" field.
+func MinWaterNotIn(vs ...int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldNotIn(FieldMinWater, vs...))
 }
 
-// MinValidWaterGT applies the GT predicate on the "min_valid_water" field.
-func MinValidWaterGT(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldGT(FieldMinValidWater, v))
+// MinWaterGT applies the GT predicate on the "min_water" field.
+func MinWaterGT(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldGT(FieldMinWater, v))
 }
 
-// MinValidWaterGTE applies the GTE predicate on the "min_valid_water" field.
-func MinValidWaterGTE(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldGTE(FieldMinValidWater, v))
+// MinWaterGTE applies the GTE predicate on the "min_water" field.
+func MinWaterGTE(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldGTE(FieldMinWater, v))
 }
 
-// MinValidWaterLT applies the LT predicate on the "min_valid_water" field.
-func MinValidWaterLT(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldLT(FieldMinValidWater, v))
+// MinWaterLT applies the LT predicate on the "min_water" field.
+func MinWaterLT(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldLT(FieldMinWater, v))
 }
 
-// MinValidWaterLTE applies the LTE predicate on the "min_valid_water" field.
-func MinValidWaterLTE(v int64) predicate.MemberAutoLevel {
-	return predicate.MemberAutoLevel(sql.FieldLTE(FieldMinValidWater, v))
+// MinWaterLTE applies the LTE predicate on the "min_water" field.
+func MinWaterLTE(v int64) predicate.MemberAutoLevel {
+	return predicate.MemberAutoLevel(sql.FieldLTE(FieldMinWater, v))
 }
 
 // And groups predicates with the AND operator between them.

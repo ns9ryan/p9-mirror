@@ -22,12 +22,13 @@ const (
 
 // Service 代理配置与开户。
 type Service struct {
-	DB *ent.Client
+	DB        *ent.Client
+	treeCache *agentTreeCache
 }
 
 // New 创建代理服务。
 func New(db *ent.Client) *Service {
-	return &Service{DB: db}
+	return &Service{DB: db, treeCache: newAgentTreeCache()}
 }
 
 func requireOperator(ctx context.Context) (context.Context, string, error) {

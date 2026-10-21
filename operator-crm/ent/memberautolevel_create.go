@@ -62,15 +62,15 @@ func (_c *MemberAutoLevelCreate) SetName(v string) *MemberAutoLevelCreate {
 	return _c
 }
 
-// SetMinValidDeposit sets the "min_valid_deposit" field.
-func (_c *MemberAutoLevelCreate) SetMinValidDeposit(v int64) *MemberAutoLevelCreate {
-	_c.mutation.SetMinValidDeposit(v)
+// SetMinDeposit sets the "min_deposit" field.
+func (_c *MemberAutoLevelCreate) SetMinDeposit(v int64) *MemberAutoLevelCreate {
+	_c.mutation.SetMinDeposit(v)
 	return _c
 }
 
-// SetMinValidWater sets the "min_valid_water" field.
-func (_c *MemberAutoLevelCreate) SetMinValidWater(v int64) *MemberAutoLevelCreate {
-	_c.mutation.SetMinValidWater(v)
+// SetMinWater sets the "min_water" field.
+func (_c *MemberAutoLevelCreate) SetMinWater(v int64) *MemberAutoLevelCreate {
+	_c.mutation.SetMinWater(v)
 	return _c
 }
 
@@ -158,20 +158,20 @@ func (_c *MemberAutoLevelCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.name": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.MinValidDeposit(); !ok {
-		return &ValidationError{Name: "min_valid_deposit", err: errors.New(`ent: missing required field "MemberAutoLevel.min_valid_deposit"`)}
+	if _, ok := _c.mutation.MinDeposit(); !ok {
+		return &ValidationError{Name: "min_deposit", err: errors.New(`ent: missing required field "MemberAutoLevel.min_deposit"`)}
 	}
-	if v, ok := _c.mutation.MinValidDeposit(); ok {
-		if err := memberautolevel.MinValidDepositValidator(v); err != nil {
-			return &ValidationError{Name: "min_valid_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_deposit": %w`, err)}
+	if v, ok := _c.mutation.MinDeposit(); ok {
+		if err := memberautolevel.MinDepositValidator(v); err != nil {
+			return &ValidationError{Name: "min_deposit", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_deposit": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.MinValidWater(); !ok {
-		return &ValidationError{Name: "min_valid_water", err: errors.New(`ent: missing required field "MemberAutoLevel.min_valid_water"`)}
+	if _, ok := _c.mutation.MinWater(); !ok {
+		return &ValidationError{Name: "min_water", err: errors.New(`ent: missing required field "MemberAutoLevel.min_water"`)}
 	}
-	if v, ok := _c.mutation.MinValidWater(); ok {
-		if err := memberautolevel.MinValidWaterValidator(v); err != nil {
-			return &ValidationError{Name: "min_valid_water", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_valid_water": %w`, err)}
+	if v, ok := _c.mutation.MinWater(); ok {
+		if err := memberautolevel.MinWaterValidator(v); err != nil {
+			return &ValidationError{Name: "min_water", err: fmt.Errorf(`ent: validator failed for field "MemberAutoLevel.min_water": %w`, err)}
 		}
 	}
 	return nil
@@ -223,13 +223,13 @@ func (_c *MemberAutoLevelCreate) createSpec() (*MemberAutoLevel, *sqlgraph.Creat
 		_spec.SetField(memberautolevel.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := _c.mutation.MinValidDeposit(); ok {
-		_spec.SetField(memberautolevel.FieldMinValidDeposit, field.TypeInt64, value)
-		_node.MinValidDeposit = value
+	if value, ok := _c.mutation.MinDeposit(); ok {
+		_spec.SetField(memberautolevel.FieldMinDeposit, field.TypeInt64, value)
+		_node.MinDeposit = value
 	}
-	if value, ok := _c.mutation.MinValidWater(); ok {
-		_spec.SetField(memberautolevel.FieldMinValidWater, field.TypeInt64, value)
-		_node.MinValidWater = value
+	if value, ok := _c.mutation.MinWater(); ok {
+		_spec.SetField(memberautolevel.FieldMinWater, field.TypeInt64, value)
+		_node.MinWater = value
 	}
 	return _node, _spec
 }
@@ -307,39 +307,39 @@ func (u *MemberAutoLevelUpsert) UpdateName() *MemberAutoLevelUpsert {
 	return u
 }
 
-// SetMinValidDeposit sets the "min_valid_deposit" field.
-func (u *MemberAutoLevelUpsert) SetMinValidDeposit(v int64) *MemberAutoLevelUpsert {
-	u.Set(memberautolevel.FieldMinValidDeposit, v)
+// SetMinDeposit sets the "min_deposit" field.
+func (u *MemberAutoLevelUpsert) SetMinDeposit(v int64) *MemberAutoLevelUpsert {
+	u.Set(memberautolevel.FieldMinDeposit, v)
 	return u
 }
 
-// UpdateMinValidDeposit sets the "min_valid_deposit" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsert) UpdateMinValidDeposit() *MemberAutoLevelUpsert {
-	u.SetExcluded(memberautolevel.FieldMinValidDeposit)
+// UpdateMinDeposit sets the "min_deposit" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsert) UpdateMinDeposit() *MemberAutoLevelUpsert {
+	u.SetExcluded(memberautolevel.FieldMinDeposit)
 	return u
 }
 
-// AddMinValidDeposit adds v to the "min_valid_deposit" field.
-func (u *MemberAutoLevelUpsert) AddMinValidDeposit(v int64) *MemberAutoLevelUpsert {
-	u.Add(memberautolevel.FieldMinValidDeposit, v)
+// AddMinDeposit adds v to the "min_deposit" field.
+func (u *MemberAutoLevelUpsert) AddMinDeposit(v int64) *MemberAutoLevelUpsert {
+	u.Add(memberautolevel.FieldMinDeposit, v)
 	return u
 }
 
-// SetMinValidWater sets the "min_valid_water" field.
-func (u *MemberAutoLevelUpsert) SetMinValidWater(v int64) *MemberAutoLevelUpsert {
-	u.Set(memberautolevel.FieldMinValidWater, v)
+// SetMinWater sets the "min_water" field.
+func (u *MemberAutoLevelUpsert) SetMinWater(v int64) *MemberAutoLevelUpsert {
+	u.Set(memberautolevel.FieldMinWater, v)
 	return u
 }
 
-// UpdateMinValidWater sets the "min_valid_water" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsert) UpdateMinValidWater() *MemberAutoLevelUpsert {
-	u.SetExcluded(memberautolevel.FieldMinValidWater)
+// UpdateMinWater sets the "min_water" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsert) UpdateMinWater() *MemberAutoLevelUpsert {
+	u.SetExcluded(memberautolevel.FieldMinWater)
 	return u
 }
 
-// AddMinValidWater adds v to the "min_valid_water" field.
-func (u *MemberAutoLevelUpsert) AddMinValidWater(v int64) *MemberAutoLevelUpsert {
-	u.Add(memberautolevel.FieldMinValidWater, v)
+// AddMinWater adds v to the "min_water" field.
+func (u *MemberAutoLevelUpsert) AddMinWater(v int64) *MemberAutoLevelUpsert {
+	u.Add(memberautolevel.FieldMinWater, v)
 	return u
 }
 
@@ -425,45 +425,45 @@ func (u *MemberAutoLevelUpsertOne) UpdateName() *MemberAutoLevelUpsertOne {
 	})
 }
 
-// SetMinValidDeposit sets the "min_valid_deposit" field.
-func (u *MemberAutoLevelUpsertOne) SetMinValidDeposit(v int64) *MemberAutoLevelUpsertOne {
+// SetMinDeposit sets the "min_deposit" field.
+func (u *MemberAutoLevelUpsertOne) SetMinDeposit(v int64) *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.SetMinValidDeposit(v)
+		s.SetMinDeposit(v)
 	})
 }
 
-// AddMinValidDeposit adds v to the "min_valid_deposit" field.
-func (u *MemberAutoLevelUpsertOne) AddMinValidDeposit(v int64) *MemberAutoLevelUpsertOne {
+// AddMinDeposit adds v to the "min_deposit" field.
+func (u *MemberAutoLevelUpsertOne) AddMinDeposit(v int64) *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.AddMinValidDeposit(v)
+		s.AddMinDeposit(v)
 	})
 }
 
-// UpdateMinValidDeposit sets the "min_valid_deposit" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsertOne) UpdateMinValidDeposit() *MemberAutoLevelUpsertOne {
+// UpdateMinDeposit sets the "min_deposit" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsertOne) UpdateMinDeposit() *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.UpdateMinValidDeposit()
+		s.UpdateMinDeposit()
 	})
 }
 
-// SetMinValidWater sets the "min_valid_water" field.
-func (u *MemberAutoLevelUpsertOne) SetMinValidWater(v int64) *MemberAutoLevelUpsertOne {
+// SetMinWater sets the "min_water" field.
+func (u *MemberAutoLevelUpsertOne) SetMinWater(v int64) *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.SetMinValidWater(v)
+		s.SetMinWater(v)
 	})
 }
 
-// AddMinValidWater adds v to the "min_valid_water" field.
-func (u *MemberAutoLevelUpsertOne) AddMinValidWater(v int64) *MemberAutoLevelUpsertOne {
+// AddMinWater adds v to the "min_water" field.
+func (u *MemberAutoLevelUpsertOne) AddMinWater(v int64) *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.AddMinValidWater(v)
+		s.AddMinWater(v)
 	})
 }
 
-// UpdateMinValidWater sets the "min_valid_water" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsertOne) UpdateMinValidWater() *MemberAutoLevelUpsertOne {
+// UpdateMinWater sets the "min_water" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsertOne) UpdateMinWater() *MemberAutoLevelUpsertOne {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.UpdateMinValidWater()
+		s.UpdateMinWater()
 	})
 }
 
@@ -715,45 +715,45 @@ func (u *MemberAutoLevelUpsertBulk) UpdateName() *MemberAutoLevelUpsertBulk {
 	})
 }
 
-// SetMinValidDeposit sets the "min_valid_deposit" field.
-func (u *MemberAutoLevelUpsertBulk) SetMinValidDeposit(v int64) *MemberAutoLevelUpsertBulk {
+// SetMinDeposit sets the "min_deposit" field.
+func (u *MemberAutoLevelUpsertBulk) SetMinDeposit(v int64) *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.SetMinValidDeposit(v)
+		s.SetMinDeposit(v)
 	})
 }
 
-// AddMinValidDeposit adds v to the "min_valid_deposit" field.
-func (u *MemberAutoLevelUpsertBulk) AddMinValidDeposit(v int64) *MemberAutoLevelUpsertBulk {
+// AddMinDeposit adds v to the "min_deposit" field.
+func (u *MemberAutoLevelUpsertBulk) AddMinDeposit(v int64) *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.AddMinValidDeposit(v)
+		s.AddMinDeposit(v)
 	})
 }
 
-// UpdateMinValidDeposit sets the "min_valid_deposit" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsertBulk) UpdateMinValidDeposit() *MemberAutoLevelUpsertBulk {
+// UpdateMinDeposit sets the "min_deposit" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsertBulk) UpdateMinDeposit() *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.UpdateMinValidDeposit()
+		s.UpdateMinDeposit()
 	})
 }
 
-// SetMinValidWater sets the "min_valid_water" field.
-func (u *MemberAutoLevelUpsertBulk) SetMinValidWater(v int64) *MemberAutoLevelUpsertBulk {
+// SetMinWater sets the "min_water" field.
+func (u *MemberAutoLevelUpsertBulk) SetMinWater(v int64) *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.SetMinValidWater(v)
+		s.SetMinWater(v)
 	})
 }
 
-// AddMinValidWater adds v to the "min_valid_water" field.
-func (u *MemberAutoLevelUpsertBulk) AddMinValidWater(v int64) *MemberAutoLevelUpsertBulk {
+// AddMinWater adds v to the "min_water" field.
+func (u *MemberAutoLevelUpsertBulk) AddMinWater(v int64) *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.AddMinValidWater(v)
+		s.AddMinWater(v)
 	})
 }
 
-// UpdateMinValidWater sets the "min_valid_water" field to the value that was provided on create.
-func (u *MemberAutoLevelUpsertBulk) UpdateMinValidWater() *MemberAutoLevelUpsertBulk {
+// UpdateMinWater sets the "min_water" field to the value that was provided on create.
+func (u *MemberAutoLevelUpsertBulk) UpdateMinWater() *MemberAutoLevelUpsertBulk {
 	return u.Update(func(s *MemberAutoLevelUpsert) {
-		s.UpdateMinValidWater()
+		s.UpdateMinWater()
 	})
 }
 

@@ -5,9 +5,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
-	"oa.98ent.com/p9/common/entmixin"
 	"oa.98ent.com/p9/operator-crm/ent"
-	"oa.98ent.com/p9/operator-crm/ent/intercept"
 	"oa.98ent.com/p9/operator-crm/ent/migrate"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/config"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/agent"
@@ -41,9 +39,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// 创建Ent数据库客户端
 	db := ent.NewClient(entOpts...)
 
-	// 附加租户过滤器
-	attachTenant(db)
-
 	// 创建数据库表
 	logx.Must(db.Schema.Create(context.Background(), migrate.WithDropIndex(true), migrate.WithDropColumn(true)))
 
@@ -68,15 +63,4 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}),
 		Agent: agent.New(db),
 	}
-}
-
-// attachTenant 附加租户过滤器
-func attachTenant(c *ent.Client) {
-	fOperatorCode := intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
-		entmixin.FilterOperatorCode(ctx, q)
-		return nil
-	})
-	c.AgentUser.Intercept(fOperatorCode)
-	c.AgentLevel.Intercept(fOperatorCode)
-	c.AgentConfig.Intercept(fOperatorCode)
 }
