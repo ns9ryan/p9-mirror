@@ -8,6 +8,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/migrate"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/config"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/agent"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/auth"
 )
@@ -16,6 +17,7 @@ type ServiceContext struct {
 	Config config.Config
 	DB     *ent.Client           // Ent数据库客户端
 	Redis  redis.UniversalClient // 令牌黑名单
+	DAO    *dao.Group            // 数据访问
 	Auth   *auth.Service         // 代理鉴权
 	Agent  *agent.Service        // 代理管理
 }
@@ -55,6 +57,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config: c,
 		DB:     db,
 		Redis:  rdb,
+		DAO:    dao.New(db),
 		Auth: auth.New(db, rdb, auth.Config{
 			AccessSecret:  c.AgentAdminJwt.AccessSecret,
 			AccessExpire:  c.AgentAdminJwt.AccessExpire,

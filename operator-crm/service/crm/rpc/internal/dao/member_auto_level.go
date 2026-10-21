@@ -1,4 +1,4 @@
-package memberautolevel
+package dao
 
 import (
 	"context"
@@ -11,15 +11,30 @@ import (
 	entlevel "oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 )
 
+// MemberAutoLevel 会员自动层级数据访问
+type MemberAutoLevel struct {
+	db *ent.Client // Ent数据库客户端
+}
+
+// Create 创建会员自动层级
+func (d *MemberAutoLevel) Create(ctx context.Context, name string, minDeposit, minWater int64) (*ent.MemberAutoLevel, error) {
+	return d.db.MemberAutoLevel.Create().
+		SetName(name).             // 自动层级名称
+		SetMinDeposit(minDeposit). // 晋级要求的累计存款金额
+		SetMinWater(minWater).     // 晋级要求的累计洗码量
+		Save(ctx)
+}
+
 // List 获取自动层级分页列表
-func (s *Service) List(ctx context.Context, name string, offset, limit int) ([]*ent.MemberAutoLevel, int64, error) {
-	// 按层级名称筛选
-	query := s.DB.MemberAutoLevel.Query()
+func (d *MemberAutoLevel) List(ctx context.Context, name string, offset, limit int) ([]*ent.MemberAutoLevel, int64, error) {
+	query := d.db.MemberAutoLevel.Query()
+
+	// 按名称筛选
 	if name = strings.TrimSpace(name); name != "" {
 		query = query.Where(entlevel.NameContainsFold(name))
 	}
 
-	// 查询数据总数
+	// 统计符合条件的层级数
 	total, err := query.Clone().Count(ctx)
 	if err != nil {
 		return nil, 0, err
@@ -28,7 +43,7 @@ func (s *Service) List(ctx context.Context, name string, offset, limit int) ([]*
 		return nil, 0, nil
 	}
 
-	// 查询当前页数据
+	// 查询当前页层级
 	levels, err := query.
 		Order(entlevel.ByID(sql.OrderDesc())).
 		Offset(offset).
@@ -41,20 +56,20 @@ func (s *Service) List(ctx context.Context, name string, offset, limit int) ([]*
 	return levels, int64(total), nil
 }
 
-// CountMembersByLevelIDs 批量统计各自动层级的会员数
-func (s *Service) CountMembersByLevelIDs(ctx context.Context, levelIDs []int64) (map[int64]int64, error) {
+// CountMembersByLevelIDs 批量统计各自动层级会员数
+func (d *MemberAutoLevel) CountMembersByLevelIDs(ctx context.Context, levelIDs []int64) (map[int64]int64, error) {
 	counts := make(map[int64]int64, len(levelIDs))
 	if len(levelIDs) == 0 {
 		return counts, nil
 	}
 
-	// 按自动层级分组统计
+	// 按层级分组统计
 	var results []struct {
 		AutoLevelID int64 `json:"auto_level_id"` // 自动层级ID
-		Count       int64 `json:"count"`         // 会员数量
+		Count       int64 `json:"count"`         // 会员数
 	}
 
-	err := s.DB.Member.Query().
+	err := d.db.Member.Query().
 		Where(member.AutoLevelIDIn(levelIDs...)).
 		GroupBy(member.FieldAutoLevelID).
 		Aggregate(ent.Count()).
