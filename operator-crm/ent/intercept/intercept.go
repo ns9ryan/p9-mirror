@@ -17,6 +17,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
@@ -329,6 +330,33 @@ func (f TraverseMember) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.MemberQuery", q)
 }
 
+// The MemberAuthFunc type is an adapter to allow the use of ordinary function as a Querier.
+type MemberAuthFunc func(context.Context, *ent.MemberAuthQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f MemberAuthFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.MemberAuthQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.MemberAuthQuery", q)
+}
+
+// The TraverseMemberAuth type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseMemberAuth func(context.Context, *ent.MemberAuthQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseMemberAuth) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseMemberAuth) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.MemberAuthQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.MemberAuthQuery", q)
+}
+
 // The MemberAutoLevelFunc type is an adapter to allow the use of ordinary function as a Querier.
 type MemberAutoLevelFunc func(context.Context, *ent.MemberAutoLevelQuery) (ent.Value, error)
 
@@ -620,6 +648,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AgentUserQuery, predicate.AgentUser, agentuser.OrderOption]{typ: ent.TypeAgentUser, tq: q}, nil
 	case *ent.MemberQuery:
 		return &query[*ent.MemberQuery, predicate.Member, member.OrderOption]{typ: ent.TypeMember, tq: q}, nil
+	case *ent.MemberAuthQuery:
+		return &query[*ent.MemberAuthQuery, predicate.MemberAuth, memberauth.OrderOption]{typ: ent.TypeMemberAuth, tq: q}, nil
 	case *ent.MemberAutoLevelQuery:
 		return &query[*ent.MemberAutoLevelQuery, predicate.MemberAutoLevel, memberautolevel.OrderOption]{typ: ent.TypeMemberAutoLevel, tq: q}, nil
 	case *ent.MemberFixedLevelQuery:

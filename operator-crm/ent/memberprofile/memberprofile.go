@@ -5,6 +5,7 @@ package memberprofile
 import (
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -18,18 +19,20 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldOperatorCode holds the string denoting the operator_code field in the database.
+	FieldOperatorCode = "operator_code"
 	// FieldMemberID holds the string denoting the member_id field in the database.
 	FieldMemberID = "member_id"
-	// FieldNickname holds the string denoting the nickname field in the database.
-	FieldNickname = "nickname"
 	// FieldAvatarURL holds the string denoting the avatar_url field in the database.
 	FieldAvatarURL = "avatar_url"
 	// FieldAvatarFrameURL holds the string denoting the avatar_frame_url field in the database.
 	FieldAvatarFrameURL = "avatar_frame_url"
-	// FieldRealName holds the string denoting the real_name field in the database.
-	FieldRealName = "real_name"
-	// FieldIdentityNumber holds the string denoting the identity_number field in the database.
-	FieldIdentityNumber = "identity_number"
+	// FieldNickname holds the string denoting the nickname field in the database.
+	FieldNickname = "nickname"
+	// FieldRealNameCiphertext holds the string denoting the real_name_ciphertext field in the database.
+	FieldRealNameCiphertext = "real_name_ciphertext"
+	// FieldIdentityNumberCiphertext holds the string denoting the identity_number_ciphertext field in the database.
+	FieldIdentityNumberCiphertext = "identity_number_ciphertext"
 	// FieldBirthday holds the string denoting the birthday field in the database.
 	FieldBirthday = "birthday"
 	// FieldGender holds the string denoting the gender field in the database.
@@ -56,12 +59,13 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldOperatorCode,
 	FieldMemberID,
-	FieldNickname,
 	FieldAvatarURL,
 	FieldAvatarFrameURL,
-	FieldRealName,
-	FieldIdentityNumber,
+	FieldNickname,
+	FieldRealNameCiphertext,
+	FieldIdentityNumberCiphertext,
 	FieldBirthday,
 	FieldGender,
 	FieldRegionCode,
@@ -78,23 +82,30 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "oa.98ent.com/p9/operator-crm/ent/runtime"
 var (
+	Hooks        [1]ent.Hook
+	Interceptors [1]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	OperatorCodeValidator func(string) error
 	// MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	MemberIDValidator func(int64) error
-	// NicknameValidator is a validator for the "nickname" field. It is called by the builders before save.
-	NicknameValidator func(string) error
 	// AvatarURLValidator is a validator for the "avatar_url" field. It is called by the builders before save.
 	AvatarURLValidator func(string) error
-	// RealNameValidator is a validator for the "real_name" field. It is called by the builders before save.
-	RealNameValidator func(string) error
-	// IdentityNumberValidator is a validator for the "identity_number" field. It is called by the builders before save.
-	IdentityNumberValidator func(string) error
+	// AvatarFrameURLValidator is a validator for the "avatar_frame_url" field. It is called by the builders before save.
+	AvatarFrameURLValidator func(string) error
+	// NicknameValidator is a validator for the "nickname" field. It is called by the builders before save.
+	NicknameValidator func(string) error
 	// DefaultGender holds the default value on creation for the "gender" field.
 	DefaultGender int64
 	// GenderValidator is a validator for the "gender" field. It is called by the builders before save.
@@ -121,14 +132,14 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
+// ByOperatorCode orders the results by the operator_code field.
+func ByOperatorCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOperatorCode, opts...).ToFunc()
+}
+
 // ByMemberID orders the results by the member_id field.
 func ByMemberID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMemberID, opts...).ToFunc()
-}
-
-// ByNickname orders the results by the nickname field.
-func ByNickname(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldNickname, opts...).ToFunc()
 }
 
 // ByAvatarURL orders the results by the avatar_url field.
@@ -141,14 +152,19 @@ func ByAvatarFrameURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAvatarFrameURL, opts...).ToFunc()
 }
 
-// ByRealName orders the results by the real_name field.
-func ByRealName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRealName, opts...).ToFunc()
+// ByNickname orders the results by the nickname field.
+func ByNickname(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNickname, opts...).ToFunc()
 }
 
-// ByIdentityNumber orders the results by the identity_number field.
-func ByIdentityNumber(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldIdentityNumber, opts...).ToFunc()
+// ByRealNameCiphertext orders the results by the real_name_ciphertext field.
+func ByRealNameCiphertext(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRealNameCiphertext, opts...).ToFunc()
+}
+
+// ByIdentityNumberCiphertext orders the results by the identity_number_ciphertext field.
+func ByIdentityNumberCiphertext(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIdentityNumberCiphertext, opts...).ToFunc()
 }
 
 // ByBirthday orders the results by the birthday field.

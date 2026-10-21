@@ -33,6 +33,9 @@ type AgentUser func(*sql.Selector)
 // Member is the predicate function for member builders.
 type Member func(*sql.Selector)
 
+// MemberAuth is the predicate function for memberauth builders.
+type MemberAuth func(*sql.Selector)
+
 // MemberAutoLevel is the predicate function for memberautolevel builders.
 type MemberAutoLevel func(*sql.Selector)
 

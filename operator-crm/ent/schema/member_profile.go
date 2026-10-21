@@ -9,6 +9,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 
+	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 	"oa.98ent.com/p9/operator-crm/ent/schema/mixins"
 )
 
@@ -20,6 +22,15 @@ type MemberProfile struct {
 // Fields 定义会员个人资料表字段
 func (MemberProfile) Fields() []ent.Field {
 	return []ent.Field{
+
+		// ==================== 会员归属 ====================
+
+		field.String("operator_code").
+			NotEmpty().
+			MaxLen(64).
+			Immutable().
+			Comment("所属厅业务编码"),
+
 		field.Int64("member_id").
 			Positive().
 			Immutable().
@@ -27,42 +38,44 @@ func (MemberProfile) Fields() []ent.Field {
 
 		// ==================== 会员形象 ====================
 
-		field.String("nickname").
-			NotEmpty().
-			MaxLen(100).
-			Comment("会员昵称"),
-
 		field.String("avatar_url").
 			NotEmpty().
 			SchemaType(map[string]string{
 				dialect.Postgres: "text",
 			}).
-			Comment("会员头像URL"),
+			Comment("会员头像URL, 使用系统预设资源"),
 
 		field.String("avatar_frame_url").
+			NotEmpty().
+			SchemaType(map[string]string{
+				dialect.Postgres: "text",
+			}).
+			Comment("会员头像框URL, 使用系统预设资源"),
+
+		// ==================== 个人资料 ====================
+
+		field.String("nickname").
+			NotEmpty().
+			MaxLen(100).
+			Comment("会员昵称"),
+
+		field.String("real_name_ciphertext").
 			Optional().
 			Nillable().
 			SchemaType(map[string]string{
 				dialect.Postgres: "text",
 			}).
-			Comment("会员头像框URL"),
-
-		// ==================== 个人资料 ====================
-
-		field.String("real_name").
-			NotEmpty().
-			MaxLen(100).
-			Optional().
-			Nillable().
-			Comment("会员真实姓名"),
-
-		field.String("identity_number").
-			NotEmpty().
-			MaxLen(100).
-			Optional().
-			Nillable().
 			Sensitive().
-			Comment("会员身份证件号码或CPF"),
+			Comment("会员真实姓名加密密文"),
+
+		field.String("identity_number_ciphertext").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{
+				dialect.Postgres: "text",
+			}).
+			Sensitive().
+			Comment("会员身份证件号码或CPF加密密文"),
 
 		field.Time("birthday").
 			Optional().
@@ -114,10 +127,17 @@ func (MemberProfile) Edges() []ent.Edge {
 // Indexes 定义会员个人资料表索引
 func (MemberProfile) Indexes() []ent.Index {
 	return []ent.Index{
+
+		// ==================== 会员关联 ====================
+
 		// 每个会员只允许有一条个人资料
 		index.Fields("member_id").
 			Unique().
 			StorageKey("uk_member_profile_member"),
+
+		// 按厅查询会员个人资料
+		index.Fields("operator_code").
+			StorageKey("idx_member_profile_operator"),
 	}
 }
 
@@ -126,6 +146,20 @@ func (MemberProfile) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
 		mixins.TimeMixin{},
+	}
+}
+
+// Interceptors 定义会员个人资料表查询隔离
+func (MemberProfile) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		entmixin.RequiredOperatorCodeInterceptor(intercept.NewQuery),
+	}
+}
+
+// Hooks 定义会员个人资料表写入隔离
+func (MemberProfile) Hooks() []ent.Hook {
+	return []ent.Hook{
+		entmixin.RequiredOperatorCodeHook(),
 	}
 }
 

@@ -117,6 +117,18 @@ func (f MemberFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MemberMutation", m)
 }
 
+// The MemberAuthFunc type is an adapter to allow the use of ordinary
+// function as MemberAuth mutator.
+type MemberAuthFunc func(context.Context, *ent.MemberAuthMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MemberAuthFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MemberAuthMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MemberAuthMutation", m)
+}
+
 // The MemberAutoLevelFunc type is an adapter to allow the use of ordinary
 // function as MemberAutoLevel mutator.
 type MemberAutoLevelFunc func(context.Context, *ent.MemberAutoLevelMutation) (ent.Value, error)

@@ -21,6 +21,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
@@ -100,6 +101,7 @@ func checkColumn(t, c string) error {
 			agentstats.Table:                 agentstats.ValidColumn,
 			agentuser.Table:                  agentuser.ValidColumn,
 			member.Table:                     member.ValidColumn,
+			memberauth.Table:                 memberauth.ValidColumn,
 			memberautolevel.Table:            memberautolevel.ValidColumn,
 			memberfixedlevel.Table:           memberfixedlevel.ValidColumn,
 			memberfixedlevelassignment.Table: memberfixedlevelassignment.ValidColumn,

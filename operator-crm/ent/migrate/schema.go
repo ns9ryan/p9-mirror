@@ -367,12 +367,11 @@ var (
 		{Name: "global_id", Type: field.TypeUUID, Unique: true, Comment: "会员全局唯一标识"},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "code", Type: field.TypeString, Size: 12, Comment: "会员对外编号, 12位数字"},
-		{Name: "username", Type: field.TypeString, Nullable: true, Size: 64, Comment: "会员登录账号, 保留原始大小写", SchemaType: map[string]string{"postgres": "citext"}},
-		{Name: "phone", Type: field.TypeString, Nullable: true, Size: 16, Comment: "绑定手机号, 国际E.164格式"},
-		{Name: "email", Type: field.TypeString, Nullable: true, Size: 254, Comment: "绑定邮箱"},
-		{Name: "password_hash", Type: field.TypeString, Nullable: true, Size: 255, Comment: "登录密码哈希"},
-		{Name: "agent_global_id", Type: field.TypeUUID, Comment: "所属分层代理全局标识"},
+		{Name: "invite_code", Type: field.TypeString, Size: 64, Comment: "会员专属邀请码"},
 		{Name: "status", Type: field.TypeInt64, Comment: "会员状态: 1正常, 2冻结, 3禁用", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "chat_disabled", Type: field.TypeBool, Comment: "是否禁止发言", Default: false},
+		{Name: "betting_disabled", Type: field.TypeBool, Comment: "是否禁止投注", Default: false},
+		{Name: "withdrawal_disabled", Type: field.TypeBool, Comment: "是否禁止提款", Default: false},
 		{Name: "register_method", Type: field.TypeString, Size: 32, Comment: "注册方式"},
 		{Name: "register_channel", Type: field.TypeString, Size: 32, Comment: "注册渠道"},
 		{Name: "register_ip", Type: field.TypeString, Nullable: true, Size: 45, Comment: "注册IP"},
@@ -381,6 +380,9 @@ var (
 		{Name: "last_login_at", Type: field.TypeTime, Nullable: true, Comment: "最后登录时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "last_login_ip", Type: field.TypeString, Nullable: true, Size: 45, Comment: "最后登录IP"},
 		{Name: "last_login_device_code", Type: field.TypeString, Nullable: true, Size: 128, Comment: "最后登录设备标识"},
+		{Name: "agent_id", Type: field.TypeInt64, Comment: "会员所属分层代理ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "agent_account_id", Type: field.TypeInt64, Nullable: true, Comment: "会员自身的分层代理账号ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "inviter_member_id", Type: field.TypeInt64, Nullable: true, Comment: "邀请当前会员注册的会员ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "auto_level_id", Type: field.TypeInt64, Comment: "当前自动层级ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "vip_level_id", Type: field.TypeInt64, Comment: "当前VIP等级ID", SchemaType: map[string]string{"postgres": "bigint"}},
 	}
@@ -392,14 +394,32 @@ var (
 		PrimaryKey: []*schema.Column{MemberColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "member_member_auto_level_auto_level",
+				Symbol:     "member_agent_user_agent",
+				Columns:    []*schema.Column{MemberColumns[19]},
+				RefColumns: []*schema.Column{AgentUserColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "member_agent_user_agent_account",
 				Columns:    []*schema.Column{MemberColumns[20]},
+				RefColumns: []*schema.Column{AgentUserColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "member_member_invited_members",
+				Columns:    []*schema.Column{MemberColumns[21]},
+				RefColumns: []*schema.Column{MemberColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "member_member_auto_level_auto_level",
+				Columns:    []*schema.Column{MemberColumns[22]},
 				RefColumns: []*schema.Column{MemberAutoLevelColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "member_member_vip_level_vip_level",
-				Columns:    []*schema.Column{MemberColumns[21]},
+				Columns:    []*schema.Column{MemberColumns[23]},
 				RefColumns: []*schema.Column{MemberVipLevelColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -411,24 +431,80 @@ var (
 				Columns: []*schema.Column{MemberColumns[4], MemberColumns[5]},
 			},
 			{
-				Name:    "uk_member_operator_username",
+				Name:    "uk_member_operator_invite_code",
 				Unique:  true,
 				Columns: []*schema.Column{MemberColumns[4], MemberColumns[6]},
 			},
 			{
-				Name:    "uk_member_operator_phone",
+				Name:    "uk_member_agent_account",
 				Unique:  true,
-				Columns: []*schema.Column{MemberColumns[4], MemberColumns[7]},
-			},
-			{
-				Name:    "uk_member_operator_email",
-				Unique:  true,
-				Columns: []*schema.Column{MemberColumns[4], MemberColumns[8]},
+				Columns: []*schema.Column{MemberColumns[20]},
 			},
 			{
 				Name:    "idx_member_operator_agent",
 				Unique:  false,
-				Columns: []*schema.Column{MemberColumns[4], MemberColumns[10]},
+				Columns: []*schema.Column{MemberColumns[4], MemberColumns[19]},
+			},
+			{
+				Name:    "idx_member_operator_inviter",
+				Unique:  false,
+				Columns: []*schema.Column{MemberColumns[4], MemberColumns[21]},
+			},
+		},
+	}
+	// MemberAuthColumns holds the columns for the "member_auth" table.
+	MemberAuthColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
+		{Name: "username", Type: field.TypeString, Nullable: true, Size: 64, Comment: "会员登录账号, 保留原始大小写", SchemaType: map[string]string{"postgres": "citext"}},
+		{Name: "phone_ciphertext", Type: field.TypeString, Nullable: true, Comment: "手机号加密密文", SchemaType: map[string]string{"postgres": "text"}},
+		{Name: "phone_lookup_hash", Type: field.TypeString, Nullable: true, Size: 64, Comment: "手机号检索摘要, 使用HMAC-SHA256生成"},
+		{Name: "email_ciphertext", Type: field.TypeString, Nullable: true, Comment: "邮箱加密密文", SchemaType: map[string]string{"postgres": "text"}},
+		{Name: "email_lookup_hash", Type: field.TypeString, Nullable: true, Size: 64, Comment: "邮箱检索摘要, 使用HMAC-SHA256生成"},
+		{Name: "login_password_hash", Type: field.TypeString, Nullable: true, Size: 255, Comment: "登录密码单向哈希"},
+		{Name: "withdrawal_password_hash", Type: field.TypeString, Nullable: true, Size: 255, Comment: "提款密码单向哈希"},
+		{Name: "sms_code_error_count", Type: field.TypeInt64, Comment: "短信验证码错误次数", Default: 0},
+		{Name: "email_code_error_count", Type: field.TypeInt64, Comment: "邮箱验证码错误次数", Default: 0},
+		{Name: "login_password_error_count", Type: field.TypeInt64, Comment: "登录密码错误次数", Default: 0},
+		{Name: "withdrawal_password_error_count", Type: field.TypeInt64, Comment: "提款密码错误次数", Default: 0},
+		{Name: "member_id", Type: field.TypeInt64, Unique: true, Comment: "所属会员ID", SchemaType: map[string]string{"postgres": "bigint"}},
+	}
+	// MemberAuthTable holds the schema information for the "member_auth" table.
+	MemberAuthTable = &schema.Table{
+		Name:       "member_auth",
+		Comment:    "会员认证信息表",
+		Columns:    MemberAuthColumns,
+		PrimaryKey: []*schema.Column{MemberAuthColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "member_auth_member_auth",
+				Columns:    []*schema.Column{MemberAuthColumns[15]},
+				RefColumns: []*schema.Column{MemberColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uk_member_auth_member",
+				Unique:  true,
+				Columns: []*schema.Column{MemberAuthColumns[15]},
+			},
+			{
+				Name:    "uk_member_auth_operator_username",
+				Unique:  true,
+				Columns: []*schema.Column{MemberAuthColumns[3], MemberAuthColumns[4]},
+			},
+			{
+				Name:    "uk_member_auth_operator_phone_hash",
+				Unique:  true,
+				Columns: []*schema.Column{MemberAuthColumns[3], MemberAuthColumns[6]},
+			},
+			{
+				Name:    "uk_member_auth_operator_email_hash",
+				Unique:  true,
+				Columns: []*schema.Column{MemberAuthColumns[3], MemberAuthColumns[8]},
 			},
 		},
 	}
@@ -563,11 +639,12 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
+		{Name: "avatar_url", Type: field.TypeString, Comment: "会员头像URL, 使用系统预设资源", SchemaType: map[string]string{"postgres": "text"}},
+		{Name: "avatar_frame_url", Type: field.TypeString, Comment: "会员头像框URL, 使用系统预设资源", SchemaType: map[string]string{"postgres": "text"}},
 		{Name: "nickname", Type: field.TypeString, Size: 100, Comment: "会员昵称"},
-		{Name: "avatar_url", Type: field.TypeString, Comment: "会员头像URL", SchemaType: map[string]string{"postgres": "text"}},
-		{Name: "avatar_frame_url", Type: field.TypeString, Nullable: true, Comment: "会员头像框URL", SchemaType: map[string]string{"postgres": "text"}},
-		{Name: "real_name", Type: field.TypeString, Nullable: true, Size: 100, Comment: "会员真实姓名"},
-		{Name: "identity_number", Type: field.TypeString, Nullable: true, Size: 100, Comment: "会员身份证件号码或CPF"},
+		{Name: "real_name_ciphertext", Type: field.TypeString, Nullable: true, Comment: "会员真实姓名加密密文", SchemaType: map[string]string{"postgres": "text"}},
+		{Name: "identity_number_ciphertext", Type: field.TypeString, Nullable: true, Comment: "会员身份证件号码或CPF加密密文", SchemaType: map[string]string{"postgres": "text"}},
 		{Name: "birthday", Type: field.TypeTime, Nullable: true, Comment: "会员生日", SchemaType: map[string]string{"postgres": "date"}},
 		{Name: "gender", Type: field.TypeInt64, Comment: "性别: 0未设置, 1男, 2女, 3保密", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "region_code", Type: field.TypeString, Nullable: true, Size: 2, Comment: "会员国家或地区编码"},
@@ -583,7 +660,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "member_profile_member_profile",
-				Columns:    []*schema.Column{MemberProfileColumns[12]},
+				Columns:    []*schema.Column{MemberProfileColumns[13]},
 				RefColumns: []*schema.Column{MemberColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -592,7 +669,12 @@ var (
 			{
 				Name:    "uk_member_profile_member",
 				Unique:  true,
-				Columns: []*schema.Column{MemberProfileColumns[12]},
+				Columns: []*schema.Column{MemberProfileColumns[13]},
+			},
+			{
+				Name:    "idx_member_profile_operator",
+				Unique:  false,
+				Columns: []*schema.Column{MemberProfileColumns[3]},
 			},
 		},
 	}
@@ -755,6 +837,7 @@ var (
 		AgentStatsTable,
 		AgentUserTable,
 		MemberTable,
+		MemberAuthTable,
 		MemberAutoLevelTable,
 		MemberFixedLevelTable,
 		MemberFixedLevelAssignmentTable,
@@ -882,10 +965,17 @@ func init() {
 		"ck_agent_user_tree":                   "(parent_id IS NULL AND level = 0) OR (parent_id IS NOT NULL AND level BETWEEN 1 AND 7)",
 		"ck_agent_user_withdraw_password_hash": "withdraw_password_hash IS NULL OR BTRIM(withdraw_password_hash) <> ''",
 	}
-	MemberTable.ForeignKeys[0].RefTable = MemberAutoLevelTable
-	MemberTable.ForeignKeys[1].RefTable = MemberVipLevelTable
+	MemberTable.ForeignKeys[0].RefTable = AgentUserTable
+	MemberTable.ForeignKeys[1].RefTable = AgentUserTable
+	MemberTable.ForeignKeys[2].RefTable = MemberTable
+	MemberTable.ForeignKeys[3].RefTable = MemberAutoLevelTable
+	MemberTable.ForeignKeys[4].RefTable = MemberVipLevelTable
 	MemberTable.Annotation = &entsql.Annotation{
 		Table: "member",
+	}
+	MemberAuthTable.ForeignKeys[0].RefTable = MemberTable
+	MemberAuthTable.Annotation = &entsql.Annotation{
+		Table: "member_auth",
 	}
 	MemberAutoLevelTable.Annotation = &entsql.Annotation{
 		Table: "member_auto_level",

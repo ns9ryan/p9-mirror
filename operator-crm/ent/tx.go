@@ -30,6 +30,8 @@ type Tx struct {
 	AgentUser *AgentUserClient
 	// Member is the client for interacting with the Member builders.
 	Member *MemberClient
+	// MemberAuth is the client for interacting with the MemberAuth builders.
+	MemberAuth *MemberAuthClient
 	// MemberAutoLevel is the client for interacting with the MemberAutoLevel builders.
 	MemberAutoLevel *MemberAutoLevelClient
 	// MemberFixedLevel is the client for interacting with the MemberFixedLevel builders.
@@ -190,6 +192,7 @@ func (tx *Tx) init() {
 	tx.AgentStats = NewAgentStatsClient(tx.config)
 	tx.AgentUser = NewAgentUserClient(tx.config)
 	tx.Member = NewMemberClient(tx.config)
+	tx.MemberAuth = NewMemberAuthClient(tx.config)
 	tx.MemberAutoLevel = NewMemberAutoLevelClient(tx.config)
 	tx.MemberFixedLevel = NewMemberFixedLevelClient(tx.config)
 	tx.MemberFixedLevelAssignment = NewMemberFixedLevelAssignmentClient(tx.config)

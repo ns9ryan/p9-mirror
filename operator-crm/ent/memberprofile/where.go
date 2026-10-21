@@ -65,14 +65,14 @@ func UpdatedAt(v time.Time) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// OperatorCode applies equality check predicate on the "operator_code" field. It's identical to OperatorCodeEQ.
+func OperatorCode(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldOperatorCode, v))
+}
+
 // MemberID applies equality check predicate on the "member_id" field. It's identical to MemberIDEQ.
 func MemberID(v int64) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldEQ(FieldMemberID, v))
-}
-
-// Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
-func Nickname(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEQ(FieldNickname, v))
 }
 
 // AvatarURL applies equality check predicate on the "avatar_url" field. It's identical to AvatarURLEQ.
@@ -85,14 +85,19 @@ func AvatarFrameURL(v string) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldEQ(FieldAvatarFrameURL, v))
 }
 
-// RealName applies equality check predicate on the "real_name" field. It's identical to RealNameEQ.
-func RealName(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEQ(FieldRealName, v))
+// Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
+func Nickname(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldNickname, v))
 }
 
-// IdentityNumber applies equality check predicate on the "identity_number" field. It's identical to IdentityNumberEQ.
-func IdentityNumber(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEQ(FieldIdentityNumber, v))
+// RealNameCiphertext applies equality check predicate on the "real_name_ciphertext" field. It's identical to RealNameCiphertextEQ.
+func RealNameCiphertext(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldRealNameCiphertext, v))
+}
+
+// IdentityNumberCiphertext applies equality check predicate on the "identity_number_ciphertext" field. It's identical to IdentityNumberCiphertextEQ.
+func IdentityNumberCiphertext(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldIdentityNumberCiphertext, v))
 }
 
 // Birthday applies equality check predicate on the "birthday" field. It's identical to BirthdayEQ.
@@ -195,6 +200,71 @@ func UpdatedAtLTE(v time.Time) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
+// OperatorCodeEQ applies the EQ predicate on the "operator_code" field.
+func OperatorCodeEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeNEQ applies the NEQ predicate on the "operator_code" field.
+func OperatorCodeNEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeIn applies the In predicate on the "operator_code" field.
+func OperatorCodeIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeNotIn applies the NotIn predicate on the "operator_code" field.
+func OperatorCodeNotIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNotIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeGT applies the GT predicate on the "operator_code" field.
+func OperatorCodeGT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGT(FieldOperatorCode, v))
+}
+
+// OperatorCodeGTE applies the GTE predicate on the "operator_code" field.
+func OperatorCodeGTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeLT applies the LT predicate on the "operator_code" field.
+func OperatorCodeLT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLT(FieldOperatorCode, v))
+}
+
+// OperatorCodeLTE applies the LTE predicate on the "operator_code" field.
+func OperatorCodeLTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeContains applies the Contains predicate on the "operator_code" field.
+func OperatorCodeContains(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContains(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasPrefix applies the HasPrefix predicate on the "operator_code" field.
+func OperatorCodeHasPrefix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasPrefix(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasSuffix applies the HasSuffix predicate on the "operator_code" field.
+func OperatorCodeHasSuffix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasSuffix(FieldOperatorCode, v))
+}
+
+// OperatorCodeEqualFold applies the EqualFold predicate on the "operator_code" field.
+func OperatorCodeEqualFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEqualFold(FieldOperatorCode, v))
+}
+
+// OperatorCodeContainsFold applies the ContainsFold predicate on the "operator_code" field.
+func OperatorCodeContainsFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContainsFold(FieldOperatorCode, v))
+}
+
 // MemberIDEQ applies the EQ predicate on the "member_id" field.
 func MemberIDEQ(v int64) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldEQ(FieldMemberID, v))
@@ -213,71 +283,6 @@ func MemberIDIn(vs ...int64) predicate.MemberProfile {
 // MemberIDNotIn applies the NotIn predicate on the "member_id" field.
 func MemberIDNotIn(vs ...int64) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldNotIn(FieldMemberID, vs...))
-}
-
-// NicknameEQ applies the EQ predicate on the "nickname" field.
-func NicknameEQ(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEQ(FieldNickname, v))
-}
-
-// NicknameNEQ applies the NEQ predicate on the "nickname" field.
-func NicknameNEQ(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNEQ(FieldNickname, v))
-}
-
-// NicknameIn applies the In predicate on the "nickname" field.
-func NicknameIn(vs ...string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldIn(FieldNickname, vs...))
-}
-
-// NicknameNotIn applies the NotIn predicate on the "nickname" field.
-func NicknameNotIn(vs ...string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNotIn(FieldNickname, vs...))
-}
-
-// NicknameGT applies the GT predicate on the "nickname" field.
-func NicknameGT(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldGT(FieldNickname, v))
-}
-
-// NicknameGTE applies the GTE predicate on the "nickname" field.
-func NicknameGTE(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldGTE(FieldNickname, v))
-}
-
-// NicknameLT applies the LT predicate on the "nickname" field.
-func NicknameLT(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldLT(FieldNickname, v))
-}
-
-// NicknameLTE applies the LTE predicate on the "nickname" field.
-func NicknameLTE(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldLTE(FieldNickname, v))
-}
-
-// NicknameContains applies the Contains predicate on the "nickname" field.
-func NicknameContains(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldContains(FieldNickname, v))
-}
-
-// NicknameHasPrefix applies the HasPrefix predicate on the "nickname" field.
-func NicknameHasPrefix(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldHasPrefix(FieldNickname, v))
-}
-
-// NicknameHasSuffix applies the HasSuffix predicate on the "nickname" field.
-func NicknameHasSuffix(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldHasSuffix(FieldNickname, v))
-}
-
-// NicknameEqualFold applies the EqualFold predicate on the "nickname" field.
-func NicknameEqualFold(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEqualFold(FieldNickname, v))
-}
-
-// NicknameContainsFold applies the ContainsFold predicate on the "nickname" field.
-func NicknameContainsFold(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldContainsFold(FieldNickname, v))
 }
 
 // AvatarURLEQ applies the EQ predicate on the "avatar_url" field.
@@ -400,16 +405,6 @@ func AvatarFrameURLHasSuffix(v string) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldHasSuffix(FieldAvatarFrameURL, v))
 }
 
-// AvatarFrameURLIsNil applies the IsNil predicate on the "avatar_frame_url" field.
-func AvatarFrameURLIsNil() predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldIsNull(FieldAvatarFrameURL))
-}
-
-// AvatarFrameURLNotNil applies the NotNil predicate on the "avatar_frame_url" field.
-func AvatarFrameURLNotNil() predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNotNull(FieldAvatarFrameURL))
-}
-
 // AvatarFrameURLEqualFold applies the EqualFold predicate on the "avatar_frame_url" field.
 func AvatarFrameURLEqualFold(v string) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldEqualFold(FieldAvatarFrameURL, v))
@@ -420,154 +415,219 @@ func AvatarFrameURLContainsFold(v string) predicate.MemberProfile {
 	return predicate.MemberProfile(sql.FieldContainsFold(FieldAvatarFrameURL, v))
 }
 
-// RealNameEQ applies the EQ predicate on the "real_name" field.
-func RealNameEQ(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEQ(FieldRealName, v))
+// NicknameEQ applies the EQ predicate on the "nickname" field.
+func NicknameEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldNickname, v))
 }
 
-// RealNameNEQ applies the NEQ predicate on the "real_name" field.
-func RealNameNEQ(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNEQ(FieldRealName, v))
+// NicknameNEQ applies the NEQ predicate on the "nickname" field.
+func NicknameNEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNEQ(FieldNickname, v))
 }
 
-// RealNameIn applies the In predicate on the "real_name" field.
-func RealNameIn(vs ...string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldIn(FieldRealName, vs...))
+// NicknameIn applies the In predicate on the "nickname" field.
+func NicknameIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldIn(FieldNickname, vs...))
 }
 
-// RealNameNotIn applies the NotIn predicate on the "real_name" field.
-func RealNameNotIn(vs ...string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNotIn(FieldRealName, vs...))
+// NicknameNotIn applies the NotIn predicate on the "nickname" field.
+func NicknameNotIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNotIn(FieldNickname, vs...))
 }
 
-// RealNameGT applies the GT predicate on the "real_name" field.
-func RealNameGT(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldGT(FieldRealName, v))
+// NicknameGT applies the GT predicate on the "nickname" field.
+func NicknameGT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGT(FieldNickname, v))
 }
 
-// RealNameGTE applies the GTE predicate on the "real_name" field.
-func RealNameGTE(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldGTE(FieldRealName, v))
+// NicknameGTE applies the GTE predicate on the "nickname" field.
+func NicknameGTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGTE(FieldNickname, v))
 }
 
-// RealNameLT applies the LT predicate on the "real_name" field.
-func RealNameLT(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldLT(FieldRealName, v))
+// NicknameLT applies the LT predicate on the "nickname" field.
+func NicknameLT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLT(FieldNickname, v))
 }
 
-// RealNameLTE applies the LTE predicate on the "real_name" field.
-func RealNameLTE(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldLTE(FieldRealName, v))
+// NicknameLTE applies the LTE predicate on the "nickname" field.
+func NicknameLTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLTE(FieldNickname, v))
 }
 
-// RealNameContains applies the Contains predicate on the "real_name" field.
-func RealNameContains(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldContains(FieldRealName, v))
+// NicknameContains applies the Contains predicate on the "nickname" field.
+func NicknameContains(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContains(FieldNickname, v))
 }
 
-// RealNameHasPrefix applies the HasPrefix predicate on the "real_name" field.
-func RealNameHasPrefix(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldHasPrefix(FieldRealName, v))
+// NicknameHasPrefix applies the HasPrefix predicate on the "nickname" field.
+func NicknameHasPrefix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasPrefix(FieldNickname, v))
 }
 
-// RealNameHasSuffix applies the HasSuffix predicate on the "real_name" field.
-func RealNameHasSuffix(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldHasSuffix(FieldRealName, v))
+// NicknameHasSuffix applies the HasSuffix predicate on the "nickname" field.
+func NicknameHasSuffix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasSuffix(FieldNickname, v))
 }
 
-// RealNameIsNil applies the IsNil predicate on the "real_name" field.
-func RealNameIsNil() predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldIsNull(FieldRealName))
+// NicknameEqualFold applies the EqualFold predicate on the "nickname" field.
+func NicknameEqualFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEqualFold(FieldNickname, v))
 }
 
-// RealNameNotNil applies the NotNil predicate on the "real_name" field.
-func RealNameNotNil() predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNotNull(FieldRealName))
+// NicknameContainsFold applies the ContainsFold predicate on the "nickname" field.
+func NicknameContainsFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContainsFold(FieldNickname, v))
 }
 
-// RealNameEqualFold applies the EqualFold predicate on the "real_name" field.
-func RealNameEqualFold(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEqualFold(FieldRealName, v))
+// RealNameCiphertextEQ applies the EQ predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldRealNameCiphertext, v))
 }
 
-// RealNameContainsFold applies the ContainsFold predicate on the "real_name" field.
-func RealNameContainsFold(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldContainsFold(FieldRealName, v))
+// RealNameCiphertextNEQ applies the NEQ predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextNEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNEQ(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberEQ applies the EQ predicate on the "identity_number" field.
-func IdentityNumberEQ(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEQ(FieldIdentityNumber, v))
+// RealNameCiphertextIn applies the In predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldIn(FieldRealNameCiphertext, vs...))
 }
 
-// IdentityNumberNEQ applies the NEQ predicate on the "identity_number" field.
-func IdentityNumberNEQ(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNEQ(FieldIdentityNumber, v))
+// RealNameCiphertextNotIn applies the NotIn predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextNotIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNotIn(FieldRealNameCiphertext, vs...))
 }
 
-// IdentityNumberIn applies the In predicate on the "identity_number" field.
-func IdentityNumberIn(vs ...string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldIn(FieldIdentityNumber, vs...))
+// RealNameCiphertextGT applies the GT predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextGT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGT(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberNotIn applies the NotIn predicate on the "identity_number" field.
-func IdentityNumberNotIn(vs ...string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNotIn(FieldIdentityNumber, vs...))
+// RealNameCiphertextGTE applies the GTE predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextGTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGTE(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberGT applies the GT predicate on the "identity_number" field.
-func IdentityNumberGT(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldGT(FieldIdentityNumber, v))
+// RealNameCiphertextLT applies the LT predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextLT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLT(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberGTE applies the GTE predicate on the "identity_number" field.
-func IdentityNumberGTE(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldGTE(FieldIdentityNumber, v))
+// RealNameCiphertextLTE applies the LTE predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextLTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLTE(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberLT applies the LT predicate on the "identity_number" field.
-func IdentityNumberLT(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldLT(FieldIdentityNumber, v))
+// RealNameCiphertextContains applies the Contains predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextContains(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContains(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberLTE applies the LTE predicate on the "identity_number" field.
-func IdentityNumberLTE(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldLTE(FieldIdentityNumber, v))
+// RealNameCiphertextHasPrefix applies the HasPrefix predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextHasPrefix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasPrefix(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberContains applies the Contains predicate on the "identity_number" field.
-func IdentityNumberContains(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldContains(FieldIdentityNumber, v))
+// RealNameCiphertextHasSuffix applies the HasSuffix predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextHasSuffix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasSuffix(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberHasPrefix applies the HasPrefix predicate on the "identity_number" field.
-func IdentityNumberHasPrefix(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldHasPrefix(FieldIdentityNumber, v))
+// RealNameCiphertextIsNil applies the IsNil predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextIsNil() predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldIsNull(FieldRealNameCiphertext))
 }
 
-// IdentityNumberHasSuffix applies the HasSuffix predicate on the "identity_number" field.
-func IdentityNumberHasSuffix(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldHasSuffix(FieldIdentityNumber, v))
+// RealNameCiphertextNotNil applies the NotNil predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextNotNil() predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNotNull(FieldRealNameCiphertext))
 }
 
-// IdentityNumberIsNil applies the IsNil predicate on the "identity_number" field.
-func IdentityNumberIsNil() predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldIsNull(FieldIdentityNumber))
+// RealNameCiphertextEqualFold applies the EqualFold predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextEqualFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEqualFold(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberNotNil applies the NotNil predicate on the "identity_number" field.
-func IdentityNumberNotNil() predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldNotNull(FieldIdentityNumber))
+// RealNameCiphertextContainsFold applies the ContainsFold predicate on the "real_name_ciphertext" field.
+func RealNameCiphertextContainsFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContainsFold(FieldRealNameCiphertext, v))
 }
 
-// IdentityNumberEqualFold applies the EqualFold predicate on the "identity_number" field.
-func IdentityNumberEqualFold(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldEqualFold(FieldIdentityNumber, v))
+// IdentityNumberCiphertextEQ applies the EQ predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEQ(FieldIdentityNumberCiphertext, v))
 }
 
-// IdentityNumberContainsFold applies the ContainsFold predicate on the "identity_number" field.
-func IdentityNumberContainsFold(v string) predicate.MemberProfile {
-	return predicate.MemberProfile(sql.FieldContainsFold(FieldIdentityNumber, v))
+// IdentityNumberCiphertextNEQ applies the NEQ predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextNEQ(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNEQ(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextIn applies the In predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldIn(FieldIdentityNumberCiphertext, vs...))
+}
+
+// IdentityNumberCiphertextNotIn applies the NotIn predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextNotIn(vs ...string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNotIn(FieldIdentityNumberCiphertext, vs...))
+}
+
+// IdentityNumberCiphertextGT applies the GT predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextGT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGT(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextGTE applies the GTE predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextGTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldGTE(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextLT applies the LT predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextLT(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLT(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextLTE applies the LTE predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextLTE(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldLTE(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextContains applies the Contains predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextContains(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContains(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextHasPrefix applies the HasPrefix predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextHasPrefix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasPrefix(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextHasSuffix applies the HasSuffix predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextHasSuffix(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldHasSuffix(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextIsNil applies the IsNil predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextIsNil() predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldIsNull(FieldIdentityNumberCiphertext))
+}
+
+// IdentityNumberCiphertextNotNil applies the NotNil predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextNotNil() predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldNotNull(FieldIdentityNumberCiphertext))
+}
+
+// IdentityNumberCiphertextEqualFold applies the EqualFold predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextEqualFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldEqualFold(FieldIdentityNumberCiphertext, v))
+}
+
+// IdentityNumberCiphertextContainsFold applies the ContainsFold predicate on the "identity_number_ciphertext" field.
+func IdentityNumberCiphertextContainsFold(v string) predicate.MemberProfile {
+	return predicate.MemberProfile(sql.FieldContainsFold(FieldIdentityNumberCiphertext, v))
 }
 
 // BirthdayEQ applies the EQ predicate on the "birthday" field.

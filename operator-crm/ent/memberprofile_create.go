@@ -51,15 +51,15 @@ func (_c *MemberProfileCreate) SetNillableUpdatedAt(v *time.Time) *MemberProfile
 	return _c
 }
 
-// SetMemberID sets the "member_id" field.
-func (_c *MemberProfileCreate) SetMemberID(v int64) *MemberProfileCreate {
-	_c.mutation.SetMemberID(v)
+// SetOperatorCode sets the "operator_code" field.
+func (_c *MemberProfileCreate) SetOperatorCode(v string) *MemberProfileCreate {
+	_c.mutation.SetOperatorCode(v)
 	return _c
 }
 
-// SetNickname sets the "nickname" field.
-func (_c *MemberProfileCreate) SetNickname(v string) *MemberProfileCreate {
-	_c.mutation.SetNickname(v)
+// SetMemberID sets the "member_id" field.
+func (_c *MemberProfileCreate) SetMemberID(v int64) *MemberProfileCreate {
+	_c.mutation.SetMemberID(v)
 	return _c
 }
 
@@ -75,38 +75,36 @@ func (_c *MemberProfileCreate) SetAvatarFrameURL(v string) *MemberProfileCreate 
 	return _c
 }
 
-// SetNillableAvatarFrameURL sets the "avatar_frame_url" field if the given value is not nil.
-func (_c *MemberProfileCreate) SetNillableAvatarFrameURL(v *string) *MemberProfileCreate {
+// SetNickname sets the "nickname" field.
+func (_c *MemberProfileCreate) SetNickname(v string) *MemberProfileCreate {
+	_c.mutation.SetNickname(v)
+	return _c
+}
+
+// SetRealNameCiphertext sets the "real_name_ciphertext" field.
+func (_c *MemberProfileCreate) SetRealNameCiphertext(v string) *MemberProfileCreate {
+	_c.mutation.SetRealNameCiphertext(v)
+	return _c
+}
+
+// SetNillableRealNameCiphertext sets the "real_name_ciphertext" field if the given value is not nil.
+func (_c *MemberProfileCreate) SetNillableRealNameCiphertext(v *string) *MemberProfileCreate {
 	if v != nil {
-		_c.SetAvatarFrameURL(*v)
+		_c.SetRealNameCiphertext(*v)
 	}
 	return _c
 }
 
-// SetRealName sets the "real_name" field.
-func (_c *MemberProfileCreate) SetRealName(v string) *MemberProfileCreate {
-	_c.mutation.SetRealName(v)
+// SetIdentityNumberCiphertext sets the "identity_number_ciphertext" field.
+func (_c *MemberProfileCreate) SetIdentityNumberCiphertext(v string) *MemberProfileCreate {
+	_c.mutation.SetIdentityNumberCiphertext(v)
 	return _c
 }
 
-// SetNillableRealName sets the "real_name" field if the given value is not nil.
-func (_c *MemberProfileCreate) SetNillableRealName(v *string) *MemberProfileCreate {
+// SetNillableIdentityNumberCiphertext sets the "identity_number_ciphertext" field if the given value is not nil.
+func (_c *MemberProfileCreate) SetNillableIdentityNumberCiphertext(v *string) *MemberProfileCreate {
 	if v != nil {
-		_c.SetRealName(*v)
-	}
-	return _c
-}
-
-// SetIdentityNumber sets the "identity_number" field.
-func (_c *MemberProfileCreate) SetIdentityNumber(v string) *MemberProfileCreate {
-	_c.mutation.SetIdentityNumber(v)
-	return _c
-}
-
-// SetNillableIdentityNumber sets the "identity_number" field if the given value is not nil.
-func (_c *MemberProfileCreate) SetNillableIdentityNumber(v *string) *MemberProfileCreate {
-	if v != nil {
-		_c.SetIdentityNumber(*v)
+		_c.SetIdentityNumberCiphertext(*v)
 	}
 	return _c
 }
@@ -185,7 +183,9 @@ func (_c *MemberProfileCreate) Mutation() *MemberProfileMutation {
 
 // Save creates the MemberProfile in the database.
 func (_c *MemberProfileCreate) Save(ctx context.Context) (*MemberProfile, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -212,12 +212,18 @@ func (_c *MemberProfileCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberProfileCreate) defaults() {
+func (_c *MemberProfileCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if memberprofile.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberprofile.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberprofile.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if memberprofile.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized memberprofile.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := memberprofile.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -225,6 +231,7 @@ func (_c *MemberProfileCreate) defaults() {
 		v := memberprofile.DefaultGender
 		_c.mutation.SetGender(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -235,20 +242,20 @@ func (_c *MemberProfileCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "MemberProfile.updated_at"`)}
 	}
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "MemberProfile.operator_code"`)}
+	}
+	if v, ok := _c.mutation.OperatorCode(); ok {
+		if err := memberprofile.OperatorCodeValidator(v); err != nil {
+			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.operator_code": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.MemberID(); !ok {
 		return &ValidationError{Name: "member_id", err: errors.New(`ent: missing required field "MemberProfile.member_id"`)}
 	}
 	if v, ok := _c.mutation.MemberID(); ok {
 		if err := memberprofile.MemberIDValidator(v); err != nil {
 			return &ValidationError{Name: "member_id", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.member_id": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.Nickname(); !ok {
-		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "MemberProfile.nickname"`)}
-	}
-	if v, ok := _c.mutation.Nickname(); ok {
-		if err := memberprofile.NicknameValidator(v); err != nil {
-			return &ValidationError{Name: "nickname", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.nickname": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.AvatarURL(); !ok {
@@ -259,14 +266,20 @@ func (_c *MemberProfileCreate) check() error {
 			return &ValidationError{Name: "avatar_url", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.avatar_url": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.RealName(); ok {
-		if err := memberprofile.RealNameValidator(v); err != nil {
-			return &ValidationError{Name: "real_name", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.real_name": %w`, err)}
+	if _, ok := _c.mutation.AvatarFrameURL(); !ok {
+		return &ValidationError{Name: "avatar_frame_url", err: errors.New(`ent: missing required field "MemberProfile.avatar_frame_url"`)}
+	}
+	if v, ok := _c.mutation.AvatarFrameURL(); ok {
+		if err := memberprofile.AvatarFrameURLValidator(v); err != nil {
+			return &ValidationError{Name: "avatar_frame_url", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.avatar_frame_url": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.IdentityNumber(); ok {
-		if err := memberprofile.IdentityNumberValidator(v); err != nil {
-			return &ValidationError{Name: "identity_number", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.identity_number": %w`, err)}
+	if _, ok := _c.mutation.Nickname(); !ok {
+		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "MemberProfile.nickname"`)}
+	}
+	if v, ok := _c.mutation.Nickname(); ok {
+		if err := memberprofile.NicknameValidator(v); err != nil {
+			return &ValidationError{Name: "nickname", err: fmt.Errorf(`ent: validator failed for field "MemberProfile.nickname": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.Gender(); !ok {
@@ -326,9 +339,9 @@ func (_c *MemberProfileCreate) createSpec() (*MemberProfile, *sqlgraph.CreateSpe
 		_spec.SetField(memberprofile.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := _c.mutation.Nickname(); ok {
-		_spec.SetField(memberprofile.FieldNickname, field.TypeString, value)
-		_node.Nickname = value
+	if value, ok := _c.mutation.OperatorCode(); ok {
+		_spec.SetField(memberprofile.FieldOperatorCode, field.TypeString, value)
+		_node.OperatorCode = value
 	}
 	if value, ok := _c.mutation.AvatarURL(); ok {
 		_spec.SetField(memberprofile.FieldAvatarURL, field.TypeString, value)
@@ -336,15 +349,19 @@ func (_c *MemberProfileCreate) createSpec() (*MemberProfile, *sqlgraph.CreateSpe
 	}
 	if value, ok := _c.mutation.AvatarFrameURL(); ok {
 		_spec.SetField(memberprofile.FieldAvatarFrameURL, field.TypeString, value)
-		_node.AvatarFrameURL = &value
+		_node.AvatarFrameURL = value
 	}
-	if value, ok := _c.mutation.RealName(); ok {
-		_spec.SetField(memberprofile.FieldRealName, field.TypeString, value)
-		_node.RealName = &value
+	if value, ok := _c.mutation.Nickname(); ok {
+		_spec.SetField(memberprofile.FieldNickname, field.TypeString, value)
+		_node.Nickname = value
 	}
-	if value, ok := _c.mutation.IdentityNumber(); ok {
-		_spec.SetField(memberprofile.FieldIdentityNumber, field.TypeString, value)
-		_node.IdentityNumber = &value
+	if value, ok := _c.mutation.RealNameCiphertext(); ok {
+		_spec.SetField(memberprofile.FieldRealNameCiphertext, field.TypeString, value)
+		_node.RealNameCiphertext = &value
+	}
+	if value, ok := _c.mutation.IdentityNumberCiphertext(); ok {
+		_spec.SetField(memberprofile.FieldIdentityNumberCiphertext, field.TypeString, value)
+		_node.IdentityNumberCiphertext = &value
 	}
 	if value, ok := _c.mutation.Birthday(); ok {
 		_spec.SetField(memberprofile.FieldBirthday, field.TypeTime, value)
@@ -443,18 +460,6 @@ func (u *MemberProfileUpsert) UpdateUpdatedAt() *MemberProfileUpsert {
 	return u
 }
 
-// SetNickname sets the "nickname" field.
-func (u *MemberProfileUpsert) SetNickname(v string) *MemberProfileUpsert {
-	u.Set(memberprofile.FieldNickname, v)
-	return u
-}
-
-// UpdateNickname sets the "nickname" field to the value that was provided on create.
-func (u *MemberProfileUpsert) UpdateNickname() *MemberProfileUpsert {
-	u.SetExcluded(memberprofile.FieldNickname)
-	return u
-}
-
 // SetAvatarURL sets the "avatar_url" field.
 func (u *MemberProfileUpsert) SetAvatarURL(v string) *MemberProfileUpsert {
 	u.Set(memberprofile.FieldAvatarURL, v)
@@ -479,45 +484,51 @@ func (u *MemberProfileUpsert) UpdateAvatarFrameURL() *MemberProfileUpsert {
 	return u
 }
 
-// ClearAvatarFrameURL clears the value of the "avatar_frame_url" field.
-func (u *MemberProfileUpsert) ClearAvatarFrameURL() *MemberProfileUpsert {
-	u.SetNull(memberprofile.FieldAvatarFrameURL)
+// SetNickname sets the "nickname" field.
+func (u *MemberProfileUpsert) SetNickname(v string) *MemberProfileUpsert {
+	u.Set(memberprofile.FieldNickname, v)
 	return u
 }
 
-// SetRealName sets the "real_name" field.
-func (u *MemberProfileUpsert) SetRealName(v string) *MemberProfileUpsert {
-	u.Set(memberprofile.FieldRealName, v)
+// UpdateNickname sets the "nickname" field to the value that was provided on create.
+func (u *MemberProfileUpsert) UpdateNickname() *MemberProfileUpsert {
+	u.SetExcluded(memberprofile.FieldNickname)
 	return u
 }
 
-// UpdateRealName sets the "real_name" field to the value that was provided on create.
-func (u *MemberProfileUpsert) UpdateRealName() *MemberProfileUpsert {
-	u.SetExcluded(memberprofile.FieldRealName)
+// SetRealNameCiphertext sets the "real_name_ciphertext" field.
+func (u *MemberProfileUpsert) SetRealNameCiphertext(v string) *MemberProfileUpsert {
+	u.Set(memberprofile.FieldRealNameCiphertext, v)
 	return u
 }
 
-// ClearRealName clears the value of the "real_name" field.
-func (u *MemberProfileUpsert) ClearRealName() *MemberProfileUpsert {
-	u.SetNull(memberprofile.FieldRealName)
+// UpdateRealNameCiphertext sets the "real_name_ciphertext" field to the value that was provided on create.
+func (u *MemberProfileUpsert) UpdateRealNameCiphertext() *MemberProfileUpsert {
+	u.SetExcluded(memberprofile.FieldRealNameCiphertext)
 	return u
 }
 
-// SetIdentityNumber sets the "identity_number" field.
-func (u *MemberProfileUpsert) SetIdentityNumber(v string) *MemberProfileUpsert {
-	u.Set(memberprofile.FieldIdentityNumber, v)
+// ClearRealNameCiphertext clears the value of the "real_name_ciphertext" field.
+func (u *MemberProfileUpsert) ClearRealNameCiphertext() *MemberProfileUpsert {
+	u.SetNull(memberprofile.FieldRealNameCiphertext)
 	return u
 }
 
-// UpdateIdentityNumber sets the "identity_number" field to the value that was provided on create.
-func (u *MemberProfileUpsert) UpdateIdentityNumber() *MemberProfileUpsert {
-	u.SetExcluded(memberprofile.FieldIdentityNumber)
+// SetIdentityNumberCiphertext sets the "identity_number_ciphertext" field.
+func (u *MemberProfileUpsert) SetIdentityNumberCiphertext(v string) *MemberProfileUpsert {
+	u.Set(memberprofile.FieldIdentityNumberCiphertext, v)
 	return u
 }
 
-// ClearIdentityNumber clears the value of the "identity_number" field.
-func (u *MemberProfileUpsert) ClearIdentityNumber() *MemberProfileUpsert {
-	u.SetNull(memberprofile.FieldIdentityNumber)
+// UpdateIdentityNumberCiphertext sets the "identity_number_ciphertext" field to the value that was provided on create.
+func (u *MemberProfileUpsert) UpdateIdentityNumberCiphertext() *MemberProfileUpsert {
+	u.SetExcluded(memberprofile.FieldIdentityNumberCiphertext)
+	return u
+}
+
+// ClearIdentityNumberCiphertext clears the value of the "identity_number_ciphertext" field.
+func (u *MemberProfileUpsert) ClearIdentityNumberCiphertext() *MemberProfileUpsert {
+	u.SetNull(memberprofile.FieldIdentityNumberCiphertext)
 	return u
 }
 
@@ -613,6 +624,9 @@ func (u *MemberProfileUpsertOne) UpdateNewValues() *MemberProfileUpsertOne {
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(memberprofile.FieldCreatedAt)
 		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(memberprofile.FieldOperatorCode)
+		}
 		if _, exists := u.create.mutation.MemberID(); exists {
 			s.SetIgnore(memberprofile.FieldMemberID)
 		}
@@ -661,20 +675,6 @@ func (u *MemberProfileUpsertOne) UpdateUpdatedAt() *MemberProfileUpsertOne {
 	})
 }
 
-// SetNickname sets the "nickname" field.
-func (u *MemberProfileUpsertOne) SetNickname(v string) *MemberProfileUpsertOne {
-	return u.Update(func(s *MemberProfileUpsert) {
-		s.SetNickname(v)
-	})
-}
-
-// UpdateNickname sets the "nickname" field to the value that was provided on create.
-func (u *MemberProfileUpsertOne) UpdateNickname() *MemberProfileUpsertOne {
-	return u.Update(func(s *MemberProfileUpsert) {
-		s.UpdateNickname()
-	})
-}
-
 // SetAvatarURL sets the "avatar_url" field.
 func (u *MemberProfileUpsertOne) SetAvatarURL(v string) *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
@@ -703,52 +703,59 @@ func (u *MemberProfileUpsertOne) UpdateAvatarFrameURL() *MemberProfileUpsertOne 
 	})
 }
 
-// ClearAvatarFrameURL clears the value of the "avatar_frame_url" field.
-func (u *MemberProfileUpsertOne) ClearAvatarFrameURL() *MemberProfileUpsertOne {
+// SetNickname sets the "nickname" field.
+func (u *MemberProfileUpsertOne) SetNickname(v string) *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.ClearAvatarFrameURL()
+		s.SetNickname(v)
 	})
 }
 
-// SetRealName sets the "real_name" field.
-func (u *MemberProfileUpsertOne) SetRealName(v string) *MemberProfileUpsertOne {
+// UpdateNickname sets the "nickname" field to the value that was provided on create.
+func (u *MemberProfileUpsertOne) UpdateNickname() *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.SetRealName(v)
+		s.UpdateNickname()
 	})
 }
 
-// UpdateRealName sets the "real_name" field to the value that was provided on create.
-func (u *MemberProfileUpsertOne) UpdateRealName() *MemberProfileUpsertOne {
+// SetRealNameCiphertext sets the "real_name_ciphertext" field.
+func (u *MemberProfileUpsertOne) SetRealNameCiphertext(v string) *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.UpdateRealName()
+		s.SetRealNameCiphertext(v)
 	})
 }
 
-// ClearRealName clears the value of the "real_name" field.
-func (u *MemberProfileUpsertOne) ClearRealName() *MemberProfileUpsertOne {
+// UpdateRealNameCiphertext sets the "real_name_ciphertext" field to the value that was provided on create.
+func (u *MemberProfileUpsertOne) UpdateRealNameCiphertext() *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.ClearRealName()
+		s.UpdateRealNameCiphertext()
 	})
 }
 
-// SetIdentityNumber sets the "identity_number" field.
-func (u *MemberProfileUpsertOne) SetIdentityNumber(v string) *MemberProfileUpsertOne {
+// ClearRealNameCiphertext clears the value of the "real_name_ciphertext" field.
+func (u *MemberProfileUpsertOne) ClearRealNameCiphertext() *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.SetIdentityNumber(v)
+		s.ClearRealNameCiphertext()
 	})
 }
 
-// UpdateIdentityNumber sets the "identity_number" field to the value that was provided on create.
-func (u *MemberProfileUpsertOne) UpdateIdentityNumber() *MemberProfileUpsertOne {
+// SetIdentityNumberCiphertext sets the "identity_number_ciphertext" field.
+func (u *MemberProfileUpsertOne) SetIdentityNumberCiphertext(v string) *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.UpdateIdentityNumber()
+		s.SetIdentityNumberCiphertext(v)
 	})
 }
 
-// ClearIdentityNumber clears the value of the "identity_number" field.
-func (u *MemberProfileUpsertOne) ClearIdentityNumber() *MemberProfileUpsertOne {
+// UpdateIdentityNumberCiphertext sets the "identity_number_ciphertext" field to the value that was provided on create.
+func (u *MemberProfileUpsertOne) UpdateIdentityNumberCiphertext() *MemberProfileUpsertOne {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.ClearIdentityNumber()
+		s.UpdateIdentityNumberCiphertext()
+	})
+}
+
+// ClearIdentityNumberCiphertext clears the value of the "identity_number_ciphertext" field.
+func (u *MemberProfileUpsertOne) ClearIdentityNumberCiphertext() *MemberProfileUpsertOne {
+	return u.Update(func(s *MemberProfileUpsert) {
+		s.ClearIdentityNumberCiphertext()
 	})
 }
 
@@ -1021,6 +1028,9 @@ func (u *MemberProfileUpsertBulk) UpdateNewValues() *MemberProfileUpsertBulk {
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(memberprofile.FieldCreatedAt)
 			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(memberprofile.FieldOperatorCode)
+			}
 			if _, exists := b.mutation.MemberID(); exists {
 				s.SetIgnore(memberprofile.FieldMemberID)
 			}
@@ -1070,20 +1080,6 @@ func (u *MemberProfileUpsertBulk) UpdateUpdatedAt() *MemberProfileUpsertBulk {
 	})
 }
 
-// SetNickname sets the "nickname" field.
-func (u *MemberProfileUpsertBulk) SetNickname(v string) *MemberProfileUpsertBulk {
-	return u.Update(func(s *MemberProfileUpsert) {
-		s.SetNickname(v)
-	})
-}
-
-// UpdateNickname sets the "nickname" field to the value that was provided on create.
-func (u *MemberProfileUpsertBulk) UpdateNickname() *MemberProfileUpsertBulk {
-	return u.Update(func(s *MemberProfileUpsert) {
-		s.UpdateNickname()
-	})
-}
-
 // SetAvatarURL sets the "avatar_url" field.
 func (u *MemberProfileUpsertBulk) SetAvatarURL(v string) *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
@@ -1112,52 +1108,59 @@ func (u *MemberProfileUpsertBulk) UpdateAvatarFrameURL() *MemberProfileUpsertBul
 	})
 }
 
-// ClearAvatarFrameURL clears the value of the "avatar_frame_url" field.
-func (u *MemberProfileUpsertBulk) ClearAvatarFrameURL() *MemberProfileUpsertBulk {
+// SetNickname sets the "nickname" field.
+func (u *MemberProfileUpsertBulk) SetNickname(v string) *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.ClearAvatarFrameURL()
+		s.SetNickname(v)
 	})
 }
 
-// SetRealName sets the "real_name" field.
-func (u *MemberProfileUpsertBulk) SetRealName(v string) *MemberProfileUpsertBulk {
+// UpdateNickname sets the "nickname" field to the value that was provided on create.
+func (u *MemberProfileUpsertBulk) UpdateNickname() *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.SetRealName(v)
+		s.UpdateNickname()
 	})
 }
 
-// UpdateRealName sets the "real_name" field to the value that was provided on create.
-func (u *MemberProfileUpsertBulk) UpdateRealName() *MemberProfileUpsertBulk {
+// SetRealNameCiphertext sets the "real_name_ciphertext" field.
+func (u *MemberProfileUpsertBulk) SetRealNameCiphertext(v string) *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.UpdateRealName()
+		s.SetRealNameCiphertext(v)
 	})
 }
 
-// ClearRealName clears the value of the "real_name" field.
-func (u *MemberProfileUpsertBulk) ClearRealName() *MemberProfileUpsertBulk {
+// UpdateRealNameCiphertext sets the "real_name_ciphertext" field to the value that was provided on create.
+func (u *MemberProfileUpsertBulk) UpdateRealNameCiphertext() *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.ClearRealName()
+		s.UpdateRealNameCiphertext()
 	})
 }
 
-// SetIdentityNumber sets the "identity_number" field.
-func (u *MemberProfileUpsertBulk) SetIdentityNumber(v string) *MemberProfileUpsertBulk {
+// ClearRealNameCiphertext clears the value of the "real_name_ciphertext" field.
+func (u *MemberProfileUpsertBulk) ClearRealNameCiphertext() *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.SetIdentityNumber(v)
+		s.ClearRealNameCiphertext()
 	})
 }
 
-// UpdateIdentityNumber sets the "identity_number" field to the value that was provided on create.
-func (u *MemberProfileUpsertBulk) UpdateIdentityNumber() *MemberProfileUpsertBulk {
+// SetIdentityNumberCiphertext sets the "identity_number_ciphertext" field.
+func (u *MemberProfileUpsertBulk) SetIdentityNumberCiphertext(v string) *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.UpdateIdentityNumber()
+		s.SetIdentityNumberCiphertext(v)
 	})
 }
 
-// ClearIdentityNumber clears the value of the "identity_number" field.
-func (u *MemberProfileUpsertBulk) ClearIdentityNumber() *MemberProfileUpsertBulk {
+// UpdateIdentityNumberCiphertext sets the "identity_number_ciphertext" field to the value that was provided on create.
+func (u *MemberProfileUpsertBulk) UpdateIdentityNumberCiphertext() *MemberProfileUpsertBulk {
 	return u.Update(func(s *MemberProfileUpsert) {
-		s.ClearIdentityNumber()
+		s.UpdateIdentityNumberCiphertext()
+	})
+}
+
+// ClearIdentityNumberCiphertext clears the value of the "identity_number_ciphertext" field.
+func (u *MemberProfileUpsertBulk) ClearIdentityNumberCiphertext() *MemberProfileUpsertBulk {
+	return u.Update(func(s *MemberProfileUpsert) {
+		s.ClearIdentityNumberCiphertext()
 	})
 }
 

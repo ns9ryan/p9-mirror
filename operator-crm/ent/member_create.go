@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
+	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
@@ -84,65 +86,43 @@ func (_c *MemberCreate) SetCode(v string) *MemberCreate {
 	return _c
 }
 
-// SetUsername sets the "username" field.
-func (_c *MemberCreate) SetUsername(v string) *MemberCreate {
-	_c.mutation.SetUsername(v)
+// SetAgentID sets the "agent_id" field.
+func (_c *MemberCreate) SetAgentID(v int64) *MemberCreate {
+	_c.mutation.SetAgentID(v)
 	return _c
 }
 
-// SetNillableUsername sets the "username" field if the given value is not nil.
-func (_c *MemberCreate) SetNillableUsername(v *string) *MemberCreate {
+// SetAgentAccountID sets the "agent_account_id" field.
+func (_c *MemberCreate) SetAgentAccountID(v int64) *MemberCreate {
+	_c.mutation.SetAgentAccountID(v)
+	return _c
+}
+
+// SetNillableAgentAccountID sets the "agent_account_id" field if the given value is not nil.
+func (_c *MemberCreate) SetNillableAgentAccountID(v *int64) *MemberCreate {
 	if v != nil {
-		_c.SetUsername(*v)
+		_c.SetAgentAccountID(*v)
 	}
 	return _c
 }
 
-// SetPhone sets the "phone" field.
-func (_c *MemberCreate) SetPhone(v string) *MemberCreate {
-	_c.mutation.SetPhone(v)
+// SetInviterMemberID sets the "inviter_member_id" field.
+func (_c *MemberCreate) SetInviterMemberID(v int64) *MemberCreate {
+	_c.mutation.SetInviterMemberID(v)
 	return _c
 }
 
-// SetNillablePhone sets the "phone" field if the given value is not nil.
-func (_c *MemberCreate) SetNillablePhone(v *string) *MemberCreate {
+// SetNillableInviterMemberID sets the "inviter_member_id" field if the given value is not nil.
+func (_c *MemberCreate) SetNillableInviterMemberID(v *int64) *MemberCreate {
 	if v != nil {
-		_c.SetPhone(*v)
+		_c.SetInviterMemberID(*v)
 	}
 	return _c
 }
 
-// SetEmail sets the "email" field.
-func (_c *MemberCreate) SetEmail(v string) *MemberCreate {
-	_c.mutation.SetEmail(v)
-	return _c
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (_c *MemberCreate) SetNillableEmail(v *string) *MemberCreate {
-	if v != nil {
-		_c.SetEmail(*v)
-	}
-	return _c
-}
-
-// SetPasswordHash sets the "password_hash" field.
-func (_c *MemberCreate) SetPasswordHash(v string) *MemberCreate {
-	_c.mutation.SetPasswordHash(v)
-	return _c
-}
-
-// SetNillablePasswordHash sets the "password_hash" field if the given value is not nil.
-func (_c *MemberCreate) SetNillablePasswordHash(v *string) *MemberCreate {
-	if v != nil {
-		_c.SetPasswordHash(*v)
-	}
-	return _c
-}
-
-// SetAgentGlobalID sets the "agent_global_id" field.
-func (_c *MemberCreate) SetAgentGlobalID(v uuid.UUID) *MemberCreate {
-	_c.mutation.SetAgentGlobalID(v)
+// SetInviteCode sets the "invite_code" field.
+func (_c *MemberCreate) SetInviteCode(v string) *MemberCreate {
+	_c.mutation.SetInviteCode(v)
 	return _c
 }
 
@@ -168,6 +148,48 @@ func (_c *MemberCreate) SetStatus(v int64) *MemberCreate {
 func (_c *MemberCreate) SetNillableStatus(v *int64) *MemberCreate {
 	if v != nil {
 		_c.SetStatus(*v)
+	}
+	return _c
+}
+
+// SetChatDisabled sets the "chat_disabled" field.
+func (_c *MemberCreate) SetChatDisabled(v bool) *MemberCreate {
+	_c.mutation.SetChatDisabled(v)
+	return _c
+}
+
+// SetNillableChatDisabled sets the "chat_disabled" field if the given value is not nil.
+func (_c *MemberCreate) SetNillableChatDisabled(v *bool) *MemberCreate {
+	if v != nil {
+		_c.SetChatDisabled(*v)
+	}
+	return _c
+}
+
+// SetBettingDisabled sets the "betting_disabled" field.
+func (_c *MemberCreate) SetBettingDisabled(v bool) *MemberCreate {
+	_c.mutation.SetBettingDisabled(v)
+	return _c
+}
+
+// SetNillableBettingDisabled sets the "betting_disabled" field if the given value is not nil.
+func (_c *MemberCreate) SetNillableBettingDisabled(v *bool) *MemberCreate {
+	if v != nil {
+		_c.SetBettingDisabled(*v)
+	}
+	return _c
+}
+
+// SetWithdrawalDisabled sets the "withdrawal_disabled" field.
+func (_c *MemberCreate) SetWithdrawalDisabled(v bool) *MemberCreate {
+	_c.mutation.SetWithdrawalDisabled(v)
+	return _c
+}
+
+// SetNillableWithdrawalDisabled sets the "withdrawal_disabled" field if the given value is not nil.
+func (_c *MemberCreate) SetNillableWithdrawalDisabled(v *bool) *MemberCreate {
+	if v != nil {
+		_c.SetWithdrawalDisabled(*v)
 	}
 	return _c
 }
@@ -274,6 +296,50 @@ func (_c *MemberCreate) SetID(v int64) *MemberCreate {
 	return _c
 }
 
+// SetAgent sets the "agent" edge to the AgentUser entity.
+func (_c *MemberCreate) SetAgent(v *AgentUser) *MemberCreate {
+	return _c.SetAgentID(v.ID)
+}
+
+// SetAgentAccount sets the "agent_account" edge to the AgentUser entity.
+func (_c *MemberCreate) SetAgentAccount(v *AgentUser) *MemberCreate {
+	return _c.SetAgentAccountID(v.ID)
+}
+
+// AddInvitedMemberIDs adds the "invited_members" edge to the Member entity by IDs.
+func (_c *MemberCreate) AddInvitedMemberIDs(ids ...int64) *MemberCreate {
+	_c.mutation.AddInvitedMemberIDs(ids...)
+	return _c
+}
+
+// AddInvitedMembers adds the "invited_members" edges to the Member entity.
+func (_c *MemberCreate) AddInvitedMembers(v ...*Member) *MemberCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddInvitedMemberIDs(ids...)
+}
+
+// SetInviterID sets the "inviter" edge to the Member entity by ID.
+func (_c *MemberCreate) SetInviterID(id int64) *MemberCreate {
+	_c.mutation.SetInviterID(id)
+	return _c
+}
+
+// SetNillableInviterID sets the "inviter" edge to the Member entity by ID if the given value is not nil.
+func (_c *MemberCreate) SetNillableInviterID(id *int64) *MemberCreate {
+	if id != nil {
+		_c = _c.SetInviterID(*id)
+	}
+	return _c
+}
+
+// SetInviter sets the "inviter" edge to the Member entity.
+func (_c *MemberCreate) SetInviter(v *Member) *MemberCreate {
+	return _c.SetInviterID(v.ID)
+}
+
 // SetAutoLevel sets the "auto_level" edge to the MemberAutoLevel entity.
 func (_c *MemberCreate) SetAutoLevel(v *MemberAutoLevel) *MemberCreate {
 	return _c.SetAutoLevelID(v.ID)
@@ -282,6 +348,40 @@ func (_c *MemberCreate) SetAutoLevel(v *MemberAutoLevel) *MemberCreate {
 // SetVipLevel sets the "vip_level" edge to the MemberVipLevel entity.
 func (_c *MemberCreate) SetVipLevel(v *MemberVipLevel) *MemberCreate {
 	return _c.SetVipLevelID(v.ID)
+}
+
+// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
+func (_c *MemberCreate) AddFixedLevelAssignmentIDs(ids ...int64) *MemberCreate {
+	_c.mutation.AddFixedLevelAssignmentIDs(ids...)
+	return _c
+}
+
+// AddFixedLevelAssignments adds the "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
+func (_c *MemberCreate) AddFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddFixedLevelAssignmentIDs(ids...)
+}
+
+// SetAuthID sets the "auth" edge to the MemberAuth entity by ID.
+func (_c *MemberCreate) SetAuthID(id int64) *MemberCreate {
+	_c.mutation.SetAuthID(id)
+	return _c
+}
+
+// SetNillableAuthID sets the "auth" edge to the MemberAuth entity by ID if the given value is not nil.
+func (_c *MemberCreate) SetNillableAuthID(id *int64) *MemberCreate {
+	if id != nil {
+		_c = _c.SetAuthID(*id)
+	}
+	return _c
+}
+
+// SetAuth sets the "auth" edge to the MemberAuth entity.
+func (_c *MemberCreate) SetAuth(v *MemberAuth) *MemberCreate {
+	return _c.SetAuthID(v.ID)
 }
 
 // SetProfileID sets the "profile" edge to the MemberProfile entity by ID.
@@ -316,21 +416,6 @@ func (_c *MemberCreate) AddOauthIdentities(v ...*MemberOAuthIdentity) *MemberCre
 		ids[i] = v[i].ID
 	}
 	return _c.AddOauthIdentityIDs(ids...)
-}
-
-// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
-func (_c *MemberCreate) AddFixedLevelAssignmentIDs(ids ...int64) *MemberCreate {
-	_c.mutation.AddFixedLevelAssignmentIDs(ids...)
-	return _c
-}
-
-// AddFixedLevelAssignments adds the "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
-func (_c *MemberCreate) AddFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddFixedLevelAssignmentIDs(ids...)
 }
 
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
@@ -374,7 +459,9 @@ func (_c *MemberCreate) Mutation() *MemberMutation {
 
 // Save creates the Member in the database.
 func (_c *MemberCreate) Save(ctx context.Context) (*Member, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -401,16 +488,25 @@ func (_c *MemberCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *MemberCreate) defaults() {
+func (_c *MemberCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if member.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized member.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := member.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if member.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized member.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := member.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
 	if _, ok := _c.mutation.GlobalID(); !ok {
+		if member.DefaultGlobalID == nil {
+			return fmt.Errorf("ent: uninitialized member.DefaultGlobalID (forgotten import ent/runtime?)")
+		}
 		v := member.DefaultGlobalID()
 		_c.mutation.SetGlobalID(v)
 	}
@@ -418,6 +514,19 @@ func (_c *MemberCreate) defaults() {
 		v := member.DefaultStatus
 		_c.mutation.SetStatus(v)
 	}
+	if _, ok := _c.mutation.ChatDisabled(); !ok {
+		v := member.DefaultChatDisabled
+		_c.mutation.SetChatDisabled(v)
+	}
+	if _, ok := _c.mutation.BettingDisabled(); !ok {
+		v := member.DefaultBettingDisabled
+		_c.mutation.SetBettingDisabled(v)
+	}
+	if _, ok := _c.mutation.WithdrawalDisabled(); !ok {
+		v := member.DefaultWithdrawalDisabled
+		_c.mutation.SetWithdrawalDisabled(v)
+	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -447,28 +556,31 @@ func (_c *MemberCreate) check() error {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Member.code": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.Username(); ok {
-		if err := member.UsernameValidator(v); err != nil {
-			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Member.username": %w`, err)}
+	if _, ok := _c.mutation.AgentID(); !ok {
+		return &ValidationError{Name: "agent_id", err: errors.New(`ent: missing required field "Member.agent_id"`)}
+	}
+	if v, ok := _c.mutation.AgentID(); ok {
+		if err := member.AgentIDValidator(v); err != nil {
+			return &ValidationError{Name: "agent_id", err: fmt.Errorf(`ent: validator failed for field "Member.agent_id": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.Phone(); ok {
-		if err := member.PhoneValidator(v); err != nil {
-			return &ValidationError{Name: "phone", err: fmt.Errorf(`ent: validator failed for field "Member.phone": %w`, err)}
+	if v, ok := _c.mutation.AgentAccountID(); ok {
+		if err := member.AgentAccountIDValidator(v); err != nil {
+			return &ValidationError{Name: "agent_account_id", err: fmt.Errorf(`ent: validator failed for field "Member.agent_account_id": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.Email(); ok {
-		if err := member.EmailValidator(v); err != nil {
-			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "Member.email": %w`, err)}
+	if v, ok := _c.mutation.InviterMemberID(); ok {
+		if err := member.InviterMemberIDValidator(v); err != nil {
+			return &ValidationError{Name: "inviter_member_id", err: fmt.Errorf(`ent: validator failed for field "Member.inviter_member_id": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.PasswordHash(); ok {
-		if err := member.PasswordHashValidator(v); err != nil {
-			return &ValidationError{Name: "password_hash", err: fmt.Errorf(`ent: validator failed for field "Member.password_hash": %w`, err)}
-		}
+	if _, ok := _c.mutation.InviteCode(); !ok {
+		return &ValidationError{Name: "invite_code", err: errors.New(`ent: missing required field "Member.invite_code"`)}
 	}
-	if _, ok := _c.mutation.AgentGlobalID(); !ok {
-		return &ValidationError{Name: "agent_global_id", err: errors.New(`ent: missing required field "Member.agent_global_id"`)}
+	if v, ok := _c.mutation.InviteCode(); ok {
+		if err := member.InviteCodeValidator(v); err != nil {
+			return &ValidationError{Name: "invite_code", err: fmt.Errorf(`ent: validator failed for field "Member.invite_code": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.AutoLevelID(); !ok {
 		return &ValidationError{Name: "auto_level_id", err: errors.New(`ent: missing required field "Member.auto_level_id"`)}
@@ -493,6 +605,15 @@ func (_c *MemberCreate) check() error {
 		if err := member.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Member.status": %w`, err)}
 		}
+	}
+	if _, ok := _c.mutation.ChatDisabled(); !ok {
+		return &ValidationError{Name: "chat_disabled", err: errors.New(`ent: missing required field "Member.chat_disabled"`)}
+	}
+	if _, ok := _c.mutation.BettingDisabled(); !ok {
+		return &ValidationError{Name: "betting_disabled", err: errors.New(`ent: missing required field "Member.betting_disabled"`)}
+	}
+	if _, ok := _c.mutation.WithdrawalDisabled(); !ok {
+		return &ValidationError{Name: "withdrawal_disabled", err: errors.New(`ent: missing required field "Member.withdrawal_disabled"`)}
 	}
 	if _, ok := _c.mutation.RegisterMethod(); !ok {
 		return &ValidationError{Name: "register_method", err: errors.New(`ent: missing required field "Member.register_method"`)}
@@ -534,6 +655,9 @@ func (_c *MemberCreate) check() error {
 		if err := member.LastLoginDeviceCodeValidator(v); err != nil {
 			return &ValidationError{Name: "last_login_device_code", err: fmt.Errorf(`ent: validator failed for field "Member.last_login_device_code": %w`, err)}
 		}
+	}
+	if len(_c.mutation.AgentIDs()) == 0 {
+		return &ValidationError{Name: "agent", err: errors.New(`ent: missing required edge "Member.agent"`)}
 	}
 	if len(_c.mutation.AutoLevelIDs()) == 0 {
 		return &ValidationError{Name: "auto_level", err: errors.New(`ent: missing required edge "Member.auto_level"`)}
@@ -594,29 +718,25 @@ func (_c *MemberCreate) createSpec() (*Member, *sqlgraph.CreateSpec) {
 		_spec.SetField(member.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
-	if value, ok := _c.mutation.Username(); ok {
-		_spec.SetField(member.FieldUsername, field.TypeString, value)
-		_node.Username = &value
-	}
-	if value, ok := _c.mutation.Phone(); ok {
-		_spec.SetField(member.FieldPhone, field.TypeString, value)
-		_node.Phone = &value
-	}
-	if value, ok := _c.mutation.Email(); ok {
-		_spec.SetField(member.FieldEmail, field.TypeString, value)
-		_node.Email = &value
-	}
-	if value, ok := _c.mutation.PasswordHash(); ok {
-		_spec.SetField(member.FieldPasswordHash, field.TypeString, value)
-		_node.PasswordHash = &value
-	}
-	if value, ok := _c.mutation.AgentGlobalID(); ok {
-		_spec.SetField(member.FieldAgentGlobalID, field.TypeUUID, value)
-		_node.AgentGlobalID = value
+	if value, ok := _c.mutation.InviteCode(); ok {
+		_spec.SetField(member.FieldInviteCode, field.TypeString, value)
+		_node.InviteCode = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(member.FieldStatus, field.TypeInt64, value)
 		_node.Status = value
+	}
+	if value, ok := _c.mutation.ChatDisabled(); ok {
+		_spec.SetField(member.FieldChatDisabled, field.TypeBool, value)
+		_node.ChatDisabled = value
+	}
+	if value, ok := _c.mutation.BettingDisabled(); ok {
+		_spec.SetField(member.FieldBettingDisabled, field.TypeBool, value)
+		_node.BettingDisabled = value
+	}
+	if value, ok := _c.mutation.WithdrawalDisabled(); ok {
+		_spec.SetField(member.FieldWithdrawalDisabled, field.TypeBool, value)
+		_node.WithdrawalDisabled = value
 	}
 	if value, ok := _c.mutation.RegisterMethod(); ok {
 		_spec.SetField(member.FieldRegisterMethod, field.TypeString, value)
@@ -649,6 +769,73 @@ func (_c *MemberCreate) createSpec() (*Member, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.LastLoginDeviceCode(); ok {
 		_spec.SetField(member.FieldLastLoginDeviceCode, field.TypeString, value)
 		_node.LastLoginDeviceCode = &value
+	}
+	if nodes := _c.mutation.AgentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   member.AgentTable,
+			Columns: []string{member.AgentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(agentuser.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.AgentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.AgentAccountIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   member.AgentAccountTable,
+			Columns: []string{member.AgentAccountColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(agentuser.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.AgentAccountID = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.InvitedMembersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.InvitedMembersTable,
+			Columns: []string{member.InvitedMembersColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.InviterIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   member.InviterTable,
+			Columns: []string{member.InviterColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.InviterMemberID = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.AutoLevelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -684,6 +871,38 @@ func (_c *MemberCreate) createSpec() (*Member, *sqlgraph.CreateSpec) {
 		_node.VipLevelID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := _c.mutation.FixedLevelAssignmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.FixedLevelAssignmentsTable,
+			Columns: []string{member.FixedLevelAssignmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.AuthIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.AuthTable,
+			Columns: []string{member.AuthColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberauth.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := _c.mutation.ProfileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -709,22 +928,6 @@ func (_c *MemberCreate) createSpec() (*Member, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberoauthidentity.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.FixedLevelAssignmentsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   member.FixedLevelAssignmentsTable,
-			Columns: []string{member.FixedLevelAssignmentsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -828,75 +1031,21 @@ func (u *MemberUpsert) UpdateUpdatedAt() *MemberUpsert {
 	return u
 }
 
-// SetUsername sets the "username" field.
-func (u *MemberUpsert) SetUsername(v string) *MemberUpsert {
-	u.Set(member.FieldUsername, v)
+// SetAgentAccountID sets the "agent_account_id" field.
+func (u *MemberUpsert) SetAgentAccountID(v int64) *MemberUpsert {
+	u.Set(member.FieldAgentAccountID, v)
 	return u
 }
 
-// UpdateUsername sets the "username" field to the value that was provided on create.
-func (u *MemberUpsert) UpdateUsername() *MemberUpsert {
-	u.SetExcluded(member.FieldUsername)
+// UpdateAgentAccountID sets the "agent_account_id" field to the value that was provided on create.
+func (u *MemberUpsert) UpdateAgentAccountID() *MemberUpsert {
+	u.SetExcluded(member.FieldAgentAccountID)
 	return u
 }
 
-// ClearUsername clears the value of the "username" field.
-func (u *MemberUpsert) ClearUsername() *MemberUpsert {
-	u.SetNull(member.FieldUsername)
-	return u
-}
-
-// SetPhone sets the "phone" field.
-func (u *MemberUpsert) SetPhone(v string) *MemberUpsert {
-	u.Set(member.FieldPhone, v)
-	return u
-}
-
-// UpdatePhone sets the "phone" field to the value that was provided on create.
-func (u *MemberUpsert) UpdatePhone() *MemberUpsert {
-	u.SetExcluded(member.FieldPhone)
-	return u
-}
-
-// ClearPhone clears the value of the "phone" field.
-func (u *MemberUpsert) ClearPhone() *MemberUpsert {
-	u.SetNull(member.FieldPhone)
-	return u
-}
-
-// SetEmail sets the "email" field.
-func (u *MemberUpsert) SetEmail(v string) *MemberUpsert {
-	u.Set(member.FieldEmail, v)
-	return u
-}
-
-// UpdateEmail sets the "email" field to the value that was provided on create.
-func (u *MemberUpsert) UpdateEmail() *MemberUpsert {
-	u.SetExcluded(member.FieldEmail)
-	return u
-}
-
-// ClearEmail clears the value of the "email" field.
-func (u *MemberUpsert) ClearEmail() *MemberUpsert {
-	u.SetNull(member.FieldEmail)
-	return u
-}
-
-// SetPasswordHash sets the "password_hash" field.
-func (u *MemberUpsert) SetPasswordHash(v string) *MemberUpsert {
-	u.Set(member.FieldPasswordHash, v)
-	return u
-}
-
-// UpdatePasswordHash sets the "password_hash" field to the value that was provided on create.
-func (u *MemberUpsert) UpdatePasswordHash() *MemberUpsert {
-	u.SetExcluded(member.FieldPasswordHash)
-	return u
-}
-
-// ClearPasswordHash clears the value of the "password_hash" field.
-func (u *MemberUpsert) ClearPasswordHash() *MemberUpsert {
-	u.SetNull(member.FieldPasswordHash)
+// ClearAgentAccountID clears the value of the "agent_account_id" field.
+func (u *MemberUpsert) ClearAgentAccountID() *MemberUpsert {
+	u.SetNull(member.FieldAgentAccountID)
 	return u
 }
 
@@ -939,6 +1088,42 @@ func (u *MemberUpsert) UpdateStatus() *MemberUpsert {
 // AddStatus adds v to the "status" field.
 func (u *MemberUpsert) AddStatus(v int64) *MemberUpsert {
 	u.Add(member.FieldStatus, v)
+	return u
+}
+
+// SetChatDisabled sets the "chat_disabled" field.
+func (u *MemberUpsert) SetChatDisabled(v bool) *MemberUpsert {
+	u.Set(member.FieldChatDisabled, v)
+	return u
+}
+
+// UpdateChatDisabled sets the "chat_disabled" field to the value that was provided on create.
+func (u *MemberUpsert) UpdateChatDisabled() *MemberUpsert {
+	u.SetExcluded(member.FieldChatDisabled)
+	return u
+}
+
+// SetBettingDisabled sets the "betting_disabled" field.
+func (u *MemberUpsert) SetBettingDisabled(v bool) *MemberUpsert {
+	u.Set(member.FieldBettingDisabled, v)
+	return u
+}
+
+// UpdateBettingDisabled sets the "betting_disabled" field to the value that was provided on create.
+func (u *MemberUpsert) UpdateBettingDisabled() *MemberUpsert {
+	u.SetExcluded(member.FieldBettingDisabled)
+	return u
+}
+
+// SetWithdrawalDisabled sets the "withdrawal_disabled" field.
+func (u *MemberUpsert) SetWithdrawalDisabled(v bool) *MemberUpsert {
+	u.Set(member.FieldWithdrawalDisabled, v)
+	return u
+}
+
+// UpdateWithdrawalDisabled sets the "withdrawal_disabled" field to the value that was provided on create.
+func (u *MemberUpsert) UpdateWithdrawalDisabled() *MemberUpsert {
+	u.SetExcluded(member.FieldWithdrawalDisabled)
 	return u
 }
 
@@ -1025,8 +1210,14 @@ func (u *MemberUpsertOne) UpdateNewValues() *MemberUpsertOne {
 		if _, exists := u.create.mutation.Code(); exists {
 			s.SetIgnore(member.FieldCode)
 		}
-		if _, exists := u.create.mutation.AgentGlobalID(); exists {
-			s.SetIgnore(member.FieldAgentGlobalID)
+		if _, exists := u.create.mutation.AgentID(); exists {
+			s.SetIgnore(member.FieldAgentID)
+		}
+		if _, exists := u.create.mutation.InviterMemberID(); exists {
+			s.SetIgnore(member.FieldInviterMemberID)
+		}
+		if _, exists := u.create.mutation.InviteCode(); exists {
+			s.SetIgnore(member.FieldInviteCode)
 		}
 		if _, exists := u.create.mutation.RegisterMethod(); exists {
 			s.SetIgnore(member.FieldRegisterMethod)
@@ -1088,87 +1279,24 @@ func (u *MemberUpsertOne) UpdateUpdatedAt() *MemberUpsertOne {
 	})
 }
 
-// SetUsername sets the "username" field.
-func (u *MemberUpsertOne) SetUsername(v string) *MemberUpsertOne {
+// SetAgentAccountID sets the "agent_account_id" field.
+func (u *MemberUpsertOne) SetAgentAccountID(v int64) *MemberUpsertOne {
 	return u.Update(func(s *MemberUpsert) {
-		s.SetUsername(v)
+		s.SetAgentAccountID(v)
 	})
 }
 
-// UpdateUsername sets the "username" field to the value that was provided on create.
-func (u *MemberUpsertOne) UpdateUsername() *MemberUpsertOne {
+// UpdateAgentAccountID sets the "agent_account_id" field to the value that was provided on create.
+func (u *MemberUpsertOne) UpdateAgentAccountID() *MemberUpsertOne {
 	return u.Update(func(s *MemberUpsert) {
-		s.UpdateUsername()
+		s.UpdateAgentAccountID()
 	})
 }
 
-// ClearUsername clears the value of the "username" field.
-func (u *MemberUpsertOne) ClearUsername() *MemberUpsertOne {
+// ClearAgentAccountID clears the value of the "agent_account_id" field.
+func (u *MemberUpsertOne) ClearAgentAccountID() *MemberUpsertOne {
 	return u.Update(func(s *MemberUpsert) {
-		s.ClearUsername()
-	})
-}
-
-// SetPhone sets the "phone" field.
-func (u *MemberUpsertOne) SetPhone(v string) *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.SetPhone(v)
-	})
-}
-
-// UpdatePhone sets the "phone" field to the value that was provided on create.
-func (u *MemberUpsertOne) UpdatePhone() *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.UpdatePhone()
-	})
-}
-
-// ClearPhone clears the value of the "phone" field.
-func (u *MemberUpsertOne) ClearPhone() *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.ClearPhone()
-	})
-}
-
-// SetEmail sets the "email" field.
-func (u *MemberUpsertOne) SetEmail(v string) *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.SetEmail(v)
-	})
-}
-
-// UpdateEmail sets the "email" field to the value that was provided on create.
-func (u *MemberUpsertOne) UpdateEmail() *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.UpdateEmail()
-	})
-}
-
-// ClearEmail clears the value of the "email" field.
-func (u *MemberUpsertOne) ClearEmail() *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.ClearEmail()
-	})
-}
-
-// SetPasswordHash sets the "password_hash" field.
-func (u *MemberUpsertOne) SetPasswordHash(v string) *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.SetPasswordHash(v)
-	})
-}
-
-// UpdatePasswordHash sets the "password_hash" field to the value that was provided on create.
-func (u *MemberUpsertOne) UpdatePasswordHash() *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.UpdatePasswordHash()
-	})
-}
-
-// ClearPasswordHash clears the value of the "password_hash" field.
-func (u *MemberUpsertOne) ClearPasswordHash() *MemberUpsertOne {
-	return u.Update(func(s *MemberUpsert) {
-		s.ClearPasswordHash()
+		s.ClearAgentAccountID()
 	})
 }
 
@@ -1218,6 +1346,48 @@ func (u *MemberUpsertOne) AddStatus(v int64) *MemberUpsertOne {
 func (u *MemberUpsertOne) UpdateStatus() *MemberUpsertOne {
 	return u.Update(func(s *MemberUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetChatDisabled sets the "chat_disabled" field.
+func (u *MemberUpsertOne) SetChatDisabled(v bool) *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetChatDisabled(v)
+	})
+}
+
+// UpdateChatDisabled sets the "chat_disabled" field to the value that was provided on create.
+func (u *MemberUpsertOne) UpdateChatDisabled() *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateChatDisabled()
+	})
+}
+
+// SetBettingDisabled sets the "betting_disabled" field.
+func (u *MemberUpsertOne) SetBettingDisabled(v bool) *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetBettingDisabled(v)
+	})
+}
+
+// UpdateBettingDisabled sets the "betting_disabled" field to the value that was provided on create.
+func (u *MemberUpsertOne) UpdateBettingDisabled() *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateBettingDisabled()
+	})
+}
+
+// SetWithdrawalDisabled sets the "withdrawal_disabled" field.
+func (u *MemberUpsertOne) SetWithdrawalDisabled(v bool) *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetWithdrawalDisabled(v)
+	})
+}
+
+// UpdateWithdrawalDisabled sets the "withdrawal_disabled" field to the value that was provided on create.
+func (u *MemberUpsertOne) UpdateWithdrawalDisabled() *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateWithdrawalDisabled()
 	})
 }
 
@@ -1478,8 +1648,14 @@ func (u *MemberUpsertBulk) UpdateNewValues() *MemberUpsertBulk {
 			if _, exists := b.mutation.Code(); exists {
 				s.SetIgnore(member.FieldCode)
 			}
-			if _, exists := b.mutation.AgentGlobalID(); exists {
-				s.SetIgnore(member.FieldAgentGlobalID)
+			if _, exists := b.mutation.AgentID(); exists {
+				s.SetIgnore(member.FieldAgentID)
+			}
+			if _, exists := b.mutation.InviterMemberID(); exists {
+				s.SetIgnore(member.FieldInviterMemberID)
+			}
+			if _, exists := b.mutation.InviteCode(); exists {
+				s.SetIgnore(member.FieldInviteCode)
 			}
 			if _, exists := b.mutation.RegisterMethod(); exists {
 				s.SetIgnore(member.FieldRegisterMethod)
@@ -1542,87 +1718,24 @@ func (u *MemberUpsertBulk) UpdateUpdatedAt() *MemberUpsertBulk {
 	})
 }
 
-// SetUsername sets the "username" field.
-func (u *MemberUpsertBulk) SetUsername(v string) *MemberUpsertBulk {
+// SetAgentAccountID sets the "agent_account_id" field.
+func (u *MemberUpsertBulk) SetAgentAccountID(v int64) *MemberUpsertBulk {
 	return u.Update(func(s *MemberUpsert) {
-		s.SetUsername(v)
+		s.SetAgentAccountID(v)
 	})
 }
 
-// UpdateUsername sets the "username" field to the value that was provided on create.
-func (u *MemberUpsertBulk) UpdateUsername() *MemberUpsertBulk {
+// UpdateAgentAccountID sets the "agent_account_id" field to the value that was provided on create.
+func (u *MemberUpsertBulk) UpdateAgentAccountID() *MemberUpsertBulk {
 	return u.Update(func(s *MemberUpsert) {
-		s.UpdateUsername()
+		s.UpdateAgentAccountID()
 	})
 }
 
-// ClearUsername clears the value of the "username" field.
-func (u *MemberUpsertBulk) ClearUsername() *MemberUpsertBulk {
+// ClearAgentAccountID clears the value of the "agent_account_id" field.
+func (u *MemberUpsertBulk) ClearAgentAccountID() *MemberUpsertBulk {
 	return u.Update(func(s *MemberUpsert) {
-		s.ClearUsername()
-	})
-}
-
-// SetPhone sets the "phone" field.
-func (u *MemberUpsertBulk) SetPhone(v string) *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.SetPhone(v)
-	})
-}
-
-// UpdatePhone sets the "phone" field to the value that was provided on create.
-func (u *MemberUpsertBulk) UpdatePhone() *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.UpdatePhone()
-	})
-}
-
-// ClearPhone clears the value of the "phone" field.
-func (u *MemberUpsertBulk) ClearPhone() *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.ClearPhone()
-	})
-}
-
-// SetEmail sets the "email" field.
-func (u *MemberUpsertBulk) SetEmail(v string) *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.SetEmail(v)
-	})
-}
-
-// UpdateEmail sets the "email" field to the value that was provided on create.
-func (u *MemberUpsertBulk) UpdateEmail() *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.UpdateEmail()
-	})
-}
-
-// ClearEmail clears the value of the "email" field.
-func (u *MemberUpsertBulk) ClearEmail() *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.ClearEmail()
-	})
-}
-
-// SetPasswordHash sets the "password_hash" field.
-func (u *MemberUpsertBulk) SetPasswordHash(v string) *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.SetPasswordHash(v)
-	})
-}
-
-// UpdatePasswordHash sets the "password_hash" field to the value that was provided on create.
-func (u *MemberUpsertBulk) UpdatePasswordHash() *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.UpdatePasswordHash()
-	})
-}
-
-// ClearPasswordHash clears the value of the "password_hash" field.
-func (u *MemberUpsertBulk) ClearPasswordHash() *MemberUpsertBulk {
-	return u.Update(func(s *MemberUpsert) {
-		s.ClearPasswordHash()
+		s.ClearAgentAccountID()
 	})
 }
 
@@ -1672,6 +1785,48 @@ func (u *MemberUpsertBulk) AddStatus(v int64) *MemberUpsertBulk {
 func (u *MemberUpsertBulk) UpdateStatus() *MemberUpsertBulk {
 	return u.Update(func(s *MemberUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetChatDisabled sets the "chat_disabled" field.
+func (u *MemberUpsertBulk) SetChatDisabled(v bool) *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetChatDisabled(v)
+	})
+}
+
+// UpdateChatDisabled sets the "chat_disabled" field to the value that was provided on create.
+func (u *MemberUpsertBulk) UpdateChatDisabled() *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateChatDisabled()
+	})
+}
+
+// SetBettingDisabled sets the "betting_disabled" field.
+func (u *MemberUpsertBulk) SetBettingDisabled(v bool) *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetBettingDisabled(v)
+	})
+}
+
+// UpdateBettingDisabled sets the "betting_disabled" field to the value that was provided on create.
+func (u *MemberUpsertBulk) UpdateBettingDisabled() *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateBettingDisabled()
+	})
+}
+
+// SetWithdrawalDisabled sets the "withdrawal_disabled" field.
+func (u *MemberUpsertBulk) SetWithdrawalDisabled(v bool) *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetWithdrawalDisabled(v)
+	})
+}
+
+// UpdateWithdrawalDisabled sets the "withdrawal_disabled" field to the value that was provided on create.
+func (u *MemberUpsertBulk) UpdateWithdrawalDisabled() *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateWithdrawalDisabled()
 	})
 }
 

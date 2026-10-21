@@ -15,6 +15,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
@@ -1001,6 +1002,10 @@ func init() {
 	// agentuser.LastLoginUdidValidator is a validator for the "last_login_udid" field. It is called by the builders before save.
 	agentuser.LastLoginUdidValidator = agentuserDescLastLoginUdid.Validators[0].(func(string) error)
 	memberMixin := schema.Member{}.Mixin()
+	memberHooks := schema.Member{}.Hooks()
+	member.Hooks[0] = memberHooks[0]
+	memberInters := schema.Member{}.Interceptors()
+	member.Interceptors[0] = memberInters[0]
 	memberMixinFields1 := memberMixin[1].Fields()
 	_ = memberMixinFields1
 	memberFields := schema.Member{}.Fields()
@@ -1057,72 +1062,31 @@ func init() {
 			return nil
 		}
 	}()
-	// memberDescUsername is the schema descriptor for username field.
-	memberDescUsername := memberFields[3].Descriptor()
-	// member.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
-	member.UsernameValidator = func() func(string) error {
-		validators := memberDescUsername.Validators
+	// memberDescAgentID is the schema descriptor for agent_id field.
+	memberDescAgentID := memberFields[3].Descriptor()
+	// member.AgentIDValidator is a validator for the "agent_id" field. It is called by the builders before save.
+	member.AgentIDValidator = memberDescAgentID.Validators[0].(func(int64) error)
+	// memberDescAgentAccountID is the schema descriptor for agent_account_id field.
+	memberDescAgentAccountID := memberFields[4].Descriptor()
+	// member.AgentAccountIDValidator is a validator for the "agent_account_id" field. It is called by the builders before save.
+	member.AgentAccountIDValidator = memberDescAgentAccountID.Validators[0].(func(int64) error)
+	// memberDescInviterMemberID is the schema descriptor for inviter_member_id field.
+	memberDescInviterMemberID := memberFields[5].Descriptor()
+	// member.InviterMemberIDValidator is a validator for the "inviter_member_id" field. It is called by the builders before save.
+	member.InviterMemberIDValidator = memberDescInviterMemberID.Validators[0].(func(int64) error)
+	// memberDescInviteCode is the schema descriptor for invite_code field.
+	memberDescInviteCode := memberFields[6].Descriptor()
+	// member.InviteCodeValidator is a validator for the "invite_code" field. It is called by the builders before save.
+	member.InviteCodeValidator = func() func(string) error {
+		validators := memberDescInviteCode.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
+			validators[2].(func(string) error),
 		}
-		return func(username string) error {
+		return func(invite_code string) error {
 			for _, fn := range fns {
-				if err := fn(username); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// memberDescPhone is the schema descriptor for phone field.
-	memberDescPhone := memberFields[4].Descriptor()
-	// member.PhoneValidator is a validator for the "phone" field. It is called by the builders before save.
-	member.PhoneValidator = func() func(string) error {
-		validators := memberDescPhone.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(phone string) error {
-			for _, fn := range fns {
-				if err := fn(phone); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// memberDescEmail is the schema descriptor for email field.
-	memberDescEmail := memberFields[5].Descriptor()
-	// member.EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	member.EmailValidator = func() func(string) error {
-		validators := memberDescEmail.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(email string) error {
-			for _, fn := range fns {
-				if err := fn(email); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// memberDescPasswordHash is the schema descriptor for password_hash field.
-	memberDescPasswordHash := memberFields[6].Descriptor()
-	// member.PasswordHashValidator is a validator for the "password_hash" field. It is called by the builders before save.
-	member.PasswordHashValidator = func() func(string) error {
-		validators := memberDescPasswordHash.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(password_hash string) error {
-			for _, fn := range fns {
-				if err := fn(password_hash); err != nil {
+				if err := fn(invite_code); err != nil {
 					return err
 				}
 			}
@@ -1130,21 +1094,33 @@ func init() {
 		}
 	}()
 	// memberDescAutoLevelID is the schema descriptor for auto_level_id field.
-	memberDescAutoLevelID := memberFields[8].Descriptor()
+	memberDescAutoLevelID := memberFields[7].Descriptor()
 	// member.AutoLevelIDValidator is a validator for the "auto_level_id" field. It is called by the builders before save.
 	member.AutoLevelIDValidator = memberDescAutoLevelID.Validators[0].(func(int64) error)
 	// memberDescVipLevelID is the schema descriptor for vip_level_id field.
-	memberDescVipLevelID := memberFields[9].Descriptor()
+	memberDescVipLevelID := memberFields[8].Descriptor()
 	// member.VipLevelIDValidator is a validator for the "vip_level_id" field. It is called by the builders before save.
 	member.VipLevelIDValidator = memberDescVipLevelID.Validators[0].(func(int64) error)
 	// memberDescStatus is the schema descriptor for status field.
-	memberDescStatus := memberFields[10].Descriptor()
+	memberDescStatus := memberFields[9].Descriptor()
 	// member.DefaultStatus holds the default value on creation for the status field.
 	member.DefaultStatus = memberDescStatus.Default.(int64)
 	// member.StatusValidator is a validator for the "status" field. It is called by the builders before save.
 	member.StatusValidator = memberDescStatus.Validators[0].(func(int64) error)
+	// memberDescChatDisabled is the schema descriptor for chat_disabled field.
+	memberDescChatDisabled := memberFields[10].Descriptor()
+	// member.DefaultChatDisabled holds the default value on creation for the chat_disabled field.
+	member.DefaultChatDisabled = memberDescChatDisabled.Default.(bool)
+	// memberDescBettingDisabled is the schema descriptor for betting_disabled field.
+	memberDescBettingDisabled := memberFields[11].Descriptor()
+	// member.DefaultBettingDisabled holds the default value on creation for the betting_disabled field.
+	member.DefaultBettingDisabled = memberDescBettingDisabled.Default.(bool)
+	// memberDescWithdrawalDisabled is the schema descriptor for withdrawal_disabled field.
+	memberDescWithdrawalDisabled := memberFields[12].Descriptor()
+	// member.DefaultWithdrawalDisabled holds the default value on creation for the withdrawal_disabled field.
+	member.DefaultWithdrawalDisabled = memberDescWithdrawalDisabled.Default.(bool)
 	// memberDescRegisterMethod is the schema descriptor for register_method field.
-	memberDescRegisterMethod := memberFields[11].Descriptor()
+	memberDescRegisterMethod := memberFields[13].Descriptor()
 	// member.RegisterMethodValidator is a validator for the "register_method" field. It is called by the builders before save.
 	member.RegisterMethodValidator = func() func(string) error {
 		validators := memberDescRegisterMethod.Validators
@@ -1162,7 +1138,7 @@ func init() {
 		}
 	}()
 	// memberDescRegisterChannel is the schema descriptor for register_channel field.
-	memberDescRegisterChannel := memberFields[12].Descriptor()
+	memberDescRegisterChannel := memberFields[14].Descriptor()
 	// member.RegisterChannelValidator is a validator for the "register_channel" field. It is called by the builders before save.
 	member.RegisterChannelValidator = func() func(string) error {
 		validators := memberDescRegisterChannel.Validators
@@ -1180,25 +1156,190 @@ func init() {
 		}
 	}()
 	// memberDescRegisterIP is the schema descriptor for register_ip field.
-	memberDescRegisterIP := memberFields[13].Descriptor()
+	memberDescRegisterIP := memberFields[15].Descriptor()
 	// member.RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
 	member.RegisterIPValidator = memberDescRegisterIP.Validators[0].(func(string) error)
 	// memberDescRegisterDeviceCode is the schema descriptor for register_device_code field.
-	memberDescRegisterDeviceCode := memberFields[14].Descriptor()
+	memberDescRegisterDeviceCode := memberFields[16].Descriptor()
 	// member.RegisterDeviceCodeValidator is a validator for the "register_device_code" field. It is called by the builders before save.
 	member.RegisterDeviceCodeValidator = memberDescRegisterDeviceCode.Validators[0].(func(string) error)
 	// memberDescRegisterDomain is the schema descriptor for register_domain field.
-	memberDescRegisterDomain := memberFields[15].Descriptor()
+	memberDescRegisterDomain := memberFields[17].Descriptor()
 	// member.RegisterDomainValidator is a validator for the "register_domain" field. It is called by the builders before save.
 	member.RegisterDomainValidator = memberDescRegisterDomain.Validators[0].(func(string) error)
 	// memberDescLastLoginIP is the schema descriptor for last_login_ip field.
-	memberDescLastLoginIP := memberFields[17].Descriptor()
+	memberDescLastLoginIP := memberFields[19].Descriptor()
 	// member.LastLoginIPValidator is a validator for the "last_login_ip" field. It is called by the builders before save.
 	member.LastLoginIPValidator = memberDescLastLoginIP.Validators[0].(func(string) error)
 	// memberDescLastLoginDeviceCode is the schema descriptor for last_login_device_code field.
-	memberDescLastLoginDeviceCode := memberFields[18].Descriptor()
+	memberDescLastLoginDeviceCode := memberFields[20].Descriptor()
 	// member.LastLoginDeviceCodeValidator is a validator for the "last_login_device_code" field. It is called by the builders before save.
 	member.LastLoginDeviceCodeValidator = memberDescLastLoginDeviceCode.Validators[0].(func(string) error)
+	memberauthMixin := schema.MemberAuth{}.Mixin()
+	memberauthHooks := schema.MemberAuth{}.Hooks()
+	memberauth.Hooks[0] = memberauthHooks[0]
+	memberauthInters := schema.MemberAuth{}.Interceptors()
+	memberauth.Interceptors[0] = memberauthInters[0]
+	memberauthMixinFields1 := memberauthMixin[1].Fields()
+	_ = memberauthMixinFields1
+	memberauthFields := schema.MemberAuth{}.Fields()
+	_ = memberauthFields
+	// memberauthDescCreatedAt is the schema descriptor for created_at field.
+	memberauthDescCreatedAt := memberauthMixinFields1[0].Descriptor()
+	// memberauth.DefaultCreatedAt holds the default value on creation for the created_at field.
+	memberauth.DefaultCreatedAt = memberauthDescCreatedAt.Default.(func() time.Time)
+	// memberauthDescUpdatedAt is the schema descriptor for updated_at field.
+	memberauthDescUpdatedAt := memberauthMixinFields1[1].Descriptor()
+	// memberauth.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	memberauth.DefaultUpdatedAt = memberauthDescUpdatedAt.Default.(func() time.Time)
+	// memberauth.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	memberauth.UpdateDefaultUpdatedAt = memberauthDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// memberauthDescOperatorCode is the schema descriptor for operator_code field.
+	memberauthDescOperatorCode := memberauthFields[0].Descriptor()
+	// memberauth.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	memberauth.OperatorCodeValidator = func() func(string) error {
+		validators := memberauthDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberauthDescMemberID is the schema descriptor for member_id field.
+	memberauthDescMemberID := memberauthFields[1].Descriptor()
+	// memberauth.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
+	memberauth.MemberIDValidator = memberauthDescMemberID.Validators[0].(func(int64) error)
+	// memberauthDescUsername is the schema descriptor for username field.
+	memberauthDescUsername := memberauthFields[2].Descriptor()
+	// memberauth.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
+	memberauth.UsernameValidator = func() func(string) error {
+		validators := memberauthDescUsername.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(username string) error {
+			for _, fn := range fns {
+				if err := fn(username); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberauthDescPhoneCiphertext is the schema descriptor for phone_ciphertext field.
+	memberauthDescPhoneCiphertext := memberauthFields[3].Descriptor()
+	// memberauth.PhoneCiphertextValidator is a validator for the "phone_ciphertext" field. It is called by the builders before save.
+	memberauth.PhoneCiphertextValidator = memberauthDescPhoneCiphertext.Validators[0].(func(string) error)
+	// memberauthDescPhoneLookupHash is the schema descriptor for phone_lookup_hash field.
+	memberauthDescPhoneLookupHash := memberauthFields[4].Descriptor()
+	// memberauth.PhoneLookupHashValidator is a validator for the "phone_lookup_hash" field. It is called by the builders before save.
+	memberauth.PhoneLookupHashValidator = func() func(string) error {
+		validators := memberauthDescPhoneLookupHash.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(phone_lookup_hash string) error {
+			for _, fn := range fns {
+				if err := fn(phone_lookup_hash); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberauthDescEmailCiphertext is the schema descriptor for email_ciphertext field.
+	memberauthDescEmailCiphertext := memberauthFields[5].Descriptor()
+	// memberauth.EmailCiphertextValidator is a validator for the "email_ciphertext" field. It is called by the builders before save.
+	memberauth.EmailCiphertextValidator = memberauthDescEmailCiphertext.Validators[0].(func(string) error)
+	// memberauthDescEmailLookupHash is the schema descriptor for email_lookup_hash field.
+	memberauthDescEmailLookupHash := memberauthFields[6].Descriptor()
+	// memberauth.EmailLookupHashValidator is a validator for the "email_lookup_hash" field. It is called by the builders before save.
+	memberauth.EmailLookupHashValidator = func() func(string) error {
+		validators := memberauthDescEmailLookupHash.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(email_lookup_hash string) error {
+			for _, fn := range fns {
+				if err := fn(email_lookup_hash); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberauthDescLoginPasswordHash is the schema descriptor for login_password_hash field.
+	memberauthDescLoginPasswordHash := memberauthFields[7].Descriptor()
+	// memberauth.LoginPasswordHashValidator is a validator for the "login_password_hash" field. It is called by the builders before save.
+	memberauth.LoginPasswordHashValidator = func() func(string) error {
+		validators := memberauthDescLoginPasswordHash.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(login_password_hash string) error {
+			for _, fn := range fns {
+				if err := fn(login_password_hash); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberauthDescWithdrawalPasswordHash is the schema descriptor for withdrawal_password_hash field.
+	memberauthDescWithdrawalPasswordHash := memberauthFields[8].Descriptor()
+	// memberauth.WithdrawalPasswordHashValidator is a validator for the "withdrawal_password_hash" field. It is called by the builders before save.
+	memberauth.WithdrawalPasswordHashValidator = func() func(string) error {
+		validators := memberauthDescWithdrawalPasswordHash.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(withdrawal_password_hash string) error {
+			for _, fn := range fns {
+				if err := fn(withdrawal_password_hash); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberauthDescSmsCodeErrorCount is the schema descriptor for sms_code_error_count field.
+	memberauthDescSmsCodeErrorCount := memberauthFields[9].Descriptor()
+	// memberauth.DefaultSmsCodeErrorCount holds the default value on creation for the sms_code_error_count field.
+	memberauth.DefaultSmsCodeErrorCount = memberauthDescSmsCodeErrorCount.Default.(int64)
+	// memberauth.SmsCodeErrorCountValidator is a validator for the "sms_code_error_count" field. It is called by the builders before save.
+	memberauth.SmsCodeErrorCountValidator = memberauthDescSmsCodeErrorCount.Validators[0].(func(int64) error)
+	// memberauthDescEmailCodeErrorCount is the schema descriptor for email_code_error_count field.
+	memberauthDescEmailCodeErrorCount := memberauthFields[10].Descriptor()
+	// memberauth.DefaultEmailCodeErrorCount holds the default value on creation for the email_code_error_count field.
+	memberauth.DefaultEmailCodeErrorCount = memberauthDescEmailCodeErrorCount.Default.(int64)
+	// memberauth.EmailCodeErrorCountValidator is a validator for the "email_code_error_count" field. It is called by the builders before save.
+	memberauth.EmailCodeErrorCountValidator = memberauthDescEmailCodeErrorCount.Validators[0].(func(int64) error)
+	// memberauthDescLoginPasswordErrorCount is the schema descriptor for login_password_error_count field.
+	memberauthDescLoginPasswordErrorCount := memberauthFields[11].Descriptor()
+	// memberauth.DefaultLoginPasswordErrorCount holds the default value on creation for the login_password_error_count field.
+	memberauth.DefaultLoginPasswordErrorCount = memberauthDescLoginPasswordErrorCount.Default.(int64)
+	// memberauth.LoginPasswordErrorCountValidator is a validator for the "login_password_error_count" field. It is called by the builders before save.
+	memberauth.LoginPasswordErrorCountValidator = memberauthDescLoginPasswordErrorCount.Validators[0].(func(int64) error)
+	// memberauthDescWithdrawalPasswordErrorCount is the schema descriptor for withdrawal_password_error_count field.
+	memberauthDescWithdrawalPasswordErrorCount := memberauthFields[12].Descriptor()
+	// memberauth.DefaultWithdrawalPasswordErrorCount holds the default value on creation for the withdrawal_password_error_count field.
+	memberauth.DefaultWithdrawalPasswordErrorCount = memberauthDescWithdrawalPasswordErrorCount.Default.(int64)
+	// memberauth.WithdrawalPasswordErrorCountValidator is a validator for the "withdrawal_password_error_count" field. It is called by the builders before save.
+	memberauth.WithdrawalPasswordErrorCountValidator = memberauthDescWithdrawalPasswordErrorCount.Validators[0].(func(int64) error)
 	memberautolevelMixin := schema.MemberAutoLevel{}.Mixin()
 	memberautolevelHooks := schema.MemberAutoLevel{}.Hooks()
 	memberautolevel.Hooks[0] = memberautolevelHooks[0]
@@ -1431,6 +1572,10 @@ func init() {
 		}
 	}()
 	memberprofileMixin := schema.MemberProfile{}.Mixin()
+	memberprofileHooks := schema.MemberProfile{}.Hooks()
+	memberprofile.Hooks[0] = memberprofileHooks[0]
+	memberprofileInters := schema.MemberProfile{}.Interceptors()
+	memberprofile.Interceptors[0] = memberprofileInters[0]
 	memberprofileMixinFields1 := memberprofileMixin[1].Fields()
 	_ = memberprofileMixinFields1
 	memberprofileFields := schema.MemberProfile{}.Fields()
@@ -1445,12 +1590,38 @@ func init() {
 	memberprofile.DefaultUpdatedAt = memberprofileDescUpdatedAt.Default.(func() time.Time)
 	// memberprofile.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	memberprofile.UpdateDefaultUpdatedAt = memberprofileDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// memberprofileDescOperatorCode is the schema descriptor for operator_code field.
+	memberprofileDescOperatorCode := memberprofileFields[0].Descriptor()
+	// memberprofile.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	memberprofile.OperatorCodeValidator = func() func(string) error {
+		validators := memberprofileDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// memberprofileDescMemberID is the schema descriptor for member_id field.
-	memberprofileDescMemberID := memberprofileFields[0].Descriptor()
+	memberprofileDescMemberID := memberprofileFields[1].Descriptor()
 	// memberprofile.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
 	memberprofile.MemberIDValidator = memberprofileDescMemberID.Validators[0].(func(int64) error)
+	// memberprofileDescAvatarURL is the schema descriptor for avatar_url field.
+	memberprofileDescAvatarURL := memberprofileFields[2].Descriptor()
+	// memberprofile.AvatarURLValidator is a validator for the "avatar_url" field. It is called by the builders before save.
+	memberprofile.AvatarURLValidator = memberprofileDescAvatarURL.Validators[0].(func(string) error)
+	// memberprofileDescAvatarFrameURL is the schema descriptor for avatar_frame_url field.
+	memberprofileDescAvatarFrameURL := memberprofileFields[3].Descriptor()
+	// memberprofile.AvatarFrameURLValidator is a validator for the "avatar_frame_url" field. It is called by the builders before save.
+	memberprofile.AvatarFrameURLValidator = memberprofileDescAvatarFrameURL.Validators[0].(func(string) error)
 	// memberprofileDescNickname is the schema descriptor for nickname field.
-	memberprofileDescNickname := memberprofileFields[1].Descriptor()
+	memberprofileDescNickname := memberprofileFields[4].Descriptor()
 	// memberprofile.NicknameValidator is a validator for the "nickname" field. It is called by the builders before save.
 	memberprofile.NicknameValidator = func() func(string) error {
 		validators := memberprofileDescNickname.Validators
@@ -1467,54 +1638,14 @@ func init() {
 			return nil
 		}
 	}()
-	// memberprofileDescAvatarURL is the schema descriptor for avatar_url field.
-	memberprofileDescAvatarURL := memberprofileFields[2].Descriptor()
-	// memberprofile.AvatarURLValidator is a validator for the "avatar_url" field. It is called by the builders before save.
-	memberprofile.AvatarURLValidator = memberprofileDescAvatarURL.Validators[0].(func(string) error)
-	// memberprofileDescRealName is the schema descriptor for real_name field.
-	memberprofileDescRealName := memberprofileFields[4].Descriptor()
-	// memberprofile.RealNameValidator is a validator for the "real_name" field. It is called by the builders before save.
-	memberprofile.RealNameValidator = func() func(string) error {
-		validators := memberprofileDescRealName.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(real_name string) error {
-			for _, fn := range fns {
-				if err := fn(real_name); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// memberprofileDescIdentityNumber is the schema descriptor for identity_number field.
-	memberprofileDescIdentityNumber := memberprofileFields[5].Descriptor()
-	// memberprofile.IdentityNumberValidator is a validator for the "identity_number" field. It is called by the builders before save.
-	memberprofile.IdentityNumberValidator = func() func(string) error {
-		validators := memberprofileDescIdentityNumber.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(identity_number string) error {
-			for _, fn := range fns {
-				if err := fn(identity_number); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
 	// memberprofileDescGender is the schema descriptor for gender field.
-	memberprofileDescGender := memberprofileFields[7].Descriptor()
+	memberprofileDescGender := memberprofileFields[8].Descriptor()
 	// memberprofile.DefaultGender holds the default value on creation for the gender field.
 	memberprofile.DefaultGender = memberprofileDescGender.Default.(int64)
 	// memberprofile.GenderValidator is a validator for the "gender" field. It is called by the builders before save.
 	memberprofile.GenderValidator = memberprofileDescGender.Validators[0].(func(int64) error)
 	// memberprofileDescRegionCode is the schema descriptor for region_code field.
-	memberprofileDescRegionCode := memberprofileFields[8].Descriptor()
+	memberprofileDescRegionCode := memberprofileFields[9].Descriptor()
 	// memberprofile.RegionCodeValidator is a validator for the "region_code" field. It is called by the builders before save.
 	memberprofile.RegionCodeValidator = func() func(string) error {
 		validators := memberprofileDescRegionCode.Validators

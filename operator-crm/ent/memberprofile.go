@@ -23,18 +23,20 @@ type MemberProfile struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// 所属厅业务编码
+	OperatorCode string `json:"operator_code,omitempty"`
 	// 所属会员ID
 	MemberID int64 `json:"member_id,omitempty"`
+	// 会员头像URL, 使用系统预设资源
+	AvatarURL string `json:"avatar_url,omitempty"`
+	// 会员头像框URL, 使用系统预设资源
+	AvatarFrameURL string `json:"avatar_frame_url,omitempty"`
 	// 会员昵称
 	Nickname string `json:"nickname,omitempty"`
-	// 会员头像URL
-	AvatarURL string `json:"avatar_url,omitempty"`
-	// 会员头像框URL
-	AvatarFrameURL *string `json:"avatar_frame_url,omitempty"`
-	// 会员真实姓名
-	RealName *string `json:"real_name,omitempty"`
-	// 会员身份证件号码或CPF
-	IdentityNumber *string `json:"-"`
+	// 会员真实姓名加密密文
+	RealNameCiphertext *string `json:"-"`
+	// 会员身份证件号码或CPF加密密文
+	IdentityNumberCiphertext *string `json:"-"`
 	// 会员生日
 	Birthday *time.Time `json:"birthday,omitempty"`
 	// 性别: 0未设置, 1男, 2女, 3保密
@@ -76,7 +78,7 @@ func (*MemberProfile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case memberprofile.FieldID, memberprofile.FieldMemberID, memberprofile.FieldGender:
 			values[i] = new(sql.NullInt64)
-		case memberprofile.FieldNickname, memberprofile.FieldAvatarURL, memberprofile.FieldAvatarFrameURL, memberprofile.FieldRealName, memberprofile.FieldIdentityNumber, memberprofile.FieldRegionCode, memberprofile.FieldRemark:
+		case memberprofile.FieldOperatorCode, memberprofile.FieldAvatarURL, memberprofile.FieldAvatarFrameURL, memberprofile.FieldNickname, memberprofile.FieldRealNameCiphertext, memberprofile.FieldIdentityNumberCiphertext, memberprofile.FieldRegionCode, memberprofile.FieldRemark:
 			values[i] = new(sql.NullString)
 		case memberprofile.FieldCreatedAt, memberprofile.FieldUpdatedAt, memberprofile.FieldBirthday:
 			values[i] = new(sql.NullTime)
@@ -113,17 +115,17 @@ func (_m *MemberProfile) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
+		case memberprofile.FieldOperatorCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
+			} else if value.Valid {
+				_m.OperatorCode = value.String
+			}
 		case memberprofile.FieldMemberID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field member_id", values[i])
 			} else if value.Valid {
 				_m.MemberID = value.Int64
-			}
-		case memberprofile.FieldNickname:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field nickname", values[i])
-			} else if value.Valid {
-				_m.Nickname = value.String
 			}
 		case memberprofile.FieldAvatarURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -135,22 +137,27 @@ func (_m *MemberProfile) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field avatar_frame_url", values[i])
 			} else if value.Valid {
-				_m.AvatarFrameURL = new(string)
-				*_m.AvatarFrameURL = value.String
+				_m.AvatarFrameURL = value.String
 			}
-		case memberprofile.FieldRealName:
+		case memberprofile.FieldNickname:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field real_name", values[i])
+				return fmt.Errorf("unexpected type %T for field nickname", values[i])
 			} else if value.Valid {
-				_m.RealName = new(string)
-				*_m.RealName = value.String
+				_m.Nickname = value.String
 			}
-		case memberprofile.FieldIdentityNumber:
+		case memberprofile.FieldRealNameCiphertext:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field identity_number", values[i])
+				return fmt.Errorf("unexpected type %T for field real_name_ciphertext", values[i])
 			} else if value.Valid {
-				_m.IdentityNumber = new(string)
-				*_m.IdentityNumber = value.String
+				_m.RealNameCiphertext = new(string)
+				*_m.RealNameCiphertext = value.String
+			}
+		case memberprofile.FieldIdentityNumberCiphertext:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field identity_number_ciphertext", values[i])
+			} else if value.Valid {
+				_m.IdentityNumberCiphertext = new(string)
+				*_m.IdentityNumberCiphertext = value.String
 			}
 		case memberprofile.FieldBirthday:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -226,26 +233,24 @@ func (_m *MemberProfile) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
+	builder.WriteString("operator_code=")
+	builder.WriteString(_m.OperatorCode)
+	builder.WriteString(", ")
 	builder.WriteString("member_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.MemberID))
-	builder.WriteString(", ")
-	builder.WriteString("nickname=")
-	builder.WriteString(_m.Nickname)
 	builder.WriteString(", ")
 	builder.WriteString("avatar_url=")
 	builder.WriteString(_m.AvatarURL)
 	builder.WriteString(", ")
-	if v := _m.AvatarFrameURL; v != nil {
-		builder.WriteString("avatar_frame_url=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("avatar_frame_url=")
+	builder.WriteString(_m.AvatarFrameURL)
 	builder.WriteString(", ")
-	if v := _m.RealName; v != nil {
-		builder.WriteString("real_name=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("nickname=")
+	builder.WriteString(_m.Nickname)
 	builder.WriteString(", ")
-	builder.WriteString("identity_number=<sensitive>")
+	builder.WriteString("real_name_ciphertext=<sensitive>")
+	builder.WriteString(", ")
+	builder.WriteString("identity_number_ciphertext=<sensitive>")
 	builder.WriteString(", ")
 	if v := _m.Birthday; v != nil {
 		builder.WriteString("birthday=")

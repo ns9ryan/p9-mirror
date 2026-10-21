@@ -81,29 +81,24 @@ func Code(v string) predicate.Member {
 	return predicate.Member(sql.FieldEQ(FieldCode, v))
 }
 
-// Username applies equality check predicate on the "username" field. It's identical to UsernameEQ.
-func Username(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldUsername, v))
+// AgentID applies equality check predicate on the "agent_id" field. It's identical to AgentIDEQ.
+func AgentID(v int64) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldAgentID, v))
 }
 
-// Phone applies equality check predicate on the "phone" field. It's identical to PhoneEQ.
-func Phone(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldPhone, v))
+// AgentAccountID applies equality check predicate on the "agent_account_id" field. It's identical to AgentAccountIDEQ.
+func AgentAccountID(v int64) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldAgentAccountID, v))
 }
 
-// Email applies equality check predicate on the "email" field. It's identical to EmailEQ.
-func Email(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldEmail, v))
+// InviterMemberID applies equality check predicate on the "inviter_member_id" field. It's identical to InviterMemberIDEQ.
+func InviterMemberID(v int64) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldInviterMemberID, v))
 }
 
-// PasswordHash applies equality check predicate on the "password_hash" field. It's identical to PasswordHashEQ.
-func PasswordHash(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldPasswordHash, v))
-}
-
-// AgentGlobalID applies equality check predicate on the "agent_global_id" field. It's identical to AgentGlobalIDEQ.
-func AgentGlobalID(v uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldAgentGlobalID, v))
+// InviteCode applies equality check predicate on the "invite_code" field. It's identical to InviteCodeEQ.
+func InviteCode(v string) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldInviteCode, v))
 }
 
 // AutoLevelID applies equality check predicate on the "auto_level_id" field. It's identical to AutoLevelIDEQ.
@@ -119,6 +114,21 @@ func VipLevelID(v int64) predicate.Member {
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
 func Status(v int64) predicate.Member {
 	return predicate.Member(sql.FieldEQ(FieldStatus, v))
+}
+
+// ChatDisabled applies equality check predicate on the "chat_disabled" field. It's identical to ChatDisabledEQ.
+func ChatDisabled(v bool) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldChatDisabled, v))
+}
+
+// BettingDisabled applies equality check predicate on the "betting_disabled" field. It's identical to BettingDisabledEQ.
+func BettingDisabled(v bool) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldBettingDisabled, v))
+}
+
+// WithdrawalDisabled applies equality check predicate on the "withdrawal_disabled" field. It's identical to WithdrawalDisabledEQ.
+func WithdrawalDisabled(v bool) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldWithdrawalDisabled, v))
 }
 
 // RegisterMethod applies equality check predicate on the "register_method" field. It's identical to RegisterMethodEQ.
@@ -411,344 +421,149 @@ func CodeContainsFold(v string) predicate.Member {
 	return predicate.Member(sql.FieldContainsFold(FieldCode, v))
 }
 
-// UsernameEQ applies the EQ predicate on the "username" field.
-func UsernameEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldUsername, v))
+// AgentIDEQ applies the EQ predicate on the "agent_id" field.
+func AgentIDEQ(v int64) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldAgentID, v))
 }
 
-// UsernameNEQ applies the NEQ predicate on the "username" field.
-func UsernameNEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldNEQ(FieldUsername, v))
+// AgentIDNEQ applies the NEQ predicate on the "agent_id" field.
+func AgentIDNEQ(v int64) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldAgentID, v))
 }
 
-// UsernameIn applies the In predicate on the "username" field.
-func UsernameIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldIn(FieldUsername, vs...))
+// AgentIDIn applies the In predicate on the "agent_id" field.
+func AgentIDIn(vs ...int64) predicate.Member {
+	return predicate.Member(sql.FieldIn(FieldAgentID, vs...))
 }
 
-// UsernameNotIn applies the NotIn predicate on the "username" field.
-func UsernameNotIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldNotIn(FieldUsername, vs...))
+// AgentIDNotIn applies the NotIn predicate on the "agent_id" field.
+func AgentIDNotIn(vs ...int64) predicate.Member {
+	return predicate.Member(sql.FieldNotIn(FieldAgentID, vs...))
 }
 
-// UsernameGT applies the GT predicate on the "username" field.
-func UsernameGT(v string) predicate.Member {
-	return predicate.Member(sql.FieldGT(FieldUsername, v))
+// AgentAccountIDEQ applies the EQ predicate on the "agent_account_id" field.
+func AgentAccountIDEQ(v int64) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldAgentAccountID, v))
 }
 
-// UsernameGTE applies the GTE predicate on the "username" field.
-func UsernameGTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldGTE(FieldUsername, v))
+// AgentAccountIDNEQ applies the NEQ predicate on the "agent_account_id" field.
+func AgentAccountIDNEQ(v int64) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldAgentAccountID, v))
 }
 
-// UsernameLT applies the LT predicate on the "username" field.
-func UsernameLT(v string) predicate.Member {
-	return predicate.Member(sql.FieldLT(FieldUsername, v))
+// AgentAccountIDIn applies the In predicate on the "agent_account_id" field.
+func AgentAccountIDIn(vs ...int64) predicate.Member {
+	return predicate.Member(sql.FieldIn(FieldAgentAccountID, vs...))
 }
 
-// UsernameLTE applies the LTE predicate on the "username" field.
-func UsernameLTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldLTE(FieldUsername, v))
+// AgentAccountIDNotIn applies the NotIn predicate on the "agent_account_id" field.
+func AgentAccountIDNotIn(vs ...int64) predicate.Member {
+	return predicate.Member(sql.FieldNotIn(FieldAgentAccountID, vs...))
 }
 
-// UsernameContains applies the Contains predicate on the "username" field.
-func UsernameContains(v string) predicate.Member {
-	return predicate.Member(sql.FieldContains(FieldUsername, v))
+// AgentAccountIDIsNil applies the IsNil predicate on the "agent_account_id" field.
+func AgentAccountIDIsNil() predicate.Member {
+	return predicate.Member(sql.FieldIsNull(FieldAgentAccountID))
 }
 
-// UsernameHasPrefix applies the HasPrefix predicate on the "username" field.
-func UsernameHasPrefix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasPrefix(FieldUsername, v))
+// AgentAccountIDNotNil applies the NotNil predicate on the "agent_account_id" field.
+func AgentAccountIDNotNil() predicate.Member {
+	return predicate.Member(sql.FieldNotNull(FieldAgentAccountID))
 }
 
-// UsernameHasSuffix applies the HasSuffix predicate on the "username" field.
-func UsernameHasSuffix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasSuffix(FieldUsername, v))
+// InviterMemberIDEQ applies the EQ predicate on the "inviter_member_id" field.
+func InviterMemberIDEQ(v int64) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldInviterMemberID, v))
 }
 
-// UsernameIsNil applies the IsNil predicate on the "username" field.
-func UsernameIsNil() predicate.Member {
-	return predicate.Member(sql.FieldIsNull(FieldUsername))
+// InviterMemberIDNEQ applies the NEQ predicate on the "inviter_member_id" field.
+func InviterMemberIDNEQ(v int64) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldInviterMemberID, v))
 }
 
-// UsernameNotNil applies the NotNil predicate on the "username" field.
-func UsernameNotNil() predicate.Member {
-	return predicate.Member(sql.FieldNotNull(FieldUsername))
+// InviterMemberIDIn applies the In predicate on the "inviter_member_id" field.
+func InviterMemberIDIn(vs ...int64) predicate.Member {
+	return predicate.Member(sql.FieldIn(FieldInviterMemberID, vs...))
 }
 
-// UsernameEqualFold applies the EqualFold predicate on the "username" field.
-func UsernameEqualFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldEqualFold(FieldUsername, v))
+// InviterMemberIDNotIn applies the NotIn predicate on the "inviter_member_id" field.
+func InviterMemberIDNotIn(vs ...int64) predicate.Member {
+	return predicate.Member(sql.FieldNotIn(FieldInviterMemberID, vs...))
 }
 
-// UsernameContainsFold applies the ContainsFold predicate on the "username" field.
-func UsernameContainsFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldContainsFold(FieldUsername, v))
+// InviterMemberIDIsNil applies the IsNil predicate on the "inviter_member_id" field.
+func InviterMemberIDIsNil() predicate.Member {
+	return predicate.Member(sql.FieldIsNull(FieldInviterMemberID))
 }
 
-// PhoneEQ applies the EQ predicate on the "phone" field.
-func PhoneEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldPhone, v))
+// InviterMemberIDNotNil applies the NotNil predicate on the "inviter_member_id" field.
+func InviterMemberIDNotNil() predicate.Member {
+	return predicate.Member(sql.FieldNotNull(FieldInviterMemberID))
 }
 
-// PhoneNEQ applies the NEQ predicate on the "phone" field.
-func PhoneNEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldNEQ(FieldPhone, v))
+// InviteCodeEQ applies the EQ predicate on the "invite_code" field.
+func InviteCodeEQ(v string) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldInviteCode, v))
 }
 
-// PhoneIn applies the In predicate on the "phone" field.
-func PhoneIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldIn(FieldPhone, vs...))
+// InviteCodeNEQ applies the NEQ predicate on the "invite_code" field.
+func InviteCodeNEQ(v string) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldInviteCode, v))
 }
 
-// PhoneNotIn applies the NotIn predicate on the "phone" field.
-func PhoneNotIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldNotIn(FieldPhone, vs...))
+// InviteCodeIn applies the In predicate on the "invite_code" field.
+func InviteCodeIn(vs ...string) predicate.Member {
+	return predicate.Member(sql.FieldIn(FieldInviteCode, vs...))
 }
 
-// PhoneGT applies the GT predicate on the "phone" field.
-func PhoneGT(v string) predicate.Member {
-	return predicate.Member(sql.FieldGT(FieldPhone, v))
+// InviteCodeNotIn applies the NotIn predicate on the "invite_code" field.
+func InviteCodeNotIn(vs ...string) predicate.Member {
+	return predicate.Member(sql.FieldNotIn(FieldInviteCode, vs...))
 }
 
-// PhoneGTE applies the GTE predicate on the "phone" field.
-func PhoneGTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldGTE(FieldPhone, v))
+// InviteCodeGT applies the GT predicate on the "invite_code" field.
+func InviteCodeGT(v string) predicate.Member {
+	return predicate.Member(sql.FieldGT(FieldInviteCode, v))
 }
 
-// PhoneLT applies the LT predicate on the "phone" field.
-func PhoneLT(v string) predicate.Member {
-	return predicate.Member(sql.FieldLT(FieldPhone, v))
+// InviteCodeGTE applies the GTE predicate on the "invite_code" field.
+func InviteCodeGTE(v string) predicate.Member {
+	return predicate.Member(sql.FieldGTE(FieldInviteCode, v))
 }
 
-// PhoneLTE applies the LTE predicate on the "phone" field.
-func PhoneLTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldLTE(FieldPhone, v))
+// InviteCodeLT applies the LT predicate on the "invite_code" field.
+func InviteCodeLT(v string) predicate.Member {
+	return predicate.Member(sql.FieldLT(FieldInviteCode, v))
 }
 
-// PhoneContains applies the Contains predicate on the "phone" field.
-func PhoneContains(v string) predicate.Member {
-	return predicate.Member(sql.FieldContains(FieldPhone, v))
+// InviteCodeLTE applies the LTE predicate on the "invite_code" field.
+func InviteCodeLTE(v string) predicate.Member {
+	return predicate.Member(sql.FieldLTE(FieldInviteCode, v))
 }
 
-// PhoneHasPrefix applies the HasPrefix predicate on the "phone" field.
-func PhoneHasPrefix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasPrefix(FieldPhone, v))
+// InviteCodeContains applies the Contains predicate on the "invite_code" field.
+func InviteCodeContains(v string) predicate.Member {
+	return predicate.Member(sql.FieldContains(FieldInviteCode, v))
 }
 
-// PhoneHasSuffix applies the HasSuffix predicate on the "phone" field.
-func PhoneHasSuffix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasSuffix(FieldPhone, v))
+// InviteCodeHasPrefix applies the HasPrefix predicate on the "invite_code" field.
+func InviteCodeHasPrefix(v string) predicate.Member {
+	return predicate.Member(sql.FieldHasPrefix(FieldInviteCode, v))
 }
 
-// PhoneIsNil applies the IsNil predicate on the "phone" field.
-func PhoneIsNil() predicate.Member {
-	return predicate.Member(sql.FieldIsNull(FieldPhone))
+// InviteCodeHasSuffix applies the HasSuffix predicate on the "invite_code" field.
+func InviteCodeHasSuffix(v string) predicate.Member {
+	return predicate.Member(sql.FieldHasSuffix(FieldInviteCode, v))
 }
 
-// PhoneNotNil applies the NotNil predicate on the "phone" field.
-func PhoneNotNil() predicate.Member {
-	return predicate.Member(sql.FieldNotNull(FieldPhone))
+// InviteCodeEqualFold applies the EqualFold predicate on the "invite_code" field.
+func InviteCodeEqualFold(v string) predicate.Member {
+	return predicate.Member(sql.FieldEqualFold(FieldInviteCode, v))
 }
 
-// PhoneEqualFold applies the EqualFold predicate on the "phone" field.
-func PhoneEqualFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldEqualFold(FieldPhone, v))
-}
-
-// PhoneContainsFold applies the ContainsFold predicate on the "phone" field.
-func PhoneContainsFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldContainsFold(FieldPhone, v))
-}
-
-// EmailEQ applies the EQ predicate on the "email" field.
-func EmailEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldEmail, v))
-}
-
-// EmailNEQ applies the NEQ predicate on the "email" field.
-func EmailNEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldNEQ(FieldEmail, v))
-}
-
-// EmailIn applies the In predicate on the "email" field.
-func EmailIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldIn(FieldEmail, vs...))
-}
-
-// EmailNotIn applies the NotIn predicate on the "email" field.
-func EmailNotIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldNotIn(FieldEmail, vs...))
-}
-
-// EmailGT applies the GT predicate on the "email" field.
-func EmailGT(v string) predicate.Member {
-	return predicate.Member(sql.FieldGT(FieldEmail, v))
-}
-
-// EmailGTE applies the GTE predicate on the "email" field.
-func EmailGTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldGTE(FieldEmail, v))
-}
-
-// EmailLT applies the LT predicate on the "email" field.
-func EmailLT(v string) predicate.Member {
-	return predicate.Member(sql.FieldLT(FieldEmail, v))
-}
-
-// EmailLTE applies the LTE predicate on the "email" field.
-func EmailLTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldLTE(FieldEmail, v))
-}
-
-// EmailContains applies the Contains predicate on the "email" field.
-func EmailContains(v string) predicate.Member {
-	return predicate.Member(sql.FieldContains(FieldEmail, v))
-}
-
-// EmailHasPrefix applies the HasPrefix predicate on the "email" field.
-func EmailHasPrefix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasPrefix(FieldEmail, v))
-}
-
-// EmailHasSuffix applies the HasSuffix predicate on the "email" field.
-func EmailHasSuffix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasSuffix(FieldEmail, v))
-}
-
-// EmailIsNil applies the IsNil predicate on the "email" field.
-func EmailIsNil() predicate.Member {
-	return predicate.Member(sql.FieldIsNull(FieldEmail))
-}
-
-// EmailNotNil applies the NotNil predicate on the "email" field.
-func EmailNotNil() predicate.Member {
-	return predicate.Member(sql.FieldNotNull(FieldEmail))
-}
-
-// EmailEqualFold applies the EqualFold predicate on the "email" field.
-func EmailEqualFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldEqualFold(FieldEmail, v))
-}
-
-// EmailContainsFold applies the ContainsFold predicate on the "email" field.
-func EmailContainsFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldContainsFold(FieldEmail, v))
-}
-
-// PasswordHashEQ applies the EQ predicate on the "password_hash" field.
-func PasswordHashEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldPasswordHash, v))
-}
-
-// PasswordHashNEQ applies the NEQ predicate on the "password_hash" field.
-func PasswordHashNEQ(v string) predicate.Member {
-	return predicate.Member(sql.FieldNEQ(FieldPasswordHash, v))
-}
-
-// PasswordHashIn applies the In predicate on the "password_hash" field.
-func PasswordHashIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldIn(FieldPasswordHash, vs...))
-}
-
-// PasswordHashNotIn applies the NotIn predicate on the "password_hash" field.
-func PasswordHashNotIn(vs ...string) predicate.Member {
-	return predicate.Member(sql.FieldNotIn(FieldPasswordHash, vs...))
-}
-
-// PasswordHashGT applies the GT predicate on the "password_hash" field.
-func PasswordHashGT(v string) predicate.Member {
-	return predicate.Member(sql.FieldGT(FieldPasswordHash, v))
-}
-
-// PasswordHashGTE applies the GTE predicate on the "password_hash" field.
-func PasswordHashGTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldGTE(FieldPasswordHash, v))
-}
-
-// PasswordHashLT applies the LT predicate on the "password_hash" field.
-func PasswordHashLT(v string) predicate.Member {
-	return predicate.Member(sql.FieldLT(FieldPasswordHash, v))
-}
-
-// PasswordHashLTE applies the LTE predicate on the "password_hash" field.
-func PasswordHashLTE(v string) predicate.Member {
-	return predicate.Member(sql.FieldLTE(FieldPasswordHash, v))
-}
-
-// PasswordHashContains applies the Contains predicate on the "password_hash" field.
-func PasswordHashContains(v string) predicate.Member {
-	return predicate.Member(sql.FieldContains(FieldPasswordHash, v))
-}
-
-// PasswordHashHasPrefix applies the HasPrefix predicate on the "password_hash" field.
-func PasswordHashHasPrefix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasPrefix(FieldPasswordHash, v))
-}
-
-// PasswordHashHasSuffix applies the HasSuffix predicate on the "password_hash" field.
-func PasswordHashHasSuffix(v string) predicate.Member {
-	return predicate.Member(sql.FieldHasSuffix(FieldPasswordHash, v))
-}
-
-// PasswordHashIsNil applies the IsNil predicate on the "password_hash" field.
-func PasswordHashIsNil() predicate.Member {
-	return predicate.Member(sql.FieldIsNull(FieldPasswordHash))
-}
-
-// PasswordHashNotNil applies the NotNil predicate on the "password_hash" field.
-func PasswordHashNotNil() predicate.Member {
-	return predicate.Member(sql.FieldNotNull(FieldPasswordHash))
-}
-
-// PasswordHashEqualFold applies the EqualFold predicate on the "password_hash" field.
-func PasswordHashEqualFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldEqualFold(FieldPasswordHash, v))
-}
-
-// PasswordHashContainsFold applies the ContainsFold predicate on the "password_hash" field.
-func PasswordHashContainsFold(v string) predicate.Member {
-	return predicate.Member(sql.FieldContainsFold(FieldPasswordHash, v))
-}
-
-// AgentGlobalIDEQ applies the EQ predicate on the "agent_global_id" field.
-func AgentGlobalIDEQ(v uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldEQ(FieldAgentGlobalID, v))
-}
-
-// AgentGlobalIDNEQ applies the NEQ predicate on the "agent_global_id" field.
-func AgentGlobalIDNEQ(v uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldNEQ(FieldAgentGlobalID, v))
-}
-
-// AgentGlobalIDIn applies the In predicate on the "agent_global_id" field.
-func AgentGlobalIDIn(vs ...uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldIn(FieldAgentGlobalID, vs...))
-}
-
-// AgentGlobalIDNotIn applies the NotIn predicate on the "agent_global_id" field.
-func AgentGlobalIDNotIn(vs ...uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldNotIn(FieldAgentGlobalID, vs...))
-}
-
-// AgentGlobalIDGT applies the GT predicate on the "agent_global_id" field.
-func AgentGlobalIDGT(v uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldGT(FieldAgentGlobalID, v))
-}
-
-// AgentGlobalIDGTE applies the GTE predicate on the "agent_global_id" field.
-func AgentGlobalIDGTE(v uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldGTE(FieldAgentGlobalID, v))
-}
-
-// AgentGlobalIDLT applies the LT predicate on the "agent_global_id" field.
-func AgentGlobalIDLT(v uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldLT(FieldAgentGlobalID, v))
-}
-
-// AgentGlobalIDLTE applies the LTE predicate on the "agent_global_id" field.
-func AgentGlobalIDLTE(v uuid.UUID) predicate.Member {
-	return predicate.Member(sql.FieldLTE(FieldAgentGlobalID, v))
+// InviteCodeContainsFold applies the ContainsFold predicate on the "invite_code" field.
+func InviteCodeContainsFold(v string) predicate.Member {
+	return predicate.Member(sql.FieldContainsFold(FieldInviteCode, v))
 }
 
 // AutoLevelIDEQ applies the EQ predicate on the "auto_level_id" field.
@@ -829,6 +644,36 @@ func StatusLT(v int64) predicate.Member {
 // StatusLTE applies the LTE predicate on the "status" field.
 func StatusLTE(v int64) predicate.Member {
 	return predicate.Member(sql.FieldLTE(FieldStatus, v))
+}
+
+// ChatDisabledEQ applies the EQ predicate on the "chat_disabled" field.
+func ChatDisabledEQ(v bool) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldChatDisabled, v))
+}
+
+// ChatDisabledNEQ applies the NEQ predicate on the "chat_disabled" field.
+func ChatDisabledNEQ(v bool) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldChatDisabled, v))
+}
+
+// BettingDisabledEQ applies the EQ predicate on the "betting_disabled" field.
+func BettingDisabledEQ(v bool) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldBettingDisabled, v))
+}
+
+// BettingDisabledNEQ applies the NEQ predicate on the "betting_disabled" field.
+func BettingDisabledNEQ(v bool) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldBettingDisabled, v))
+}
+
+// WithdrawalDisabledEQ applies the EQ predicate on the "withdrawal_disabled" field.
+func WithdrawalDisabledEQ(v bool) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldWithdrawalDisabled, v))
+}
+
+// WithdrawalDisabledNEQ applies the NEQ predicate on the "withdrawal_disabled" field.
+func WithdrawalDisabledNEQ(v bool) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldWithdrawalDisabled, v))
 }
 
 // RegisterMethodEQ applies the EQ predicate on the "register_method" field.
@@ -1386,6 +1231,98 @@ func LastLoginDeviceCodeContainsFold(v string) predicate.Member {
 	return predicate.Member(sql.FieldContainsFold(FieldLastLoginDeviceCode, v))
 }
 
+// HasAgent applies the HasEdge predicate on the "agent" edge.
+func HasAgent() predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, AgentTable, AgentColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAgentWith applies the HasEdge predicate on the "agent" edge with a given conditions (other predicates).
+func HasAgentWith(preds ...predicate.AgentUser) predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := newAgentStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAgentAccount applies the HasEdge predicate on the "agent_account" edge.
+func HasAgentAccount() predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, AgentAccountTable, AgentAccountColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAgentAccountWith applies the HasEdge predicate on the "agent_account" edge with a given conditions (other predicates).
+func HasAgentAccountWith(preds ...predicate.AgentUser) predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := newAgentAccountStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasInvitedMembers applies the HasEdge predicate on the "invited_members" edge.
+func HasInvitedMembers() predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, InvitedMembersTable, InvitedMembersColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasInvitedMembersWith applies the HasEdge predicate on the "invited_members" edge with a given conditions (other predicates).
+func HasInvitedMembersWith(preds ...predicate.Member) predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := newInvitedMembersStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasInviter applies the HasEdge predicate on the "inviter" edge.
+func HasInviter() predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, InviterTable, InviterColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasInviterWith applies the HasEdge predicate on the "inviter" edge with a given conditions (other predicates).
+func HasInviterWith(preds ...predicate.Member) predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := newInviterStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasAutoLevel applies the HasEdge predicate on the "auto_level" edge.
 func HasAutoLevel() predicate.Member {
 	return predicate.Member(func(s *sql.Selector) {
@@ -1432,6 +1369,52 @@ func HasVipLevelWith(preds ...predicate.MemberVipLevel) predicate.Member {
 	})
 }
 
+// HasFixedLevelAssignments applies the HasEdge predicate on the "fixed_level_assignments" edge.
+func HasFixedLevelAssignments() predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FixedLevelAssignmentsTable, FixedLevelAssignmentsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFixedLevelAssignmentsWith applies the HasEdge predicate on the "fixed_level_assignments" edge with a given conditions (other predicates).
+func HasFixedLevelAssignmentsWith(preds ...predicate.MemberFixedLevelAssignment) predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := newFixedLevelAssignmentsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAuth applies the HasEdge predicate on the "auth" edge.
+func HasAuth() predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, AuthTable, AuthColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAuthWith applies the HasEdge predicate on the "auth" edge with a given conditions (other predicates).
+func HasAuthWith(preds ...predicate.MemberAuth) predicate.Member {
+	return predicate.Member(func(s *sql.Selector) {
+		step := newAuthStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasProfile applies the HasEdge predicate on the "profile" edge.
 func HasProfile() predicate.Member {
 	return predicate.Member(func(s *sql.Selector) {
@@ -1470,29 +1453,6 @@ func HasOauthIdentities() predicate.Member {
 func HasOauthIdentitiesWith(preds ...predicate.MemberOAuthIdentity) predicate.Member {
 	return predicate.Member(func(s *sql.Selector) {
 		step := newOauthIdentitiesStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasFixedLevelAssignments applies the HasEdge predicate on the "fixed_level_assignments" edge.
-func HasFixedLevelAssignments() predicate.Member {
-	return predicate.Member(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, FixedLevelAssignmentsTable, FixedLevelAssignmentsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasFixedLevelAssignmentsWith applies the HasEdge predicate on the "fixed_level_assignments" edge with a given conditions (other predicates).
-func HasFixedLevelAssignmentsWith(preds ...predicate.MemberFixedLevelAssignment) predicate.Member {
-	return predicate.Member(func(s *sql.Selector) {
-		step := newFixedLevelAssignmentsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -21,6 +21,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
@@ -52,6 +53,7 @@ const (
 	TypeAgentStats                 = "AgentStats"
 	TypeAgentUser                  = "AgentUser"
 	TypeMember                     = "Member"
+	TypeMemberAuth                 = "MemberAuth"
 	TypeMemberAutoLevel            = "MemberAutoLevel"
 	TypeMemberFixedLevel           = "MemberFixedLevel"
 	TypeMemberFixedLevelAssignment = "MemberFixedLevelAssignment"
@@ -10891,13 +10893,12 @@ type MemberMutation struct {
 	global_id                      *uuid.UUID
 	operator_code                  *string
 	code                           *string
-	username                       *string
-	phone                          *string
-	email                          *string
-	password_hash                  *string
-	agent_global_id                *uuid.UUID
+	invite_code                    *string
 	status                         *int64
 	addstatus                      *int64
+	chat_disabled                  *bool
+	betting_disabled               *bool
+	withdrawal_disabled            *bool
 	register_method                *string
 	register_channel               *string
 	register_ip                    *string
@@ -10907,18 +10908,29 @@ type MemberMutation struct {
 	last_login_ip                  *string
 	last_login_device_code         *string
 	clearedFields                  map[string]struct{}
+	agent                          *int64
+	clearedagent                   bool
+	agent_account                  *int64
+	clearedagent_account           bool
+	invited_members                map[int64]struct{}
+	removedinvited_members         map[int64]struct{}
+	clearedinvited_members         bool
+	inviter                        *int64
+	clearedinviter                 bool
 	auto_level                     *int64
 	clearedauto_level              bool
 	vip_level                      *int64
 	clearedvip_level               bool
+	fixed_level_assignments        map[int64]struct{}
+	removedfixed_level_assignments map[int64]struct{}
+	clearedfixed_level_assignments bool
+	auth                           *int64
+	clearedauth                    bool
 	profile                        *int64
 	clearedprofile                 bool
 	oauth_identities               map[int64]struct{}
 	removedoauth_identities        map[int64]struct{}
 	clearedoauth_identities        bool
-	fixed_level_assignments        map[int64]struct{}
-	removedfixed_level_assignments map[int64]struct{}
-	clearedfixed_level_assignments bool
 	vip_progress                   *int64
 	clearedvip_progress            bool
 	vip_level_records              map[int64]struct{}
@@ -11213,236 +11225,174 @@ func (m *MemberMutation) ResetCode() {
 	m.code = nil
 }
 
-// SetUsername sets the "username" field.
-func (m *MemberMutation) SetUsername(s string) {
-	m.username = &s
+// SetAgentID sets the "agent_id" field.
+func (m *MemberMutation) SetAgentID(i int64) {
+	m.agent = &i
 }
 
-// Username returns the value of the "username" field in the mutation.
-func (m *MemberMutation) Username() (r string, exists bool) {
-	v := m.username
+// AgentID returns the value of the "agent_id" field in the mutation.
+func (m *MemberMutation) AgentID() (r int64, exists bool) {
+	v := m.agent
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUsername returns the old "username" field's value of the Member entity.
+// OldAgentID returns the old "agent_id" field's value of the Member entity.
 // If the Member object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberMutation) OldUsername(ctx context.Context) (v *string, err error) {
+func (m *MemberMutation) OldAgentID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
+		return v, errors.New("OldAgentID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUsername requires an ID field in the mutation")
+		return v, errors.New("OldAgentID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUsername: %w", err)
+		return v, fmt.Errorf("querying old value for OldAgentID: %w", err)
 	}
-	return oldValue.Username, nil
+	return oldValue.AgentID, nil
 }
 
-// ClearUsername clears the value of the "username" field.
-func (m *MemberMutation) ClearUsername() {
-	m.username = nil
-	m.clearedFields[member.FieldUsername] = struct{}{}
+// ResetAgentID resets all changes to the "agent_id" field.
+func (m *MemberMutation) ResetAgentID() {
+	m.agent = nil
 }
 
-// UsernameCleared returns if the "username" field was cleared in this mutation.
-func (m *MemberMutation) UsernameCleared() bool {
-	_, ok := m.clearedFields[member.FieldUsername]
+// SetAgentAccountID sets the "agent_account_id" field.
+func (m *MemberMutation) SetAgentAccountID(i int64) {
+	m.agent_account = &i
+}
+
+// AgentAccountID returns the value of the "agent_account_id" field in the mutation.
+func (m *MemberMutation) AgentAccountID() (r int64, exists bool) {
+	v := m.agent_account
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAgentAccountID returns the old "agent_account_id" field's value of the Member entity.
+// If the Member object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberMutation) OldAgentAccountID(ctx context.Context) (v *int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAgentAccountID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAgentAccountID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAgentAccountID: %w", err)
+	}
+	return oldValue.AgentAccountID, nil
+}
+
+// ClearAgentAccountID clears the value of the "agent_account_id" field.
+func (m *MemberMutation) ClearAgentAccountID() {
+	m.agent_account = nil
+	m.clearedFields[member.FieldAgentAccountID] = struct{}{}
+}
+
+// AgentAccountIDCleared returns if the "agent_account_id" field was cleared in this mutation.
+func (m *MemberMutation) AgentAccountIDCleared() bool {
+	_, ok := m.clearedFields[member.FieldAgentAccountID]
 	return ok
 }
 
-// ResetUsername resets all changes to the "username" field.
-func (m *MemberMutation) ResetUsername() {
-	m.username = nil
-	delete(m.clearedFields, member.FieldUsername)
+// ResetAgentAccountID resets all changes to the "agent_account_id" field.
+func (m *MemberMutation) ResetAgentAccountID() {
+	m.agent_account = nil
+	delete(m.clearedFields, member.FieldAgentAccountID)
 }
 
-// SetPhone sets the "phone" field.
-func (m *MemberMutation) SetPhone(s string) {
-	m.phone = &s
+// SetInviterMemberID sets the "inviter_member_id" field.
+func (m *MemberMutation) SetInviterMemberID(i int64) {
+	m.inviter = &i
 }
 
-// Phone returns the value of the "phone" field in the mutation.
-func (m *MemberMutation) Phone() (r string, exists bool) {
-	v := m.phone
+// InviterMemberID returns the value of the "inviter_member_id" field in the mutation.
+func (m *MemberMutation) InviterMemberID() (r int64, exists bool) {
+	v := m.inviter
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPhone returns the old "phone" field's value of the Member entity.
+// OldInviterMemberID returns the old "inviter_member_id" field's value of the Member entity.
 // If the Member object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberMutation) OldPhone(ctx context.Context) (v *string, err error) {
+func (m *MemberMutation) OldInviterMemberID(ctx context.Context) (v *int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPhone is only allowed on UpdateOne operations")
+		return v, errors.New("OldInviterMemberID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPhone requires an ID field in the mutation")
+		return v, errors.New("OldInviterMemberID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPhone: %w", err)
+		return v, fmt.Errorf("querying old value for OldInviterMemberID: %w", err)
 	}
-	return oldValue.Phone, nil
+	return oldValue.InviterMemberID, nil
 }
 
-// ClearPhone clears the value of the "phone" field.
-func (m *MemberMutation) ClearPhone() {
-	m.phone = nil
-	m.clearedFields[member.FieldPhone] = struct{}{}
+// ClearInviterMemberID clears the value of the "inviter_member_id" field.
+func (m *MemberMutation) ClearInviterMemberID() {
+	m.inviter = nil
+	m.clearedFields[member.FieldInviterMemberID] = struct{}{}
 }
 
-// PhoneCleared returns if the "phone" field was cleared in this mutation.
-func (m *MemberMutation) PhoneCleared() bool {
-	_, ok := m.clearedFields[member.FieldPhone]
+// InviterMemberIDCleared returns if the "inviter_member_id" field was cleared in this mutation.
+func (m *MemberMutation) InviterMemberIDCleared() bool {
+	_, ok := m.clearedFields[member.FieldInviterMemberID]
 	return ok
 }
 
-// ResetPhone resets all changes to the "phone" field.
-func (m *MemberMutation) ResetPhone() {
-	m.phone = nil
-	delete(m.clearedFields, member.FieldPhone)
+// ResetInviterMemberID resets all changes to the "inviter_member_id" field.
+func (m *MemberMutation) ResetInviterMemberID() {
+	m.inviter = nil
+	delete(m.clearedFields, member.FieldInviterMemberID)
 }
 
-// SetEmail sets the "email" field.
-func (m *MemberMutation) SetEmail(s string) {
-	m.email = &s
+// SetInviteCode sets the "invite_code" field.
+func (m *MemberMutation) SetInviteCode(s string) {
+	m.invite_code = &s
 }
 
-// Email returns the value of the "email" field in the mutation.
-func (m *MemberMutation) Email() (r string, exists bool) {
-	v := m.email
+// InviteCode returns the value of the "invite_code" field in the mutation.
+func (m *MemberMutation) InviteCode() (r string, exists bool) {
+	v := m.invite_code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldEmail returns the old "email" field's value of the Member entity.
+// OldInviteCode returns the old "invite_code" field's value of the Member entity.
 // If the Member object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberMutation) OldEmail(ctx context.Context) (v *string, err error) {
+func (m *MemberMutation) OldInviteCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEmail is only allowed on UpdateOne operations")
+		return v, errors.New("OldInviteCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEmail requires an ID field in the mutation")
+		return v, errors.New("OldInviteCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEmail: %w", err)
+		return v, fmt.Errorf("querying old value for OldInviteCode: %w", err)
 	}
-	return oldValue.Email, nil
+	return oldValue.InviteCode, nil
 }
 
-// ClearEmail clears the value of the "email" field.
-func (m *MemberMutation) ClearEmail() {
-	m.email = nil
-	m.clearedFields[member.FieldEmail] = struct{}{}
-}
-
-// EmailCleared returns if the "email" field was cleared in this mutation.
-func (m *MemberMutation) EmailCleared() bool {
-	_, ok := m.clearedFields[member.FieldEmail]
-	return ok
-}
-
-// ResetEmail resets all changes to the "email" field.
-func (m *MemberMutation) ResetEmail() {
-	m.email = nil
-	delete(m.clearedFields, member.FieldEmail)
-}
-
-// SetPasswordHash sets the "password_hash" field.
-func (m *MemberMutation) SetPasswordHash(s string) {
-	m.password_hash = &s
-}
-
-// PasswordHash returns the value of the "password_hash" field in the mutation.
-func (m *MemberMutation) PasswordHash() (r string, exists bool) {
-	v := m.password_hash
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPasswordHash returns the old "password_hash" field's value of the Member entity.
-// If the Member object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberMutation) OldPasswordHash(ctx context.Context) (v *string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPasswordHash is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPasswordHash requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPasswordHash: %w", err)
-	}
-	return oldValue.PasswordHash, nil
-}
-
-// ClearPasswordHash clears the value of the "password_hash" field.
-func (m *MemberMutation) ClearPasswordHash() {
-	m.password_hash = nil
-	m.clearedFields[member.FieldPasswordHash] = struct{}{}
-}
-
-// PasswordHashCleared returns if the "password_hash" field was cleared in this mutation.
-func (m *MemberMutation) PasswordHashCleared() bool {
-	_, ok := m.clearedFields[member.FieldPasswordHash]
-	return ok
-}
-
-// ResetPasswordHash resets all changes to the "password_hash" field.
-func (m *MemberMutation) ResetPasswordHash() {
-	m.password_hash = nil
-	delete(m.clearedFields, member.FieldPasswordHash)
-}
-
-// SetAgentGlobalID sets the "agent_global_id" field.
-func (m *MemberMutation) SetAgentGlobalID(u uuid.UUID) {
-	m.agent_global_id = &u
-}
-
-// AgentGlobalID returns the value of the "agent_global_id" field in the mutation.
-func (m *MemberMutation) AgentGlobalID() (r uuid.UUID, exists bool) {
-	v := m.agent_global_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAgentGlobalID returns the old "agent_global_id" field's value of the Member entity.
-// If the Member object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberMutation) OldAgentGlobalID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAgentGlobalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAgentGlobalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAgentGlobalID: %w", err)
-	}
-	return oldValue.AgentGlobalID, nil
-}
-
-// ResetAgentGlobalID resets all changes to the "agent_global_id" field.
-func (m *MemberMutation) ResetAgentGlobalID() {
-	m.agent_global_id = nil
+// ResetInviteCode resets all changes to the "invite_code" field.
+func (m *MemberMutation) ResetInviteCode() {
+	m.invite_code = nil
 }
 
 // SetAutoLevelID sets the "auto_level_id" field.
@@ -11571,6 +11521,114 @@ func (m *MemberMutation) AddedStatus() (r int64, exists bool) {
 func (m *MemberMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
+}
+
+// SetChatDisabled sets the "chat_disabled" field.
+func (m *MemberMutation) SetChatDisabled(b bool) {
+	m.chat_disabled = &b
+}
+
+// ChatDisabled returns the value of the "chat_disabled" field in the mutation.
+func (m *MemberMutation) ChatDisabled() (r bool, exists bool) {
+	v := m.chat_disabled
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChatDisabled returns the old "chat_disabled" field's value of the Member entity.
+// If the Member object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberMutation) OldChatDisabled(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChatDisabled is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChatDisabled requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChatDisabled: %w", err)
+	}
+	return oldValue.ChatDisabled, nil
+}
+
+// ResetChatDisabled resets all changes to the "chat_disabled" field.
+func (m *MemberMutation) ResetChatDisabled() {
+	m.chat_disabled = nil
+}
+
+// SetBettingDisabled sets the "betting_disabled" field.
+func (m *MemberMutation) SetBettingDisabled(b bool) {
+	m.betting_disabled = &b
+}
+
+// BettingDisabled returns the value of the "betting_disabled" field in the mutation.
+func (m *MemberMutation) BettingDisabled() (r bool, exists bool) {
+	v := m.betting_disabled
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBettingDisabled returns the old "betting_disabled" field's value of the Member entity.
+// If the Member object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberMutation) OldBettingDisabled(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBettingDisabled is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBettingDisabled requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBettingDisabled: %w", err)
+	}
+	return oldValue.BettingDisabled, nil
+}
+
+// ResetBettingDisabled resets all changes to the "betting_disabled" field.
+func (m *MemberMutation) ResetBettingDisabled() {
+	m.betting_disabled = nil
+}
+
+// SetWithdrawalDisabled sets the "withdrawal_disabled" field.
+func (m *MemberMutation) SetWithdrawalDisabled(b bool) {
+	m.withdrawal_disabled = &b
+}
+
+// WithdrawalDisabled returns the value of the "withdrawal_disabled" field in the mutation.
+func (m *MemberMutation) WithdrawalDisabled() (r bool, exists bool) {
+	v := m.withdrawal_disabled
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWithdrawalDisabled returns the old "withdrawal_disabled" field's value of the Member entity.
+// If the Member object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberMutation) OldWithdrawalDisabled(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWithdrawalDisabled is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWithdrawalDisabled requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWithdrawalDisabled: %w", err)
+	}
+	return oldValue.WithdrawalDisabled, nil
+}
+
+// ResetWithdrawalDisabled resets all changes to the "withdrawal_disabled" field.
+func (m *MemberMutation) ResetWithdrawalDisabled() {
+	m.withdrawal_disabled = nil
 }
 
 // SetRegisterMethod sets the "register_method" field.
@@ -11939,6 +11997,154 @@ func (m *MemberMutation) ResetLastLoginDeviceCode() {
 	delete(m.clearedFields, member.FieldLastLoginDeviceCode)
 }
 
+// ClearAgent clears the "agent" edge to the AgentUser entity.
+func (m *MemberMutation) ClearAgent() {
+	m.clearedagent = true
+	m.clearedFields[member.FieldAgentID] = struct{}{}
+}
+
+// AgentCleared reports if the "agent" edge to the AgentUser entity was cleared.
+func (m *MemberMutation) AgentCleared() bool {
+	return m.clearedagent
+}
+
+// AgentIDs returns the "agent" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AgentID instead. It exists only for internal usage by the builders.
+func (m *MemberMutation) AgentIDs() (ids []int64) {
+	if id := m.agent; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAgent resets all changes to the "agent" edge.
+func (m *MemberMutation) ResetAgent() {
+	m.agent = nil
+	m.clearedagent = false
+}
+
+// ClearAgentAccount clears the "agent_account" edge to the AgentUser entity.
+func (m *MemberMutation) ClearAgentAccount() {
+	m.clearedagent_account = true
+	m.clearedFields[member.FieldAgentAccountID] = struct{}{}
+}
+
+// AgentAccountCleared reports if the "agent_account" edge to the AgentUser entity was cleared.
+func (m *MemberMutation) AgentAccountCleared() bool {
+	return m.AgentAccountIDCleared() || m.clearedagent_account
+}
+
+// AgentAccountIDs returns the "agent_account" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AgentAccountID instead. It exists only for internal usage by the builders.
+func (m *MemberMutation) AgentAccountIDs() (ids []int64) {
+	if id := m.agent_account; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAgentAccount resets all changes to the "agent_account" edge.
+func (m *MemberMutation) ResetAgentAccount() {
+	m.agent_account = nil
+	m.clearedagent_account = false
+}
+
+// AddInvitedMemberIDs adds the "invited_members" edge to the Member entity by ids.
+func (m *MemberMutation) AddInvitedMemberIDs(ids ...int64) {
+	if m.invited_members == nil {
+		m.invited_members = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.invited_members[ids[i]] = struct{}{}
+	}
+}
+
+// ClearInvitedMembers clears the "invited_members" edge to the Member entity.
+func (m *MemberMutation) ClearInvitedMembers() {
+	m.clearedinvited_members = true
+}
+
+// InvitedMembersCleared reports if the "invited_members" edge to the Member entity was cleared.
+func (m *MemberMutation) InvitedMembersCleared() bool {
+	return m.clearedinvited_members
+}
+
+// RemoveInvitedMemberIDs removes the "invited_members" edge to the Member entity by IDs.
+func (m *MemberMutation) RemoveInvitedMemberIDs(ids ...int64) {
+	if m.removedinvited_members == nil {
+		m.removedinvited_members = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.invited_members, ids[i])
+		m.removedinvited_members[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedInvitedMembers returns the removed IDs of the "invited_members" edge to the Member entity.
+func (m *MemberMutation) RemovedInvitedMembersIDs() (ids []int64) {
+	for id := range m.removedinvited_members {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// InvitedMembersIDs returns the "invited_members" edge IDs in the mutation.
+func (m *MemberMutation) InvitedMembersIDs() (ids []int64) {
+	for id := range m.invited_members {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetInvitedMembers resets all changes to the "invited_members" edge.
+func (m *MemberMutation) ResetInvitedMembers() {
+	m.invited_members = nil
+	m.clearedinvited_members = false
+	m.removedinvited_members = nil
+}
+
+// SetInviterID sets the "inviter" edge to the Member entity by id.
+func (m *MemberMutation) SetInviterID(id int64) {
+	m.inviter = &id
+}
+
+// ClearInviter clears the "inviter" edge to the Member entity.
+func (m *MemberMutation) ClearInviter() {
+	m.clearedinviter = true
+	m.clearedFields[member.FieldInviterMemberID] = struct{}{}
+}
+
+// InviterCleared reports if the "inviter" edge to the Member entity was cleared.
+func (m *MemberMutation) InviterCleared() bool {
+	return m.InviterMemberIDCleared() || m.clearedinviter
+}
+
+// InviterID returns the "inviter" edge ID in the mutation.
+func (m *MemberMutation) InviterID() (id int64, exists bool) {
+	if m.inviter != nil {
+		return *m.inviter, true
+	}
+	return
+}
+
+// InviterIDs returns the "inviter" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// InviterID instead. It exists only for internal usage by the builders.
+func (m *MemberMutation) InviterIDs() (ids []int64) {
+	if id := m.inviter; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetInviter resets all changes to the "inviter" edge.
+func (m *MemberMutation) ResetInviter() {
+	m.inviter = nil
+	m.clearedinviter = false
+}
+
 // ClearAutoLevel clears the "auto_level" edge to the MemberAutoLevel entity.
 func (m *MemberMutation) ClearAutoLevel() {
 	m.clearedauto_level = true
@@ -11991,6 +12197,99 @@ func (m *MemberMutation) VipLevelIDs() (ids []int64) {
 func (m *MemberMutation) ResetVipLevel() {
 	m.vip_level = nil
 	m.clearedvip_level = false
+}
+
+// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by ids.
+func (m *MemberMutation) AddFixedLevelAssignmentIDs(ids ...int64) {
+	if m.fixed_level_assignments == nil {
+		m.fixed_level_assignments = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.fixed_level_assignments[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFixedLevelAssignments clears the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity.
+func (m *MemberMutation) ClearFixedLevelAssignments() {
+	m.clearedfixed_level_assignments = true
+}
+
+// FixedLevelAssignmentsCleared reports if the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity was cleared.
+func (m *MemberMutation) FixedLevelAssignmentsCleared() bool {
+	return m.clearedfixed_level_assignments
+}
+
+// RemoveFixedLevelAssignmentIDs removes the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
+func (m *MemberMutation) RemoveFixedLevelAssignmentIDs(ids ...int64) {
+	if m.removedfixed_level_assignments == nil {
+		m.removedfixed_level_assignments = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.fixed_level_assignments, ids[i])
+		m.removedfixed_level_assignments[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFixedLevelAssignments returns the removed IDs of the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity.
+func (m *MemberMutation) RemovedFixedLevelAssignmentsIDs() (ids []int64) {
+	for id := range m.removedfixed_level_assignments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FixedLevelAssignmentsIDs returns the "fixed_level_assignments" edge IDs in the mutation.
+func (m *MemberMutation) FixedLevelAssignmentsIDs() (ids []int64) {
+	for id := range m.fixed_level_assignments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFixedLevelAssignments resets all changes to the "fixed_level_assignments" edge.
+func (m *MemberMutation) ResetFixedLevelAssignments() {
+	m.fixed_level_assignments = nil
+	m.clearedfixed_level_assignments = false
+	m.removedfixed_level_assignments = nil
+}
+
+// SetAuthID sets the "auth" edge to the MemberAuth entity by id.
+func (m *MemberMutation) SetAuthID(id int64) {
+	m.auth = &id
+}
+
+// ClearAuth clears the "auth" edge to the MemberAuth entity.
+func (m *MemberMutation) ClearAuth() {
+	m.clearedauth = true
+}
+
+// AuthCleared reports if the "auth" edge to the MemberAuth entity was cleared.
+func (m *MemberMutation) AuthCleared() bool {
+	return m.clearedauth
+}
+
+// AuthID returns the "auth" edge ID in the mutation.
+func (m *MemberMutation) AuthID() (id int64, exists bool) {
+	if m.auth != nil {
+		return *m.auth, true
+	}
+	return
+}
+
+// AuthIDs returns the "auth" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AuthID instead. It exists only for internal usage by the builders.
+func (m *MemberMutation) AuthIDs() (ids []int64) {
+	if id := m.auth; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAuth resets all changes to the "auth" edge.
+func (m *MemberMutation) ResetAuth() {
+	m.auth = nil
+	m.clearedauth = false
 }
 
 // SetProfileID sets the "profile" edge to the MemberProfile entity by id.
@@ -12084,60 +12383,6 @@ func (m *MemberMutation) ResetOauthIdentities() {
 	m.oauth_identities = nil
 	m.clearedoauth_identities = false
 	m.removedoauth_identities = nil
-}
-
-// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by ids.
-func (m *MemberMutation) AddFixedLevelAssignmentIDs(ids ...int64) {
-	if m.fixed_level_assignments == nil {
-		m.fixed_level_assignments = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.fixed_level_assignments[ids[i]] = struct{}{}
-	}
-}
-
-// ClearFixedLevelAssignments clears the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity.
-func (m *MemberMutation) ClearFixedLevelAssignments() {
-	m.clearedfixed_level_assignments = true
-}
-
-// FixedLevelAssignmentsCleared reports if the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity was cleared.
-func (m *MemberMutation) FixedLevelAssignmentsCleared() bool {
-	return m.clearedfixed_level_assignments
-}
-
-// RemoveFixedLevelAssignmentIDs removes the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
-func (m *MemberMutation) RemoveFixedLevelAssignmentIDs(ids ...int64) {
-	if m.removedfixed_level_assignments == nil {
-		m.removedfixed_level_assignments = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.fixed_level_assignments, ids[i])
-		m.removedfixed_level_assignments[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedFixedLevelAssignments returns the removed IDs of the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity.
-func (m *MemberMutation) RemovedFixedLevelAssignmentsIDs() (ids []int64) {
-	for id := range m.removedfixed_level_assignments {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// FixedLevelAssignmentsIDs returns the "fixed_level_assignments" edge IDs in the mutation.
-func (m *MemberMutation) FixedLevelAssignmentsIDs() (ids []int64) {
-	for id := range m.fixed_level_assignments {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetFixedLevelAssignments resets all changes to the "fixed_level_assignments" edge.
-func (m *MemberMutation) ResetFixedLevelAssignments() {
-	m.fixed_level_assignments = nil
-	m.clearedfixed_level_assignments = false
-	m.removedfixed_level_assignments = nil
 }
 
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by id.
@@ -12267,7 +12512,7 @@ func (m *MemberMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MemberMutation) Fields() []string {
-	fields := make([]string, 0, 21)
+	fields := make([]string, 0, 23)
 	if m.created_at != nil {
 		fields = append(fields, member.FieldCreatedAt)
 	}
@@ -12283,20 +12528,17 @@ func (m *MemberMutation) Fields() []string {
 	if m.code != nil {
 		fields = append(fields, member.FieldCode)
 	}
-	if m.username != nil {
-		fields = append(fields, member.FieldUsername)
+	if m.agent != nil {
+		fields = append(fields, member.FieldAgentID)
 	}
-	if m.phone != nil {
-		fields = append(fields, member.FieldPhone)
+	if m.agent_account != nil {
+		fields = append(fields, member.FieldAgentAccountID)
 	}
-	if m.email != nil {
-		fields = append(fields, member.FieldEmail)
+	if m.inviter != nil {
+		fields = append(fields, member.FieldInviterMemberID)
 	}
-	if m.password_hash != nil {
-		fields = append(fields, member.FieldPasswordHash)
-	}
-	if m.agent_global_id != nil {
-		fields = append(fields, member.FieldAgentGlobalID)
+	if m.invite_code != nil {
+		fields = append(fields, member.FieldInviteCode)
 	}
 	if m.auto_level != nil {
 		fields = append(fields, member.FieldAutoLevelID)
@@ -12306,6 +12548,15 @@ func (m *MemberMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, member.FieldStatus)
+	}
+	if m.chat_disabled != nil {
+		fields = append(fields, member.FieldChatDisabled)
+	}
+	if m.betting_disabled != nil {
+		fields = append(fields, member.FieldBettingDisabled)
+	}
+	if m.withdrawal_disabled != nil {
+		fields = append(fields, member.FieldWithdrawalDisabled)
 	}
 	if m.register_method != nil {
 		fields = append(fields, member.FieldRegisterMethod)
@@ -12349,22 +12600,26 @@ func (m *MemberMutation) Field(name string) (ent.Value, bool) {
 		return m.OperatorCode()
 	case member.FieldCode:
 		return m.Code()
-	case member.FieldUsername:
-		return m.Username()
-	case member.FieldPhone:
-		return m.Phone()
-	case member.FieldEmail:
-		return m.Email()
-	case member.FieldPasswordHash:
-		return m.PasswordHash()
-	case member.FieldAgentGlobalID:
-		return m.AgentGlobalID()
+	case member.FieldAgentID:
+		return m.AgentID()
+	case member.FieldAgentAccountID:
+		return m.AgentAccountID()
+	case member.FieldInviterMemberID:
+		return m.InviterMemberID()
+	case member.FieldInviteCode:
+		return m.InviteCode()
 	case member.FieldAutoLevelID:
 		return m.AutoLevelID()
 	case member.FieldVipLevelID:
 		return m.VipLevelID()
 	case member.FieldStatus:
 		return m.Status()
+	case member.FieldChatDisabled:
+		return m.ChatDisabled()
+	case member.FieldBettingDisabled:
+		return m.BettingDisabled()
+	case member.FieldWithdrawalDisabled:
+		return m.WithdrawalDisabled()
 	case member.FieldRegisterMethod:
 		return m.RegisterMethod()
 	case member.FieldRegisterChannel:
@@ -12400,22 +12655,26 @@ func (m *MemberMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldOperatorCode(ctx)
 	case member.FieldCode:
 		return m.OldCode(ctx)
-	case member.FieldUsername:
-		return m.OldUsername(ctx)
-	case member.FieldPhone:
-		return m.OldPhone(ctx)
-	case member.FieldEmail:
-		return m.OldEmail(ctx)
-	case member.FieldPasswordHash:
-		return m.OldPasswordHash(ctx)
-	case member.FieldAgentGlobalID:
-		return m.OldAgentGlobalID(ctx)
+	case member.FieldAgentID:
+		return m.OldAgentID(ctx)
+	case member.FieldAgentAccountID:
+		return m.OldAgentAccountID(ctx)
+	case member.FieldInviterMemberID:
+		return m.OldInviterMemberID(ctx)
+	case member.FieldInviteCode:
+		return m.OldInviteCode(ctx)
 	case member.FieldAutoLevelID:
 		return m.OldAutoLevelID(ctx)
 	case member.FieldVipLevelID:
 		return m.OldVipLevelID(ctx)
 	case member.FieldStatus:
 		return m.OldStatus(ctx)
+	case member.FieldChatDisabled:
+		return m.OldChatDisabled(ctx)
+	case member.FieldBettingDisabled:
+		return m.OldBettingDisabled(ctx)
+	case member.FieldWithdrawalDisabled:
+		return m.OldWithdrawalDisabled(ctx)
 	case member.FieldRegisterMethod:
 		return m.OldRegisterMethod(ctx)
 	case member.FieldRegisterChannel:
@@ -12476,40 +12735,33 @@ func (m *MemberMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCode(v)
 		return nil
-	case member.FieldUsername:
+	case member.FieldAgentID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAgentID(v)
+		return nil
+	case member.FieldAgentAccountID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAgentAccountID(v)
+		return nil
+	case member.FieldInviterMemberID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInviterMemberID(v)
+		return nil
+	case member.FieldInviteCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUsername(v)
-		return nil
-	case member.FieldPhone:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPhone(v)
-		return nil
-	case member.FieldEmail:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEmail(v)
-		return nil
-	case member.FieldPasswordHash:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPasswordHash(v)
-		return nil
-	case member.FieldAgentGlobalID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAgentGlobalID(v)
+		m.SetInviteCode(v)
 		return nil
 	case member.FieldAutoLevelID:
 		v, ok := value.(int64)
@@ -12531,6 +12783,27 @@ func (m *MemberMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case member.FieldChatDisabled:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChatDisabled(v)
+		return nil
+	case member.FieldBettingDisabled:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBettingDisabled(v)
+		return nil
+	case member.FieldWithdrawalDisabled:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWithdrawalDisabled(v)
 		return nil
 	case member.FieldRegisterMethod:
 		v, ok := value.(string)
@@ -12633,17 +12906,11 @@ func (m *MemberMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *MemberMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(member.FieldUsername) {
-		fields = append(fields, member.FieldUsername)
+	if m.FieldCleared(member.FieldAgentAccountID) {
+		fields = append(fields, member.FieldAgentAccountID)
 	}
-	if m.FieldCleared(member.FieldPhone) {
-		fields = append(fields, member.FieldPhone)
-	}
-	if m.FieldCleared(member.FieldEmail) {
-		fields = append(fields, member.FieldEmail)
-	}
-	if m.FieldCleared(member.FieldPasswordHash) {
-		fields = append(fields, member.FieldPasswordHash)
+	if m.FieldCleared(member.FieldInviterMemberID) {
+		fields = append(fields, member.FieldInviterMemberID)
 	}
 	if m.FieldCleared(member.FieldRegisterIP) {
 		fields = append(fields, member.FieldRegisterIP)
@@ -12677,17 +12944,11 @@ func (m *MemberMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *MemberMutation) ClearField(name string) error {
 	switch name {
-	case member.FieldUsername:
-		m.ClearUsername()
+	case member.FieldAgentAccountID:
+		m.ClearAgentAccountID()
 		return nil
-	case member.FieldPhone:
-		m.ClearPhone()
-		return nil
-	case member.FieldEmail:
-		m.ClearEmail()
-		return nil
-	case member.FieldPasswordHash:
-		m.ClearPasswordHash()
+	case member.FieldInviterMemberID:
+		m.ClearInviterMemberID()
 		return nil
 	case member.FieldRegisterIP:
 		m.ClearRegisterIP()
@@ -12730,20 +12991,17 @@ func (m *MemberMutation) ResetField(name string) error {
 	case member.FieldCode:
 		m.ResetCode()
 		return nil
-	case member.FieldUsername:
-		m.ResetUsername()
+	case member.FieldAgentID:
+		m.ResetAgentID()
 		return nil
-	case member.FieldPhone:
-		m.ResetPhone()
+	case member.FieldAgentAccountID:
+		m.ResetAgentAccountID()
 		return nil
-	case member.FieldEmail:
-		m.ResetEmail()
+	case member.FieldInviterMemberID:
+		m.ResetInviterMemberID()
 		return nil
-	case member.FieldPasswordHash:
-		m.ResetPasswordHash()
-		return nil
-	case member.FieldAgentGlobalID:
-		m.ResetAgentGlobalID()
+	case member.FieldInviteCode:
+		m.ResetInviteCode()
 		return nil
 	case member.FieldAutoLevelID:
 		m.ResetAutoLevelID()
@@ -12753,6 +13011,15 @@ func (m *MemberMutation) ResetField(name string) error {
 		return nil
 	case member.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case member.FieldChatDisabled:
+		m.ResetChatDisabled()
+		return nil
+	case member.FieldBettingDisabled:
+		m.ResetBettingDisabled()
+		return nil
+	case member.FieldWithdrawalDisabled:
+		m.ResetWithdrawalDisabled()
 		return nil
 	case member.FieldRegisterMethod:
 		m.ResetRegisterMethod()
@@ -12784,21 +13051,36 @@ func (m *MemberMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *MemberMutation) AddedEdges() []string {
-	edges := make([]string, 0, 7)
+	edges := make([]string, 0, 12)
+	if m.agent != nil {
+		edges = append(edges, member.EdgeAgent)
+	}
+	if m.agent_account != nil {
+		edges = append(edges, member.EdgeAgentAccount)
+	}
+	if m.invited_members != nil {
+		edges = append(edges, member.EdgeInvitedMembers)
+	}
+	if m.inviter != nil {
+		edges = append(edges, member.EdgeInviter)
+	}
 	if m.auto_level != nil {
 		edges = append(edges, member.EdgeAutoLevel)
 	}
 	if m.vip_level != nil {
 		edges = append(edges, member.EdgeVipLevel)
 	}
+	if m.fixed_level_assignments != nil {
+		edges = append(edges, member.EdgeFixedLevelAssignments)
+	}
+	if m.auth != nil {
+		edges = append(edges, member.EdgeAuth)
+	}
 	if m.profile != nil {
 		edges = append(edges, member.EdgeProfile)
 	}
 	if m.oauth_identities != nil {
 		edges = append(edges, member.EdgeOauthIdentities)
-	}
-	if m.fixed_level_assignments != nil {
-		edges = append(edges, member.EdgeFixedLevelAssignments)
 	}
 	if m.vip_progress != nil {
 		edges = append(edges, member.EdgeVipProgress)
@@ -12813,12 +13095,40 @@ func (m *MemberMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *MemberMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case member.EdgeAgent:
+		if id := m.agent; id != nil {
+			return []ent.Value{*id}
+		}
+	case member.EdgeAgentAccount:
+		if id := m.agent_account; id != nil {
+			return []ent.Value{*id}
+		}
+	case member.EdgeInvitedMembers:
+		ids := make([]ent.Value, 0, len(m.invited_members))
+		for id := range m.invited_members {
+			ids = append(ids, id)
+		}
+		return ids
+	case member.EdgeInviter:
+		if id := m.inviter; id != nil {
+			return []ent.Value{*id}
+		}
 	case member.EdgeAutoLevel:
 		if id := m.auto_level; id != nil {
 			return []ent.Value{*id}
 		}
 	case member.EdgeVipLevel:
 		if id := m.vip_level; id != nil {
+			return []ent.Value{*id}
+		}
+	case member.EdgeFixedLevelAssignments:
+		ids := make([]ent.Value, 0, len(m.fixed_level_assignments))
+		for id := range m.fixed_level_assignments {
+			ids = append(ids, id)
+		}
+		return ids
+	case member.EdgeAuth:
+		if id := m.auth; id != nil {
 			return []ent.Value{*id}
 		}
 	case member.EdgeProfile:
@@ -12828,12 +13138,6 @@ func (m *MemberMutation) AddedIDs(name string) []ent.Value {
 	case member.EdgeOauthIdentities:
 		ids := make([]ent.Value, 0, len(m.oauth_identities))
 		for id := range m.oauth_identities {
-			ids = append(ids, id)
-		}
-		return ids
-	case member.EdgeFixedLevelAssignments:
-		ids := make([]ent.Value, 0, len(m.fixed_level_assignments))
-		for id := range m.fixed_level_assignments {
 			ids = append(ids, id)
 		}
 		return ids
@@ -12853,12 +13157,15 @@ func (m *MemberMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MemberMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 7)
-	if m.removedoauth_identities != nil {
-		edges = append(edges, member.EdgeOauthIdentities)
+	edges := make([]string, 0, 12)
+	if m.removedinvited_members != nil {
+		edges = append(edges, member.EdgeInvitedMembers)
 	}
 	if m.removedfixed_level_assignments != nil {
 		edges = append(edges, member.EdgeFixedLevelAssignments)
+	}
+	if m.removedoauth_identities != nil {
+		edges = append(edges, member.EdgeOauthIdentities)
 	}
 	if m.removedvip_level_records != nil {
 		edges = append(edges, member.EdgeVipLevelRecords)
@@ -12870,15 +13177,21 @@ func (m *MemberMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *MemberMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case member.EdgeOauthIdentities:
-		ids := make([]ent.Value, 0, len(m.removedoauth_identities))
-		for id := range m.removedoauth_identities {
+	case member.EdgeInvitedMembers:
+		ids := make([]ent.Value, 0, len(m.removedinvited_members))
+		for id := range m.removedinvited_members {
 			ids = append(ids, id)
 		}
 		return ids
 	case member.EdgeFixedLevelAssignments:
 		ids := make([]ent.Value, 0, len(m.removedfixed_level_assignments))
 		for id := range m.removedfixed_level_assignments {
+			ids = append(ids, id)
+		}
+		return ids
+	case member.EdgeOauthIdentities:
+		ids := make([]ent.Value, 0, len(m.removedoauth_identities))
+		for id := range m.removedoauth_identities {
 			ids = append(ids, id)
 		}
 		return ids
@@ -12894,21 +13207,36 @@ func (m *MemberMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *MemberMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 7)
+	edges := make([]string, 0, 12)
+	if m.clearedagent {
+		edges = append(edges, member.EdgeAgent)
+	}
+	if m.clearedagent_account {
+		edges = append(edges, member.EdgeAgentAccount)
+	}
+	if m.clearedinvited_members {
+		edges = append(edges, member.EdgeInvitedMembers)
+	}
+	if m.clearedinviter {
+		edges = append(edges, member.EdgeInviter)
+	}
 	if m.clearedauto_level {
 		edges = append(edges, member.EdgeAutoLevel)
 	}
 	if m.clearedvip_level {
 		edges = append(edges, member.EdgeVipLevel)
 	}
+	if m.clearedfixed_level_assignments {
+		edges = append(edges, member.EdgeFixedLevelAssignments)
+	}
+	if m.clearedauth {
+		edges = append(edges, member.EdgeAuth)
+	}
 	if m.clearedprofile {
 		edges = append(edges, member.EdgeProfile)
 	}
 	if m.clearedoauth_identities {
 		edges = append(edges, member.EdgeOauthIdentities)
-	}
-	if m.clearedfixed_level_assignments {
-		edges = append(edges, member.EdgeFixedLevelAssignments)
 	}
 	if m.clearedvip_progress {
 		edges = append(edges, member.EdgeVipProgress)
@@ -12923,16 +13251,26 @@ func (m *MemberMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *MemberMutation) EdgeCleared(name string) bool {
 	switch name {
+	case member.EdgeAgent:
+		return m.clearedagent
+	case member.EdgeAgentAccount:
+		return m.clearedagent_account
+	case member.EdgeInvitedMembers:
+		return m.clearedinvited_members
+	case member.EdgeInviter:
+		return m.clearedinviter
 	case member.EdgeAutoLevel:
 		return m.clearedauto_level
 	case member.EdgeVipLevel:
 		return m.clearedvip_level
+	case member.EdgeFixedLevelAssignments:
+		return m.clearedfixed_level_assignments
+	case member.EdgeAuth:
+		return m.clearedauth
 	case member.EdgeProfile:
 		return m.clearedprofile
 	case member.EdgeOauthIdentities:
 		return m.clearedoauth_identities
-	case member.EdgeFixedLevelAssignments:
-		return m.clearedfixed_level_assignments
 	case member.EdgeVipProgress:
 		return m.clearedvip_progress
 	case member.EdgeVipLevelRecords:
@@ -12945,11 +13283,23 @@ func (m *MemberMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *MemberMutation) ClearEdge(name string) error {
 	switch name {
+	case member.EdgeAgent:
+		m.ClearAgent()
+		return nil
+	case member.EdgeAgentAccount:
+		m.ClearAgentAccount()
+		return nil
+	case member.EdgeInviter:
+		m.ClearInviter()
+		return nil
 	case member.EdgeAutoLevel:
 		m.ClearAutoLevel()
 		return nil
 	case member.EdgeVipLevel:
 		m.ClearVipLevel()
+		return nil
+	case member.EdgeAuth:
+		m.ClearAuth()
 		return nil
 	case member.EdgeProfile:
 		m.ClearProfile()
@@ -12965,20 +13315,35 @@ func (m *MemberMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *MemberMutation) ResetEdge(name string) error {
 	switch name {
+	case member.EdgeAgent:
+		m.ResetAgent()
+		return nil
+	case member.EdgeAgentAccount:
+		m.ResetAgentAccount()
+		return nil
+	case member.EdgeInvitedMembers:
+		m.ResetInvitedMembers()
+		return nil
+	case member.EdgeInviter:
+		m.ResetInviter()
+		return nil
 	case member.EdgeAutoLevel:
 		m.ResetAutoLevel()
 		return nil
 	case member.EdgeVipLevel:
 		m.ResetVipLevel()
 		return nil
+	case member.EdgeFixedLevelAssignments:
+		m.ResetFixedLevelAssignments()
+		return nil
+	case member.EdgeAuth:
+		m.ResetAuth()
+		return nil
 	case member.EdgeProfile:
 		m.ResetProfile()
 		return nil
 	case member.EdgeOauthIdentities:
 		m.ResetOauthIdentities()
-		return nil
-	case member.EdgeFixedLevelAssignments:
-		m.ResetFixedLevelAssignments()
 		return nil
 	case member.EdgeVipProgress:
 		m.ResetVipProgress()
@@ -12988,6 +13353,1419 @@ func (m *MemberMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Member edge %s", name)
+}
+
+// MemberAuthMutation represents an operation that mutates the MemberAuth nodes in the graph.
+type MemberAuthMutation struct {
+	config
+	op                                 Op
+	typ                                string
+	id                                 *int64
+	created_at                         *time.Time
+	updated_at                         *time.Time
+	operator_code                      *string
+	username                           *string
+	phone_ciphertext                   *string
+	phone_lookup_hash                  *string
+	email_ciphertext                   *string
+	email_lookup_hash                  *string
+	login_password_hash                *string
+	withdrawal_password_hash           *string
+	sms_code_error_count               *int64
+	addsms_code_error_count            *int64
+	email_code_error_count             *int64
+	addemail_code_error_count          *int64
+	login_password_error_count         *int64
+	addlogin_password_error_count      *int64
+	withdrawal_password_error_count    *int64
+	addwithdrawal_password_error_count *int64
+	clearedFields                      map[string]struct{}
+	member                             *int64
+	clearedmember                      bool
+	done                               bool
+	oldValue                           func(context.Context) (*MemberAuth, error)
+	predicates                         []predicate.MemberAuth
+}
+
+var _ ent.Mutation = (*MemberAuthMutation)(nil)
+
+// memberauthOption allows management of the mutation configuration using functional options.
+type memberauthOption func(*MemberAuthMutation)
+
+// newMemberAuthMutation creates new mutation for the MemberAuth entity.
+func newMemberAuthMutation(c config, op Op, opts ...memberauthOption) *MemberAuthMutation {
+	m := &MemberAuthMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeMemberAuth,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withMemberAuthID sets the ID field of the mutation.
+func withMemberAuthID(id int64) memberauthOption {
+	return func(m *MemberAuthMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *MemberAuth
+		)
+		m.oldValue = func(ctx context.Context) (*MemberAuth, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().MemberAuth.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withMemberAuth sets the old MemberAuth of the mutation.
+func withMemberAuth(node *MemberAuth) memberauthOption {
+	return func(m *MemberAuthMutation) {
+		m.oldValue = func(context.Context) (*MemberAuth, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m MemberAuthMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m MemberAuthMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of MemberAuth entities.
+func (m *MemberAuthMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *MemberAuthMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *MemberAuthMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().MemberAuth.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *MemberAuthMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *MemberAuthMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *MemberAuthMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *MemberAuthMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *MemberAuthMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *MemberAuthMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *MemberAuthMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *MemberAuthMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *MemberAuthMutation) ResetOperatorCode() {
+	m.operator_code = nil
+}
+
+// SetMemberID sets the "member_id" field.
+func (m *MemberAuthMutation) SetMemberID(i int64) {
+	m.member = &i
+}
+
+// MemberID returns the value of the "member_id" field in the mutation.
+func (m *MemberAuthMutation) MemberID() (r int64, exists bool) {
+	v := m.member
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMemberID returns the old "member_id" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldMemberID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMemberID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMemberID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMemberID: %w", err)
+	}
+	return oldValue.MemberID, nil
+}
+
+// ResetMemberID resets all changes to the "member_id" field.
+func (m *MemberAuthMutation) ResetMemberID() {
+	m.member = nil
+}
+
+// SetUsername sets the "username" field.
+func (m *MemberAuthMutation) SetUsername(s string) {
+	m.username = &s
+}
+
+// Username returns the value of the "username" field in the mutation.
+func (m *MemberAuthMutation) Username() (r string, exists bool) {
+	v := m.username
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUsername returns the old "username" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldUsername(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUsername requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUsername: %w", err)
+	}
+	return oldValue.Username, nil
+}
+
+// ClearUsername clears the value of the "username" field.
+func (m *MemberAuthMutation) ClearUsername() {
+	m.username = nil
+	m.clearedFields[memberauth.FieldUsername] = struct{}{}
+}
+
+// UsernameCleared returns if the "username" field was cleared in this mutation.
+func (m *MemberAuthMutation) UsernameCleared() bool {
+	_, ok := m.clearedFields[memberauth.FieldUsername]
+	return ok
+}
+
+// ResetUsername resets all changes to the "username" field.
+func (m *MemberAuthMutation) ResetUsername() {
+	m.username = nil
+	delete(m.clearedFields, memberauth.FieldUsername)
+}
+
+// SetPhoneCiphertext sets the "phone_ciphertext" field.
+func (m *MemberAuthMutation) SetPhoneCiphertext(s string) {
+	m.phone_ciphertext = &s
+}
+
+// PhoneCiphertext returns the value of the "phone_ciphertext" field in the mutation.
+func (m *MemberAuthMutation) PhoneCiphertext() (r string, exists bool) {
+	v := m.phone_ciphertext
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPhoneCiphertext returns the old "phone_ciphertext" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldPhoneCiphertext(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPhoneCiphertext is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPhoneCiphertext requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPhoneCiphertext: %w", err)
+	}
+	return oldValue.PhoneCiphertext, nil
+}
+
+// ClearPhoneCiphertext clears the value of the "phone_ciphertext" field.
+func (m *MemberAuthMutation) ClearPhoneCiphertext() {
+	m.phone_ciphertext = nil
+	m.clearedFields[memberauth.FieldPhoneCiphertext] = struct{}{}
+}
+
+// PhoneCiphertextCleared returns if the "phone_ciphertext" field was cleared in this mutation.
+func (m *MemberAuthMutation) PhoneCiphertextCleared() bool {
+	_, ok := m.clearedFields[memberauth.FieldPhoneCiphertext]
+	return ok
+}
+
+// ResetPhoneCiphertext resets all changes to the "phone_ciphertext" field.
+func (m *MemberAuthMutation) ResetPhoneCiphertext() {
+	m.phone_ciphertext = nil
+	delete(m.clearedFields, memberauth.FieldPhoneCiphertext)
+}
+
+// SetPhoneLookupHash sets the "phone_lookup_hash" field.
+func (m *MemberAuthMutation) SetPhoneLookupHash(s string) {
+	m.phone_lookup_hash = &s
+}
+
+// PhoneLookupHash returns the value of the "phone_lookup_hash" field in the mutation.
+func (m *MemberAuthMutation) PhoneLookupHash() (r string, exists bool) {
+	v := m.phone_lookup_hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPhoneLookupHash returns the old "phone_lookup_hash" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldPhoneLookupHash(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPhoneLookupHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPhoneLookupHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPhoneLookupHash: %w", err)
+	}
+	return oldValue.PhoneLookupHash, nil
+}
+
+// ClearPhoneLookupHash clears the value of the "phone_lookup_hash" field.
+func (m *MemberAuthMutation) ClearPhoneLookupHash() {
+	m.phone_lookup_hash = nil
+	m.clearedFields[memberauth.FieldPhoneLookupHash] = struct{}{}
+}
+
+// PhoneLookupHashCleared returns if the "phone_lookup_hash" field was cleared in this mutation.
+func (m *MemberAuthMutation) PhoneLookupHashCleared() bool {
+	_, ok := m.clearedFields[memberauth.FieldPhoneLookupHash]
+	return ok
+}
+
+// ResetPhoneLookupHash resets all changes to the "phone_lookup_hash" field.
+func (m *MemberAuthMutation) ResetPhoneLookupHash() {
+	m.phone_lookup_hash = nil
+	delete(m.clearedFields, memberauth.FieldPhoneLookupHash)
+}
+
+// SetEmailCiphertext sets the "email_ciphertext" field.
+func (m *MemberAuthMutation) SetEmailCiphertext(s string) {
+	m.email_ciphertext = &s
+}
+
+// EmailCiphertext returns the value of the "email_ciphertext" field in the mutation.
+func (m *MemberAuthMutation) EmailCiphertext() (r string, exists bool) {
+	v := m.email_ciphertext
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEmailCiphertext returns the old "email_ciphertext" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldEmailCiphertext(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEmailCiphertext is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEmailCiphertext requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEmailCiphertext: %w", err)
+	}
+	return oldValue.EmailCiphertext, nil
+}
+
+// ClearEmailCiphertext clears the value of the "email_ciphertext" field.
+func (m *MemberAuthMutation) ClearEmailCiphertext() {
+	m.email_ciphertext = nil
+	m.clearedFields[memberauth.FieldEmailCiphertext] = struct{}{}
+}
+
+// EmailCiphertextCleared returns if the "email_ciphertext" field was cleared in this mutation.
+func (m *MemberAuthMutation) EmailCiphertextCleared() bool {
+	_, ok := m.clearedFields[memberauth.FieldEmailCiphertext]
+	return ok
+}
+
+// ResetEmailCiphertext resets all changes to the "email_ciphertext" field.
+func (m *MemberAuthMutation) ResetEmailCiphertext() {
+	m.email_ciphertext = nil
+	delete(m.clearedFields, memberauth.FieldEmailCiphertext)
+}
+
+// SetEmailLookupHash sets the "email_lookup_hash" field.
+func (m *MemberAuthMutation) SetEmailLookupHash(s string) {
+	m.email_lookup_hash = &s
+}
+
+// EmailLookupHash returns the value of the "email_lookup_hash" field in the mutation.
+func (m *MemberAuthMutation) EmailLookupHash() (r string, exists bool) {
+	v := m.email_lookup_hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEmailLookupHash returns the old "email_lookup_hash" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldEmailLookupHash(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEmailLookupHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEmailLookupHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEmailLookupHash: %w", err)
+	}
+	return oldValue.EmailLookupHash, nil
+}
+
+// ClearEmailLookupHash clears the value of the "email_lookup_hash" field.
+func (m *MemberAuthMutation) ClearEmailLookupHash() {
+	m.email_lookup_hash = nil
+	m.clearedFields[memberauth.FieldEmailLookupHash] = struct{}{}
+}
+
+// EmailLookupHashCleared returns if the "email_lookup_hash" field was cleared in this mutation.
+func (m *MemberAuthMutation) EmailLookupHashCleared() bool {
+	_, ok := m.clearedFields[memberauth.FieldEmailLookupHash]
+	return ok
+}
+
+// ResetEmailLookupHash resets all changes to the "email_lookup_hash" field.
+func (m *MemberAuthMutation) ResetEmailLookupHash() {
+	m.email_lookup_hash = nil
+	delete(m.clearedFields, memberauth.FieldEmailLookupHash)
+}
+
+// SetLoginPasswordHash sets the "login_password_hash" field.
+func (m *MemberAuthMutation) SetLoginPasswordHash(s string) {
+	m.login_password_hash = &s
+}
+
+// LoginPasswordHash returns the value of the "login_password_hash" field in the mutation.
+func (m *MemberAuthMutation) LoginPasswordHash() (r string, exists bool) {
+	v := m.login_password_hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLoginPasswordHash returns the old "login_password_hash" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldLoginPasswordHash(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLoginPasswordHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLoginPasswordHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLoginPasswordHash: %w", err)
+	}
+	return oldValue.LoginPasswordHash, nil
+}
+
+// ClearLoginPasswordHash clears the value of the "login_password_hash" field.
+func (m *MemberAuthMutation) ClearLoginPasswordHash() {
+	m.login_password_hash = nil
+	m.clearedFields[memberauth.FieldLoginPasswordHash] = struct{}{}
+}
+
+// LoginPasswordHashCleared returns if the "login_password_hash" field was cleared in this mutation.
+func (m *MemberAuthMutation) LoginPasswordHashCleared() bool {
+	_, ok := m.clearedFields[memberauth.FieldLoginPasswordHash]
+	return ok
+}
+
+// ResetLoginPasswordHash resets all changes to the "login_password_hash" field.
+func (m *MemberAuthMutation) ResetLoginPasswordHash() {
+	m.login_password_hash = nil
+	delete(m.clearedFields, memberauth.FieldLoginPasswordHash)
+}
+
+// SetWithdrawalPasswordHash sets the "withdrawal_password_hash" field.
+func (m *MemberAuthMutation) SetWithdrawalPasswordHash(s string) {
+	m.withdrawal_password_hash = &s
+}
+
+// WithdrawalPasswordHash returns the value of the "withdrawal_password_hash" field in the mutation.
+func (m *MemberAuthMutation) WithdrawalPasswordHash() (r string, exists bool) {
+	v := m.withdrawal_password_hash
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWithdrawalPasswordHash returns the old "withdrawal_password_hash" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldWithdrawalPasswordHash(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWithdrawalPasswordHash is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWithdrawalPasswordHash requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWithdrawalPasswordHash: %w", err)
+	}
+	return oldValue.WithdrawalPasswordHash, nil
+}
+
+// ClearWithdrawalPasswordHash clears the value of the "withdrawal_password_hash" field.
+func (m *MemberAuthMutation) ClearWithdrawalPasswordHash() {
+	m.withdrawal_password_hash = nil
+	m.clearedFields[memberauth.FieldWithdrawalPasswordHash] = struct{}{}
+}
+
+// WithdrawalPasswordHashCleared returns if the "withdrawal_password_hash" field was cleared in this mutation.
+func (m *MemberAuthMutation) WithdrawalPasswordHashCleared() bool {
+	_, ok := m.clearedFields[memberauth.FieldWithdrawalPasswordHash]
+	return ok
+}
+
+// ResetWithdrawalPasswordHash resets all changes to the "withdrawal_password_hash" field.
+func (m *MemberAuthMutation) ResetWithdrawalPasswordHash() {
+	m.withdrawal_password_hash = nil
+	delete(m.clearedFields, memberauth.FieldWithdrawalPasswordHash)
+}
+
+// SetSmsCodeErrorCount sets the "sms_code_error_count" field.
+func (m *MemberAuthMutation) SetSmsCodeErrorCount(i int64) {
+	m.sms_code_error_count = &i
+	m.addsms_code_error_count = nil
+}
+
+// SmsCodeErrorCount returns the value of the "sms_code_error_count" field in the mutation.
+func (m *MemberAuthMutation) SmsCodeErrorCount() (r int64, exists bool) {
+	v := m.sms_code_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSmsCodeErrorCount returns the old "sms_code_error_count" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldSmsCodeErrorCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSmsCodeErrorCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSmsCodeErrorCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSmsCodeErrorCount: %w", err)
+	}
+	return oldValue.SmsCodeErrorCount, nil
+}
+
+// AddSmsCodeErrorCount adds i to the "sms_code_error_count" field.
+func (m *MemberAuthMutation) AddSmsCodeErrorCount(i int64) {
+	if m.addsms_code_error_count != nil {
+		*m.addsms_code_error_count += i
+	} else {
+		m.addsms_code_error_count = &i
+	}
+}
+
+// AddedSmsCodeErrorCount returns the value that was added to the "sms_code_error_count" field in this mutation.
+func (m *MemberAuthMutation) AddedSmsCodeErrorCount() (r int64, exists bool) {
+	v := m.addsms_code_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSmsCodeErrorCount resets all changes to the "sms_code_error_count" field.
+func (m *MemberAuthMutation) ResetSmsCodeErrorCount() {
+	m.sms_code_error_count = nil
+	m.addsms_code_error_count = nil
+}
+
+// SetEmailCodeErrorCount sets the "email_code_error_count" field.
+func (m *MemberAuthMutation) SetEmailCodeErrorCount(i int64) {
+	m.email_code_error_count = &i
+	m.addemail_code_error_count = nil
+}
+
+// EmailCodeErrorCount returns the value of the "email_code_error_count" field in the mutation.
+func (m *MemberAuthMutation) EmailCodeErrorCount() (r int64, exists bool) {
+	v := m.email_code_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEmailCodeErrorCount returns the old "email_code_error_count" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldEmailCodeErrorCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEmailCodeErrorCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEmailCodeErrorCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEmailCodeErrorCount: %w", err)
+	}
+	return oldValue.EmailCodeErrorCount, nil
+}
+
+// AddEmailCodeErrorCount adds i to the "email_code_error_count" field.
+func (m *MemberAuthMutation) AddEmailCodeErrorCount(i int64) {
+	if m.addemail_code_error_count != nil {
+		*m.addemail_code_error_count += i
+	} else {
+		m.addemail_code_error_count = &i
+	}
+}
+
+// AddedEmailCodeErrorCount returns the value that was added to the "email_code_error_count" field in this mutation.
+func (m *MemberAuthMutation) AddedEmailCodeErrorCount() (r int64, exists bool) {
+	v := m.addemail_code_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetEmailCodeErrorCount resets all changes to the "email_code_error_count" field.
+func (m *MemberAuthMutation) ResetEmailCodeErrorCount() {
+	m.email_code_error_count = nil
+	m.addemail_code_error_count = nil
+}
+
+// SetLoginPasswordErrorCount sets the "login_password_error_count" field.
+func (m *MemberAuthMutation) SetLoginPasswordErrorCount(i int64) {
+	m.login_password_error_count = &i
+	m.addlogin_password_error_count = nil
+}
+
+// LoginPasswordErrorCount returns the value of the "login_password_error_count" field in the mutation.
+func (m *MemberAuthMutation) LoginPasswordErrorCount() (r int64, exists bool) {
+	v := m.login_password_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLoginPasswordErrorCount returns the old "login_password_error_count" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldLoginPasswordErrorCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLoginPasswordErrorCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLoginPasswordErrorCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLoginPasswordErrorCount: %w", err)
+	}
+	return oldValue.LoginPasswordErrorCount, nil
+}
+
+// AddLoginPasswordErrorCount adds i to the "login_password_error_count" field.
+func (m *MemberAuthMutation) AddLoginPasswordErrorCount(i int64) {
+	if m.addlogin_password_error_count != nil {
+		*m.addlogin_password_error_count += i
+	} else {
+		m.addlogin_password_error_count = &i
+	}
+}
+
+// AddedLoginPasswordErrorCount returns the value that was added to the "login_password_error_count" field in this mutation.
+func (m *MemberAuthMutation) AddedLoginPasswordErrorCount() (r int64, exists bool) {
+	v := m.addlogin_password_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLoginPasswordErrorCount resets all changes to the "login_password_error_count" field.
+func (m *MemberAuthMutation) ResetLoginPasswordErrorCount() {
+	m.login_password_error_count = nil
+	m.addlogin_password_error_count = nil
+}
+
+// SetWithdrawalPasswordErrorCount sets the "withdrawal_password_error_count" field.
+func (m *MemberAuthMutation) SetWithdrawalPasswordErrorCount(i int64) {
+	m.withdrawal_password_error_count = &i
+	m.addwithdrawal_password_error_count = nil
+}
+
+// WithdrawalPasswordErrorCount returns the value of the "withdrawal_password_error_count" field in the mutation.
+func (m *MemberAuthMutation) WithdrawalPasswordErrorCount() (r int64, exists bool) {
+	v := m.withdrawal_password_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWithdrawalPasswordErrorCount returns the old "withdrawal_password_error_count" field's value of the MemberAuth entity.
+// If the MemberAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberAuthMutation) OldWithdrawalPasswordErrorCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWithdrawalPasswordErrorCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWithdrawalPasswordErrorCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWithdrawalPasswordErrorCount: %w", err)
+	}
+	return oldValue.WithdrawalPasswordErrorCount, nil
+}
+
+// AddWithdrawalPasswordErrorCount adds i to the "withdrawal_password_error_count" field.
+func (m *MemberAuthMutation) AddWithdrawalPasswordErrorCount(i int64) {
+	if m.addwithdrawal_password_error_count != nil {
+		*m.addwithdrawal_password_error_count += i
+	} else {
+		m.addwithdrawal_password_error_count = &i
+	}
+}
+
+// AddedWithdrawalPasswordErrorCount returns the value that was added to the "withdrawal_password_error_count" field in this mutation.
+func (m *MemberAuthMutation) AddedWithdrawalPasswordErrorCount() (r int64, exists bool) {
+	v := m.addwithdrawal_password_error_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWithdrawalPasswordErrorCount resets all changes to the "withdrawal_password_error_count" field.
+func (m *MemberAuthMutation) ResetWithdrawalPasswordErrorCount() {
+	m.withdrawal_password_error_count = nil
+	m.addwithdrawal_password_error_count = nil
+}
+
+// ClearMember clears the "member" edge to the Member entity.
+func (m *MemberAuthMutation) ClearMember() {
+	m.clearedmember = true
+	m.clearedFields[memberauth.FieldMemberID] = struct{}{}
+}
+
+// MemberCleared reports if the "member" edge to the Member entity was cleared.
+func (m *MemberAuthMutation) MemberCleared() bool {
+	return m.clearedmember
+}
+
+// MemberIDs returns the "member" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MemberID instead. It exists only for internal usage by the builders.
+func (m *MemberAuthMutation) MemberIDs() (ids []int64) {
+	if id := m.member; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetMember resets all changes to the "member" edge.
+func (m *MemberAuthMutation) ResetMember() {
+	m.member = nil
+	m.clearedmember = false
+}
+
+// Where appends a list predicates to the MemberAuthMutation builder.
+func (m *MemberAuthMutation) Where(ps ...predicate.MemberAuth) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the MemberAuthMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *MemberAuthMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.MemberAuth, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *MemberAuthMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *MemberAuthMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (MemberAuth).
+func (m *MemberAuthMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *MemberAuthMutation) Fields() []string {
+	fields := make([]string, 0, 15)
+	if m.created_at != nil {
+		fields = append(fields, memberauth.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, memberauth.FieldUpdatedAt)
+	}
+	if m.operator_code != nil {
+		fields = append(fields, memberauth.FieldOperatorCode)
+	}
+	if m.member != nil {
+		fields = append(fields, memberauth.FieldMemberID)
+	}
+	if m.username != nil {
+		fields = append(fields, memberauth.FieldUsername)
+	}
+	if m.phone_ciphertext != nil {
+		fields = append(fields, memberauth.FieldPhoneCiphertext)
+	}
+	if m.phone_lookup_hash != nil {
+		fields = append(fields, memberauth.FieldPhoneLookupHash)
+	}
+	if m.email_ciphertext != nil {
+		fields = append(fields, memberauth.FieldEmailCiphertext)
+	}
+	if m.email_lookup_hash != nil {
+		fields = append(fields, memberauth.FieldEmailLookupHash)
+	}
+	if m.login_password_hash != nil {
+		fields = append(fields, memberauth.FieldLoginPasswordHash)
+	}
+	if m.withdrawal_password_hash != nil {
+		fields = append(fields, memberauth.FieldWithdrawalPasswordHash)
+	}
+	if m.sms_code_error_count != nil {
+		fields = append(fields, memberauth.FieldSmsCodeErrorCount)
+	}
+	if m.email_code_error_count != nil {
+		fields = append(fields, memberauth.FieldEmailCodeErrorCount)
+	}
+	if m.login_password_error_count != nil {
+		fields = append(fields, memberauth.FieldLoginPasswordErrorCount)
+	}
+	if m.withdrawal_password_error_count != nil {
+		fields = append(fields, memberauth.FieldWithdrawalPasswordErrorCount)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *MemberAuthMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case memberauth.FieldCreatedAt:
+		return m.CreatedAt()
+	case memberauth.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case memberauth.FieldOperatorCode:
+		return m.OperatorCode()
+	case memberauth.FieldMemberID:
+		return m.MemberID()
+	case memberauth.FieldUsername:
+		return m.Username()
+	case memberauth.FieldPhoneCiphertext:
+		return m.PhoneCiphertext()
+	case memberauth.FieldPhoneLookupHash:
+		return m.PhoneLookupHash()
+	case memberauth.FieldEmailCiphertext:
+		return m.EmailCiphertext()
+	case memberauth.FieldEmailLookupHash:
+		return m.EmailLookupHash()
+	case memberauth.FieldLoginPasswordHash:
+		return m.LoginPasswordHash()
+	case memberauth.FieldWithdrawalPasswordHash:
+		return m.WithdrawalPasswordHash()
+	case memberauth.FieldSmsCodeErrorCount:
+		return m.SmsCodeErrorCount()
+	case memberauth.FieldEmailCodeErrorCount:
+		return m.EmailCodeErrorCount()
+	case memberauth.FieldLoginPasswordErrorCount:
+		return m.LoginPasswordErrorCount()
+	case memberauth.FieldWithdrawalPasswordErrorCount:
+		return m.WithdrawalPasswordErrorCount()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *MemberAuthMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case memberauth.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case memberauth.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case memberauth.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
+	case memberauth.FieldMemberID:
+		return m.OldMemberID(ctx)
+	case memberauth.FieldUsername:
+		return m.OldUsername(ctx)
+	case memberauth.FieldPhoneCiphertext:
+		return m.OldPhoneCiphertext(ctx)
+	case memberauth.FieldPhoneLookupHash:
+		return m.OldPhoneLookupHash(ctx)
+	case memberauth.FieldEmailCiphertext:
+		return m.OldEmailCiphertext(ctx)
+	case memberauth.FieldEmailLookupHash:
+		return m.OldEmailLookupHash(ctx)
+	case memberauth.FieldLoginPasswordHash:
+		return m.OldLoginPasswordHash(ctx)
+	case memberauth.FieldWithdrawalPasswordHash:
+		return m.OldWithdrawalPasswordHash(ctx)
+	case memberauth.FieldSmsCodeErrorCount:
+		return m.OldSmsCodeErrorCount(ctx)
+	case memberauth.FieldEmailCodeErrorCount:
+		return m.OldEmailCodeErrorCount(ctx)
+	case memberauth.FieldLoginPasswordErrorCount:
+		return m.OldLoginPasswordErrorCount(ctx)
+	case memberauth.FieldWithdrawalPasswordErrorCount:
+		return m.OldWithdrawalPasswordErrorCount(ctx)
+	}
+	return nil, fmt.Errorf("unknown MemberAuth field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberAuthMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case memberauth.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case memberauth.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case memberauth.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
+		return nil
+	case memberauth.FieldMemberID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMemberID(v)
+		return nil
+	case memberauth.FieldUsername:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUsername(v)
+		return nil
+	case memberauth.FieldPhoneCiphertext:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPhoneCiphertext(v)
+		return nil
+	case memberauth.FieldPhoneLookupHash:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPhoneLookupHash(v)
+		return nil
+	case memberauth.FieldEmailCiphertext:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEmailCiphertext(v)
+		return nil
+	case memberauth.FieldEmailLookupHash:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEmailLookupHash(v)
+		return nil
+	case memberauth.FieldLoginPasswordHash:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLoginPasswordHash(v)
+		return nil
+	case memberauth.FieldWithdrawalPasswordHash:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWithdrawalPasswordHash(v)
+		return nil
+	case memberauth.FieldSmsCodeErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSmsCodeErrorCount(v)
+		return nil
+	case memberauth.FieldEmailCodeErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEmailCodeErrorCount(v)
+		return nil
+	case memberauth.FieldLoginPasswordErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLoginPasswordErrorCount(v)
+		return nil
+	case memberauth.FieldWithdrawalPasswordErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWithdrawalPasswordErrorCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberAuth field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *MemberAuthMutation) AddedFields() []string {
+	var fields []string
+	if m.addsms_code_error_count != nil {
+		fields = append(fields, memberauth.FieldSmsCodeErrorCount)
+	}
+	if m.addemail_code_error_count != nil {
+		fields = append(fields, memberauth.FieldEmailCodeErrorCount)
+	}
+	if m.addlogin_password_error_count != nil {
+		fields = append(fields, memberauth.FieldLoginPasswordErrorCount)
+	}
+	if m.addwithdrawal_password_error_count != nil {
+		fields = append(fields, memberauth.FieldWithdrawalPasswordErrorCount)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *MemberAuthMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case memberauth.FieldSmsCodeErrorCount:
+		return m.AddedSmsCodeErrorCount()
+	case memberauth.FieldEmailCodeErrorCount:
+		return m.AddedEmailCodeErrorCount()
+	case memberauth.FieldLoginPasswordErrorCount:
+		return m.AddedLoginPasswordErrorCount()
+	case memberauth.FieldWithdrawalPasswordErrorCount:
+		return m.AddedWithdrawalPasswordErrorCount()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberAuthMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case memberauth.FieldSmsCodeErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSmsCodeErrorCount(v)
+		return nil
+	case memberauth.FieldEmailCodeErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEmailCodeErrorCount(v)
+		return nil
+	case memberauth.FieldLoginPasswordErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLoginPasswordErrorCount(v)
+		return nil
+	case memberauth.FieldWithdrawalPasswordErrorCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWithdrawalPasswordErrorCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberAuth numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *MemberAuthMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(memberauth.FieldUsername) {
+		fields = append(fields, memberauth.FieldUsername)
+	}
+	if m.FieldCleared(memberauth.FieldPhoneCiphertext) {
+		fields = append(fields, memberauth.FieldPhoneCiphertext)
+	}
+	if m.FieldCleared(memberauth.FieldPhoneLookupHash) {
+		fields = append(fields, memberauth.FieldPhoneLookupHash)
+	}
+	if m.FieldCleared(memberauth.FieldEmailCiphertext) {
+		fields = append(fields, memberauth.FieldEmailCiphertext)
+	}
+	if m.FieldCleared(memberauth.FieldEmailLookupHash) {
+		fields = append(fields, memberauth.FieldEmailLookupHash)
+	}
+	if m.FieldCleared(memberauth.FieldLoginPasswordHash) {
+		fields = append(fields, memberauth.FieldLoginPasswordHash)
+	}
+	if m.FieldCleared(memberauth.FieldWithdrawalPasswordHash) {
+		fields = append(fields, memberauth.FieldWithdrawalPasswordHash)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *MemberAuthMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *MemberAuthMutation) ClearField(name string) error {
+	switch name {
+	case memberauth.FieldUsername:
+		m.ClearUsername()
+		return nil
+	case memberauth.FieldPhoneCiphertext:
+		m.ClearPhoneCiphertext()
+		return nil
+	case memberauth.FieldPhoneLookupHash:
+		m.ClearPhoneLookupHash()
+		return nil
+	case memberauth.FieldEmailCiphertext:
+		m.ClearEmailCiphertext()
+		return nil
+	case memberauth.FieldEmailLookupHash:
+		m.ClearEmailLookupHash()
+		return nil
+	case memberauth.FieldLoginPasswordHash:
+		m.ClearLoginPasswordHash()
+		return nil
+	case memberauth.FieldWithdrawalPasswordHash:
+		m.ClearWithdrawalPasswordHash()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberAuth nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *MemberAuthMutation) ResetField(name string) error {
+	switch name {
+	case memberauth.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case memberauth.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case memberauth.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
+	case memberauth.FieldMemberID:
+		m.ResetMemberID()
+		return nil
+	case memberauth.FieldUsername:
+		m.ResetUsername()
+		return nil
+	case memberauth.FieldPhoneCiphertext:
+		m.ResetPhoneCiphertext()
+		return nil
+	case memberauth.FieldPhoneLookupHash:
+		m.ResetPhoneLookupHash()
+		return nil
+	case memberauth.FieldEmailCiphertext:
+		m.ResetEmailCiphertext()
+		return nil
+	case memberauth.FieldEmailLookupHash:
+		m.ResetEmailLookupHash()
+		return nil
+	case memberauth.FieldLoginPasswordHash:
+		m.ResetLoginPasswordHash()
+		return nil
+	case memberauth.FieldWithdrawalPasswordHash:
+		m.ResetWithdrawalPasswordHash()
+		return nil
+	case memberauth.FieldSmsCodeErrorCount:
+		m.ResetSmsCodeErrorCount()
+		return nil
+	case memberauth.FieldEmailCodeErrorCount:
+		m.ResetEmailCodeErrorCount()
+		return nil
+	case memberauth.FieldLoginPasswordErrorCount:
+		m.ResetLoginPasswordErrorCount()
+		return nil
+	case memberauth.FieldWithdrawalPasswordErrorCount:
+		m.ResetWithdrawalPasswordErrorCount()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberAuth field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *MemberAuthMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.member != nil {
+		edges = append(edges, memberauth.EdgeMember)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *MemberAuthMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case memberauth.EdgeMember:
+		if id := m.member; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *MemberAuthMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *MemberAuthMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *MemberAuthMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedmember {
+		edges = append(edges, memberauth.EdgeMember)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *MemberAuthMutation) EdgeCleared(name string) bool {
+	switch name {
+	case memberauth.EdgeMember:
+		return m.clearedmember
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *MemberAuthMutation) ClearEdge(name string) error {
+	switch name {
+	case memberauth.EdgeMember:
+		m.ClearMember()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberAuth unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *MemberAuthMutation) ResetEdge(name string) error {
+	switch name {
+	case memberauth.EdgeMember:
+		m.ResetMember()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberAuth edge %s", name)
 }
 
 // MemberAutoLevelMutation represents an operation that mutates the MemberAutoLevel nodes in the graph.
@@ -15715,27 +17493,28 @@ func (m *MemberOAuthIdentityMutation) ResetEdge(name string) error {
 // MemberProfileMutation represents an operation that mutates the MemberProfile nodes in the graph.
 type MemberProfileMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *int64
-	created_at       *time.Time
-	updated_at       *time.Time
-	nickname         *string
-	avatar_url       *string
-	avatar_frame_url *string
-	real_name        *string
-	identity_number  *string
-	birthday         *time.Time
-	gender           *int64
-	addgender        *int64
-	region_code      *string
-	remark           *string
-	clearedFields    map[string]struct{}
-	member           *int64
-	clearedmember    bool
-	done             bool
-	oldValue         func(context.Context) (*MemberProfile, error)
-	predicates       []predicate.MemberProfile
+	op                         Op
+	typ                        string
+	id                         *int64
+	created_at                 *time.Time
+	updated_at                 *time.Time
+	operator_code              *string
+	avatar_url                 *string
+	avatar_frame_url           *string
+	nickname                   *string
+	real_name_ciphertext       *string
+	identity_number_ciphertext *string
+	birthday                   *time.Time
+	gender                     *int64
+	addgender                  *int64
+	region_code                *string
+	remark                     *string
+	clearedFields              map[string]struct{}
+	member                     *int64
+	clearedmember              bool
+	done                       bool
+	oldValue                   func(context.Context) (*MemberProfile, error)
+	predicates                 []predicate.MemberProfile
 }
 
 var _ ent.Mutation = (*MemberProfileMutation)(nil)
@@ -15914,6 +17693,42 @@ func (m *MemberProfileMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
+// SetOperatorCode sets the "operator_code" field.
+func (m *MemberProfileMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *MemberProfileMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the MemberProfile entity.
+// If the MemberProfile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberProfileMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *MemberProfileMutation) ResetOperatorCode() {
+	m.operator_code = nil
+}
+
 // SetMemberID sets the "member_id" field.
 func (m *MemberProfileMutation) SetMemberID(i int64) {
 	m.member = &i
@@ -15948,42 +17763,6 @@ func (m *MemberProfileMutation) OldMemberID(ctx context.Context) (v int64, err e
 // ResetMemberID resets all changes to the "member_id" field.
 func (m *MemberProfileMutation) ResetMemberID() {
 	m.member = nil
-}
-
-// SetNickname sets the "nickname" field.
-func (m *MemberProfileMutation) SetNickname(s string) {
-	m.nickname = &s
-}
-
-// Nickname returns the value of the "nickname" field in the mutation.
-func (m *MemberProfileMutation) Nickname() (r string, exists bool) {
-	v := m.nickname
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldNickname returns the old "nickname" field's value of the MemberProfile entity.
-// If the MemberProfile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberProfileMutation) OldNickname(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNickname is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNickname requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNickname: %w", err)
-	}
-	return oldValue.Nickname, nil
-}
-
-// ResetNickname resets all changes to the "nickname" field.
-func (m *MemberProfileMutation) ResetNickname() {
-	m.nickname = nil
 }
 
 // SetAvatarURL sets the "avatar_url" field.
@@ -16039,7 +17818,7 @@ func (m *MemberProfileMutation) AvatarFrameURL() (r string, exists bool) {
 // OldAvatarFrameURL returns the old "avatar_frame_url" field's value of the MemberProfile entity.
 // If the MemberProfile object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberProfileMutation) OldAvatarFrameURL(ctx context.Context) (v *string, err error) {
+func (m *MemberProfileMutation) OldAvatarFrameURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAvatarFrameURL is only allowed on UpdateOne operations")
 	}
@@ -16053,120 +17832,143 @@ func (m *MemberProfileMutation) OldAvatarFrameURL(ctx context.Context) (v *strin
 	return oldValue.AvatarFrameURL, nil
 }
 
-// ClearAvatarFrameURL clears the value of the "avatar_frame_url" field.
-func (m *MemberProfileMutation) ClearAvatarFrameURL() {
-	m.avatar_frame_url = nil
-	m.clearedFields[memberprofile.FieldAvatarFrameURL] = struct{}{}
-}
-
-// AvatarFrameURLCleared returns if the "avatar_frame_url" field was cleared in this mutation.
-func (m *MemberProfileMutation) AvatarFrameURLCleared() bool {
-	_, ok := m.clearedFields[memberprofile.FieldAvatarFrameURL]
-	return ok
-}
-
 // ResetAvatarFrameURL resets all changes to the "avatar_frame_url" field.
 func (m *MemberProfileMutation) ResetAvatarFrameURL() {
 	m.avatar_frame_url = nil
-	delete(m.clearedFields, memberprofile.FieldAvatarFrameURL)
 }
 
-// SetRealName sets the "real_name" field.
-func (m *MemberProfileMutation) SetRealName(s string) {
-	m.real_name = &s
+// SetNickname sets the "nickname" field.
+func (m *MemberProfileMutation) SetNickname(s string) {
+	m.nickname = &s
 }
 
-// RealName returns the value of the "real_name" field in the mutation.
-func (m *MemberProfileMutation) RealName() (r string, exists bool) {
-	v := m.real_name
+// Nickname returns the value of the "nickname" field in the mutation.
+func (m *MemberProfileMutation) Nickname() (r string, exists bool) {
+	v := m.nickname
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRealName returns the old "real_name" field's value of the MemberProfile entity.
+// OldNickname returns the old "nickname" field's value of the MemberProfile entity.
 // If the MemberProfile object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberProfileMutation) OldRealName(ctx context.Context) (v *string, err error) {
+func (m *MemberProfileMutation) OldNickname(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRealName is only allowed on UpdateOne operations")
+		return v, errors.New("OldNickname is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRealName requires an ID field in the mutation")
+		return v, errors.New("OldNickname requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRealName: %w", err)
+		return v, fmt.Errorf("querying old value for OldNickname: %w", err)
 	}
-	return oldValue.RealName, nil
+	return oldValue.Nickname, nil
 }
 
-// ClearRealName clears the value of the "real_name" field.
-func (m *MemberProfileMutation) ClearRealName() {
-	m.real_name = nil
-	m.clearedFields[memberprofile.FieldRealName] = struct{}{}
+// ResetNickname resets all changes to the "nickname" field.
+func (m *MemberProfileMutation) ResetNickname() {
+	m.nickname = nil
 }
 
-// RealNameCleared returns if the "real_name" field was cleared in this mutation.
-func (m *MemberProfileMutation) RealNameCleared() bool {
-	_, ok := m.clearedFields[memberprofile.FieldRealName]
-	return ok
+// SetRealNameCiphertext sets the "real_name_ciphertext" field.
+func (m *MemberProfileMutation) SetRealNameCiphertext(s string) {
+	m.real_name_ciphertext = &s
 }
 
-// ResetRealName resets all changes to the "real_name" field.
-func (m *MemberProfileMutation) ResetRealName() {
-	m.real_name = nil
-	delete(m.clearedFields, memberprofile.FieldRealName)
-}
-
-// SetIdentityNumber sets the "identity_number" field.
-func (m *MemberProfileMutation) SetIdentityNumber(s string) {
-	m.identity_number = &s
-}
-
-// IdentityNumber returns the value of the "identity_number" field in the mutation.
-func (m *MemberProfileMutation) IdentityNumber() (r string, exists bool) {
-	v := m.identity_number
+// RealNameCiphertext returns the value of the "real_name_ciphertext" field in the mutation.
+func (m *MemberProfileMutation) RealNameCiphertext() (r string, exists bool) {
+	v := m.real_name_ciphertext
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldIdentityNumber returns the old "identity_number" field's value of the MemberProfile entity.
+// OldRealNameCiphertext returns the old "real_name_ciphertext" field's value of the MemberProfile entity.
 // If the MemberProfile object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MemberProfileMutation) OldIdentityNumber(ctx context.Context) (v *string, err error) {
+func (m *MemberProfileMutation) OldRealNameCiphertext(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIdentityNumber is only allowed on UpdateOne operations")
+		return v, errors.New("OldRealNameCiphertext is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIdentityNumber requires an ID field in the mutation")
+		return v, errors.New("OldRealNameCiphertext requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIdentityNumber: %w", err)
+		return v, fmt.Errorf("querying old value for OldRealNameCiphertext: %w", err)
 	}
-	return oldValue.IdentityNumber, nil
+	return oldValue.RealNameCiphertext, nil
 }
 
-// ClearIdentityNumber clears the value of the "identity_number" field.
-func (m *MemberProfileMutation) ClearIdentityNumber() {
-	m.identity_number = nil
-	m.clearedFields[memberprofile.FieldIdentityNumber] = struct{}{}
+// ClearRealNameCiphertext clears the value of the "real_name_ciphertext" field.
+func (m *MemberProfileMutation) ClearRealNameCiphertext() {
+	m.real_name_ciphertext = nil
+	m.clearedFields[memberprofile.FieldRealNameCiphertext] = struct{}{}
 }
 
-// IdentityNumberCleared returns if the "identity_number" field was cleared in this mutation.
-func (m *MemberProfileMutation) IdentityNumberCleared() bool {
-	_, ok := m.clearedFields[memberprofile.FieldIdentityNumber]
+// RealNameCiphertextCleared returns if the "real_name_ciphertext" field was cleared in this mutation.
+func (m *MemberProfileMutation) RealNameCiphertextCleared() bool {
+	_, ok := m.clearedFields[memberprofile.FieldRealNameCiphertext]
 	return ok
 }
 
-// ResetIdentityNumber resets all changes to the "identity_number" field.
-func (m *MemberProfileMutation) ResetIdentityNumber() {
-	m.identity_number = nil
-	delete(m.clearedFields, memberprofile.FieldIdentityNumber)
+// ResetRealNameCiphertext resets all changes to the "real_name_ciphertext" field.
+func (m *MemberProfileMutation) ResetRealNameCiphertext() {
+	m.real_name_ciphertext = nil
+	delete(m.clearedFields, memberprofile.FieldRealNameCiphertext)
+}
+
+// SetIdentityNumberCiphertext sets the "identity_number_ciphertext" field.
+func (m *MemberProfileMutation) SetIdentityNumberCiphertext(s string) {
+	m.identity_number_ciphertext = &s
+}
+
+// IdentityNumberCiphertext returns the value of the "identity_number_ciphertext" field in the mutation.
+func (m *MemberProfileMutation) IdentityNumberCiphertext() (r string, exists bool) {
+	v := m.identity_number_ciphertext
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIdentityNumberCiphertext returns the old "identity_number_ciphertext" field's value of the MemberProfile entity.
+// If the MemberProfile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberProfileMutation) OldIdentityNumberCiphertext(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIdentityNumberCiphertext is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIdentityNumberCiphertext requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIdentityNumberCiphertext: %w", err)
+	}
+	return oldValue.IdentityNumberCiphertext, nil
+}
+
+// ClearIdentityNumberCiphertext clears the value of the "identity_number_ciphertext" field.
+func (m *MemberProfileMutation) ClearIdentityNumberCiphertext() {
+	m.identity_number_ciphertext = nil
+	m.clearedFields[memberprofile.FieldIdentityNumberCiphertext] = struct{}{}
+}
+
+// IdentityNumberCiphertextCleared returns if the "identity_number_ciphertext" field was cleared in this mutation.
+func (m *MemberProfileMutation) IdentityNumberCiphertextCleared() bool {
+	_, ok := m.clearedFields[memberprofile.FieldIdentityNumberCiphertext]
+	return ok
+}
+
+// ResetIdentityNumberCiphertext resets all changes to the "identity_number_ciphertext" field.
+func (m *MemberProfileMutation) ResetIdentityNumberCiphertext() {
+	m.identity_number_ciphertext = nil
+	delete(m.clearedFields, memberprofile.FieldIdentityNumberCiphertext)
 }
 
 // SetBirthday sets the "birthday" field.
@@ -16433,18 +18235,18 @@ func (m *MemberProfileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MemberProfileMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, memberprofile.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, memberprofile.FieldUpdatedAt)
 	}
+	if m.operator_code != nil {
+		fields = append(fields, memberprofile.FieldOperatorCode)
+	}
 	if m.member != nil {
 		fields = append(fields, memberprofile.FieldMemberID)
-	}
-	if m.nickname != nil {
-		fields = append(fields, memberprofile.FieldNickname)
 	}
 	if m.avatar_url != nil {
 		fields = append(fields, memberprofile.FieldAvatarURL)
@@ -16452,11 +18254,14 @@ func (m *MemberProfileMutation) Fields() []string {
 	if m.avatar_frame_url != nil {
 		fields = append(fields, memberprofile.FieldAvatarFrameURL)
 	}
-	if m.real_name != nil {
-		fields = append(fields, memberprofile.FieldRealName)
+	if m.nickname != nil {
+		fields = append(fields, memberprofile.FieldNickname)
 	}
-	if m.identity_number != nil {
-		fields = append(fields, memberprofile.FieldIdentityNumber)
+	if m.real_name_ciphertext != nil {
+		fields = append(fields, memberprofile.FieldRealNameCiphertext)
+	}
+	if m.identity_number_ciphertext != nil {
+		fields = append(fields, memberprofile.FieldIdentityNumberCiphertext)
 	}
 	if m.birthday != nil {
 		fields = append(fields, memberprofile.FieldBirthday)
@@ -16482,18 +18287,20 @@ func (m *MemberProfileMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case memberprofile.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case memberprofile.FieldOperatorCode:
+		return m.OperatorCode()
 	case memberprofile.FieldMemberID:
 		return m.MemberID()
-	case memberprofile.FieldNickname:
-		return m.Nickname()
 	case memberprofile.FieldAvatarURL:
 		return m.AvatarURL()
 	case memberprofile.FieldAvatarFrameURL:
 		return m.AvatarFrameURL()
-	case memberprofile.FieldRealName:
-		return m.RealName()
-	case memberprofile.FieldIdentityNumber:
-		return m.IdentityNumber()
+	case memberprofile.FieldNickname:
+		return m.Nickname()
+	case memberprofile.FieldRealNameCiphertext:
+		return m.RealNameCiphertext()
+	case memberprofile.FieldIdentityNumberCiphertext:
+		return m.IdentityNumberCiphertext()
 	case memberprofile.FieldBirthday:
 		return m.Birthday()
 	case memberprofile.FieldGender:
@@ -16515,18 +18322,20 @@ func (m *MemberProfileMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldCreatedAt(ctx)
 	case memberprofile.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case memberprofile.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
 	case memberprofile.FieldMemberID:
 		return m.OldMemberID(ctx)
-	case memberprofile.FieldNickname:
-		return m.OldNickname(ctx)
 	case memberprofile.FieldAvatarURL:
 		return m.OldAvatarURL(ctx)
 	case memberprofile.FieldAvatarFrameURL:
 		return m.OldAvatarFrameURL(ctx)
-	case memberprofile.FieldRealName:
-		return m.OldRealName(ctx)
-	case memberprofile.FieldIdentityNumber:
-		return m.OldIdentityNumber(ctx)
+	case memberprofile.FieldNickname:
+		return m.OldNickname(ctx)
+	case memberprofile.FieldRealNameCiphertext:
+		return m.OldRealNameCiphertext(ctx)
+	case memberprofile.FieldIdentityNumberCiphertext:
+		return m.OldIdentityNumberCiphertext(ctx)
 	case memberprofile.FieldBirthday:
 		return m.OldBirthday(ctx)
 	case memberprofile.FieldGender:
@@ -16558,19 +18367,19 @@ func (m *MemberProfileMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case memberprofile.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
+		return nil
 	case memberprofile.FieldMemberID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMemberID(v)
-		return nil
-	case memberprofile.FieldNickname:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetNickname(v)
 		return nil
 	case memberprofile.FieldAvatarURL:
 		v, ok := value.(string)
@@ -16586,19 +18395,26 @@ func (m *MemberProfileMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAvatarFrameURL(v)
 		return nil
-	case memberprofile.FieldRealName:
+	case memberprofile.FieldNickname:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRealName(v)
+		m.SetNickname(v)
 		return nil
-	case memberprofile.FieldIdentityNumber:
+	case memberprofile.FieldRealNameCiphertext:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetIdentityNumber(v)
+		m.SetRealNameCiphertext(v)
+		return nil
+	case memberprofile.FieldIdentityNumberCiphertext:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIdentityNumberCiphertext(v)
 		return nil
 	case memberprofile.FieldBirthday:
 		v, ok := value.(time.Time)
@@ -16673,14 +18489,11 @@ func (m *MemberProfileMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *MemberProfileMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(memberprofile.FieldAvatarFrameURL) {
-		fields = append(fields, memberprofile.FieldAvatarFrameURL)
+	if m.FieldCleared(memberprofile.FieldRealNameCiphertext) {
+		fields = append(fields, memberprofile.FieldRealNameCiphertext)
 	}
-	if m.FieldCleared(memberprofile.FieldRealName) {
-		fields = append(fields, memberprofile.FieldRealName)
-	}
-	if m.FieldCleared(memberprofile.FieldIdentityNumber) {
-		fields = append(fields, memberprofile.FieldIdentityNumber)
+	if m.FieldCleared(memberprofile.FieldIdentityNumberCiphertext) {
+		fields = append(fields, memberprofile.FieldIdentityNumberCiphertext)
 	}
 	if m.FieldCleared(memberprofile.FieldBirthday) {
 		fields = append(fields, memberprofile.FieldBirthday)
@@ -16705,14 +18518,11 @@ func (m *MemberProfileMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *MemberProfileMutation) ClearField(name string) error {
 	switch name {
-	case memberprofile.FieldAvatarFrameURL:
-		m.ClearAvatarFrameURL()
+	case memberprofile.FieldRealNameCiphertext:
+		m.ClearRealNameCiphertext()
 		return nil
-	case memberprofile.FieldRealName:
-		m.ClearRealName()
-		return nil
-	case memberprofile.FieldIdentityNumber:
-		m.ClearIdentityNumber()
+	case memberprofile.FieldIdentityNumberCiphertext:
+		m.ClearIdentityNumberCiphertext()
 		return nil
 	case memberprofile.FieldBirthday:
 		m.ClearBirthday()
@@ -16737,11 +18547,11 @@ func (m *MemberProfileMutation) ResetField(name string) error {
 	case memberprofile.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case memberprofile.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
 	case memberprofile.FieldMemberID:
 		m.ResetMemberID()
-		return nil
-	case memberprofile.FieldNickname:
-		m.ResetNickname()
 		return nil
 	case memberprofile.FieldAvatarURL:
 		m.ResetAvatarURL()
@@ -16749,11 +18559,14 @@ func (m *MemberProfileMutation) ResetField(name string) error {
 	case memberprofile.FieldAvatarFrameURL:
 		m.ResetAvatarFrameURL()
 		return nil
-	case memberprofile.FieldRealName:
-		m.ResetRealName()
+	case memberprofile.FieldNickname:
+		m.ResetNickname()
 		return nil
-	case memberprofile.FieldIdentityNumber:
-		m.ResetIdentityNumber()
+	case memberprofile.FieldRealNameCiphertext:
+		m.ResetRealNameCiphertext()
+		return nil
+	case memberprofile.FieldIdentityNumberCiphertext:
+		m.ResetIdentityNumberCiphertext()
 		return nil
 	case memberprofile.FieldBirthday:
 		m.ResetBirthday()

@@ -5,6 +5,7 @@ package member
 import (
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
@@ -25,22 +26,26 @@ const (
 	FieldOperatorCode = "operator_code"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
-	// FieldUsername holds the string denoting the username field in the database.
-	FieldUsername = "username"
-	// FieldPhone holds the string denoting the phone field in the database.
-	FieldPhone = "phone"
-	// FieldEmail holds the string denoting the email field in the database.
-	FieldEmail = "email"
-	// FieldPasswordHash holds the string denoting the password_hash field in the database.
-	FieldPasswordHash = "password_hash"
-	// FieldAgentGlobalID holds the string denoting the agent_global_id field in the database.
-	FieldAgentGlobalID = "agent_global_id"
+	// FieldAgentID holds the string denoting the agent_id field in the database.
+	FieldAgentID = "agent_id"
+	// FieldAgentAccountID holds the string denoting the agent_account_id field in the database.
+	FieldAgentAccountID = "agent_account_id"
+	// FieldInviterMemberID holds the string denoting the inviter_member_id field in the database.
+	FieldInviterMemberID = "inviter_member_id"
+	// FieldInviteCode holds the string denoting the invite_code field in the database.
+	FieldInviteCode = "invite_code"
 	// FieldAutoLevelID holds the string denoting the auto_level_id field in the database.
 	FieldAutoLevelID = "auto_level_id"
 	// FieldVipLevelID holds the string denoting the vip_level_id field in the database.
 	FieldVipLevelID = "vip_level_id"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldChatDisabled holds the string denoting the chat_disabled field in the database.
+	FieldChatDisabled = "chat_disabled"
+	// FieldBettingDisabled holds the string denoting the betting_disabled field in the database.
+	FieldBettingDisabled = "betting_disabled"
+	// FieldWithdrawalDisabled holds the string denoting the withdrawal_disabled field in the database.
+	FieldWithdrawalDisabled = "withdrawal_disabled"
 	// FieldRegisterMethod holds the string denoting the register_method field in the database.
 	FieldRegisterMethod = "register_method"
 	// FieldRegisterChannel holds the string denoting the register_channel field in the database.
@@ -57,22 +62,54 @@ const (
 	FieldLastLoginIP = "last_login_ip"
 	// FieldLastLoginDeviceCode holds the string denoting the last_login_device_code field in the database.
 	FieldLastLoginDeviceCode = "last_login_device_code"
+	// EdgeAgent holds the string denoting the agent edge name in mutations.
+	EdgeAgent = "agent"
+	// EdgeAgentAccount holds the string denoting the agent_account edge name in mutations.
+	EdgeAgentAccount = "agent_account"
+	// EdgeInvitedMembers holds the string denoting the invited_members edge name in mutations.
+	EdgeInvitedMembers = "invited_members"
+	// EdgeInviter holds the string denoting the inviter edge name in mutations.
+	EdgeInviter = "inviter"
 	// EdgeAutoLevel holds the string denoting the auto_level edge name in mutations.
 	EdgeAutoLevel = "auto_level"
 	// EdgeVipLevel holds the string denoting the vip_level edge name in mutations.
 	EdgeVipLevel = "vip_level"
+	// EdgeFixedLevelAssignments holds the string denoting the fixed_level_assignments edge name in mutations.
+	EdgeFixedLevelAssignments = "fixed_level_assignments"
+	// EdgeAuth holds the string denoting the auth edge name in mutations.
+	EdgeAuth = "auth"
 	// EdgeProfile holds the string denoting the profile edge name in mutations.
 	EdgeProfile = "profile"
 	// EdgeOauthIdentities holds the string denoting the oauth_identities edge name in mutations.
 	EdgeOauthIdentities = "oauth_identities"
-	// EdgeFixedLevelAssignments holds the string denoting the fixed_level_assignments edge name in mutations.
-	EdgeFixedLevelAssignments = "fixed_level_assignments"
 	// EdgeVipProgress holds the string denoting the vip_progress edge name in mutations.
 	EdgeVipProgress = "vip_progress"
 	// EdgeVipLevelRecords holds the string denoting the vip_level_records edge name in mutations.
 	EdgeVipLevelRecords = "vip_level_records"
 	// Table holds the table name of the member in the database.
 	Table = "member"
+	// AgentTable is the table that holds the agent relation/edge.
+	AgentTable = "member"
+	// AgentInverseTable is the table name for the AgentUser entity.
+	// It exists in this package in order to avoid circular dependency with the "agentuser" package.
+	AgentInverseTable = "agent_user"
+	// AgentColumn is the table column denoting the agent relation/edge.
+	AgentColumn = "agent_id"
+	// AgentAccountTable is the table that holds the agent_account relation/edge.
+	AgentAccountTable = "member"
+	// AgentAccountInverseTable is the table name for the AgentUser entity.
+	// It exists in this package in order to avoid circular dependency with the "agentuser" package.
+	AgentAccountInverseTable = "agent_user"
+	// AgentAccountColumn is the table column denoting the agent_account relation/edge.
+	AgentAccountColumn = "agent_account_id"
+	// InvitedMembersTable is the table that holds the invited_members relation/edge.
+	InvitedMembersTable = "member"
+	// InvitedMembersColumn is the table column denoting the invited_members relation/edge.
+	InvitedMembersColumn = "inviter_member_id"
+	// InviterTable is the table that holds the inviter relation/edge.
+	InviterTable = "member"
+	// InviterColumn is the table column denoting the inviter relation/edge.
+	InviterColumn = "inviter_member_id"
 	// AutoLevelTable is the table that holds the auto_level relation/edge.
 	AutoLevelTable = "member"
 	// AutoLevelInverseTable is the table name for the MemberAutoLevel entity.
@@ -87,6 +124,20 @@ const (
 	VipLevelInverseTable = "member_vip_level"
 	// VipLevelColumn is the table column denoting the vip_level relation/edge.
 	VipLevelColumn = "vip_level_id"
+	// FixedLevelAssignmentsTable is the table that holds the fixed_level_assignments relation/edge.
+	FixedLevelAssignmentsTable = "member_fixed_level_assignment"
+	// FixedLevelAssignmentsInverseTable is the table name for the MemberFixedLevelAssignment entity.
+	// It exists in this package in order to avoid circular dependency with the "memberfixedlevelassignment" package.
+	FixedLevelAssignmentsInverseTable = "member_fixed_level_assignment"
+	// FixedLevelAssignmentsColumn is the table column denoting the fixed_level_assignments relation/edge.
+	FixedLevelAssignmentsColumn = "member_id"
+	// AuthTable is the table that holds the auth relation/edge.
+	AuthTable = "member_auth"
+	// AuthInverseTable is the table name for the MemberAuth entity.
+	// It exists in this package in order to avoid circular dependency with the "memberauth" package.
+	AuthInverseTable = "member_auth"
+	// AuthColumn is the table column denoting the auth relation/edge.
+	AuthColumn = "member_id"
 	// ProfileTable is the table that holds the profile relation/edge.
 	ProfileTable = "member_profile"
 	// ProfileInverseTable is the table name for the MemberProfile entity.
@@ -101,13 +152,6 @@ const (
 	OauthIdentitiesInverseTable = "member_oauth_identity"
 	// OauthIdentitiesColumn is the table column denoting the oauth_identities relation/edge.
 	OauthIdentitiesColumn = "member_id"
-	// FixedLevelAssignmentsTable is the table that holds the fixed_level_assignments relation/edge.
-	FixedLevelAssignmentsTable = "member_fixed_level_assignment"
-	// FixedLevelAssignmentsInverseTable is the table name for the MemberFixedLevelAssignment entity.
-	// It exists in this package in order to avoid circular dependency with the "memberfixedlevelassignment" package.
-	FixedLevelAssignmentsInverseTable = "member_fixed_level_assignment"
-	// FixedLevelAssignmentsColumn is the table column denoting the fixed_level_assignments relation/edge.
-	FixedLevelAssignmentsColumn = "member_id"
 	// VipProgressTable is the table that holds the vip_progress relation/edge.
 	VipProgressTable = "member_vip_progress"
 	// VipProgressInverseTable is the table name for the MemberVipProgress entity.
@@ -132,14 +176,16 @@ var Columns = []string{
 	FieldGlobalID,
 	FieldOperatorCode,
 	FieldCode,
-	FieldUsername,
-	FieldPhone,
-	FieldEmail,
-	FieldPasswordHash,
-	FieldAgentGlobalID,
+	FieldAgentID,
+	FieldAgentAccountID,
+	FieldInviterMemberID,
+	FieldInviteCode,
 	FieldAutoLevelID,
 	FieldVipLevelID,
 	FieldStatus,
+	FieldChatDisabled,
+	FieldBettingDisabled,
+	FieldWithdrawalDisabled,
 	FieldRegisterMethod,
 	FieldRegisterChannel,
 	FieldRegisterIP,
@@ -160,7 +206,14 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "oa.98ent.com/p9/operator-crm/ent/runtime"
 var (
+	Hooks        [1]ent.Hook
+	Interceptors [1]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -173,14 +226,14 @@ var (
 	OperatorCodeValidator func(string) error
 	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	CodeValidator func(string) error
-	// UsernameValidator is a validator for the "username" field. It is called by the builders before save.
-	UsernameValidator func(string) error
-	// PhoneValidator is a validator for the "phone" field. It is called by the builders before save.
-	PhoneValidator func(string) error
-	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	EmailValidator func(string) error
-	// PasswordHashValidator is a validator for the "password_hash" field. It is called by the builders before save.
-	PasswordHashValidator func(string) error
+	// AgentIDValidator is a validator for the "agent_id" field. It is called by the builders before save.
+	AgentIDValidator func(int64) error
+	// AgentAccountIDValidator is a validator for the "agent_account_id" field. It is called by the builders before save.
+	AgentAccountIDValidator func(int64) error
+	// InviterMemberIDValidator is a validator for the "inviter_member_id" field. It is called by the builders before save.
+	InviterMemberIDValidator func(int64) error
+	// InviteCodeValidator is a validator for the "invite_code" field. It is called by the builders before save.
+	InviteCodeValidator func(string) error
 	// AutoLevelIDValidator is a validator for the "auto_level_id" field. It is called by the builders before save.
 	AutoLevelIDValidator func(int64) error
 	// VipLevelIDValidator is a validator for the "vip_level_id" field. It is called by the builders before save.
@@ -189,6 +242,12 @@ var (
 	DefaultStatus int64
 	// StatusValidator is a validator for the "status" field. It is called by the builders before save.
 	StatusValidator func(int64) error
+	// DefaultChatDisabled holds the default value on creation for the "chat_disabled" field.
+	DefaultChatDisabled bool
+	// DefaultBettingDisabled holds the default value on creation for the "betting_disabled" field.
+	DefaultBettingDisabled bool
+	// DefaultWithdrawalDisabled holds the default value on creation for the "withdrawal_disabled" field.
+	DefaultWithdrawalDisabled bool
 	// RegisterMethodValidator is a validator for the "register_method" field. It is called by the builders before save.
 	RegisterMethodValidator func(string) error
 	// RegisterChannelValidator is a validator for the "register_channel" field. It is called by the builders before save.
@@ -238,29 +297,24 @@ func ByCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCode, opts...).ToFunc()
 }
 
-// ByUsername orders the results by the username field.
-func ByUsername(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUsername, opts...).ToFunc()
+// ByAgentID orders the results by the agent_id field.
+func ByAgentID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAgentID, opts...).ToFunc()
 }
 
-// ByPhone orders the results by the phone field.
-func ByPhone(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPhone, opts...).ToFunc()
+// ByAgentAccountID orders the results by the agent_account_id field.
+func ByAgentAccountID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAgentAccountID, opts...).ToFunc()
 }
 
-// ByEmail orders the results by the email field.
-func ByEmail(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEmail, opts...).ToFunc()
+// ByInviterMemberID orders the results by the inviter_member_id field.
+func ByInviterMemberID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInviterMemberID, opts...).ToFunc()
 }
 
-// ByPasswordHash orders the results by the password_hash field.
-func ByPasswordHash(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPasswordHash, opts...).ToFunc()
-}
-
-// ByAgentGlobalID orders the results by the agent_global_id field.
-func ByAgentGlobalID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAgentGlobalID, opts...).ToFunc()
+// ByInviteCode orders the results by the invite_code field.
+func ByInviteCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInviteCode, opts...).ToFunc()
 }
 
 // ByAutoLevelID orders the results by the auto_level_id field.
@@ -276,6 +330,21 @@ func ByVipLevelID(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByChatDisabled orders the results by the chat_disabled field.
+func ByChatDisabled(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldChatDisabled, opts...).ToFunc()
+}
+
+// ByBettingDisabled orders the results by the betting_disabled field.
+func ByBettingDisabled(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBettingDisabled, opts...).ToFunc()
+}
+
+// ByWithdrawalDisabled orders the results by the withdrawal_disabled field.
+func ByWithdrawalDisabled(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWithdrawalDisabled, opts...).ToFunc()
 }
 
 // ByRegisterMethod orders the results by the register_method field.
@@ -318,6 +387,41 @@ func ByLastLoginDeviceCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastLoginDeviceCode, opts...).ToFunc()
 }
 
+// ByAgentField orders the results by agent field.
+func ByAgentField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAgentStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByAgentAccountField orders the results by agent_account field.
+func ByAgentAccountField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAgentAccountStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByInvitedMembersCount orders the results by invited_members count.
+func ByInvitedMembersCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newInvitedMembersStep(), opts...)
+	}
+}
+
+// ByInvitedMembers orders the results by invited_members terms.
+func ByInvitedMembers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInvitedMembersStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByInviterField orders the results by inviter field.
+func ByInviterField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInviterStep(), sql.OrderByField(field, opts...))
+	}
+}
+
 // ByAutoLevelField orders the results by auto_level field.
 func ByAutoLevelField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -329,6 +433,27 @@ func ByAutoLevelField(field string, opts ...sql.OrderTermOption) OrderOption {
 func ByVipLevelField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newVipLevelStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByFixedLevelAssignmentsCount orders the results by fixed_level_assignments count.
+func ByFixedLevelAssignmentsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFixedLevelAssignmentsStep(), opts...)
+	}
+}
+
+// ByFixedLevelAssignments orders the results by fixed_level_assignments terms.
+func ByFixedLevelAssignments(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFixedLevelAssignmentsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAuthField orders the results by auth field.
+func ByAuthField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAuthStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -353,20 +478,6 @@ func ByOauthIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByFixedLevelAssignmentsCount orders the results by fixed_level_assignments count.
-func ByFixedLevelAssignmentsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newFixedLevelAssignmentsStep(), opts...)
-	}
-}
-
-// ByFixedLevelAssignments orders the results by fixed_level_assignments terms.
-func ByFixedLevelAssignments(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newFixedLevelAssignmentsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
 // ByVipProgressField orders the results by vip_progress field.
 func ByVipProgressField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -387,6 +498,34 @@ func ByVipLevelRecords(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newVipLevelRecordsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+func newAgentStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AgentInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, AgentTable, AgentColumn),
+	)
+}
+func newAgentAccountStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AgentAccountInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, AgentAccountTable, AgentAccountColumn),
+	)
+}
+func newInvitedMembersStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, InvitedMembersTable, InvitedMembersColumn),
+	)
+}
+func newInviterStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, InviterTable, InviterColumn),
+	)
+}
 func newAutoLevelStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -401,6 +540,20 @@ func newVipLevelStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, false, VipLevelTable, VipLevelColumn),
 	)
 }
+func newFixedLevelAssignmentsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FixedLevelAssignmentsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FixedLevelAssignmentsTable, FixedLevelAssignmentsColumn),
+	)
+}
+func newAuthStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AuthInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, AuthTable, AuthColumn),
+	)
+}
 func newProfileStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -413,13 +566,6 @@ func newOauthIdentitiesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OauthIdentitiesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, OauthIdentitiesTable, OauthIdentitiesColumn),
-	)
-}
-func newFixedLevelAssignmentsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(FixedLevelAssignmentsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, FixedLevelAssignmentsTable, FixedLevelAssignmentsColumn),
 	)
 }
 func newVipProgressStep() *sqlgraph.Step {

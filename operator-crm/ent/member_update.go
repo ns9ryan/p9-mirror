@@ -11,7 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
@@ -41,83 +43,23 @@ func (_u *MemberUpdate) SetUpdatedAt(v time.Time) *MemberUpdate {
 	return _u
 }
 
-// SetUsername sets the "username" field.
-func (_u *MemberUpdate) SetUsername(v string) *MemberUpdate {
-	_u.mutation.SetUsername(v)
+// SetAgentAccountID sets the "agent_account_id" field.
+func (_u *MemberUpdate) SetAgentAccountID(v int64) *MemberUpdate {
+	_u.mutation.SetAgentAccountID(v)
 	return _u
 }
 
-// SetNillableUsername sets the "username" field if the given value is not nil.
-func (_u *MemberUpdate) SetNillableUsername(v *string) *MemberUpdate {
+// SetNillableAgentAccountID sets the "agent_account_id" field if the given value is not nil.
+func (_u *MemberUpdate) SetNillableAgentAccountID(v *int64) *MemberUpdate {
 	if v != nil {
-		_u.SetUsername(*v)
+		_u.SetAgentAccountID(*v)
 	}
 	return _u
 }
 
-// ClearUsername clears the value of the "username" field.
-func (_u *MemberUpdate) ClearUsername() *MemberUpdate {
-	_u.mutation.ClearUsername()
-	return _u
-}
-
-// SetPhone sets the "phone" field.
-func (_u *MemberUpdate) SetPhone(v string) *MemberUpdate {
-	_u.mutation.SetPhone(v)
-	return _u
-}
-
-// SetNillablePhone sets the "phone" field if the given value is not nil.
-func (_u *MemberUpdate) SetNillablePhone(v *string) *MemberUpdate {
-	if v != nil {
-		_u.SetPhone(*v)
-	}
-	return _u
-}
-
-// ClearPhone clears the value of the "phone" field.
-func (_u *MemberUpdate) ClearPhone() *MemberUpdate {
-	_u.mutation.ClearPhone()
-	return _u
-}
-
-// SetEmail sets the "email" field.
-func (_u *MemberUpdate) SetEmail(v string) *MemberUpdate {
-	_u.mutation.SetEmail(v)
-	return _u
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (_u *MemberUpdate) SetNillableEmail(v *string) *MemberUpdate {
-	if v != nil {
-		_u.SetEmail(*v)
-	}
-	return _u
-}
-
-// ClearEmail clears the value of the "email" field.
-func (_u *MemberUpdate) ClearEmail() *MemberUpdate {
-	_u.mutation.ClearEmail()
-	return _u
-}
-
-// SetPasswordHash sets the "password_hash" field.
-func (_u *MemberUpdate) SetPasswordHash(v string) *MemberUpdate {
-	_u.mutation.SetPasswordHash(v)
-	return _u
-}
-
-// SetNillablePasswordHash sets the "password_hash" field if the given value is not nil.
-func (_u *MemberUpdate) SetNillablePasswordHash(v *string) *MemberUpdate {
-	if v != nil {
-		_u.SetPasswordHash(*v)
-	}
-	return _u
-}
-
-// ClearPasswordHash clears the value of the "password_hash" field.
-func (_u *MemberUpdate) ClearPasswordHash() *MemberUpdate {
-	_u.mutation.ClearPasswordHash()
+// ClearAgentAccountID clears the value of the "agent_account_id" field.
+func (_u *MemberUpdate) ClearAgentAccountID() *MemberUpdate {
+	_u.mutation.ClearAgentAccountID()
 	return _u
 }
 
@@ -167,6 +109,48 @@ func (_u *MemberUpdate) SetNillableStatus(v *int64) *MemberUpdate {
 // AddStatus adds value to the "status" field.
 func (_u *MemberUpdate) AddStatus(v int64) *MemberUpdate {
 	_u.mutation.AddStatus(v)
+	return _u
+}
+
+// SetChatDisabled sets the "chat_disabled" field.
+func (_u *MemberUpdate) SetChatDisabled(v bool) *MemberUpdate {
+	_u.mutation.SetChatDisabled(v)
+	return _u
+}
+
+// SetNillableChatDisabled sets the "chat_disabled" field if the given value is not nil.
+func (_u *MemberUpdate) SetNillableChatDisabled(v *bool) *MemberUpdate {
+	if v != nil {
+		_u.SetChatDisabled(*v)
+	}
+	return _u
+}
+
+// SetBettingDisabled sets the "betting_disabled" field.
+func (_u *MemberUpdate) SetBettingDisabled(v bool) *MemberUpdate {
+	_u.mutation.SetBettingDisabled(v)
+	return _u
+}
+
+// SetNillableBettingDisabled sets the "betting_disabled" field if the given value is not nil.
+func (_u *MemberUpdate) SetNillableBettingDisabled(v *bool) *MemberUpdate {
+	if v != nil {
+		_u.SetBettingDisabled(*v)
+	}
+	return _u
+}
+
+// SetWithdrawalDisabled sets the "withdrawal_disabled" field.
+func (_u *MemberUpdate) SetWithdrawalDisabled(v bool) *MemberUpdate {
+	_u.mutation.SetWithdrawalDisabled(v)
+	return _u
+}
+
+// SetNillableWithdrawalDisabled sets the "withdrawal_disabled" field if the given value is not nil.
+func (_u *MemberUpdate) SetNillableWithdrawalDisabled(v *bool) *MemberUpdate {
+	if v != nil {
+		_u.SetWithdrawalDisabled(*v)
+	}
 	return _u
 }
 
@@ -230,6 +214,26 @@ func (_u *MemberUpdate) ClearLastLoginDeviceCode() *MemberUpdate {
 	return _u
 }
 
+// SetAgentAccount sets the "agent_account" edge to the AgentUser entity.
+func (_u *MemberUpdate) SetAgentAccount(v *AgentUser) *MemberUpdate {
+	return _u.SetAgentAccountID(v.ID)
+}
+
+// AddInvitedMemberIDs adds the "invited_members" edge to the Member entity by IDs.
+func (_u *MemberUpdate) AddInvitedMemberIDs(ids ...int64) *MemberUpdate {
+	_u.mutation.AddInvitedMemberIDs(ids...)
+	return _u
+}
+
+// AddInvitedMembers adds the "invited_members" edges to the Member entity.
+func (_u *MemberUpdate) AddInvitedMembers(v ...*Member) *MemberUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddInvitedMemberIDs(ids...)
+}
+
 // SetAutoLevel sets the "auto_level" edge to the MemberAutoLevel entity.
 func (_u *MemberUpdate) SetAutoLevel(v *MemberAutoLevel) *MemberUpdate {
 	return _u.SetAutoLevelID(v.ID)
@@ -238,6 +242,40 @@ func (_u *MemberUpdate) SetAutoLevel(v *MemberAutoLevel) *MemberUpdate {
 // SetVipLevel sets the "vip_level" edge to the MemberVipLevel entity.
 func (_u *MemberUpdate) SetVipLevel(v *MemberVipLevel) *MemberUpdate {
 	return _u.SetVipLevelID(v.ID)
+}
+
+// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
+func (_u *MemberUpdate) AddFixedLevelAssignmentIDs(ids ...int64) *MemberUpdate {
+	_u.mutation.AddFixedLevelAssignmentIDs(ids...)
+	return _u
+}
+
+// AddFixedLevelAssignments adds the "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
+func (_u *MemberUpdate) AddFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFixedLevelAssignmentIDs(ids...)
+}
+
+// SetAuthID sets the "auth" edge to the MemberAuth entity by ID.
+func (_u *MemberUpdate) SetAuthID(id int64) *MemberUpdate {
+	_u.mutation.SetAuthID(id)
+	return _u
+}
+
+// SetNillableAuthID sets the "auth" edge to the MemberAuth entity by ID if the given value is not nil.
+func (_u *MemberUpdate) SetNillableAuthID(id *int64) *MemberUpdate {
+	if id != nil {
+		_u = _u.SetAuthID(*id)
+	}
+	return _u
+}
+
+// SetAuth sets the "auth" edge to the MemberAuth entity.
+func (_u *MemberUpdate) SetAuth(v *MemberAuth) *MemberUpdate {
+	return _u.SetAuthID(v.ID)
 }
 
 // SetProfileID sets the "profile" edge to the MemberProfile entity by ID.
@@ -272,21 +310,6 @@ func (_u *MemberUpdate) AddOauthIdentities(v ...*MemberOAuthIdentity) *MemberUpd
 		ids[i] = v[i].ID
 	}
 	return _u.AddOauthIdentityIDs(ids...)
-}
-
-// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
-func (_u *MemberUpdate) AddFixedLevelAssignmentIDs(ids ...int64) *MemberUpdate {
-	_u.mutation.AddFixedLevelAssignmentIDs(ids...)
-	return _u
-}
-
-// AddFixedLevelAssignments adds the "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
-func (_u *MemberUpdate) AddFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddFixedLevelAssignmentIDs(ids...)
 }
 
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
@@ -328,6 +351,33 @@ func (_u *MemberUpdate) Mutation() *MemberMutation {
 	return _u.mutation
 }
 
+// ClearAgentAccount clears the "agent_account" edge to the AgentUser entity.
+func (_u *MemberUpdate) ClearAgentAccount() *MemberUpdate {
+	_u.mutation.ClearAgentAccount()
+	return _u
+}
+
+// ClearInvitedMembers clears all "invited_members" edges to the Member entity.
+func (_u *MemberUpdate) ClearInvitedMembers() *MemberUpdate {
+	_u.mutation.ClearInvitedMembers()
+	return _u
+}
+
+// RemoveInvitedMemberIDs removes the "invited_members" edge to Member entities by IDs.
+func (_u *MemberUpdate) RemoveInvitedMemberIDs(ids ...int64) *MemberUpdate {
+	_u.mutation.RemoveInvitedMemberIDs(ids...)
+	return _u
+}
+
+// RemoveInvitedMembers removes "invited_members" edges to Member entities.
+func (_u *MemberUpdate) RemoveInvitedMembers(v ...*Member) *MemberUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveInvitedMemberIDs(ids...)
+}
+
 // ClearAutoLevel clears the "auto_level" edge to the MemberAutoLevel entity.
 func (_u *MemberUpdate) ClearAutoLevel() *MemberUpdate {
 	_u.mutation.ClearAutoLevel()
@@ -337,6 +387,33 @@ func (_u *MemberUpdate) ClearAutoLevel() *MemberUpdate {
 // ClearVipLevel clears the "vip_level" edge to the MemberVipLevel entity.
 func (_u *MemberUpdate) ClearVipLevel() *MemberUpdate {
 	_u.mutation.ClearVipLevel()
+	return _u
+}
+
+// ClearFixedLevelAssignments clears all "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
+func (_u *MemberUpdate) ClearFixedLevelAssignments() *MemberUpdate {
+	_u.mutation.ClearFixedLevelAssignments()
+	return _u
+}
+
+// RemoveFixedLevelAssignmentIDs removes the "fixed_level_assignments" edge to MemberFixedLevelAssignment entities by IDs.
+func (_u *MemberUpdate) RemoveFixedLevelAssignmentIDs(ids ...int64) *MemberUpdate {
+	_u.mutation.RemoveFixedLevelAssignmentIDs(ids...)
+	return _u
+}
+
+// RemoveFixedLevelAssignments removes "fixed_level_assignments" edges to MemberFixedLevelAssignment entities.
+func (_u *MemberUpdate) RemoveFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFixedLevelAssignmentIDs(ids...)
+}
+
+// ClearAuth clears the "auth" edge to the MemberAuth entity.
+func (_u *MemberUpdate) ClearAuth() *MemberUpdate {
+	_u.mutation.ClearAuth()
 	return _u
 }
 
@@ -365,27 +442,6 @@ func (_u *MemberUpdate) RemoveOauthIdentities(v ...*MemberOAuthIdentity) *Member
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveOauthIdentityIDs(ids...)
-}
-
-// ClearFixedLevelAssignments clears all "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
-func (_u *MemberUpdate) ClearFixedLevelAssignments() *MemberUpdate {
-	_u.mutation.ClearFixedLevelAssignments()
-	return _u
-}
-
-// RemoveFixedLevelAssignmentIDs removes the "fixed_level_assignments" edge to MemberFixedLevelAssignment entities by IDs.
-func (_u *MemberUpdate) RemoveFixedLevelAssignmentIDs(ids ...int64) *MemberUpdate {
-	_u.mutation.RemoveFixedLevelAssignmentIDs(ids...)
-	return _u
-}
-
-// RemoveFixedLevelAssignments removes "fixed_level_assignments" edges to MemberFixedLevelAssignment entities.
-func (_u *MemberUpdate) RemoveFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveFixedLevelAssignmentIDs(ids...)
 }
 
 // ClearVipProgress clears the "vip_progress" edge to the MemberVipProgress entity.
@@ -417,7 +473,9 @@ func (_u *MemberUpdate) RemoveVipLevelRecords(v ...*MemberVipLevelRecord) *Membe
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *MemberUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -444,33 +502,22 @@ func (_u *MemberUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberUpdate) defaults() {
+func (_u *MemberUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if member.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized member.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := member.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberUpdate) check() error {
-	if v, ok := _u.mutation.Username(); ok {
-		if err := member.UsernameValidator(v); err != nil {
-			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Member.username": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Phone(); ok {
-		if err := member.PhoneValidator(v); err != nil {
-			return &ValidationError{Name: "phone", err: fmt.Errorf(`ent: validator failed for field "Member.phone": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Email(); ok {
-		if err := member.EmailValidator(v); err != nil {
-			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "Member.email": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.PasswordHash(); ok {
-		if err := member.PasswordHashValidator(v); err != nil {
-			return &ValidationError{Name: "password_hash", err: fmt.Errorf(`ent: validator failed for field "Member.password_hash": %w`, err)}
+	if v, ok := _u.mutation.AgentAccountID(); ok {
+		if err := member.AgentAccountIDValidator(v); err != nil {
+			return &ValidationError{Name: "agent_account_id", err: fmt.Errorf(`ent: validator failed for field "Member.agent_account_id": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.AutoLevelID(); ok {
@@ -498,6 +545,9 @@ func (_u *MemberUpdate) check() error {
 			return &ValidationError{Name: "last_login_device_code", err: fmt.Errorf(`ent: validator failed for field "Member.last_login_device_code": %w`, err)}
 		}
 	}
+	if _u.mutation.AgentCleared() && len(_u.mutation.AgentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Member.agent"`)
+	}
 	if _u.mutation.AutoLevelCleared() && len(_u.mutation.AutoLevelIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Member.auto_level"`)
 	}
@@ -522,35 +572,20 @@ func (_u *MemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(member.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.Username(); ok {
-		_spec.SetField(member.FieldUsername, field.TypeString, value)
-	}
-	if _u.mutation.UsernameCleared() {
-		_spec.ClearField(member.FieldUsername, field.TypeString)
-	}
-	if value, ok := _u.mutation.Phone(); ok {
-		_spec.SetField(member.FieldPhone, field.TypeString, value)
-	}
-	if _u.mutation.PhoneCleared() {
-		_spec.ClearField(member.FieldPhone, field.TypeString)
-	}
-	if value, ok := _u.mutation.Email(); ok {
-		_spec.SetField(member.FieldEmail, field.TypeString, value)
-	}
-	if _u.mutation.EmailCleared() {
-		_spec.ClearField(member.FieldEmail, field.TypeString)
-	}
-	if value, ok := _u.mutation.PasswordHash(); ok {
-		_spec.SetField(member.FieldPasswordHash, field.TypeString, value)
-	}
-	if _u.mutation.PasswordHashCleared() {
-		_spec.ClearField(member.FieldPasswordHash, field.TypeString)
-	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(member.FieldStatus, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
 		_spec.AddField(member.FieldStatus, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.ChatDisabled(); ok {
+		_spec.SetField(member.FieldChatDisabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.BettingDisabled(); ok {
+		_spec.SetField(member.FieldBettingDisabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.WithdrawalDisabled(); ok {
+		_spec.SetField(member.FieldWithdrawalDisabled, field.TypeBool, value)
 	}
 	if _u.mutation.RegisterIPCleared() {
 		_spec.ClearField(member.FieldRegisterIP, field.TypeString)
@@ -578,6 +613,80 @@ func (_u *MemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.LastLoginDeviceCodeCleared() {
 		_spec.ClearField(member.FieldLastLoginDeviceCode, field.TypeString)
+	}
+	if _u.mutation.AgentAccountCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   member.AgentAccountTable,
+			Columns: []string{member.AgentAccountColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(agentuser.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AgentAccountIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   member.AgentAccountTable,
+			Columns: []string{member.AgentAccountColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(agentuser.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.InvitedMembersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.InvitedMembersTable,
+			Columns: []string{member.InvitedMembersColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedInvitedMembersIDs(); len(nodes) > 0 && !_u.mutation.InvitedMembersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.InvitedMembersTable,
+			Columns: []string{member.InvitedMembersColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.InvitedMembersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.InvitedMembersTable,
+			Columns: []string{member.InvitedMembersColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.AutoLevelCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -630,6 +739,80 @@ func (_u *MemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberviplevel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.FixedLevelAssignmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.FixedLevelAssignmentsTable,
+			Columns: []string{member.FixedLevelAssignmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFixedLevelAssignmentsIDs(); len(nodes) > 0 && !_u.mutation.FixedLevelAssignmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.FixedLevelAssignmentsTable,
+			Columns: []string{member.FixedLevelAssignmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FixedLevelAssignmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.FixedLevelAssignmentsTable,
+			Columns: []string{member.FixedLevelAssignmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.AuthCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.AuthTable,
+			Columns: []string{member.AuthColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberauth.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AuthIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.AuthTable,
+			Columns: []string{member.AuthColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberauth.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -704,51 +887,6 @@ func (_u *MemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberoauthidentity.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.FixedLevelAssignmentsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   member.FixedLevelAssignmentsTable,
-			Columns: []string{member.FixedLevelAssignmentsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedFixedLevelAssignmentsIDs(); len(nodes) > 0 && !_u.mutation.FixedLevelAssignmentsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   member.FixedLevelAssignmentsTable,
-			Columns: []string{member.FixedLevelAssignmentsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.FixedLevelAssignmentsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   member.FixedLevelAssignmentsTable,
-			Columns: []string{member.FixedLevelAssignmentsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -856,83 +994,23 @@ func (_u *MemberUpdateOne) SetUpdatedAt(v time.Time) *MemberUpdateOne {
 	return _u
 }
 
-// SetUsername sets the "username" field.
-func (_u *MemberUpdateOne) SetUsername(v string) *MemberUpdateOne {
-	_u.mutation.SetUsername(v)
+// SetAgentAccountID sets the "agent_account_id" field.
+func (_u *MemberUpdateOne) SetAgentAccountID(v int64) *MemberUpdateOne {
+	_u.mutation.SetAgentAccountID(v)
 	return _u
 }
 
-// SetNillableUsername sets the "username" field if the given value is not nil.
-func (_u *MemberUpdateOne) SetNillableUsername(v *string) *MemberUpdateOne {
+// SetNillableAgentAccountID sets the "agent_account_id" field if the given value is not nil.
+func (_u *MemberUpdateOne) SetNillableAgentAccountID(v *int64) *MemberUpdateOne {
 	if v != nil {
-		_u.SetUsername(*v)
+		_u.SetAgentAccountID(*v)
 	}
 	return _u
 }
 
-// ClearUsername clears the value of the "username" field.
-func (_u *MemberUpdateOne) ClearUsername() *MemberUpdateOne {
-	_u.mutation.ClearUsername()
-	return _u
-}
-
-// SetPhone sets the "phone" field.
-func (_u *MemberUpdateOne) SetPhone(v string) *MemberUpdateOne {
-	_u.mutation.SetPhone(v)
-	return _u
-}
-
-// SetNillablePhone sets the "phone" field if the given value is not nil.
-func (_u *MemberUpdateOne) SetNillablePhone(v *string) *MemberUpdateOne {
-	if v != nil {
-		_u.SetPhone(*v)
-	}
-	return _u
-}
-
-// ClearPhone clears the value of the "phone" field.
-func (_u *MemberUpdateOne) ClearPhone() *MemberUpdateOne {
-	_u.mutation.ClearPhone()
-	return _u
-}
-
-// SetEmail sets the "email" field.
-func (_u *MemberUpdateOne) SetEmail(v string) *MemberUpdateOne {
-	_u.mutation.SetEmail(v)
-	return _u
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (_u *MemberUpdateOne) SetNillableEmail(v *string) *MemberUpdateOne {
-	if v != nil {
-		_u.SetEmail(*v)
-	}
-	return _u
-}
-
-// ClearEmail clears the value of the "email" field.
-func (_u *MemberUpdateOne) ClearEmail() *MemberUpdateOne {
-	_u.mutation.ClearEmail()
-	return _u
-}
-
-// SetPasswordHash sets the "password_hash" field.
-func (_u *MemberUpdateOne) SetPasswordHash(v string) *MemberUpdateOne {
-	_u.mutation.SetPasswordHash(v)
-	return _u
-}
-
-// SetNillablePasswordHash sets the "password_hash" field if the given value is not nil.
-func (_u *MemberUpdateOne) SetNillablePasswordHash(v *string) *MemberUpdateOne {
-	if v != nil {
-		_u.SetPasswordHash(*v)
-	}
-	return _u
-}
-
-// ClearPasswordHash clears the value of the "password_hash" field.
-func (_u *MemberUpdateOne) ClearPasswordHash() *MemberUpdateOne {
-	_u.mutation.ClearPasswordHash()
+// ClearAgentAccountID clears the value of the "agent_account_id" field.
+func (_u *MemberUpdateOne) ClearAgentAccountID() *MemberUpdateOne {
+	_u.mutation.ClearAgentAccountID()
 	return _u
 }
 
@@ -982,6 +1060,48 @@ func (_u *MemberUpdateOne) SetNillableStatus(v *int64) *MemberUpdateOne {
 // AddStatus adds value to the "status" field.
 func (_u *MemberUpdateOne) AddStatus(v int64) *MemberUpdateOne {
 	_u.mutation.AddStatus(v)
+	return _u
+}
+
+// SetChatDisabled sets the "chat_disabled" field.
+func (_u *MemberUpdateOne) SetChatDisabled(v bool) *MemberUpdateOne {
+	_u.mutation.SetChatDisabled(v)
+	return _u
+}
+
+// SetNillableChatDisabled sets the "chat_disabled" field if the given value is not nil.
+func (_u *MemberUpdateOne) SetNillableChatDisabled(v *bool) *MemberUpdateOne {
+	if v != nil {
+		_u.SetChatDisabled(*v)
+	}
+	return _u
+}
+
+// SetBettingDisabled sets the "betting_disabled" field.
+func (_u *MemberUpdateOne) SetBettingDisabled(v bool) *MemberUpdateOne {
+	_u.mutation.SetBettingDisabled(v)
+	return _u
+}
+
+// SetNillableBettingDisabled sets the "betting_disabled" field if the given value is not nil.
+func (_u *MemberUpdateOne) SetNillableBettingDisabled(v *bool) *MemberUpdateOne {
+	if v != nil {
+		_u.SetBettingDisabled(*v)
+	}
+	return _u
+}
+
+// SetWithdrawalDisabled sets the "withdrawal_disabled" field.
+func (_u *MemberUpdateOne) SetWithdrawalDisabled(v bool) *MemberUpdateOne {
+	_u.mutation.SetWithdrawalDisabled(v)
+	return _u
+}
+
+// SetNillableWithdrawalDisabled sets the "withdrawal_disabled" field if the given value is not nil.
+func (_u *MemberUpdateOne) SetNillableWithdrawalDisabled(v *bool) *MemberUpdateOne {
+	if v != nil {
+		_u.SetWithdrawalDisabled(*v)
+	}
 	return _u
 }
 
@@ -1045,6 +1165,26 @@ func (_u *MemberUpdateOne) ClearLastLoginDeviceCode() *MemberUpdateOne {
 	return _u
 }
 
+// SetAgentAccount sets the "agent_account" edge to the AgentUser entity.
+func (_u *MemberUpdateOne) SetAgentAccount(v *AgentUser) *MemberUpdateOne {
+	return _u.SetAgentAccountID(v.ID)
+}
+
+// AddInvitedMemberIDs adds the "invited_members" edge to the Member entity by IDs.
+func (_u *MemberUpdateOne) AddInvitedMemberIDs(ids ...int64) *MemberUpdateOne {
+	_u.mutation.AddInvitedMemberIDs(ids...)
+	return _u
+}
+
+// AddInvitedMembers adds the "invited_members" edges to the Member entity.
+func (_u *MemberUpdateOne) AddInvitedMembers(v ...*Member) *MemberUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddInvitedMemberIDs(ids...)
+}
+
 // SetAutoLevel sets the "auto_level" edge to the MemberAutoLevel entity.
 func (_u *MemberUpdateOne) SetAutoLevel(v *MemberAutoLevel) *MemberUpdateOne {
 	return _u.SetAutoLevelID(v.ID)
@@ -1053,6 +1193,40 @@ func (_u *MemberUpdateOne) SetAutoLevel(v *MemberAutoLevel) *MemberUpdateOne {
 // SetVipLevel sets the "vip_level" edge to the MemberVipLevel entity.
 func (_u *MemberUpdateOne) SetVipLevel(v *MemberVipLevel) *MemberUpdateOne {
 	return _u.SetVipLevelID(v.ID)
+}
+
+// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
+func (_u *MemberUpdateOne) AddFixedLevelAssignmentIDs(ids ...int64) *MemberUpdateOne {
+	_u.mutation.AddFixedLevelAssignmentIDs(ids...)
+	return _u
+}
+
+// AddFixedLevelAssignments adds the "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
+func (_u *MemberUpdateOne) AddFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFixedLevelAssignmentIDs(ids...)
+}
+
+// SetAuthID sets the "auth" edge to the MemberAuth entity by ID.
+func (_u *MemberUpdateOne) SetAuthID(id int64) *MemberUpdateOne {
+	_u.mutation.SetAuthID(id)
+	return _u
+}
+
+// SetNillableAuthID sets the "auth" edge to the MemberAuth entity by ID if the given value is not nil.
+func (_u *MemberUpdateOne) SetNillableAuthID(id *int64) *MemberUpdateOne {
+	if id != nil {
+		_u = _u.SetAuthID(*id)
+	}
+	return _u
+}
+
+// SetAuth sets the "auth" edge to the MemberAuth entity.
+func (_u *MemberUpdateOne) SetAuth(v *MemberAuth) *MemberUpdateOne {
+	return _u.SetAuthID(v.ID)
 }
 
 // SetProfileID sets the "profile" edge to the MemberProfile entity by ID.
@@ -1087,21 +1261,6 @@ func (_u *MemberUpdateOne) AddOauthIdentities(v ...*MemberOAuthIdentity) *Member
 		ids[i] = v[i].ID
 	}
 	return _u.AddOauthIdentityIDs(ids...)
-}
-
-// AddFixedLevelAssignmentIDs adds the "fixed_level_assignments" edge to the MemberFixedLevelAssignment entity by IDs.
-func (_u *MemberUpdateOne) AddFixedLevelAssignmentIDs(ids ...int64) *MemberUpdateOne {
-	_u.mutation.AddFixedLevelAssignmentIDs(ids...)
-	return _u
-}
-
-// AddFixedLevelAssignments adds the "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
-func (_u *MemberUpdateOne) AddFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddFixedLevelAssignmentIDs(ids...)
 }
 
 // SetVipProgressID sets the "vip_progress" edge to the MemberVipProgress entity by ID.
@@ -1143,6 +1302,33 @@ func (_u *MemberUpdateOne) Mutation() *MemberMutation {
 	return _u.mutation
 }
 
+// ClearAgentAccount clears the "agent_account" edge to the AgentUser entity.
+func (_u *MemberUpdateOne) ClearAgentAccount() *MemberUpdateOne {
+	_u.mutation.ClearAgentAccount()
+	return _u
+}
+
+// ClearInvitedMembers clears all "invited_members" edges to the Member entity.
+func (_u *MemberUpdateOne) ClearInvitedMembers() *MemberUpdateOne {
+	_u.mutation.ClearInvitedMembers()
+	return _u
+}
+
+// RemoveInvitedMemberIDs removes the "invited_members" edge to Member entities by IDs.
+func (_u *MemberUpdateOne) RemoveInvitedMemberIDs(ids ...int64) *MemberUpdateOne {
+	_u.mutation.RemoveInvitedMemberIDs(ids...)
+	return _u
+}
+
+// RemoveInvitedMembers removes "invited_members" edges to Member entities.
+func (_u *MemberUpdateOne) RemoveInvitedMembers(v ...*Member) *MemberUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveInvitedMemberIDs(ids...)
+}
+
 // ClearAutoLevel clears the "auto_level" edge to the MemberAutoLevel entity.
 func (_u *MemberUpdateOne) ClearAutoLevel() *MemberUpdateOne {
 	_u.mutation.ClearAutoLevel()
@@ -1152,6 +1338,33 @@ func (_u *MemberUpdateOne) ClearAutoLevel() *MemberUpdateOne {
 // ClearVipLevel clears the "vip_level" edge to the MemberVipLevel entity.
 func (_u *MemberUpdateOne) ClearVipLevel() *MemberUpdateOne {
 	_u.mutation.ClearVipLevel()
+	return _u
+}
+
+// ClearFixedLevelAssignments clears all "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
+func (_u *MemberUpdateOne) ClearFixedLevelAssignments() *MemberUpdateOne {
+	_u.mutation.ClearFixedLevelAssignments()
+	return _u
+}
+
+// RemoveFixedLevelAssignmentIDs removes the "fixed_level_assignments" edge to MemberFixedLevelAssignment entities by IDs.
+func (_u *MemberUpdateOne) RemoveFixedLevelAssignmentIDs(ids ...int64) *MemberUpdateOne {
+	_u.mutation.RemoveFixedLevelAssignmentIDs(ids...)
+	return _u
+}
+
+// RemoveFixedLevelAssignments removes "fixed_level_assignments" edges to MemberFixedLevelAssignment entities.
+func (_u *MemberUpdateOne) RemoveFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFixedLevelAssignmentIDs(ids...)
+}
+
+// ClearAuth clears the "auth" edge to the MemberAuth entity.
+func (_u *MemberUpdateOne) ClearAuth() *MemberUpdateOne {
+	_u.mutation.ClearAuth()
 	return _u
 }
 
@@ -1180,27 +1393,6 @@ func (_u *MemberUpdateOne) RemoveOauthIdentities(v ...*MemberOAuthIdentity) *Mem
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveOauthIdentityIDs(ids...)
-}
-
-// ClearFixedLevelAssignments clears all "fixed_level_assignments" edges to the MemberFixedLevelAssignment entity.
-func (_u *MemberUpdateOne) ClearFixedLevelAssignments() *MemberUpdateOne {
-	_u.mutation.ClearFixedLevelAssignments()
-	return _u
-}
-
-// RemoveFixedLevelAssignmentIDs removes the "fixed_level_assignments" edge to MemberFixedLevelAssignment entities by IDs.
-func (_u *MemberUpdateOne) RemoveFixedLevelAssignmentIDs(ids ...int64) *MemberUpdateOne {
-	_u.mutation.RemoveFixedLevelAssignmentIDs(ids...)
-	return _u
-}
-
-// RemoveFixedLevelAssignments removes "fixed_level_assignments" edges to MemberFixedLevelAssignment entities.
-func (_u *MemberUpdateOne) RemoveFixedLevelAssignments(v ...*MemberFixedLevelAssignment) *MemberUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveFixedLevelAssignmentIDs(ids...)
 }
 
 // ClearVipProgress clears the "vip_progress" edge to the MemberVipProgress entity.
@@ -1245,7 +1437,9 @@ func (_u *MemberUpdateOne) Select(field string, fields ...string) *MemberUpdateO
 
 // Save executes the query and returns the updated Member entity.
 func (_u *MemberUpdateOne) Save(ctx context.Context) (*Member, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -1272,33 +1466,22 @@ func (_u *MemberUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *MemberUpdateOne) defaults() {
+func (_u *MemberUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if member.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized member.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := member.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *MemberUpdateOne) check() error {
-	if v, ok := _u.mutation.Username(); ok {
-		if err := member.UsernameValidator(v); err != nil {
-			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Member.username": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Phone(); ok {
-		if err := member.PhoneValidator(v); err != nil {
-			return &ValidationError{Name: "phone", err: fmt.Errorf(`ent: validator failed for field "Member.phone": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Email(); ok {
-		if err := member.EmailValidator(v); err != nil {
-			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "Member.email": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.PasswordHash(); ok {
-		if err := member.PasswordHashValidator(v); err != nil {
-			return &ValidationError{Name: "password_hash", err: fmt.Errorf(`ent: validator failed for field "Member.password_hash": %w`, err)}
+	if v, ok := _u.mutation.AgentAccountID(); ok {
+		if err := member.AgentAccountIDValidator(v); err != nil {
+			return &ValidationError{Name: "agent_account_id", err: fmt.Errorf(`ent: validator failed for field "Member.agent_account_id": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.AutoLevelID(); ok {
@@ -1325,6 +1508,9 @@ func (_u *MemberUpdateOne) check() error {
 		if err := member.LastLoginDeviceCodeValidator(v); err != nil {
 			return &ValidationError{Name: "last_login_device_code", err: fmt.Errorf(`ent: validator failed for field "Member.last_login_device_code": %w`, err)}
 		}
+	}
+	if _u.mutation.AgentCleared() && len(_u.mutation.AgentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Member.agent"`)
 	}
 	if _u.mutation.AutoLevelCleared() && len(_u.mutation.AutoLevelIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Member.auto_level"`)
@@ -1367,35 +1553,20 @@ func (_u *MemberUpdateOne) sqlSave(ctx context.Context) (_node *Member, err erro
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(member.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.Username(); ok {
-		_spec.SetField(member.FieldUsername, field.TypeString, value)
-	}
-	if _u.mutation.UsernameCleared() {
-		_spec.ClearField(member.FieldUsername, field.TypeString)
-	}
-	if value, ok := _u.mutation.Phone(); ok {
-		_spec.SetField(member.FieldPhone, field.TypeString, value)
-	}
-	if _u.mutation.PhoneCleared() {
-		_spec.ClearField(member.FieldPhone, field.TypeString)
-	}
-	if value, ok := _u.mutation.Email(); ok {
-		_spec.SetField(member.FieldEmail, field.TypeString, value)
-	}
-	if _u.mutation.EmailCleared() {
-		_spec.ClearField(member.FieldEmail, field.TypeString)
-	}
-	if value, ok := _u.mutation.PasswordHash(); ok {
-		_spec.SetField(member.FieldPasswordHash, field.TypeString, value)
-	}
-	if _u.mutation.PasswordHashCleared() {
-		_spec.ClearField(member.FieldPasswordHash, field.TypeString)
-	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(member.FieldStatus, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
 		_spec.AddField(member.FieldStatus, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.ChatDisabled(); ok {
+		_spec.SetField(member.FieldChatDisabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.BettingDisabled(); ok {
+		_spec.SetField(member.FieldBettingDisabled, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.WithdrawalDisabled(); ok {
+		_spec.SetField(member.FieldWithdrawalDisabled, field.TypeBool, value)
 	}
 	if _u.mutation.RegisterIPCleared() {
 		_spec.ClearField(member.FieldRegisterIP, field.TypeString)
@@ -1423,6 +1594,80 @@ func (_u *MemberUpdateOne) sqlSave(ctx context.Context) (_node *Member, err erro
 	}
 	if _u.mutation.LastLoginDeviceCodeCleared() {
 		_spec.ClearField(member.FieldLastLoginDeviceCode, field.TypeString)
+	}
+	if _u.mutation.AgentAccountCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   member.AgentAccountTable,
+			Columns: []string{member.AgentAccountColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(agentuser.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AgentAccountIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   member.AgentAccountTable,
+			Columns: []string{member.AgentAccountColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(agentuser.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.InvitedMembersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.InvitedMembersTable,
+			Columns: []string{member.InvitedMembersColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedInvitedMembersIDs(); len(nodes) > 0 && !_u.mutation.InvitedMembersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.InvitedMembersTable,
+			Columns: []string{member.InvitedMembersColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.InvitedMembersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.InvitedMembersTable,
+			Columns: []string{member.InvitedMembersColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(member.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.AutoLevelCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1475,6 +1720,80 @@ func (_u *MemberUpdateOne) sqlSave(ctx context.Context) (_node *Member, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberviplevel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.FixedLevelAssignmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.FixedLevelAssignmentsTable,
+			Columns: []string{member.FixedLevelAssignmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFixedLevelAssignmentsIDs(); len(nodes) > 0 && !_u.mutation.FixedLevelAssignmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.FixedLevelAssignmentsTable,
+			Columns: []string{member.FixedLevelAssignmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FixedLevelAssignmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   member.FixedLevelAssignmentsTable,
+			Columns: []string{member.FixedLevelAssignmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.AuthCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.AuthTable,
+			Columns: []string{member.AuthColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberauth.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.AuthIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   member.AuthTable,
+			Columns: []string{member.AuthColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberauth.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1549,51 +1868,6 @@ func (_u *MemberUpdateOne) sqlSave(ctx context.Context) (_node *Member, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memberoauthidentity.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.FixedLevelAssignmentsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   member.FixedLevelAssignmentsTable,
-			Columns: []string{member.FixedLevelAssignmentsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedFixedLevelAssignmentsIDs(); len(nodes) > 0 && !_u.mutation.FixedLevelAssignmentsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   member.FixedLevelAssignmentsTable,
-			Columns: []string{member.FixedLevelAssignmentsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.FixedLevelAssignmentsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   member.FixedLevelAssignmentsTable,
-			Columns: []string{member.FixedLevelAssignmentsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memberfixedlevelassignment.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

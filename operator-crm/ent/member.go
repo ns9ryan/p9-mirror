@@ -10,7 +10,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
+	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
@@ -33,22 +35,26 @@ type Member struct {
 	OperatorCode string `json:"operator_code,omitempty"`
 	// 会员对外编号, 12位数字
 	Code string `json:"code,omitempty"`
-	// 会员登录账号, 保留原始大小写
-	Username *string `json:"username,omitempty"`
-	// 绑定手机号, 国际E.164格式
-	Phone *string `json:"phone,omitempty"`
-	// 绑定邮箱
-	Email *string `json:"email,omitempty"`
-	// 登录密码哈希
-	PasswordHash *string `json:"-"`
-	// 所属分层代理全局标识
-	AgentGlobalID uuid.UUID `json:"agent_global_id,omitempty"`
+	// 会员所属分层代理ID
+	AgentID int64 `json:"agent_id,omitempty"`
+	// 会员自身的分层代理账号ID
+	AgentAccountID *int64 `json:"agent_account_id,omitempty"`
+	// 邀请当前会员注册的会员ID
+	InviterMemberID *int64 `json:"inviter_member_id,omitempty"`
+	// 会员专属邀请码
+	InviteCode string `json:"invite_code,omitempty"`
 	// 当前自动层级ID
 	AutoLevelID int64 `json:"auto_level_id,omitempty"`
 	// 当前VIP等级ID
 	VipLevelID int64 `json:"vip_level_id,omitempty"`
 	// 会员状态: 1正常, 2冻结, 3禁用
 	Status int64 `json:"status,omitempty"`
+	// 是否禁止发言
+	ChatDisabled bool `json:"chat_disabled,omitempty"`
+	// 是否禁止投注
+	BettingDisabled bool `json:"betting_disabled,omitempty"`
+	// 是否禁止提款
+	WithdrawalDisabled bool `json:"withdrawal_disabled,omitempty"`
 	// 注册方式
 	RegisterMethod string `json:"register_method,omitempty"`
 	// 注册渠道
@@ -73,23 +79,75 @@ type Member struct {
 
 // MemberEdges holds the relations/edges for other nodes in the graph.
 type MemberEdges struct {
+	// Agent holds the value of the agent edge.
+	Agent *AgentUser `json:"agent,omitempty"`
+	// AgentAccount holds the value of the agent_account edge.
+	AgentAccount *AgentUser `json:"agent_account,omitempty"`
+	// InvitedMembers holds the value of the invited_members edge.
+	InvitedMembers []*Member `json:"invited_members,omitempty"`
+	// Inviter holds the value of the inviter edge.
+	Inviter *Member `json:"inviter,omitempty"`
 	// AutoLevel holds the value of the auto_level edge.
 	AutoLevel *MemberAutoLevel `json:"auto_level,omitempty"`
 	// VipLevel holds the value of the vip_level edge.
 	VipLevel *MemberVipLevel `json:"vip_level,omitempty"`
+	// FixedLevelAssignments holds the value of the fixed_level_assignments edge.
+	FixedLevelAssignments []*MemberFixedLevelAssignment `json:"fixed_level_assignments,omitempty"`
+	// Auth holds the value of the auth edge.
+	Auth *MemberAuth `json:"auth,omitempty"`
 	// Profile holds the value of the profile edge.
 	Profile *MemberProfile `json:"profile,omitempty"`
 	// OauthIdentities holds the value of the oauth_identities edge.
 	OauthIdentities []*MemberOAuthIdentity `json:"oauth_identities,omitempty"`
-	// FixedLevelAssignments holds the value of the fixed_level_assignments edge.
-	FixedLevelAssignments []*MemberFixedLevelAssignment `json:"fixed_level_assignments,omitempty"`
 	// VipProgress holds the value of the vip_progress edge.
 	VipProgress *MemberVipProgress `json:"vip_progress,omitempty"`
 	// VipLevelRecords holds the value of the vip_level_records edge.
 	VipLevelRecords []*MemberVipLevelRecord `json:"vip_level_records,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [7]bool
+	loadedTypes [12]bool
+}
+
+// AgentOrErr returns the Agent value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MemberEdges) AgentOrErr() (*AgentUser, error) {
+	if e.Agent != nil {
+		return e.Agent, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: agentuser.Label}
+	}
+	return nil, &NotLoadedError{edge: "agent"}
+}
+
+// AgentAccountOrErr returns the AgentAccount value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MemberEdges) AgentAccountOrErr() (*AgentUser, error) {
+	if e.AgentAccount != nil {
+		return e.AgentAccount, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: agentuser.Label}
+	}
+	return nil, &NotLoadedError{edge: "agent_account"}
+}
+
+// InvitedMembersOrErr returns the InvitedMembers value or an error if the edge
+// was not loaded in eager-loading.
+func (e MemberEdges) InvitedMembersOrErr() ([]*Member, error) {
+	if e.loadedTypes[2] {
+		return e.InvitedMembers, nil
+	}
+	return nil, &NotLoadedError{edge: "invited_members"}
+}
+
+// InviterOrErr returns the Inviter value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MemberEdges) InviterOrErr() (*Member, error) {
+	if e.Inviter != nil {
+		return e.Inviter, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: member.Label}
+	}
+	return nil, &NotLoadedError{edge: "inviter"}
 }
 
 // AutoLevelOrErr returns the AutoLevel value or an error if the edge
@@ -97,7 +155,7 @@ type MemberEdges struct {
 func (e MemberEdges) AutoLevelOrErr() (*MemberAutoLevel, error) {
 	if e.AutoLevel != nil {
 		return e.AutoLevel, nil
-	} else if e.loadedTypes[0] {
+	} else if e.loadedTypes[4] {
 		return nil, &NotFoundError{label: memberautolevel.Label}
 	}
 	return nil, &NotLoadedError{edge: "auto_level"}
@@ -108,10 +166,30 @@ func (e MemberEdges) AutoLevelOrErr() (*MemberAutoLevel, error) {
 func (e MemberEdges) VipLevelOrErr() (*MemberVipLevel, error) {
 	if e.VipLevel != nil {
 		return e.VipLevel, nil
-	} else if e.loadedTypes[1] {
+	} else if e.loadedTypes[5] {
 		return nil, &NotFoundError{label: memberviplevel.Label}
 	}
 	return nil, &NotLoadedError{edge: "vip_level"}
+}
+
+// FixedLevelAssignmentsOrErr returns the FixedLevelAssignments value or an error if the edge
+// was not loaded in eager-loading.
+func (e MemberEdges) FixedLevelAssignmentsOrErr() ([]*MemberFixedLevelAssignment, error) {
+	if e.loadedTypes[6] {
+		return e.FixedLevelAssignments, nil
+	}
+	return nil, &NotLoadedError{edge: "fixed_level_assignments"}
+}
+
+// AuthOrErr returns the Auth value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MemberEdges) AuthOrErr() (*MemberAuth, error) {
+	if e.Auth != nil {
+		return e.Auth, nil
+	} else if e.loadedTypes[7] {
+		return nil, &NotFoundError{label: memberauth.Label}
+	}
+	return nil, &NotLoadedError{edge: "auth"}
 }
 
 // ProfileOrErr returns the Profile value or an error if the edge
@@ -119,7 +197,7 @@ func (e MemberEdges) VipLevelOrErr() (*MemberVipLevel, error) {
 func (e MemberEdges) ProfileOrErr() (*MemberProfile, error) {
 	if e.Profile != nil {
 		return e.Profile, nil
-	} else if e.loadedTypes[2] {
+	} else if e.loadedTypes[8] {
 		return nil, &NotFoundError{label: memberprofile.Label}
 	}
 	return nil, &NotLoadedError{edge: "profile"}
@@ -128,19 +206,10 @@ func (e MemberEdges) ProfileOrErr() (*MemberProfile, error) {
 // OauthIdentitiesOrErr returns the OauthIdentities value or an error if the edge
 // was not loaded in eager-loading.
 func (e MemberEdges) OauthIdentitiesOrErr() ([]*MemberOAuthIdentity, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[9] {
 		return e.OauthIdentities, nil
 	}
 	return nil, &NotLoadedError{edge: "oauth_identities"}
-}
-
-// FixedLevelAssignmentsOrErr returns the FixedLevelAssignments value or an error if the edge
-// was not loaded in eager-loading.
-func (e MemberEdges) FixedLevelAssignmentsOrErr() ([]*MemberFixedLevelAssignment, error) {
-	if e.loadedTypes[4] {
-		return e.FixedLevelAssignments, nil
-	}
-	return nil, &NotLoadedError{edge: "fixed_level_assignments"}
 }
 
 // VipProgressOrErr returns the VipProgress value or an error if the edge
@@ -148,7 +217,7 @@ func (e MemberEdges) FixedLevelAssignmentsOrErr() ([]*MemberFixedLevelAssignment
 func (e MemberEdges) VipProgressOrErr() (*MemberVipProgress, error) {
 	if e.VipProgress != nil {
 		return e.VipProgress, nil
-	} else if e.loadedTypes[5] {
+	} else if e.loadedTypes[10] {
 		return nil, &NotFoundError{label: membervipprogress.Label}
 	}
 	return nil, &NotLoadedError{edge: "vip_progress"}
@@ -157,7 +226,7 @@ func (e MemberEdges) VipProgressOrErr() (*MemberVipProgress, error) {
 // VipLevelRecordsOrErr returns the VipLevelRecords value or an error if the edge
 // was not loaded in eager-loading.
 func (e MemberEdges) VipLevelRecordsOrErr() ([]*MemberVipLevelRecord, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[11] {
 		return e.VipLevelRecords, nil
 	}
 	return nil, &NotLoadedError{edge: "vip_level_records"}
@@ -168,13 +237,15 @@ func (*Member) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case member.FieldID, member.FieldAutoLevelID, member.FieldVipLevelID, member.FieldStatus:
+		case member.FieldChatDisabled, member.FieldBettingDisabled, member.FieldWithdrawalDisabled:
+			values[i] = new(sql.NullBool)
+		case member.FieldID, member.FieldAgentID, member.FieldAgentAccountID, member.FieldInviterMemberID, member.FieldAutoLevelID, member.FieldVipLevelID, member.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case member.FieldOperatorCode, member.FieldCode, member.FieldUsername, member.FieldPhone, member.FieldEmail, member.FieldPasswordHash, member.FieldRegisterMethod, member.FieldRegisterChannel, member.FieldRegisterIP, member.FieldRegisterDeviceCode, member.FieldRegisterDomain, member.FieldLastLoginIP, member.FieldLastLoginDeviceCode:
+		case member.FieldOperatorCode, member.FieldCode, member.FieldInviteCode, member.FieldRegisterMethod, member.FieldRegisterChannel, member.FieldRegisterIP, member.FieldRegisterDeviceCode, member.FieldRegisterDomain, member.FieldLastLoginIP, member.FieldLastLoginDeviceCode:
 			values[i] = new(sql.NullString)
 		case member.FieldCreatedAt, member.FieldUpdatedAt, member.FieldLastLoginAt:
 			values[i] = new(sql.NullTime)
-		case member.FieldGlobalID, member.FieldAgentGlobalID:
+		case member.FieldGlobalID:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -227,39 +298,31 @@ func (_m *Member) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Code = value.String
 			}
-		case member.FieldUsername:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field username", values[i])
+		case member.FieldAgentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field agent_id", values[i])
 			} else if value.Valid {
-				_m.Username = new(string)
-				*_m.Username = value.String
+				_m.AgentID = value.Int64
 			}
-		case member.FieldPhone:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field phone", values[i])
+		case member.FieldAgentAccountID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field agent_account_id", values[i])
 			} else if value.Valid {
-				_m.Phone = new(string)
-				*_m.Phone = value.String
+				_m.AgentAccountID = new(int64)
+				*_m.AgentAccountID = value.Int64
 			}
-		case member.FieldEmail:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field email", values[i])
+		case member.FieldInviterMemberID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field inviter_member_id", values[i])
 			} else if value.Valid {
-				_m.Email = new(string)
-				*_m.Email = value.String
+				_m.InviterMemberID = new(int64)
+				*_m.InviterMemberID = value.Int64
 			}
-		case member.FieldPasswordHash:
+		case member.FieldInviteCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field password_hash", values[i])
+				return fmt.Errorf("unexpected type %T for field invite_code", values[i])
 			} else if value.Valid {
-				_m.PasswordHash = new(string)
-				*_m.PasswordHash = value.String
-			}
-		case member.FieldAgentGlobalID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field agent_global_id", values[i])
-			} else if value != nil {
-				_m.AgentGlobalID = *value
+				_m.InviteCode = value.String
 			}
 		case member.FieldAutoLevelID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -278,6 +341,24 @@ func (_m *Member) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				_m.Status = value.Int64
+			}
+		case member.FieldChatDisabled:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field chat_disabled", values[i])
+			} else if value.Valid {
+				_m.ChatDisabled = value.Bool
+			}
+		case member.FieldBettingDisabled:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field betting_disabled", values[i])
+			} else if value.Valid {
+				_m.BettingDisabled = value.Bool
+			}
+		case member.FieldWithdrawalDisabled:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field withdrawal_disabled", values[i])
+			} else if value.Valid {
+				_m.WithdrawalDisabled = value.Bool
 			}
 		case member.FieldRegisterMethod:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -346,6 +427,26 @@ func (_m *Member) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
+// QueryAgent queries the "agent" edge of the Member entity.
+func (_m *Member) QueryAgent() *AgentUserQuery {
+	return NewMemberClient(_m.config).QueryAgent(_m)
+}
+
+// QueryAgentAccount queries the "agent_account" edge of the Member entity.
+func (_m *Member) QueryAgentAccount() *AgentUserQuery {
+	return NewMemberClient(_m.config).QueryAgentAccount(_m)
+}
+
+// QueryInvitedMembers queries the "invited_members" edge of the Member entity.
+func (_m *Member) QueryInvitedMembers() *MemberQuery {
+	return NewMemberClient(_m.config).QueryInvitedMembers(_m)
+}
+
+// QueryInviter queries the "inviter" edge of the Member entity.
+func (_m *Member) QueryInviter() *MemberQuery {
+	return NewMemberClient(_m.config).QueryInviter(_m)
+}
+
 // QueryAutoLevel queries the "auto_level" edge of the Member entity.
 func (_m *Member) QueryAutoLevel() *MemberAutoLevelQuery {
 	return NewMemberClient(_m.config).QueryAutoLevel(_m)
@@ -356,6 +457,16 @@ func (_m *Member) QueryVipLevel() *MemberVipLevelQuery {
 	return NewMemberClient(_m.config).QueryVipLevel(_m)
 }
 
+// QueryFixedLevelAssignments queries the "fixed_level_assignments" edge of the Member entity.
+func (_m *Member) QueryFixedLevelAssignments() *MemberFixedLevelAssignmentQuery {
+	return NewMemberClient(_m.config).QueryFixedLevelAssignments(_m)
+}
+
+// QueryAuth queries the "auth" edge of the Member entity.
+func (_m *Member) QueryAuth() *MemberAuthQuery {
+	return NewMemberClient(_m.config).QueryAuth(_m)
+}
+
 // QueryProfile queries the "profile" edge of the Member entity.
 func (_m *Member) QueryProfile() *MemberProfileQuery {
 	return NewMemberClient(_m.config).QueryProfile(_m)
@@ -364,11 +475,6 @@ func (_m *Member) QueryProfile() *MemberProfileQuery {
 // QueryOauthIdentities queries the "oauth_identities" edge of the Member entity.
 func (_m *Member) QueryOauthIdentities() *MemberOAuthIdentityQuery {
 	return NewMemberClient(_m.config).QueryOauthIdentities(_m)
-}
-
-// QueryFixedLevelAssignments queries the "fixed_level_assignments" edge of the Member entity.
-func (_m *Member) QueryFixedLevelAssignments() *MemberFixedLevelAssignmentQuery {
-	return NewMemberClient(_m.config).QueryFixedLevelAssignments(_m)
 }
 
 // QueryVipProgress queries the "vip_progress" edge of the Member entity.
@@ -419,25 +525,21 @@ func (_m *Member) String() string {
 	builder.WriteString("code=")
 	builder.WriteString(_m.Code)
 	builder.WriteString(", ")
-	if v := _m.Username; v != nil {
-		builder.WriteString("username=")
-		builder.WriteString(*v)
+	builder.WriteString("agent_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AgentID))
+	builder.WriteString(", ")
+	if v := _m.AgentAccountID; v != nil {
+		builder.WriteString("agent_account_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	if v := _m.Phone; v != nil {
-		builder.WriteString("phone=")
-		builder.WriteString(*v)
+	if v := _m.InviterMemberID; v != nil {
+		builder.WriteString("inviter_member_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	if v := _m.Email; v != nil {
-		builder.WriteString("email=")
-		builder.WriteString(*v)
-	}
-	builder.WriteString(", ")
-	builder.WriteString("password_hash=<sensitive>")
-	builder.WriteString(", ")
-	builder.WriteString("agent_global_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.AgentGlobalID))
+	builder.WriteString("invite_code=")
+	builder.WriteString(_m.InviteCode)
 	builder.WriteString(", ")
 	builder.WriteString("auto_level_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.AutoLevelID))
@@ -447,6 +549,15 @@ func (_m *Member) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
+	builder.WriteString(", ")
+	builder.WriteString("chat_disabled=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ChatDisabled))
+	builder.WriteString(", ")
+	builder.WriteString("betting_disabled=")
+	builder.WriteString(fmt.Sprintf("%v", _m.BettingDisabled))
+	builder.WriteString(", ")
+	builder.WriteString("withdrawal_disabled=")
+	builder.WriteString(fmt.Sprintf("%v", _m.WithdrawalDisabled))
 	builder.WriteString(", ")
 	builder.WriteString("register_method=")
 	builder.WriteString(_m.RegisterMethod)

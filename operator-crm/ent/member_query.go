@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberoauthidentity"
@@ -30,11 +32,16 @@ type MemberQuery struct {
 	order                     []member.OrderOption
 	inters                    []Interceptor
 	predicates                []predicate.Member
+	withAgent                 *AgentUserQuery
+	withAgentAccount          *AgentUserQuery
+	withInvitedMembers        *MemberQuery
+	withInviter               *MemberQuery
 	withAutoLevel             *MemberAutoLevelQuery
 	withVipLevel              *MemberVipLevelQuery
+	withFixedLevelAssignments *MemberFixedLevelAssignmentQuery
+	withAuth                  *MemberAuthQuery
 	withProfile               *MemberProfileQuery
 	withOauthIdentities       *MemberOAuthIdentityQuery
-	withFixedLevelAssignments *MemberFixedLevelAssignmentQuery
 	withVipProgress           *MemberVipProgressQuery
 	withVipLevelRecords       *MemberVipLevelRecordQuery
 	// intermediate query (i.e. traversal path).
@@ -71,6 +78,94 @@ func (_q *MemberQuery) Unique(unique bool) *MemberQuery {
 func (_q *MemberQuery) Order(o ...member.OrderOption) *MemberQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryAgent chains the current query on the "agent" edge.
+func (_q *MemberQuery) QueryAgent() *AgentUserQuery {
+	query := (&AgentUserClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, selector),
+			sqlgraph.To(agentuser.Table, agentuser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, member.AgentTable, member.AgentColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAgentAccount chains the current query on the "agent_account" edge.
+func (_q *MemberQuery) QueryAgentAccount() *AgentUserQuery {
+	query := (&AgentUserClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, selector),
+			sqlgraph.To(agentuser.Table, agentuser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, member.AgentAccountTable, member.AgentAccountColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryInvitedMembers chains the current query on the "invited_members" edge.
+func (_q *MemberQuery) QueryInvitedMembers() *MemberQuery {
+	query := (&MemberClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, selector),
+			sqlgraph.To(member.Table, member.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, member.InvitedMembersTable, member.InvitedMembersColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryInviter chains the current query on the "inviter" edge.
+func (_q *MemberQuery) QueryInviter() *MemberQuery {
+	query := (&MemberClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, selector),
+			sqlgraph.To(member.Table, member.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, member.InviterTable, member.InviterColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryAutoLevel chains the current query on the "auto_level" edge.
@@ -117,6 +212,50 @@ func (_q *MemberQuery) QueryVipLevel() *MemberVipLevelQuery {
 	return query
 }
 
+// QueryFixedLevelAssignments chains the current query on the "fixed_level_assignments" edge.
+func (_q *MemberQuery) QueryFixedLevelAssignments() *MemberFixedLevelAssignmentQuery {
+	query := (&MemberFixedLevelAssignmentClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, selector),
+			sqlgraph.To(memberfixedlevelassignment.Table, memberfixedlevelassignment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, member.FixedLevelAssignmentsTable, member.FixedLevelAssignmentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAuth chains the current query on the "auth" edge.
+func (_q *MemberQuery) QueryAuth() *MemberAuthQuery {
+	query := (&MemberAuthClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(member.Table, member.FieldID, selector),
+			sqlgraph.To(memberauth.Table, memberauth.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, member.AuthTable, member.AuthColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryProfile chains the current query on the "profile" edge.
 func (_q *MemberQuery) QueryProfile() *MemberProfileQuery {
 	query := (&MemberProfileClient{config: _q.config}).Query()
@@ -154,28 +293,6 @@ func (_q *MemberQuery) QueryOauthIdentities() *MemberOAuthIdentityQuery {
 			sqlgraph.From(member.Table, member.FieldID, selector),
 			sqlgraph.To(memberoauthidentity.Table, memberoauthidentity.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, member.OauthIdentitiesTable, member.OauthIdentitiesColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryFixedLevelAssignments chains the current query on the "fixed_level_assignments" edge.
-func (_q *MemberQuery) QueryFixedLevelAssignments() *MemberFixedLevelAssignmentQuery {
-	query := (&MemberFixedLevelAssignmentClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(member.Table, member.FieldID, selector),
-			sqlgraph.To(memberfixedlevelassignment.Table, memberfixedlevelassignment.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, member.FixedLevelAssignmentsTable, member.FixedLevelAssignmentsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -419,17 +536,66 @@ func (_q *MemberQuery) Clone() *MemberQuery {
 		order:                     append([]member.OrderOption{}, _q.order...),
 		inters:                    append([]Interceptor{}, _q.inters...),
 		predicates:                append([]predicate.Member{}, _q.predicates...),
+		withAgent:                 _q.withAgent.Clone(),
+		withAgentAccount:          _q.withAgentAccount.Clone(),
+		withInvitedMembers:        _q.withInvitedMembers.Clone(),
+		withInviter:               _q.withInviter.Clone(),
 		withAutoLevel:             _q.withAutoLevel.Clone(),
 		withVipLevel:              _q.withVipLevel.Clone(),
+		withFixedLevelAssignments: _q.withFixedLevelAssignments.Clone(),
+		withAuth:                  _q.withAuth.Clone(),
 		withProfile:               _q.withProfile.Clone(),
 		withOauthIdentities:       _q.withOauthIdentities.Clone(),
-		withFixedLevelAssignments: _q.withFixedLevelAssignments.Clone(),
 		withVipProgress:           _q.withVipProgress.Clone(),
 		withVipLevelRecords:       _q.withVipLevelRecords.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithAgent tells the query-builder to eager-load the nodes that are connected to
+// the "agent" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberQuery) WithAgent(opts ...func(*AgentUserQuery)) *MemberQuery {
+	query := (&AgentUserClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withAgent = query
+	return _q
+}
+
+// WithAgentAccount tells the query-builder to eager-load the nodes that are connected to
+// the "agent_account" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberQuery) WithAgentAccount(opts ...func(*AgentUserQuery)) *MemberQuery {
+	query := (&AgentUserClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withAgentAccount = query
+	return _q
+}
+
+// WithInvitedMembers tells the query-builder to eager-load the nodes that are connected to
+// the "invited_members" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberQuery) WithInvitedMembers(opts ...func(*MemberQuery)) *MemberQuery {
+	query := (&MemberClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withInvitedMembers = query
+	return _q
+}
+
+// WithInviter tells the query-builder to eager-load the nodes that are connected to
+// the "inviter" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberQuery) WithInviter(opts ...func(*MemberQuery)) *MemberQuery {
+	query := (&MemberClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withInviter = query
+	return _q
 }
 
 // WithAutoLevel tells the query-builder to eager-load the nodes that are connected to
@@ -454,6 +620,28 @@ func (_q *MemberQuery) WithVipLevel(opts ...func(*MemberVipLevelQuery)) *MemberQ
 	return _q
 }
 
+// WithFixedLevelAssignments tells the query-builder to eager-load the nodes that are connected to
+// the "fixed_level_assignments" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberQuery) WithFixedLevelAssignments(opts ...func(*MemberFixedLevelAssignmentQuery)) *MemberQuery {
+	query := (&MemberFixedLevelAssignmentClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withFixedLevelAssignments = query
+	return _q
+}
+
+// WithAuth tells the query-builder to eager-load the nodes that are connected to
+// the "auth" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberQuery) WithAuth(opts ...func(*MemberAuthQuery)) *MemberQuery {
+	query := (&MemberAuthClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withAuth = query
+	return _q
+}
+
 // WithProfile tells the query-builder to eager-load the nodes that are connected to
 // the "profile" edge. The optional arguments are used to configure the query builder of the edge.
 func (_q *MemberQuery) WithProfile(opts ...func(*MemberProfileQuery)) *MemberQuery {
@@ -473,17 +661,6 @@ func (_q *MemberQuery) WithOauthIdentities(opts ...func(*MemberOAuthIdentityQuer
 		opt(query)
 	}
 	_q.withOauthIdentities = query
-	return _q
-}
-
-// WithFixedLevelAssignments tells the query-builder to eager-load the nodes that are connected to
-// the "fixed_level_assignments" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *MemberQuery) WithFixedLevelAssignments(opts ...func(*MemberFixedLevelAssignmentQuery)) *MemberQuery {
-	query := (&MemberFixedLevelAssignmentClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withFixedLevelAssignments = query
 	return _q
 }
 
@@ -587,12 +764,17 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 	var (
 		nodes       = []*Member{}
 		_spec       = _q.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [12]bool{
+			_q.withAgent != nil,
+			_q.withAgentAccount != nil,
+			_q.withInvitedMembers != nil,
+			_q.withInviter != nil,
 			_q.withAutoLevel != nil,
 			_q.withVipLevel != nil,
+			_q.withFixedLevelAssignments != nil,
+			_q.withAuth != nil,
 			_q.withProfile != nil,
 			_q.withOauthIdentities != nil,
-			_q.withFixedLevelAssignments != nil,
 			_q.withVipProgress != nil,
 			_q.withVipLevelRecords != nil,
 		}
@@ -615,6 +797,31 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withAgent; query != nil {
+		if err := _q.loadAgent(ctx, query, nodes, nil,
+			func(n *Member, e *AgentUser) { n.Edges.Agent = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withAgentAccount; query != nil {
+		if err := _q.loadAgentAccount(ctx, query, nodes, nil,
+			func(n *Member, e *AgentUser) { n.Edges.AgentAccount = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withInvitedMembers; query != nil {
+		if err := _q.loadInvitedMembers(ctx, query, nodes,
+			func(n *Member) { n.Edges.InvitedMembers = []*Member{} },
+			func(n *Member, e *Member) { n.Edges.InvitedMembers = append(n.Edges.InvitedMembers, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withInviter; query != nil {
+		if err := _q.loadInviter(ctx, query, nodes, nil,
+			func(n *Member, e *Member) { n.Edges.Inviter = e }); err != nil {
+			return nil, err
+		}
+	}
 	if query := _q.withAutoLevel; query != nil {
 		if err := _q.loadAutoLevel(ctx, query, nodes, nil,
 			func(n *Member, e *MemberAutoLevel) { n.Edges.AutoLevel = e }); err != nil {
@@ -624,6 +831,21 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 	if query := _q.withVipLevel; query != nil {
 		if err := _q.loadVipLevel(ctx, query, nodes, nil,
 			func(n *Member, e *MemberVipLevel) { n.Edges.VipLevel = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withFixedLevelAssignments; query != nil {
+		if err := _q.loadFixedLevelAssignments(ctx, query, nodes,
+			func(n *Member) { n.Edges.FixedLevelAssignments = []*MemberFixedLevelAssignment{} },
+			func(n *Member, e *MemberFixedLevelAssignment) {
+				n.Edges.FixedLevelAssignments = append(n.Edges.FixedLevelAssignments, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withAuth; query != nil {
+		if err := _q.loadAuth(ctx, query, nodes, nil,
+			func(n *Member, e *MemberAuth) { n.Edges.Auth = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -637,15 +859,6 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 		if err := _q.loadOauthIdentities(ctx, query, nodes,
 			func(n *Member) { n.Edges.OauthIdentities = []*MemberOAuthIdentity{} },
 			func(n *Member, e *MemberOAuthIdentity) { n.Edges.OauthIdentities = append(n.Edges.OauthIdentities, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withFixedLevelAssignments; query != nil {
-		if err := _q.loadFixedLevelAssignments(ctx, query, nodes,
-			func(n *Member) { n.Edges.FixedLevelAssignments = []*MemberFixedLevelAssignment{} },
-			func(n *Member, e *MemberFixedLevelAssignment) {
-				n.Edges.FixedLevelAssignments = append(n.Edges.FixedLevelAssignments, e)
-			}); err != nil {
 			return nil, err
 		}
 	}
@@ -665,6 +878,132 @@ func (_q *MemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Membe
 	return nodes, nil
 }
 
+func (_q *MemberQuery) loadAgent(ctx context.Context, query *AgentUserQuery, nodes []*Member, init func(*Member), assign func(*Member, *AgentUser)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Member)
+	for i := range nodes {
+		fk := nodes[i].AgentID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(agentuser.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "agent_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *MemberQuery) loadAgentAccount(ctx context.Context, query *AgentUserQuery, nodes []*Member, init func(*Member), assign func(*Member, *AgentUser)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Member)
+	for i := range nodes {
+		if nodes[i].AgentAccountID == nil {
+			continue
+		}
+		fk := *nodes[i].AgentAccountID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(agentuser.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "agent_account_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *MemberQuery) loadInvitedMembers(ctx context.Context, query *MemberQuery, nodes []*Member, init func(*Member), assign func(*Member, *Member)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Member)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(member.FieldInviterMemberID)
+	}
+	query.Where(predicate.Member(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(member.InvitedMembersColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.InviterMemberID
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "inviter_member_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "inviter_member_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *MemberQuery) loadInviter(ctx context.Context, query *MemberQuery, nodes []*Member, init func(*Member), assign func(*Member, *Member)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Member)
+	for i := range nodes {
+		if nodes[i].InviterMemberID == nil {
+			continue
+		}
+		fk := *nodes[i].InviterMemberID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(member.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "inviter_member_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (_q *MemberQuery) loadAutoLevel(ctx context.Context, query *MemberAutoLevelQuery, nodes []*Member, init func(*Member), assign func(*Member, *MemberAutoLevel)) error {
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*Member)
@@ -723,6 +1062,63 @@ func (_q *MemberQuery) loadVipLevel(ctx context.Context, query *MemberVipLevelQu
 	}
 	return nil
 }
+func (_q *MemberQuery) loadFixedLevelAssignments(ctx context.Context, query *MemberFixedLevelAssignmentQuery, nodes []*Member, init func(*Member), assign func(*Member, *MemberFixedLevelAssignment)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Member)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(memberfixedlevelassignment.FieldMemberID)
+	}
+	query.Where(predicate.MemberFixedLevelAssignment(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(member.FixedLevelAssignmentsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.MemberID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "member_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *MemberQuery) loadAuth(ctx context.Context, query *MemberAuthQuery, nodes []*Member, init func(*Member), assign func(*Member, *MemberAuth)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Member)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(memberauth.FieldMemberID)
+	}
+	query.Where(predicate.MemberAuth(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(member.AuthColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.MemberID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "member_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (_q *MemberQuery) loadProfile(ctx context.Context, query *MemberProfileQuery, nodes []*Member, init func(*Member), assign func(*Member, *MemberProfile)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*Member)
@@ -765,36 +1161,6 @@ func (_q *MemberQuery) loadOauthIdentities(ctx context.Context, query *MemberOAu
 	}
 	query.Where(predicate.MemberOAuthIdentity(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(member.OauthIdentitiesColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.MemberID
-		node, ok := nodeids[fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "member_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (_q *MemberQuery) loadFixedLevelAssignments(ctx context.Context, query *MemberFixedLevelAssignmentQuery, nodes []*Member, init func(*Member), assign func(*Member, *MemberFixedLevelAssignment)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*Member)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(memberfixedlevelassignment.FieldMemberID)
-	}
-	query.Where(predicate.MemberFixedLevelAssignment(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(member.FixedLevelAssignmentsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -892,6 +1258,15 @@ func (_q *MemberQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != member.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withAgent != nil {
+			_spec.Node.AddColumnOnce(member.FieldAgentID)
+		}
+		if _q.withAgentAccount != nil {
+			_spec.Node.AddColumnOnce(member.FieldAgentAccountID)
+		}
+		if _q.withInviter != nil {
+			_spec.Node.AddColumnOnce(member.FieldInviterMemberID)
 		}
 		if _q.withAutoLevel != nil {
 			_spec.Node.AddColumnOnce(member.FieldAutoLevelID)
