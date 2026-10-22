@@ -18,6 +18,7 @@ import (
 	vipconfigpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb"
 	vipicongrouppb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
 	viplevelpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/viplevelpb"
+	vippb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vippb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -423,6 +424,7 @@ const (
 	AgentService_UpdateWithdrawPassword_FullMethodName      = "/crm.AgentService/updateWithdrawPassword"
 	AgentService_UpdateAgentShareRate_FullMethodName        = "/crm.AgentService/updateAgentShareRate"
 	AgentService_UpdateAgentPayoutRestricted_FullMethodName = "/crm.AgentService/updateAgentPayoutRestricted"
+	AgentService_UpdateAgentStatus_FullMethodName           = "/crm.AgentService/updateAgentStatus"
 	AgentService_UpdateAgentRemark_FullMethodName           = "/crm.AgentService/updateAgentRemark"
 	AgentService_UpdateAgentProfile_FullMethodName          = "/crm.AgentService/updateAgentProfile"
 	AgentService_ListAgentLoginLogs_FullMethodName          = "/crm.AgentService/listAgentLoginLogs"
@@ -477,6 +479,8 @@ type AgentServiceClient interface {
 	UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
 	// group: agent
 	UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+	// group: agent
+	UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
 	// group: agent
 	UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
 	// group: agent
@@ -705,6 +709,16 @@ func (c *agentServiceClient) UpdateAgentPayoutRestricted(ctx context.Context, in
 	return out, nil
 }
 
+func (c *agentServiceClient) UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.Empty)
+	err := c.cc.Invoke(ctx, AgentService_UpdateAgentStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *agentServiceClient) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(agentpb.Empty)
@@ -794,6 +808,8 @@ type AgentServiceServer interface {
 	// group: agent
 	UpdateAgentPayoutRestricted(context.Context, *agentpb.UpdateAgentPayoutRestrictedReq) (*agentpb.Empty, error)
 	// group: agent
+	UpdateAgentStatus(context.Context, *agentpb.UpdateAgentStatusReq) (*agentpb.Empty, error)
+	// group: agent
 	UpdateAgentRemark(context.Context, *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error)
 	// group: agent
 	UpdateAgentProfile(context.Context, *agentpb.UpdateAgentProfileReq) (*agentpb.AgentProfile, error)
@@ -873,6 +889,9 @@ func (UnimplementedAgentServiceServer) UpdateAgentShareRate(context.Context, *ag
 }
 func (UnimplementedAgentServiceServer) UpdateAgentPayoutRestricted(context.Context, *agentpb.UpdateAgentPayoutRestrictedReq) (*agentpb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateAgentPayoutRestricted not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateAgentStatus(context.Context, *agentpb.UpdateAgentStatusReq) (*agentpb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateAgentStatus not implemented")
 }
 func (UnimplementedAgentServiceServer) UpdateAgentRemark(context.Context, *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateAgentRemark not implemented")
@@ -1285,6 +1304,24 @@ func _AgentService_UpdateAgentPayoutRestricted_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_UpdateAgentStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.UpdateAgentStatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateAgentStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateAgentStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateAgentStatus(ctx, req.(*agentpb.UpdateAgentStatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AgentService_UpdateAgentRemark_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(agentpb.UpdateAgentRemarkReq)
 	if err := dec(in); err != nil {
@@ -1447,6 +1484,10 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "updateAgentPayoutRestricted",
 			Handler:    _AgentService_UpdateAgentPayoutRestricted_Handler,
+		},
+		{
+			MethodName: "updateAgentStatus",
+			Handler:    _AgentService_UpdateAgentStatus_Handler,
 		},
 		{
 			MethodName: "updateAgentRemark",
@@ -1699,6 +1740,7 @@ var MemberAutoLevelService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	VipService_Init_FullMethodName            = "/crm.VipService/Init"
 	VipService_GetConfig_FullMethodName       = "/crm.VipService/GetConfig"
 	VipService_UpdateConfig_FullMethodName    = "/crm.VipService/UpdateConfig"
 	VipService_ListLevels_FullMethodName      = "/crm.VipService/ListLevels"
@@ -1717,6 +1759,8 @@ const (
 //
 // VIP管理服务
 type VipServiceClient interface {
+	// 初始化分站VIP基础数据
+	Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error)
 	// 获取VIP基础配置
 	GetConfig(ctx context.Context, in *vipconfigpb.GetVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.GetVipConfigResponse, error)
 	// 修改VIP基础配置
@@ -1746,6 +1790,16 @@ type vipServiceClient struct {
 
 func NewVipServiceClient(cc grpc.ClientConnInterface) VipServiceClient {
 	return &vipServiceClient{cc}
+}
+
+func (c *vipServiceClient) Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(vippb.InitResponse)
+	err := c.cc.Invoke(ctx, VipService_Init_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *vipServiceClient) GetConfig(ctx context.Context, in *vipconfigpb.GetVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.GetVipConfigResponse, error) {
@@ -1854,6 +1908,8 @@ func (c *vipServiceClient) ResetIconGroup(ctx context.Context, in *vipicongroupp
 //
 // VIP管理服务
 type VipServiceServer interface {
+	// 初始化分站VIP基础数据
+	Init(context.Context, *vippb.InitRequest) (*vippb.InitResponse, error)
 	// 获取VIP基础配置
 	GetConfig(context.Context, *vipconfigpb.GetVipConfigRequest) (*vipconfigpb.GetVipConfigResponse, error)
 	// 修改VIP基础配置
@@ -1885,6 +1941,9 @@ type VipServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedVipServiceServer struct{}
 
+func (UnimplementedVipServiceServer) Init(context.Context, *vippb.InitRequest) (*vippb.InitResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Init not implemented")
+}
 func (UnimplementedVipServiceServer) GetConfig(context.Context, *vipconfigpb.GetVipConfigRequest) (*vipconfigpb.GetVipConfigResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetConfig not implemented")
 }
@@ -1934,6 +1993,24 @@ func RegisterVipServiceServer(s grpc.ServiceRegistrar, srv VipServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&VipService_ServiceDesc, srv)
+}
+
+func _VipService_Init_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(vippb.InitRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VipServiceServer).Init(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: VipService_Init_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VipServiceServer).Init(ctx, req.(*vippb.InitRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _VipService_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2123,6 +2200,10 @@ var VipService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "crm.VipService",
 	HandlerType: (*VipServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Init",
+			Handler:    _VipService_Init_Handler,
+		},
 		{
 			MethodName: "GetConfig",
 			Handler:    _VipService_GetConfig_Handler,

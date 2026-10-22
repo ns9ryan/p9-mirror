@@ -51,6 +51,20 @@ func (_c *AgentProfileCreate) SetNillableUpdatedAt(v *time.Time) *AgentProfileCr
 	return _c
 }
 
+// SetOperatorCode sets the "operator_code" field.
+func (_c *AgentProfileCreate) SetOperatorCode(v string) *AgentProfileCreate {
+	_c.mutation.SetOperatorCode(v)
+	return _c
+}
+
+// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
+func (_c *AgentProfileCreate) SetNillableOperatorCode(v *string) *AgentProfileCreate {
+	if v != nil {
+		_c.SetOperatorCode(*v)
+	}
+	return _c
+}
+
 // SetAgentID sets the "agent_id" field.
 func (_c *AgentProfileCreate) SetAgentID(v int64) *AgentProfileCreate {
 	_c.mutation.SetAgentID(v)
@@ -299,7 +313,9 @@ func (_c *AgentProfileCreate) Mutation() *AgentProfileMutation {
 
 // Save creates the AgentProfile in the database.
 func (_c *AgentProfileCreate) Save(ctx context.Context) (*AgentProfile, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -326,12 +342,18 @@ func (_c *AgentProfileCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *AgentProfileCreate) defaults() {
+func (_c *AgentProfileCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if agentprofile.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agentprofile.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := agentprofile.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if agentprofile.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agentprofile.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := agentprofile.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -339,6 +361,7 @@ func (_c *AgentProfileCreate) defaults() {
 		v := agentprofile.DefaultGender
 		_c.mutation.SetGender(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -348,6 +371,11 @@ func (_c *AgentProfileCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AgentProfile.updated_at"`)}
+	}
+	if v, ok := _c.mutation.OperatorCode(); ok {
+		if err := agentprofile.OperatorCodeValidator(v); err != nil {
+			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AgentProfile.operator_code": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.AgentID(); !ok {
 		return &ValidationError{Name: "agent_id", err: errors.New(`ent: missing required field "AgentProfile.agent_id"`)}
@@ -473,6 +501,10 @@ func (_c *AgentProfileCreate) createSpec() (*AgentProfile, *sqlgraph.CreateSpec)
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentprofile.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if value, ok := _c.mutation.OperatorCode(); ok {
+		_spec.SetField(agentprofile.FieldOperatorCode, field.TypeString, value)
+		_node.OperatorCode = &value
 	}
 	if value, ok := _c.mutation.Gender(); ok {
 		_spec.SetField(agentprofile.FieldGender, field.TypeInt64, value)
@@ -926,6 +958,9 @@ func (u *AgentProfileUpsertOne) UpdateNewValues() *AgentProfileUpsertOne {
 		}
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(agentprofile.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(agentprofile.FieldOperatorCode)
 		}
 		if _, exists := u.create.mutation.AgentID(); exists {
 			s.SetIgnore(agentprofile.FieldAgentID)
@@ -1495,6 +1530,9 @@ func (u *AgentProfileUpsertBulk) UpdateNewValues() *AgentProfileUpsertBulk {
 			}
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(agentprofile.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(agentprofile.FieldOperatorCode)
 			}
 			if _, exists := b.mutation.AgentID(); exists {
 				s.SetIgnore(agentprofile.FieldAgentID)

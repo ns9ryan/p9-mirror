@@ -78,12 +78,6 @@ func (AgentLevel) Annotations() []schema.Annotation {
 		schema.Comment("代理等级表"),
 		entsql.Annotation{
 			Table: "agent_level",
-			Checks: map[string]string{
-				"ck_agent_level_operator_code": "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-				"ck_agent_level_alias":         "BTRIM(alias) <> '' AND alias = BTRIM(alias)",
-				"ck_agent_level_name":          "BTRIM(name) <> '' AND name = BTRIM(name)",
-				"ck_agent_level_level":         "level BETWEEN 1 AND 7",
-			},
 		},
 	}
 }

@@ -60,6 +60,8 @@ type (
 		// group: agent
 		UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
 		// group: agent
+		UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
+		// group: agent
 		UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
 		// group: agent
 		UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
@@ -204,6 +206,12 @@ func (m *defaultAgentService) UpdateAgentShareRate(ctx context.Context, in *agen
 func (m *defaultAgentService) UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentPayoutRestricted(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.UpdateAgentStatus(ctx, in, opts...)
 }
 
 // group: agent

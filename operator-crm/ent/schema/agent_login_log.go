@@ -127,14 +127,6 @@ func (AgentLoginLog) Annotations() []schema.Annotation {
 		schema.Comment("代理登录日志表"),
 		entsql.Annotation{
 			Table: "agent_login_log",
-			Checks: map[string]string{
-				"ck_agent_login_log_operator_code":  "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-				"ck_agent_login_log_account":        "BTRIM(account) <> '' AND account = BTRIM(account)",
-				"ck_agent_login_log_login_type":     "login_type = 1",
-				"ck_agent_login_log_udid":           "udid IS NULL OR (BTRIM(udid) <> '' AND udid = BTRIM(udid))",
-				"ck_agent_login_log_login_location": "login_location IS NULL OR (BTRIM(login_location) <> '' AND login_location = BTRIM(login_location))",
-				"ck_agent_login_log_login_device":   "login_device IS NULL OR (BTRIM(login_device) <> '' AND login_device = BTRIM(login_device))",
-			},
 		},
 	}
 }

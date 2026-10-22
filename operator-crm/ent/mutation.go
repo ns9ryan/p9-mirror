@@ -5412,6 +5412,7 @@ type AgentProfileMutation struct {
 	id             *int64
 	created_at     *time.Time
 	updated_at     *time.Time
+	operator_code  *string
 	gender         *int64
 	addgender      *int64
 	birth_date     *time.Time
@@ -5611,6 +5612,55 @@ func (m *AgentProfileMutation) OldUpdatedAt(ctx context.Context) (v time.Time, e
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *AgentProfileMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *AgentProfileMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *AgentProfileMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the AgentProfile entity.
+// If the AgentProfile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentProfileMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ClearOperatorCode clears the value of the "operator_code" field.
+func (m *AgentProfileMutation) ClearOperatorCode() {
+	m.operator_code = nil
+	m.clearedFields[agentprofile.FieldOperatorCode] = struct{}{}
+}
+
+// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
+func (m *AgentProfileMutation) OperatorCodeCleared() bool {
+	_, ok := m.clearedFields[agentprofile.FieldOperatorCode]
+	return ok
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *AgentProfileMutation) ResetOperatorCode() {
+	m.operator_code = nil
+	delete(m.clearedFields, agentprofile.FieldOperatorCode)
 }
 
 // SetAgentID sets the "agent_id" field.
@@ -6501,12 +6551,15 @@ func (m *AgentProfileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentProfileMutation) Fields() []string {
-	fields := make([]string, 0, 19)
+	fields := make([]string, 0, 20)
 	if m.created_at != nil {
 		fields = append(fields, agentprofile.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, agentprofile.FieldUpdatedAt)
+	}
+	if m.operator_code != nil {
+		fields = append(fields, agentprofile.FieldOperatorCode)
 	}
 	if m.agent != nil {
 		fields = append(fields, agentprofile.FieldAgentID)
@@ -6571,6 +6624,8 @@ func (m *AgentProfileMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case agentprofile.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case agentprofile.FieldOperatorCode:
+		return m.OperatorCode()
 	case agentprofile.FieldAgentID:
 		return m.AgentID()
 	case agentprofile.FieldGender:
@@ -6618,6 +6673,8 @@ func (m *AgentProfileMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldCreatedAt(ctx)
 	case agentprofile.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case agentprofile.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
 	case agentprofile.FieldAgentID:
 		return m.OldAgentID(ctx)
 	case agentprofile.FieldGender:
@@ -6674,6 +6731,13 @@ func (m *AgentProfileMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case agentprofile.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
 		return nil
 	case agentprofile.FieldAgentID:
 		v, ok := value.(int64)
@@ -6839,6 +6903,9 @@ func (m *AgentProfileMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentProfileMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(agentprofile.FieldOperatorCode) {
+		fields = append(fields, agentprofile.FieldOperatorCode)
+	}
 	if m.FieldCleared(agentprofile.FieldBirthDate) {
 		fields = append(fields, agentprofile.FieldBirthDate)
 	}
@@ -6898,6 +6965,9 @@ func (m *AgentProfileMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentProfileMutation) ClearField(name string) error {
 	switch name {
+	case agentprofile.FieldOperatorCode:
+		m.ClearOperatorCode()
+		return nil
 	case agentprofile.FieldBirthDate:
 		m.ClearBirthDate()
 		return nil
@@ -6956,6 +7026,9 @@ func (m *AgentProfileMutation) ResetField(name string) error {
 		return nil
 	case agentprofile.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case agentprofile.FieldOperatorCode:
+		m.ResetOperatorCode()
 		return nil
 	case agentprofile.FieldAgentID:
 		m.ResetAgentID()

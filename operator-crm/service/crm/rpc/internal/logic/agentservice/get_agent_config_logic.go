@@ -26,7 +26,7 @@ func NewGetAgentConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 
 // GetAgentConfig 获取代理配置
 func (l *GetAgentConfigLogic) GetAgentConfig(in *agentpb.GetAgentConfigReq) (*agentpb.AgentConfigResp, error) {
-	resp, err := l.svcCtx.Agent.GetConfig(l.ctx, in)
+	resp, err := l.svcCtx.Agent.GetConfig(l.ctx)
 	if err != nil {
 		return nil, xerr.RpcErr(err)
 	}

@@ -42,7 +42,7 @@ type AgentUser struct {
 	AgentLineCode string `json:"agent_line_code,omitempty"`
 	// 当前占成比例，百分比，0~100（100=100%）
 	ShareRate int64 `json:"share_rate,omitempty"`
-	// 1正常 2冻结 3停用
+	// 1正常 2冻结 3禁用
 	Status int64 `json:"status,omitempty"`
 	// 1不限制出款 2限制本人 3限制全线
 	PayoutRestricted int64 `json:"payout_restricted,omitempty"`

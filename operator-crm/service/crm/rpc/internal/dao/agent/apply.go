@@ -56,14 +56,14 @@ func (s *Service) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyRe
 		return nil, xerr.BadRequest(i18n.AgentShareRateInvalid)
 	}
 	// 查询代理配置是否存在
-	cfg, err := s.DB.AgentConfig.Query().Only(ctx)
+	cfg, err := s.GetConfig(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.BadRequest(i18n.AgentConfigMissing)
 		}
 		return nil, err
 	}
-	if shareRate < cfg.ApplyMinShareRate || shareRate > cfg.ApplyMaxShareRate {
+	if shareRate < int64(cfg.GetApplyMinShareRate()) || shareRate > int64(cfg.GetApplyMaxShareRate()) {
 		return nil, xerr.BadRequest(i18n.AgentShareRateInvalid)
 	}
 	// 查询代理账号是否存在

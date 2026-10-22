@@ -6,6 +6,7 @@ const (
 	TokenExpired  = "common.tokenExpired"
 	InternalError = "common.internalError"
 	InvalidParam  = "common.invalidParam"
+	InvalidPhone  = "common.invalidPhone"
 
 	AuthUsernamePasswordRequired = "auth.usernamePasswordRequired"
 	AuthOperatorCodeRequired     = "auth.operatorCodeRequired"

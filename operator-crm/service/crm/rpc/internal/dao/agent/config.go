@@ -12,7 +12,7 @@ import (
 )
 
 // GetConfig 读取当前租户代理配置；无配置时返回全 0。
-func (s *Service) GetConfig(ctx context.Context, _ *agentpb.GetAgentConfigReq) (*agentpb.AgentConfigResp, error) {
+func (s *Service) GetConfig(ctx context.Context) (*agentpb.AgentConfigResp, error) {
 	ctx, _, err := requireOperator(ctx)
 	if err != nil {
 		return nil, err

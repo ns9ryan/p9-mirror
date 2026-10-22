@@ -151,6 +151,12 @@ func (s *AgentServiceServer) UpdateAgentPayoutRestricted(ctx context.Context, in
 }
 
 // group: agent
+func (s *AgentServiceServer) UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq) (*agentpb.Empty, error) {
+	l := agentservicelogic.NewUpdateAgentStatusLogic(ctx, s.svcCtx)
+	return l.UpdateAgentStatus(in)
+}
+
+// group: agent
 func (s *AgentServiceServer) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateAgentRemarkLogic(ctx, s.svcCtx)
 	return l.UpdateAgentRemark(in)

@@ -362,7 +362,9 @@ func (_u *AgentProfileUpdate) Mutation() *AgentProfileMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *AgentProfileUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -389,11 +391,15 @@ func (_u *AgentProfileUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *AgentProfileUpdate) defaults() {
+func (_u *AgentProfileUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if agentprofile.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agentprofile.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := agentprofile.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -493,6 +499,9 @@ func (_u *AgentProfileUpdate) sqlSave(ctx context.Context) (_node int, err error
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentprofile.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.OperatorCodeCleared() {
+		_spec.ClearField(agentprofile.FieldOperatorCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Gender(); ok {
 		_spec.SetField(agentprofile.FieldGender, field.TypeInt64, value)
@@ -957,7 +966,9 @@ func (_u *AgentProfileUpdateOne) Select(field string, fields ...string) *AgentPr
 
 // Save executes the query and returns the updated AgentProfile entity.
 func (_u *AgentProfileUpdateOne) Save(ctx context.Context) (*AgentProfile, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -984,11 +995,15 @@ func (_u *AgentProfileUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *AgentProfileUpdateOne) defaults() {
+func (_u *AgentProfileUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if agentprofile.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized agentprofile.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := agentprofile.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -1105,6 +1120,9 @@ func (_u *AgentProfileUpdateOne) sqlSave(ctx context.Context) (_node *AgentProfi
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentprofile.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.OperatorCodeCleared() {
+		_spec.ClearField(agentprofile.FieldOperatorCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Gender(); ok {
 		_spec.SetField(agentprofile.FieldGender, field.TypeInt64, value)

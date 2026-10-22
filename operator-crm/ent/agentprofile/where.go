@@ -65,6 +65,11 @@ func UpdatedAt(v time.Time) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// OperatorCode applies equality check predicate on the "operator_code" field. It's identical to OperatorCodeEQ.
+func OperatorCode(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldEQ(FieldOperatorCode, v))
+}
+
 // AgentID applies equality check predicate on the "agent_id" field. It's identical to AgentIDEQ.
 func AgentID(v int64) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldEQ(FieldAgentID, v))
@@ -228,6 +233,81 @@ func UpdatedAtLT(v time.Time) predicate.AgentProfile {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// OperatorCodeEQ applies the EQ predicate on the "operator_code" field.
+func OperatorCodeEQ(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeNEQ applies the NEQ predicate on the "operator_code" field.
+func OperatorCodeNEQ(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldNEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeIn applies the In predicate on the "operator_code" field.
+func OperatorCodeIn(vs ...string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeNotIn applies the NotIn predicate on the "operator_code" field.
+func OperatorCodeNotIn(vs ...string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldNotIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeGT applies the GT predicate on the "operator_code" field.
+func OperatorCodeGT(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldGT(FieldOperatorCode, v))
+}
+
+// OperatorCodeGTE applies the GTE predicate on the "operator_code" field.
+func OperatorCodeGTE(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldGTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeLT applies the LT predicate on the "operator_code" field.
+func OperatorCodeLT(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldLT(FieldOperatorCode, v))
+}
+
+// OperatorCodeLTE applies the LTE predicate on the "operator_code" field.
+func OperatorCodeLTE(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldLTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeContains applies the Contains predicate on the "operator_code" field.
+func OperatorCodeContains(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldContains(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasPrefix applies the HasPrefix predicate on the "operator_code" field.
+func OperatorCodeHasPrefix(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldHasPrefix(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasSuffix applies the HasSuffix predicate on the "operator_code" field.
+func OperatorCodeHasSuffix(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldHasSuffix(FieldOperatorCode, v))
+}
+
+// OperatorCodeIsNil applies the IsNil predicate on the "operator_code" field.
+func OperatorCodeIsNil() predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldIsNull(FieldOperatorCode))
+}
+
+// OperatorCodeNotNil applies the NotNil predicate on the "operator_code" field.
+func OperatorCodeNotNil() predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldNotNull(FieldOperatorCode))
+}
+
+// OperatorCodeEqualFold applies the EqualFold predicate on the "operator_code" field.
+func OperatorCodeEqualFold(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldEqualFold(FieldOperatorCode, v))
+}
+
+// OperatorCodeContainsFold applies the ContainsFold predicate on the "operator_code" field.
+func OperatorCodeContainsFold(v string) predicate.AgentProfile {
+	return predicate.AgentProfile(sql.FieldContainsFold(FieldOperatorCode, v))
 }
 
 // AgentIDEQ applies the EQ predicate on the "agent_id" field.

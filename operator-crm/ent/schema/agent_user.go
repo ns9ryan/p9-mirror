@@ -84,7 +84,7 @@ func (AgentUser) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "smallint",
 			}).
-			Comment("1正常 2冻结 3停用"),
+			Comment("1正常 2冻结 3禁用"),
 
 		field.Int64("payout_restricted").
 			Default(1).
@@ -270,26 +270,6 @@ func (AgentUser) Annotations() []schema.Annotation {
 		schema.Comment("代理主表"),
 		entsql.Annotation{
 			Table: "agent_user",
-			Checks: map[string]string{
-				"ck_agent_user_operator_code":          "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-				"ck_agent_user_account":                "BTRIM(account) <> '' AND account = BTRIM(account)",
-				"ck_agent_user_code":                   "BTRIM(code) <> '' AND code = BTRIM(code)",
-				"ck_agent_user_agent_line_code":        "BTRIM(agent_line_code) <> '' AND agent_line_code = BTRIM(agent_line_code)",
-				"ck_agent_user_promo_code":             "BTRIM(promo_code) <> '' AND promo_code = BTRIM(promo_code)",
-				"ck_agent_user_login_password_hash":    "BTRIM(login_password_hash) <> ''",
-				"ck_agent_user_withdraw_password_hash": "withdraw_password_hash IS NULL OR BTRIM(withdraw_password_hash) <> ''",
-				"ck_agent_user_remark":                 "remark IS NULL OR BTRIM(remark) <> ''",
-				"ck_agent_user_top_self":               "top_id IS DISTINCT FROM id",
-				"ck_agent_user_top_id":                 "(top_id IS NULL AND level = 0) OR (top_id IS NOT NULL AND level BETWEEN 1 AND 7)",
-				"ck_agent_user_parent_self":            "parent_id IS DISTINCT FROM id",
-				"ck_agent_user_tree":                   "(parent_id IS NULL AND level = 0) OR (parent_id IS NOT NULL AND level BETWEEN 1 AND 7)",
-				"ck_agent_user_agent_type":             "agent_type IN (1, 2)",
-				"ck_agent_user_share_rate":             "share_rate BETWEEN 0 AND 100",
-				"ck_agent_user_status":                 "status IN (1, 2, 3)",
-				"ck_agent_user_payout_restricted":      "payout_restricted IN (1, 2, 3)",
-				"ck_agent_user_register_source":        "register_source IN (1, 2, 3, 4)",
-				"ck_agent_user_login_count":            "login_count >= 0",
-			},
 		},
 	}
 }

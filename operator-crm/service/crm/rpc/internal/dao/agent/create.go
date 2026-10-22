@@ -144,14 +144,30 @@ func (s *Service) createRootAgent(ctx context.Context) (int64, error) {
 
 func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCreateFields, parentID, registerSource int64, isInit bool) (*agentpb.AddAgentResp, error) {
 	account := strings.TrimSpace(fields.Account)
-	code := strings.TrimSpace(fields.Code)
+	agentCode := strings.TrimSpace(fields.Code)
 	password := fields.Password
 	lineCode := strings.TrimSpace(fields.AgentLineCode)
-	promo := strings.TrimSpace(fields.PromoCode)
+	promoCode := strings.TrimSpace(fields.PromoCode)
 	shareRate := int64(fields.ShareRate)
 	agentType := int64(fields.AgentType)
+	// 如果代理编码为空，则生成代理编码
+	if agentCode == "" {
+		agentCodeTemp, err := utils.GenLongID()
+		if err != nil {
+			return nil, err
+		}
+		agentCode = strings.ToUpper(agentCodeTemp)
+	}
+	// 如果推广码为空，则生成推广码
+	if promoCode == "" {
+		promoCodeTemp, err := utils.GenShortID()
+		if err != nil {
+			return nil, err
+		}
+		promoCode = strings.ToUpper(promoCodeTemp)
+	}
 
-	if account == "" || code == "" || password == "" || promo == "" {
+	if account == "" || password == "" {
 		return nil, xerr.BadRequest(i18n.AgentFieldsRequired)
 	}
 	if agentType < 1 || agentType > 2 {
@@ -168,6 +184,11 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 		}
 		return nil, err
 	}
+	// 获取管理员设置的最大层级
+	opMaxLevel, err := s.GetMaxLevel(ctx)
+	if err != nil {
+		return nil, err
+	}
 	// 如果非初始化代理，则使用上级代理的子线路编码
 	if !isInit {
 		// 上级不能是系统根（level=0）
@@ -179,19 +200,13 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 	if parent.Status != statusNormal {
 		return nil, xerr.BadRequest(i18n.AgentParentDisabled)
 	}
-	if parent.Level >= maxLevel {
+	// 判断是否超过管理员设置的最大层级
+	if parent.Level >= opMaxLevel {
 		return nil, xerr.BadRequest(i18n.AgentLevelExceeded)
 	}
 	// 占层比例不能超过上级代理
 	if shareRate > parent.ShareRate {
 		return nil, xerr.BadRequest(i18n.AgentShareRateExceedParent)
-	}
-	if cfg, cerr := s.DB.AgentConfig.Query().Only(ctx); cerr == nil {
-		if shareRate > cfg.MaxShareRate {
-			return nil, xerr.BadRequest(i18n.AgentShareRateExceedMax)
-		}
-	} else if !ent.IsNotFound(cerr) {
-		return nil, cerr
 	}
 	// 生成密码哈希
 	hash, err := dao.HashPassword(password)
@@ -219,7 +234,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 	err = dao.WithTx(ctx, s.DB, func(tx *ent.Tx) error {
 		c := tx.AgentUser.Create().
 			SetAccount(account).
-			SetCode(code).
+			SetCode(agentCode).
 			SetParentID(parent.ID).
 			SetTopID(topID).
 			SetLevel(level).
@@ -229,7 +244,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 			SetStatus(statusNormal).
 			SetPayoutRestricted(1).
 			SetRegisterSource(registerSource).
-			SetPromoCode(promo).
+			SetPromoCode(promoCode).
 			SetLoginPasswordHash(hash).
 			SetSalt(salt).
 			SetRegisterAt(now).

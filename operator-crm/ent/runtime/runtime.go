@@ -39,7 +39,9 @@ func init() {
 	agentapplyMixinHooks2 := agentapplyMixin[2].Hooks()
 	agentapply.Hooks[0] = agentapplyMixinHooks2[0]
 	agentapplyMixinInters2 := agentapplyMixin[2].Interceptors()
+	agentapplyInters := schema.AgentApply{}.Interceptors()
 	agentapply.Interceptors[0] = agentapplyMixinInters2[0]
+	agentapply.Interceptors[1] = agentapplyInters[0]
 	agentapplyMixinFields1 := agentapplyMixin[1].Fields()
 	_ = agentapplyMixinFields1
 	agentapplyMixinFields2 := agentapplyMixin[2].Fields()
@@ -456,8 +458,16 @@ func init() {
 	// agentloginlog.ResultValidator is a validator for the "result" field. It is called by the builders before save.
 	agentloginlog.ResultValidator = agentloginlogDescResult.Validators[0].(func(int64) error)
 	agentprofileMixin := schema.AgentProfile{}.Mixin()
+	agentprofileMixinHooks2 := agentprofileMixin[2].Hooks()
+	agentprofile.Hooks[0] = agentprofileMixinHooks2[0]
+	agentprofileMixinInters2 := agentprofileMixin[2].Interceptors()
+	agentprofileInters := schema.AgentProfile{}.Interceptors()
+	agentprofile.Interceptors[0] = agentprofileMixinInters2[0]
+	agentprofile.Interceptors[1] = agentprofileInters[0]
 	agentprofileMixinFields1 := agentprofileMixin[1].Fields()
 	_ = agentprofileMixinFields1
+	agentprofileMixinFields2 := agentprofileMixin[2].Fields()
+	_ = agentprofileMixinFields2
 	agentprofileFields := schema.AgentProfile{}.Fields()
 	_ = agentprofileFields
 	// agentprofileDescCreatedAt is the schema descriptor for created_at field.
@@ -470,6 +480,10 @@ func init() {
 	agentprofile.DefaultUpdatedAt = agentprofileDescUpdatedAt.Default.(func() time.Time)
 	// agentprofile.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	agentprofile.UpdateDefaultUpdatedAt = agentprofileDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// agentprofileDescOperatorCode is the schema descriptor for operator_code field.
+	agentprofileDescOperatorCode := agentprofileMixinFields2[0].Descriptor()
+	// agentprofile.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	agentprofile.OperatorCodeValidator = agentprofileDescOperatorCode.Validators[0].(func(string) error)
 	// agentprofileDescGender is the schema descriptor for gender field.
 	agentprofileDescGender := agentprofileFields[1].Descriptor()
 	// agentprofile.DefaultGender holds the default value on creation for the gender field.

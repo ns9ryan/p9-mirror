@@ -102,14 +102,6 @@ func (AgentStats) Annotations() []schema.Annotation {
 		schema.Comment("agent统计表"),
 		entsql.Annotation{
 			Table: "agent_stats",
-			Checks: map[string]string{
-				"ck_agent_stats_direct_member_count":      "direct_member_count >= 0",
-				"ck_agent_stats_direct_agent_count":       "direct_agent_count >= 0",
-				"ck_agent_stats_total_commission_amount":  "total_commission_amount >= 0",
-				"ck_agent_stats_unpaid_commission_amount": "unpaid_commission_amount >= 0 AND unpaid_commission_amount <= total_commission_amount",
-				"ck_agent_stats_commission_claim_count":   "commission_claim_count >= 0",
-				"ck_agent_stats_visit_uv":                 "visit_uv >= 0",
-			},
 		},
 	}
 }

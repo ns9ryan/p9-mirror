@@ -456,6 +456,12 @@ message UpdateAgentPayoutRestrictedReq {
   int32 payout_restricted = 2;
 }
 
+message UpdateAgentStatusReq {
+  int64 agent_id = 1;
+  // 1正常 2冻结 3禁用
+  int32 status = 2;
+}
+
 message UpdateAgentRemarkReq {
   int64 agent_id = 1;
   // 空字符串清空

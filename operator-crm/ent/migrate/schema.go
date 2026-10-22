@@ -15,7 +15,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "operator_code", Type: field.TypeString, Nullable: true, Size: 64, Comment: "Operator Code | 分站编码"},
-		{Name: "account", Type: field.TypeString, Size: 64, Comment: "申请代理账号"},
+		{Name: "account", Type: field.TypeString, Size: 64, Comment: "申请代理账号, 保留原始大小写", SchemaType: map[string]string{"postgres": "citext"}},
 		{Name: "realname", Type: field.TypeString, Size: 100, Comment: "真实姓名"},
 		{Name: "mobile", Type: field.TypeString, Size: 32, Comment: "手机号"},
 		{Name: "register_source", Type: field.TypeInt64, Comment: "注册来源：1 PC 2 app 3 管理员 4 代理", SchemaType: map[string]string{"postgres": "smallint"}},
@@ -205,6 +205,7 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Nullable: true, Size: 64, Comment: "Operator Code | 分站编码"},
 		{Name: "gender", Type: field.TypeInt64, Comment: "性别：0保密，1男，2女", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "birth_date", Type: field.TypeTime, Nullable: true, Comment: "生日", SchemaType: map[string]string{"postgres": "date"}},
 		{Name: "avatar_url", Type: field.TypeString, Nullable: true, Size: 255, Comment: "头像访问地址"},
@@ -232,7 +233,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "fk_agent_profile_agent",
-				Columns:    []*schema.Column{AgentProfileColumns[19]},
+				Columns:    []*schema.Column{AgentProfileColumns[20]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -241,7 +242,7 @@ var (
 			{
 				Name:    "uk_agent_profile_agent",
 				Unique:  true,
-				Columns: []*schema.Column{AgentProfileColumns[19]},
+				Columns: []*schema.Column{AgentProfileColumns[20]},
 			},
 		},
 	}
@@ -294,7 +295,7 @@ var (
 		{Name: "agent_type", Type: field.TypeInt64, Comment: "1现金代理 2信用代理", SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "agent_line_code", Type: field.TypeString, Size: 32, Comment: "代理子线路编码"},
 		{Name: "share_rate", Type: field.TypeInt64, Comment: "当前占成比例，百分比，0~100（100=100%）", Default: 0, SchemaType: map[string]string{"postgres": "integer"}},
-		{Name: "status", Type: field.TypeInt64, Comment: "1正常 2冻结 3停用", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "status", Type: field.TypeInt64, Comment: "1正常 2冻结 3禁用", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "payout_restricted", Type: field.TypeInt64, Comment: "1不限制出款 2限制本人 3限制全线", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "register_source", Type: field.TypeInt64, Comment: "1 PC注册 2 app注册 3管理员添加 4代理添加", SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "promo_code", Type: field.TypeString, Size: 64, Comment: "对外推广码"},
@@ -954,115 +955,32 @@ func init() {
 	AgentApplyTable.Annotation = &entsql.Annotation{
 		Table: "agent_apply",
 	}
-	AgentApplyTable.Annotation.Checks = map[string]string{
-		"ck_agent_apply_account":          "BTRIM(account) <> '' AND account = BTRIM(account)",
-		"ck_agent_apply_apply_share_rate": "apply_share_rate BETWEEN 0 AND 100",
-		"ck_agent_apply_audit_status":     "audit_status BETWEEN 1 AND 4",
-		"ck_agent_apply_member_account":   "BTRIM(member_account) <> '' AND member_account = BTRIM(member_account)",
-		"ck_agent_apply_member_code":      "BTRIM(member_code) <> '' AND member_code = BTRIM(member_code)",
-		"ck_agent_apply_mobile":           "BTRIM(mobile) <> '' AND mobile = BTRIM(mobile)",
-		"ck_agent_apply_operator_code":    "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-		"ck_agent_apply_realname":         "BTRIM(realname) <> '' AND realname = BTRIM(realname)",
-		"ck_agent_apply_register_source":  "register_source BETWEEN 1 AND 4",
-	}
 	AgentClosureTable.ForeignKeys[0].RefTable = AgentUserTable
 	AgentClosureTable.ForeignKeys[1].RefTable = AgentUserTable
 	AgentClosureTable.Annotation = &entsql.Annotation{
 		Table: "agent_closure",
 	}
-	AgentClosureTable.Annotation.Checks = map[string]string{
-		"ck_agent_closure_depth": "(ancestor_id = descendant_id AND depth = 0) OR (ancestor_id <> descendant_id AND depth > 0)",
-	}
 	AgentConfigTable.Annotation = &entsql.Annotation{
 		Table: "agent_config",
-	}
-	AgentConfigTable.Annotation.Checks = map[string]string{
-		"ck_agent_config_apply_max_share_rate":   "apply_max_share_rate BETWEEN 0 AND 100",
-		"ck_agent_config_apply_min_share_rate":   "apply_min_share_rate BETWEEN 0 AND 100",
-		"ck_agent_config_apply_share_rate_order": "apply_min_share_rate <= apply_max_share_rate AND apply_max_share_rate <= max_share_rate",
-		"ck_agent_config_cash_max_agent_per_ip":  "cash_max_agent_per_ip >= 0",
-		"ck_agent_config_cash_max_member_count":  "cash_max_member_count >= 0",
-		"ck_agent_config_max_share_rate":         "max_share_rate BETWEEN 0 AND 100",
-		"ck_agent_config_operator_code":          "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
 	}
 	AgentLevelTable.Annotation = &entsql.Annotation{
 		Table: "agent_level",
 	}
-	AgentLevelTable.Annotation.Checks = map[string]string{
-		"ck_agent_level_alias":         "BTRIM(alias) <> '' AND alias = BTRIM(alias)",
-		"ck_agent_level_level":         "level BETWEEN 1 AND 7",
-		"ck_agent_level_name":          "BTRIM(name) <> '' AND name = BTRIM(name)",
-		"ck_agent_level_operator_code": "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-	}
 	AgentLoginLogTable.Annotation = &entsql.Annotation{
 		Table: "agent_login_log",
-	}
-	AgentLoginLogTable.Annotation.Checks = map[string]string{
-		"ck_agent_login_log_account":        "BTRIM(account) <> '' AND account = BTRIM(account)",
-		"ck_agent_login_log_login_device":   "login_device IS NULL OR (BTRIM(login_device) <> '' AND login_device = BTRIM(login_device))",
-		"ck_agent_login_log_login_location": "login_location IS NULL OR (BTRIM(login_location) <> '' AND login_location = BTRIM(login_location))",
-		"ck_agent_login_log_login_type":     "login_type = 1",
-		"ck_agent_login_log_operator_code":  "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-		"ck_agent_login_log_udid":           "udid IS NULL OR (BTRIM(udid) <> '' AND udid = BTRIM(udid))",
 	}
 	AgentProfileTable.ForeignKeys[0].RefTable = AgentUserTable
 	AgentProfileTable.Annotation = &entsql.Annotation{
 		Table: "agent_profile",
 	}
-	AgentProfileTable.Annotation.Checks = map[string]string{
-		"ck_agent_profile_avatar_url":     "avatar_url IS NULL OR (BTRIM(avatar_url) <> '' AND avatar_url = BTRIM(avatar_url))",
-		"ck_agent_profile_birth_date":     "birth_date IS NULL OR birth_date <= CURRENT_DATE",
-		"ck_agent_profile_email":          "email IS NULL OR (BTRIM(email) <> '' AND email = BTRIM(email))",
-		"ck_agent_profile_facebook":       "facebook IS NULL OR (BTRIM(facebook) <> '' AND facebook = BTRIM(facebook))",
-		"ck_agent_profile_gender":         "gender IN (0, 1, 2)",
-		"ck_agent_profile_id_document_no": "id_document_no IS NULL OR (BTRIM(id_document_no) <> '' AND id_document_no = BTRIM(id_document_no))",
-		"ck_agent_profile_line":           "line IS NULL OR (BTRIM(line) <> '' AND line = BTRIM(line))",
-		"ck_agent_profile_mobile":         "mobile IS NULL OR (BTRIM(mobile) <> '' AND mobile = BTRIM(mobile))",
-		"ck_agent_profile_nickname":       "nickname IS NULL OR (BTRIM(nickname) <> '' AND nickname = BTRIM(nickname))",
-		"ck_agent_profile_qq":             "qq IS NULL OR (BTRIM(qq) <> '' AND qq = BTRIM(qq))",
-		"ck_agent_profile_realname":       "realname IS NULL OR (BTRIM(realname) <> '' AND realname = BTRIM(realname))",
-		"ck_agent_profile_telegram":       "telegram IS NULL OR (BTRIM(telegram) <> '' AND telegram = BTRIM(telegram))",
-		"ck_agent_profile_twitter":        "twitter IS NULL OR (BTRIM(twitter) <> '' AND twitter = BTRIM(twitter))",
-		"ck_agent_profile_wechat":         "wechat IS NULL OR (BTRIM(wechat) <> '' AND wechat = BTRIM(wechat))",
-		"ck_agent_profile_whatsapp":       "whatsapp IS NULL OR (BTRIM(whatsapp) <> '' AND whatsapp = BTRIM(whatsapp))",
-		"ck_agent_profile_zalo":           "zalo IS NULL OR (BTRIM(zalo) <> '' AND zalo = BTRIM(zalo))",
-	}
 	AgentStatsTable.ForeignKeys[0].RefTable = AgentUserTable
 	AgentStatsTable.Annotation = &entsql.Annotation{
 		Table: "agent_stats",
-	}
-	AgentStatsTable.Annotation.Checks = map[string]string{
-		"ck_agent_stats_commission_claim_count":   "commission_claim_count >= 0",
-		"ck_agent_stats_direct_agent_count":       "direct_agent_count >= 0",
-		"ck_agent_stats_direct_member_count":      "direct_member_count >= 0",
-		"ck_agent_stats_total_commission_amount":  "total_commission_amount >= 0",
-		"ck_agent_stats_unpaid_commission_amount": "unpaid_commission_amount >= 0 AND unpaid_commission_amount <= total_commission_amount",
-		"ck_agent_stats_visit_uv":                 "visit_uv >= 0",
 	}
 	AgentUserTable.ForeignKeys[0].RefTable = AgentUserTable
 	AgentUserTable.ForeignKeys[1].RefTable = AgentUserTable
 	AgentUserTable.Annotation = &entsql.Annotation{
 		Table: "agent_user",
-	}
-	AgentUserTable.Annotation.Checks = map[string]string{
-		"ck_agent_user_account":                "BTRIM(account) <> '' AND account = BTRIM(account)",
-		"ck_agent_user_agent_line_code":        "BTRIM(agent_line_code) <> '' AND agent_line_code = BTRIM(agent_line_code)",
-		"ck_agent_user_agent_type":             "agent_type IN (1, 2)",
-		"ck_agent_user_code":                   "BTRIM(code) <> '' AND code = BTRIM(code)",
-		"ck_agent_user_login_count":            "login_count >= 0",
-		"ck_agent_user_login_password_hash":    "BTRIM(login_password_hash) <> ''",
-		"ck_agent_user_operator_code":          "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-		"ck_agent_user_parent_self":            "parent_id IS DISTINCT FROM id",
-		"ck_agent_user_payout_restricted":      "payout_restricted IN (1, 2, 3)",
-		"ck_agent_user_promo_code":             "BTRIM(promo_code) <> '' AND promo_code = BTRIM(promo_code)",
-		"ck_agent_user_register_source":        "register_source IN (1, 2, 3, 4)",
-		"ck_agent_user_remark":                 "remark IS NULL OR BTRIM(remark) <> ''",
-		"ck_agent_user_share_rate":             "share_rate BETWEEN 0 AND 100",
-		"ck_agent_user_status":                 "status IN (1, 2, 3)",
-		"ck_agent_user_top_id":                 "(top_id IS NULL AND level = 0) OR (top_id IS NOT NULL AND level BETWEEN 1 AND 7)",
-		"ck_agent_user_top_self":               "top_id IS DISTINCT FROM id",
-		"ck_agent_user_tree":                   "(parent_id IS NULL AND level = 0) OR (parent_id IS NOT NULL AND level BETWEEN 1 AND 7)",
-		"ck_agent_user_withdraw_password_hash": "withdraw_password_hash IS NULL OR BTRIM(withdraw_password_hash) <> ''",
 	}
 	MemberTable.ForeignKeys[0].RefTable = AgentUserTable
 	MemberTable.ForeignKeys[1].RefTable = AgentUserTable

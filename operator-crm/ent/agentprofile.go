@@ -23,6 +23,8 @@ type AgentProfile struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Updated At | 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Operator Code | 分站编码
+	OperatorCode *string `json:"operator_code,omitempty"`
 	// 所属agent ID
 	AgentID int64 `json:"agent_id,omitempty"`
 	// 性别：0保密，1男，2女
@@ -90,7 +92,7 @@ func (*AgentProfile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case agentprofile.FieldID, agentprofile.FieldAgentID, agentprofile.FieldGender:
 			values[i] = new(sql.NullInt64)
-		case agentprofile.FieldAvatarURL, agentprofile.FieldNickname, agentprofile.FieldRealname, agentprofile.FieldMobile, agentprofile.FieldEmail, agentprofile.FieldIDDocumentNo, agentprofile.FieldQq, agentprofile.FieldLine, agentprofile.FieldWechat, agentprofile.FieldWhatsapp, agentprofile.FieldTelegram, agentprofile.FieldFacebook, agentprofile.FieldTwitter, agentprofile.FieldZalo:
+		case agentprofile.FieldOperatorCode, agentprofile.FieldAvatarURL, agentprofile.FieldNickname, agentprofile.FieldRealname, agentprofile.FieldMobile, agentprofile.FieldEmail, agentprofile.FieldIDDocumentNo, agentprofile.FieldQq, agentprofile.FieldLine, agentprofile.FieldWechat, agentprofile.FieldWhatsapp, agentprofile.FieldTelegram, agentprofile.FieldFacebook, agentprofile.FieldTwitter, agentprofile.FieldZalo:
 			values[i] = new(sql.NullString)
 		case agentprofile.FieldCreatedAt, agentprofile.FieldUpdatedAt, agentprofile.FieldBirthDate:
 			values[i] = new(sql.NullTime)
@@ -126,6 +128,13 @@ func (_m *AgentProfile) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
+			}
+		case agentprofile.FieldOperatorCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
+			} else if value.Valid {
+				_m.OperatorCode = new(string)
+				*_m.OperatorCode = value.String
 			}
 		case agentprofile.FieldAgentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -290,6 +299,11 @@ func (_m *AgentProfile) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	if v := _m.OperatorCode; v != nil {
+		builder.WriteString("operator_code=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", ")
 	builder.WriteString("agent_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.AgentID))

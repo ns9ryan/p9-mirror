@@ -11,13 +11,15 @@ import (
 )
 
 const (
-	statusNormal int64 = 1
+	statusNormal   int64 = 1 // 正常
+	statusFrozen   int64 = 2 // 冻结
+	statusDisabled int64 = 3 // 禁用
 
-	registerSourceAdmin int64 = 3
-	registerSourceAgent int64 = 4
+	registerSourceAdmin int64 = 3 // 管理员
+	registerSourceAgent int64 = 4 // 代理
 
-	maxLevel     int64 = 7
-	maxShareRate int64 = 100
+	maxLevel     int64 = 7   // 最大层级
+	maxShareRate int64 = 100 // 最大分享比例
 )
 
 // Service 代理配置与开户。

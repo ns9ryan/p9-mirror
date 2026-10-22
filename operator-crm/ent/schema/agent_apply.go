@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"context"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
@@ -9,6 +11,7 @@ import (
 	"entgo.io/ent/schema/index"
 
 	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 )
 
 // AgentApply 定义代理申请表结构。
@@ -23,7 +26,10 @@ func (AgentApply) Fields() []ent.Field {
 			NotEmpty().
 			MaxLen(64).
 			Match(trimmedNonEmpty).
-			Comment("申请代理账号"),
+			SchemaType(map[string]string{
+				dialect.Postgres: "citext",
+			}).
+			Comment("申请代理账号, 保留原始大小写"),
 
 		field.String("realname").
 			NotEmpty().
@@ -132,6 +138,16 @@ func (AgentApply) Mixin() []ent.Mixin {
 	}
 }
 
+// Interceptors 定义代理申请表查询隔离
+func (AgentApply) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
+	}
+}
+
 // Annotations 定义代理申请表数据库注解
 func (AgentApply) Annotations() []schema.Annotation {
 	return []schema.Annotation{
@@ -139,17 +155,6 @@ func (AgentApply) Annotations() []schema.Annotation {
 		schema.Comment("代理申请表"),
 		entsql.Annotation{
 			Table: "agent_apply",
-			Checks: map[string]string{
-				"ck_agent_apply_operator_code":    "BTRIM(operator_code) <> '' AND operator_code = BTRIM(operator_code)",
-				"ck_agent_apply_account":          "BTRIM(account) <> '' AND account = BTRIM(account)",
-				"ck_agent_apply_realname":         "BTRIM(realname) <> '' AND realname = BTRIM(realname)",
-				"ck_agent_apply_mobile":           "BTRIM(mobile) <> '' AND mobile = BTRIM(mobile)",
-				"ck_agent_apply_member_account":   "BTRIM(member_account) <> '' AND member_account = BTRIM(member_account)",
-				"ck_agent_apply_member_code":      "BTRIM(member_code) <> '' AND member_code = BTRIM(member_code)",
-				"ck_agent_apply_register_source":  "register_source BETWEEN 1 AND 4",
-				"ck_agent_apply_apply_share_rate": "apply_share_rate BETWEEN 0 AND 100",
-				"ck_agent_apply_audit_status":     "audit_status BETWEEN 1 AND 4",
-			},
 		},
 	}
 }

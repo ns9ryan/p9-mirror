@@ -69,6 +69,13 @@ func TestUpdatePayoutRestrictedRange(t *testing.T) {
 	assertApplyKey(t, err, i18n.InvalidParam)
 }
 
+func TestUpdateStatusRange(t *testing.T) {
+	s := New(nil)
+	ctx := ctxdata.WithClaims(context.Background(), &ctxdata.Claims{OperatorCode: "op01"})
+	_, err := s.UpdateStatus(ctx, &agentpb.UpdateAgentStatusReq{AgentId: 1, Status: 4})
+	assertApplyKey(t, err, i18n.InvalidParam)
+}
+
 func TestUpdateProfileFieldType(t *testing.T) {
 	s := New(nil)
 	ctx := ctxdata.WithClaims(context.Background(), &ctxdata.Claims{OperatorCode: "op01"})

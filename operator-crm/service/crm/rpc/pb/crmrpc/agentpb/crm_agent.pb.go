@@ -3320,6 +3320,59 @@ func (x *UpdateAgentPayoutRestrictedReq) GetPayoutRestricted() int32 {
 	return 0
 }
 
+type UpdateAgentStatusReq struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	AgentId int64                  `protobuf:"varint,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	// 1正常 2冻结 3禁用
+	Status        int32 `protobuf:"varint,2,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateAgentStatusReq) Reset() {
+	*x = UpdateAgentStatusReq{}
+	mi := &file_types_crm_agent_proto_msgTypes[44]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateAgentStatusReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateAgentStatusReq) ProtoMessage() {}
+
+func (x *UpdateAgentStatusReq) ProtoReflect() protoreflect.Message {
+	mi := &file_types_crm_agent_proto_msgTypes[44]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateAgentStatusReq.ProtoReflect.Descriptor instead.
+func (*UpdateAgentStatusReq) Descriptor() ([]byte, []int) {
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *UpdateAgentStatusReq) GetAgentId() int64 {
+	if x != nil {
+		return x.AgentId
+	}
+	return 0
+}
+
+func (x *UpdateAgentStatusReq) GetStatus() int32 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
 type UpdateAgentRemarkReq struct {
 	state   protoimpl.MessageState `protogen:"open.v1"`
 	AgentId int64                  `protobuf:"varint,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
@@ -3331,7 +3384,7 @@ type UpdateAgentRemarkReq struct {
 
 func (x *UpdateAgentRemarkReq) Reset() {
 	*x = UpdateAgentRemarkReq{}
-	mi := &file_types_crm_agent_proto_msgTypes[44]
+	mi := &file_types_crm_agent_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3343,7 +3396,7 @@ func (x *UpdateAgentRemarkReq) String() string {
 func (*UpdateAgentRemarkReq) ProtoMessage() {}
 
 func (x *UpdateAgentRemarkReq) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[44]
+	mi := &file_types_crm_agent_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3356,7 +3409,7 @@ func (x *UpdateAgentRemarkReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAgentRemarkReq.ProtoReflect.Descriptor instead.
 func (*UpdateAgentRemarkReq) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{44}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *UpdateAgentRemarkReq) GetAgentId() int64 {
@@ -3397,7 +3450,7 @@ type UpdateAgentProfileReq struct {
 
 func (x *UpdateAgentProfileReq) Reset() {
 	*x = UpdateAgentProfileReq{}
-	mi := &file_types_crm_agent_proto_msgTypes[45]
+	mi := &file_types_crm_agent_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3409,7 +3462,7 @@ func (x *UpdateAgentProfileReq) String() string {
 func (*UpdateAgentProfileReq) ProtoMessage() {}
 
 func (x *UpdateAgentProfileReq) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[45]
+	mi := &file_types_crm_agent_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3422,7 +3475,7 @@ func (x *UpdateAgentProfileReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAgentProfileReq.ProtoReflect.Descriptor instead.
 func (*UpdateAgentProfileReq) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{45}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *UpdateAgentProfileReq) GetAgentId() int64 {
@@ -3550,7 +3603,7 @@ type ListAgentLoginLogsReq struct {
 
 func (x *ListAgentLoginLogsReq) Reset() {
 	*x = ListAgentLoginLogsReq{}
-	mi := &file_types_crm_agent_proto_msgTypes[46]
+	mi := &file_types_crm_agent_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3562,7 +3615,7 @@ func (x *ListAgentLoginLogsReq) String() string {
 func (*ListAgentLoginLogsReq) ProtoMessage() {}
 
 func (x *ListAgentLoginLogsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[46]
+	mi := &file_types_crm_agent_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3575,7 +3628,7 @@ func (x *ListAgentLoginLogsReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAgentLoginLogsReq.ProtoReflect.Descriptor instead.
 func (*ListAgentLoginLogsReq) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{46}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *ListAgentLoginLogsReq) GetPage() int32 {
@@ -3663,7 +3716,7 @@ type AgentLoginLogItem struct {
 
 func (x *AgentLoginLogItem) Reset() {
 	*x = AgentLoginLogItem{}
-	mi := &file_types_crm_agent_proto_msgTypes[47]
+	mi := &file_types_crm_agent_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3675,7 +3728,7 @@ func (x *AgentLoginLogItem) String() string {
 func (*AgentLoginLogItem) ProtoMessage() {}
 
 func (x *AgentLoginLogItem) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[47]
+	mi := &file_types_crm_agent_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3688,7 +3741,7 @@ func (x *AgentLoginLogItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AgentLoginLogItem.ProtoReflect.Descriptor instead.
 func (*AgentLoginLogItem) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{47}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *AgentLoginLogItem) GetId() int64 {
@@ -3779,7 +3832,7 @@ type ListAgentLoginLogsResp struct {
 
 func (x *ListAgentLoginLogsResp) Reset() {
 	*x = ListAgentLoginLogsResp{}
-	mi := &file_types_crm_agent_proto_msgTypes[48]
+	mi := &file_types_crm_agent_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3791,7 +3844,7 @@ func (x *ListAgentLoginLogsResp) String() string {
 func (*ListAgentLoginLogsResp) ProtoMessage() {}
 
 func (x *ListAgentLoginLogsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[48]
+	mi := &file_types_crm_agent_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3804,7 +3857,7 @@ func (x *ListAgentLoginLogsResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAgentLoginLogsResp.ProtoReflect.Descriptor instead.
 func (*ListAgentLoginLogsResp) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{48}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *ListAgentLoginLogsResp) GetItems() []*AgentLoginLogItem {
@@ -3846,7 +3899,7 @@ type ListAgentLoginAssociationsReq struct {
 
 func (x *ListAgentLoginAssociationsReq) Reset() {
 	*x = ListAgentLoginAssociationsReq{}
-	mi := &file_types_crm_agent_proto_msgTypes[49]
+	mi := &file_types_crm_agent_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3858,7 +3911,7 @@ func (x *ListAgentLoginAssociationsReq) String() string {
 func (*ListAgentLoginAssociationsReq) ProtoMessage() {}
 
 func (x *ListAgentLoginAssociationsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[49]
+	mi := &file_types_crm_agent_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3871,7 +3924,7 @@ func (x *ListAgentLoginAssociationsReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAgentLoginAssociationsReq.ProtoReflect.Descriptor instead.
 func (*ListAgentLoginAssociationsReq) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{49}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ListAgentLoginAssociationsReq) GetPage() int32 {
@@ -3953,7 +4006,7 @@ type AgentLoginAssociationItem struct {
 
 func (x *AgentLoginAssociationItem) Reset() {
 	*x = AgentLoginAssociationItem{}
-	mi := &file_types_crm_agent_proto_msgTypes[50]
+	mi := &file_types_crm_agent_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3965,7 +4018,7 @@ func (x *AgentLoginAssociationItem) String() string {
 func (*AgentLoginAssociationItem) ProtoMessage() {}
 
 func (x *AgentLoginAssociationItem) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[50]
+	mi := &file_types_crm_agent_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3978,7 +4031,7 @@ func (x *AgentLoginAssociationItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AgentLoginAssociationItem.ProtoReflect.Descriptor instead.
 func (*AgentLoginAssociationItem) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{50}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *AgentLoginAssociationItem) GetId() int64 {
@@ -4069,7 +4122,7 @@ type ListAgentLoginAssociationsResp struct {
 
 func (x *ListAgentLoginAssociationsResp) Reset() {
 	*x = ListAgentLoginAssociationsResp{}
-	mi := &file_types_crm_agent_proto_msgTypes[51]
+	mi := &file_types_crm_agent_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4081,7 +4134,7 @@ func (x *ListAgentLoginAssociationsResp) String() string {
 func (*ListAgentLoginAssociationsResp) ProtoMessage() {}
 
 func (x *ListAgentLoginAssociationsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_types_crm_agent_proto_msgTypes[51]
+	mi := &file_types_crm_agent_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4094,7 +4147,7 @@ func (x *ListAgentLoginAssociationsResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAgentLoginAssociationsResp.ProtoReflect.Descriptor instead.
 func (*ListAgentLoginAssociationsResp) Descriptor() ([]byte, []int) {
-	return file_types_crm_agent_proto_rawDescGZIP(), []int{51}
+	return file_types_crm_agent_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *ListAgentLoginAssociationsResp) GetItems() []*AgentLoginAssociationItem {
@@ -4401,6 +4454,9 @@ const file_types_crm_agent_proto_rawDesc = "" +
 	"\x1eUpdateAgentPayoutRestrictedReq\x12\x19\n" +
 	"\bagent_id\x18\x01 \x01(\x03R\aagentId\x12+\n" +
 	"\x11payout_restricted\x18\x02 \x01(\x05R\x10payoutRestricted\"I\n" +
+	"\x14UpdateAgentStatusReq\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\x03R\aagentId\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\x05R\x06status\"I\n" +
 	"\x14UpdateAgentRemarkReq\x12\x19\n" +
 	"\bagent_id\x18\x01 \x01(\x03R\aagentId\x12\x16\n" +
 	"\x06remark\x18\x02 \x01(\tR\x06remark\"\x92\x03\n" +
@@ -4494,7 +4550,7 @@ func file_types_crm_agent_proto_rawDescGZIP() []byte {
 	return file_types_crm_agent_proto_rawDescData
 }
 
-var file_types_crm_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
+var file_types_crm_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 53)
 var file_types_crm_agent_proto_goTypes = []any{
 	(*AgentLevelItem)(nil),                 // 0: crm_agent.AgentLevelItem
 	(*UpdateAgentLevelsReq)(nil),           // 1: crm_agent.UpdateAgentLevelsReq
@@ -4540,14 +4596,15 @@ var file_types_crm_agent_proto_goTypes = []any{
 	(*UpdateWithdrawPasswordReq)(nil),      // 41: crm_agent.UpdateWithdrawPasswordReq
 	(*UpdateAgentShareRateReq)(nil),        // 42: crm_agent.UpdateAgentShareRateReq
 	(*UpdateAgentPayoutRestrictedReq)(nil), // 43: crm_agent.UpdateAgentPayoutRestrictedReq
-	(*UpdateAgentRemarkReq)(nil),           // 44: crm_agent.UpdateAgentRemarkReq
-	(*UpdateAgentProfileReq)(nil),          // 45: crm_agent.UpdateAgentProfileReq
-	(*ListAgentLoginLogsReq)(nil),          // 46: crm_agent.ListAgentLoginLogsReq
-	(*AgentLoginLogItem)(nil),              // 47: crm_agent.AgentLoginLogItem
-	(*ListAgentLoginLogsResp)(nil),         // 48: crm_agent.ListAgentLoginLogsResp
-	(*ListAgentLoginAssociationsReq)(nil),  // 49: crm_agent.ListAgentLoginAssociationsReq
-	(*AgentLoginAssociationItem)(nil),      // 50: crm_agent.AgentLoginAssociationItem
-	(*ListAgentLoginAssociationsResp)(nil), // 51: crm_agent.ListAgentLoginAssociationsResp
+	(*UpdateAgentStatusReq)(nil),           // 44: crm_agent.UpdateAgentStatusReq
+	(*UpdateAgentRemarkReq)(nil),           // 45: crm_agent.UpdateAgentRemarkReq
+	(*UpdateAgentProfileReq)(nil),          // 46: crm_agent.UpdateAgentProfileReq
+	(*ListAgentLoginLogsReq)(nil),          // 47: crm_agent.ListAgentLoginLogsReq
+	(*AgentLoginLogItem)(nil),              // 48: crm_agent.AgentLoginLogItem
+	(*ListAgentLoginLogsResp)(nil),         // 49: crm_agent.ListAgentLoginLogsResp
+	(*ListAgentLoginAssociationsReq)(nil),  // 50: crm_agent.ListAgentLoginAssociationsReq
+	(*AgentLoginAssociationItem)(nil),      // 51: crm_agent.AgentLoginAssociationItem
+	(*ListAgentLoginAssociationsResp)(nil), // 52: crm_agent.ListAgentLoginAssociationsResp
 }
 var file_types_crm_agent_proto_depIdxs = []int32{
 	0,  // 0: crm_agent.UpdateAgentLevelsReq.items:type_name -> crm_agent.AgentLevelItem
@@ -4564,8 +4621,8 @@ var file_types_crm_agent_proto_depIdxs = []int32{
 	27, // 11: crm_agent.TreeNodeAgentsResp.items:type_name -> crm_agent.TreeNodeAgentItem
 	30, // 12: crm_agent.ListAgentAppliesResp.items:type_name -> crm_agent.AgentApplyItem
 	30, // 13: crm_agent.ReviewAgentApplyResp.apply:type_name -> crm_agent.AgentApplyItem
-	47, // 14: crm_agent.ListAgentLoginLogsResp.items:type_name -> crm_agent.AgentLoginLogItem
-	50, // 15: crm_agent.ListAgentLoginAssociationsResp.items:type_name -> crm_agent.AgentLoginAssociationItem
+	48, // 14: crm_agent.ListAgentLoginLogsResp.items:type_name -> crm_agent.AgentLoginLogItem
+	51, // 15: crm_agent.ListAgentLoginAssociationsResp.items:type_name -> crm_agent.AgentLoginAssociationItem
 	16, // [16:16] is the sub-list for method output_type
 	16, // [16:16] is the sub-list for method input_type
 	16, // [16:16] is the sub-list for extension type_name
@@ -4586,7 +4643,7 @@ func file_types_crm_agent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_crm_agent_proto_rawDesc), len(file_types_crm_agent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   52,
+			NumMessages:   53,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

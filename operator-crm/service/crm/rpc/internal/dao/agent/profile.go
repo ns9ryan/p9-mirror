@@ -7,6 +7,7 @@ import (
 	"unicode/utf8"
 
 	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/common/utils"
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
@@ -17,22 +18,23 @@ import (
 )
 
 const (
-	profileFieldAll = iota
-	profileFieldAvatar
-	profileFieldRealname
-	profileFieldTelegram
-	profileFieldFacebook
-	profileFieldWhatsapp
-	profileFieldMobile
-	profileFieldNickname
-	profileFieldIDDocument
-	profileFieldZalo
-	profileFieldTwitter
-	profileFieldLine
-	profileFieldEmail
+	profileFieldAll        = iota
+	profileFieldAvatar     // 头像
+	profileFieldRealname   // 真实姓名
+	profileFieldTelegram   // 电报
+	profileFieldFacebook   // 脸书
+	profileFieldWhatsapp   // 微信
+	profileFieldMobile     // 手机号
+	profileFieldNickname   // 昵称
+	profileFieldIDDocument // 身份证号
+	profileFieldZalo       // 扎拉
+	profileFieldTwitter    // 推特
+	profileFieldLine       // 连信
+	profileFieldEmail      // 邮箱
 
-	payoutNormal         int64 = 1
-	payoutLineRestricted int64 = 3
+	payoutNormal          int64 = 1 // 不限制出款
+	payoutOwnerRestricted int64 = 2 // 限制本人出款
+	payoutLineRestricted  int64 = 3 // 限制全线出款
 )
 
 // 获取代理资料
@@ -142,17 +144,6 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 	if err != nil {
 		return nil, err
 	}
-	cfg, err := s.GetConfig(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-	if cfg.GetId() == 0 {
-		return nil, xerr.BadRequest(i18n.AgentConfigMissing)
-	}
-	// 检查代理占成比例是否超过最大值
-	if share > int64(cfg.GetMaxShareRate()) {
-		return nil, xerr.BadRequest(i18n.AgentShareRateExceedMax)
-	}
 	if row.ParentID != nil {
 		parent, err := s.DB.AgentUser.Query().
 			Where(agentuser.IDEQ(*row.ParentID)).
@@ -212,6 +203,27 @@ func (s *Service) UpdatePayoutRestricted(ctx context.Context, req *agentpb.Updat
 	return &agentpb.Empty{}, nil
 }
 
+// UpdateStatus 更新代理账号状态：1正常 2冻结 3禁用。
+func (s *Service) UpdateStatus(ctx context.Context, req *agentpb.UpdateAgentStatusReq) (*agentpb.Empty, error) {
+	if req == nil {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
+	v := int64(req.GetStatus())
+	if v < statusNormal || v > statusDisabled {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
+	row, err := s.loadAgent(ctx, req.GetAgentId())
+	if err != nil {
+		return nil, err
+	}
+	if err = s.DB.AgentUser.UpdateOneID(row.ID).
+		SetStatus(v).
+		Exec(ctx); err != nil {
+		return nil, mapEntErr(err)
+	}
+	return &agentpb.Empty{}, nil
+}
+
 // 更新代理备注
 func (s *Service) UpdateRemark(ctx context.Context, req *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error) {
 	if req == nil {
@@ -245,6 +257,12 @@ func (s *Service) UpdateProfile(ctx context.Context, req *agentpb.UpdateAgentPro
 	ft := req.GetFieldType()
 	if ft < profileFieldAll || ft > profileFieldEmail {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
+	// 验证手机号是否合法
+	if (ft == profileFieldMobile || ft == profileFieldAll) && req.GetMobile() != "" {
+		if !utils.ValidPhone(req.GetMobile()) {
+			return nil, xerr.BadRequest(i18n.InvalidPhone)
+		}
 	}
 	row, err := s.loadAgent(ctx, req.GetAgentId())
 	if err != nil {

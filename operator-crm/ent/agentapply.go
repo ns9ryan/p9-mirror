@@ -24,7 +24,7 @@ type AgentApply struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Operator Code | 分站编码
 	OperatorCode *string `json:"operator_code,omitempty"`
-	// 申请代理账号
+	// 申请代理账号, 保留原始大小写
 	Account string `json:"account,omitempty"`
 	// 真实姓名
 	Realname string `json:"realname,omitempty"`

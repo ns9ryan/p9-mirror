@@ -8,6 +8,7 @@ import "types/crm_auth.proto";
 import "types/crm_ping.proto";
 import "types/crm_agent.proto";
 import "types/crm_member_auto_level.proto";
+import "types/crm_vip.proto";
 import "types/crm_vip_config.proto";
 import "types/crm_vip_level.proto";
 import "types/crm_vip_icon_group.proto";
@@ -77,6 +78,8 @@ service AgentService {
   // group: agent
   rpc updateAgentPayoutRestricted(crm_agent.UpdateAgentPayoutRestrictedReq) returns (crm_agent.Empty);
   // group: agent
+  rpc updateAgentStatus(crm_agent.UpdateAgentStatusReq) returns (crm_agent.Empty);
+  // group: agent
   rpc updateAgentRemark(crm_agent.UpdateAgentRemarkReq) returns (crm_agent.Empty);
   // group: agent
   rpc updateAgentProfile(crm_agent.UpdateAgentProfileReq) returns (crm_agent.AgentProfile);
@@ -104,6 +107,11 @@ service MemberAutoLevelService {
 
 // VIP管理服务
 service VipService {
+  // ==================== 初始化 ====================
+
+  // 初始化分站VIP基础数据
+  rpc Init(crm_vip.InitRequest) returns (crm_vip.InitResponse);
+
   // ==================== 基础配置 ====================
 
   // 获取VIP基础配置

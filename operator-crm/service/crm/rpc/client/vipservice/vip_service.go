@@ -12,6 +12,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/viplevelpb"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vippb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -19,6 +20,8 @@ import (
 
 type (
 	VipService interface {
+		// 初始化分站VIP基础数据
+		Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error)
 		// 获取VIP基础配置
 		GetConfig(ctx context.Context, in *vipconfigpb.GetVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.GetVipConfigResponse, error)
 		// 修改VIP基础配置
@@ -50,6 +53,12 @@ func NewVipService(cli zrpc.Client) VipService {
 	return &defaultVipService{
 		cli: cli,
 	}
+}
+
+// 初始化分站VIP基础数据
+func (m *defaultVipService) Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error) {
+	client := crmrpc.NewVipServiceClient(m.cli.Conn())
+	return client.Init(ctx, in, opts...)
 }
 
 // 获取VIP基础配置

@@ -1165,12 +1165,14 @@ func (c *AgentProfileClient) QueryAgent(_m *AgentProfile) *AgentUserQuery {
 
 // Hooks returns the client hooks.
 func (c *AgentProfileClient) Hooks() []Hook {
-	return c.hooks.AgentProfile
+	hooks := c.hooks.AgentProfile
+	return append(hooks[:len(hooks):len(hooks)], agentprofile.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *AgentProfileClient) Interceptors() []Interceptor {
-	return c.inters.AgentProfile
+	inters := c.inters.AgentProfile
+	return append(inters[:len(inters):len(inters)], agentprofile.Interceptors[:]...)
 }
 
 func (c *AgentProfileClient) mutate(ctx context.Context, m *AgentProfileMutation) (Value, error) {

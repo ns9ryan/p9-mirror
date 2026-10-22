@@ -112,3 +112,16 @@ func (s *Service) UpdateLevels(ctx context.Context, in *agentpb.UpdateAgentLevel
 	}
 	return &agentpb.UpdateAgentLevelsResp{Items: out}, nil
 }
+
+// 获取最大代理层级
+func (s *Service) GetMaxLevel(ctx context.Context) (int64, error) {
+	ctx, _, err := requireOperator(ctx)
+	if err != nil {
+		return 0, err
+	}
+	row, err := s.DB.AgentLevel.Query().Order(agentlevel.ByLevel(sql.OrderDesc())).First(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return row.Level, nil
+}

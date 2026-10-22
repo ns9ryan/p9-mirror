@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"context"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
@@ -10,6 +12,7 @@ import (
 	"entgo.io/ent/schema/index"
 
 	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 )
 
 // AgentProfile 定义代理资料表结构。
@@ -167,6 +170,17 @@ func (AgentProfile) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
+		entmixin.OperatorCodeMixin{},
+	}
+}
+
+// Interceptors 定义代理资料表查询隔离
+func (AgentProfile) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
 	}
 }
 
@@ -177,24 +191,6 @@ func (AgentProfile) Annotations() []schema.Annotation {
 		schema.Comment("agent资料表"),
 		entsql.Annotation{
 			Table: "agent_profile",
-			Checks: map[string]string{
-				"ck_agent_profile_gender":     "gender IN (0, 1, 2)",
-				"ck_agent_profile_birth_date": "birth_date IS NULL OR birth_date <= CURRENT_DATE",
-				"ck_agent_profile_avatar_url": "avatar_url IS NULL OR (BTRIM(avatar_url) <> '' AND avatar_url = BTRIM(avatar_url))",
-				"ck_agent_profile_nickname":   "nickname IS NULL OR (BTRIM(nickname) <> '' AND nickname = BTRIM(nickname))",
-				"ck_agent_profile_realname":   "realname IS NULL OR (BTRIM(realname) <> '' AND realname = BTRIM(realname))",
-				"ck_agent_profile_mobile":     "mobile IS NULL OR (BTRIM(mobile) <> '' AND mobile = BTRIM(mobile))",
-				"ck_agent_profile_email":          "email IS NULL OR (BTRIM(email) <> '' AND email = BTRIM(email))",
-				"ck_agent_profile_id_document_no": "id_document_no IS NULL OR (BTRIM(id_document_no) <> '' AND id_document_no = BTRIM(id_document_no))",
-				"ck_agent_profile_qq":         "qq IS NULL OR (BTRIM(qq) <> '' AND qq = BTRIM(qq))",
-				"ck_agent_profile_line":       "line IS NULL OR (BTRIM(line) <> '' AND line = BTRIM(line))",
-				"ck_agent_profile_wechat":     "wechat IS NULL OR (BTRIM(wechat) <> '' AND wechat = BTRIM(wechat))",
-				"ck_agent_profile_whatsapp":   "whatsapp IS NULL OR (BTRIM(whatsapp) <> '' AND whatsapp = BTRIM(whatsapp))",
-				"ck_agent_profile_telegram":   "telegram IS NULL OR (BTRIM(telegram) <> '' AND telegram = BTRIM(telegram))",
-				"ck_agent_profile_facebook":   "facebook IS NULL OR (BTRIM(facebook) <> '' AND facebook = BTRIM(facebook))",
-				"ck_agent_profile_twitter":    "twitter IS NULL OR (BTRIM(twitter) <> '' AND twitter = BTRIM(twitter))",
-				"ck_agent_profile_zalo":       "zalo IS NULL OR (BTRIM(zalo) <> '' AND zalo = BTRIM(zalo))",
-			},
 		},
 	}
 }

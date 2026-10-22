@@ -75,9 +75,6 @@ func (AgentClosure) Annotations() []schema.Annotation {
 		schema.Comment("代理祖先-子孙闭包，含自己"),
 		entsql.Annotation{
 			Table: "agent_closure",
-			Checks: map[string]string{
-				"ck_agent_closure_depth": "(ancestor_id = descendant_id AND depth = 0) OR (ancestor_id <> descendant_id AND depth > 0)",
-			},
 		},
 	}
 }
