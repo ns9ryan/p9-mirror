@@ -43,4 +43,7 @@ const (
 	AgentApplyAccountUsedByOther   = "agent.applyAccountUsedByOther"
 	AgentApplyMemberCodeExists     = "agent.applyMemberCodeExists"
 	AgentNotFound                  = "agent.notFound"
+
+	MemberConflict         = "member.conflict"
+	MemberRelationNotFound = "member.relationNotFound"
 )
