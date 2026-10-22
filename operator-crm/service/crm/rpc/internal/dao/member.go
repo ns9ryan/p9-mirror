@@ -7,13 +7,15 @@ import (
 	"fmt"
 	"math/big"
 	"strings"
-	"time"
+	
+	"entgo.io/ent/dialect/sql"
 
 	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
+	"oa.98ent.com/p9/operator-crm/ent/member"
 	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 )
@@ -49,7 +51,7 @@ func (d *Member) Create(ctx context.Context, in CreateInput) (*ent.Member, error
 
 		autoLevel, err := tx.MemberAutoLevel.Query().
 			Where(memberautolevel.MinDepositEQ(0), memberautolevel.MinWaterEQ(0)).
-			Order(ent.Asc(memberautolevel.FieldID)).
+			Order(memberautolevel.ByID(sql.OrderAsc())).
 			First(ctx)
 		if err != nil {
 			return err
@@ -126,7 +128,7 @@ func newMemberCode(ctx context.Context, tx *ent.Tx) (string, error) {
 			return "", err
 		}
 		code := fmt.Sprintf("%012d", n.Int64()+100_000_000_000)
-		exists, err := tx.Member.Query().Where(ent.FieldEQ("code", code)).Exist(ctx)
+		exists, err := tx.Member.Query().Where(member.CodeEQ(code)).Exist(ctx)
 		if err != nil {
 			return "", err
 		}
@@ -184,7 +186,3 @@ func OperatorContext(ctx context.Context) (context.Context, string, error) {
 	return ctxdata.WithOperatorCode(ctx, claims.OperatorCode), claims.OperatorCode, nil
 }
 
-// CreatedAtMillis 将创建时间转换为 API 使用的 Unix 毫秒时间戳。
-func CreatedAtMillis(t time.Time) int64 {
-	return t.UnixMilli()
-}
