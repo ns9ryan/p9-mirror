@@ -39,7 +39,9 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "AgentApplyReview", Title: "menu.route.agentApplyReview", HideMenu: 1, MenuType: menuTypeButton, Permission: "agent:apply:review", ParentName: "AgentApply", Sort: 251},
 		},
 		Apis: []*coreclient.CreateApiReq{
-			{Path: "/agent/list", Method: http.MethodPost, Description: "api.agentList", ApiGroup: "api.group.agent", ServiceName: serviceName},
+			{Path: "/member/create", Method: http.MethodPost, Description: "api.memberCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/create/options", Method: http.MethodGet, Description: "api.memberCreateOptions", ApiGroup: "api.group.member", ServiceName: serviceName},
+						{Path: "/agent/list", Method: http.MethodPost, Description: "api.agentList", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/create", Method: http.MethodPost, Description: "api.agentCreate", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/search", Method: http.MethodPost, Description: "api.agentSearch", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/operator/list", Method: http.MethodGet, Description: "api.agentOperatorList", ApiGroup: "api.group.agent", ServiceName: serviceName},
