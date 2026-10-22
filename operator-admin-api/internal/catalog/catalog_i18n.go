@@ -63,8 +63,11 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 		)
 	}
 	add("api.group.agent", "代理管理", "代理管理", "Agents")
+	add("api.group.member", "会员管理", "會員管理", "Members")
 
 	add("api.agentList", "代理列表", "代理列表", "Agent list")
+	add("api.memberCreate", "创建会员", "創建會員", "Create member")
+	add("api.memberCreateOptions", "获取会员创建选项", "獲取會員創建選項", "Get member creation options")
 	add("api.agentCreate", "分站添加代理", "分站添加代理", "Add operator agent")
 	add("api.agentSearch", "搜索代理", "搜索代理", "Search agents")
 	add("api.agentOperatorList", "分站代理分组列表", "分站代理分組列表", "Operator agent groups")
@@ -155,5 +158,7 @@ func errorI18n(i18nCode string) []*coreclient.I18NItem {
 	add("agent.applyPendingExists", "该账号已有待审核申请", "該賬號已有待審核申請", "Pending apply already exists")
 	add("agent.applyMemberCodeExists", "该会员已申请过代理", "該會員已申請過代理", "Member already applied")
 	add("agent.notFound", "代理不存在", "代理不存在", "Agent not found")
+	add("member.conflict", "会员账号或唯一标识已存在", "會員賬號或唯一標識已存在", "Member account or unique identifier already exists")
+	add("member.relationNotFound", "所属代理或默认等级不存在", "所屬代理或默認等級不存在", "Agent or default level not found")
 	return out
 }
