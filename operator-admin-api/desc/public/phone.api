@@ -1,0 +1,29 @@
+syntax = "v1"
+
+info (
+	title:   "phone calling codes api"
+	desc:    "手机区号"
+	author:  "p9"
+	version: "v1"
+)
+
+type PhoneCallingCodeItem {
+	// Region | ISO 3166-1 alpha-2
+	Region string `json:"region"`
+	// Code | 国际区号，不含加号
+	Code string `json:"code"`
+}
+
+type ListPhoneCallingCodesResp {
+	Items []PhoneCallingCodeItem `json:"items"`
+}
+
+@server (
+	group:      public/phone
+	middleware: Jwt
+)
+service operator_admin_api {
+	@doc "手机区号列表"
+	@handler listPhoneCallingCodes
+	get /phone-calling-codes returns (ListPhoneCallingCodesResp)
+}

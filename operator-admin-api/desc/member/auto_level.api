@@ -1,0 +1,67 @@
+syntax = "v1"
+
+import "../common.api"
+
+type (
+	// 会员自动层级信息
+	MemberAutoLevelInfo {
+		// 层级ID
+		Id int64 `json:"id"`
+		// 层级名称
+		Name string `json:"name"`
+		// 最低累计存款金额
+		MinDeposit int64 `json:"min_deposit"`
+		// 最低累计洗码量
+		MinWater int64 `json:"min_water"`
+		// 当前会员数
+		CurrentMemberCount int64 `json:"current_member_count"`
+		// 创建时间, Unix毫秒时间戳
+		CreatedAt int64 `json:"created_at"`
+		// 更新时间, Unix毫秒时间戳
+		UpdatedAt int64 `json:"updated_at"`
+	}
+	// 自动层级列表请求
+	ListMemberAutoLevelsRequest {
+		// 分页参数
+		PageRequest
+		// 层级名称, 模糊查询
+		Name string `form:"name,optional" validate:"omitempty,max=100"`
+	}
+	// 自动层级列表响应
+	ListMemberAutoLevelsResponse {
+		// 数据总数
+		Total int64 `json:"total"`
+		// 自动层级列表
+		List []MemberAutoLevelInfo `json:"list"`
+	}
+	// 创建自动层级请求
+	CreateMemberAutoLevelRequest {
+		// 层级名称
+		Name string `json:"name" validate:"required,max=100"`
+		// 最低累计存款金额
+		MinDeposit int64 `json:"min_deposit" validate:"gte=0"`
+		// 最低累计洗码量
+		MinWater int64 `json:"min_water" validate:"gte=0"`
+	}
+	// 创建自动层级响应
+	CreateMemberAutoLevelResponse {
+		// 新建层级ID
+		Id int64 `json:"id"`
+	}
+)
+
+@server (
+	group:      member/auto_level
+	prefix:     /member/auto-level
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	// 获取自动层级列表
+	@handler List
+	get /list (ListMemberAutoLevelsRequest) returns (ListMemberAutoLevelsResponse)
+
+	// 创建自动层级
+	@handler Create
+	post /create (CreateMemberAutoLevelRequest) returns (CreateMemberAutoLevelResponse)
+}
+

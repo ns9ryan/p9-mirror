@@ -47,8 +47,11 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	add("menu.route.agentWithdrawPasswordReset", "重置提现密码", "重置提現密碼", "Reset withdraw password")
 	add("menu.route.agentShareRateUpdate", "修改占成", "修改佔成", "Update share rate")
 	add("menu.route.agentPayoutUpdate", "修改出款限制", "修改出款限制", "Update payout restriction")
+	add("menu.route.agentStatusUpdate", "修改代理状态", "修改代理狀態", "Update agent status")
 	add("menu.route.agentRemarkUpdate", "修改代理备注", "修改代理備註", "Update agent remark")
 	add("menu.route.agentProfileUpdate", "修改代理资料", "修改代理資料", "Update agent profile")
+	add("menu.route.agentLoginLog", "代理日志", "代理日誌", "Agent login logs")
+	add("menu.route.agentLoginAssociation", "关联检索", "關聯檢索", "Login associations")
 	return out
 }
 
@@ -83,8 +86,11 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 	add("api.agentWithdrawPasswordReset", "重置提现密码", "重置提現密碼", "Reset withdraw password")
 	add("api.agentShareRateUpdate", "修改占成", "修改佔成", "Update share rate")
 	add("api.agentPayoutUpdate", "修改出款限制", "修改出款限制", "Update payout restriction")
+	add("api.agentStatusUpdate", "修改代理状态", "修改代理狀態", "Update agent status")
 	add("api.agentRemarkUpdate", "修改代理备注", "修改代理備註", "Update agent remark")
 	add("api.agentProfileUpdate", "修改代理资料", "修改代理資料", "Update agent profile")
+	add("api.agentLoginLogList", "代理登录日志列表", "代理登錄日誌列表", "Agent login log list")
+	add("api.agentLoginAssociations", "关联检索登录日志", "關聯檢索登錄日誌", "Login association search")
 	return out
 }
 
@@ -98,7 +104,17 @@ func frontI18n(i18nCode string) []*coreclient.I18NItem {
 			&coreclient.I18NItem{I18NCode: i18nCode, I18NGroup: i18n.GroupFront, TransKey: key, Lang: i18n.LangEN, Value: en},
 		)
 	}
-	add("common.column.operations", "操作", "操作", "Operations")
+	add("agent.loginType.1", "登录", "登錄", "Login")
+	add("agent.loginType.2", "注册", "註冊", "Register")
+	add("agent.deviceType.1", "PC网页", "PC網頁", "PC Web")
+	add("agent.deviceType.2", "H5", "H5", "H5")
+	add("agent.deviceType.3", "Android", "Android", "Android")
+	add("agent.deviceType.4", "iOS", "iOS", "iOS")
+	add("agent.deviceType.5", "PC客户端", "PC客戶端", "PC Client")
+	add("agent.loginResult.1", "成功", "成功", "Success")
+	add("agent.loginResult.2", "密码无效", "密碼無效", "Invalid password")
+	add("agent.loginResult.3", "账号停用", "帳號停用", "Account disabled")
+	add("agent.loginResult.4", "账号不存在", "帳號不存在", "Account not found")
 	return out
 }
 
@@ -123,6 +139,7 @@ func errorI18n(i18nCode string) []*coreclient.I18NItem {
 	add("common.timeout", "请求超时", "請求超時", "Request timeout")
 	add("common.serviceUnavailable", "服务不可用", "服務不可用", "Service unavailable")
 	add("common.invalidParam", "参数无效", "參數無效", "Invalid parameter")
+	add("common.invalidPhone", "手机号无效", "手機號無效", "Invalid phone number")
 	add("auth.ipMismatch", "登录 IP 已变化，请重新登录", "登錄 IP 已變化，請重新登錄", "Login IP has changed, please login again")
 	add("auth.ipNotAllowed", "当前 IP 不在白名单内", "當前 IP 不在白名單內", "Current IP is not in the whitelist")
 	add("auth.invalidToken", "登录凭证无效", "登錄憑證無效", "Invalid login credentials")
@@ -142,12 +159,12 @@ func errorI18n(i18nCode string) []*coreclient.I18NItem {
 	add("agent.parentLevelInvalid", "上级代理层级无效", "上級代理層級無效", "Parent agent level invalid")
 	add("agent.parentDisabled", "上级代理已停用", "上級代理已停用", "Parent agent disabled")
 	add("agent.parentRequired", "必须指定上级代理", "必須指定上級代理", "Parent agent required")
-	add("agent.levelExceeded", "代理层级超限", "代理層級超限", "Agent level exceeded")
+	add("agent.levelExceeded", "代理层级超限，无法再添加下级", "代理層級超限，無法再添加下級", "Agent level exceeded, cannot add sub-agent")
 	add("agent.shareRateExceedParent", "占成不能超过上级", "佔成不能超過上級", "Share rate exceeds parent")
 	add("agent.shareRateExceedMax", "占成不能超过上限", "佔成不能超過上限", "Share rate exceeds max")
 	add("agent.shareRateBelowChild", "占成不能低于下级", "佔成不能低於下級", "Share rate below child")
 	add("agent.fieldsRequired", "代理字段不能为空", "代理字段不能為空", "Agent fields required")
-	add("agent.conflict", "代理账号冲突", "代理賬號衝突", "Agent conflict")
+	add("agent.conflict", "代理账号已存在", "代理賬號已存在", "Agent account already exists")
 	add("agent.lineCodeInvalid", "代理线路编码无效", "代理線路編碼無效", "Agent line code invalid")
 	add("agent.applyNotFound", "代理申请不存在", "代理申請不存在", "Agent apply not found")
 	add("agent.applyNotPending", "申请不在待审核状态", "申請不在待審核狀態", "Agent apply is not pending")

@@ -5,7 +5,7 @@ type PingResponse {
 }
 
 @server (
-	group: ping
+	group: public/ping
 )
 service operator_admin_api {
 	@handler Ping

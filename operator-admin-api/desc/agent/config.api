@@ -65,3 +65,4 @@ service operator_admin_api {
 	@handler getAgentInitStatus
 	get /agent/init/status returns (AgentInitStatusResp)
 }
+

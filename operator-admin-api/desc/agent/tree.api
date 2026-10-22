@@ -47,3 +47,4 @@ service operator_admin_api {
 	@handler treeNodeAncestorAgents
 	get /agent/tree/ancestors (TreeNodeAncestorAgentsReq) returns ([]AgentSearchItem)
 }
+

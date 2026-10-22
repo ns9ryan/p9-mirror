@@ -106,6 +106,38 @@ type AgentListItem struct {
 	LastLoginAt       int64  `json:"last_login_at"`
 }
 
+type AgentLoginAssociationItem struct {
+	Id                   int64  `json:"id"`
+	AgentId              int64  `json:"agent_id"`
+	Account              string `json:"account"`
+	LoginIp              string `json:"login_ip"`
+	LoginLocation        string `json:"login_location"`
+	Udid                 string `json:"udid"`
+	LoginDevice          string `json:"login_device"`
+	DeviceType           int32  `json:"device_type"`
+	DeviceTypeLabel      string `json:"device_type_label"`
+	LoginAt              int64  `json:"login_at"`
+	SameIpAgentCount     int64  `json:"same_ip_agent_count"`
+	SameDeviceAgentCount int64  `json:"same_device_agent_count"`
+}
+
+type AgentLoginLogItem struct {
+	Id              int64  `json:"id"`
+	AgentId         int64  `json:"agent_id"`
+	Account         string `json:"account"`
+	LoginType       int32  `json:"login_type"`
+	LoginTypeLabel  string `json:"login_type_label"`
+	LoginIp         string `json:"login_ip"`
+	LoginLocation   string `json:"login_location"`
+	Udid            string `json:"udid"`
+	LoginDevice     string `json:"login_device"`
+	DeviceType      int32  `json:"device_type"`
+	DeviceTypeLabel string `json:"device_type_label"`
+	LoginAt         int64  `json:"login_at"`
+	Result          int32  `json:"result"`
+	ResultLabel     string `json:"result_label"`
+}
+
 type AgentProfile struct {
 	AgentId           int64  `json:"agent_id"`
 	Remark            string `json:"remark"`
@@ -145,21 +177,18 @@ type AgentSearchItem struct {
 	ShareRate  int32  `json:"share_rate"`
 }
 
-type BaseMsgResp struct {
-	Result string `json:"result"`
+type CreateMemberAutoLevelRequest struct {
+	Name       string `json:"name" validate:"required,max=100"`
+	MinDeposit int64  `json:"min_deposit" validate:"gte=0"`
+	MinWater   int64  `json:"min_water" validate:"gte=0"`
+}
+
+type CreateMemberAutoLevelResponse struct {
+	Id int64 `json:"id"`
 }
 
 type GetAgentProfileReq struct {
 	AgentId int64 `form:"agent_id"`
-}
-
-type IDQuery struct {
-	Id int64 `form:"id" validate:"required,gt=0"`
-}
-
-type IDsReq struct {
-	Id  int64   `json:"id,optional"`
-	Ids []int64 `json:"ids,optional"`
 }
 
 type LineDefaultAgent struct {
@@ -196,6 +225,38 @@ type ListAgentLevelsResp struct {
 	Items []AgentLevelItem `json:"items"`
 }
 
+type ListAgentLoginAssociationsReq struct {
+	Page        int32  `json:"page,optional"`
+	PageSize    int32  `json:"page_size,optional"`
+	TimeStart   int64  `json:"time_start,optional"`
+	TimeEnd     int64  `json:"time_end,optional"`
+	AgentId     int64  `json:"agent_id,optional"`
+	DeviceType  int32  `json:"device_type,optional"`
+	KeywordType int32  `json:"keyword_type,optional"`
+	Keyword     string `json:"keyword,optional"`
+}
+
+type ListAgentLoginAssociationsResp struct {
+	Items []AgentLoginAssociationItem `json:"items"`
+	Total int64                       `json:"total"`
+}
+
+type ListAgentLoginLogsReq struct {
+	Page        int32  `json:"page,optional"`
+	PageSize    int32  `json:"page_size,optional"`
+	TimeStart   int64  `json:"time_start,optional"`
+	TimeEnd     int64  `json:"time_end,optional"`
+	LoginType   int32  `json:"login_type,optional"`
+	DeviceType  int32  `json:"device_type,optional"`
+	KeywordType int32  `json:"keyword_type,optional"`
+	Keyword     string `json:"keyword,optional"`
+}
+
+type ListAgentLoginLogsResp struct {
+	Items []AgentLoginLogItem `json:"items"`
+	Total int64               `json:"total"`
+}
+
 type ListAgentsReq struct {
 	Page             int32  `json:"page,optional"`
 	PageSize         int32  `json:"page_size,optional"`
@@ -218,6 +279,16 @@ type ListAgentsResp struct {
 	Total int64           `json:"total"`
 }
 
+type ListMemberAutoLevelsRequest struct {
+	PageRequest
+	Name string `form:"name,optional" validate:"omitempty,max=100"`
+}
+
+type ListMemberAutoLevelsResponse struct {
+	Total int64                 `json:"total"`
+	List  []MemberAutoLevelInfo `json:"list"`
+}
+
 type ListOperatorAgentsReq struct {
 	Level int32 `form:"level"`
 }
@@ -226,14 +297,24 @@ type ListOperatorAgentsResp struct {
 	Groups []OperatorAgentLineGroup `json:"groups"`
 }
 
+type MemberAutoLevelInfo struct {
+	Id                 int64  `json:"id"`
+	Name               string `json:"name"`
+	MinDeposit         int64  `json:"min_deposit"`
+	MinWater           int64  `json:"min_water"`
+	CurrentMemberCount int64  `json:"current_member_count"`
+	CreatedAt          int64  `json:"created_at"`
+	UpdatedAt          int64  `json:"updated_at"`
+}
+
 type OperatorAgentLineGroup struct {
 	LineCode string            `json:"line_code"`
 	Agents   []AgentSearchItem `json:"agents"`
 }
 
-type PageReq struct {
-	Page     int32 `json:"page,optional"`
-	PageSize int32 `json:"page_size,optional"`
+type PageRequest struct {
+	Page     int64 `form:"page" validate:"required,gte=1"`
+	PageSize int64 `form:"page_size" validate:"required,gte=1,lte=100"`
 }
 
 type PingResponse struct {
@@ -338,6 +419,11 @@ type UpdateAgentRemarkReq struct {
 type UpdateAgentShareRateReq struct {
 	AgentId   int64 `json:"agent_id"`
 	ShareRate int32 `json:"share_rate"`
+}
+
+type UpdateAgentStatusReq struct {
+	AgentId int64 `json:"agent_id"`
+	Status  int32 `json:"status"`
 }
 
 type UpdateWithdrawPasswordReq struct {

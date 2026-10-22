@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/common/utils"
 	agentconv "oa.98ent.com/p9/operator-admin-api/internal/logic/agent"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
@@ -31,14 +31,22 @@ func (l *AddOperatorAgentLogic) AddOperatorAgent(req *types.AddOperatorAgentReq)
 	if req == nil {
 		req = &types.AddOperatorAgentReq{}
 	}
-	// 设置code, promo_code
-	uniCode := ctxdata.OperatorCodeFromCtx(l.ctx) + "_" + strings.ToUpper(req.Agent.Account)
-	if req.Agent.Code == "" {
-		req.Agent.Code = uniCode
+	// 设置agent code
+	agentCode, err := utils.GenLongID()
+	if err != nil {
+		l.Logger.Errorw("GenLongID error", logx.Field("error", err))
+		return nil, err
 	}
-	if req.Agent.PromoCode == "" {
-		req.Agent.PromoCode = uniCode
+	// 设置promo code
+	promoCode, err := utils.GenShortID()
+	if err != nil {
+		l.Logger.Errorw("GenShortID error", logx.Field("error", err))
+		return nil, err
 	}
+	// 设置agent code和promo code
+	req.Agent.Code = strings.ToUpper(agentCode)
+	req.Agent.PromoCode = strings.ToUpper(promoCode)
+
 	rpcResp, err := l.svcCtx.AgentRpc.AddOperatorAgent(l.ctx, &agentpb.AddOperatorAgentReq{
 		Agent:    agentconv.CreateFieldsToPB(&req.Agent),
 		IsInit:   req.IsInit,

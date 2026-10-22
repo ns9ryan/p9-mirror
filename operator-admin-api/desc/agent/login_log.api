@@ -1,0 +1,87 @@
+syntax = "v1"
+
+info (
+	title:   "agent login log api"
+	desc:    "代理登录日志"
+	author:  "p9"
+	version: "v1"
+)
+
+type ListAgentLoginLogsReq {
+	Page        int32  `json:"page,optional"`
+	PageSize    int32  `json:"page_size,optional"`
+	TimeStart   int64  `json:"time_start,optional"`
+	TimeEnd     int64  `json:"time_end,optional"`
+	LoginType   int32  `json:"login_type,optional"`
+	DeviceType  int32  `json:"device_type,optional"`
+	KeywordType int32  `json:"keyword_type,optional"`
+	Keyword     string `json:"keyword,optional"`
+}
+
+type AgentLoginLogItem {
+	Id              int64  `json:"id"`
+	AgentId         int64  `json:"agent_id"`
+	Account         string `json:"account"`
+	LoginType       int32  `json:"login_type"`
+	LoginTypeLabel  string `json:"login_type_label"`
+	LoginIp         string `json:"login_ip"`
+	LoginLocation   string `json:"login_location"`
+	Udid            string `json:"udid"`
+	LoginDevice     string `json:"login_device"`
+	DeviceType      int32  `json:"device_type"`
+	DeviceTypeLabel string `json:"device_type_label"`
+	LoginAt         int64  `json:"login_at"`
+	Result          int32  `json:"result"`
+	ResultLabel     string `json:"result_label"`
+}
+
+type ListAgentLoginLogsResp {
+	Items []AgentLoginLogItem `json:"items"`
+	Total int64               `json:"total"`
+}
+
+type ListAgentLoginAssociationsReq {
+	Page        int32  `json:"page,optional"`
+	PageSize    int32  `json:"page_size,optional"`
+	TimeStart   int64  `json:"time_start,optional"`
+	TimeEnd     int64  `json:"time_end,optional"`
+	AgentId     int64  `json:"agent_id,optional"`
+	DeviceType  int32  `json:"device_type,optional"`
+	KeywordType int32  `json:"keyword_type,optional"`
+	Keyword     string `json:"keyword,optional"`
+}
+
+type AgentLoginAssociationItem {
+	Id                   int64  `json:"id"`
+	AgentId              int64  `json:"agent_id"`
+	Account              string `json:"account"`
+	LoginIp              string `json:"login_ip"`
+	LoginLocation        string `json:"login_location"`
+	Udid                 string `json:"udid"`
+	LoginDevice          string `json:"login_device"`
+	DeviceType           int32  `json:"device_type"`
+	DeviceTypeLabel      string `json:"device_type_label"`
+	LoginAt              int64  `json:"login_at"`
+	SameIpAgentCount     int64  `json:"same_ip_agent_count"`
+	SameDeviceAgentCount int64  `json:"same_device_agent_count"`
+}
+
+type ListAgentLoginAssociationsResp {
+	Items []AgentLoginAssociationItem `json:"items"`
+	Total int64                       `json:"total"`
+}
+
+@server (
+	group:      agent/loginlog
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "代理登录日志列表"
+	@handler listAgentLoginLogs
+	post /agent/login-log/list (ListAgentLoginLogsReq) returns (ListAgentLoginLogsResp)
+
+	@doc "关联检索登录日志"
+	@handler listAgentLoginAssociations
+	post /agent/login-log/associations (ListAgentLoginAssociationsReq) returns (ListAgentLoginAssociationsResp)
+}
+

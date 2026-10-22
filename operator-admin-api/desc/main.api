@@ -7,12 +7,20 @@ info (
 	version: "1.0.0"
 )
 
-import "base.api"
-import "./public/ping.api"
-import "./agent/common.api"
-import "./agent/level.api"
-import "./agent/config.api"
-import "./agent/manage.api"
-import "./agent/apply.api"
-import "./agent/profile.api"
-import "./agent/tree.api"
+// 公共接口
+import "public/ping.api"
+
+// 代理管理
+import (
+	"agent/common.api"
+	"agent/level.api"
+	"agent/config.api"
+	"agent/manage.api"
+	"agent/apply.api"
+	"agent/profile.api"
+	"agent/tree.api"
+	"agent/login_log.api"
+)
+
+// 会员管理
+import "member/auto_level.api"

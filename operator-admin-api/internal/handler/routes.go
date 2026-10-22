@@ -9,10 +9,12 @@ import (
 	agentapply "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/apply"
 	agentconfig "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/config"
 	agentlevel "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/level"
+	agentloginlog "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/loginlog"
 	agentmanage "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/manage"
 	agentprofile "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/profile"
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
-	ping "oa.98ent.com/p9/operator-admin-api/internal/handler/ping"
+	memberauto_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/auto_level"
+	publicping "oa.98ent.com/p9/operator-admin-api/internal/handler/public/ping"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -96,6 +98,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
 			[]rest.Route{
 				{
+					// 关联检索登录日志
+					Method:  http.MethodPost,
+					Path:    "/agent/login-log/associations",
+					Handler: agentloginlog.ListAgentLoginAssociationsHandler(serverCtx),
+				},
+				{
+					// 代理登录日志列表
+					Method:  http.MethodPost,
+					Path:    "/agent/login-log/list",
+					Handler: agentloginlog.ListAgentLoginLogsHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
 					// 分站添加代理
 					Method:  http.MethodPost,
 					Path:    "/agent/create",
@@ -164,6 +186,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: agentprofile.UpdateAgentShareRateHandler(serverCtx),
 				},
 				{
+					// 修改代理状态
+					Method:  http.MethodPost,
+					Path:    "/agent/status/update",
+					Handler: agentprofile.UpdateAgentStatusHandler(serverCtx),
+				},
+				{
 					// 修改提款密码
 					Method:  http.MethodPost,
 					Path:    "/agent/withdraw-password/reset",
@@ -194,11 +222,30 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: memberauto_level.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/list",
+					Handler: memberauto_level.ListHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/member/auto-level"),
+	)
+
+	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
 				Path:    "/ping",
-				Handler: ping.PingHandler(serverCtx),
+				Handler: publicping.PingHandler(serverCtx),
 			},
 		},
 	)

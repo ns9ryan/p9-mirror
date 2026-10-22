@@ -64,6 +64,12 @@ type UpdateAgentPayoutRestrictedReq {
 	PayoutRestricted int32 `json:"payout_restricted"`
 }
 
+type UpdateAgentStatusReq {
+	AgentId int64 `json:"agent_id"`
+	// 1正常 2冻结 3禁用
+	Status int32 `json:"status"`
+}
+
 type UpdateAgentRemarkReq {
 	AgentId int64  `json:"agent_id"`
 	Remark  string `json:"remark,optional"`
@@ -113,6 +119,10 @@ service operator_admin_api {
 	@handler updateAgentPayoutRestricted
 	post /agent/payout-restricted/update (UpdateAgentPayoutRestrictedReq) returns (AgentEmpty)
 
+	@doc "修改代理状态"
+	@handler updateAgentStatus
+	post /agent/status/update (UpdateAgentStatusReq) returns (AgentEmpty)
+
 	@doc "修改代理备注"
 	@handler updateAgentRemark
 	post /agent/remark/update (UpdateAgentRemarkReq) returns (AgentEmpty)
@@ -121,3 +131,4 @@ service operator_admin_api {
 	@handler updateAgentProfile
 	post /agent/profile/update (UpdateAgentProfileReq) returns (AgentProfile)
 }
+

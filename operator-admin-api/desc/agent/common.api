@@ -65,28 +65,29 @@ type AgentSearchItem {
 
 // Agent list item | 代理列表项
 type AgentListItem {
-	Id                 int64  `json:"id"`
-	Account            string `json:"account"`
-	Level              int32  `json:"level"`
-	LevelAlias         string `json:"level_alias"`
-	ParentId           int64  `json:"parent_id"`
-	ParentAccount      string `json:"parent_account"`
-	TopId              int64  `json:"top_id"`
-	TopAccount         string `json:"top_account"`
-	RegisterSource     int32  `json:"register_source"`
-	DirectMemberCount  int64  `json:"direct_member_count"`
-	DirectAgentCount   int64  `json:"direct_agent_count"`
-	TotalMemberCount   int64  `json:"total_member_count"`
-	TotalAgentCount    int64  `json:"total_agent_count"`
-	ShareRate          int32  `json:"share_rate"`
-	WalletBalance      int64  `json:"wallet_balance"`
-	TotalCommission    int64  `json:"total_commission"`
-	UnpaidCommission   int64  `json:"unpaid_commission"`
-	Status             int32  `json:"status"`
-	PayoutRestricted   int32  `json:"payout_restricted"`
-	Remark             string `json:"remark"`
-	PromoLink          string `json:"promo_link"`
-	VisitUv            int64  `json:"visit_uv"`
-	RegisterAt         int64  `json:"register_at"`
-	LastLoginAt        int64  `json:"last_login_at"`
+	Id                int64  `json:"id"`
+	Account           string `json:"account"`
+	Level             int32  `json:"level"`
+	LevelAlias        string `json:"level_alias"`
+	ParentId          int64  `json:"parent_id"`
+	ParentAccount     string `json:"parent_account"`
+	TopId             int64  `json:"top_id"`
+	TopAccount        string `json:"top_account"`
+	RegisterSource    int32  `json:"register_source"`
+	DirectMemberCount int64  `json:"direct_member_count"`
+	DirectAgentCount  int64  `json:"direct_agent_count"`
+	TotalMemberCount  int64  `json:"total_member_count"`
+	TotalAgentCount   int64  `json:"total_agent_count"`
+	ShareRate         int32  `json:"share_rate"`
+	WalletBalance     int64  `json:"wallet_balance"`
+	TotalCommission   int64  `json:"total_commission"`
+	UnpaidCommission  int64  `json:"unpaid_commission"`
+	Status            int32  `json:"status"`
+	PayoutRestricted  int32  `json:"payout_restricted"`
+	Remark            string `json:"remark"`
+	PromoLink         string `json:"promo_link"`
+	VisitUv           int64  `json:"visit_uv"`
+	RegisterAt        int64  `json:"register_at"`
+	LastLoginAt       int64  `json:"last_login_at"`
 }
+

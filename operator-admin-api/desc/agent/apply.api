@@ -64,3 +64,4 @@ service operator_admin_api {
 	@handler reviewAgentApply
 	post /agent/apply/review (ReviewAgentApplyReq) returns (ReviewAgentApplyResp)
 }
+

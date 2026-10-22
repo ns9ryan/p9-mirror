@@ -34,3 +34,4 @@ service operator_admin_api {
 	@handler updateAgentLevels
 	post /agent/level/update (UpdateAgentLevelsReq) returns (UpdateAgentLevelsResp)
 }
+
