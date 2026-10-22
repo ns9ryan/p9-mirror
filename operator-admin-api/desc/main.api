@@ -9,6 +9,7 @@ info (
 
 import "base.api"
 import "./public/ping.api"
+import "./member.api"
 import "./agent/common.api"
 import "./agent/level.api"
 import "./agent/config.api"
