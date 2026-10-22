@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package crm_member;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb";
+
+// 创建会员请求
+message CreateMemberRequest {
+  string account = 1;
+  string password = 2;
+  string nickname = 3;
+  int64 agent_id = 4;
+  string remark = 5;
+  string avatar_url = 6;
+  string avatar_frame_url = 7;
+}
+
+// 创建会员响应
+message CreateMemberResponse {
+  int64 id = 1;
+  string code = 2;
+  int64 created_at = 3; // Unix毫秒时间戳
+}
+
+// 获取会员创建选项请求
+message GetMemberCreateOptionsRequest {}
+
+// 会员头像或头像框选项
+message MemberImageOption {
+  string key = 1;
+  string name = 2;
+  string url = 3;
+}
+
+// 获取会员创建选项响应
+message GetMemberCreateOptionsResponse {
+  repeated MemberImageOption avatars = 1;
+  repeated MemberImageOption avatar_frames = 2;
+}
