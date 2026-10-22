@@ -10,6 +10,7 @@ import (
 	authserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/authservice"
 	memberautolevelserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberautolevelservice"
 	pingserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/pingservice"
+	vipserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/vipservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
 
@@ -30,6 +31,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+		// 健康检查服务
 		crmrpc.RegisterPingServiceServer(grpcServer, pingserviceServer.NewPingServiceServer(ctx))
 		crmrpc.RegisterAuthServiceServer(grpcServer, authserviceServer.NewAuthServiceServer(ctx))
 		crmrpc.RegisterAgentServiceServer(grpcServer, agentserviceServer.NewAgentServiceServer(ctx))
@@ -37,6 +39,10 @@ func main() {
 		// 会员自动层级服务
 		crmrpc.RegisterMemberAutoLevelServiceServer(grpcServer, memberautolevelserviceServer.NewMemberAutoLevelServiceServer(ctx))
 
+		// VIP管理服务
+		crmrpc.RegisterVipServiceServer(grpcServer, vipserviceServer.NewVipServiceServer(ctx))
+
+		// 开发和测试环境额外开启服务反射
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
