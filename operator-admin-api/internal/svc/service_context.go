@@ -15,6 +15,7 @@ import (
 	"oa.98ent.com/p9/operator-admin-api/internal/locales"
 	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberservice"
 )
 
 type ServiceContext struct {
@@ -23,6 +24,7 @@ type ServiceContext struct {
 	OperatorCoreRpc coreclient.Core
 	OperatorBaseRpc operatorservice.OperatorService
 	AgentRpc        agentservice.AgentService
+	MemberRpc       memberservice.MemberService
 	Jwt             rest.Middleware // Core JWT
 	Authority       rest.Middleware // Casbin 权限
 	ActionLog       rest.Middleware // 操作日志
@@ -51,6 +53,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// 创建后台 CRM Agent RPC 客户端
 	crmCli := zrpc.MustNewClient(c.CrmRpc)
 	agentRpc := agentservice.NewAgentService(crmCli)
+	memberRpc := memberservice.NewMemberService(crmCli)
 
 	return &ServiceContext{
 		Config:          c,
@@ -58,6 +61,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OperatorCoreRpc: operatorCoreRpc,
 		OperatorBaseRpc: operatorBaseRpc,
 		AgentRpc:        agentRpc,
+		MemberRpc:       memberRpc,
 		Jwt:             middleware.JWT(authAdapter),
 		Authority:       middleware.Authority(authAdapter),
 		ActionLog:       middleware.ActionLog(coreadapt.ActionRecorder(operatorCoreRpc)),
