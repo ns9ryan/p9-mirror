@@ -1,0 +1,49 @@
+syntax = "v1"
+
+info (
+	title:   "Member API"
+	desc:    "会员管理"
+	author:  "p9"
+	version: "1.0.0"
+)
+
+type CreateMemberReq {
+	Account        string `json:"account"`
+	Password       string `json:"password"`
+	Nickname       string `json:"nickname,optional"`
+	AgentId        int64  `json:"agent_id"`
+	Remark         string `json:"remark,optional"`
+	AvatarUrl      string `json:"avatar_url,optional"`
+	AvatarFrameUrl string `json:"avatar_frame_url,optional"`
+}
+
+type CreateMemberResp {
+	Id        int64  `json:"id"`
+	Code      string `json:"code"`
+	CreatedAt int64  `json:"created_at"`
+}
+
+type MemberImageOption {
+	Key  string `json:"key"`
+	Name string `json:"name"`
+	Url  string `json:"url"`
+}
+
+type GetMemberCreateOptionsResp {
+	Avatars      []MemberImageOption `json:"avatars"`
+	AvatarFrames []MemberImageOption `json:"avatar_frames"`
+}
+
+@server (
+	group:      member
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "创建会员"
+	@handler createMember
+	post /member/create (CreateMemberReq) returns (CreateMemberResp)
+
+	@doc "获取创建会员的头像和头像框选项"
+	@handler getMemberCreateOptions
+	get /member/create/options returns (GetMemberCreateOptionsResp)
+}
