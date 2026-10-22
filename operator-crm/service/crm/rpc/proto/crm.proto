@@ -8,6 +8,7 @@ import "types/crm_auth.proto";
 import "types/crm_ping.proto";
 import "types/crm_agent.proto";
 import "types/crm_member_auto_level.proto";
+import "types/crm_member.proto";
 import "types/crm_vip_config.proto";
 import "types/crm_vip_level.proto";
 import "types/crm_vip_icon_group.proto";
@@ -140,6 +141,16 @@ service VipService {
 
   // 恢复默认VIP图标
   rpc ResetIconGroup(crm_vip_icon_group.ResetVipIconGroupRequest) returns (crm_vip_icon_group.ResetVipIconGroupResponse);
+}
+
+
+// 会员管理服务
+service MemberService {
+  // group: member
+  rpc CreateMember(crm_member.CreateMemberRequest) returns (crm_member.CreateMemberResponse);
+
+  // group: member
+  rpc GetCreateOptions(crm_member.GetMemberCreateOptionsRequest) returns (crm_member.GetMemberCreateOptionsResponse);
 }
 
 // TODO: VIP等级变更记录列表、详情，待会员等级变更业务完善后实现
