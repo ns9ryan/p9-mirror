@@ -9,6 +9,7 @@ import (
 	agentserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/agentservice"
 	authserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/authservice"
 	memberautolevelserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberautolevelservice"
+	memberserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberservice"
 	pingserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/pingservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
@@ -36,6 +37,7 @@ func main() {
 
 		// 会员自动层级服务
 		crmrpc.RegisterMemberAutoLevelServiceServer(grpcServer, memberautolevelserviceServer.NewMemberAutoLevelServiceServer(ctx))
+		crmrpc.RegisterMemberServiceServer(grpcServer, memberserviceServer.NewMemberServiceServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
