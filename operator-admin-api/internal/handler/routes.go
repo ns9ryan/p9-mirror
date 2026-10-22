@@ -12,6 +12,7 @@ import (
 	agentmanage "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/manage"
 	agentprofile "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/profile"
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
+	memberhandler "oa.98ent.com/p9/operator-admin-api/internal/handler/member"
 	ping "oa.98ent.com/p9/operator-admin-api/internal/handler/ping"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 
@@ -202,4 +203,14 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 	)
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{Method: http.MethodPost, Path: "/member/create", Handler: memberhandler.CreateMemberHandler(serverCtx)},
+				{Method: http.MethodGet, Path: "/member/create/options", Handler: memberhandler.GetMemberCreateOptionsHandler(serverCtx)},
+			}...,
+		),
+	)
+
 }
