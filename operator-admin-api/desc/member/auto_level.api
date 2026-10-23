@@ -22,10 +22,10 @@ type (
 	}
 	// 自动层级列表请求
 	ListMemberAutoLevelsRequest {
+        // 层级名称, 模糊查询
+        Name string `form:"name,optional" validate:"omitempty,max=100"`
 		// 分页参数
-		PageRequest PageRequest
-		// 层级名称, 模糊查询
-		Name string `form:"name,optional" validate:"omitempty,max=100"`
+		PageRequest
 	}
 	// 自动层级列表响应
 	ListMemberAutoLevelsResponse {

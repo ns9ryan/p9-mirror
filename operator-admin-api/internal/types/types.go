@@ -281,8 +281,8 @@ type ListAgentsResp struct {
 }
 
 type ListMemberAutoLevelsRequest struct {
-	PageRequest PageRequest
-	Name        string `form:"name,optional" validate:"omitempty,max=100"`
+	Name string `form:"name,optional" validate:"omitempty,max=100"`
+	PageRequest
 }
 
 type ListMemberAutoLevelsResponse struct {

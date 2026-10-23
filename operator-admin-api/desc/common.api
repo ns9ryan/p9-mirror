@@ -1,11 +1,11 @@
 syntax = "v1"
 
 type (
-	// 分页参数
+	// 公共分页请求参数
 	PageRequest {
-		// 页码, 从1开始
+		// 当前页码, 从1开始
 		Page int64 `form:"page" validate:"required,gte=1"`
-		// 每页数量
+		// 分页数量
 		PageSize int64 `form:"page_size" validate:"required,gte=1,lte=100"`
 	}
 )
