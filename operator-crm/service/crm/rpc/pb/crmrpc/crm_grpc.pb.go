@@ -1660,18 +1660,18 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	MemberAutoLevelService_Create_FullMethodName = "/crm.MemberAutoLevelService/Create"
-	MemberAutoLevelService_Update_FullMethodName = "/crm.MemberAutoLevelService/Update"
-	MemberAutoLevelService_List_FullMethodName   = "/crm.MemberAutoLevelService/List"
-	MemberAutoLevelService_Delete_FullMethodName = "/crm.MemberAutoLevelService/Delete"
+	MemberAutoLevel_Create_FullMethodName = "/crm.MemberAutoLevel/Create"
+	MemberAutoLevel_Update_FullMethodName = "/crm.MemberAutoLevel/Update"
+	MemberAutoLevel_List_FullMethodName   = "/crm.MemberAutoLevel/List"
+	MemberAutoLevel_Delete_FullMethodName = "/crm.MemberAutoLevel/Delete"
 )
 
-// MemberAutoLevelServiceClient is the client API for MemberAutoLevelService service.
+// MemberAutoLevelClient is the client API for MemberAutoLevel service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // 会员自动层级服务
-type MemberAutoLevelServiceClient interface {
+type MemberAutoLevelClient interface {
 	// 创建自动层级
 	Create(ctx context.Context, in *memberautolevelpb.CreateMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.CreateMemberAutoLevelResponse, error)
 	// 修改自动层级
@@ -1682,60 +1682,60 @@ type MemberAutoLevelServiceClient interface {
 	Delete(ctx context.Context, in *memberautolevelpb.DeleteMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.DeleteMemberAutoLevelResponse, error)
 }
 
-type memberAutoLevelServiceClient struct {
+type memberAutoLevelClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMemberAutoLevelServiceClient(cc grpc.ClientConnInterface) MemberAutoLevelServiceClient {
-	return &memberAutoLevelServiceClient{cc}
+func NewMemberAutoLevelClient(cc grpc.ClientConnInterface) MemberAutoLevelClient {
+	return &memberAutoLevelClient{cc}
 }
 
-func (c *memberAutoLevelServiceClient) Create(ctx context.Context, in *memberautolevelpb.CreateMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.CreateMemberAutoLevelResponse, error) {
+func (c *memberAutoLevelClient) Create(ctx context.Context, in *memberautolevelpb.CreateMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.CreateMemberAutoLevelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(memberautolevelpb.CreateMemberAutoLevelResponse)
-	err := c.cc.Invoke(ctx, MemberAutoLevelService_Create_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MemberAutoLevel_Create_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *memberAutoLevelServiceClient) Update(ctx context.Context, in *memberautolevelpb.UpdateMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.UpdateMemberAutoLevelResponse, error) {
+func (c *memberAutoLevelClient) Update(ctx context.Context, in *memberautolevelpb.UpdateMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.UpdateMemberAutoLevelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(memberautolevelpb.UpdateMemberAutoLevelResponse)
-	err := c.cc.Invoke(ctx, MemberAutoLevelService_Update_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MemberAutoLevel_Update_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *memberAutoLevelServiceClient) List(ctx context.Context, in *memberautolevelpb.ListMemberAutoLevelsRequest, opts ...grpc.CallOption) (*memberautolevelpb.ListMemberAutoLevelsResponse, error) {
+func (c *memberAutoLevelClient) List(ctx context.Context, in *memberautolevelpb.ListMemberAutoLevelsRequest, opts ...grpc.CallOption) (*memberautolevelpb.ListMemberAutoLevelsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(memberautolevelpb.ListMemberAutoLevelsResponse)
-	err := c.cc.Invoke(ctx, MemberAutoLevelService_List_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MemberAutoLevel_List_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *memberAutoLevelServiceClient) Delete(ctx context.Context, in *memberautolevelpb.DeleteMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.DeleteMemberAutoLevelResponse, error) {
+func (c *memberAutoLevelClient) Delete(ctx context.Context, in *memberautolevelpb.DeleteMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberautolevelpb.DeleteMemberAutoLevelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(memberautolevelpb.DeleteMemberAutoLevelResponse)
-	err := c.cc.Invoke(ctx, MemberAutoLevelService_Delete_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, MemberAutoLevel_Delete_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MemberAutoLevelServiceServer is the server API for MemberAutoLevelService service.
-// All implementations must embed UnimplementedMemberAutoLevelServiceServer
+// MemberAutoLevelServer is the server API for MemberAutoLevel service.
+// All implementations must embed UnimplementedMemberAutoLevelServer
 // for forward compatibility.
 //
 // 会员自动层级服务
-type MemberAutoLevelServiceServer interface {
+type MemberAutoLevelServer interface {
 	// 创建自动层级
 	Create(context.Context, *memberautolevelpb.CreateMemberAutoLevelRequest) (*memberautolevelpb.CreateMemberAutoLevelResponse, error)
 	// 修改自动层级
@@ -1744,144 +1744,143 @@ type MemberAutoLevelServiceServer interface {
 	List(context.Context, *memberautolevelpb.ListMemberAutoLevelsRequest) (*memberautolevelpb.ListMemberAutoLevelsResponse, error)
 	// 删除自动层级
 	Delete(context.Context, *memberautolevelpb.DeleteMemberAutoLevelRequest) (*memberautolevelpb.DeleteMemberAutoLevelResponse, error)
-	mustEmbedUnimplementedMemberAutoLevelServiceServer()
+	mustEmbedUnimplementedMemberAutoLevelServer()
 }
 
-// UnimplementedMemberAutoLevelServiceServer must be embedded to have
+// UnimplementedMemberAutoLevelServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedMemberAutoLevelServiceServer struct{}
+type UnimplementedMemberAutoLevelServer struct{}
 
-func (UnimplementedMemberAutoLevelServiceServer) Create(context.Context, *memberautolevelpb.CreateMemberAutoLevelRequest) (*memberautolevelpb.CreateMemberAutoLevelResponse, error) {
+func (UnimplementedMemberAutoLevelServer) Create(context.Context, *memberautolevelpb.CreateMemberAutoLevelRequest) (*memberautolevelpb.CreateMemberAutoLevelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedMemberAutoLevelServiceServer) Update(context.Context, *memberautolevelpb.UpdateMemberAutoLevelRequest) (*memberautolevelpb.UpdateMemberAutoLevelResponse, error) {
+func (UnimplementedMemberAutoLevelServer) Update(context.Context, *memberautolevelpb.UpdateMemberAutoLevelRequest) (*memberautolevelpb.UpdateMemberAutoLevelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedMemberAutoLevelServiceServer) List(context.Context, *memberautolevelpb.ListMemberAutoLevelsRequest) (*memberautolevelpb.ListMemberAutoLevelsResponse, error) {
+func (UnimplementedMemberAutoLevelServer) List(context.Context, *memberautolevelpb.ListMemberAutoLevelsRequest) (*memberautolevelpb.ListMemberAutoLevelsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method List not implemented")
 }
-func (UnimplementedMemberAutoLevelServiceServer) Delete(context.Context, *memberautolevelpb.DeleteMemberAutoLevelRequest) (*memberautolevelpb.DeleteMemberAutoLevelResponse, error) {
+func (UnimplementedMemberAutoLevelServer) Delete(context.Context, *memberautolevelpb.DeleteMemberAutoLevelRequest) (*memberautolevelpb.DeleteMemberAutoLevelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedMemberAutoLevelServiceServer) mustEmbedUnimplementedMemberAutoLevelServiceServer() {
-}
-func (UnimplementedMemberAutoLevelServiceServer) testEmbeddedByValue() {}
+func (UnimplementedMemberAutoLevelServer) mustEmbedUnimplementedMemberAutoLevelServer() {}
+func (UnimplementedMemberAutoLevelServer) testEmbeddedByValue()                         {}
 
-// UnsafeMemberAutoLevelServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MemberAutoLevelServiceServer will
+// UnsafeMemberAutoLevelServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MemberAutoLevelServer will
 // result in compilation errors.
-type UnsafeMemberAutoLevelServiceServer interface {
-	mustEmbedUnimplementedMemberAutoLevelServiceServer()
+type UnsafeMemberAutoLevelServer interface {
+	mustEmbedUnimplementedMemberAutoLevelServer()
 }
 
-func RegisterMemberAutoLevelServiceServer(s grpc.ServiceRegistrar, srv MemberAutoLevelServiceServer) {
-	// If the following call panics, it indicates UnimplementedMemberAutoLevelServiceServer was
+func RegisterMemberAutoLevelServer(s grpc.ServiceRegistrar, srv MemberAutoLevelServer) {
+	// If the following call panics, it indicates UnimplementedMemberAutoLevelServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&MemberAutoLevelService_ServiceDesc, srv)
+	s.RegisterService(&MemberAutoLevel_ServiceDesc, srv)
 }
 
-func _MemberAutoLevelService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MemberAutoLevel_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(memberautolevelpb.CreateMemberAutoLevelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberAutoLevelServiceServer).Create(ctx, in)
+		return srv.(MemberAutoLevelServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MemberAutoLevelService_Create_FullMethodName,
+		FullMethod: MemberAutoLevel_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberAutoLevelServiceServer).Create(ctx, req.(*memberautolevelpb.CreateMemberAutoLevelRequest))
+		return srv.(MemberAutoLevelServer).Create(ctx, req.(*memberautolevelpb.CreateMemberAutoLevelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MemberAutoLevelService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MemberAutoLevel_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(memberautolevelpb.UpdateMemberAutoLevelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberAutoLevelServiceServer).Update(ctx, in)
+		return srv.(MemberAutoLevelServer).Update(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MemberAutoLevelService_Update_FullMethodName,
+		FullMethod: MemberAutoLevel_Update_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberAutoLevelServiceServer).Update(ctx, req.(*memberautolevelpb.UpdateMemberAutoLevelRequest))
+		return srv.(MemberAutoLevelServer).Update(ctx, req.(*memberautolevelpb.UpdateMemberAutoLevelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MemberAutoLevelService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MemberAutoLevel_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(memberautolevelpb.ListMemberAutoLevelsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberAutoLevelServiceServer).List(ctx, in)
+		return srv.(MemberAutoLevelServer).List(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MemberAutoLevelService_List_FullMethodName,
+		FullMethod: MemberAutoLevel_List_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberAutoLevelServiceServer).List(ctx, req.(*memberautolevelpb.ListMemberAutoLevelsRequest))
+		return srv.(MemberAutoLevelServer).List(ctx, req.(*memberautolevelpb.ListMemberAutoLevelsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MemberAutoLevelService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MemberAutoLevel_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(memberautolevelpb.DeleteMemberAutoLevelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberAutoLevelServiceServer).Delete(ctx, in)
+		return srv.(MemberAutoLevelServer).Delete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MemberAutoLevelService_Delete_FullMethodName,
+		FullMethod: MemberAutoLevel_Delete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberAutoLevelServiceServer).Delete(ctx, req.(*memberautolevelpb.DeleteMemberAutoLevelRequest))
+		return srv.(MemberAutoLevelServer).Delete(ctx, req.(*memberautolevelpb.DeleteMemberAutoLevelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// MemberAutoLevelService_ServiceDesc is the grpc.ServiceDesc for MemberAutoLevelService service.
+// MemberAutoLevel_ServiceDesc is the grpc.ServiceDesc for MemberAutoLevel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MemberAutoLevelService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "crm.MemberAutoLevelService",
-	HandlerType: (*MemberAutoLevelServiceServer)(nil),
+var MemberAutoLevel_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "crm.MemberAutoLevel",
+	HandlerType: (*MemberAutoLevelServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Create",
-			Handler:    _MemberAutoLevelService_Create_Handler,
+			Handler:    _MemberAutoLevel_Create_Handler,
 		},
 		{
 			MethodName: "Update",
-			Handler:    _MemberAutoLevelService_Update_Handler,
+			Handler:    _MemberAutoLevel_Update_Handler,
 		},
 		{
 			MethodName: "List",
-			Handler:    _MemberAutoLevelService_List_Handler,
+			Handler:    _MemberAutoLevel_List_Handler,
 		},
 		{
 			MethodName: "Delete",
-			Handler:    _MemberAutoLevelService_Delete_Handler,
+			Handler:    _MemberAutoLevel_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

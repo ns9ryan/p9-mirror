@@ -99,7 +99,7 @@ service AgentService {
 }
 
 // 会员自动层级服务
-service MemberAutoLevelService {
+service MemberAutoLevel {
   // 创建自动层级
   rpc Create(crm_member_auto_level.CreateMemberAutoLevelRequest) returns (crm_member_auto_level.CreateMemberAutoLevelResponse);
 

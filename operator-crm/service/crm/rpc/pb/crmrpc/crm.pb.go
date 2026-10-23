@@ -73,8 +73,8 @@ const file_crm_proto_rawDesc = "" +
 	"\x12updateAgentProfile\x12 .crm_agent.UpdateAgentProfileReq\x1a\x17.crm_agent.AgentProfile\x12Y\n" +
 	"\x12listAgentLoginLogs\x12 .crm_agent.ListAgentLoginLogsReq\x1a!.crm_agent.ListAgentLoginLogsResp\x12q\n" +
 	"\x1alistAgentLoginAssociations\x12(.crm_agent.ListAgentLoginAssociationsReq\x1a).crm_agent.ListAgentLoginAssociationsResp\x12P\n" +
-	"\x0flistAgentOpLogs\x12\x1d.crm_agent.ListAgentOpLogsReq\x1a\x1e.crm_agent.ListAgentOpLogsResp2\xe8\x03\n" +
-	"\x16MemberAutoLevelService\x12s\n" +
+	"\x0flistAgentOpLogs\x12\x1d.crm_agent.ListAgentOpLogsReq\x1a\x1e.crm_agent.ListAgentOpLogsResp2\xe1\x03\n" +
+	"\x0fMemberAutoLevel\x12s\n" +
 	"\x06Create\x123.crm_member_auto_level.CreateMemberAutoLevelRequest\x1a4.crm_member_auto_level.CreateMemberAutoLevelResponse\x12s\n" +
 	"\x06Update\x123.crm_member_auto_level.UpdateMemberAutoLevelRequest\x1a4.crm_member_auto_level.UpdateMemberAutoLevelResponse\x12o\n" +
 	"\x04List\x122.crm_member_auto_level.ListMemberAutoLevelsRequest\x1a3.crm_member_auto_level.ListMemberAutoLevelsResponse\x12s\n" +
@@ -218,10 +218,10 @@ var file_crm_proto_depIdxs = []int32{
 	31, // 31: crm.AgentService.listAgentLoginLogs:input_type -> crm_agent.ListAgentLoginLogsReq
 	32, // 32: crm.AgentService.listAgentLoginAssociations:input_type -> crm_agent.ListAgentLoginAssociationsReq
 	33, // 33: crm.AgentService.listAgentOpLogs:input_type -> crm_agent.ListAgentOpLogsReq
-	34, // 34: crm.MemberAutoLevelService.Create:input_type -> crm_member_auto_level.CreateMemberAutoLevelRequest
-	35, // 35: crm.MemberAutoLevelService.Update:input_type -> crm_member_auto_level.UpdateMemberAutoLevelRequest
-	36, // 36: crm.MemberAutoLevelService.List:input_type -> crm_member_auto_level.ListMemberAutoLevelsRequest
-	37, // 37: crm.MemberAutoLevelService.Delete:input_type -> crm_member_auto_level.DeleteMemberAutoLevelRequest
+	34, // 34: crm.MemberAutoLevel.Create:input_type -> crm_member_auto_level.CreateMemberAutoLevelRequest
+	35, // 35: crm.MemberAutoLevel.Update:input_type -> crm_member_auto_level.UpdateMemberAutoLevelRequest
+	36, // 36: crm.MemberAutoLevel.List:input_type -> crm_member_auto_level.ListMemberAutoLevelsRequest
+	37, // 37: crm.MemberAutoLevel.Delete:input_type -> crm_member_auto_level.DeleteMemberAutoLevelRequest
 	38, // 38: crm.VipService.Init:input_type -> crm_vip.InitRequest
 	39, // 39: crm.VipService.GetConfig:input_type -> crm_vip_config.GetVipConfigRequest
 	40, // 40: crm.VipService.UpdateConfig:input_type -> crm_vip_config.UpdateVipConfigRequest
@@ -267,10 +267,10 @@ var file_crm_proto_depIdxs = []int32{
 	69, // 80: crm.AgentService.listAgentLoginLogs:output_type -> crm_agent.ListAgentLoginLogsResp
 	70, // 81: crm.AgentService.listAgentLoginAssociations:output_type -> crm_agent.ListAgentLoginAssociationsResp
 	71, // 82: crm.AgentService.listAgentOpLogs:output_type -> crm_agent.ListAgentOpLogsResp
-	72, // 83: crm.MemberAutoLevelService.Create:output_type -> crm_member_auto_level.CreateMemberAutoLevelResponse
-	73, // 84: crm.MemberAutoLevelService.Update:output_type -> crm_member_auto_level.UpdateMemberAutoLevelResponse
-	74, // 85: crm.MemberAutoLevelService.List:output_type -> crm_member_auto_level.ListMemberAutoLevelsResponse
-	75, // 86: crm.MemberAutoLevelService.Delete:output_type -> crm_member_auto_level.DeleteMemberAutoLevelResponse
+	72, // 83: crm.MemberAutoLevel.Create:output_type -> crm_member_auto_level.CreateMemberAutoLevelResponse
+	73, // 84: crm.MemberAutoLevel.Update:output_type -> crm_member_auto_level.UpdateMemberAutoLevelResponse
+	74, // 85: crm.MemberAutoLevel.List:output_type -> crm_member_auto_level.ListMemberAutoLevelsResponse
+	75, // 86: crm.MemberAutoLevel.Delete:output_type -> crm_member_auto_level.DeleteMemberAutoLevelResponse
 	76, // 87: crm.VipService.Init:output_type -> crm_vip.InitResponse
 	77, // 88: crm.VipService.GetConfig:output_type -> crm_vip_config.GetVipConfigResponse
 	78, // 89: crm.VipService.UpdateConfig:output_type -> crm_vip_config.UpdateVipConfigResponse
