@@ -11,7 +11,7 @@ import (
 	initServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/init"
 	memberautolevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberautolevel"
 	pingserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/pingservice"
-	vipserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/vipservice"
+	vipServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/vip"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
 
@@ -46,7 +46,7 @@ func main() {
 		crmrpc.RegisterMemberAutoLevelServer(grpcServer, memberautolevelServer.NewMemberAutoLevelServer(ctx))
 
 		// VIP管理服务
-		crmrpc.RegisterVipServiceServer(grpcServer, vipserviceServer.NewVipServiceServer(ctx))
+		crmrpc.RegisterVipServer(grpcServer, vipServer.NewVipServer(ctx))
 
 		// 开发和测试环境额外开启服务反射
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
