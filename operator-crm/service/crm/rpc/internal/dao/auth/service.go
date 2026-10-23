@@ -219,13 +219,13 @@ func (s *Service) CheckToken(ctx context.Context, raw string) (*authpb.CheckToke
 	if u.Salt != c.Salt {
 		return nil, xerr.Forbidden(i18n.AuthUserSaltMismatch)
 	}
-	if strPtr(u.OperatorCode) == "" || strPtr(u.OperatorCode) != c.OperatorCode {
+	if u.OperatorCode == "" || u.OperatorCode != c.OperatorCode {
 		return nil, xerr.Unauthorized(i18n.Unauthorized)
 	}
 	return &authpb.CheckTokenResp{
 		UserId:       u.ID,
 		Account:      u.Account,
-		OperatorCode: strPtr(u.OperatorCode),
+		OperatorCode: u.OperatorCode,
 		Salt:         u.Salt,
 		ExpiresAt:    expiresUnix(c),
 		TokenType:    c.TokenType,
@@ -243,7 +243,7 @@ func (s *Service) sessionUser(ctx context.Context, c *Claims) (*ent.AgentUser, e
 	if u.Status != statusNormal || u.Salt != c.Salt {
 		return nil, xerr.Unauthorized(i18n.Unauthorized)
 	}
-	if strPtr(u.OperatorCode) == "" || strPtr(u.OperatorCode) != c.OperatorCode {
+	if u.OperatorCode == "" || u.OperatorCode != c.OperatorCode {
 		return nil, xerr.Unauthorized(i18n.Unauthorized)
 	}
 	return u, nil
@@ -383,7 +383,7 @@ func tokenClaims(ctx context.Context, u *ent.AgentUser) Claims {
 	return Claims{
 		UserID:       u.ID,
 		Username:     u.Account,
-		OperatorCode: strPtr(u.OperatorCode),
+		OperatorCode: u.OperatorCode,
 		Salt:         u.Salt,
 		ClientIP:     utils.NormalizeIP(ctxdata.ClientIPFromCtx(ctx)),
 	}
@@ -416,7 +416,7 @@ func toPublic(u *ent.AgentUser) *authpb.UserPublic {
 		Id:           u.ID,
 		Account:      u.Account,
 		Status:       int32(u.Status),
-		OperatorCode: strPtr(u.OperatorCode),
+		OperatorCode: u.OperatorCode,
 		AgentType:    int32(u.AgentType),
 		Level:        int32(u.Level),
 		CreatedAt:    u.CreatedAt.Unix(),

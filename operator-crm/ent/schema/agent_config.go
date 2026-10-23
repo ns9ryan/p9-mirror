@@ -99,7 +99,7 @@ func (AgentConfig) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
-		entmixin.OperatorCodeMixin{},
+		entmixin.OperatorCodeNotNullMixin{},
 	}
 }
 

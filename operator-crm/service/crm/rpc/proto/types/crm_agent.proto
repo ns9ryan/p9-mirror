@@ -93,6 +93,8 @@ message AgentCreateFields {
   optional string email = 12;
   // 真实姓名，可选
   optional string realname = 13;
+  // 备注
+  string remark = 14;
 }
 
 // AddOperatorAgentReq 分站添加代理

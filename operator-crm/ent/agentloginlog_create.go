@@ -56,14 +56,6 @@ func (_c *AgentLoginLogCreate) SetOperatorCode(v string) *AgentLoginLogCreate {
 	return _c
 }
 
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_c *AgentLoginLogCreate) SetNillableOperatorCode(v *string) *AgentLoginLogCreate {
-	if v != nil {
-		_c.SetOperatorCode(*v)
-	}
-	return _c
-}
-
 // SetAgentID sets the "agent_id" field.
 func (_c *AgentLoginLogCreate) SetAgentID(v int64) *AgentLoginLogCreate {
 	_c.mutation.SetAgentID(v)
@@ -246,6 +238,9 @@ func (_c *AgentLoginLogCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AgentLoginLog.updated_at"`)}
 	}
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "AgentLoginLog.operator_code"`)}
+	}
 	if v, ok := _c.mutation.OperatorCode(); ok {
 		if err := agentloginlog.OperatorCodeValidator(v); err != nil {
 			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AgentLoginLog.operator_code": %w`, err)}
@@ -344,7 +339,7 @@ func (_c *AgentLoginLogCreate) createSpec() (*AgentLoginLog, *sqlgraph.CreateSpe
 	}
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(agentloginlog.FieldOperatorCode, field.TypeString, value)
-		_node.OperatorCode = &value
+		_node.OperatorCode = value
 	}
 	if value, ok := _c.mutation.AgentID(); ok {
 		_spec.SetField(agentloginlog.FieldAgentID, field.TypeInt64, value)

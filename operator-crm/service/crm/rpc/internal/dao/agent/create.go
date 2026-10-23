@@ -148,6 +148,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 	password := fields.Password
 	lineCode := strings.TrimSpace(fields.AgentLineCode)
 	promoCode := strings.TrimSpace(fields.PromoCode)
+	remark := strings.TrimSpace(fields.Remark)
 	shareRate := int64(fields.ShareRate)
 	agentType := int64(fields.AgentType)
 	// 如果代理编码为空，则生成代理编码
@@ -248,7 +249,8 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 			SetLoginPasswordHash(hash).
 			SetSalt(salt).
 			SetRegisterAt(now).
-			SetLoginCount(0)
+			SetLoginCount(0).
+			SetRemark(remark)
 		if registerIP != nil {
 			c.SetRegisterIP(*registerIP)
 		}

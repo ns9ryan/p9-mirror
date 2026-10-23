@@ -56,14 +56,6 @@ func (_c *AgentConfigCreate) SetOperatorCode(v string) *AgentConfigCreate {
 	return _c
 }
 
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_c *AgentConfigCreate) SetNillableOperatorCode(v *string) *AgentConfigCreate {
-	if v != nil {
-		_c.SetOperatorCode(*v)
-	}
-	return _c
-}
-
 // SetMaxShareRate sets the "max_share_rate" field.
 func (_c *AgentConfigCreate) SetMaxShareRate(v int64) *AgentConfigCreate {
 	_c.mutation.SetMaxShareRate(v)
@@ -232,6 +224,9 @@ func (_c *AgentConfigCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AgentConfig.updated_at"`)}
 	}
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "AgentConfig.operator_code"`)}
+	}
 	if v, ok := _c.mutation.OperatorCode(); ok {
 		if err := agentconfig.OperatorCodeValidator(v); err != nil {
 			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AgentConfig.operator_code": %w`, err)}
@@ -320,7 +315,7 @@ func (_c *AgentConfigCreate) createSpec() (*AgentConfig, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(agentconfig.FieldOperatorCode, field.TypeString, value)
-		_node.OperatorCode = &value
+		_node.OperatorCode = value
 	}
 	if value, ok := _c.mutation.MaxShareRate(); ok {
 		_spec.SetField(agentconfig.FieldMaxShareRate, field.TypeInt64, value)

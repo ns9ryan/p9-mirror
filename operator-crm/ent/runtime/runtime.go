@@ -61,7 +61,21 @@ func init() {
 	// agentapplyDescOperatorCode is the schema descriptor for operator_code field.
 	agentapplyDescOperatorCode := agentapplyMixinFields2[0].Descriptor()
 	// agentapply.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
-	agentapply.OperatorCodeValidator = agentapplyDescOperatorCode.Validators[0].(func(string) error)
+	agentapply.OperatorCodeValidator = func() func(string) error {
+		validators := agentapplyDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentapplyDescAccount is the schema descriptor for account field.
 	agentapplyDescAccount := agentapplyFields[0].Descriptor()
 	// agentapply.AccountValidator is a validator for the "account" field. It is called by the builders before save.
@@ -257,7 +271,21 @@ func init() {
 	// agentconfigDescOperatorCode is the schema descriptor for operator_code field.
 	agentconfigDescOperatorCode := agentconfigMixinFields2[0].Descriptor()
 	// agentconfig.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
-	agentconfig.OperatorCodeValidator = agentconfigDescOperatorCode.Validators[0].(func(string) error)
+	agentconfig.OperatorCodeValidator = func() func(string) error {
+		validators := agentconfigDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentconfigDescMaxShareRate is the schema descriptor for max_share_rate field.
 	agentconfigDescMaxShareRate := agentconfigFields[0].Descriptor()
 	// agentconfig.MaxShareRateValidator is a validator for the "max_share_rate" field. It is called by the builders before save.
@@ -304,7 +332,21 @@ func init() {
 	// agentlevelDescOperatorCode is the schema descriptor for operator_code field.
 	agentlevelDescOperatorCode := agentlevelMixinFields2[0].Descriptor()
 	// agentlevel.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
-	agentlevel.OperatorCodeValidator = agentlevelDescOperatorCode.Validators[0].(func(string) error)
+	agentlevel.OperatorCodeValidator = func() func(string) error {
+		validators := agentlevelDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentlevelDescLevel is the schema descriptor for level field.
 	agentlevelDescLevel := agentlevelFields[0].Descriptor()
 	// agentlevel.LevelValidator is a validator for the "level" field. It is called by the builders before save.
@@ -371,7 +413,21 @@ func init() {
 	// agentloginlogDescOperatorCode is the schema descriptor for operator_code field.
 	agentloginlogDescOperatorCode := agentloginlogMixinFields2[0].Descriptor()
 	// agentloginlog.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
-	agentloginlog.OperatorCodeValidator = agentloginlogDescOperatorCode.Validators[0].(func(string) error)
+	agentloginlog.OperatorCodeValidator = func() func(string) error {
+		validators := agentloginlogDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentloginlogDescAccount is the schema descriptor for account field.
 	agentloginlogDescAccount := agentloginlogFields[2].Descriptor()
 	// agentloginlog.AccountValidator is a validator for the "account" field. It is called by the builders before save.
@@ -483,7 +539,21 @@ func init() {
 	// agentprofileDescOperatorCode is the schema descriptor for operator_code field.
 	agentprofileDescOperatorCode := agentprofileMixinFields2[0].Descriptor()
 	// agentprofile.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
-	agentprofile.OperatorCodeValidator = agentprofileDescOperatorCode.Validators[0].(func(string) error)
+	agentprofile.OperatorCodeValidator = func() func(string) error {
+		validators := agentprofileDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentprofileDescGender is the schema descriptor for gender field.
 	agentprofileDescGender := agentprofileFields[1].Descriptor()
 	// agentprofile.DefaultGender holds the default value on creation for the gender field.
@@ -831,7 +901,21 @@ func init() {
 	// agentuserDescOperatorCode is the schema descriptor for operator_code field.
 	agentuserDescOperatorCode := agentuserMixinFields2[0].Descriptor()
 	// agentuser.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
-	agentuser.OperatorCodeValidator = agentuserDescOperatorCode.Validators[0].(func(string) error)
+	agentuser.OperatorCodeValidator = func() func(string) error {
+		validators := agentuserDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentuserDescAccount is the schema descriptor for account field.
 	agentuserDescAccount := agentuserFields[0].Descriptor()
 	// agentuser.AccountValidator is a validator for the "account" field. It is called by the builders before save.
@@ -998,21 +1082,7 @@ func init() {
 	// agentuserDescRemark is the schema descriptor for remark field.
 	agentuserDescRemark := agentuserFields[15].Descriptor()
 	// agentuser.RemarkValidator is a validator for the "remark" field. It is called by the builders before save.
-	agentuser.RemarkValidator = func() func(string) error {
-		validators := agentuserDescRemark.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(remark string) error {
-			for _, fn := range fns {
-				if err := fn(remark); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
+	agentuser.RemarkValidator = agentuserDescRemark.Validators[0].(func(string) error)
 	// agentuserDescLoginCount is the schema descriptor for login_count field.
 	agentuserDescLoginCount := agentuserFields[20].Descriptor()
 	// agentuser.DefaultLoginCount holds the default value on creation for the login_count field.

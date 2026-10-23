@@ -56,14 +56,6 @@ func (_c *AgentLevelCreate) SetOperatorCode(v string) *AgentLevelCreate {
 	return _c
 }
 
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_c *AgentLevelCreate) SetNillableOperatorCode(v *string) *AgentLevelCreate {
-	if v != nil {
-		_c.SetOperatorCode(*v)
-	}
-	return _c
-}
-
 // SetLevel sets the "level" field.
 func (_c *AgentLevelCreate) SetLevel(v int64) *AgentLevelCreate {
 	_c.mutation.SetLevel(v)
@@ -150,6 +142,9 @@ func (_c *AgentLevelCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AgentLevel.updated_at"`)}
 	}
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "AgentLevel.operator_code"`)}
+	}
 	if v, ok := _c.mutation.OperatorCode(); ok {
 		if err := agentlevel.OperatorCodeValidator(v); err != nil {
 			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AgentLevel.operator_code": %w`, err)}
@@ -222,7 +217,7 @@ func (_c *AgentLevelCreate) createSpec() (*AgentLevel, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(agentlevel.FieldOperatorCode, field.TypeString, value)
-		_node.OperatorCode = &value
+		_node.OperatorCode = value
 	}
 	if value, ok := _c.mutation.Level(); ok {
 		_spec.SetField(agentlevel.FieldLevel, field.TypeInt64, value)

@@ -25,6 +25,17 @@ func (d *MemberAutoLevel) Create(ctx context.Context, name string, minDeposit, m
 		Save(ctx)
 }
 
+// HasThresholdConflict 检查晋级条件是否与已有层级冲突
+func (d *MemberAutoLevel) HasThresholdConflict(ctx context.Context, minDeposit, minWater int64) (bool, error) {
+	// 两项条件必须分别严格大于当前厅所有已有层级
+	return d.db.MemberAutoLevel.Query().
+		Where(entlevel.Or(
+			entlevel.MinDepositGTE(minDeposit), // 晋级要求的累计存款金额
+			entlevel.MinWaterGTE(minWater),     // 晋级要求的累计洗码量
+		)).
+		Exist(ctx)
+}
+
 // List 获取自动层级分页列表
 func (d *MemberAutoLevel) List(ctx context.Context, name string, offset, limit int) ([]*ent.MemberAutoLevel, int64, error) {
 	query := d.db.MemberAutoLevel.Query()
@@ -43,7 +54,7 @@ func (d *MemberAutoLevel) List(ctx context.Context, name string, offset, limit i
 		return nil, 0, nil
 	}
 
-	// 查询当前页层级
+	// 查询当前页数据
 	levels, err := query.
 		Order(entlevel.ByID(sql.OrderDesc())).
 		Offset(offset).
@@ -56,8 +67,8 @@ func (d *MemberAutoLevel) List(ctx context.Context, name string, offset, limit i
 	return levels, int64(total), nil
 }
 
-// CountMembersByLevelIDs 批量统计各自动层级会员数
-func (d *MemberAutoLevel) CountMembersByLevelIDs(ctx context.Context, levelIDs []int64) (map[int64]int64, error) {
+// MemberCounts 统计指定自动层级的会员数
+func (d *MemberAutoLevel) MemberCounts(ctx context.Context, levelIDs []int64) (map[int64]int64, error) {
 	counts := make(map[int64]int64, len(levelIDs))
 	if len(levelIDs) == 0 {
 		return counts, nil

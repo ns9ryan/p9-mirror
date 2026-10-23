@@ -132,7 +132,6 @@ func (AgentUser) Fields() []ent.Field {
 			Optional().
 			Nillable().
 			MaxLen(1000).
-			Match(trimmedNonEmpty).
 			Comment("备注"),
 
 		field.Time("register_at").
@@ -249,7 +248,7 @@ func (AgentUser) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
-		entmixin.OperatorCodeMixin{},
+		entmixin.OperatorCodeNotNullMixin{},
 	}
 }
 

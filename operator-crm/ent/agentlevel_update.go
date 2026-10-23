@@ -165,9 +165,6 @@ func (_u *AgentLevelUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentlevel.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.OperatorCodeCleared() {
-		_spec.ClearField(agentlevel.FieldOperatorCode, field.TypeString)
-	}
 	if value, ok := _u.mutation.Level(); ok {
 		_spec.SetField(agentlevel.FieldLevel, field.TypeInt64, value)
 	}
@@ -366,9 +363,6 @@ func (_u *AgentLevelUpdateOne) sqlSave(ctx context.Context) (_node *AgentLevel, 
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentlevel.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.OperatorCodeCleared() {
-		_spec.ClearField(agentlevel.FieldOperatorCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Level(); ok {
 		_spec.SetField(agentlevel.FieldLevel, field.TypeInt64, value)

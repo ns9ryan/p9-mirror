@@ -290,16 +290,6 @@ func OperatorCodeHasSuffix(v string) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldHasSuffix(FieldOperatorCode, v))
 }
 
-// OperatorCodeIsNil applies the IsNil predicate on the "operator_code" field.
-func OperatorCodeIsNil() predicate.AgentProfile {
-	return predicate.AgentProfile(sql.FieldIsNull(FieldOperatorCode))
-}
-
-// OperatorCodeNotNil applies the NotNil predicate on the "operator_code" field.
-func OperatorCodeNotNil() predicate.AgentProfile {
-	return predicate.AgentProfile(sql.FieldNotNull(FieldOperatorCode))
-}
-
 // OperatorCodeEqualFold applies the EqualFold predicate on the "operator_code" field.
 func OperatorCodeEqualFold(v string) predicate.AgentProfile {
 	return predicate.AgentProfile(sql.FieldEqualFold(FieldOperatorCode, v))

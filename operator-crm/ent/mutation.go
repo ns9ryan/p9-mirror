@@ -296,7 +296,7 @@ func (m *AgentApplyMutation) OperatorCode() (r string, exists bool) {
 // OldOperatorCode returns the old "operator_code" field's value of the AgentApply entity.
 // If the AgentApply object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentApplyMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+func (m *AgentApplyMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
 	}
@@ -310,22 +310,9 @@ func (m *AgentApplyMutation) OldOperatorCode(ctx context.Context) (v *string, er
 	return oldValue.OperatorCode, nil
 }
 
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (m *AgentApplyMutation) ClearOperatorCode() {
-	m.operator_code = nil
-	m.clearedFields[agentapply.FieldOperatorCode] = struct{}{}
-}
-
-// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
-func (m *AgentApplyMutation) OperatorCodeCleared() bool {
-	_, ok := m.clearedFields[agentapply.FieldOperatorCode]
-	return ok
-}
-
 // ResetOperatorCode resets all changes to the "operator_code" field.
 func (m *AgentApplyMutation) ResetOperatorCode() {
 	m.operator_code = nil
-	delete(m.clearedFields, agentapply.FieldOperatorCode)
 }
 
 // SetAccount sets the "account" field.
@@ -1358,9 +1345,6 @@ func (m *AgentApplyMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentApplyMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(agentapply.FieldOperatorCode) {
-		fields = append(fields, agentapply.FieldOperatorCode)
-	}
 	if m.FieldCleared(agentapply.FieldRejectReason) {
 		fields = append(fields, agentapply.FieldRejectReason)
 	}
@@ -1390,9 +1374,6 @@ func (m *AgentApplyMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentApplyMutation) ClearField(name string) error {
 	switch name {
-	case agentapply.FieldOperatorCode:
-		m.ClearOperatorCode()
-		return nil
 	case agentapply.FieldRejectReason:
 		m.ClearRejectReason()
 		return nil
@@ -2197,7 +2178,7 @@ func (m *AgentConfigMutation) OperatorCode() (r string, exists bool) {
 // OldOperatorCode returns the old "operator_code" field's value of the AgentConfig entity.
 // If the AgentConfig object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentConfigMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+func (m *AgentConfigMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
 	}
@@ -2211,22 +2192,9 @@ func (m *AgentConfigMutation) OldOperatorCode(ctx context.Context) (v *string, e
 	return oldValue.OperatorCode, nil
 }
 
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (m *AgentConfigMutation) ClearOperatorCode() {
-	m.operator_code = nil
-	m.clearedFields[agentconfig.FieldOperatorCode] = struct{}{}
-}
-
-// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
-func (m *AgentConfigMutation) OperatorCodeCleared() bool {
-	_, ok := m.clearedFields[agentconfig.FieldOperatorCode]
-	return ok
-}
-
 // ResetOperatorCode resets all changes to the "operator_code" field.
 func (m *AgentConfigMutation) ResetOperatorCode() {
 	m.operator_code = nil
-	delete(m.clearedFields, agentconfig.FieldOperatorCode)
 }
 
 // SetMaxShareRate sets the "max_share_rate" field.
@@ -3255,9 +3223,6 @@ func (m *AgentConfigMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentConfigMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(agentconfig.FieldOperatorCode) {
-		fields = append(fields, agentconfig.FieldOperatorCode)
-	}
 	if m.FieldCleared(agentconfig.FieldCashProductionAgentID) {
 		fields = append(fields, agentconfig.FieldCashProductionAgentID)
 	}
@@ -3287,9 +3252,6 @@ func (m *AgentConfigMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentConfigMutation) ClearField(name string) error {
 	switch name {
-	case agentconfig.FieldOperatorCode:
-		m.ClearOperatorCode()
-		return nil
 	case agentconfig.FieldCashProductionAgentID:
 		m.ClearCashProductionAgentID()
 		return nil
@@ -3616,7 +3578,7 @@ func (m *AgentLevelMutation) OperatorCode() (r string, exists bool) {
 // OldOperatorCode returns the old "operator_code" field's value of the AgentLevel entity.
 // If the AgentLevel object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentLevelMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+func (m *AgentLevelMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
 	}
@@ -3630,22 +3592,9 @@ func (m *AgentLevelMutation) OldOperatorCode(ctx context.Context) (v *string, er
 	return oldValue.OperatorCode, nil
 }
 
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (m *AgentLevelMutation) ClearOperatorCode() {
-	m.operator_code = nil
-	m.clearedFields[agentlevel.FieldOperatorCode] = struct{}{}
-}
-
-// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
-func (m *AgentLevelMutation) OperatorCodeCleared() bool {
-	_, ok := m.clearedFields[agentlevel.FieldOperatorCode]
-	return ok
-}
-
 // ResetOperatorCode resets all changes to the "operator_code" field.
 func (m *AgentLevelMutation) ResetOperatorCode() {
 	m.operator_code = nil
-	delete(m.clearedFields, agentlevel.FieldOperatorCode)
 }
 
 // SetLevel sets the "level" field.
@@ -3965,11 +3914,7 @@ func (m *AgentLevelMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *AgentLevelMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(agentlevel.FieldOperatorCode) {
-		fields = append(fields, agentlevel.FieldOperatorCode)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3982,11 +3927,6 @@ func (m *AgentLevelMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *AgentLevelMutation) ClearField(name string) error {
-	switch name {
-	case agentlevel.FieldOperatorCode:
-		m.ClearOperatorCode()
-		return nil
-	}
 	return fmt.Errorf("unknown AgentLevel nullable field %s", name)
 }
 
@@ -4288,7 +4228,7 @@ func (m *AgentLoginLogMutation) OperatorCode() (r string, exists bool) {
 // OldOperatorCode returns the old "operator_code" field's value of the AgentLoginLog entity.
 // If the AgentLoginLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentLoginLogMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+func (m *AgentLoginLogMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
 	}
@@ -4302,22 +4242,9 @@ func (m *AgentLoginLogMutation) OldOperatorCode(ctx context.Context) (v *string,
 	return oldValue.OperatorCode, nil
 }
 
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (m *AgentLoginLogMutation) ClearOperatorCode() {
-	m.operator_code = nil
-	m.clearedFields[agentloginlog.FieldOperatorCode] = struct{}{}
-}
-
-// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
-func (m *AgentLoginLogMutation) OperatorCodeCleared() bool {
-	_, ok := m.clearedFields[agentloginlog.FieldOperatorCode]
-	return ok
-}
-
 // ResetOperatorCode resets all changes to the "operator_code" field.
 func (m *AgentLoginLogMutation) ResetOperatorCode() {
 	m.operator_code = nil
-	delete(m.clearedFields, agentloginlog.FieldOperatorCode)
 }
 
 // SetAgentID sets the "agent_id" field.
@@ -5246,9 +5173,6 @@ func (m *AgentLoginLogMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentLoginLogMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(agentloginlog.FieldOperatorCode) {
-		fields = append(fields, agentloginlog.FieldOperatorCode)
-	}
 	if m.FieldCleared(agentloginlog.FieldAgentID) {
 		fields = append(fields, agentloginlog.FieldAgentID)
 	}
@@ -5281,9 +5205,6 @@ func (m *AgentLoginLogMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentLoginLogMutation) ClearField(name string) error {
 	switch name {
-	case agentloginlog.FieldOperatorCode:
-		m.ClearOperatorCode()
-		return nil
 	case agentloginlog.FieldAgentID:
 		m.ClearAgentID()
 		return nil
@@ -5631,7 +5552,7 @@ func (m *AgentProfileMutation) OperatorCode() (r string, exists bool) {
 // OldOperatorCode returns the old "operator_code" field's value of the AgentProfile entity.
 // If the AgentProfile object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentProfileMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+func (m *AgentProfileMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
 	}
@@ -5645,22 +5566,9 @@ func (m *AgentProfileMutation) OldOperatorCode(ctx context.Context) (v *string, 
 	return oldValue.OperatorCode, nil
 }
 
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (m *AgentProfileMutation) ClearOperatorCode() {
-	m.operator_code = nil
-	m.clearedFields[agentprofile.FieldOperatorCode] = struct{}{}
-}
-
-// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
-func (m *AgentProfileMutation) OperatorCodeCleared() bool {
-	_, ok := m.clearedFields[agentprofile.FieldOperatorCode]
-	return ok
-}
-
 // ResetOperatorCode resets all changes to the "operator_code" field.
 func (m *AgentProfileMutation) ResetOperatorCode() {
 	m.operator_code = nil
-	delete(m.clearedFields, agentprofile.FieldOperatorCode)
 }
 
 // SetAgentID sets the "agent_id" field.
@@ -6903,9 +6811,6 @@ func (m *AgentProfileMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentProfileMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(agentprofile.FieldOperatorCode) {
-		fields = append(fields, agentprofile.FieldOperatorCode)
-	}
 	if m.FieldCleared(agentprofile.FieldBirthDate) {
 		fields = append(fields, agentprofile.FieldBirthDate)
 	}
@@ -6965,9 +6870,6 @@ func (m *AgentProfileMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentProfileMutation) ClearField(name string) error {
 	switch name {
-	case agentprofile.FieldOperatorCode:
-		m.ClearOperatorCode()
-		return nil
 	case agentprofile.FieldBirthDate:
 		m.ClearBirthDate()
 		return nil
@@ -8607,7 +8509,7 @@ func (m *AgentUserMutation) OperatorCode() (r string, exists bool) {
 // OldOperatorCode returns the old "operator_code" field's value of the AgentUser entity.
 // If the AgentUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentUserMutation) OldOperatorCode(ctx context.Context) (v *string, err error) {
+func (m *AgentUserMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
 	}
@@ -8621,22 +8523,9 @@ func (m *AgentUserMutation) OldOperatorCode(ctx context.Context) (v *string, err
 	return oldValue.OperatorCode, nil
 }
 
-// ClearOperatorCode clears the value of the "operator_code" field.
-func (m *AgentUserMutation) ClearOperatorCode() {
-	m.operator_code = nil
-	m.clearedFields[agentuser.FieldOperatorCode] = struct{}{}
-}
-
-// OperatorCodeCleared returns if the "operator_code" field was cleared in this mutation.
-func (m *AgentUserMutation) OperatorCodeCleared() bool {
-	_, ok := m.clearedFields[agentuser.FieldOperatorCode]
-	return ok
-}
-
 // ResetOperatorCode resets all changes to the "operator_code" field.
 func (m *AgentUserMutation) ResetOperatorCode() {
 	m.operator_code = nil
-	delete(m.clearedFields, agentuser.FieldOperatorCode)
 }
 
 // SetAccount sets the "account" field.
@@ -10564,9 +10453,6 @@ func (m *AgentUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentUserMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(agentuser.FieldOperatorCode) {
-		fields = append(fields, agentuser.FieldOperatorCode)
-	}
 	if m.FieldCleared(agentuser.FieldParentID) {
 		fields = append(fields, agentuser.FieldParentID)
 	}
@@ -10608,9 +10494,6 @@ func (m *AgentUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentUserMutation) ClearField(name string) error {
 	switch name {
-	case agentuser.FieldOperatorCode:
-		m.ClearOperatorCode()
-		return nil
 	case agentuser.FieldParentID:
 		m.ClearParentID()
 		return nil

@@ -366,9 +366,6 @@ func (_u *AgentConfigUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentconfig.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.OperatorCodeCleared() {
-		_spec.ClearField(agentconfig.FieldOperatorCode, field.TypeString)
-	}
 	if value, ok := _u.mutation.MaxShareRate(); ok {
 		_spec.SetField(agentconfig.FieldMaxShareRate, field.TypeInt64, value)
 	}
@@ -831,9 +828,6 @@ func (_u *AgentConfigUpdateOne) sqlSave(ctx context.Context) (_node *AgentConfig
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentconfig.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if _u.mutation.OperatorCodeCleared() {
-		_spec.ClearField(agentconfig.FieldOperatorCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.MaxShareRate(); ok {
 		_spec.SetField(agentconfig.FieldMaxShareRate, field.TypeInt64, value)

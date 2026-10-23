@@ -56,14 +56,6 @@ func (_c *AgentApplyCreate) SetOperatorCode(v string) *AgentApplyCreate {
 	return _c
 }
 
-// SetNillableOperatorCode sets the "operator_code" field if the given value is not nil.
-func (_c *AgentApplyCreate) SetNillableOperatorCode(v *string) *AgentApplyCreate {
-	if v != nil {
-		_c.SetOperatorCode(*v)
-	}
-	return _c
-}
-
 // SetAccount sets the "account" field.
 func (_c *AgentApplyCreate) SetAccount(v string) *AgentApplyCreate {
 	_c.mutation.SetAccount(v)
@@ -268,6 +260,9 @@ func (_c *AgentApplyCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AgentApply.updated_at"`)}
 	}
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "AgentApply.operator_code"`)}
+	}
 	if v, ok := _c.mutation.OperatorCode(); ok {
 		if err := agentapply.OperatorCodeValidator(v); err != nil {
 			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AgentApply.operator_code": %w`, err)}
@@ -398,7 +393,7 @@ func (_c *AgentApplyCreate) createSpec() (*AgentApply, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(agentapply.FieldOperatorCode, field.TypeString, value)
-		_node.OperatorCode = &value
+		_node.OperatorCode = value
 	}
 	if value, ok := _c.mutation.Account(); ok {
 		_spec.SetField(agentapply.FieldAccount, field.TypeString, value)

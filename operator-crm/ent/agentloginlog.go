@@ -23,7 +23,7 @@ type AgentLoginLog struct {
 	// Updated At | 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Operator Code | 分站编码
-	OperatorCode *string `json:"operator_code,omitempty"`
+	OperatorCode string `json:"operator_code,omitempty"`
 	// 代理ID，账号不存在时为空
 	AgentID *int64 `json:"agent_id,omitempty"`
 	// 父代理ID，账号不存在时为空
@@ -97,8 +97,7 @@ func (_m *AgentLoginLog) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
 			} else if value.Valid {
-				_m.OperatorCode = new(string)
-				*_m.OperatorCode = value.String
+				_m.OperatorCode = value.String
 			}
 		case agentloginlog.FieldAgentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -214,10 +213,8 @@ func (_m *AgentLoginLog) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	if v := _m.OperatorCode; v != nil {
-		builder.WriteString("operator_code=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("operator_code=")
+	builder.WriteString(_m.OperatorCode)
 	builder.WriteString(", ")
 	if v := _m.AgentID; v != nil {
 		builder.WriteString("agent_id=")
