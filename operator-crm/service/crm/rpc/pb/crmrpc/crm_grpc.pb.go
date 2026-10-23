@@ -136,107 +136,107 @@ var PingService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	InitService_Init_FullMethodName = "/crm.InitService/Init"
+	Init_Init_FullMethodName = "/crm.Init/Init"
 )
 
-// InitServiceClient is the client API for InitService service.
+// InitClient is the client API for Init service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // CRM统一初始化服务
-type InitServiceClient interface {
+type InitClient interface {
 	// 初始化分站CRM基础数据
 	Init(ctx context.Context, in *initpb.InitRequest, opts ...grpc.CallOption) (*initpb.InitResponse, error)
 }
 
-type initServiceClient struct {
+type initClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewInitServiceClient(cc grpc.ClientConnInterface) InitServiceClient {
-	return &initServiceClient{cc}
+func NewInitClient(cc grpc.ClientConnInterface) InitClient {
+	return &initClient{cc}
 }
 
-func (c *initServiceClient) Init(ctx context.Context, in *initpb.InitRequest, opts ...grpc.CallOption) (*initpb.InitResponse, error) {
+func (c *initClient) Init(ctx context.Context, in *initpb.InitRequest, opts ...grpc.CallOption) (*initpb.InitResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(initpb.InitResponse)
-	err := c.cc.Invoke(ctx, InitService_Init_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Init_Init_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// InitServiceServer is the server API for InitService service.
-// All implementations must embed UnimplementedInitServiceServer
+// InitServer is the server API for Init service.
+// All implementations must embed UnimplementedInitServer
 // for forward compatibility.
 //
 // CRM统一初始化服务
-type InitServiceServer interface {
+type InitServer interface {
 	// 初始化分站CRM基础数据
 	Init(context.Context, *initpb.InitRequest) (*initpb.InitResponse, error)
-	mustEmbedUnimplementedInitServiceServer()
+	mustEmbedUnimplementedInitServer()
 }
 
-// UnimplementedInitServiceServer must be embedded to have
+// UnimplementedInitServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedInitServiceServer struct{}
+type UnimplementedInitServer struct{}
 
-func (UnimplementedInitServiceServer) Init(context.Context, *initpb.InitRequest) (*initpb.InitResponse, error) {
+func (UnimplementedInitServer) Init(context.Context, *initpb.InitRequest) (*initpb.InitResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Init not implemented")
 }
-func (UnimplementedInitServiceServer) mustEmbedUnimplementedInitServiceServer() {}
-func (UnimplementedInitServiceServer) testEmbeddedByValue()                     {}
+func (UnimplementedInitServer) mustEmbedUnimplementedInitServer() {}
+func (UnimplementedInitServer) testEmbeddedByValue()              {}
 
-// UnsafeInitServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to InitServiceServer will
+// UnsafeInitServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to InitServer will
 // result in compilation errors.
-type UnsafeInitServiceServer interface {
-	mustEmbedUnimplementedInitServiceServer()
+type UnsafeInitServer interface {
+	mustEmbedUnimplementedInitServer()
 }
 
-func RegisterInitServiceServer(s grpc.ServiceRegistrar, srv InitServiceServer) {
-	// If the following call panics, it indicates UnimplementedInitServiceServer was
+func RegisterInitServer(s grpc.ServiceRegistrar, srv InitServer) {
+	// If the following call panics, it indicates UnimplementedInitServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&InitService_ServiceDesc, srv)
+	s.RegisterService(&Init_ServiceDesc, srv)
 }
 
-func _InitService_Init_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Init_Init_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(initpb.InitRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(InitServiceServer).Init(ctx, in)
+		return srv.(InitServer).Init(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: InitService_Init_FullMethodName,
+		FullMethod: Init_Init_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(InitServiceServer).Init(ctx, req.(*initpb.InitRequest))
+		return srv.(InitServer).Init(ctx, req.(*initpb.InitRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// InitService_ServiceDesc is the grpc.ServiceDesc for InitService service.
+// Init_ServiceDesc is the grpc.ServiceDesc for Init service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var InitService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "crm.InitService",
-	HandlerType: (*InitServiceServer)(nil),
+var Init_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "crm.Init",
+	HandlerType: (*InitServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Init",
-			Handler:    _InitService_Init_Handler,
+			Handler:    _Init_Init_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

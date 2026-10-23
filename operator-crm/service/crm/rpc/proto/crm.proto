@@ -21,7 +21,7 @@ service PingService {
 }
 
 // CRM统一初始化服务
-service InitService {
+service Init {
   // 初始化分站CRM基础数据
   rpc Init(crm_init.InitRequest) returns (crm_init.InitResponse);
 }
