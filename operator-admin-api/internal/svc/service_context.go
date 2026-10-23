@@ -15,7 +15,7 @@ import (
 	"oa.98ent.com/p9/operator-admin-api/internal/locales"
 	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
-	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberautolevelservice"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberautolevel"
 )
 
 // ServiceContext 分站后台服务上下文
@@ -29,8 +29,8 @@ type ServiceContext struct {
 	OperatorBaseRpc operatorservice.OperatorService // 分站基础RPC
 
 	// CRM业务RPC
-	AgentRpc           agentservice.AgentService                     // 分层代理RPC
-	MemberAutoLevelRpc memberautolevelservice.MemberAutoLevelService // 会员自动层级RPC
+	AgentRpc           agentservice.AgentService       // 分层代理RPC
+	MemberAutoLevelRpc memberautolevel.MemberAutoLevel // 会员自动层级RPC
 
 	// 认证权限
 	Jwt       rest.Middleware // JWT认证
@@ -67,7 +67,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OperatorBaseRpc: operatorservice.NewOperatorService(baseClient),
 
 		AgentRpc:           agentservice.NewAgentService(crmClient),
-		MemberAutoLevelRpc: memberautolevelservice.NewMemberAutoLevelService(crmClient),
+		MemberAutoLevelRpc: memberautolevel.NewMemberAutoLevel(crmClient),
 
 		Jwt:       middleware.JWT(auth),
 		Authority: middleware.Authority(auth),
