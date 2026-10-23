@@ -13,6 +13,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
 	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
+	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
 	"oa.98ent.com/p9/operator-crm/ent/agentprofile"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
@@ -222,6 +223,33 @@ func (f TraverseAgentLoginLog) Traverse(ctx context.Context, q ent.Query) error 
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.AgentLoginLogQuery", q)
+}
+
+// The AgentOpLogFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AgentOpLogFunc func(context.Context, *ent.AgentOpLogQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AgentOpLogFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AgentOpLogQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AgentOpLogQuery", q)
+}
+
+// The TraverseAgentOpLog type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAgentOpLog func(context.Context, *ent.AgentOpLogQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAgentOpLog) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAgentOpLog) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AgentOpLogQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AgentOpLogQuery", q)
 }
 
 // The AgentProfileFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -696,6 +724,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AgentLevelQuery, predicate.AgentLevel, agentlevel.OrderOption]{typ: ent.TypeAgentLevel, tq: q}, nil
 	case *ent.AgentLoginLogQuery:
 		return &query[*ent.AgentLoginLogQuery, predicate.AgentLoginLog, agentloginlog.OrderOption]{typ: ent.TypeAgentLoginLog, tq: q}, nil
+	case *ent.AgentOpLogQuery:
+		return &query[*ent.AgentOpLogQuery, predicate.AgentOpLog, agentoplog.OrderOption]{typ: ent.TypeAgentOpLog, tq: q}, nil
 	case *ent.AgentProfileQuery:
 		return &query[*ent.AgentProfileQuery, predicate.AgentProfile, agentprofile.OrderOption]{typ: ent.TypeAgentProfile, tq: q}, nil
 	case *ent.AgentStatsQuery:

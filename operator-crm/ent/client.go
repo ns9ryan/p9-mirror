@@ -20,6 +20,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
 	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
+	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
 	"oa.98ent.com/p9/operator-crm/ent/agentprofile"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
@@ -54,6 +55,8 @@ type Client struct {
 	AgentLevel *AgentLevelClient
 	// AgentLoginLog is the client for interacting with the AgentLoginLog builders.
 	AgentLoginLog *AgentLoginLogClient
+	// AgentOpLog is the client for interacting with the AgentOpLog builders.
+	AgentOpLog *AgentOpLogClient
 	// AgentProfile is the client for interacting with the AgentProfile builders.
 	AgentProfile *AgentProfileClient
 	// AgentStats is the client for interacting with the AgentStats builders.
@@ -104,6 +107,7 @@ func (c *Client) init() {
 	c.AgentConfig = NewAgentConfigClient(c.config)
 	c.AgentLevel = NewAgentLevelClient(c.config)
 	c.AgentLoginLog = NewAgentLoginLogClient(c.config)
+	c.AgentOpLog = NewAgentOpLogClient(c.config)
 	c.AgentProfile = NewAgentProfileClient(c.config)
 	c.AgentStats = NewAgentStatsClient(c.config)
 	c.AgentUser = NewAgentUserClient(c.config)
@@ -218,6 +222,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AgentConfig:                NewAgentConfigClient(cfg),
 		AgentLevel:                 NewAgentLevelClient(cfg),
 		AgentLoginLog:              NewAgentLoginLogClient(cfg),
+		AgentOpLog:                 NewAgentOpLogClient(cfg),
 		AgentProfile:               NewAgentProfileClient(cfg),
 		AgentStats:                 NewAgentStatsClient(cfg),
 		AgentUser:                  NewAgentUserClient(cfg),
@@ -259,6 +264,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AgentConfig:                NewAgentConfigClient(cfg),
 		AgentLevel:                 NewAgentLevelClient(cfg),
 		AgentLoginLog:              NewAgentLoginLogClient(cfg),
+		AgentOpLog:                 NewAgentOpLogClient(cfg),
 		AgentProfile:               NewAgentProfileClient(cfg),
 		AgentStats:                 NewAgentStatsClient(cfg),
 		AgentUser:                  NewAgentUserClient(cfg),
@@ -306,11 +312,11 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentLevel, c.AgentLoginLog,
-		c.AgentProfile, c.AgentStats, c.AgentUser, c.Member, c.MemberAuth,
-		c.MemberAutoLevel, c.MemberFixedLevel, c.MemberFixedLevelAssignment,
-		c.MemberOAuthIdentity, c.MemberPeriodStats, c.MemberProfile, c.MemberStats,
-		c.MemberVipConfig, c.MemberVipIconGroup, c.MemberVipLevel,
-		c.MemberVipLevelRecord, c.MemberVipProgress,
+		c.AgentOpLog, c.AgentProfile, c.AgentStats, c.AgentUser, c.Member,
+		c.MemberAuth, c.MemberAutoLevel, c.MemberFixedLevel,
+		c.MemberFixedLevelAssignment, c.MemberOAuthIdentity, c.MemberPeriodStats,
+		c.MemberProfile, c.MemberStats, c.MemberVipConfig, c.MemberVipIconGroup,
+		c.MemberVipLevel, c.MemberVipLevelRecord, c.MemberVipProgress,
 	} {
 		n.Use(hooks...)
 	}
@@ -321,11 +327,11 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentLevel, c.AgentLoginLog,
-		c.AgentProfile, c.AgentStats, c.AgentUser, c.Member, c.MemberAuth,
-		c.MemberAutoLevel, c.MemberFixedLevel, c.MemberFixedLevelAssignment,
-		c.MemberOAuthIdentity, c.MemberPeriodStats, c.MemberProfile, c.MemberStats,
-		c.MemberVipConfig, c.MemberVipIconGroup, c.MemberVipLevel,
-		c.MemberVipLevelRecord, c.MemberVipProgress,
+		c.AgentOpLog, c.AgentProfile, c.AgentStats, c.AgentUser, c.Member,
+		c.MemberAuth, c.MemberAutoLevel, c.MemberFixedLevel,
+		c.MemberFixedLevelAssignment, c.MemberOAuthIdentity, c.MemberPeriodStats,
+		c.MemberProfile, c.MemberStats, c.MemberVipConfig, c.MemberVipIconGroup,
+		c.MemberVipLevel, c.MemberVipLevelRecord, c.MemberVipProgress,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -344,6 +350,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AgentLevel.mutate(ctx, m)
 	case *AgentLoginLogMutation:
 		return c.AgentLoginLog.mutate(ctx, m)
+	case *AgentOpLogMutation:
+		return c.AgentOpLog.mutate(ctx, m)
 	case *AgentProfileMutation:
 		return c.AgentProfile.mutate(ctx, m)
 	case *AgentStatsMutation:
@@ -1036,6 +1044,141 @@ func (c *AgentLoginLogClient) mutate(ctx context.Context, m *AgentLoginLogMutati
 		return (&AgentLoginLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AgentLoginLog mutation op: %q", m.Op())
+	}
+}
+
+// AgentOpLogClient is a client for the AgentOpLog schema.
+type AgentOpLogClient struct {
+	config
+}
+
+// NewAgentOpLogClient returns a client for the AgentOpLog from the given config.
+func NewAgentOpLogClient(c config) *AgentOpLogClient {
+	return &AgentOpLogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `agentoplog.Hooks(f(g(h())))`.
+func (c *AgentOpLogClient) Use(hooks ...Hook) {
+	c.hooks.AgentOpLog = append(c.hooks.AgentOpLog, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `agentoplog.Intercept(f(g(h())))`.
+func (c *AgentOpLogClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AgentOpLog = append(c.inters.AgentOpLog, interceptors...)
+}
+
+// Create returns a builder for creating a AgentOpLog entity.
+func (c *AgentOpLogClient) Create() *AgentOpLogCreate {
+	mutation := newAgentOpLogMutation(c.config, OpCreate)
+	return &AgentOpLogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AgentOpLog entities.
+func (c *AgentOpLogClient) CreateBulk(builders ...*AgentOpLogCreate) *AgentOpLogCreateBulk {
+	return &AgentOpLogCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AgentOpLogClient) MapCreateBulk(slice any, setFunc func(*AgentOpLogCreate, int)) *AgentOpLogCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AgentOpLogCreateBulk{err: fmt.Errorf("calling to AgentOpLogClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AgentOpLogCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AgentOpLogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AgentOpLog.
+func (c *AgentOpLogClient) Update() *AgentOpLogUpdate {
+	mutation := newAgentOpLogMutation(c.config, OpUpdate)
+	return &AgentOpLogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AgentOpLogClient) UpdateOne(_m *AgentOpLog) *AgentOpLogUpdateOne {
+	mutation := newAgentOpLogMutation(c.config, OpUpdateOne, withAgentOpLog(_m))
+	return &AgentOpLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AgentOpLogClient) UpdateOneID(id int64) *AgentOpLogUpdateOne {
+	mutation := newAgentOpLogMutation(c.config, OpUpdateOne, withAgentOpLogID(id))
+	return &AgentOpLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AgentOpLog.
+func (c *AgentOpLogClient) Delete() *AgentOpLogDelete {
+	mutation := newAgentOpLogMutation(c.config, OpDelete)
+	return &AgentOpLogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AgentOpLogClient) DeleteOne(_m *AgentOpLog) *AgentOpLogDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AgentOpLogClient) DeleteOneID(id int64) *AgentOpLogDeleteOne {
+	builder := c.Delete().Where(agentoplog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AgentOpLogDeleteOne{builder}
+}
+
+// Query returns a query builder for AgentOpLog.
+func (c *AgentOpLogClient) Query() *AgentOpLogQuery {
+	return &AgentOpLogQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAgentOpLog},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AgentOpLog entity by its id.
+func (c *AgentOpLogClient) Get(ctx context.Context, id int64) (*AgentOpLog, error) {
+	return c.Query().Where(agentoplog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AgentOpLogClient) GetX(ctx context.Context, id int64) *AgentOpLog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AgentOpLogClient) Hooks() []Hook {
+	hooks := c.hooks.AgentOpLog
+	return append(hooks[:len(hooks):len(hooks)], agentoplog.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *AgentOpLogClient) Interceptors() []Interceptor {
+	inters := c.inters.AgentOpLog
+	return append(inters[:len(inters):len(inters)], agentoplog.Interceptors[:]...)
+}
+
+func (c *AgentOpLogClient) mutate(ctx context.Context, m *AgentOpLogMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AgentOpLogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AgentOpLogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AgentOpLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AgentOpLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AgentOpLog mutation op: %q", m.Op())
 	}
 }
 
@@ -3909,17 +4052,19 @@ func (c *MemberVipProgressClient) mutate(ctx context.Context, m *MemberVipProgre
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentProfile,
-		AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel, MemberFixedLevel,
-		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberPeriodStats,
-		MemberProfile, MemberStats, MemberVipConfig, MemberVipIconGroup,
-		MemberVipLevel, MemberVipLevelRecord, MemberVipProgress []ent.Hook
+		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentOpLog,
+		AgentProfile, AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel,
+		MemberFixedLevel, MemberFixedLevelAssignment, MemberOAuthIdentity,
+		MemberPeriodStats, MemberProfile, MemberStats, MemberVipConfig,
+		MemberVipIconGroup, MemberVipLevel, MemberVipLevelRecord,
+		MemberVipProgress []ent.Hook
 	}
 	inters struct {
-		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentProfile,
-		AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel, MemberFixedLevel,
-		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberPeriodStats,
-		MemberProfile, MemberStats, MemberVipConfig, MemberVipIconGroup,
-		MemberVipLevel, MemberVipLevelRecord, MemberVipProgress []ent.Interceptor
+		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentOpLog,
+		AgentProfile, AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel,
+		MemberFixedLevel, MemberFixedLevelAssignment, MemberOAuthIdentity,
+		MemberPeriodStats, MemberProfile, MemberStats, MemberVipConfig,
+		MemberVipIconGroup, MemberVipLevel, MemberVipLevelRecord,
+		MemberVipProgress []ent.Interceptor
 	}
 )

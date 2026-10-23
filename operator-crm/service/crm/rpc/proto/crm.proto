@@ -94,6 +94,8 @@ service AgentService {
   rpc listAgentLoginLogs(crm_agent.ListAgentLoginLogsReq) returns (crm_agent.ListAgentLoginLogsResp);
   // group: agent
   rpc listAgentLoginAssociations(crm_agent.ListAgentLoginAssociationsReq) returns (crm_agent.ListAgentLoginAssociationsResp);
+  // group: agent
+  rpc listAgentOpLogs(crm_agent.ListAgentOpLogsReq) returns (crm_agent.ListAgentOpLogsResp);
 }
 
 // 会员自动层级服务

@@ -200,6 +200,44 @@ var (
 			},
 		},
 	}
+	// AgentOpLogColumns holds the columns for the "agent_op_log" table.
+	AgentOpLogColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
+		{Name: "agent_id", Type: field.TypeInt64, Comment: "被操作代理ID"},
+		{Name: "operator_id", Type: field.TypeInt64, Nullable: true, Comment: "操作人用户ID"},
+		{Name: "operator_account", Type: field.TypeString, Size: 64, Comment: "操作用户名", Default: ""},
+		{Name: "action", Type: field.TypeString, Size: 64, Comment: "操作项目 code"},
+		{Name: "before_value", Type: field.TypeString, Nullable: true, Size: 2000, Comment: "变更前"},
+		{Name: "after_value", Type: field.TypeString, Nullable: true, Size: 2000, Comment: "变更后"},
+		{Name: "client_ip", Type: field.TypeString, Nullable: true, Comment: "客户端IP", SchemaType: map[string]string{"postgres": "inet"}},
+		{Name: "login_device", Type: field.TypeString, Nullable: true, Size: 512, Comment: "登录设备，User-Agent"},
+		{Name: "udid", Type: field.TypeString, Nullable: true, Size: 128, Comment: "设备码"},
+		{Name: "operated_at", Type: field.TypeTime, Comment: "操作时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "result", Type: field.TypeInt64, Comment: "结果：1成功 2失败", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "fail_reason", Type: field.TypeString, Nullable: true, Size: 512, Comment: "失败原因，成功为空"},
+	}
+	// AgentOpLogTable holds the schema information for the "agent_op_log" table.
+	AgentOpLogTable = &schema.Table{
+		Name:       "agent_op_log",
+		Comment:    "代理资料变更操作日志表",
+		Columns:    AgentOpLogColumns,
+		PrimaryKey: []*schema.Column{AgentOpLogColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_agent_op_log_operator_agent_operated_at",
+				Unique:  false,
+				Columns: []*schema.Column{AgentOpLogColumns[3], AgentOpLogColumns[4], AgentOpLogColumns[13]},
+			},
+			{
+				Name:    "idx_agent_op_log_operator_operated_at",
+				Unique:  false,
+				Columns: []*schema.Column{AgentOpLogColumns[3], AgentOpLogColumns[13]},
+			},
+		},
+	}
 	// AgentProfileColumns holds the columns for the "agent_profile" table.
 	AgentProfileColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
@@ -931,6 +969,7 @@ var (
 		AgentConfigTable,
 		AgentLevelTable,
 		AgentLoginLogTable,
+		AgentOpLogTable,
 		AgentProfileTable,
 		AgentStatsTable,
 		AgentUserTable,
@@ -968,6 +1007,9 @@ func init() {
 	}
 	AgentLoginLogTable.Annotation = &entsql.Annotation{
 		Table: "agent_login_log",
+	}
+	AgentOpLogTable.Annotation = &entsql.Annotation{
+		Table: "agent_op_log",
 	}
 	AgentProfileTable.ForeignKeys[0].RefTable = AgentUserTable
 	AgentProfileTable.Annotation = &entsql.Annotation{

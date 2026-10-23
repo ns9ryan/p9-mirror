@@ -179,3 +179,9 @@ func (s *AgentServiceServer) ListAgentLoginAssociations(ctx context.Context, in 
 	l := agentservicelogic.NewListAgentLoginAssociationsLogic(ctx, s.svcCtx)
 	return l.ListAgentLoginAssociations(in)
 }
+
+// group: agent
+func (s *AgentServiceServer) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq) (*agentpb.ListAgentOpLogsResp, error) {
+	l := agentservicelogic.NewListAgentOpLogsLogic(ctx, s.svcCtx)
+	return l.ListAgentOpLogs(in)
+}

@@ -538,6 +538,7 @@ const (
 	AgentService_UpdateAgentProfile_FullMethodName          = "/crm.AgentService/updateAgentProfile"
 	AgentService_ListAgentLoginLogs_FullMethodName          = "/crm.AgentService/listAgentLoginLogs"
 	AgentService_ListAgentLoginAssociations_FullMethodName  = "/crm.AgentService/listAgentLoginAssociations"
+	AgentService_ListAgentOpLogs_FullMethodName             = "/crm.AgentService/listAgentOpLogs"
 )
 
 // AgentServiceClient is the client API for AgentService service.
@@ -598,6 +599,8 @@ type AgentServiceClient interface {
 	ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginLogsResp, error)
 	// group: agent
 	ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginAssociationsResp, error)
+	// group: agent
+	ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentOpLogsResp, error)
 }
 
 type agentServiceClient struct {
@@ -868,6 +871,16 @@ func (c *agentServiceClient) ListAgentLoginAssociations(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *agentServiceClient) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentOpLogsResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(agentpb.ListAgentOpLogsResp)
+	err := c.cc.Invoke(ctx, AgentService_ListAgentOpLogs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentServiceServer is the server API for AgentService service.
 // All implementations must embed UnimplementedAgentServiceServer
 // for forward compatibility.
@@ -926,6 +939,8 @@ type AgentServiceServer interface {
 	ListAgentLoginLogs(context.Context, *agentpb.ListAgentLoginLogsReq) (*agentpb.ListAgentLoginLogsResp, error)
 	// group: agent
 	ListAgentLoginAssociations(context.Context, *agentpb.ListAgentLoginAssociationsReq) (*agentpb.ListAgentLoginAssociationsResp, error)
+	// group: agent
+	ListAgentOpLogs(context.Context, *agentpb.ListAgentOpLogsReq) (*agentpb.ListAgentOpLogsResp, error)
 	mustEmbedUnimplementedAgentServiceServer()
 }
 
@@ -1013,6 +1028,9 @@ func (UnimplementedAgentServiceServer) ListAgentLoginLogs(context.Context, *agen
 }
 func (UnimplementedAgentServiceServer) ListAgentLoginAssociations(context.Context, *agentpb.ListAgentLoginAssociationsReq) (*agentpb.ListAgentLoginAssociationsResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListAgentLoginAssociations not implemented")
+}
+func (UnimplementedAgentServiceServer) ListAgentOpLogs(context.Context, *agentpb.ListAgentOpLogsReq) (*agentpb.ListAgentOpLogsResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListAgentOpLogs not implemented")
 }
 func (UnimplementedAgentServiceServer) mustEmbedUnimplementedAgentServiceServer() {}
 func (UnimplementedAgentServiceServer) testEmbeddedByValue()                      {}
@@ -1503,6 +1521,24 @@ func _AgentService_ListAgentLoginAssociations_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_ListAgentOpLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(agentpb.ListAgentOpLogsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).ListAgentOpLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_ListAgentOpLogs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).ListAgentOpLogs(ctx, req.(*agentpb.ListAgentOpLogsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AgentService_ServiceDesc is the grpc.ServiceDesc for AgentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1613,6 +1649,10 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "listAgentLoginAssociations",
 			Handler:    _AgentService_ListAgentLoginAssociations_Handler,
+		},
+		{
+			MethodName: "listAgentOpLogs",
+			Handler:    _AgentService_ListAgentOpLogs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

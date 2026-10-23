@@ -69,6 +69,8 @@ type (
 		ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginLogsResp, error)
 		// group: agent
 		ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginAssociationsResp, error)
+		// group: agent
+		ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentOpLogsResp, error)
 	}
 
 	defaultAgentService struct {
@@ -236,4 +238,10 @@ func (m *defaultAgentService) ListAgentLoginLogs(ctx context.Context, in *agentp
 func (m *defaultAgentService) ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginAssociationsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListAgentLoginAssociations(ctx, in, opts...)
+}
+
+// group: agent
+func (m *defaultAgentService) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentOpLogsResp, error) {
+	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
+	return client.ListAgentOpLogs(ctx, in, opts...)
 }

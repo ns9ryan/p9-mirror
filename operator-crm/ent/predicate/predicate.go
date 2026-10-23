@@ -21,6 +21,9 @@ type AgentLevel func(*sql.Selector)
 // AgentLoginLog is the predicate function for agentloginlog builders.
 type AgentLoginLog func(*sql.Selector)
 
+// AgentOpLog is the predicate function for agentoplog builders.
+type AgentOpLog func(*sql.Selector)
+
 // AgentProfile is the predicate function for agentprofile builders.
 type AgentProfile func(*sql.Selector)
 

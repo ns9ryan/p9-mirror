@@ -4173,6 +4173,293 @@ func (x *ListAgentLoginAssociationsResp) GetTotal() int64 {
 	return 0
 }
 
+// ListAgentOpLogsReq 代理资料变更操作日志列表
+type ListAgentOpLogsReq struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 被操作代理 ID，必填
+	AgentId int64 `protobuf:"varint,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	// 页码，从 1 开始
+	Page int32 `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	// 每页条数，默认 20，上限 100
+	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	// 操作时间起始 unix 秒，0 不限
+	TimeStart int64 `protobuf:"varint,4,opt,name=time_start,json=timeStart,proto3" json:"time_start,omitempty"`
+	// 操作时间结束 unix 秒，0 不限
+	TimeEnd int64 `protobuf:"varint,5,opt,name=time_end,json=timeEnd,proto3" json:"time_end,omitempty"`
+	// 结果：0 不限 1 成功 2 失败
+	Result        int32 `protobuf:"varint,6,opt,name=result,proto3" json:"result,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAgentOpLogsReq) Reset() {
+	*x = ListAgentOpLogsReq{}
+	mi := &file_types_agent_proto_msgTypes[53]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAgentOpLogsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAgentOpLogsReq) ProtoMessage() {}
+
+func (x *ListAgentOpLogsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_types_agent_proto_msgTypes[53]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAgentOpLogsReq.ProtoReflect.Descriptor instead.
+func (*ListAgentOpLogsReq) Descriptor() ([]byte, []int) {
+	return file_types_agent_proto_rawDescGZIP(), []int{53}
+}
+
+func (x *ListAgentOpLogsReq) GetAgentId() int64 {
+	if x != nil {
+		return x.AgentId
+	}
+	return 0
+}
+
+func (x *ListAgentOpLogsReq) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListAgentOpLogsReq) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListAgentOpLogsReq) GetTimeStart() int64 {
+	if x != nil {
+		return x.TimeStart
+	}
+	return 0
+}
+
+func (x *ListAgentOpLogsReq) GetTimeEnd() int64 {
+	if x != nil {
+		return x.TimeEnd
+	}
+	return 0
+}
+
+func (x *ListAgentOpLogsReq) GetResult() int32 {
+	if x != nil {
+		return x.Result
+	}
+	return 0
+}
+
+// AgentOpLogItem 代理资料变更操作日志项
+type AgentOpLogItem struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	AgentId         int64                  `protobuf:"varint,2,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	OperatorId      int64                  `protobuf:"varint,3,opt,name=operator_id,json=operatorId,proto3" json:"operator_id,omitempty"`
+	OperatorAccount string                 `protobuf:"bytes,4,opt,name=operator_account,json=operatorAccount,proto3" json:"operator_account,omitempty"`
+	Action          string                 `protobuf:"bytes,5,opt,name=action,proto3" json:"action,omitempty"`
+	BeforeValue     string                 `protobuf:"bytes,6,opt,name=before_value,json=beforeValue,proto3" json:"before_value,omitempty"`
+	AfterValue      string                 `protobuf:"bytes,7,opt,name=after_value,json=afterValue,proto3" json:"after_value,omitempty"`
+	ClientIp        string                 `protobuf:"bytes,8,opt,name=client_ip,json=clientIp,proto3" json:"client_ip,omitempty"`
+	LoginDevice     string                 `protobuf:"bytes,9,opt,name=login_device,json=loginDevice,proto3" json:"login_device,omitempty"`
+	Udid            string                 `protobuf:"bytes,10,opt,name=udid,proto3" json:"udid,omitempty"`
+	// 操作时间 unix 秒
+	OperatedAt int64 `protobuf:"varint,11,opt,name=operated_at,json=operatedAt,proto3" json:"operated_at,omitempty"`
+	// 1成功 2失败
+	Result        int32  `protobuf:"varint,12,opt,name=result,proto3" json:"result,omitempty"`
+	FailReason    string `protobuf:"bytes,13,opt,name=fail_reason,json=failReason,proto3" json:"fail_reason,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AgentOpLogItem) Reset() {
+	*x = AgentOpLogItem{}
+	mi := &file_types_agent_proto_msgTypes[54]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AgentOpLogItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AgentOpLogItem) ProtoMessage() {}
+
+func (x *AgentOpLogItem) ProtoReflect() protoreflect.Message {
+	mi := &file_types_agent_proto_msgTypes[54]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AgentOpLogItem.ProtoReflect.Descriptor instead.
+func (*AgentOpLogItem) Descriptor() ([]byte, []int) {
+	return file_types_agent_proto_rawDescGZIP(), []int{54}
+}
+
+func (x *AgentOpLogItem) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *AgentOpLogItem) GetAgentId() int64 {
+	if x != nil {
+		return x.AgentId
+	}
+	return 0
+}
+
+func (x *AgentOpLogItem) GetOperatorId() int64 {
+	if x != nil {
+		return x.OperatorId
+	}
+	return 0
+}
+
+func (x *AgentOpLogItem) GetOperatorAccount() string {
+	if x != nil {
+		return x.OperatorAccount
+	}
+	return ""
+}
+
+func (x *AgentOpLogItem) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+func (x *AgentOpLogItem) GetBeforeValue() string {
+	if x != nil {
+		return x.BeforeValue
+	}
+	return ""
+}
+
+func (x *AgentOpLogItem) GetAfterValue() string {
+	if x != nil {
+		return x.AfterValue
+	}
+	return ""
+}
+
+func (x *AgentOpLogItem) GetClientIp() string {
+	if x != nil {
+		return x.ClientIp
+	}
+	return ""
+}
+
+func (x *AgentOpLogItem) GetLoginDevice() string {
+	if x != nil {
+		return x.LoginDevice
+	}
+	return ""
+}
+
+func (x *AgentOpLogItem) GetUdid() string {
+	if x != nil {
+		return x.Udid
+	}
+	return ""
+}
+
+func (x *AgentOpLogItem) GetOperatedAt() int64 {
+	if x != nil {
+		return x.OperatedAt
+	}
+	return 0
+}
+
+func (x *AgentOpLogItem) GetResult() int32 {
+	if x != nil {
+		return x.Result
+	}
+	return 0
+}
+
+func (x *AgentOpLogItem) GetFailReason() string {
+	if x != nil {
+		return x.FailReason
+	}
+	return ""
+}
+
+// ListAgentOpLogsResp 代理资料变更操作日志列表响应
+type ListAgentOpLogsResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*AgentOpLogItem      `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAgentOpLogsResp) Reset() {
+	*x = ListAgentOpLogsResp{}
+	mi := &file_types_agent_proto_msgTypes[55]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAgentOpLogsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAgentOpLogsResp) ProtoMessage() {}
+
+func (x *ListAgentOpLogsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_types_agent_proto_msgTypes[55]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAgentOpLogsResp.ProtoReflect.Descriptor instead.
+func (*ListAgentOpLogsResp) Descriptor() ([]byte, []int) {
+	return file_types_agent_proto_rawDescGZIP(), []int{55}
+}
+
+func (x *ListAgentOpLogsResp) GetItems() []*AgentOpLogItem {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *ListAgentOpLogsResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
 var File_types_agent_proto protoreflect.FileDescriptor
 
 const file_types_agent_proto_rawDesc = "" +
@@ -4546,6 +4833,36 @@ const file_types_agent_proto_rawDesc = "" +
 	"\x17same_device_agent_count\x18\v \x01(\x03R\x14sameDeviceAgentCount\"r\n" +
 	"\x1eListAgentLoginAssociationsResp\x12:\n" +
 	"\x05items\x18\x01 \x03(\v2$.crm_agent.AgentLoginAssociationItemR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\"\xb2\x01\n" +
+	"\x12ListAgentOpLogsReq\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\x03R\aagentId\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"time_start\x18\x04 \x01(\x03R\ttimeStart\x12\x19\n" +
+	"\btime_end\x18\x05 \x01(\x03R\atimeEnd\x12\x16\n" +
+	"\x06result\x18\x06 \x01(\x05R\x06result\"\x91\x03\n" +
+	"\x0eAgentOpLogItem\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x19\n" +
+	"\bagent_id\x18\x02 \x01(\x03R\aagentId\x12\x1f\n" +
+	"\voperator_id\x18\x03 \x01(\x03R\n" +
+	"operatorId\x12)\n" +
+	"\x10operator_account\x18\x04 \x01(\tR\x0foperatorAccount\x12\x16\n" +
+	"\x06action\x18\x05 \x01(\tR\x06action\x12!\n" +
+	"\fbefore_value\x18\x06 \x01(\tR\vbeforeValue\x12\x1f\n" +
+	"\vafter_value\x18\a \x01(\tR\n" +
+	"afterValue\x12\x1b\n" +
+	"\tclient_ip\x18\b \x01(\tR\bclientIp\x12!\n" +
+	"\flogin_device\x18\t \x01(\tR\vloginDevice\x12\x12\n" +
+	"\x04udid\x18\n" +
+	" \x01(\tR\x04udid\x12\x1f\n" +
+	"\voperated_at\x18\v \x01(\x03R\n" +
+	"operatedAt\x12\x16\n" +
+	"\x06result\x18\f \x01(\x05R\x06result\x12\x1f\n" +
+	"\vfail_reason\x18\r \x01(\tR\n" +
+	"failReason\"\\\n" +
+	"\x13ListAgentOpLogsResp\x12/\n" +
+	"\x05items\x18\x01 \x03(\v2\x19.crm_agent.AgentOpLogItemR\x05items\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x03R\x05totalB@Z>oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpbb\x06proto3"
 
 var (
@@ -4560,7 +4877,7 @@ func file_types_agent_proto_rawDescGZIP() []byte {
 	return file_types_agent_proto_rawDescData
 }
 
-var file_types_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 53)
+var file_types_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 56)
 var file_types_agent_proto_goTypes = []any{
 	(*AgentLevelItem)(nil),                 // 0: crm_agent.AgentLevelItem
 	(*UpdateAgentLevelsReq)(nil),           // 1: crm_agent.UpdateAgentLevelsReq
@@ -4615,6 +4932,9 @@ var file_types_agent_proto_goTypes = []any{
 	(*ListAgentLoginAssociationsReq)(nil),  // 50: crm_agent.ListAgentLoginAssociationsReq
 	(*AgentLoginAssociationItem)(nil),      // 51: crm_agent.AgentLoginAssociationItem
 	(*ListAgentLoginAssociationsResp)(nil), // 52: crm_agent.ListAgentLoginAssociationsResp
+	(*ListAgentOpLogsReq)(nil),             // 53: crm_agent.ListAgentOpLogsReq
+	(*AgentOpLogItem)(nil),                 // 54: crm_agent.AgentOpLogItem
+	(*ListAgentOpLogsResp)(nil),            // 55: crm_agent.ListAgentOpLogsResp
 }
 var file_types_agent_proto_depIdxs = []int32{
 	0,  // 0: crm_agent.UpdateAgentLevelsReq.items:type_name -> crm_agent.AgentLevelItem
@@ -4633,11 +4953,12 @@ var file_types_agent_proto_depIdxs = []int32{
 	30, // 13: crm_agent.ReviewAgentApplyResp.apply:type_name -> crm_agent.AgentApplyItem
 	48, // 14: crm_agent.ListAgentLoginLogsResp.items:type_name -> crm_agent.AgentLoginLogItem
 	51, // 15: crm_agent.ListAgentLoginAssociationsResp.items:type_name -> crm_agent.AgentLoginAssociationItem
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	54, // 16: crm_agent.ListAgentOpLogsResp.items:type_name -> crm_agent.AgentOpLogItem
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_types_agent_proto_init() }
@@ -4653,7 +4974,7 @@ func file_types_agent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_agent_proto_rawDesc), len(file_types_agent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   53,
+			NumMessages:   56,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

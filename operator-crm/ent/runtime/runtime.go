@@ -11,6 +11,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
 	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
+	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
 	"oa.98ent.com/p9/operator-crm/ent/agentprofile"
 	"oa.98ent.com/p9/operator-crm/ent/agentstats"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
@@ -513,6 +514,122 @@ func init() {
 	agentloginlogDescResult := agentloginlogFields[10].Descriptor()
 	// agentloginlog.ResultValidator is a validator for the "result" field. It is called by the builders before save.
 	agentloginlog.ResultValidator = agentloginlogDescResult.Validators[0].(func(int64) error)
+	agentoplogMixin := schema.AgentOpLog{}.Mixin()
+	agentoplogMixinHooks2 := agentoplogMixin[2].Hooks()
+	agentoplog.Hooks[0] = agentoplogMixinHooks2[0]
+	agentoplogMixinInters2 := agentoplogMixin[2].Interceptors()
+	agentoplog.Interceptors[0] = agentoplogMixinInters2[0]
+	agentoplogMixinFields1 := agentoplogMixin[1].Fields()
+	_ = agentoplogMixinFields1
+	agentoplogMixinFields2 := agentoplogMixin[2].Fields()
+	_ = agentoplogMixinFields2
+	agentoplogFields := schema.AgentOpLog{}.Fields()
+	_ = agentoplogFields
+	// agentoplogDescCreatedAt is the schema descriptor for created_at field.
+	agentoplogDescCreatedAt := agentoplogMixinFields1[0].Descriptor()
+	// agentoplog.DefaultCreatedAt holds the default value on creation for the created_at field.
+	agentoplog.DefaultCreatedAt = agentoplogDescCreatedAt.Default.(func() time.Time)
+	// agentoplogDescUpdatedAt is the schema descriptor for updated_at field.
+	agentoplogDescUpdatedAt := agentoplogMixinFields1[1].Descriptor()
+	// agentoplog.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	agentoplog.DefaultUpdatedAt = agentoplogDescUpdatedAt.Default.(func() time.Time)
+	// agentoplog.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	agentoplog.UpdateDefaultUpdatedAt = agentoplogDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// agentoplogDescOperatorCode is the schema descriptor for operator_code field.
+	agentoplogDescOperatorCode := agentoplogMixinFields2[0].Descriptor()
+	// agentoplog.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	agentoplog.OperatorCodeValidator = func() func(string) error {
+		validators := agentoplogDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentoplogDescOperatorAccount is the schema descriptor for operator_account field.
+	agentoplogDescOperatorAccount := agentoplogFields[2].Descriptor()
+	// agentoplog.DefaultOperatorAccount holds the default value on creation for the operator_account field.
+	agentoplog.DefaultOperatorAccount = agentoplogDescOperatorAccount.Default.(string)
+	// agentoplog.OperatorAccountValidator is a validator for the "operator_account" field. It is called by the builders before save.
+	agentoplog.OperatorAccountValidator = agentoplogDescOperatorAccount.Validators[0].(func(string) error)
+	// agentoplogDescAction is the schema descriptor for action field.
+	agentoplogDescAction := agentoplogFields[3].Descriptor()
+	// agentoplog.ActionValidator is a validator for the "action" field. It is called by the builders before save.
+	agentoplog.ActionValidator = func() func(string) error {
+		validators := agentoplogDescAction.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(action string) error {
+			for _, fn := range fns {
+				if err := fn(action); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentoplogDescBeforeValue is the schema descriptor for before_value field.
+	agentoplogDescBeforeValue := agentoplogFields[4].Descriptor()
+	// agentoplog.BeforeValueValidator is a validator for the "before_value" field. It is called by the builders before save.
+	agentoplog.BeforeValueValidator = agentoplogDescBeforeValue.Validators[0].(func(string) error)
+	// agentoplogDescAfterValue is the schema descriptor for after_value field.
+	agentoplogDescAfterValue := agentoplogFields[5].Descriptor()
+	// agentoplog.AfterValueValidator is a validator for the "after_value" field. It is called by the builders before save.
+	agentoplog.AfterValueValidator = agentoplogDescAfterValue.Validators[0].(func(string) error)
+	// agentoplogDescLoginDevice is the schema descriptor for login_device field.
+	agentoplogDescLoginDevice := agentoplogFields[7].Descriptor()
+	// agentoplog.LoginDeviceValidator is a validator for the "login_device" field. It is called by the builders before save.
+	agentoplog.LoginDeviceValidator = func() func(string) error {
+		validators := agentoplogDescLoginDevice.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(login_device string) error {
+			for _, fn := range fns {
+				if err := fn(login_device); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentoplogDescUdid is the schema descriptor for udid field.
+	agentoplogDescUdid := agentoplogFields[8].Descriptor()
+	// agentoplog.UdidValidator is a validator for the "udid" field. It is called by the builders before save.
+	agentoplog.UdidValidator = func() func(string) error {
+		validators := agentoplogDescUdid.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(udid string) error {
+			for _, fn := range fns {
+				if err := fn(udid); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentoplogDescResult is the schema descriptor for result field.
+	agentoplogDescResult := agentoplogFields[10].Descriptor()
+	// agentoplog.ResultValidator is a validator for the "result" field. It is called by the builders before save.
+	agentoplog.ResultValidator = agentoplogDescResult.Validators[0].(func(int64) error)
+	// agentoplogDescFailReason is the schema descriptor for fail_reason field.
+	agentoplogDescFailReason := agentoplogFields[11].Descriptor()
+	// agentoplog.FailReasonValidator is a validator for the "fail_reason" field. It is called by the builders before save.
+	agentoplog.FailReasonValidator = agentoplogDescFailReason.Validators[0].(func(string) error)
 	agentprofileMixin := schema.AgentProfile{}.Mixin()
 	agentprofileMixinHooks2 := agentprofileMixin[2].Hooks()
 	agentprofile.Hooks[0] = agentprofileMixinHooks2[0]

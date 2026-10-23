@@ -54,23 +54,30 @@ func (s *Service) ResetLoginPassword(ctx context.Context, req *agentpb.ResetLogi
 	if req == nil {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
-	row, err := s.loadAgent(ctx, req.GetAgentId())
+	agentID := req.GetAgentId()
+	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
+		s.recordOpFail(ctx, agentID, opActionResetLoginPassword, "", "", err)
 		return nil, err
 	}
 	plain, err := utils.GenRandomPassword(16)
 	if err != nil {
+		s.recordOpFail(ctx, row.ID, opActionResetLoginPassword, opPasswordMask, opPasswordMask, err)
 		return nil, err
 	}
 	hashed, err := dao.HashPassword(plain)
 	if err != nil {
+		s.recordOpFail(ctx, row.ID, opActionResetLoginPassword, opPasswordMask, opPasswordMask, err)
 		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetLoginPasswordHash(hashed).
 		Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, opActionResetLoginPassword, opPasswordMask, opPasswordMask, err)
+		return nil, err
 	}
+	s.recordOpOK(ctx, row.ID, opActionResetLoginPassword, opPasswordMask, opPasswordMask)
 	return &agentpb.ResetLoginPasswordResp{Password: plain}, nil
 }
 
@@ -88,25 +95,35 @@ func (s *Service) UpdateLoginPassword(ctx context.Context, req *agentpb.UpdateLo
 	if c == nil || c.UserID <= 0 || strings.TrimSpace(c.OperatorCode) == "" || c.Salt == "" {
 		return nil, xerr.Unauthorized(i18n.Unauthorized)
 	}
-	row, err := s.loadAgent(ctx, c.UserID)
+	agentID := c.UserID
+	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
+		s.recordOpFail(ctx, agentID, opActionUpdateLoginPassword, opPasswordMask, opPasswordMask, err)
 		return nil, err
 	}
 	if row.Status != statusNormal || row.Salt != c.Salt {
-		return nil, xerr.Unauthorized(i18n.Unauthorized)
+		err = xerr.Unauthorized(i18n.Unauthorized)
+		s.recordOpFail(ctx, row.ID, opActionUpdateLoginPassword, opPasswordMask, opPasswordMask, err)
+		return nil, err
 	}
 	if !dao.CheckPassword(row.LoginPasswordHash, oldPw) {
-		return nil, xerr.Unauthorized(i18n.AuthPasswordIncorrect)
+		err = xerr.Unauthorized(i18n.AuthPasswordIncorrect)
+		s.recordOpFail(ctx, row.ID, opActionUpdateLoginPassword, opPasswordMask, opPasswordMask, err)
+		return nil, err
 	}
 	hashed, err := dao.HashPassword(newPw)
 	if err != nil {
+		s.recordOpFail(ctx, row.ID, opActionUpdateLoginPassword, opPasswordMask, opPasswordMask, err)
 		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetLoginPasswordHash(hashed).
 		Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, opActionUpdateLoginPassword, opPasswordMask, opPasswordMask, err)
+		return nil, err
 	}
+	s.recordOpOK(ctx, row.ID, opActionUpdateLoginPassword, opPasswordMask, opPasswordMask)
 	return &agentpb.Empty{}, nil
 }
 
@@ -115,19 +132,25 @@ func (s *Service) UpdateWithdrawPassword(ctx context.Context, req *agentpb.Updat
 	if req == nil || strings.TrimSpace(req.GetPassword()) == "" {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
-	row, err := s.loadAgent(ctx, req.GetAgentId())
+	agentID := req.GetAgentId()
+	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
+		s.recordOpFail(ctx, agentID, opActionUpdateWithdrawPassword, opPasswordMask, opPasswordMask, err)
 		return nil, err
 	}
 	hashed, err := dao.HashPassword(strings.TrimSpace(req.GetPassword()))
 	if err != nil {
+		s.recordOpFail(ctx, row.ID, opActionUpdateWithdrawPassword, opPasswordMask, opPasswordMask, err)
 		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetWithdrawPasswordHash(hashed).
 		Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, opActionUpdateWithdrawPassword, opPasswordMask, opPasswordMask, err)
+		return nil, err
 	}
+	s.recordOpOK(ctx, row.ID, opActionUpdateWithdrawPassword, opPasswordMask, opPasswordMask)
 	return &agentpb.Empty{}, nil
 }
 
@@ -136,26 +159,35 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 	if req == nil {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
+	agentID := req.GetAgentId()
 	share := int64(req.GetShareRate())
+	after := formatInt64(share)
 	if share < 0 || share > maxShareRate {
-		return nil, xerr.BadRequest(i18n.AgentShareRateInvalid)
-	}
-	row, err := s.loadAgent(ctx, req.GetAgentId())
-	if err != nil {
+		err := xerr.BadRequest(i18n.AgentShareRateInvalid)
+		s.recordOpFail(ctx, agentID, opActionShareRate, "", after, err)
 		return nil, err
 	}
+	row, err := s.loadAgent(ctx, agentID)
+	if err != nil {
+		s.recordOpFail(ctx, agentID, opActionShareRate, "", after, err)
+		return nil, err
+	}
+	before := formatInt64(row.ShareRate)
 	if row.ParentID != nil {
 		parent, err := s.DB.AgentUser.Query().
 			Where(agentuser.IDEQ(*row.ParentID)).
 			Only(ctx)
 		if err != nil {
 			if ent.IsNotFound(err) {
-				return nil, xerr.BadRequest(i18n.AgentParentNotFound)
+				err = xerr.BadRequest(i18n.AgentParentNotFound)
 			}
+			s.recordOpFail(ctx, row.ID, opActionShareRate, before, after, err)
 			return nil, err
 		}
 		if share > parent.ShareRate {
-			return nil, xerr.BadRequest(i18n.AgentShareRateExceedParent)
+			err = xerr.BadRequest(i18n.AgentShareRateExceedParent)
+			s.recordOpFail(ctx, row.ID, opActionShareRate, before, after, err)
+			return nil, err
 		}
 	}
 	var childMax []struct {
@@ -165,20 +197,25 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 		Where(agentuser.ParentIDEQ(row.ID)).
 		Aggregate(ent.As(ent.Max(agentuser.FieldShareRate), "max")).
 		Scan(ctx, &childMax); err != nil {
+		s.recordOpFail(ctx, row.ID, opActionShareRate, before, after, err)
 		return nil, err
 	}
 	if len(childMax) > 0 && childMax[0].Max.Valid && share < childMax[0].Max.Int64 {
-		return nil, xerr.BadRequest(i18n.AgentShareRateBelowChild)
+		err = xerr.BadRequest(i18n.AgentShareRateBelowChild)
+		s.recordOpFail(ctx, row.ID, opActionShareRate, before, after, err)
+		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetShareRate(share).
 		Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, opActionShareRate, before, after, err)
+		return nil, err
 	}
-	// 修改占层比例后，刷新内存树缓存
 	if _, op, oerr := requireOperator(ctx); oerr == nil {
 		s.invalidateTree(op)
 	}
+	s.recordOpOK(ctx, row.ID, opActionShareRate, before, after)
 	return &agentpb.Empty{}, nil
 }
 
@@ -187,19 +224,28 @@ func (s *Service) UpdatePayoutRestricted(ctx context.Context, req *agentpb.Updat
 	if req == nil {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
+	agentID := req.GetAgentId()
 	v := int64(req.GetPayoutRestricted())
+	after := formatInt64(v)
 	if v < payoutNormal || v > payoutLineRestricted {
-		return nil, xerr.BadRequest(i18n.InvalidParam)
-	}
-	row, err := s.loadAgent(ctx, req.GetAgentId())
-	if err != nil {
+		err := xerr.BadRequest(i18n.InvalidParam)
+		s.recordOpFail(ctx, agentID, opActionPayoutRestricted, "", after, err)
 		return nil, err
 	}
+	row, err := s.loadAgent(ctx, agentID)
+	if err != nil {
+		s.recordOpFail(ctx, agentID, opActionPayoutRestricted, "", after, err)
+		return nil, err
+	}
+	before := formatInt64(row.PayoutRestricted)
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetPayoutRestricted(v).
 		Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, opActionPayoutRestricted, before, after, err)
+		return nil, err
 	}
+	s.recordOpOK(ctx, row.ID, opActionPayoutRestricted, before, after)
 	return &agentpb.Empty{}, nil
 }
 
@@ -208,19 +254,28 @@ func (s *Service) UpdateStatus(ctx context.Context, req *agentpb.UpdateAgentStat
 	if req == nil {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
+	agentID := req.GetAgentId()
 	v := int64(req.GetStatus())
+	after := formatInt64(v)
 	if v < statusNormal || v > statusDisabled {
-		return nil, xerr.BadRequest(i18n.InvalidParam)
-	}
-	row, err := s.loadAgent(ctx, req.GetAgentId())
-	if err != nil {
+		err := xerr.BadRequest(i18n.InvalidParam)
+		s.recordOpFail(ctx, agentID, opActionStatus, "", after, err)
 		return nil, err
 	}
+	row, err := s.loadAgent(ctx, agentID)
+	if err != nil {
+		s.recordOpFail(ctx, agentID, opActionStatus, "", after, err)
+		return nil, err
+	}
+	before := formatInt64(row.Status)
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetStatus(v).
 		Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, opActionStatus, before, after, err)
+		return nil, err
 	}
+	s.recordOpOK(ctx, row.ID, opActionStatus, before, after)
 	return &agentpb.Empty{}, nil
 }
 
@@ -229,14 +284,19 @@ func (s *Service) UpdateRemark(ctx context.Context, req *agentpb.UpdateAgentRema
 	if req == nil {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
+	agentID := req.GetAgentId()
 	remark := strings.TrimSpace(req.GetRemark())
 	if utf8.RuneCountInString(remark) > 1000 {
-		return nil, xerr.BadRequest(i18n.InvalidParam)
-	}
-	row, err := s.loadAgent(ctx, req.GetAgentId())
-	if err != nil {
+		err := xerr.BadRequest(i18n.InvalidParam)
+		s.recordOpFail(ctx, agentID, opActionRemark, "", remark, err)
 		return nil, err
 	}
+	row, err := s.loadAgent(ctx, agentID)
+	if err != nil {
+		s.recordOpFail(ctx, agentID, opActionRemark, "", remark, err)
+		return nil, err
+	}
+	before := ptrStr(row.Remark)
 	upd := s.DB.AgentUser.UpdateOneID(row.ID)
 	if remark == "" {
 		upd.ClearRemark()
@@ -244,8 +304,11 @@ func (s *Service) UpdateRemark(ctx context.Context, req *agentpb.UpdateAgentRema
 		upd.SetRemark(remark)
 	}
 	if err = upd.Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, opActionRemark, before, remark, err)
+		return nil, err
 	}
+	s.recordOpOK(ctx, row.ID, opActionRemark, before, remark)
 	return &agentpb.Empty{}, nil
 }
 
@@ -254,44 +317,67 @@ func (s *Service) UpdateProfile(ctx context.Context, req *agentpb.UpdateAgentPro
 	if req == nil {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
+	agentID := req.GetAgentId()
 	ft := req.GetFieldType()
 	if ft < profileFieldAll || ft > profileFieldEmail {
-		return nil, xerr.BadRequest(i18n.InvalidParam)
+		err := xerr.BadRequest(i18n.InvalidParam)
+		s.recordOpFail(ctx, agentID, opActionProfile, "", "", err)
+		return nil, err
 	}
-	// 验证手机号是否合法
 	if (ft == profileFieldMobile || ft == profileFieldAll) && req.GetMobile() != "" {
 		if !utils.ValidPhone(req.GetMobile()) {
-			return nil, xerr.BadRequest(i18n.InvalidPhone)
+			err := xerr.BadRequest(i18n.InvalidPhone)
+			action := opActionProfile
+			if ft == profileFieldMobile {
+				action = opActionProfileMobile
+			}
+			s.recordOpFail(ctx, agentID, action, "", req.GetMobile(), err)
+			return nil, err
 		}
 	}
-	row, err := s.loadAgent(ctx, req.GetAgentId())
+	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
+		s.recordOpFail(ctx, agentID, profileActionOf(ft), "", "", err)
 		return nil, err
 	}
 	profile, err := row.QueryProfile().Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil, xerr.NotFound(i18n.AgentNotFound)
+			err = xerr.NotFound(i18n.AgentNotFound)
 		}
+		s.recordOpFail(ctx, row.ID, profileActionOf(ft), "", "", err)
 		return nil, err
 	}
+	beforeVals := profileFieldValues(profile)
 	upd := s.DB.AgentProfile.UpdateOneID(profile.ID)
 	fields := profileUpdates(req)
 	if ft == profileFieldAll {
 		for _, item := range fields {
 			if err = item.apply(upd); err != nil {
+				s.recordOpFail(ctx, row.ID, opActionProfile, "", "", err)
 				return nil, err
 			}
 		}
 	} else if err = fields[ft-1].apply(upd); err != nil {
+		s.recordOpFail(ctx, row.ID, profileOpActions[ft-1], beforeVals[ft-1], strings.TrimSpace(fields[ft-1].value), err)
 		return nil, err
 	}
 	if err = upd.Exec(ctx); err != nil {
-		return nil, mapEntErr(err)
+		err = mapEntErr(err)
+		s.recordOpFail(ctx, row.ID, profileActionOf(ft), "", "", err)
+		return nil, err
 	}
 	row, err = s.loadAgent(ctx, row.ID)
 	if err != nil {
+		s.recordOpFail(ctx, agentID, profileActionOf(ft), "", "", err)
 		return nil, err
+	}
+	afterVals := profileFieldValues(row.Edges.Profile)
+	if ft == profileFieldAll {
+		b, a := profileJSONDiff(beforeVals, afterVals)
+		s.recordOpOK(ctx, row.ID, opActionProfile, b, a)
+	} else {
+		s.recordOpOK(ctx, row.ID, profileOpActions[ft-1], beforeVals[ft-1], afterVals[ft-1])
 	}
 	return s.toProfile(ctx, row)
 }
@@ -303,17 +389,14 @@ type profileField struct {
 	clear func(*ent.AgentProfileUpdateOne) *ent.AgentProfileUpdateOne
 }
 
-// 应用代理资料更新
 func (f profileField) apply(upd *ent.AgentProfileUpdateOne) error {
 	v := strings.TrimSpace(f.value)
 	if v == "" {
-		// 如果值为空，并且有清除函数，则调用清除函数
 		if f.clear != nil {
 			f.clear(upd)
 		}
 		return nil
 	}
-	// 如果值长度超过最大长度，则返回错误
 	if utf8.RuneCountInString(v) > f.max {
 		return xerr.BadRequest(i18n.InvalidParam)
 	}
@@ -321,7 +404,6 @@ func (f profileField) apply(upd *ent.AgentProfileUpdateOne) error {
 	return nil
 }
 
-// 生成代理资料更新列表， clear为清除函数，nil则不执行清除操作
 func profileUpdates(req *agentpb.UpdateAgentProfileReq) []profileField {
 	return []profileField{
 		{req.GetAvatarUrl(), 255, (*ent.AgentProfileUpdateOne).SetAvatarURL, (*ent.AgentProfileUpdateOne).ClearAvatarURL},
@@ -339,7 +421,6 @@ func profileUpdates(req *agentpb.UpdateAgentProfileReq) []profileField {
 	}
 }
 
-// 加载代理资料 user+profile信息 包含代理资料和上级代理信息
 func (s *Service) loadAgent(ctx context.Context, id int64) (*ent.AgentUser, error) {
 	if id <= 0 {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
