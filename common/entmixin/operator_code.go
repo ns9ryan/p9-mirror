@@ -26,7 +26,8 @@ func (OperatorCodeMixin) Fields() []ent.Field {
 	}
 }
 
-// Interceptors 分站编码拦截器
+// Interceptors 分站编码拦截器， 此处拦截器不会生效，因为q不是Query接口，所以需要业务侧自行注册拦截器
+// 可参考core项目rpc的service_context.go设置拦截器 c.User.Intercept(fOperatorCode)
 func (OperatorCodeMixin) Interceptors() []ent.Interceptor {
 	return []ent.Interceptor{
 		ent.TraverseFunc(func(ctx context.Context, q ent.Query) error {

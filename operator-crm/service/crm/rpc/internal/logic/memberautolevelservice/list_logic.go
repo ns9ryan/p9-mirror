@@ -2,10 +2,10 @@ package memberautolevelservicelogic
 
 import (
 	"context"
-	"math"
 
 	"github.com/zeromicro/go-zero/core/logx"
 
+	"oa.98ent.com/p9/common/paging"
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
@@ -17,12 +17,14 @@ const (
 	maxPageSize     int64 = 100 // 最大每页数量
 )
 
+// ListLogic 自动层级列表逻辑
 type ListLogic struct {
-	ctx         context.Context     // 请求上下文
-	svcCtx      *svc.ServiceContext // 服务依赖
-	logx.Logger                     // 日志
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
 }
 
+// NewListLogic 创建自动层级列表逻辑
 func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	return &ListLogic{
 		ctx:    ctx,
@@ -33,30 +35,14 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 
 // List 获取自动层级列表
 func (l *ListLogic) List(in *memberautolevelpb.ListMemberAutoLevelsRequest) (*memberautolevelpb.ListMemberAutoLevelsResponse, error) {
-	if in == nil {
-		in = &memberautolevelpb.ListMemberAutoLevelsRequest{}
-	}
-
-	// 页码
-	page := max(in.GetPage(), int64(1))
-
-	// 每页数量
-	pageSize := in.GetPageSize()
-	switch {
-	case pageSize <= 0:
-		pageSize = defaultPageSize
-	case pageSize > maxPageSize:
-		pageSize = maxPageSize
-	}
-
-	// 计算分页偏移量
-	if page-1 > int64(math.MaxInt)/pageSize {
+	// 分页参数
+	offset, limit, ok := paging.OffsetLimit(in.GetPage(), in.GetPageSize())
+	if !ok {
 		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
-	offset := int((page - 1) * pageSize)
 
-	// 查询自动层级
-	levels, total, err := l.svcCtx.DAO.MemberAutoLevel.List(l.ctx, in.GetName(), offset, int(pageSize))
+	// 获取自动层级分页列表
+	levels, total, err := l.svcCtx.DAO.MemberAutoLevel.List(l.ctx, in.GetName(), offset, limit)
 	if err != nil {
 		return nil, xerr.RpcErr(err)
 	}
@@ -67,8 +53,8 @@ func (l *ListLogic) List(in *memberautolevelpb.ListMemberAutoLevelsRequest) (*me
 		levelIDs = append(levelIDs, level.ID)
 	}
 
-	// 批量统计各层级会员数
-	memberCounts, err := l.svcCtx.DAO.MemberAutoLevel.CountMembersByLevelIDs(l.ctx, levelIDs)
+	// 统计指定自动层级的会员数
+	memberCounts, err := l.svcCtx.DAO.MemberAutoLevel.MemberCounts(l.ctx, levelIDs)
 	if err != nil {
 		return nil, xerr.RpcErr(err)
 	}
