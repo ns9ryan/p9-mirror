@@ -13,12 +13,14 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberautolevelpb"
 )
 
+// CreateLogic 自动层级创建逻辑
 type CreateLogic struct {
-	ctx         context.Context     // 请求上下文
-	svcCtx      *svc.ServiceContext // 服务依赖
-	logx.Logger                     // 日志
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
 }
 
+// NewCreateLogic 创建自动层级创建逻辑
 func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogic {
 	return &CreateLogic{
 		ctx:    ctx,
@@ -39,7 +41,20 @@ func (l *CreateLogic) Create(in *memberautolevelpb.CreateMemberAutoLevelRequest)
 		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
 
-	// 创建自动层级
+	// 校验晋级条件, 两项门槛必须严格大于当前厅所有已有层级
+	conflict, err := l.svcCtx.DAO.MemberAutoLevel.HasThresholdConflict(
+		l.ctx,
+		in.MinDeposit,
+		in.MinWater,
+	)
+	if err != nil {
+		return nil, xerr.RpcErr(err)
+	}
+	if conflict {
+		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
+	}
+
+	// 创建会员自动层级
 	level, err := l.svcCtx.DAO.MemberAutoLevel.Create(
 		l.ctx,
 		name,          // 自动层级名称

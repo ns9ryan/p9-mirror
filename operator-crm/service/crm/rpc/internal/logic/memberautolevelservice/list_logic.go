@@ -12,11 +12,6 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberautolevelpb"
 )
 
-const (
-	defaultPageSize int64 = 20  // 默认每页数量
-	maxPageSize     int64 = 100 // 最大每页数量
-)
-
 // ListLogic 自动层级列表逻辑
 type ListLogic struct {
 	ctx    context.Context
