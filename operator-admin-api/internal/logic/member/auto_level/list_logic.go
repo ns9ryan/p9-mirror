@@ -19,6 +19,7 @@ type ListLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
+// NewListLogic 创建自动层级列表逻辑
 func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	return &ListLogic{
 		Logger: logx.WithContext(ctx),
@@ -29,17 +30,32 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 
 // List 获取自动层级列表
 func (l *ListLogic) List(req *types.ListMemberAutoLevelsRequest) (resp *types.ListMemberAutoLevelsResponse, err error) {
-	if req == nil {
-		req = &types.ListMemberAutoLevelsRequest{}
+	// 查询自动层级
+	rpcResp, err := l.svcCtx.MemberAutoLevelRpc.List(l.ctx, &memberautolevelpb.ListMemberAutoLevelsRequest{
+		Page:     req.Page,     // 当前页码, 从1开始
+		PageSize: req.PageSize, // 分页数量
+		Name:     &req.Name,    // 层级名称, 模糊查询
+	})
+	if err != nil {
+		return nil, err
 	}
 
-	// 构建RPC请求
-	rpcReq := &memberautolevelpb.ListMemberAutoLevelsRequest{
-		Page:     req.Page,
-		PageSize: req.PageSize,
+	// 组装自动层级列表
+	list := make([]types.MemberAutoLevelInfo, 0, len(rpcResp.GetList()))
+	for _, level := range rpcResp.GetList() {
+		list = append(list, types.MemberAutoLevelInfo{
+			Id:                 level.Id,                 // 层级ID
+			Name:               level.Name,               // 层级名称
+			MinDeposit:         level.MinDeposit,         // 最低累计存款
+			MinWater:           level.MinWater,           // 最低累计洗码量
+			CurrentMemberCount: level.CurrentMemberCount, // 当前会员数
+			CreatedAt:          level.CreatedAt,          // 创建时间
+			UpdatedAt:          level.UpdatedAt,          // 更新时间
+		})
 	}
-	if req.Name != "" {
-		rpcReq.Name = &req.Name
-	}
-	return
+
+	return &types.ListMemberAutoLevelsResponse{
+		Total: rpcResp.GetTotal(), // 总条数
+		List:  list,               // 自动层级列表
+	}, nil
 }

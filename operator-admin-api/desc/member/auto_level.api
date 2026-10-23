@@ -29,7 +29,7 @@ type (
 	}
 	// 自动层级列表响应
 	ListMemberAutoLevelsResponse {
-		// 数据总数
+		// 总条数
 		Total int64 `json:"total"`
 		// 自动层级列表
 		List []MemberAutoLevelInfo `json:"list"`
