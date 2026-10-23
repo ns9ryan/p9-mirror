@@ -15,52 +15,64 @@ import (
 	"oa.98ent.com/p9/operator-admin-api/internal/locales"
 	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberautolevelservice"
 )
 
+// ServiceContext 分站后台服务上下文
 type ServiceContext struct {
-	Config          config.Config
-	Trans           *i18n.Translator
-	OperatorCoreRpc coreclient.Core
-	OperatorBaseRpc operatorservice.OperatorService
-	AgentRpc        agentservice.AgentService
-	Jwt             rest.Middleware // Core JWT
-	Authority       rest.Middleware // Casbin 权限
-	ActionLog       rest.Middleware // 操作日志
-	ErrorLog        rest.Middleware // 错误日志
+	// 基础依赖
+	Config config.Config    // 服务配置
+	Trans  *i18n.Translator // 多语言翻译器
+
+	// 基础服务RPC
+	OperatorCoreRpc coreclient.Core                 // Core RPC
+	OperatorBaseRpc operatorservice.OperatorService // 分站基础RPC
+
+	// CRM业务RPC
+	AgentRpc           agentservice.AgentService                     // 分层代理RPC
+	MemberAutoLevelRpc memberautolevelservice.MemberAutoLevelService // 会员自动层级RPC
+
+	// 认证权限
+	Jwt       rest.Middleware // JWT认证
+	Authority rest.Middleware // 权限校验
+
+	// 日志
+	ActionLog rest.Middleware // 操作日志
+	ErrorLog  rest.Middleware // 错误日志
 }
 
+// NewServiceContext 创建分站后台服务上下文
 func NewServiceContext(c config.Config) *ServiceContext {
-	// 创建API翻译器
+	// 初始化API翻译器
 	trans, err := i18n.New(c.I18n, locales.FS)
 	logx.Must(err)
 
-	// 创建分站Core RPC客户端
-	operatorCoreCli := zrpc.MustNewClient(c.OperatorCoreRpc)
-	operatorCoreRpc := coreclient.NewCore(operatorCoreCli)
+	// 创建Core RPC客户端
+	coreClient := zrpc.MustNewClient(c.OperatorCoreRpc)
+	coreRpc := coreclient.NewCore(coreClient)
 
-	// 创建后台基础服务 RPC客户端
-	operatorBaseCli := zrpc.MustNewClient(c.OperatorBaseRpc)
-	operatorBaseRpc := operatorservice.NewOperatorService(operatorBaseCli)
+	// 设置Core字典加载器和认证适配器
+	coreadapt.SetDictLoader(coreRpc)
+	auth := coreadapt.Auth(coreRpc)
 
-	// 设置多语言字典加载器
-	coreadapt.SetDictLoader(operatorCoreRpc)
-
-	// 权限中间件适配器
-	authAdapter := coreadapt.Auth(operatorCoreRpc)
-
-	// 创建后台 CRM Agent RPC 客户端
-	crmCli := zrpc.MustNewClient(c.CrmRpc)
-	agentRpc := agentservice.NewAgentService(crmCli)
+	// 创建业务RPC客户端
+	baseClient := zrpc.MustNewClient(c.OperatorBaseRpc)
+	crmClient := zrpc.MustNewClient(c.CrmRpc)
 
 	return &ServiceContext{
-		Config:          c,
-		Trans:           trans,
-		OperatorCoreRpc: operatorCoreRpc,
-		OperatorBaseRpc: operatorBaseRpc,
-		AgentRpc:        agentRpc,
-		Jwt:             middleware.JWT(authAdapter),
-		Authority:       middleware.Authority(authAdapter),
-		ActionLog:       middleware.ActionLog(coreadapt.ActionRecorder(operatorCoreRpc)),
-		ErrorLog:        middleware.ErrorLog(c.Name, coreadapt.ErrorRecorder(operatorCoreRpc)),
+		Config: c,
+		Trans:  trans,
+
+		OperatorCoreRpc: coreRpc,
+		OperatorBaseRpc: operatorservice.NewOperatorService(baseClient),
+
+		AgentRpc:           agentservice.NewAgentService(crmClient),
+		MemberAutoLevelRpc: memberautolevelservice.NewMemberAutoLevelService(crmClient),
+
+		Jwt:       middleware.JWT(auth),
+		Authority: middleware.Authority(auth),
+
+		ActionLog: middleware.ActionLog(coreadapt.ActionRecorder(coreRpc)),
+		ErrorLog:  middleware.ErrorLog(c.Name, coreadapt.ErrorRecorder(coreRpc)),
 	}
 }

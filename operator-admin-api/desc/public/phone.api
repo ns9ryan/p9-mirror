@@ -12,6 +12,10 @@ type PhoneCallingCodeItem {
 	Region string `json:"region"`
 	// Code | 国际区号，不含加号
 	Code string `json:"code"`
+	// Min | 国内号码最小位数
+	Min int32
+	// Max | 国内号码最大位数
+	Max int32
 }
 
 type ListPhoneCallingCodesResp {
@@ -27,3 +31,4 @@ service operator_admin_api {
 	@handler listPhoneCallingCodes
 	get /phone-calling-codes returns (ListPhoneCallingCodesResp)
 }
+

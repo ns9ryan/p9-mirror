@@ -74,6 +74,7 @@ func CreateFieldsToPB(in *types.AgentCreateFields) *agentpb.AgentCreateFields {
 		ShareRate:     in.ShareRate,
 		PromoCode:     in.PromoCode,
 		RegisterIp:    in.RegisterIp,
+		Remark:        in.Remark,
 	}
 }
 

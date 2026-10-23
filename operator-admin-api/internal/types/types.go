@@ -60,6 +60,7 @@ type AgentCreateFields struct {
 	ShareRate     int32  `json:"share_rate"`
 	PromoCode     string `json:"promo_code,optional"`
 	RegisterIp    string `json:"register_ip,optional"`
+	Remark        string `json:"remark,optional"`
 }
 
 type AgentEmpty struct {
@@ -280,8 +281,8 @@ type ListAgentsResp struct {
 }
 
 type ListMemberAutoLevelsRequest struct {
-	PageRequest
-	Name string `form:"name,optional" validate:"omitempty,max=100"`
+	PageRequest PageRequest
+	Name        string `form:"name,optional" validate:"omitempty,max=100"`
 }
 
 type ListMemberAutoLevelsResponse struct {
@@ -295,6 +296,10 @@ type ListOperatorAgentsReq struct {
 
 type ListOperatorAgentsResp struct {
 	Groups []OperatorAgentLineGroup `json:"groups"`
+}
+
+type ListPhoneCallingCodesResp struct {
+	Items []PhoneCallingCodeItem `json:"items"`
 }
 
 type MemberAutoLevelInfo struct {
@@ -315,6 +320,13 @@ type OperatorAgentLineGroup struct {
 type PageRequest struct {
 	Page     int64 `form:"page" validate:"required,gte=1"`
 	PageSize int64 `form:"page_size" validate:"required,gte=1,lte=100"`
+}
+
+type PhoneCallingCodeItem struct {
+	Region string `json:"region"`
+	Code   string `json:"code"`
+	Min    int32
+	Max    int32
 }
 
 type PingResponse struct {

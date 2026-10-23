@@ -8,7 +8,10 @@ info (
 )
 
 // 公共接口
-import "public/ping.api"
+import (
+	"public/ping.api"
+	"public/phone.api"
+)
 
 // 代理管理
 import (

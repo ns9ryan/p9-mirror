@@ -14,6 +14,7 @@ import (
 	agentprofile "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/profile"
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
 	memberauto_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/auto_level"
+	publicphone "oa.98ent.com/p9/operator-admin-api/internal/handler/public/phone"
 	publicping "oa.98ent.com/p9/operator-admin-api/internal/handler/public/ping"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 
@@ -238,6 +239,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/member/auto-level"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt},
+			[]rest.Route{
+				{
+					// 手机区号列表
+					Method:  http.MethodGet,
+					Path:    "/phone-calling-codes",
+					Handler: publicphone.ListPhoneCallingCodesHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 
 	server.AddRoutes(

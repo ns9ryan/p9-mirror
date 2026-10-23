@@ -32,6 +32,8 @@ func (l *ListPhoneCallingCodesLogic) ListPhoneCallingCodes() (*types.ListPhoneCa
 		items = append(items, types.PhoneCallingCodeItem{
 			Region: c.Region,
 			Code:   c.Code,
+			Min:    int32(c.Min),
+			Max:    int32(c.Max),
 		})
 	}
 	return &types.ListPhoneCallingCodesResp{Items: items}, nil
