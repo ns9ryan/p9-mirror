@@ -44,8 +44,8 @@ func (l *CreateLogic) Create(in *memberautolevelpb.CreateMemberAutoLevelRequest)
 	// 校验晋级条件, 两项门槛必须严格大于当前厅所有已有层级
 	conflict, err := l.svcCtx.DAO.MemberAutoLevel.HasThresholdConflict(
 		l.ctx,
-		in.MinDeposit,
-		in.MinWater,
+		in.MinDeposit, // 晋级要求的累计存款金额
+		in.MinWater,   // 晋级要求的累计洗码量
 	)
 	if err != nil {
 		return nil, xerr.RpcErr(err)

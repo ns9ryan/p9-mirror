@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.5
 // 	protoc        v5.29.3
-// source: types/crm_vip_level.proto
+// source: types/vip_level.proto
 
 package viplevelpb
 
