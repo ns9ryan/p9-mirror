@@ -58,7 +58,7 @@ func (s *Service) ResetLoginPassword(ctx context.Context, req *agentpb.ResetLogi
 	if err != nil {
 		return nil, err
 	}
-	plain, err := randomSalt()
+	plain, err := utils.GenRandomPassword(16)
 	if err != nil {
 		return nil, err
 	}

@@ -7,6 +7,7 @@ option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc";
 import "types/auth.proto";
 import "types/ping.proto";
 import "types/agent.proto";
+import "types/init.proto";
 import "types/member_auto_level.proto";
 import "types/vip.proto";
 import "types/vip_config.proto";
@@ -17,6 +18,12 @@ import "types/vip_icon_group.proto";
 service PingService {
   // 健康检查
   rpc Ping(crm_ping.PingRequest) returns (crm_ping.PingResponse);
+}
+
+// CRM统一初始化服务
+service InitService {
+  // 初始化分站CRM基础数据
+  rpc Init(crm_init.InitRequest) returns (crm_init.InitResponse);
 }
 
 // 代理鉴权服务

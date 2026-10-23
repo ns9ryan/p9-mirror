@@ -12,7 +12,7 @@ require (
 	golang.org/x/crypto v0.55.0
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
-	oa.98ent.com/p9/common v1.0.9
+	oa.98ent.com/p9/common v1.0.11
 )
 
 require (

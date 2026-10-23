@@ -2,8 +2,6 @@ package agent
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"net"
 	"strings"
 	"time"
@@ -17,8 +15,6 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
 )
-
-const saltByteLen = 8
 
 // AddOperatorAgent 分站按指定线添加代理。
 func (s *Service) AddOperatorAgent(ctx context.Context, in *agentpb.AddOperatorAgentReq) (*agentpb.AddAgentResp, error) {
@@ -83,7 +79,8 @@ func (s *Service) resolveDesignatedParent(ctx context.Context) (int64, error) {
 
 // createRootAgent 创建系统根代理：parent 为空、level=0、top_id is null。
 func (s *Service) createRootAgent(ctx context.Context) (int64, error) {
-	password, err := randomSalt()
+	// 生成随机密码
+	password, err := utils.GenRandomPassword(16)
 	if err != nil {
 		return 0, err
 	}
@@ -91,16 +88,28 @@ func (s *Service) createRootAgent(ctx context.Context) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	salt, err := randomSalt()
+	// 生成随机盐值
+	salt, err := utils.GenShortID()
 	if err != nil {
 		return 0, err
 	}
+	// 生成代理编码
+	agentCode, err := utils.GenLongID()
+	if err != nil {
+		return 0, err
+	}
+	// 生成推广码
+	promoCode, err := utils.GenShortID()
+	if err != nil {
+		return 0, err
+	}
+
 	now := time.Now()
 	var rootID int64
 	err = dao.WithTx(ctx, s.DB, func(tx *ent.Tx) error {
 		u, cerr := tx.AgentUser.Create().
 			SetAccount("root").
-			SetCode("ROOT").
+			SetCode(strings.ToUpper(agentCode)).
 			SetLevel(0).
 			SetAgentType(1).
 			SetAgentLineCode("ROOT_LINE").
@@ -108,7 +117,7 @@ func (s *Service) createRootAgent(ctx context.Context) (int64, error) {
 			SetStatus(statusNormal).
 			SetPayoutRestricted(1).
 			SetRegisterSource(registerSourceAdmin).
-			SetPromoCode("ROOT").
+			SetPromoCode(strings.ToUpper(promoCode)).
 			SetLoginPasswordHash(hash).
 			SetSalt(salt).
 			SetRegisterAt(now).
@@ -214,7 +223,8 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 	if err != nil {
 		return nil, err
 	}
-	salt, err := randomSalt()
+	// 生成随机盐值
+	salt, err := utils.GenShortID()
 	if err != nil {
 		return nil, err
 	}
@@ -305,13 +315,4 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 		resp.TopId = *created.TopID
 	}
 	return resp, nil
-}
-
-// 生成随机盐值
-func randomSalt() (string, error) {
-	b := make([]byte, saltByteLen)
-	if _, err := rand.Read(b); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(b), nil
 }

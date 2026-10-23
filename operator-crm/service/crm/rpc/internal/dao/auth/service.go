@@ -2,8 +2,6 @@ package auth
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"net"
 	"strings"
 	"time"
@@ -23,7 +21,6 @@ import (
 const (
 	statusNormal    int64 = 1                   // 正常
 	blacklistPrefix       = "crm:agent:jwt:bl:" // 黑名单前缀
-	saltByteLen           = 8                   // 盐字节长度
 	udidMaxLen            = 128                 // 设备码最大长度
 	uaMaxLen              = 512                 // 用户代理最大长度
 
@@ -327,7 +324,7 @@ func (s *Service) signPair(ctx context.Context, u *ent.AgentUser) (*authpb.Token
 }
 
 func (s *Service) rotateSalt(ctx context.Context, userID int64) error {
-	salt, err := randomSalt()
+	salt, err := utils.GenShortID()
 	if err != nil {
 		return err
 	}
@@ -435,14 +432,6 @@ func toPublic(u *ent.AgentUser) *authpb.UserPublic {
 
 func withOperator(ctx context.Context, code string) context.Context {
 	return ctxdata.WithOperatorCode(ctx, code)
-}
-
-func randomSalt() (string, error) {
-	b := make([]byte, saltByteLen)
-	if _, err := rand.Read(b); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(b), nil
 }
 
 func expiresUnix(c *Claims) int64 {

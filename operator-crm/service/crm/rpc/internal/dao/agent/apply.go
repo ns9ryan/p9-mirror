@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/common/utils"
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentapply"
@@ -256,11 +257,11 @@ func (s *Service) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentA
 			return nil, perr
 		}
 
-		password, perr := randomSalt()
+		password, perr := utils.GenRandomPassword(16)
 		if perr != nil {
 			return nil, perr
 		}
-		promo, perr := randomSalt()
+		promoCode, perr := utils.GenShortID()
 		if perr != nil {
 			return nil, perr
 		}
@@ -273,7 +274,7 @@ func (s *Service) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentA
 			AgentType:     int32(parent.AgentType),
 			AgentLineCode: parent.AgentLineCode,
 			ShareRate:     int32(row.ApplyShareRate),
-			PromoCode:     promo,
+			PromoCode:     strings.ToUpper(promoCode),
 			Mobile:        &mobile,
 			Realname:      &realname,
 		}
