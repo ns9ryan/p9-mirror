@@ -115,7 +115,7 @@ service MemberAutoLevel {
 
 
 // VIP管理服务
-service VipService {
+service Vip {
   // ==================== 初始化 ====================
 
   // 初始化分站VIP基础数据

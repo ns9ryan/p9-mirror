@@ -1888,25 +1888,25 @@ var MemberAutoLevel_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	VipService_Init_FullMethodName            = "/crm.VipService/Init"
-	VipService_GetConfig_FullMethodName       = "/crm.VipService/GetConfig"
-	VipService_UpdateConfig_FullMethodName    = "/crm.VipService/UpdateConfig"
-	VipService_ListLevels_FullMethodName      = "/crm.VipService/ListLevels"
-	VipService_GetLevel_FullMethodName        = "/crm.VipService/GetLevel"
-	VipService_CreateLevel_FullMethodName     = "/crm.VipService/CreateLevel"
-	VipService_UpdateLevel_FullMethodName     = "/crm.VipService/UpdateLevel"
-	VipService_DeleteLevel_FullMethodName     = "/crm.VipService/DeleteLevel"
-	VipService_ListIconGroups_FullMethodName  = "/crm.VipService/ListIconGroups"
-	VipService_UpdateIconGroup_FullMethodName = "/crm.VipService/UpdateIconGroup"
-	VipService_ResetIconGroup_FullMethodName  = "/crm.VipService/ResetIconGroup"
+	Vip_Init_FullMethodName            = "/crm.Vip/Init"
+	Vip_GetConfig_FullMethodName       = "/crm.Vip/GetConfig"
+	Vip_UpdateConfig_FullMethodName    = "/crm.Vip/UpdateConfig"
+	Vip_ListLevels_FullMethodName      = "/crm.Vip/ListLevels"
+	Vip_GetLevel_FullMethodName        = "/crm.Vip/GetLevel"
+	Vip_CreateLevel_FullMethodName     = "/crm.Vip/CreateLevel"
+	Vip_UpdateLevel_FullMethodName     = "/crm.Vip/UpdateLevel"
+	Vip_DeleteLevel_FullMethodName     = "/crm.Vip/DeleteLevel"
+	Vip_ListIconGroups_FullMethodName  = "/crm.Vip/ListIconGroups"
+	Vip_UpdateIconGroup_FullMethodName = "/crm.Vip/UpdateIconGroup"
+	Vip_ResetIconGroup_FullMethodName  = "/crm.Vip/ResetIconGroup"
 )
 
-// VipServiceClient is the client API for VipService service.
+// VipClient is the client API for Vip service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // VIP管理服务
-type VipServiceClient interface {
+type VipClient interface {
 	// 初始化分站VIP基础数据
 	Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error)
 	// 获取VIP基础配置
@@ -1932,130 +1932,130 @@ type VipServiceClient interface {
 	ResetIconGroup(ctx context.Context, in *vipicongrouppb.ResetVipIconGroupRequest, opts ...grpc.CallOption) (*vipicongrouppb.ResetVipIconGroupResponse, error)
 }
 
-type vipServiceClient struct {
+type vipClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewVipServiceClient(cc grpc.ClientConnInterface) VipServiceClient {
-	return &vipServiceClient{cc}
+func NewVipClient(cc grpc.ClientConnInterface) VipClient {
+	return &vipClient{cc}
 }
 
-func (c *vipServiceClient) Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error) {
+func (c *vipClient) Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(vippb.InitResponse)
-	err := c.cc.Invoke(ctx, VipService_Init_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_Init_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) GetConfig(ctx context.Context, in *vipconfigpb.GetVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.GetVipConfigResponse, error) {
+func (c *vipClient) GetConfig(ctx context.Context, in *vipconfigpb.GetVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.GetVipConfigResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(vipconfigpb.GetVipConfigResponse)
-	err := c.cc.Invoke(ctx, VipService_GetConfig_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_GetConfig_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) UpdateConfig(ctx context.Context, in *vipconfigpb.UpdateVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.UpdateVipConfigResponse, error) {
+func (c *vipClient) UpdateConfig(ctx context.Context, in *vipconfigpb.UpdateVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.UpdateVipConfigResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(vipconfigpb.UpdateVipConfigResponse)
-	err := c.cc.Invoke(ctx, VipService_UpdateConfig_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_UpdateConfig_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) ListLevels(ctx context.Context, in *viplevelpb.ListVipLevelsRequest, opts ...grpc.CallOption) (*viplevelpb.ListVipLevelsResponse, error) {
+func (c *vipClient) ListLevels(ctx context.Context, in *viplevelpb.ListVipLevelsRequest, opts ...grpc.CallOption) (*viplevelpb.ListVipLevelsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(viplevelpb.ListVipLevelsResponse)
-	err := c.cc.Invoke(ctx, VipService_ListLevels_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_ListLevels_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) GetLevel(ctx context.Context, in *viplevelpb.GetVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.GetVipLevelResponse, error) {
+func (c *vipClient) GetLevel(ctx context.Context, in *viplevelpb.GetVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.GetVipLevelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(viplevelpb.GetVipLevelResponse)
-	err := c.cc.Invoke(ctx, VipService_GetLevel_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_GetLevel_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) CreateLevel(ctx context.Context, in *viplevelpb.CreateVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.CreateVipLevelResponse, error) {
+func (c *vipClient) CreateLevel(ctx context.Context, in *viplevelpb.CreateVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.CreateVipLevelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(viplevelpb.CreateVipLevelResponse)
-	err := c.cc.Invoke(ctx, VipService_CreateLevel_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_CreateLevel_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) UpdateLevel(ctx context.Context, in *viplevelpb.UpdateVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.UpdateVipLevelResponse, error) {
+func (c *vipClient) UpdateLevel(ctx context.Context, in *viplevelpb.UpdateVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.UpdateVipLevelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(viplevelpb.UpdateVipLevelResponse)
-	err := c.cc.Invoke(ctx, VipService_UpdateLevel_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_UpdateLevel_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) DeleteLevel(ctx context.Context, in *viplevelpb.DeleteVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.DeleteVipLevelResponse, error) {
+func (c *vipClient) DeleteLevel(ctx context.Context, in *viplevelpb.DeleteVipLevelRequest, opts ...grpc.CallOption) (*viplevelpb.DeleteVipLevelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(viplevelpb.DeleteVipLevelResponse)
-	err := c.cc.Invoke(ctx, VipService_DeleteLevel_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_DeleteLevel_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) ListIconGroups(ctx context.Context, in *vipicongrouppb.ListVipIconGroupsRequest, opts ...grpc.CallOption) (*vipicongrouppb.ListVipIconGroupsResponse, error) {
+func (c *vipClient) ListIconGroups(ctx context.Context, in *vipicongrouppb.ListVipIconGroupsRequest, opts ...grpc.CallOption) (*vipicongrouppb.ListVipIconGroupsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(vipicongrouppb.ListVipIconGroupsResponse)
-	err := c.cc.Invoke(ctx, VipService_ListIconGroups_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_ListIconGroups_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) UpdateIconGroup(ctx context.Context, in *vipicongrouppb.UpdateVipIconGroupRequest, opts ...grpc.CallOption) (*vipicongrouppb.UpdateVipIconGroupResponse, error) {
+func (c *vipClient) UpdateIconGroup(ctx context.Context, in *vipicongrouppb.UpdateVipIconGroupRequest, opts ...grpc.CallOption) (*vipicongrouppb.UpdateVipIconGroupResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(vipicongrouppb.UpdateVipIconGroupResponse)
-	err := c.cc.Invoke(ctx, VipService_UpdateIconGroup_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_UpdateIconGroup_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vipServiceClient) ResetIconGroup(ctx context.Context, in *vipicongrouppb.ResetVipIconGroupRequest, opts ...grpc.CallOption) (*vipicongrouppb.ResetVipIconGroupResponse, error) {
+func (c *vipClient) ResetIconGroup(ctx context.Context, in *vipicongrouppb.ResetVipIconGroupRequest, opts ...grpc.CallOption) (*vipicongrouppb.ResetVipIconGroupResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(vipicongrouppb.ResetVipIconGroupResponse)
-	err := c.cc.Invoke(ctx, VipService_ResetIconGroup_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Vip_ResetIconGroup_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// VipServiceServer is the server API for VipService service.
-// All implementations must embed UnimplementedVipServiceServer
+// VipServer is the server API for Vip service.
+// All implementations must embed UnimplementedVipServer
 // for forward compatibility.
 //
 // VIP管理服务
-type VipServiceServer interface {
+type VipServer interface {
 	// 初始化分站VIP基础数据
 	Init(context.Context, *vippb.InitRequest) (*vippb.InitResponse, error)
 	// 获取VIP基础配置
@@ -2079,318 +2079,318 @@ type VipServiceServer interface {
 	UpdateIconGroup(context.Context, *vipicongrouppb.UpdateVipIconGroupRequest) (*vipicongrouppb.UpdateVipIconGroupResponse, error)
 	// 恢复默认VIP图标
 	ResetIconGroup(context.Context, *vipicongrouppb.ResetVipIconGroupRequest) (*vipicongrouppb.ResetVipIconGroupResponse, error)
-	mustEmbedUnimplementedVipServiceServer()
+	mustEmbedUnimplementedVipServer()
 }
 
-// UnimplementedVipServiceServer must be embedded to have
+// UnimplementedVipServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedVipServiceServer struct{}
+type UnimplementedVipServer struct{}
 
-func (UnimplementedVipServiceServer) Init(context.Context, *vippb.InitRequest) (*vippb.InitResponse, error) {
+func (UnimplementedVipServer) Init(context.Context, *vippb.InitRequest) (*vippb.InitResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Init not implemented")
 }
-func (UnimplementedVipServiceServer) GetConfig(context.Context, *vipconfigpb.GetVipConfigRequest) (*vipconfigpb.GetVipConfigResponse, error) {
+func (UnimplementedVipServer) GetConfig(context.Context, *vipconfigpb.GetVipConfigRequest) (*vipconfigpb.GetVipConfigResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetConfig not implemented")
 }
-func (UnimplementedVipServiceServer) UpdateConfig(context.Context, *vipconfigpb.UpdateVipConfigRequest) (*vipconfigpb.UpdateVipConfigResponse, error) {
+func (UnimplementedVipServer) UpdateConfig(context.Context, *vipconfigpb.UpdateVipConfigRequest) (*vipconfigpb.UpdateVipConfigResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateConfig not implemented")
 }
-func (UnimplementedVipServiceServer) ListLevels(context.Context, *viplevelpb.ListVipLevelsRequest) (*viplevelpb.ListVipLevelsResponse, error) {
+func (UnimplementedVipServer) ListLevels(context.Context, *viplevelpb.ListVipLevelsRequest) (*viplevelpb.ListVipLevelsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListLevels not implemented")
 }
-func (UnimplementedVipServiceServer) GetLevel(context.Context, *viplevelpb.GetVipLevelRequest) (*viplevelpb.GetVipLevelResponse, error) {
+func (UnimplementedVipServer) GetLevel(context.Context, *viplevelpb.GetVipLevelRequest) (*viplevelpb.GetVipLevelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetLevel not implemented")
 }
-func (UnimplementedVipServiceServer) CreateLevel(context.Context, *viplevelpb.CreateVipLevelRequest) (*viplevelpb.CreateVipLevelResponse, error) {
+func (UnimplementedVipServer) CreateLevel(context.Context, *viplevelpb.CreateVipLevelRequest) (*viplevelpb.CreateVipLevelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateLevel not implemented")
 }
-func (UnimplementedVipServiceServer) UpdateLevel(context.Context, *viplevelpb.UpdateVipLevelRequest) (*viplevelpb.UpdateVipLevelResponse, error) {
+func (UnimplementedVipServer) UpdateLevel(context.Context, *viplevelpb.UpdateVipLevelRequest) (*viplevelpb.UpdateVipLevelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateLevel not implemented")
 }
-func (UnimplementedVipServiceServer) DeleteLevel(context.Context, *viplevelpb.DeleteVipLevelRequest) (*viplevelpb.DeleteVipLevelResponse, error) {
+func (UnimplementedVipServer) DeleteLevel(context.Context, *viplevelpb.DeleteVipLevelRequest) (*viplevelpb.DeleteVipLevelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteLevel not implemented")
 }
-func (UnimplementedVipServiceServer) ListIconGroups(context.Context, *vipicongrouppb.ListVipIconGroupsRequest) (*vipicongrouppb.ListVipIconGroupsResponse, error) {
+func (UnimplementedVipServer) ListIconGroups(context.Context, *vipicongrouppb.ListVipIconGroupsRequest) (*vipicongrouppb.ListVipIconGroupsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListIconGroups not implemented")
 }
-func (UnimplementedVipServiceServer) UpdateIconGroup(context.Context, *vipicongrouppb.UpdateVipIconGroupRequest) (*vipicongrouppb.UpdateVipIconGroupResponse, error) {
+func (UnimplementedVipServer) UpdateIconGroup(context.Context, *vipicongrouppb.UpdateVipIconGroupRequest) (*vipicongrouppb.UpdateVipIconGroupResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateIconGroup not implemented")
 }
-func (UnimplementedVipServiceServer) ResetIconGroup(context.Context, *vipicongrouppb.ResetVipIconGroupRequest) (*vipicongrouppb.ResetVipIconGroupResponse, error) {
+func (UnimplementedVipServer) ResetIconGroup(context.Context, *vipicongrouppb.ResetVipIconGroupRequest) (*vipicongrouppb.ResetVipIconGroupResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ResetIconGroup not implemented")
 }
-func (UnimplementedVipServiceServer) mustEmbedUnimplementedVipServiceServer() {}
-func (UnimplementedVipServiceServer) testEmbeddedByValue()                    {}
+func (UnimplementedVipServer) mustEmbedUnimplementedVipServer() {}
+func (UnimplementedVipServer) testEmbeddedByValue()             {}
 
-// UnsafeVipServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to VipServiceServer will
+// UnsafeVipServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to VipServer will
 // result in compilation errors.
-type UnsafeVipServiceServer interface {
-	mustEmbedUnimplementedVipServiceServer()
+type UnsafeVipServer interface {
+	mustEmbedUnimplementedVipServer()
 }
 
-func RegisterVipServiceServer(s grpc.ServiceRegistrar, srv VipServiceServer) {
-	// If the following call panics, it indicates UnimplementedVipServiceServer was
+func RegisterVipServer(s grpc.ServiceRegistrar, srv VipServer) {
+	// If the following call panics, it indicates UnimplementedVipServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&VipService_ServiceDesc, srv)
+	s.RegisterService(&Vip_ServiceDesc, srv)
 }
 
-func _VipService_Init_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_Init_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(vippb.InitRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).Init(ctx, in)
+		return srv.(VipServer).Init(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_Init_FullMethodName,
+		FullMethod: Vip_Init_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).Init(ctx, req.(*vippb.InitRequest))
+		return srv.(VipServer).Init(ctx, req.(*vippb.InitRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(vipconfigpb.GetVipConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).GetConfig(ctx, in)
+		return srv.(VipServer).GetConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_GetConfig_FullMethodName,
+		FullMethod: Vip_GetConfig_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).GetConfig(ctx, req.(*vipconfigpb.GetVipConfigRequest))
+		return srv.(VipServer).GetConfig(ctx, req.(*vipconfigpb.GetVipConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_UpdateConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_UpdateConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(vipconfigpb.UpdateVipConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).UpdateConfig(ctx, in)
+		return srv.(VipServer).UpdateConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_UpdateConfig_FullMethodName,
+		FullMethod: Vip_UpdateConfig_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).UpdateConfig(ctx, req.(*vipconfigpb.UpdateVipConfigRequest))
+		return srv.(VipServer).UpdateConfig(ctx, req.(*vipconfigpb.UpdateVipConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_ListLevels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_ListLevels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(viplevelpb.ListVipLevelsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).ListLevels(ctx, in)
+		return srv.(VipServer).ListLevels(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_ListLevels_FullMethodName,
+		FullMethod: Vip_ListLevels_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).ListLevels(ctx, req.(*viplevelpb.ListVipLevelsRequest))
+		return srv.(VipServer).ListLevels(ctx, req.(*viplevelpb.ListVipLevelsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_GetLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_GetLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(viplevelpb.GetVipLevelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).GetLevel(ctx, in)
+		return srv.(VipServer).GetLevel(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_GetLevel_FullMethodName,
+		FullMethod: Vip_GetLevel_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).GetLevel(ctx, req.(*viplevelpb.GetVipLevelRequest))
+		return srv.(VipServer).GetLevel(ctx, req.(*viplevelpb.GetVipLevelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_CreateLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_CreateLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(viplevelpb.CreateVipLevelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).CreateLevel(ctx, in)
+		return srv.(VipServer).CreateLevel(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_CreateLevel_FullMethodName,
+		FullMethod: Vip_CreateLevel_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).CreateLevel(ctx, req.(*viplevelpb.CreateVipLevelRequest))
+		return srv.(VipServer).CreateLevel(ctx, req.(*viplevelpb.CreateVipLevelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_UpdateLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_UpdateLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(viplevelpb.UpdateVipLevelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).UpdateLevel(ctx, in)
+		return srv.(VipServer).UpdateLevel(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_UpdateLevel_FullMethodName,
+		FullMethod: Vip_UpdateLevel_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).UpdateLevel(ctx, req.(*viplevelpb.UpdateVipLevelRequest))
+		return srv.(VipServer).UpdateLevel(ctx, req.(*viplevelpb.UpdateVipLevelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_DeleteLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_DeleteLevel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(viplevelpb.DeleteVipLevelRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).DeleteLevel(ctx, in)
+		return srv.(VipServer).DeleteLevel(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_DeleteLevel_FullMethodName,
+		FullMethod: Vip_DeleteLevel_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).DeleteLevel(ctx, req.(*viplevelpb.DeleteVipLevelRequest))
+		return srv.(VipServer).DeleteLevel(ctx, req.(*viplevelpb.DeleteVipLevelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_ListIconGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_ListIconGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(vipicongrouppb.ListVipIconGroupsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).ListIconGroups(ctx, in)
+		return srv.(VipServer).ListIconGroups(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_ListIconGroups_FullMethodName,
+		FullMethod: Vip_ListIconGroups_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).ListIconGroups(ctx, req.(*vipicongrouppb.ListVipIconGroupsRequest))
+		return srv.(VipServer).ListIconGroups(ctx, req.(*vipicongrouppb.ListVipIconGroupsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_UpdateIconGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_UpdateIconGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(vipicongrouppb.UpdateVipIconGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).UpdateIconGroup(ctx, in)
+		return srv.(VipServer).UpdateIconGroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_UpdateIconGroup_FullMethodName,
+		FullMethod: Vip_UpdateIconGroup_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).UpdateIconGroup(ctx, req.(*vipicongrouppb.UpdateVipIconGroupRequest))
+		return srv.(VipServer).UpdateIconGroup(ctx, req.(*vipicongrouppb.UpdateVipIconGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VipService_ResetIconGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Vip_ResetIconGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(vipicongrouppb.ResetVipIconGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VipServiceServer).ResetIconGroup(ctx, in)
+		return srv.(VipServer).ResetIconGroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: VipService_ResetIconGroup_FullMethodName,
+		FullMethod: Vip_ResetIconGroup_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServiceServer).ResetIconGroup(ctx, req.(*vipicongrouppb.ResetVipIconGroupRequest))
+		return srv.(VipServer).ResetIconGroup(ctx, req.(*vipicongrouppb.ResetVipIconGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// VipService_ServiceDesc is the grpc.ServiceDesc for VipService service.
+// Vip_ServiceDesc is the grpc.ServiceDesc for Vip service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var VipService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "crm.VipService",
-	HandlerType: (*VipServiceServer)(nil),
+var Vip_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "crm.Vip",
+	HandlerType: (*VipServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Init",
-			Handler:    _VipService_Init_Handler,
+			Handler:    _Vip_Init_Handler,
 		},
 		{
 			MethodName: "GetConfig",
-			Handler:    _VipService_GetConfig_Handler,
+			Handler:    _Vip_GetConfig_Handler,
 		},
 		{
 			MethodName: "UpdateConfig",
-			Handler:    _VipService_UpdateConfig_Handler,
+			Handler:    _Vip_UpdateConfig_Handler,
 		},
 		{
 			MethodName: "ListLevels",
-			Handler:    _VipService_ListLevels_Handler,
+			Handler:    _Vip_ListLevels_Handler,
 		},
 		{
 			MethodName: "GetLevel",
-			Handler:    _VipService_GetLevel_Handler,
+			Handler:    _Vip_GetLevel_Handler,
 		},
 		{
 			MethodName: "CreateLevel",
-			Handler:    _VipService_CreateLevel_Handler,
+			Handler:    _Vip_CreateLevel_Handler,
 		},
 		{
 			MethodName: "UpdateLevel",
-			Handler:    _VipService_UpdateLevel_Handler,
+			Handler:    _Vip_UpdateLevel_Handler,
 		},
 		{
 			MethodName: "DeleteLevel",
-			Handler:    _VipService_DeleteLevel_Handler,
+			Handler:    _Vip_DeleteLevel_Handler,
 		},
 		{
 			MethodName: "ListIconGroups",
-			Handler:    _VipService_ListIconGroups_Handler,
+			Handler:    _Vip_ListIconGroups_Handler,
 		},
 		{
 			MethodName: "UpdateIconGroup",
-			Handler:    _VipService_UpdateIconGroup_Handler,
+			Handler:    _Vip_UpdateIconGroup_Handler,
 		},
 		{
 			MethodName: "ResetIconGroup",
-			Handler:    _VipService_ResetIconGroup_Handler,
+			Handler:    _Vip_ResetIconGroup_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

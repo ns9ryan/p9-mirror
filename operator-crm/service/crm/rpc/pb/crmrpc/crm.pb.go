@@ -78,9 +78,8 @@ const file_crm_proto_rawDesc = "" +
 	"\x06Create\x123.crm_member_auto_level.CreateMemberAutoLevelRequest\x1a4.crm_member_auto_level.CreateMemberAutoLevelResponse\x12s\n" +
 	"\x06Update\x123.crm_member_auto_level.UpdateMemberAutoLevelRequest\x1a4.crm_member_auto_level.UpdateMemberAutoLevelResponse\x12o\n" +
 	"\x04List\x122.crm_member_auto_level.ListMemberAutoLevelsRequest\x1a3.crm_member_auto_level.ListMemberAutoLevelsResponse\x12s\n" +
-	"\x06Delete\x123.crm_member_auto_level.DeleteMemberAutoLevelRequest\x1a4.crm_member_auto_level.DeleteMemberAutoLevelResponse2\x8a\b\n" +
-	"\n" +
-	"VipService\x123\n" +
+	"\x06Delete\x123.crm_member_auto_level.DeleteMemberAutoLevelRequest\x1a4.crm_member_auto_level.DeleteMemberAutoLevelResponse2\x83\b\n" +
+	"\x03Vip\x123\n" +
 	"\x04Init\x12\x14.crm_vip.InitRequest\x1a\x15.crm_vip.InitResponse\x12V\n" +
 	"\tGetConfig\x12#.crm_vip_config.GetVipConfigRequest\x1a$.crm_vip_config.GetVipConfigResponse\x12_\n" +
 	"\fUpdateConfig\x12&.crm_vip_config.UpdateVipConfigRequest\x1a'.crm_vip_config.UpdateVipConfigResponse\x12W\n" +
@@ -222,17 +221,17 @@ var file_crm_proto_depIdxs = []int32{
 	35, // 35: crm.MemberAutoLevel.Update:input_type -> crm_member_auto_level.UpdateMemberAutoLevelRequest
 	36, // 36: crm.MemberAutoLevel.List:input_type -> crm_member_auto_level.ListMemberAutoLevelsRequest
 	37, // 37: crm.MemberAutoLevel.Delete:input_type -> crm_member_auto_level.DeleteMemberAutoLevelRequest
-	38, // 38: crm.VipService.Init:input_type -> crm_vip.InitRequest
-	39, // 39: crm.VipService.GetConfig:input_type -> crm_vip_config.GetVipConfigRequest
-	40, // 40: crm.VipService.UpdateConfig:input_type -> crm_vip_config.UpdateVipConfigRequest
-	41, // 41: crm.VipService.ListLevels:input_type -> crm_vip_level.ListVipLevelsRequest
-	42, // 42: crm.VipService.GetLevel:input_type -> crm_vip_level.GetVipLevelRequest
-	43, // 43: crm.VipService.CreateLevel:input_type -> crm_vip_level.CreateVipLevelRequest
-	44, // 44: crm.VipService.UpdateLevel:input_type -> crm_vip_level.UpdateVipLevelRequest
-	45, // 45: crm.VipService.DeleteLevel:input_type -> crm_vip_level.DeleteVipLevelRequest
-	46, // 46: crm.VipService.ListIconGroups:input_type -> crm_vip_icon_group.ListVipIconGroupsRequest
-	47, // 47: crm.VipService.UpdateIconGroup:input_type -> crm_vip_icon_group.UpdateVipIconGroupRequest
-	48, // 48: crm.VipService.ResetIconGroup:input_type -> crm_vip_icon_group.ResetVipIconGroupRequest
+	38, // 38: crm.Vip.Init:input_type -> crm_vip.InitRequest
+	39, // 39: crm.Vip.GetConfig:input_type -> crm_vip_config.GetVipConfigRequest
+	40, // 40: crm.Vip.UpdateConfig:input_type -> crm_vip_config.UpdateVipConfigRequest
+	41, // 41: crm.Vip.ListLevels:input_type -> crm_vip_level.ListVipLevelsRequest
+	42, // 42: crm.Vip.GetLevel:input_type -> crm_vip_level.GetVipLevelRequest
+	43, // 43: crm.Vip.CreateLevel:input_type -> crm_vip_level.CreateVipLevelRequest
+	44, // 44: crm.Vip.UpdateLevel:input_type -> crm_vip_level.UpdateVipLevelRequest
+	45, // 45: crm.Vip.DeleteLevel:input_type -> crm_vip_level.DeleteVipLevelRequest
+	46, // 46: crm.Vip.ListIconGroups:input_type -> crm_vip_icon_group.ListVipIconGroupsRequest
+	47, // 47: crm.Vip.UpdateIconGroup:input_type -> crm_vip_icon_group.UpdateVipIconGroupRequest
+	48, // 48: crm.Vip.ResetIconGroup:input_type -> crm_vip_icon_group.ResetVipIconGroupRequest
 	49, // 49: crm.PingService.Ping:output_type -> crm_ping.PingResponse
 	50, // 50: crm.Init.Init:output_type -> crm_init.InitResponse
 	51, // 51: crm.AuthService.login:output_type -> crm_auth.LoginResp
@@ -271,17 +270,17 @@ var file_crm_proto_depIdxs = []int32{
 	73, // 84: crm.MemberAutoLevel.Update:output_type -> crm_member_auto_level.UpdateMemberAutoLevelResponse
 	74, // 85: crm.MemberAutoLevel.List:output_type -> crm_member_auto_level.ListMemberAutoLevelsResponse
 	75, // 86: crm.MemberAutoLevel.Delete:output_type -> crm_member_auto_level.DeleteMemberAutoLevelResponse
-	76, // 87: crm.VipService.Init:output_type -> crm_vip.InitResponse
-	77, // 88: crm.VipService.GetConfig:output_type -> crm_vip_config.GetVipConfigResponse
-	78, // 89: crm.VipService.UpdateConfig:output_type -> crm_vip_config.UpdateVipConfigResponse
-	79, // 90: crm.VipService.ListLevels:output_type -> crm_vip_level.ListVipLevelsResponse
-	80, // 91: crm.VipService.GetLevel:output_type -> crm_vip_level.GetVipLevelResponse
-	81, // 92: crm.VipService.CreateLevel:output_type -> crm_vip_level.CreateVipLevelResponse
-	82, // 93: crm.VipService.UpdateLevel:output_type -> crm_vip_level.UpdateVipLevelResponse
-	83, // 94: crm.VipService.DeleteLevel:output_type -> crm_vip_level.DeleteVipLevelResponse
-	84, // 95: crm.VipService.ListIconGroups:output_type -> crm_vip_icon_group.ListVipIconGroupsResponse
-	85, // 96: crm.VipService.UpdateIconGroup:output_type -> crm_vip_icon_group.UpdateVipIconGroupResponse
-	86, // 97: crm.VipService.ResetIconGroup:output_type -> crm_vip_icon_group.ResetVipIconGroupResponse
+	76, // 87: crm.Vip.Init:output_type -> crm_vip.InitResponse
+	77, // 88: crm.Vip.GetConfig:output_type -> crm_vip_config.GetVipConfigResponse
+	78, // 89: crm.Vip.UpdateConfig:output_type -> crm_vip_config.UpdateVipConfigResponse
+	79, // 90: crm.Vip.ListLevels:output_type -> crm_vip_level.ListVipLevelsResponse
+	80, // 91: crm.Vip.GetLevel:output_type -> crm_vip_level.GetVipLevelResponse
+	81, // 92: crm.Vip.CreateLevel:output_type -> crm_vip_level.CreateVipLevelResponse
+	82, // 93: crm.Vip.UpdateLevel:output_type -> crm_vip_level.UpdateVipLevelResponse
+	83, // 94: crm.Vip.DeleteLevel:output_type -> crm_vip_level.DeleteVipLevelResponse
+	84, // 95: crm.Vip.ListIconGroups:output_type -> crm_vip_icon_group.ListVipIconGroupsResponse
+	85, // 96: crm.Vip.UpdateIconGroup:output_type -> crm_vip_icon_group.UpdateVipIconGroupResponse
+	86, // 97: crm.Vip.ResetIconGroup:output_type -> crm_vip_icon_group.ResetVipIconGroupResponse
 	49, // [49:98] is the sub-list for method output_type
 	0,  // [0:49] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
