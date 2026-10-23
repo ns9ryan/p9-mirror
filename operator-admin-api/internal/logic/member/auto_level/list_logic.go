@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberautolevelpb"
@@ -46,8 +47,8 @@ func (l *ListLogic) List(req *types.ListMemberAutoLevelsRequest) (resp *types.Li
 		list = append(list, types.MemberAutoLevelInfo{
 			Id:                 level.Id,                 // 层级ID
 			Name:               level.Name,               // 层级名称
-			MinDeposit:         level.MinDeposit,         // 最低累计存款
-			MinWater:           level.MinWater,           // 最低累计洗码量
+			MinDeposit:         level.MinDeposit,         // 晋级要求的累计存款金额
+			MinWater:           level.MinWater,           // 晋级要求的累计洗码量
 			CurrentMemberCount: level.CurrentMemberCount, // 当前会员数
 			CreatedAt:          level.CreatedAt,          // 创建时间
 			UpdatedAt:          level.UpdatedAt,          // 更新时间
