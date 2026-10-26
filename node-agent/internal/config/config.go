@@ -14,6 +14,7 @@ type Config struct {
 	PlatformCoreRpc     zrpc.RpcClientConf // 总网Core RPC配置
 	OperatorCoreRpc     zrpc.RpcClientConf // 分站Core RPC配置
 	OperatorGameRpc     zrpc.RpcClientConf // 当前节点游戏RPC配置
+	OperatorCrmRpc      zrpc.RpcClientConf // 当前节点CRM RPC配置
 }
 
 // DispatchConf 调度中心连接配置
