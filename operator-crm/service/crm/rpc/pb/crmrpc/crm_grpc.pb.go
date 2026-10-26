@@ -19,7 +19,6 @@ import (
 	vipconfigpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb"
 	vipicongrouppb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
 	viplevelpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/viplevelpb"
-	vippb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vippb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -1888,7 +1887,6 @@ var MemberAutoLevel_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	Vip_Init_FullMethodName            = "/crm.Vip/Init"
 	Vip_GetConfig_FullMethodName       = "/crm.Vip/GetConfig"
 	Vip_UpdateConfig_FullMethodName    = "/crm.Vip/UpdateConfig"
 	Vip_ListLevels_FullMethodName      = "/crm.Vip/ListLevels"
@@ -1907,8 +1905,6 @@ const (
 //
 // VIP管理服务
 type VipClient interface {
-	// 初始化分站VIP基础数据
-	Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error)
 	// 获取VIP基础配置
 	GetConfig(ctx context.Context, in *vipconfigpb.GetVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.GetVipConfigResponse, error)
 	// 修改VIP基础配置
@@ -1938,16 +1934,6 @@ type vipClient struct {
 
 func NewVipClient(cc grpc.ClientConnInterface) VipClient {
 	return &vipClient{cc}
-}
-
-func (c *vipClient) Init(ctx context.Context, in *vippb.InitRequest, opts ...grpc.CallOption) (*vippb.InitResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(vippb.InitResponse)
-	err := c.cc.Invoke(ctx, Vip_Init_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *vipClient) GetConfig(ctx context.Context, in *vipconfigpb.GetVipConfigRequest, opts ...grpc.CallOption) (*vipconfigpb.GetVipConfigResponse, error) {
@@ -2056,8 +2042,6 @@ func (c *vipClient) ResetIconGroup(ctx context.Context, in *vipicongrouppb.Reset
 //
 // VIP管理服务
 type VipServer interface {
-	// 初始化分站VIP基础数据
-	Init(context.Context, *vippb.InitRequest) (*vippb.InitResponse, error)
 	// 获取VIP基础配置
 	GetConfig(context.Context, *vipconfigpb.GetVipConfigRequest) (*vipconfigpb.GetVipConfigResponse, error)
 	// 修改VIP基础配置
@@ -2089,9 +2073,6 @@ type VipServer interface {
 // pointer dereference when methods are called.
 type UnimplementedVipServer struct{}
 
-func (UnimplementedVipServer) Init(context.Context, *vippb.InitRequest) (*vippb.InitResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method Init not implemented")
-}
 func (UnimplementedVipServer) GetConfig(context.Context, *vipconfigpb.GetVipConfigRequest) (*vipconfigpb.GetVipConfigResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetConfig not implemented")
 }
@@ -2141,24 +2122,6 @@ func RegisterVipServer(s grpc.ServiceRegistrar, srv VipServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Vip_ServiceDesc, srv)
-}
-
-func _Vip_Init_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(vippb.InitRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(VipServer).Init(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Vip_Init_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VipServer).Init(ctx, req.(*vippb.InitRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Vip_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2348,10 +2311,6 @@ var Vip_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "crm.Vip",
 	HandlerType: (*VipServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Init",
-			Handler:    _Vip_Init_Handler,
-		},
 		{
 			MethodName: "GetConfig",
 			Handler:    _Vip_GetConfig_Handler,

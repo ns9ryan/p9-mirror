@@ -9,7 +9,6 @@ import "types/ping.proto";
 import "types/agent.proto";
 import "types/init.proto";
 import "types/member_auto_level.proto";
-import "types/vip.proto";
 import "types/vip_config.proto";
 import "types/vip_level.proto";
 import "types/vip_icon_group.proto";
@@ -116,11 +115,6 @@ service MemberAutoLevel {
 
 // VIP管理服务
 service Vip {
-  // ==================== 初始化 ====================
-
-  // 初始化分站VIP基础数据
-  rpc Init(crm_vip.InitRequest) returns (crm_vip.InitResponse);
-
   // ==================== 基础配置 ====================
 
   // 获取VIP基础配置

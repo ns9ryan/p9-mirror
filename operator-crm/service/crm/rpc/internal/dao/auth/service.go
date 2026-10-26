@@ -87,7 +87,7 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 			if werr := s.writeLoginLog(ctx, in, 0, 0, loginResultNotFound); werr != nil {
 				return nil, werr
 			}
-			return nil, xerr.Unauthorized(i18n.AuthPasswordIncorrect)
+			return nil, xerr.Unauthorized(i18n.AuthAccountOrPasswordIncorrect)
 		}
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 		if werr := s.writeLoginLog(ctx, in, u.ID, parentID, loginResultBadPassword); werr != nil {
 			return nil, werr
 		}
-		return nil, xerr.Unauthorized(i18n.AuthPasswordIncorrect)
+		return nil, xerr.Unauthorized(i18n.AuthAccountOrPasswordIncorrect)
 	}
 	if u.Status != statusNormal {
 		if werr := s.writeLoginLog(ctx, in, u.ID, parentID, loginResultDisabled); werr != nil {

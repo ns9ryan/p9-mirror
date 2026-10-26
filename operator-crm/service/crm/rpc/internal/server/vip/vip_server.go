@@ -13,7 +13,6 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/viplevelpb"
-	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vippb"
 )
 
 type VipServer struct {
@@ -25,12 +24,6 @@ func NewVipServer(svcCtx *svc.ServiceContext) *VipServer {
 	return &VipServer{
 		svcCtx: svcCtx,
 	}
-}
-
-// 初始化分站VIP基础数据
-func (s *VipServer) Init(ctx context.Context, in *vippb.InitRequest) (*vippb.InitResponse, error) {
-	l := viplogic.NewInitLogic(ctx, s.svcCtx)
-	return l.Init(in)
 }
 
 // 获取VIP基础配置
