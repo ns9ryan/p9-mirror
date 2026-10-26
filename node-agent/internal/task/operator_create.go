@@ -8,9 +8,11 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/core/rpc/coreclient"
 	operatorbasepb "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/operatorpb"
+	crminitpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/initpb"
 	platformoperatorpb "oa.98ent.com/p9/platform-operator/rpc/pb/platformoperatorrpc/operatorpb"
 )
 
@@ -78,6 +80,12 @@ func (s *Service) executeCreateOperator(ctx context.Context, params json.RawMess
 	err = s.initCoreData(ctx, initializationData)
 	if err != nil {
 		return nil, fmt.Errorf("初始化核心数据失败: %w", err)
+	}
+
+	// 初始化当前分站CRM基础数据
+	crmCtx := ctxdata.WithOperatorCode(ctx, operatorInfo.GetCode())
+	if _, err := s.operatorCrmRpc.Init(crmCtx, &crminitpb.InitRequest{}); err != nil {
+		return nil, fmt.Errorf("初始化分站CRM基础数据失败: %w", err)
 	}
 
 	// ==================== 生成 Nginx 配置 ====================
