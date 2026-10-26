@@ -38,25 +38,24 @@ func (l *InitLogic) Init(in *initpb.InitRequest) (*initpb.InitResponse, error) {
 	}
 
 	// 所有初始化操作共用一个事务, 任何一步失败均回滚
-	err := dao.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
+	if err := dao.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
 		// 初始化默认自动层级
-		// if err := initMemberAutoLevel(l.ctx, tx); err != nil {
-		// 	return fmt.Errorf("初始化会员自动层级失败: %w", err)
-		// }
+		if err := initMemberAutoLevel(l.ctx, tx); err != nil {
+			return fmt.Errorf("初始化会员自动层级失败: %w", err)
+		}
 
 		// 初始化预设固定层级
-		// if err := initMemberFixedLevels(l.ctx, tx); err != nil {
-		// 	return fmt.Errorf("初始化会员固定层级失败: %w", err)
-		// }
+		if err := initMemberFixedLevels(l.ctx, tx); err != nil {
+			return fmt.Errorf("初始化会员固定层级失败: %w", err)
+		}
 
 		// 初始化VIP配置、VIP0及图标组
-		// if err := initMemberVip(l.ctx, tx); err != nil {
-		// 	return fmt.Errorf("初始化会员VIP数据失败: %w", err)
-		// }
+		if err := initMemberVip(l.ctx, tx); err != nil {
+			return fmt.Errorf("初始化会员VIP数据失败: %w", err)
+		}
 
 		return nil
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, fmt.Errorf("CRM初始化失败: %w", err)
 	}
 
