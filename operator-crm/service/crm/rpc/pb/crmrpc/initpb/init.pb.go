@@ -24,7 +24,6 @@ const (
 // CRM初始化请求
 type InitRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	OperatorCode  string                 `protobuf:"bytes,1,opt,name=operator_code,json=operatorCode,proto3" json:"operator_code,omitempty"` // 分站业务编码
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -57,13 +56,6 @@ func (x *InitRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use InitRequest.ProtoReflect.Descriptor instead.
 func (*InitRequest) Descriptor() ([]byte, []int) {
 	return file_types_init_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *InitRequest) GetOperatorCode() string {
-	if x != nil {
-		return x.OperatorCode
-	}
-	return ""
 }
 
 // CRM初始化响应
@@ -107,9 +99,8 @@ var File_types_init_proto protoreflect.FileDescriptor
 
 const file_types_init_proto_rawDesc = "" +
 	"\n" +
-	"\x10types/init.proto\x12\bcrm_init\"2\n" +
-	"\vInitRequest\x12#\n" +
-	"\roperator_code\x18\x01 \x01(\tR\foperatorCode\"\x0e\n" +
+	"\x10types/init.proto\x12\bcrm_init\"\r\n" +
+	"\vInitRequest\"\x0e\n" +
 	"\fInitResponseB?Z=oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/initpbb\x06proto3"
 
 var (

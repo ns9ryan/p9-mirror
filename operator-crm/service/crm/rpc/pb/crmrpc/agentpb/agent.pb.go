@@ -7,12 +7,11 @@
 package agentpb
 
 import (
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -4842,13 +4841,12 @@ const file_types_agent_proto_rawDesc = "" +
 	"\n" +
 	"time_start\x18\x04 \x01(\x03R\ttimeStart\x12\x19\n" +
 	"\btime_end\x18\x05 \x01(\x03R\atimeEnd\x12\x16\n" +
-	"\x06result\x18\x06 \x01(\x05R\x06result\"\x91\x03\n" +
+	"\x06result\x18\x06 \x01(\x05R\x06result\"\x85\x03\n" +
 	"\x0eAgentOpLogItem\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x19\n" +
-	"\bagent_id\x18\x02 \x01(\x03R\aagentId\x12\x1f\n" +
-	"\voperator_id\x18\x03 \x01(\x03R\n" +
-	"operatorId\x12)\n" +
-	"\x10operator_account\x18\x04 \x01(\tR\x0foperatorAccount\x12\x16\n" +
+	"\bagent_id\x18\x02 \x01(\x03R\aagentId\x12\x19\n" +
+	"\badmin_id\x18\x03 \x01(\x03R\aadminId\x12#\n" +
+	"\radmin_account\x18\x04 \x01(\tR\fadminAccount\x12\x16\n" +
 	"\x06action\x18\x05 \x01(\tR\x06action\x12!\n" +
 	"\fbefore_value\x18\x06 \x01(\tR\vbeforeValue\x12\x1f\n" +
 	"\vafter_value\x18\a \x01(\tR\n" +

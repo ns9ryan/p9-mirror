@@ -10,7 +10,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 )
 
-// withTx 使用事务执行操作。
+// WithTx 使用事务执行操作。
 func WithTx(ctx context.Context, client *ent.Client, fn func(tx *ent.Tx) error) error {
 	tx, err := client.Tx(ctx)
 	if err != nil {
