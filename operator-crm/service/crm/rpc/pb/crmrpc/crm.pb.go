@@ -33,8 +33,8 @@ var File_crm_proto protoreflect.FileDescriptor
 
 const file_crm_proto_rawDesc = "" +
 	"\n" +
-	"\tcrm.proto\x12\x03crm\x1a\x10types/auth.proto\x1a\x10types/ping.proto\x1a\x11types/agent.proto\x1a\x10types/init.proto\x1a\x1dtypes/member_auto_level.proto\x1a\x0ftypes/vip.proto\x1a\x16types/vip_config.proto\x1a\x15types/vip_level.proto\x1a\x1atypes/vip_icon_group.proto2D\n" +
-	"\vPingService\x125\n" +
+	"\tcrm.proto\x12\x03crm\x1a\x10types/auth.proto\x1a\x10types/ping.proto\x1a\x11types/agent.proto\x1a\x10types/init.proto\x1a\x1dtypes/member_auto_level.proto\x1a\x0ftypes/vip.proto\x1a\x16types/vip_config.proto\x1a\x15types/vip_level.proto\x1a\x1atypes/vip_icon_group.proto2=\n" +
+	"\x04Ping\x125\n" +
 	"\x04Ping\x12\x15.crm_ping.PingRequest\x1a\x16.crm_ping.PingResponse2=\n" +
 	"\x04Init\x125\n" +
 	"\x04Init\x12\x15.crm_init.InitRequest\x1a\x16.crm_init.InitResponse2\x95\x02\n" +
@@ -183,7 +183,7 @@ var file_crm_proto_goTypes = []any{
 	(*vipicongrouppb.ResetVipIconGroupResponse)(nil),        // 86: crm_vip_icon_group.ResetVipIconGroupResponse
 }
 var file_crm_proto_depIdxs = []int32{
-	0,  // 0: crm.PingService.Ping:input_type -> crm_ping.PingRequest
+	0,  // 0: crm.Ping.Ping:input_type -> crm_ping.PingRequest
 	1,  // 1: crm.Init.Init:input_type -> crm_init.InitRequest
 	2,  // 2: crm.AuthService.login:input_type -> crm_auth.LoginReq
 	3,  // 3: crm.AuthService.refresh:input_type -> crm_auth.RefreshReq
@@ -232,7 +232,7 @@ var file_crm_proto_depIdxs = []int32{
 	46, // 46: crm.Vip.ListIconGroups:input_type -> crm_vip_icon_group.ListVipIconGroupsRequest
 	47, // 47: crm.Vip.UpdateIconGroup:input_type -> crm_vip_icon_group.UpdateVipIconGroupRequest
 	48, // 48: crm.Vip.ResetIconGroup:input_type -> crm_vip_icon_group.ResetVipIconGroupRequest
-	49, // 49: crm.PingService.Ping:output_type -> crm_ping.PingResponse
+	49, // 49: crm.Ping.Ping:output_type -> crm_ping.PingResponse
 	50, // 50: crm.Init.Init:output_type -> crm_init.InitResponse
 	51, // 51: crm.AuthService.login:output_type -> crm_auth.LoginResp
 	51, // 52: crm.AuthService.refresh:output_type -> crm_auth.LoginResp

@@ -22,13 +22,13 @@ func (AgentOpLog) Fields() []ent.Field {
 		field.Int64("agent_id").
 			Comment("被操作代理ID"),
 
-		field.Int64("operator_id").
+		field.Int64("admin_id").
 			Optional().
 			Nillable().
 			Immutable().
 			Comment("操作人用户ID"),
 
-		field.String("operator_account").
+		field.String("admin_account").
 			Default("").
 			MaxLen(64).
 			Immutable().

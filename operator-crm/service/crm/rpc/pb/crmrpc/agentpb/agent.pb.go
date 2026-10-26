@@ -7,11 +7,12 @@
 package agentpb
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -4266,17 +4267,17 @@ func (x *ListAgentOpLogsReq) GetResult() int32 {
 
 // AgentOpLogItem 代理资料变更操作日志项
 type AgentOpLogItem struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	Id              int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	AgentId         int64                  `protobuf:"varint,2,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
-	OperatorId      int64                  `protobuf:"varint,3,opt,name=operator_id,json=operatorId,proto3" json:"operator_id,omitempty"`
-	OperatorAccount string                 `protobuf:"bytes,4,opt,name=operator_account,json=operatorAccount,proto3" json:"operator_account,omitempty"`
-	Action          string                 `protobuf:"bytes,5,opt,name=action,proto3" json:"action,omitempty"`
-	BeforeValue     string                 `protobuf:"bytes,6,opt,name=before_value,json=beforeValue,proto3" json:"before_value,omitempty"`
-	AfterValue      string                 `protobuf:"bytes,7,opt,name=after_value,json=afterValue,proto3" json:"after_value,omitempty"`
-	ClientIp        string                 `protobuf:"bytes,8,opt,name=client_ip,json=clientIp,proto3" json:"client_ip,omitempty"`
-	LoginDevice     string                 `protobuf:"bytes,9,opt,name=login_device,json=loginDevice,proto3" json:"login_device,omitempty"`
-	Udid            string                 `protobuf:"bytes,10,opt,name=udid,proto3" json:"udid,omitempty"`
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	Id           int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	AgentId      int64                  `protobuf:"varint,2,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	AdminId      int64                  `protobuf:"varint,3,opt,name=admin_id,json=adminId,proto3" json:"admin_id,omitempty"`
+	AdminAccount string                 `protobuf:"bytes,4,opt,name=admin_account,json=adminAccount,proto3" json:"admin_account,omitempty"`
+	Action       string                 `protobuf:"bytes,5,opt,name=action,proto3" json:"action,omitempty"`
+	BeforeValue  string                 `protobuf:"bytes,6,opt,name=before_value,json=beforeValue,proto3" json:"before_value,omitempty"`
+	AfterValue   string                 `protobuf:"bytes,7,opt,name=after_value,json=afterValue,proto3" json:"after_value,omitempty"`
+	ClientIp     string                 `protobuf:"bytes,8,opt,name=client_ip,json=clientIp,proto3" json:"client_ip,omitempty"`
+	LoginDevice  string                 `protobuf:"bytes,9,opt,name=login_device,json=loginDevice,proto3" json:"login_device,omitempty"`
+	Udid         string                 `protobuf:"bytes,10,opt,name=udid,proto3" json:"udid,omitempty"`
 	// 操作时间 unix 秒
 	OperatedAt int64 `protobuf:"varint,11,opt,name=operated_at,json=operatedAt,proto3" json:"operated_at,omitempty"`
 	// 1成功 2失败
@@ -4330,16 +4331,16 @@ func (x *AgentOpLogItem) GetAgentId() int64 {
 	return 0
 }
 
-func (x *AgentOpLogItem) GetOperatorId() int64 {
+func (x *AgentOpLogItem) GetAdminId() int64 {
 	if x != nil {
-		return x.OperatorId
+		return x.AdminId
 	}
 	return 0
 }
 
-func (x *AgentOpLogItem) GetOperatorAccount() string {
+func (x *AgentOpLogItem) GetAdminAccount() string {
 	if x != nil {
-		return x.OperatorAccount
+		return x.AdminAccount
 	}
 	return ""
 }

@@ -15,7 +15,7 @@ import "types/vip_level.proto";
 import "types/vip_icon_group.proto";
 
 // CRM 健康检查服务
-service PingService {
+service Ping {
   // 健康检查
   rpc Ping(crm_ping.PingRequest) returns (crm_ping.PingResponse);
 }

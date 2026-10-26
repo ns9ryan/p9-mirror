@@ -598,8 +598,8 @@ message ListAgentOpLogsReq {
 message AgentOpLogItem {
   int64 id = 1;
   int64 agent_id = 2;
-  int64 operator_id = 3;
-  string operator_account = 4;
+  int64 admin_id = 3;
+  string admin_account = 4;
   string action = 5;
   string before_value = 6;
   string after_value = 7;

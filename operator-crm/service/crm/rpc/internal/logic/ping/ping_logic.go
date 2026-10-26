@@ -1,4 +1,4 @@
-package pingservicelogic
+package pinglogic
 
 import (
 	"context"
@@ -23,7 +23,9 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 	}
 }
 
-// Ping 健康检查
+// 健康检查
 func (l *PingLogic) Ping(in *pingpb.PingRequest) (*pingpb.PingResponse, error) {
+	// todo: add your logic here and delete this line
+
 	return &pingpb.PingResponse{}, nil
 }

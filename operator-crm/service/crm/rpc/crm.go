@@ -10,7 +10,7 @@ import (
 	authserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/authservice"
 	initServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/init"
 	memberautolevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberautolevel"
-	pingserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/pingservice"
+	pingServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/ping"
 	vipServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/vip"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
@@ -33,7 +33,7 @@ func main() {
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		// 健康检查服务
-		crmrpc.RegisterPingServiceServer(grpcServer, pingserviceServer.NewPingServiceServer(ctx))
+		crmrpc.RegisterPingServer(grpcServer, pingServer.NewPingServer(ctx))
 
 		// CRM统一初始化服务
 		crmrpc.RegisterInitServer(grpcServer, initServer.NewInitServer(ctx))

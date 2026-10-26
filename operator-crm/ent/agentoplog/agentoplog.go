@@ -22,10 +22,10 @@ const (
 	FieldOperatorCode = "operator_code"
 	// FieldAgentID holds the string denoting the agent_id field in the database.
 	FieldAgentID = "agent_id"
-	// FieldOperatorID holds the string denoting the operator_id field in the database.
-	FieldOperatorID = "operator_id"
-	// FieldOperatorAccount holds the string denoting the operator_account field in the database.
-	FieldOperatorAccount = "operator_account"
+	// FieldAdminID holds the string denoting the admin_id field in the database.
+	FieldAdminID = "admin_id"
+	// FieldAdminAccount holds the string denoting the admin_account field in the database.
+	FieldAdminAccount = "admin_account"
 	// FieldAction holds the string denoting the action field in the database.
 	FieldAction = "action"
 	// FieldBeforeValue holds the string denoting the before_value field in the database.
@@ -55,8 +55,8 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldOperatorCode,
 	FieldAgentID,
-	FieldOperatorID,
-	FieldOperatorAccount,
+	FieldAdminID,
+	FieldAdminAccount,
 	FieldAction,
 	FieldBeforeValue,
 	FieldAfterValue,
@@ -94,10 +94,10 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
 	OperatorCodeValidator func(string) error
-	// DefaultOperatorAccount holds the default value on creation for the "operator_account" field.
-	DefaultOperatorAccount string
-	// OperatorAccountValidator is a validator for the "operator_account" field. It is called by the builders before save.
-	OperatorAccountValidator func(string) error
+	// DefaultAdminAccount holds the default value on creation for the "admin_account" field.
+	DefaultAdminAccount string
+	// AdminAccountValidator is a validator for the "admin_account" field. It is called by the builders before save.
+	AdminAccountValidator func(string) error
 	// ActionValidator is a validator for the "action" field. It is called by the builders before save.
 	ActionValidator func(string) error
 	// BeforeValueValidator is a validator for the "before_value" field. It is called by the builders before save.
@@ -142,14 +142,14 @@ func ByAgentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAgentID, opts...).ToFunc()
 }
 
-// ByOperatorID orders the results by the operator_id field.
-func ByOperatorID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOperatorID, opts...).ToFunc()
+// ByAdminID orders the results by the admin_id field.
+func ByAdminID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAdminID, opts...).ToFunc()
 }
 
-// ByOperatorAccount orders the results by the operator_account field.
-func ByOperatorAccount(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOperatorAccount, opts...).ToFunc()
+// ByAdminAccount orders the results by the admin_account field.
+func ByAdminAccount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAdminAccount, opts...).ToFunc()
 }
 
 // ByAction orders the results by the action field.

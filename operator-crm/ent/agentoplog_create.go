@@ -62,30 +62,30 @@ func (_c *AgentOpLogCreate) SetAgentID(v int64) *AgentOpLogCreate {
 	return _c
 }
 
-// SetOperatorID sets the "operator_id" field.
-func (_c *AgentOpLogCreate) SetOperatorID(v int64) *AgentOpLogCreate {
-	_c.mutation.SetOperatorID(v)
+// SetAdminID sets the "admin_id" field.
+func (_c *AgentOpLogCreate) SetAdminID(v int64) *AgentOpLogCreate {
+	_c.mutation.SetAdminID(v)
 	return _c
 }
 
-// SetNillableOperatorID sets the "operator_id" field if the given value is not nil.
-func (_c *AgentOpLogCreate) SetNillableOperatorID(v *int64) *AgentOpLogCreate {
+// SetNillableAdminID sets the "admin_id" field if the given value is not nil.
+func (_c *AgentOpLogCreate) SetNillableAdminID(v *int64) *AgentOpLogCreate {
 	if v != nil {
-		_c.SetOperatorID(*v)
+		_c.SetAdminID(*v)
 	}
 	return _c
 }
 
-// SetOperatorAccount sets the "operator_account" field.
-func (_c *AgentOpLogCreate) SetOperatorAccount(v string) *AgentOpLogCreate {
-	_c.mutation.SetOperatorAccount(v)
+// SetAdminAccount sets the "admin_account" field.
+func (_c *AgentOpLogCreate) SetAdminAccount(v string) *AgentOpLogCreate {
+	_c.mutation.SetAdminAccount(v)
 	return _c
 }
 
-// SetNillableOperatorAccount sets the "operator_account" field if the given value is not nil.
-func (_c *AgentOpLogCreate) SetNillableOperatorAccount(v *string) *AgentOpLogCreate {
+// SetNillableAdminAccount sets the "admin_account" field if the given value is not nil.
+func (_c *AgentOpLogCreate) SetNillableAdminAccount(v *string) *AgentOpLogCreate {
 	if v != nil {
-		_c.SetOperatorAccount(*v)
+		_c.SetAdminAccount(*v)
 	}
 	return _c
 }
@@ -249,9 +249,9 @@ func (_c *AgentOpLogCreate) defaults() error {
 		v := agentoplog.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := _c.mutation.OperatorAccount(); !ok {
-		v := agentoplog.DefaultOperatorAccount
-		_c.mutation.SetOperatorAccount(v)
+	if _, ok := _c.mutation.AdminAccount(); !ok {
+		v := agentoplog.DefaultAdminAccount
+		_c.mutation.SetAdminAccount(v)
 	}
 	return nil
 }
@@ -275,12 +275,12 @@ func (_c *AgentOpLogCreate) check() error {
 	if _, ok := _c.mutation.AgentID(); !ok {
 		return &ValidationError{Name: "agent_id", err: errors.New(`ent: missing required field "AgentOpLog.agent_id"`)}
 	}
-	if _, ok := _c.mutation.OperatorAccount(); !ok {
-		return &ValidationError{Name: "operator_account", err: errors.New(`ent: missing required field "AgentOpLog.operator_account"`)}
+	if _, ok := _c.mutation.AdminAccount(); !ok {
+		return &ValidationError{Name: "admin_account", err: errors.New(`ent: missing required field "AgentOpLog.admin_account"`)}
 	}
-	if v, ok := _c.mutation.OperatorAccount(); ok {
-		if err := agentoplog.OperatorAccountValidator(v); err != nil {
-			return &ValidationError{Name: "operator_account", err: fmt.Errorf(`ent: validator failed for field "AgentOpLog.operator_account": %w`, err)}
+	if v, ok := _c.mutation.AdminAccount(); ok {
+		if err := agentoplog.AdminAccountValidator(v); err != nil {
+			return &ValidationError{Name: "admin_account", err: fmt.Errorf(`ent: validator failed for field "AgentOpLog.admin_account": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.Action(); !ok {
@@ -376,13 +376,13 @@ func (_c *AgentOpLogCreate) createSpec() (*AgentOpLog, *sqlgraph.CreateSpec) {
 		_spec.SetField(agentoplog.FieldAgentID, field.TypeInt64, value)
 		_node.AgentID = value
 	}
-	if value, ok := _c.mutation.OperatorID(); ok {
-		_spec.SetField(agentoplog.FieldOperatorID, field.TypeInt64, value)
-		_node.OperatorID = &value
+	if value, ok := _c.mutation.AdminID(); ok {
+		_spec.SetField(agentoplog.FieldAdminID, field.TypeInt64, value)
+		_node.AdminID = &value
 	}
-	if value, ok := _c.mutation.OperatorAccount(); ok {
-		_spec.SetField(agentoplog.FieldOperatorAccount, field.TypeString, value)
-		_node.OperatorAccount = value
+	if value, ok := _c.mutation.AdminAccount(); ok {
+		_spec.SetField(agentoplog.FieldAdminAccount, field.TypeString, value)
+		_node.AdminAccount = value
 	}
 	if value, ok := _c.mutation.Action(); ok {
 		_spec.SetField(agentoplog.FieldAction, field.TypeString, value)
@@ -639,11 +639,11 @@ func (u *AgentOpLogUpsertOne) UpdateNewValues() *AgentOpLogUpsertOne {
 		if _, exists := u.create.mutation.OperatorCode(); exists {
 			s.SetIgnore(agentoplog.FieldOperatorCode)
 		}
-		if _, exists := u.create.mutation.OperatorID(); exists {
-			s.SetIgnore(agentoplog.FieldOperatorID)
+		if _, exists := u.create.mutation.AdminID(); exists {
+			s.SetIgnore(agentoplog.FieldAdminID)
 		}
-		if _, exists := u.create.mutation.OperatorAccount(); exists {
-			s.SetIgnore(agentoplog.FieldOperatorAccount)
+		if _, exists := u.create.mutation.AdminAccount(); exists {
+			s.SetIgnore(agentoplog.FieldAdminAccount)
 		}
 		if _, exists := u.create.mutation.BeforeValue(); exists {
 			s.SetIgnore(agentoplog.FieldBeforeValue)
@@ -1038,11 +1038,11 @@ func (u *AgentOpLogUpsertBulk) UpdateNewValues() *AgentOpLogUpsertBulk {
 			if _, exists := b.mutation.OperatorCode(); exists {
 				s.SetIgnore(agentoplog.FieldOperatorCode)
 			}
-			if _, exists := b.mutation.OperatorID(); exists {
-				s.SetIgnore(agentoplog.FieldOperatorID)
+			if _, exists := b.mutation.AdminID(); exists {
+				s.SetIgnore(agentoplog.FieldAdminID)
 			}
-			if _, exists := b.mutation.OperatorAccount(); exists {
-				s.SetIgnore(agentoplog.FieldOperatorAccount)
+			if _, exists := b.mutation.AdminAccount(); exists {
+				s.SetIgnore(agentoplog.FieldAdminAccount)
 			}
 			if _, exists := b.mutation.BeforeValue(); exists {
 				s.SetIgnore(agentoplog.FieldBeforeValue)

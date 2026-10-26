@@ -119,15 +119,15 @@ func (s *Service) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLo
 
 func toOpLogItem(row *ent.AgentOpLog) *agentpb.AgentOpLogItem {
 	item := &agentpb.AgentOpLogItem{
-		Id:              row.ID,
-		AgentId:         row.AgentID,
-		OperatorAccount: row.OperatorAccount,
-		Action:          row.Action,
-		OperatedAt:      row.OperatedAt.Unix(),
-		Result:          int32(row.Result),
+		Id:           row.ID,
+		AgentId:      row.AgentID,
+		AdminAccount: row.AdminAccount,
+		Action:       row.Action,
+		OperatedAt:   row.OperatedAt.Unix(),
+		Result:       int32(row.Result),
 	}
-	if row.OperatorID != nil {
-		item.OperatorId = *row.OperatorID
+	if row.AdminID != nil {
+		item.AdminId = *row.AdminID
 	}
 	if row.BeforeValue != nil {
 		item.BeforeValue = *row.BeforeValue
@@ -170,13 +170,13 @@ func (s *Service) recordOp(ctx context.Context, agentID int64, action, before, a
 		SetAction(action).
 		SetOperatedAt(time.Now()).
 		SetResult(result).
-		SetOperatorAccount("")
+		SetAdminAccount("")
 
 	if c := ctxdata.ClaimsFromCtx(ctx); c != nil {
 		if c.UserID > 0 {
-			create.SetOperatorID(c.UserID)
+			create.SetAdminID(c.UserID)
 		}
-		create.SetOperatorAccount(clipRunes(c.Username, 64))
+		create.SetAdminAccount(clipRunes(c.Username, 64))
 	}
 	if v := clipRunes(before, opValueMax); v != "" {
 		create.SetBeforeValue(v)

@@ -2,7 +2,7 @@
 // goctl 1.10.2
 // Source: crm.proto
 
-package pingservice
+package ping
 
 import (
 	"context"
@@ -16,24 +16,24 @@ import (
 )
 
 type (
-	PingService interface {
+	Ping interface {
 		// 健康检查
 		Ping(ctx context.Context, in *pingpb.PingRequest, opts ...grpc.CallOption) (*pingpb.PingResponse, error)
 	}
 
-	defaultPingService struct {
+	defaultPing struct {
 		cli zrpc.Client
 	}
 )
 
-func NewPingService(cli zrpc.Client) PingService {
-	return &defaultPingService{
+func NewPing(cli zrpc.Client) Ping {
+	return &defaultPing{
 		cli: cli,
 	}
 }
 
 // 健康检查
-func (m *defaultPingService) Ping(ctx context.Context, in *pingpb.PingRequest, opts ...grpc.CallOption) (*pingpb.PingResponse, error) {
-	client := crmrpc.NewPingServiceClient(m.cli.Conn())
+func (m *defaultPing) Ping(ctx context.Context, in *pingpb.PingRequest, opts ...grpc.CallOption) (*pingpb.PingResponse, error) {
+	client := crmrpc.NewPingClient(m.cli.Conn())
 	return client.Ping(ctx, in, opts...)
 }

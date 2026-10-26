@@ -553,12 +553,12 @@ func init() {
 			return nil
 		}
 	}()
-	// agentoplogDescOperatorAccount is the schema descriptor for operator_account field.
-	agentoplogDescOperatorAccount := agentoplogFields[2].Descriptor()
-	// agentoplog.DefaultOperatorAccount holds the default value on creation for the operator_account field.
-	agentoplog.DefaultOperatorAccount = agentoplogDescOperatorAccount.Default.(string)
-	// agentoplog.OperatorAccountValidator is a validator for the "operator_account" field. It is called by the builders before save.
-	agentoplog.OperatorAccountValidator = agentoplogDescOperatorAccount.Validators[0].(func(string) error)
+	// agentoplogDescAdminAccount is the schema descriptor for admin_account field.
+	agentoplogDescAdminAccount := agentoplogFields[2].Descriptor()
+	// agentoplog.DefaultAdminAccount holds the default value on creation for the admin_account field.
+	agentoplog.DefaultAdminAccount = agentoplogDescAdminAccount.Default.(string)
+	// agentoplog.AdminAccountValidator is a validator for the "admin_account" field. It is called by the builders before save.
+	agentoplog.AdminAccountValidator = agentoplogDescAdminAccount.Validators[0].(func(string) error)
 	// agentoplogDescAction is the schema descriptor for action field.
 	agentoplogDescAction := agentoplogFields[3].Descriptor()
 	// agentoplog.ActionValidator is a validator for the "action" field. It is called by the builders before save.

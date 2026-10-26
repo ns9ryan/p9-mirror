@@ -282,8 +282,8 @@ func (_u *AgentOpLogUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	if value, ok := _u.mutation.AddedAgentID(); ok {
 		_spec.AddField(agentoplog.FieldAgentID, field.TypeInt64, value)
 	}
-	if _u.mutation.OperatorIDCleared() {
-		_spec.ClearField(agentoplog.FieldOperatorID, field.TypeInt64)
+	if _u.mutation.AdminIDCleared() {
+		_spec.ClearField(agentoplog.FieldAdminID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Action(); ok {
 		_spec.SetField(agentoplog.FieldAction, field.TypeString, value)
@@ -631,8 +631,8 @@ func (_u *AgentOpLogUpdateOne) sqlSave(ctx context.Context) (_node *AgentOpLog, 
 	if value, ok := _u.mutation.AddedAgentID(); ok {
 		_spec.AddField(agentoplog.FieldAgentID, field.TypeInt64, value)
 	}
-	if _u.mutation.OperatorIDCleared() {
-		_spec.ClearField(agentoplog.FieldOperatorID, field.TypeInt64)
+	if _u.mutation.AdminIDCleared() {
+		_spec.ClearField(agentoplog.FieldAdminID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Action(); ok {
 		_spec.SetField(agentoplog.FieldAction, field.TypeString, value)
