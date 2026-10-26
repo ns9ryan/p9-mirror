@@ -5,9 +5,10 @@ go 1.26.0
 require (
 	github.com/coder/websocket v1.8.15
 	github.com/zeromicro/go-zero v1.10.3
-	oa.98ent.com/p9/common v1.0.3
+	oa.98ent.com/p9/common v1.0.12
 	oa.98ent.com/p9/core v1.2.2
 	oa.98ent.com/p9/operator-base v0.1.0
+	oa.98ent.com/p9/operator-crm v0.0.0-20261026082823-6a5202bfe3bf
 	oa.98ent.com/p9/operator-game v0.1.0
 	oa.98ent.com/p9/platform-operator v0.1.0
 )

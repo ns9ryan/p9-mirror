@@ -9,6 +9,7 @@ import (
 	"oa.98ent.com/p9/node-agent/internal/task"
 	"oa.98ent.com/p9/node-agent/internal/websocket"
 	operatorbaseservice "oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
+	crminitservice "oa.98ent.com/p9/operator-crm/service/crm/rpc/client/init"
 	operatorgameservice "oa.98ent.com/p9/operator-game/rpc/client/publishdataservice"
 	platformoperatorservice "oa.98ent.com/p9/platform-operator/rpc/client/operatorservice"
 
@@ -44,8 +45,19 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	operatorGameClient := zrpc.MustNewClient(c.OperatorGameRpc)
 	operatorGameRpc := operatorgameservice.NewPublishDataService(operatorGameClient)
 
+	// 创建当前节点CRM RPC客户端
+	operatorCrmClient := zrpc.MustNewClient(c.OperatorCrmRpc)
+	operatorCrmRpc := crminitservice.NewInit(operatorCrmClient)
+
 	// 创建调度任务执行服务
-	taskService := task.NewService(platformOperatorRpc, operatorBaseRpc, platformCoreRpc, operatorCoreRpc, operatorGameRpc)
+	taskService := task.NewService(
+		platformOperatorRpc,
+		operatorBaseRpc,
+		platformCoreRpc,
+		operatorCoreRpc,
+		operatorGameRpc,
+		operatorCrmRpc,
+	)
 
 	// 初始化 Nginx 管理器
 	ctx := context.Background()
