@@ -1,6 +1,6 @@
 # 节点配置
-NodeCode: NODE_8BD5ACF81D094CA996FCCB89449B56B9                               # 节点业务编码
-AuthSecret: 4ac2d174414d8e7cf67252c1c10445670d41170ee3a5045d9d77f5a123e66bcb  # 节点认证密钥
+NodeCode: NODE_FDD76E3F7C654F5D87BA1965BDC3C664                               # 节点业务编码
+AuthSecret: 6ba1434d45011c4eefed669a5eb234334b7f32d72bcf126b0cde434c16d5280c  # 节点认证密钥
 
 # 调度中心连接配置
 Dispatch:
@@ -48,3 +48,8 @@ OperatorGameRpc:
     Hosts:
       - 127.0.0.1:12379                                                       # Etcd地址
     Key: operator-game-rpc
+
+# 当前节点CRM RPC配置
+OperatorCrmRpc:
+  Endpoints:
+    - 127.0.0.1:39002 # 当前节点CRM RPC地址
