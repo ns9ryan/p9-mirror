@@ -82,10 +82,10 @@ service operator_admin_api {
 
 	// 修改固定层级
 	@handler Update
-	post /update (UpdateMemberFixedLevelRequest) returns ()
+	post /update (UpdateMemberFixedLevelRequest)
 
 	// 删除固定层级
 	@handler Delete
-	post /delete (DeleteMemberFixedLevelRequest) returns ()
+	post /delete (DeleteMemberFixedLevelRequest)
 }
 

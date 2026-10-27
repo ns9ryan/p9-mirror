@@ -19,19 +19,21 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 	return &coreclient.RegisterCatalogReq{
 		Menus: []*coreclient.RegisterMenuReq{
 			{Name: "Dashboard", Title: "menu.route.dashboard", Path: "/dashboard", MenuType: menuTypeMenu, Component: "dashboard/index", Sort: 1},
+
 			// 会员管理
 			{Name: "MemberManage", Title: "menu.memberManage", Path: "/member", MenuType: menuTypeDir, Sort: 10},
 			{Name: "MemberManageList", Title: "menu.memberManage.list", Path: "/member/list", MenuType: menuTypeMenu, Component: "memberManage/index", ParentName: "MemberManage", Sort: 11},
-			{Name: "MemberAutoLevel", Title: "menu.route.memberAutoLevel", Path: "/member/auto-level", MenuType: menuTypeMenu, Component: "memberManage/autoLevel/index", ParentName: "MemberManage", Sort: 12},
-			{Name: "MemberFixedLevel", Title: "menu.route.memberFixedLevel", Path: "/member/fixed-level", MenuType: menuTypeMenu, Component: "memberManage/fixedLevel/index", ParentName: "MemberManage", Sort: 13},
+
+			// 层级管理：自动层级和固定层级在同一页面内切换
+			{Name: "MemberLevel", Title: "menu.route.memberLevel", Path: "/member/level", MenuType: menuTypeMenu, Component: "memberManage/level/index", ParentName: "MemberManage", Sort: 12},
 
 			// 自动层级按钮权限
-			{Name: "MemberAutoLevelCreate", Title: "menu.route.memberAutoLevelCreate", MenuType: menuTypeButton, Permission: "member:auto-level:create", ParentName: "MemberAutoLevel", Sort: 121},
+			{Name: "MemberAutoLevelCreate", Title: "menu.route.memberAutoLevelCreate", MenuType: menuTypeButton, Permission: "member:auto-level:create", ParentName: "MemberLevel", Sort: 121},
 
 			// 固定层级按钮权限
-			{Name: "MemberFixedLevelCreate", Title: "menu.route.memberFixedLevelCreate", MenuType: menuTypeButton, Permission: "member:fixed-level:create", ParentName: "MemberFixedLevel", Sort: 131},
-			{Name: "MemberFixedLevelUpdate", Title: "menu.route.memberFixedLevelUpdate", MenuType: menuTypeButton, Permission: "member:fixed-level:update", ParentName: "MemberFixedLevel", Sort: 132},
-			{Name: "MemberFixedLevelDelete", Title: "menu.route.memberFixedLevelDelete", MenuType: menuTypeButton, Permission: "member:fixed-level:delete", ParentName: "MemberFixedLevel", Sort: 133},
+			{Name: "MemberFixedLevelCreate", Title: "menu.route.memberFixedLevelCreate", MenuType: menuTypeButton, Permission: "member:fixed-level:create", ParentName: "MemberLevel", Sort: 122},
+			{Name: "MemberFixedLevelUpdate", Title: "menu.route.memberFixedLevelUpdate", MenuType: menuTypeButton, Permission: "member:fixed-level:update", ParentName: "MemberLevel", Sort: 123},
+			{Name: "MemberFixedLevelDelete", Title: "menu.route.memberFixedLevelDelete", MenuType: menuTypeButton, Permission: "member:fixed-level:delete", ParentName: "MemberLevel", Sort: 124},
 
 			{Name: "Agent", Title: "menu.route.agent", Path: "/agent", MenuType: menuTypeDir, Sort: 20},
 			{Name: "AgentList", Title: "menu.route.agentList", Path: "/agent/list", MenuType: menuTypeMenu, Component: "agent/list/index", ParentName: "Agent", Sort: 21},

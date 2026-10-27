@@ -57,10 +57,9 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	// 会员管理
 	add("menu.memberManage", "会员管理", "會員管理", "Member management")
 	add("menu.memberManage.list", "会员列表", "會員列表", "Member list")
-	add("menu.route.memberAutoLevel", "会员自动层级", "會員自動層級", "Member auto levels")
-	add("menu.route.memberFixedLevel", "会员固定层级", "會員固定層級", "Member fixed levels")
+	add("menu.route.memberLevel", "层级管理", "層級管理", "Member levels")
 
-	// 会员层级操作权限
+	// 层级管理操作权限
 	add("menu.route.memberAutoLevelCreate", "创建自动层级", "建立自動層級", "Create auto level")
 	add("menu.route.memberFixedLevelCreate", "创建固定层级", "建立固定層級", "Create fixed level")
 	add("menu.route.memberFixedLevelUpdate", "修改固定层级", "修改固定層級", "Update fixed level")
@@ -143,6 +142,11 @@ func frontI18n(i18nCode string) []*coreclient.I18NItem {
 	add("agent.loginResult.4", "账号不存在", "帳號不存在", "Account not found")
 	add("agent.opResult.1", "成功", "成功", "Success")
 	add("agent.opResult.2", "失败", "失敗", "Failed")
+	add("agent.opTargetType.1", "代理账号", "代理帳號", "Agent account")
+	add("agent.opTargetType.2", "会员账号", "會員帳號", "Member account")
+	add("agent.adminType.1", "分站管理员", "分站管理員", "Operator admin")
+	add("agent.adminType.2", "分站代理", "分站代理", "Operator agent")
+	add("agent.opAction.create", "创建代理", "創建代理", "Create agent")
 	add("agent.opAction.share_rate", "更新占成", "更新佔成", "Update share rate")
 	add("agent.opAction.payout_restricted", "更新出款限制", "更新出款限制", "Update payout restriction")
 	add("agent.opAction.status", "更新状态", "更新狀態", "Update status")

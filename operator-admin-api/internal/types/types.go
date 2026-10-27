@@ -140,21 +140,27 @@ type AgentLoginLogItem struct {
 }
 
 type AgentOpLogItem struct {
-	Id           int64  `json:"id"`
-	AgentId      int64  `json:"agent_id"`
-	AdminId      int64  `json:"admin_id"`
-	AdminAccount string `json:"admin_account"`
-	Action       string `json:"action"`
-	ActionLabel  string `json:"action_label"`
-	BeforeValue  string `json:"before_value"`
-	AfterValue   string `json:"after_value"`
-	ClientIp     string `json:"client_ip"`
-	LoginDevice  string `json:"login_device"`
-	Udid         string `json:"udid"`
-	OperatedAt   int64  `json:"operated_at"`
-	Result       int32  `json:"result"`
-	ResultLabel  string `json:"result_label"`
-	FailReason   string `json:"fail_reason"`
+	Id                int64  `json:"id"`
+	OpTargetId        int64  `json:"op_target_id"`
+	OpTargetType      int32  `json:"op_target_type"`
+	OpTargetTypeLabel string `json:"op_target_type_label"`
+	OpTargetAccount   string `json:"op_target_account"`
+	AdminId           int64  `json:"admin_id"`
+	AdminType         int32  `json:"admin_type"`
+	AdminTypeLabel    string `json:"admin_type_label"`
+	AdminAccount      string `json:"admin_account"`
+	Action            string `json:"action"`
+	ActionLabel       string `json:"action_label"`
+	BeforeValue       string `json:"before_value"`
+	AfterValue        string `json:"after_value"`
+	ClientIp          string `json:"client_ip"`
+	ClientIpLocation  string `json:"client_ip_location"`
+	LoginDevice       string `json:"login_device"`
+	Udid              string `json:"udid"`
+	OperatedAt        int64  `json:"operated_at"`
+	Result            int32  `json:"result"`
+	ResultLabel       string `json:"result_label"`
+	FailReason        string `json:"fail_reason"`
 }
 
 type AgentProfile struct {
@@ -291,12 +297,13 @@ type ListAgentLoginLogsResp struct {
 }
 
 type ListAgentOpLogsReq struct {
-	AgentId   int64 `form:"agent_id"`
-	Page      int32 `form:"page,optional"`
-	PageSize  int32 `form:"page_size,optional"`
-	TimeStart int64 `form:"time_start,optional"`
-	TimeEnd   int64 `form:"time_end,optional"`
-	Result    int32 `form:"result,optional"`
+	TargetId   int64 `form:"target_id,optional"`
+	TargetType int32 `form:"target_type,optional"`
+	Page       int32 `form:"page,optional"`
+	PageSize   int32 `form:"page_size,optional"`
+	TimeStart  int64 `form:"time_start,optional"`
+	TimeEnd    int64 `form:"time_end,optional"`
+	Result     int32 `form:"result,optional"`
 }
 
 type ListAgentOpLogsResp struct {

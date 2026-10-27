@@ -54,7 +54,8 @@ func (l *ListAgentLoginLogsLogic) ListAgentLoginLogs(req *types.ListAgentLoginLo
 	}
 	ipInfoMap, err := l.getIpsLocation(ipList)
 	if err != nil {
-		return nil, err
+		// return nil, err
+		l.Logger.Errorf("getIpsLocation error: %v", err)
 	}
 
 	items := make([]types.AgentLoginLogItem, 0, len(rpcResp.GetItems()))
@@ -88,7 +89,7 @@ func (l *ListAgentLoginLogsLogic) ListAgentLoginLogs(req *types.ListAgentLoginLo
 // 获取IP地理信息
 func (l *ListAgentLoginLogsLogic) getIpsLocation(ipList []string) (map[string]string, error) {
 	ipInfo, err := l.svcCtx.IntegrationRpc.SearchIp(l.ctx, &integration.SearchIpReq{
-		Ips: ipList, Lang: "zh-CN",
+		Ips: ipList, Lang: i18n.Lang(l.ctx, nil),
 	})
 	if err != nil {
 		return nil, err
