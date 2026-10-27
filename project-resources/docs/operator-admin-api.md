@@ -43,16 +43,14 @@
     - [POST /agent/withdraw-password/reset](#post-agentwithdraw-passwordreset)
     - [POST /agent/share-rate/update](#post-agentshare-rateupdate)
     - [POST /agent/payout-restricted/update](#post-agentpayout-restrictedupdate)
+    - [POST /agent/status/update](#post-agentstatusupdate)
     - [POST /agent/remark/update](#post-agentremarkupdate)
     - [POST /agent/profile/update](#post-agentprofileupdate)
+    - [GET /agent/op-logs](#get-agentop-logs)
 
 ---
 
-
-
 ## 约定
-
-
 
 ### 响应结构体
 
@@ -91,6 +89,18 @@ Authorization: Bearer <access_token>
 
 Token 获取见 [core-api.md](./core-api.md)。Dev 模式下 Jwt / Authority 透传，便于本地联调。
 
+### 客户端元数据透传
+
+全局中间件会把客户端信息写入上下文，并随 gRPC metadata 传给 CRM（用于资料变更操作日志等）：
+
+| 来源             | 透传字段           | 说明             |
+| -------------- | -------------- | -------------- |
+| `ClientIP` 中间件 | 客户端 IP         | 由 core 解析请求 IP |
+| `User-Agent`   | `login_device` | 标准请求头          |
+| `X-Udid`       | `udid`         | 可选；客户端设备码      |
+
+写代理资料相关接口（重置密码、改占成等）时建议带上 `X-Udid`，便于操作记录落库。
+
 ### 多语言
 
 请求语言通过 Header 指定：
@@ -99,20 +109,17 @@ Token 获取见 [core-api.md](./core-api.md)。Dev 模式下 Jwt / Authority 透
 X-Lang: zh-CN
 ```
 
-
 | 语言编码    | 说明   |
 | ------- | ---- |
 | `zh-CN` | 简体中文 |
 | `zh-HK` | 繁体中文 |
 | `en-US` | 英文   |
 
-
 默认 `zh-CN`。菜单 / API 描述词条由启动时 `RegisterCatalog` 写入 Core（i18n code=`operator`）。
 
 ### 公共类型
 
 `AgentLevelItem`：
-
 
 | 字段      | 类型     | 说明          |
 | ------- | ------ | ----------- |
@@ -121,9 +128,7 @@ X-Lang: zh-CN
 | `name`  | string | 等级名称        |
 | `alias` | string | 等级别名        |
 
-
 `AgentConfig`：
-
 
 | 字段                         | 类型    | 说明                     |
 | -------------------------- | ----- | ---------------------- |
@@ -139,9 +144,7 @@ X-Lang: zh-CN
 | `credit_demo_agent_id`     | int64 | 信誉试玩线指定代理              |
 | `credit_test_agent_id`     | int64 | 信誉测试线指定代理              |
 
-
 `AgentCreateFields`：
-
 
 | 字段                | 类型     | 说明                        |
 | ----------------- | ------ | ------------------------- |
@@ -154,9 +157,7 @@ X-Lang: zh-CN
 | `promo_code`      | string | 对外推广码                     |
 | `register_ip`     | string | 注册 IP，可选                  |
 
-
 `AddAgentResp`：
-
 
 | 字段           | 类型     | 说明             |
 | ------------ | ------ | -------------- |
@@ -168,9 +169,7 @@ X-Lang: zh-CN
 | `level`      | int32  | 层级             |
 | `share_rate` | int32  | 占成             |
 
-
 `AgentSearchItem`：
-
 
 | 字段            | 类型     | 说明                |
 | ------------- | ------ | ----------------- |
@@ -181,9 +180,7 @@ X-Lang: zh-CN
 | `line_code`   | string | `agent_line_code` |
 | `share_rate`  | int32  | 当前占成，百分比 0~100    |
 
-
 `AgentListItem`：
-
 
 | 字段                    | 类型     | 说明                                 |
 | --------------------- | ------ | ---------------------------------- |
@@ -212,9 +209,7 @@ X-Lang: zh-CN
 | `register_at`         | int64  | 注册时间 Unix 秒                        |
 | `last_login_at`       | int64  | 最后登录 Unix 秒                        |
 
-
 `TreeNodeAgentItem`：
-
 
 | 字段                   | 类型     | 说明    |
 | -------------------- | ------ | ----- |
@@ -225,14 +220,9 @@ X-Lang: zh-CN
 | `level_alias`        | string | 等级别名  |
 | `direct_agent_count` | int64  | 直属代理数 |
 
-
 ---
 
-
-
 ## 公开（无 JWT）
-
-
 
 ### GET /ping
 
@@ -251,8 +241,6 @@ X-Lang: zh-CN
 ```
 
 ---
-
-
 
 ## 需登录（仅 Jwt）
 
@@ -280,22 +268,17 @@ X-Lang: zh-CN
 
 ---
 
-
-
 ## 受保护（Jwt + ActionLog + Authority）
 
 需 Header：`Authorization: Bearer <access_token>`，且角色需具备对应 API 权限。
 
 ## 代理列表 / 开户
 
-
-
 ### POST /agent/list
 
 分页代理列表，支持筛选。对应 RPC `listAgents`。
 
 **请求**
-
 
 | 字段                          | 位置   | 必填  | 类型     | 说明                       |
 | --------------------------- | ---- | --- | ------ | ------------------------ |
@@ -311,7 +294,6 @@ X-Lang: zh-CN
 | `number_min` / `number_max` | json | 否   | int64  | `>0` 才生效                 |
 | `agent_filter_type`         | json | 否   | int32  | `1` 本人，`2` 上级，`0` 不筛     |
 | `agent_keyword`             | json | 否   | string | 纯数字按 ID，否则账号模糊           |
-
 
 `number_filter_type`：`1` 直属会员数，`2` 直属代理数，`3` 所有下级总数，`4` 所有会员总数，`5` 占成比例，`6` 累计佣金，`7` 已领取佣金（累计−未领）。
 
@@ -364,21 +346,17 @@ X-Lang: zh-CN
 }
 ```
 
-
-
 ### POST /agent/create
 
 分站添加代理。对应 RPC `addOperatorAgent`。
 
 **请求**
 
-
 | 字段          | 位置   | 必填  | 类型     | 说明                            |
 | ----------- | ---- | --- | ------ | ----------------------------- |
 | `agent`     | json | 是   | object | 见 `AgentCreateFields`         |
 | `is_init`   | json | 否   | bool   | 是否初始化代理；`true` 时可走指定线/root 逻辑 |
 | `parent_id` | json | 否   | int64  | 上级 ID；`0` 且非 init 时失败         |
-
 
 ```json
 {
@@ -412,21 +390,17 @@ X-Lang: zh-CN
 }
 ```
 
-
-
 ### POST /agent/search
 
 按关键字搜索代理（指定代理选择）。对应 RPC `searchAgents`。
 
 **请求**
 
-
 | 字段        | 位置   | 必填  | 类型     | 说明                       |
 | --------- | ---- | --- | ------ | ------------------------ |
 | `keyword` | json | 是   | string | 纯数字：ID 或账号模糊；否则账号模糊      |
 | `level`   | json | 否   | int32  | `<=0` 时默认按 CRM 规则（通常 ≥2） |
 | `limit`   | json | 否   | int32  | 默认 20，上限 50              |
-
 
 ```json
 {
@@ -457,11 +431,7 @@ X-Lang: zh-CN
 }
 ```
 
-
-
 ### GET /agent/operator/list
-
-
 
 ### PS: 用于设置分站代理线路默认代理
 
@@ -469,11 +439,9 @@ X-Lang: zh-CN
 
 **请求**
 
-
 | 字段      | 位置    | 必填  | 类型    | 说明                |
 | ------- | ----- | --- | ----- | ----------------- |
 | `level` | query | 是   | int32 | 层级 1~7（业务上常用 `2`） |
-
 
 ```http
 GET /agent/operator/list?level=2
@@ -513,11 +481,7 @@ GET /agent/operator/list?level=2
 
 ---
 
-
-
 ## 代理等级
-
-
 
 ### GET /agent/level/list
 
@@ -548,19 +512,15 @@ GET /agent/operator/list?level=2
 }
 ```
 
-
-
 ### POST /agent/level/update
 
 批量 upsert 代理等级。对应 RPC `updateAgentLevels`。
 
 **请求**
 
-
 | 字段      | 位置   | 必填  | 类型    | 说明                                        |
 | ------- | ---- | --- | ----- | ----------------------------------------- |
 | `items` | json | 是   | array | `AgentLevelItem`；`level` 1~7，同 level 不可重复 |
-
 
 ```json
 {
@@ -588,11 +548,7 @@ GET /agent/operator/list?level=2
 
 ---
 
-
-
 ## 代理配置
-
-
 
 ### GET /agent/config
 
@@ -619,8 +575,6 @@ GET /agent/operator/list?level=2
   }
 }
 ```
-
-
 
 ### POST /agent/config/update
 
@@ -651,8 +605,6 @@ GET /agent/operator/list?level=2
 
 ### GET /agent/line/defaults
 
-
-
 ### PS: 用于新增代理的默认代理选择
 
 返回当前分站已开通代理线在配置中的默认代理及占成。先取 operator-base `GetAgentLines`，再取 `getAgentConfig`。`agent_id` 大于 0 时用 `getAgentProfile` 取 `share_rate`（百分比 0~100）。未配置时 `agent_id` 与 `share_rate` 为 `0`。顺序与已开通线路一致。
@@ -680,8 +632,6 @@ GET /agent/operator/list?level=2
 }
 ```
 
-
-
 ### GET /agent/init/status
 
 检测已开通代理线是否完成初始化，以及 `agent_level` 是否至少 3 层。线路以 `GetAgentLines` 为准；`listOperatorAgents` 固定查 `level=1`，该线路至少有一名代理则 `initialized` 为 `true`。`ready` 为等级已就绪且每条已开通线路都已初始化。没有开通线路时只看等级。
@@ -706,11 +656,7 @@ GET /agent/operator/list?level=2
 
 ---
 
-
-
 ## 代理树
-
-
 
 ### GET /agent/tree/node
 
@@ -718,11 +664,9 @@ GET /agent/operator/list?level=2
 
 **请求**
 
-
 | 字段          | 位置    | 必填  | 类型    | 说明              |
 | ----------- | ----- | --- | ----- | --------------- |
 | `parent_id` | query | 否   | int64 | 上级 ID；`0`/省略为顶层 |
-
 
 ```http
 GET /agent/tree/node?parent_id=1001
@@ -747,19 +691,15 @@ GET /agent/tree/node?parent_id=1001
 }
 ```
 
-
-
 ### GET /agent/tree/ancestors
 
 按代理 ID 或账号精确查找，返回当前代理及其全部上级。对应 RPC `treeNodeAncestorAgents`。当前代理在数组最前，其后为直接上级直到顶层。纯数字先按 ID 匹配，没有再按账号匹配；其他内容只按账号匹配。
 
 **请求**
 
-
 | 字段        | 位置    | 必填  | 类型     | 说明        |
 | --------- | ----- | --- | ------ | --------- |
 | `keyword` | query | 是   | string | 代理 ID 或账号 |
-
 
 ```http
 GET /agent/tree/ancestors?keyword=agent01
@@ -794,8 +734,6 @@ GET /agent/tree/ancestors?keyword=agent01
 
 ---
 
-
-
 ## 代理登录日志
 
 对应 RPC `listAgentLoginLogs`。登录类型、设备类型、登录结果数值码保留，并额外下发当前语言的 `*_label`（front 词典）。
@@ -805,7 +743,6 @@ GET /agent/tree/ancestors?keyword=agent01
 分页查询代理登录日志。
 
 **请求**
-
 
 | 字段             | 位置   | 必填  | 类型     | 说明                                               |
 | -------------- | ---- | --- | ------ | ------------------------------------------------ |
@@ -817,7 +754,6 @@ GET /agent/tree/ancestors?keyword=agent01
 | `device_type`  | body | 否   | int32  | `0` 不限，`1`~`5` PC网页 / H5 / Android / iOS / PC客户端 |
 | `keyword_type` | body | 否   | int32  | `0` 不筛，`1` 代理 ID，`2` 登录 IP，`3` 设备码，`4` 登录地点      |
 | `keyword`      | body | 否   | string | 与 `keyword_type` 配合                              |
-
 
 ```json
 {
@@ -862,14 +798,11 @@ GET /agent/tree/ancestors?keyword=agent01
 }
 ```
 
-
-
 ### POST /agent/login-log/associations
 
 关联检索登录日志。对应 RPC `listAgentLoginAssociations`。同 IP / 同设备代理数仅在时间范围与设备类型范围内统计（不计 `agent_id` / keyword）。设备类型数值码保留，并额外下发当前语言的 `device_type_label`（front 词典）。
 
 **请求**
-
 
 | 字段             | 位置   | 必填  | 类型     | 说明                                               |
 | -------------- | ---- | --- | ------ | ------------------------------------------------ |
@@ -881,7 +814,6 @@ GET /agent/tree/ancestors?keyword=agent01
 | `device_type`  | body | 否   | int32  | `0` 不限，`1`~`5` PC网页 / H5 / Android / iOS / PC客户端 |
 | `keyword_type` | body | 否   | int32  | `0` 不筛，`1` 登录 IP，`2` 设备码                         |
 | `keyword`      | body | 否   | string | 与 `keyword_type` 配合                              |
-
 
 ```json
 {
@@ -926,8 +858,6 @@ GET /agent/tree/ancestors?keyword=agent01
 
 ---
 
-
-
 ## 代理申请
 
 对应 RPC `listAgentApplies` / `reviewAgentApply`。审核状态：`1` 待审核，`2` 已通过，`3` 人工拒绝，`4` 风控拒绝。占成为百分比 0~100。
@@ -938,7 +868,6 @@ GET /agent/tree/ancestors?keyword=agent01
 
 **请求**
 
-
 | 字段                        | 位置   | 必填  | 类型     | 说明                         |
 | ------------------------- | ---- | --- | ------ | -------------------------- |
 | `page`                    | json | 否   | int32  | 页码，从 1                     |
@@ -947,7 +876,6 @@ GET /agent/tree/ancestors?keyword=agent01
 | `account_type`            | json | 否   | int32  | `1` 代理账号，`2` 会员账号，`0` 不限类型 |
 | `account`                 | json | 否   | string | 账号模糊                       |
 | `time_start` / `time_end` | json | 否   | int64  | 申请时间 Unix 秒，`0` 不限         |
-
 
 ```json
 {
@@ -988,21 +916,17 @@ GET /agent/tree/ancestors?keyword=agent01
 }
 ```
 
-
-
 ### POST /agent/apply/review
 
 审批申请。仅待审核可审。通过时按现金正式线指定代理开户，响应中的 `password` 为明文且仅返回一次。拒绝时 `reject_reason` 必填。
 
 **请求**
 
-
 | 字段              | 位置   | 必填  | 类型     | 说明                       |
 | --------------- | ---- | --- | ------ | ------------------------ |
 | `id`            | json | 是   | int64  | 申请单 ID                   |
 | `action`        | json | 是   | int32  | `1` 通过，`2` 人工拒绝，`3` 风控拒绝 |
 | `reject_reason` | json | 拒绝时 | string | 拒绝理由                     |
-
 
 ```json
 {
@@ -1033,13 +957,11 @@ GET /agent/tree/ancestors?keyword=agent01
 
 ---
 
-
-
 ## 代理资料
 
-对应 RPC `getAgentProfile`、`resetLoginPassword`、`updateWithdrawPassword`、`updateAgentShareRate`、`updateAgentPayoutRestricted`、`updateAgentRemark`、`updateAgentProfile`。
+对应 RPC `getAgentProfile`、`resetLoginPassword`、`updateWithdrawPassword`、`updateAgentShareRate`、`updateAgentPayoutRestricted`、`updateAgentStatus`、`updateAgentRemark`、`updateAgentProfile`、`listAgentOpLogs`。
 
-账号状态：`1` 正常，`2` 冻结，`3` 停用。注册来源：`1` PC，`2` app，`3` 管理员，`4` 代理。占成为百分比 `0`–`100`。出款限制：`1` 不限制，`2` 限制本人，`3` 限制全线。代理类型：`1` 现金，`2` 信用。`invite_member_count` 为直属会员数。
+账号状态：`1` 正常，`2` 冻结，`3` 禁用。注册来源：`1` PC，`2` app，`3` 管理员，`4` 代理。占成为百分比 `0`–`100`。出款限制：`1` 不限制，`2` 限制本人，`3` 限制全线。代理类型：`1` 现金，`2` 信用。`invite_member_count` 为直属会员数。
 
 ### GET /agent/profile
 
@@ -1047,18 +969,15 @@ GET /agent/tree/ancestors?keyword=agent01
 
 **请求**
 
-
 | 字段         | 位置    | 必填  | 类型    | 说明    |
 | ---------- | ----- | --- | ----- | ----- |
 | `agent_id` | query | 是   | int64 | 代理 ID |
-
 
 ```http
 GET /agent/profile?agent_id=1001
 ```
 
 **响应** `data`
-
 
 | 字段                                                                                                                                                  | 类型     | 说明      |
 | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------- |
@@ -1079,20 +998,15 @@ GET /agent/profile?agent_id=1001
 | `agent_type`                                                                                                                                        | int32  | 代理类型    |
 | `avatar_url` / `realname` / `telegram` / `facebook` / `whatsapp` / `mobile` / `nickname` / `id_document_no` / `zalo` / `twitter` / `line` / `email` | string | 资料字段    |
 
-
-
-
 ### POST /agent/password/reset
 
 服务端生成随机登录密码，只存哈希，不改令牌盐。响应中的 `password` 为明文且仅返回一次。
 
 **请求**
 
-
 | 字段         | 位置   | 必填  | 类型    | 说明    |
 | ---------- | ---- | --- | ----- | ----- |
 | `agent_id` | json | 是   | int64 | 代理 ID |
-
 
 ```json
 { "agent_id": 1001 }
@@ -1104,20 +1018,16 @@ GET /agent/profile?agent_id=1001
 { "password": "a1b2c3d4e5f67890" }
 ```
 
-
-
 ### POST /agent/withdraw-password/reset
 
 调用方传入提现密码明文，只存哈希，响应不回传密码。
 
 **请求**
 
-
 | 字段         | 位置   | 必填  | 类型     | 说明     |
 | ---------- | ---- | --- | ------ | ------ |
 | `agent_id` | json | 是   | int64  | 代理 ID  |
 | `password` | json | 是   | string | 提现密码明文 |
-
 
 成功时 `data` 为空对象。
 
@@ -1127,12 +1037,10 @@ GET /agent/profile?agent_id=1001
 
 **请求**
 
-
 | 字段           | 位置   | 必填  | 类型    | 说明    |
 | ------------ | ---- | --- | ----- | ----- |
 | `agent_id`   | json | 是   | int64 | 代理 ID |
 | `share_rate` | json | 是   | int32 | 百分比   |
-
 
 成功时 `data` 为空对象。
 
@@ -1140,12 +1048,23 @@ GET /agent/profile?agent_id=1001
 
 **请求**
 
-
 | 字段                  | 位置   | 必填  | 类型    | 说明              |
 | ------------------- | ---- | --- | ----- | --------------- |
 | `agent_id`          | json | 是   | int64 | 代理 ID           |
 | `payout_restricted` | json | 是   | int32 | `1` / `2` / `3` |
 
+成功时 `data` 为空对象。
+
+### POST /agent/status/update
+
+对应 RPC `updateAgentStatus`。修改代理账号状态。
+
+**请求**
+
+| 字段         | 位置   | 必填  | 类型    | 说明                   |
+| ---------- | ---- | --- | ----- | -------------------- |
+| `agent_id` | json | 是   | int64 | 代理 ID                |
+| `status`   | json | 是   | int32 | `1` 正常，`2` 冻结，`3` 禁用 |
 
 成功时 `data` 为空对象。
 
@@ -1155,19 +1074,16 @@ GET /agent/profile?agent_id=1001
 
 **请求**
 
-
 | 字段         | 位置   | 必填  | 类型     | 说明     |
 | ---------- | ---- | --- | ------ | ------ |
 | `agent_id` | json | 是   | int64  | 代理 ID  |
 | `remark`   | json | 否   | string | 空字符串清空 |
-
 
 成功时 `data` 为空对象。
 
 ### POST /agent/profile/update
 
 按 `field_type` 更新资料，不含备注。被选中的字段省略或传空字符串表示清空。
-
 
 | `field_type` | 字段               |
 | ------------ | ---------------- |
@@ -1185,7 +1101,6 @@ GET /agent/profile?agent_id=1001
 | `11`         | `line`           |
 | `12`         | `email`          |
 
-
 **请求**
 
 ```json
@@ -1198,16 +1113,115 @@ GET /agent/profile?agent_id=1001
 
 **响应** `data` 与 `GET /agent/profile` 相同。
 
+### GET /agent/op-logs
+
+对应 RPC `listAgentOpLogs`。分页查询资料/账号变更操作记录（占成、密码、状态、备注、资料字段等）。`target_id` / `target_type` 均为可选过滤；不传则不限目标。
+
+数值/code 字段保留，并额外下发当前语言的 label（front 词典）：
+
+| 原字段 | label 字段 | 词典 key |
+| --- | --- | --- |
+| `op_target_type` | `op_target_type_label` | `agent.opTargetType.<n>` |
+| `admin_type` | `admin_type_label` | `agent.adminType.<n>` |
+| `action` | `action_label` | 与 `action` 相同（落库即为完整 i18n key） |
+| `result` | `result_label` | `agent.opResult.<n>` |
+
+`fail_reason` 若存的是错误 i18n key，会按 error 组翻译后返回。
+
+权限：`agent:op-log:list`。
+
+**请求**
+
+| 字段           | 位置    | 必填  | 类型    | 说明                                      |
+| ------------ | ----- | --- | ----- | --------------------------------------- |
+| `target_id`  | query | 否   | int64 | 操作目标 ID，`0` 或不传表示不限                      |
+| `target_type`| query | 否   | int32 | 操作目标类型：`0` 不限，`1` 代理，`2` 会员             |
+| `page`       | query | 否   | int32 | 页码，默认 1                                 |
+| `page_size`  | query | 否   | int32 | 每页条数，默认 20，上限 100                       |
+| `time_start` | query | 否   | int64 | 操作时间起始 unix 秒，`0` 不限                    |
+| `time_end`   | query | 否   | int64 | 操作时间结束 unix 秒，`0` 不限                    |
+| `result`     | query | 否   | int32 | `0` 不限，`1` 成功，`2` 失败                    |
+
+```http
+GET /agent/op-logs?target_id=1001&target_type=1&page=1&page_size=20&result=0
+```
+
+**响应**
+
+```json
+{
+  "code": 0,
+  "msg": "ok",
+  "data": {
+    "total": 1,
+    "items": [
+      {
+        "id": 1,
+        "op_target_id": 1001,
+        "op_target_type": 1,
+        "op_target_type_label": "代理账号",
+        "op_target_account": "agent01",
+        "admin_id": 2001,
+        "admin_type": 1,
+        "admin_type_label": "分站管理员",
+        "admin_account": "admin01",
+        "action": "agent.opAction.share_rate",
+        "action_label": "更新占成",
+        "before_value": "30",
+        "after_value": "40",
+        "client_ip": "10.0.0.1",
+        "client_ip_location": "私有IP",
+        "login_device": "Mozilla/5.0 ...",
+        "udid": "device-abc",
+        "operated_at": 1760262518,
+        "result": 1,
+        "result_label": "成功",
+        "fail_reason": ""
+      }
+    ]
+  }
+}
+```
+
+`op_target_type`
+
+| 值 | 说明 |
+| -- | -- |
+| `1` | 代理账号 |
+| `2` | 会员账号 |
+
+`admin_type`
+
+| 值 | 说明 |
+| -- | -- |
+| `1` | 分站管理员 |
+| `2` | 分站代理 |
+
+`action`（落库为完整 front key，稳定可直接作词典查询）
+
+| action | 说明 |
+| --- | --- |
+| `agent.opAction.create` | 创建代理 |
+| `agent.opAction.share_rate` | 更新占成 |
+| `agent.opAction.payout_restricted` | 更新出款限制 |
+| `agent.opAction.status` | 更新状态 |
+| `agent.opAction.remark` | 更新备注 |
+| `agent.opAction.reset_login_password` | 重置登录密码 |
+| `agent.opAction.update_login_password` | 修改登录密码 |
+| `agent.opAction.update_withdraw_password` | 修改提款密码 |
+| `agent.opAction.profile` | 整份资料更新（`field_type=0`，前后值为 JSON） |
+| `agent.opAction.profile.avatar` / `…realname` / `…mobile` / … | 单字段资料更新 |
+
+密码类变更的 `before_value` / `after_value` 为 `***`，不落明文。
+
 ---
-
-
 
 ## 二、Catalog 注册
 
 服务启动时调用分站 Core `RegisterCatalog`（i18n code=`operator`），注册：
 
-- 菜单：看板、代理管理（列表 / 树 / 配置 / 等级 / 申请）及按钮权限
-- API：上表全部 path（`ServiceName=operator-admin-api`）
-- 多语言：`menu` / `api` / `front` / `error` 组词条
+- 菜单：看板、代理管理（列表 / 树 / 配置 / 等级 / 申请）及按钮权限（含 `agent:op-log:list`）
+- API：上表全部 path（`ServiceName=operator-admin-api`，含 `GET /agent/op-logs`）
+- 多语言：`menu` / `api` / `front` / `error` 组词条（含 `agent.opAction.*`、`agent.opResult.*`）
 
 菜单与 API 按 `name`、method+path upsert；超管角色自动补授权。详见 [core-api.md](./core-api.md) 「菜单 / API 自动迁移」。

@@ -33,6 +33,8 @@ project-resources
 - [Node Dispatch API 文档](docs/node-dispatch-api.md)
 - [Integration API 文档](docs/integration-api.md)
 - [File API 文档](docs/oss-api.md)
+- [Operator Admin API 文档](docs/operator-admin-api.md)
+- [会员自动层级与固定层级 API 对接文档](docs/operator-member-level-api.md)
 - [Operator Game API 文档](docs/operator-game-api.md)
 
 ## 说明
