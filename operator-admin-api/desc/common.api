@@ -1,6 +1,8 @@
 syntax = "v1"
 
 type (
+	// 空响应
+	Empty  {}
 	// 公共分页请求参数
 	PageRequest {
 		// 当前页码, 从1开始

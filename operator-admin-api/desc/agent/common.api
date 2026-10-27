@@ -40,7 +40,7 @@ type AgentCreateFields {
 	ShareRate     int32  `json:"share_rate"`
 	PromoCode     string `json:"promo_code,optional"`
 	RegisterIp    string `json:"register_ip,optional"`
-	Remark 		  string `json:"remark,optional"`
+	Remark        string `json:"remark,optional"`
 }
 
 // Add agent response | 添加代理响应

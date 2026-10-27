@@ -14,6 +14,7 @@ import (
 	agentprofile "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/profile"
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
 	memberauto_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/auto_level"
+	memberfixed_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/fixed_level"
 	publicphone "oa.98ent.com/p9/operator-admin-api/internal/handler/public/phone"
 	publicping "oa.98ent.com/p9/operator-admin-api/internal/handler/public/ping"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
@@ -245,6 +246,35 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/member/auto-level"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: memberfixed_level.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: memberfixed_level.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/list",
+					Handler: memberfixed_level.ListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: memberfixed_level.UpdateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/member/fixed-level"),
 	)
 
 	server.AddRoutes(

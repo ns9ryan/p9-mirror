@@ -105,21 +105,21 @@ type ListAgentOpLogsReq {
 }
 
 type AgentOpLogItem {
-	Id              int64  `json:"id"`
-	AgentId         int64  `json:"agent_id"`
-	AdminId      	int64  `json:"admin_id"`
-	AdminAccount 	string `json:"admin_account"`
-	Action          string `json:"action"`
-	ActionLabel     string `json:"action_label"`
-	BeforeValue     string `json:"before_value"`
-	AfterValue      string `json:"after_value"`
-	ClientIp        string `json:"client_ip"`
-	LoginDevice     string `json:"login_device"`
-	Udid            string `json:"udid"`
-	OperatedAt      int64  `json:"operated_at"`
-	Result          int32  `json:"result"`
-	ResultLabel     string `json:"result_label"`
-	FailReason      string `json:"fail_reason"`
+	Id           int64  `json:"id"`
+	AgentId      int64  `json:"agent_id"`
+	AdminId      int64  `json:"admin_id"`
+	AdminAccount string `json:"admin_account"`
+	Action       string `json:"action"`
+	ActionLabel  string `json:"action_label"`
+	BeforeValue  string `json:"before_value"`
+	AfterValue   string `json:"after_value"`
+	ClientIp     string `json:"client_ip"`
+	LoginDevice  string `json:"login_device"`
+	Udid         string `json:"udid"`
+	OperatedAt   int64  `json:"operated_at"`
+	Result       int32  `json:"result"`
+	ResultLabel  string `json:"result_label"`
+	FailReason   string `json:"fail_reason"`
 }
 
 type ListAgentOpLogsResp {

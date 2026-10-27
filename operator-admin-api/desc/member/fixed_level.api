@@ -3,97 +3,91 @@ syntax = "v1"
 import "../common.api"
 
 type (
-    // 会员固定层级信息
-    MemberFixedLevelInfo {
-        // 层级ID
-        Id int64 `json:"id"`
-        // 层级名称
-        Name string `json:"name"`
-        // 层级说明
-        Description string `json:"description"`
-        // 单笔提款金额上限, 未设置表示不额外限制
-        WithdrawalLimit *int64 `json:"withdrawal_limit"`
-        // 当前会员数
-        CurrentMemberCount int64 `json:"current_member_count"`
-        // 创建时间, Unix毫秒时间戳
-        CreatedAt int64 `json:"created_at"`
-        // 更新时间, Unix毫秒时间戳
-        UpdatedAt int64 `json:"updated_at"`
-    }
-
-    // 固定层级列表请求
-    ListMemberFixedLevelsRequest {
-        // 层级名称, 模糊查询
-        Name string `form:"name,optional" validate:"omitempty,max=100"`
-        // 分页参数
-        PageRequest
-    }
-
-    // 固定层级列表响应
-    ListMemberFixedLevelsResponse {
-        // 数据总数
-        Total int64 `json:"total"`
-        // 固定层级列表
-        List []MemberFixedLevelInfo `json:"list"`
-    }
-
-    // 创建固定层级请求
-    CreateMemberFixedLevelRequest {
-        // 层级名称
-        Name string `json:"name" validate:"required,max=100"`
-        // 层级说明
-        Description string `json:"description,optional" validate:"omitempty,max=255"`
-        // 单笔提款金额上限, 未设置表示不额外限制
-        WithdrawalLimit *int64 `json:"withdrawal_limit,optional" validate:"omitempty,gt=0"`
-    }
-
-    // 创建固定层级响应
-    CreateMemberFixedLevelResponse {
-        // 新建层级ID
-        Id int64 `json:"id"`
-    }
-
-    // 修改固定层级请求
-    UpdateMemberFixedLevelRequest {
-        // 层级ID
-        Id int64 `json:"id" validate:"required,gt=0"`
-        // 层级名称
-        Name string `json:"name" validate:"required,max=100"`
-        // 层级说明
-        Description string `json:"description,optional" validate:"omitempty,max=255"`
-        // 单笔提款金额上限, 未设置表示不额外限制
-        WithdrawalLimit *int64 `json:"withdrawal_limit,optional" validate:"omitempty,gt=0"`
-    }
-
-    // 删除固定层级请求
-    DeleteMemberFixedLevelRequest {
-        // 层级ID
-        Id int64 `json:"id" validate:"required,gt=0"`
-    }
-
-    // 删除固定层级响应
-    DeleteMemberFixedLevelResponse {}
+	// 会员固定层级信息
+	MemberFixedLevelInfo {
+		// 层级ID
+		Id int64 `json:"id"`
+		// 层级名称
+		Name string `json:"name"`
+		// 层级说明
+		Description string `json:"description"`
+		// 单笔提款金额上限, 未设置表示不额外限制
+		WithdrawalLimit *int64 `json:"withdrawal_limit"`
+		// 当前会员数
+		CurrentMemberCount int64 `json:"current_member_count"`
+		// 创建时间, Unix毫秒时间戳
+		CreatedAt int64 `json:"created_at"`
+		// 更新时间, Unix毫秒时间戳
+		UpdatedAt int64 `json:"updated_at"`
+	}
+	// 固定层级列表请求
+	ListMemberFixedLevelsRequest {
+		// 层级名称, 模糊查询
+		Name string `form:"name,optional" validate:"omitempty,max=100"`
+		// 分页参数
+		PageRequest
+	}
+	// 固定层级列表响应
+	ListMemberFixedLevelsResponse {
+		// 数据总数
+		Total int64 `json:"total"`
+		// 固定层级列表
+		List []MemberFixedLevelInfo `json:"list"`
+	}
+	// 创建固定层级请求
+	CreateMemberFixedLevelRequest {
+		// 层级名称
+		Name string `json:"name" validate:"required,max=100"`
+		// 层级说明
+		Description string `json:"description,optional" validate:"omitempty,max=255"`
+		// 单笔提款金额上限, 未设置表示不额外限制
+		WithdrawalLimit *int64 `json:"withdrawal_limit,optional" validate:"omitempty,gt=0"`
+	}
+	// 创建固定层级响应
+	CreateMemberFixedLevelResponse {
+		// 新建层级ID
+		Id int64 `json:"id"`
+	}
+	// 修改固定层级请求
+	UpdateMemberFixedLevelRequest {
+		// 层级ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+		// 层级名称
+		Name string `json:"name" validate:"required,max=100"`
+		// 层级说明
+		Description string `json:"description,optional" validate:"omitempty,max=255"`
+		// 单笔提款金额上限, 未设置表示不额外限制
+		WithdrawalLimit *int64 `json:"withdrawal_limit,optional" validate:"omitempty,gt=0"`
+	}
+	// 删除固定层级请求
+	DeleteMemberFixedLevelRequest {
+		// 层级ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+	}
+	// 删除固定层级响应
+	DeleteMemberFixedLevelResponse  {}
 )
 
 @server (
-    group:      member/fixed_level
-    prefix:     /member/fixed-level
-    middleware: Jwt,ActionLog,Authority
+	group:      member/fixed_level
+	prefix:     /member/fixed-level
+	middleware: Jwt,ActionLog,Authority
 )
 service operator_admin_api {
-    // 获取固定层级列表
-    @handler List
-    get /list (ListMemberFixedLevelsRequest) returns (ListMemberFixedLevelsResponse)
+	// 获取固定层级列表
+	@handler List
+	get /list (ListMemberFixedLevelsRequest) returns (ListMemberFixedLevelsResponse)
 
-    // 创建固定层级
-    @handler Create
-    post /create (CreateMemberFixedLevelRequest) returns (CreateMemberFixedLevelResponse)
+	// 创建固定层级
+	@handler Create
+	post /create (CreateMemberFixedLevelRequest) returns (CreateMemberFixedLevelResponse)
 
-    // 修改固定层级
-    @handler Update
-    post /update (UpdateMemberFixedLevelRequest) returns (Empty)
+	// 修改固定层级
+	@handler Update
+	post /update (UpdateMemberFixedLevelRequest) returns (Empty)
 
-    // 删除固定层级
-    @handler Delete
-    post /delete (DeleteMemberFixedLevelRequest) returns (Empty)
+	// 删除固定层级
+	@handler Delete
+	post /delete (DeleteMemberFixedLevelRequest) returns (Empty)
 }
+

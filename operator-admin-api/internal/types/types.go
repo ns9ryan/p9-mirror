@@ -206,6 +206,26 @@ type CreateMemberAutoLevelResponse struct {
 	Id int64 `json:"id"`
 }
 
+type CreateMemberFixedLevelRequest struct {
+	Name            string `json:"name" validate:"required,max=100"`
+	Description     string `json:"description,optional" validate:"omitempty,max=255"`
+	WithdrawalLimit *int64 `json:"withdrawal_limit,optional" validate:"omitempty,gt=0"`
+}
+
+type CreateMemberFixedLevelResponse struct {
+	Id int64 `json:"id"`
+}
+
+type DeleteMemberFixedLevelRequest struct {
+	Id int64 `json:"id" validate:"required,gt=0"`
+}
+
+type DeleteMemberFixedLevelResponse struct {
+}
+
+type Empty struct {
+}
+
 type GetAgentProfileReq struct {
 	AgentId int64 `form:"agent_id"`
 }
@@ -322,6 +342,16 @@ type ListMemberAutoLevelsResponse struct {
 	List  []MemberAutoLevelInfo `json:"list"`
 }
 
+type ListMemberFixedLevelsRequest struct {
+	Name string `form:"name,optional" validate:"omitempty,max=100"`
+	PageRequest
+}
+
+type ListMemberFixedLevelsResponse struct {
+	Total int64                  `json:"total"`
+	List  []MemberFixedLevelInfo `json:"list"`
+}
+
 type ListOperatorAgentsReq struct {
 	Level int32 `form:"level"`
 }
@@ -339,6 +369,16 @@ type MemberAutoLevelInfo struct {
 	Name               string `json:"name"`
 	MinDeposit         int64  `json:"min_deposit"`
 	MinWater           int64  `json:"min_water"`
+	CurrentMemberCount int64  `json:"current_member_count"`
+	CreatedAt          int64  `json:"created_at"`
+	UpdatedAt          int64  `json:"updated_at"`
+}
+
+type MemberFixedLevelInfo struct {
+	Id                 int64  `json:"id"`
+	Name               string `json:"name"`
+	Description        string `json:"description"`
+	WithdrawalLimit    *int64 `json:"withdrawal_limit"`
 	CurrentMemberCount int64  `json:"current_member_count"`
 	CreatedAt          int64  `json:"created_at"`
 	UpdatedAt          int64  `json:"updated_at"`
@@ -468,6 +508,13 @@ type UpdateAgentShareRateReq struct {
 type UpdateAgentStatusReq struct {
 	AgentId int64 `json:"agent_id"`
 	Status  int32 `json:"status"`
+}
+
+type UpdateMemberFixedLevelRequest struct {
+	Id              int64  `json:"id" validate:"required,gt=0"`
+	Name            string `json:"name" validate:"required,max=100"`
+	Description     string `json:"description,optional" validate:"omitempty,max=255"`
+	WithdrawalLimit *int64 `json:"withdrawal_limit,optional" validate:"omitempty,gt=0"`
 }
 
 type UpdateWithdrawPasswordReq struct {
