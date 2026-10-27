@@ -11,6 +11,7 @@ import (
 	"oa.98ent.com/p9/core/common/coreadapt"
 	"oa.98ent.com/p9/core/common/middleware"
 	"oa.98ent.com/p9/core/rpc/coreclient"
+	"oa.98ent.com/p9/integration/rpc/integrationclient"
 	"oa.98ent.com/p9/operator-admin-api/internal/config"
 	"oa.98ent.com/p9/operator-admin-api/internal/locales"
 	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
@@ -31,6 +32,9 @@ type ServiceContext struct {
 	// CRM业务RPC
 	AgentRpc           agentservice.AgentService       // 分层代理RPC
 	MemberAutoLevelRpc memberautolevel.MemberAutoLevel // 会员自动层级RPC
+
+	// 第三方服务集成 RPC
+	IntegrationRpc integrationclient.Integration
 
 	// 认证权限
 	Jwt       rest.Middleware // JWT认证
@@ -59,6 +63,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	baseClient := zrpc.MustNewClient(c.OperatorBaseRpc)
 	crmClient := zrpc.MustNewClient(c.CrmRpc)
 
+	// 创建第三方服务集成客户端
+	integrationClient := zrpc.MustNewClient(c.IntegrationRpc)
+
 	return &ServiceContext{
 		Config: c,
 		Trans:  trans,
@@ -68,6 +75,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 		AgentRpc:           agentservice.NewAgentService(crmClient),
 		MemberAutoLevelRpc: memberautolevel.NewMemberAutoLevel(crmClient),
+
+		IntegrationRpc: integrationclient.NewIntegration(integrationClient),
 
 		Jwt:       middleware.JWT(auth),
 		Authority: middleware.Authority(auth),

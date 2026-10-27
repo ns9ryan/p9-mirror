@@ -18,6 +18,8 @@ type Config struct {
 	OperatorBaseRpc zrpc.RpcClientConf
 	// 后台CRM RPC配置
 	CrmRpc zrpc.RpcClientConf
+	// 第三方服务集成 RPC配置
+	IntegrationRpc zrpc.RpcClientConf
 	// 国际化配置
 	I18n i18n.Config
 }

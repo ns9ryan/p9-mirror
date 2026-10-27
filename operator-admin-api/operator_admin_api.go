@@ -10,10 +10,10 @@ import (
 	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/common/response"
 	"oa.98ent.com/p9/common/validate"
-	"oa.98ent.com/p9/core/common/middleware"
 	"oa.98ent.com/p9/operator-admin-api/internal/catalog"
 	"oa.98ent.com/p9/operator-admin-api/internal/config"
 	"oa.98ent.com/p9/operator-admin-api/internal/handler"
+	localmw "oa.98ent.com/p9/operator-admin-api/internal/middleware"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -46,8 +46,9 @@ func main() {
 
 	// 注册I18n语言中间件
 	server.Use(i18n.NewI18nLangMiddleware(c.I18n.DefaultLanguage).Handle)
-	// 注册客户端 IP 中间件
-	server.Use(middleware.ClientIP)
+
+	// 注册 User-Agent / 设备码透传，供 CRM 操作日志使用
+	server.Use(localmw.ClientMeta)
 	// 注册全局错误日志中间件
 	server.Use(ctx.ErrorLog)
 

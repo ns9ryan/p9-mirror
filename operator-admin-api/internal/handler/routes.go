@@ -151,6 +151,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
 			[]rest.Route{
 				{
+					// 代理资料变更操作日志列表
+					Method:  http.MethodGet,
+					Path:    "/agent/op-logs",
+					Handler: agentprofile.ListAgentOpLogsHandler(serverCtx),
+				},
+				{
 					// 重置登录密码
 					Method:  http.MethodPost,
 					Path:    "/agent/password/reset",
