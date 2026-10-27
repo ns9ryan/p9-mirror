@@ -149,8 +149,10 @@ func (m *Manager) buildConfigContent(domain string) string {
 	if operatorPort := ports.Operator; operatorPort != 0 {
 		sb.WriteString(fmt.Sprintf("    # =========================\n"))
 		sb.WriteString(fmt.Sprintf("    # Operator API\n"))
+		sb.WriteString(fmt.Sprintf("    # /admin/operator/* → /*\n"))
 		sb.WriteString(fmt.Sprintf("    # =========================\n"))
 		sb.WriteString(fmt.Sprintf("    location /admin/operator/ {\n"))
+		sb.WriteString(fmt.Sprintf("        rewrite ^/admin/operator/(.*)$ /$1 break;\n\n"))
 		sb.WriteString(fmt.Sprintf("        proxy_pass http://host.docker.internal:%d;\n\n", operatorPort))
 		sb.WriteString(fmt.Sprintf("        proxy_set_header Host $host;\n"))
 		sb.WriteString(fmt.Sprintf("        proxy_set_header X-Real-IP $remote_addr;\n"))
