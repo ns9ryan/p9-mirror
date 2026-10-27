@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package crm_member_fixed_level;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberfixedlevelpb";
+
+// 会员固定层级信息
+message MemberFixedLevelInfo {
+  // 层级ID
+  int64 id = 1;
+  // 层级名称
+  string name = 2;
+  // 层级说明
+  string description = 3;
+  // 单笔提款金额上限, 未设置表示不额外限制
+  optional int64 withdrawal_limit = 4;
+  // 当前会员数
+  int64 current_member_count = 5;
+  // 创建时间, Unix毫秒时间戳
+  int64 created_at = 6;
+  // 更新时间, Unix毫秒时间戳
+  int64 updated_at = 7;
+}
+
+// 创建固定层级请求
+message CreateMemberFixedLevelRequest {
+  // 层级名称
+  string name = 1;
+  // 层级说明
+  string description = 2;
+  // 单笔提款金额上限, 未设置表示不额外限制
+  optional int64 withdrawal_limit = 3;
+}
+
+// 创建固定层级响应
+message CreateMemberFixedLevelResponse {
+  // 新建层级ID
+  int64 id = 1;
+}
+
+// 修改固定层级请求
+message UpdateMemberFixedLevelRequest {
+  // 层级ID
+  int64 id = 1;
+  // 层级名称
+  string name = 2;
+  // 层级说明
+  string description = 3;
+  // 单笔提款金额上限, 未设置表示不额外限制
+  optional int64 withdrawal_limit = 4;
+}
+
+// 修改固定层级响应
+message UpdateMemberFixedLevelResponse {}
+
+// 获取固定层级列表请求
+message ListMemberFixedLevelsRequest {
+  // 页码, 从1开始
+  int64 page = 1;
+  // 每页数量
+  int64 page_size = 2;
+  // 层级名称, 模糊查询
+  optional string name = 3;
+}
+
+// 获取固定层级列表响应
+message ListMemberFixedLevelsResponse {
+  // 数据总数
+  int64 total = 1;
+  // 固定层级列表
+  repeated MemberFixedLevelInfo list = 2;
+}
+
+// 删除固定层级请求
+message DeleteMemberFixedLevelRequest {
+  // 层级ID
+  int64 id = 1;
+}
+
+// 删除固定层级响应
+message DeleteMemberFixedLevelResponse {}

@@ -15,6 +15,7 @@ import (
 	authpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/authpb"
 	initpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/initpb"
 	memberautolevelpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberautolevelpb"
+	memberfixedlevelpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberfixedlevelpb"
 	pingpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/pingpb"
 	vipconfigpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb"
 	vipicongrouppb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
@@ -1880,6 +1881,234 @@ var MemberAutoLevel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _MemberAutoLevel_Delete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "crm.proto",
+}
+
+const (
+	MemberFixedLevel_Create_FullMethodName = "/crm.MemberFixedLevel/Create"
+	MemberFixedLevel_Update_FullMethodName = "/crm.MemberFixedLevel/Update"
+	MemberFixedLevel_List_FullMethodName   = "/crm.MemberFixedLevel/List"
+	MemberFixedLevel_Delete_FullMethodName = "/crm.MemberFixedLevel/Delete"
+)
+
+// MemberFixedLevelClient is the client API for MemberFixedLevel service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// 会员固定层级服务
+type MemberFixedLevelClient interface {
+	// 创建固定层级
+	Create(ctx context.Context, in *memberfixedlevelpb.CreateMemberFixedLevelRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.CreateMemberFixedLevelResponse, error)
+	// 修改固定层级
+	Update(ctx context.Context, in *memberfixedlevelpb.UpdateMemberFixedLevelRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.UpdateMemberFixedLevelResponse, error)
+	// 获取固定层级列表
+	List(ctx context.Context, in *memberfixedlevelpb.ListMemberFixedLevelsRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.ListMemberFixedLevelsResponse, error)
+	// 删除固定层级
+	Delete(ctx context.Context, in *memberfixedlevelpb.DeleteMemberFixedLevelRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.DeleteMemberFixedLevelResponse, error)
+}
+
+type memberFixedLevelClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMemberFixedLevelClient(cc grpc.ClientConnInterface) MemberFixedLevelClient {
+	return &memberFixedLevelClient{cc}
+}
+
+func (c *memberFixedLevelClient) Create(ctx context.Context, in *memberfixedlevelpb.CreateMemberFixedLevelRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.CreateMemberFixedLevelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(memberfixedlevelpb.CreateMemberFixedLevelResponse)
+	err := c.cc.Invoke(ctx, MemberFixedLevel_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *memberFixedLevelClient) Update(ctx context.Context, in *memberfixedlevelpb.UpdateMemberFixedLevelRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.UpdateMemberFixedLevelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(memberfixedlevelpb.UpdateMemberFixedLevelResponse)
+	err := c.cc.Invoke(ctx, MemberFixedLevel_Update_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *memberFixedLevelClient) List(ctx context.Context, in *memberfixedlevelpb.ListMemberFixedLevelsRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.ListMemberFixedLevelsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(memberfixedlevelpb.ListMemberFixedLevelsResponse)
+	err := c.cc.Invoke(ctx, MemberFixedLevel_List_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *memberFixedLevelClient) Delete(ctx context.Context, in *memberfixedlevelpb.DeleteMemberFixedLevelRequest, opts ...grpc.CallOption) (*memberfixedlevelpb.DeleteMemberFixedLevelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(memberfixedlevelpb.DeleteMemberFixedLevelResponse)
+	err := c.cc.Invoke(ctx, MemberFixedLevel_Delete_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MemberFixedLevelServer is the server API for MemberFixedLevel service.
+// All implementations must embed UnimplementedMemberFixedLevelServer
+// for forward compatibility.
+//
+// 会员固定层级服务
+type MemberFixedLevelServer interface {
+	// 创建固定层级
+	Create(context.Context, *memberfixedlevelpb.CreateMemberFixedLevelRequest) (*memberfixedlevelpb.CreateMemberFixedLevelResponse, error)
+	// 修改固定层级
+	Update(context.Context, *memberfixedlevelpb.UpdateMemberFixedLevelRequest) (*memberfixedlevelpb.UpdateMemberFixedLevelResponse, error)
+	// 获取固定层级列表
+	List(context.Context, *memberfixedlevelpb.ListMemberFixedLevelsRequest) (*memberfixedlevelpb.ListMemberFixedLevelsResponse, error)
+	// 删除固定层级
+	Delete(context.Context, *memberfixedlevelpb.DeleteMemberFixedLevelRequest) (*memberfixedlevelpb.DeleteMemberFixedLevelResponse, error)
+	mustEmbedUnimplementedMemberFixedLevelServer()
+}
+
+// UnimplementedMemberFixedLevelServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedMemberFixedLevelServer struct{}
+
+func (UnimplementedMemberFixedLevelServer) Create(context.Context, *memberfixedlevelpb.CreateMemberFixedLevelRequest) (*memberfixedlevelpb.CreateMemberFixedLevelResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedMemberFixedLevelServer) Update(context.Context, *memberfixedlevelpb.UpdateMemberFixedLevelRequest) (*memberfixedlevelpb.UpdateMemberFixedLevelResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedMemberFixedLevelServer) List(context.Context, *memberfixedlevelpb.ListMemberFixedLevelsRequest) (*memberfixedlevelpb.ListMemberFixedLevelsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedMemberFixedLevelServer) Delete(context.Context, *memberfixedlevelpb.DeleteMemberFixedLevelRequest) (*memberfixedlevelpb.DeleteMemberFixedLevelResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedMemberFixedLevelServer) mustEmbedUnimplementedMemberFixedLevelServer() {}
+func (UnimplementedMemberFixedLevelServer) testEmbeddedByValue()                          {}
+
+// UnsafeMemberFixedLevelServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MemberFixedLevelServer will
+// result in compilation errors.
+type UnsafeMemberFixedLevelServer interface {
+	mustEmbedUnimplementedMemberFixedLevelServer()
+}
+
+func RegisterMemberFixedLevelServer(s grpc.ServiceRegistrar, srv MemberFixedLevelServer) {
+	// If the following call panics, it indicates UnimplementedMemberFixedLevelServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&MemberFixedLevel_ServiceDesc, srv)
+}
+
+func _MemberFixedLevel_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(memberfixedlevelpb.CreateMemberFixedLevelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberFixedLevelServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MemberFixedLevel_Create_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberFixedLevelServer).Create(ctx, req.(*memberfixedlevelpb.CreateMemberFixedLevelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MemberFixedLevel_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(memberfixedlevelpb.UpdateMemberFixedLevelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberFixedLevelServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MemberFixedLevel_Update_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberFixedLevelServer).Update(ctx, req.(*memberfixedlevelpb.UpdateMemberFixedLevelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MemberFixedLevel_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(memberfixedlevelpb.ListMemberFixedLevelsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberFixedLevelServer).List(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MemberFixedLevel_List_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberFixedLevelServer).List(ctx, req.(*memberfixedlevelpb.ListMemberFixedLevelsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MemberFixedLevel_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(memberfixedlevelpb.DeleteMemberFixedLevelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberFixedLevelServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MemberFixedLevel_Delete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberFixedLevelServer).Delete(ctx, req.(*memberfixedlevelpb.DeleteMemberFixedLevelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MemberFixedLevel_ServiceDesc is the grpc.ServiceDesc for MemberFixedLevel service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MemberFixedLevel_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "crm.MemberFixedLevel",
+	HandlerType: (*MemberFixedLevelServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _MemberFixedLevel_Create_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _MemberFixedLevel_Update_Handler,
+		},
+		{
+			MethodName: "List",
+			Handler:    _MemberFixedLevel_List_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _MemberFixedLevel_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -13,6 +13,7 @@ import (
 	authpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/authpb"
 	initpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/initpb"
 	memberautolevelpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberautolevelpb"
+	memberfixedlevelpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberfixedlevelpb"
 	pingpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/pingpb"
 	vipconfigpb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb"
 	vipicongrouppb "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
@@ -32,7 +33,7 @@ var File_crm_proto protoreflect.FileDescriptor
 
 const file_crm_proto_rawDesc = "" +
 	"\n" +
-	"\tcrm.proto\x12\x03crm\x1a\x10types/auth.proto\x1a\x10types/ping.proto\x1a\x11types/agent.proto\x1a\x10types/init.proto\x1a\x1dtypes/member_auto_level.proto\x1a\x16types/vip_config.proto\x1a\x15types/vip_level.proto\x1a\x1atypes/vip_icon_group.proto2=\n" +
+	"\tcrm.proto\x12\x03crm\x1a\x10types/auth.proto\x1a\x10types/ping.proto\x1a\x11types/agent.proto\x1a\x10types/init.proto\x1a\x1dtypes/member_auto_level.proto\x1a\x1etypes/member_fixed_level.proto\x1a\x16types/vip_config.proto\x1a\x15types/vip_level.proto\x1a\x1atypes/vip_icon_group.proto2=\n" +
 	"\x04Ping\x125\n" +
 	"\x04Ping\x12\x15.crm_ping.PingRequest\x1a\x16.crm_ping.PingResponse2=\n" +
 	"\x04Init\x125\n" +
@@ -77,7 +78,12 @@ const file_crm_proto_rawDesc = "" +
 	"\x06Create\x123.crm_member_auto_level.CreateMemberAutoLevelRequest\x1a4.crm_member_auto_level.CreateMemberAutoLevelResponse\x12s\n" +
 	"\x06Update\x123.crm_member_auto_level.UpdateMemberAutoLevelRequest\x1a4.crm_member_auto_level.UpdateMemberAutoLevelResponse\x12o\n" +
 	"\x04List\x122.crm_member_auto_level.ListMemberAutoLevelsRequest\x1a3.crm_member_auto_level.ListMemberAutoLevelsResponse\x12s\n" +
-	"\x06Delete\x123.crm_member_auto_level.DeleteMemberAutoLevelRequest\x1a4.crm_member_auto_level.DeleteMemberAutoLevelResponse2\xce\a\n" +
+	"\x06Delete\x123.crm_member_auto_level.DeleteMemberAutoLevelRequest\x1a4.crm_member_auto_level.DeleteMemberAutoLevelResponse2\xf2\x03\n" +
+	"\x10MemberFixedLevel\x12w\n" +
+	"\x06Create\x125.crm_member_fixed_level.CreateMemberFixedLevelRequest\x1a6.crm_member_fixed_level.CreateMemberFixedLevelResponse\x12w\n" +
+	"\x06Update\x125.crm_member_fixed_level.UpdateMemberFixedLevelRequest\x1a6.crm_member_fixed_level.UpdateMemberFixedLevelResponse\x12s\n" +
+	"\x04List\x124.crm_member_fixed_level.ListMemberFixedLevelsRequest\x1a5.crm_member_fixed_level.ListMemberFixedLevelsResponse\x12w\n" +
+	"\x06Delete\x125.crm_member_fixed_level.DeleteMemberFixedLevelRequest\x1a6.crm_member_fixed_level.DeleteMemberFixedLevelResponse2\xce\a\n" +
 	"\x03Vip\x12V\n" +
 	"\tGetConfig\x12#.crm_vip_config.GetVipConfigRequest\x1a$.crm_vip_config.GetVipConfigResponse\x12_\n" +
 	"\fUpdateConfig\x12&.crm_vip_config.UpdateVipConfigRequest\x1a'.crm_vip_config.UpdateVipConfigResponse\x12W\n" +
@@ -92,91 +98,99 @@ const file_crm_proto_rawDesc = "" +
 	"\x0eResetIconGroup\x12,.crm_vip_icon_group.ResetVipIconGroupRequest\x1a-.crm_vip_icon_group.ResetVipIconGroupResponseB8Z6oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpcb\x06proto3"
 
 var file_crm_proto_goTypes = []any{
-	(*pingpb.PingRequest)(nil),                              // 0: crm_ping.PingRequest
-	(*initpb.InitRequest)(nil),                              // 1: crm_init.InitRequest
-	(*authpb.LoginReq)(nil),                                 // 2: crm_auth.LoginReq
-	(*authpb.RefreshReq)(nil),                               // 3: crm_auth.RefreshReq
-	(*authpb.LogoutReq)(nil),                                // 4: crm_auth.LogoutReq
-	(*authpb.Empty)(nil),                                    // 5: crm_auth.Empty
-	(*authpb.CheckTokenReq)(nil),                            // 6: crm_auth.CheckTokenReq
-	(*agentpb.UpdateAgentLevelsReq)(nil),                    // 7: crm_agent.UpdateAgentLevelsReq
-	(*agentpb.UpdateAgentConfigReq)(nil),                    // 8: crm_agent.UpdateAgentConfigReq
-	(*agentpb.GetAgentConfigReq)(nil),                       // 9: crm_agent.GetAgentConfigReq
-	(*agentpb.AddOperatorAgentReq)(nil),                     // 10: crm_agent.AddOperatorAgentReq
-	(*agentpb.AddSubAgentReq)(nil),                          // 11: crm_agent.AddSubAgentReq
-	(*agentpb.ListAgentsReq)(nil),                           // 12: crm_agent.ListAgentsReq
-	(*agentpb.SearchAgentsReq)(nil),                         // 13: crm_agent.SearchAgentsReq
-	(*agentpb.ListOperatorAgentsReq)(nil),                   // 14: crm_agent.ListOperatorAgentsReq
-	(*agentpb.ListAgentLevelsReq)(nil),                      // 15: crm_agent.ListAgentLevelsReq
-	(*agentpb.TreeNodeAgentsReq)(nil),                       // 16: crm_agent.TreeNodeAgentsReq
-	(*agentpb.TreeNodeAncestorAgentsReq)(nil),               // 17: crm_agent.TreeNodeAncestorAgentsReq
-	(*agentpb.AncestorsByIDReq)(nil),                        // 18: crm_agent.AncestorsByIDReq
-	(*agentpb.AddAgentApplyReq)(nil),                        // 19: crm_agent.AddAgentApplyReq
-	(*agentpb.ListAgentAppliesReq)(nil),                     // 20: crm_agent.ListAgentAppliesReq
-	(*agentpb.ReviewAgentApplyReq)(nil),                     // 21: crm_agent.ReviewAgentApplyReq
-	(*agentpb.GetAgentProfileReq)(nil),                      // 22: crm_agent.GetAgentProfileReq
-	(*agentpb.ResetLoginPasswordReq)(nil),                   // 23: crm_agent.ResetLoginPasswordReq
-	(*agentpb.UpdateLoginPasswordReq)(nil),                  // 24: crm_agent.UpdateLoginPasswordReq
-	(*agentpb.UpdateWithdrawPasswordReq)(nil),               // 25: crm_agent.UpdateWithdrawPasswordReq
-	(*agentpb.UpdateAgentShareRateReq)(nil),                 // 26: crm_agent.UpdateAgentShareRateReq
-	(*agentpb.UpdateAgentPayoutRestrictedReq)(nil),          // 27: crm_agent.UpdateAgentPayoutRestrictedReq
-	(*agentpb.UpdateAgentStatusReq)(nil),                    // 28: crm_agent.UpdateAgentStatusReq
-	(*agentpb.UpdateAgentRemarkReq)(nil),                    // 29: crm_agent.UpdateAgentRemarkReq
-	(*agentpb.UpdateAgentProfileReq)(nil),                   // 30: crm_agent.UpdateAgentProfileReq
-	(*agentpb.ListAgentLoginLogsReq)(nil),                   // 31: crm_agent.ListAgentLoginLogsReq
-	(*agentpb.ListAgentLoginAssociationsReq)(nil),           // 32: crm_agent.ListAgentLoginAssociationsReq
-	(*agentpb.ListAgentOpLogsReq)(nil),                      // 33: crm_agent.ListAgentOpLogsReq
-	(*memberautolevelpb.CreateMemberAutoLevelRequest)(nil),  // 34: crm_member_auto_level.CreateMemberAutoLevelRequest
-	(*memberautolevelpb.UpdateMemberAutoLevelRequest)(nil),  // 35: crm_member_auto_level.UpdateMemberAutoLevelRequest
-	(*memberautolevelpb.ListMemberAutoLevelsRequest)(nil),   // 36: crm_member_auto_level.ListMemberAutoLevelsRequest
-	(*memberautolevelpb.DeleteMemberAutoLevelRequest)(nil),  // 37: crm_member_auto_level.DeleteMemberAutoLevelRequest
-	(*vipconfigpb.GetVipConfigRequest)(nil),                 // 38: crm_vip_config.GetVipConfigRequest
-	(*vipconfigpb.UpdateVipConfigRequest)(nil),              // 39: crm_vip_config.UpdateVipConfigRequest
-	(*viplevelpb.ListVipLevelsRequest)(nil),                 // 40: crm_vip_level.ListVipLevelsRequest
-	(*viplevelpb.GetVipLevelRequest)(nil),                   // 41: crm_vip_level.GetVipLevelRequest
-	(*viplevelpb.CreateVipLevelRequest)(nil),                // 42: crm_vip_level.CreateVipLevelRequest
-	(*viplevelpb.UpdateVipLevelRequest)(nil),                // 43: crm_vip_level.UpdateVipLevelRequest
-	(*viplevelpb.DeleteVipLevelRequest)(nil),                // 44: crm_vip_level.DeleteVipLevelRequest
-	(*vipicongrouppb.ListVipIconGroupsRequest)(nil),         // 45: crm_vip_icon_group.ListVipIconGroupsRequest
-	(*vipicongrouppb.UpdateVipIconGroupRequest)(nil),        // 46: crm_vip_icon_group.UpdateVipIconGroupRequest
-	(*vipicongrouppb.ResetVipIconGroupRequest)(nil),         // 47: crm_vip_icon_group.ResetVipIconGroupRequest
-	(*pingpb.PingResponse)(nil),                             // 48: crm_ping.PingResponse
-	(*initpb.InitResponse)(nil),                             // 49: crm_init.InitResponse
-	(*authpb.LoginResp)(nil),                                // 50: crm_auth.LoginResp
-	(*authpb.CheckTokenResp)(nil),                           // 51: crm_auth.CheckTokenResp
-	(*agentpb.UpdateAgentLevelsResp)(nil),                   // 52: crm_agent.UpdateAgentLevelsResp
-	(*agentpb.AgentConfigResp)(nil),                         // 53: crm_agent.AgentConfigResp
-	(*agentpb.AddAgentResp)(nil),                            // 54: crm_agent.AddAgentResp
-	(*agentpb.ListAgentsResp)(nil),                          // 55: crm_agent.ListAgentsResp
-	(*agentpb.SearchAgentsResp)(nil),                        // 56: crm_agent.SearchAgentsResp
-	(*agentpb.ListOperatorAgentsResp)(nil),                  // 57: crm_agent.ListOperatorAgentsResp
-	(*agentpb.ListAgentLevelsResp)(nil),                     // 58: crm_agent.ListAgentLevelsResp
-	(*agentpb.TreeNodeAgentsResp)(nil),                      // 59: crm_agent.TreeNodeAgentsResp
-	(*agentpb.TreeNodeAncestorAgentsResp)(nil),              // 60: crm_agent.TreeNodeAncestorAgentsResp
-	(*agentpb.AncestorsByIDResp)(nil),                       // 61: crm_agent.AncestorsByIDResp
-	(*agentpb.AgentApplyItem)(nil),                          // 62: crm_agent.AgentApplyItem
-	(*agentpb.ListAgentAppliesResp)(nil),                    // 63: crm_agent.ListAgentAppliesResp
-	(*agentpb.ReviewAgentApplyResp)(nil),                    // 64: crm_agent.ReviewAgentApplyResp
-	(*agentpb.AgentProfile)(nil),                            // 65: crm_agent.AgentProfile
-	(*agentpb.ResetLoginPasswordResp)(nil),                  // 66: crm_agent.ResetLoginPasswordResp
-	(*agentpb.Empty)(nil),                                   // 67: crm_agent.Empty
-	(*agentpb.ListAgentLoginLogsResp)(nil),                  // 68: crm_agent.ListAgentLoginLogsResp
-	(*agentpb.ListAgentLoginAssociationsResp)(nil),          // 69: crm_agent.ListAgentLoginAssociationsResp
-	(*agentpb.ListAgentOpLogsResp)(nil),                     // 70: crm_agent.ListAgentOpLogsResp
-	(*memberautolevelpb.CreateMemberAutoLevelResponse)(nil), // 71: crm_member_auto_level.CreateMemberAutoLevelResponse
-	(*memberautolevelpb.UpdateMemberAutoLevelResponse)(nil), // 72: crm_member_auto_level.UpdateMemberAutoLevelResponse
-	(*memberautolevelpb.ListMemberAutoLevelsResponse)(nil),  // 73: crm_member_auto_level.ListMemberAutoLevelsResponse
-	(*memberautolevelpb.DeleteMemberAutoLevelResponse)(nil), // 74: crm_member_auto_level.DeleteMemberAutoLevelResponse
-	(*vipconfigpb.GetVipConfigResponse)(nil),                // 75: crm_vip_config.GetVipConfigResponse
-	(*vipconfigpb.UpdateVipConfigResponse)(nil),             // 76: crm_vip_config.UpdateVipConfigResponse
-	(*viplevelpb.ListVipLevelsResponse)(nil),                // 77: crm_vip_level.ListVipLevelsResponse
-	(*viplevelpb.GetVipLevelResponse)(nil),                  // 78: crm_vip_level.GetVipLevelResponse
-	(*viplevelpb.CreateVipLevelResponse)(nil),               // 79: crm_vip_level.CreateVipLevelResponse
-	(*viplevelpb.UpdateVipLevelResponse)(nil),               // 80: crm_vip_level.UpdateVipLevelResponse
-	(*viplevelpb.DeleteVipLevelResponse)(nil),               // 81: crm_vip_level.DeleteVipLevelResponse
-	(*vipicongrouppb.ListVipIconGroupsResponse)(nil),        // 82: crm_vip_icon_group.ListVipIconGroupsResponse
-	(*vipicongrouppb.UpdateVipIconGroupResponse)(nil),       // 83: crm_vip_icon_group.UpdateVipIconGroupResponse
-	(*vipicongrouppb.ResetVipIconGroupResponse)(nil),        // 84: crm_vip_icon_group.ResetVipIconGroupResponse
+	(*pingpb.PingRequest)(nil),                                // 0: crm_ping.PingRequest
+	(*initpb.InitRequest)(nil),                                // 1: crm_init.InitRequest
+	(*authpb.LoginReq)(nil),                                   // 2: crm_auth.LoginReq
+	(*authpb.RefreshReq)(nil),                                 // 3: crm_auth.RefreshReq
+	(*authpb.LogoutReq)(nil),                                  // 4: crm_auth.LogoutReq
+	(*authpb.Empty)(nil),                                      // 5: crm_auth.Empty
+	(*authpb.CheckTokenReq)(nil),                              // 6: crm_auth.CheckTokenReq
+	(*agentpb.UpdateAgentLevelsReq)(nil),                      // 7: crm_agent.UpdateAgentLevelsReq
+	(*agentpb.UpdateAgentConfigReq)(nil),                      // 8: crm_agent.UpdateAgentConfigReq
+	(*agentpb.GetAgentConfigReq)(nil),                         // 9: crm_agent.GetAgentConfigReq
+	(*agentpb.AddOperatorAgentReq)(nil),                       // 10: crm_agent.AddOperatorAgentReq
+	(*agentpb.AddSubAgentReq)(nil),                            // 11: crm_agent.AddSubAgentReq
+	(*agentpb.ListAgentsReq)(nil),                             // 12: crm_agent.ListAgentsReq
+	(*agentpb.SearchAgentsReq)(nil),                           // 13: crm_agent.SearchAgentsReq
+	(*agentpb.ListOperatorAgentsReq)(nil),                     // 14: crm_agent.ListOperatorAgentsReq
+	(*agentpb.ListAgentLevelsReq)(nil),                        // 15: crm_agent.ListAgentLevelsReq
+	(*agentpb.TreeNodeAgentsReq)(nil),                         // 16: crm_agent.TreeNodeAgentsReq
+	(*agentpb.TreeNodeAncestorAgentsReq)(nil),                 // 17: crm_agent.TreeNodeAncestorAgentsReq
+	(*agentpb.AncestorsByIDReq)(nil),                          // 18: crm_agent.AncestorsByIDReq
+	(*agentpb.AddAgentApplyReq)(nil),                          // 19: crm_agent.AddAgentApplyReq
+	(*agentpb.ListAgentAppliesReq)(nil),                       // 20: crm_agent.ListAgentAppliesReq
+	(*agentpb.ReviewAgentApplyReq)(nil),                       // 21: crm_agent.ReviewAgentApplyReq
+	(*agentpb.GetAgentProfileReq)(nil),                        // 22: crm_agent.GetAgentProfileReq
+	(*agentpb.ResetLoginPasswordReq)(nil),                     // 23: crm_agent.ResetLoginPasswordReq
+	(*agentpb.UpdateLoginPasswordReq)(nil),                    // 24: crm_agent.UpdateLoginPasswordReq
+	(*agentpb.UpdateWithdrawPasswordReq)(nil),                 // 25: crm_agent.UpdateWithdrawPasswordReq
+	(*agentpb.UpdateAgentShareRateReq)(nil),                   // 26: crm_agent.UpdateAgentShareRateReq
+	(*agentpb.UpdateAgentPayoutRestrictedReq)(nil),            // 27: crm_agent.UpdateAgentPayoutRestrictedReq
+	(*agentpb.UpdateAgentStatusReq)(nil),                      // 28: crm_agent.UpdateAgentStatusReq
+	(*agentpb.UpdateAgentRemarkReq)(nil),                      // 29: crm_agent.UpdateAgentRemarkReq
+	(*agentpb.UpdateAgentProfileReq)(nil),                     // 30: crm_agent.UpdateAgentProfileReq
+	(*agentpb.ListAgentLoginLogsReq)(nil),                     // 31: crm_agent.ListAgentLoginLogsReq
+	(*agentpb.ListAgentLoginAssociationsReq)(nil),             // 32: crm_agent.ListAgentLoginAssociationsReq
+	(*agentpb.ListAgentOpLogsReq)(nil),                        // 33: crm_agent.ListAgentOpLogsReq
+	(*memberautolevelpb.CreateMemberAutoLevelRequest)(nil),    // 34: crm_member_auto_level.CreateMemberAutoLevelRequest
+	(*memberautolevelpb.UpdateMemberAutoLevelRequest)(nil),    // 35: crm_member_auto_level.UpdateMemberAutoLevelRequest
+	(*memberautolevelpb.ListMemberAutoLevelsRequest)(nil),     // 36: crm_member_auto_level.ListMemberAutoLevelsRequest
+	(*memberautolevelpb.DeleteMemberAutoLevelRequest)(nil),    // 37: crm_member_auto_level.DeleteMemberAutoLevelRequest
+	(*memberfixedlevelpb.CreateMemberFixedLevelRequest)(nil),  // 38: crm_member_fixed_level.CreateMemberFixedLevelRequest
+	(*memberfixedlevelpb.UpdateMemberFixedLevelRequest)(nil),  // 39: crm_member_fixed_level.UpdateMemberFixedLevelRequest
+	(*memberfixedlevelpb.ListMemberFixedLevelsRequest)(nil),   // 40: crm_member_fixed_level.ListMemberFixedLevelsRequest
+	(*memberfixedlevelpb.DeleteMemberFixedLevelRequest)(nil),  // 41: crm_member_fixed_level.DeleteMemberFixedLevelRequest
+	(*vipconfigpb.GetVipConfigRequest)(nil),                   // 42: crm_vip_config.GetVipConfigRequest
+	(*vipconfigpb.UpdateVipConfigRequest)(nil),                // 43: crm_vip_config.UpdateVipConfigRequest
+	(*viplevelpb.ListVipLevelsRequest)(nil),                   // 44: crm_vip_level.ListVipLevelsRequest
+	(*viplevelpb.GetVipLevelRequest)(nil),                     // 45: crm_vip_level.GetVipLevelRequest
+	(*viplevelpb.CreateVipLevelRequest)(nil),                  // 46: crm_vip_level.CreateVipLevelRequest
+	(*viplevelpb.UpdateVipLevelRequest)(nil),                  // 47: crm_vip_level.UpdateVipLevelRequest
+	(*viplevelpb.DeleteVipLevelRequest)(nil),                  // 48: crm_vip_level.DeleteVipLevelRequest
+	(*vipicongrouppb.ListVipIconGroupsRequest)(nil),           // 49: crm_vip_icon_group.ListVipIconGroupsRequest
+	(*vipicongrouppb.UpdateVipIconGroupRequest)(nil),          // 50: crm_vip_icon_group.UpdateVipIconGroupRequest
+	(*vipicongrouppb.ResetVipIconGroupRequest)(nil),           // 51: crm_vip_icon_group.ResetVipIconGroupRequest
+	(*pingpb.PingResponse)(nil),                               // 52: crm_ping.PingResponse
+	(*initpb.InitResponse)(nil),                               // 53: crm_init.InitResponse
+	(*authpb.LoginResp)(nil),                                  // 54: crm_auth.LoginResp
+	(*authpb.CheckTokenResp)(nil),                             // 55: crm_auth.CheckTokenResp
+	(*agentpb.UpdateAgentLevelsResp)(nil),                     // 56: crm_agent.UpdateAgentLevelsResp
+	(*agentpb.AgentConfigResp)(nil),                           // 57: crm_agent.AgentConfigResp
+	(*agentpb.AddAgentResp)(nil),                              // 58: crm_agent.AddAgentResp
+	(*agentpb.ListAgentsResp)(nil),                            // 59: crm_agent.ListAgentsResp
+	(*agentpb.SearchAgentsResp)(nil),                          // 60: crm_agent.SearchAgentsResp
+	(*agentpb.ListOperatorAgentsResp)(nil),                    // 61: crm_agent.ListOperatorAgentsResp
+	(*agentpb.ListAgentLevelsResp)(nil),                       // 62: crm_agent.ListAgentLevelsResp
+	(*agentpb.TreeNodeAgentsResp)(nil),                        // 63: crm_agent.TreeNodeAgentsResp
+	(*agentpb.TreeNodeAncestorAgentsResp)(nil),                // 64: crm_agent.TreeNodeAncestorAgentsResp
+	(*agentpb.AncestorsByIDResp)(nil),                         // 65: crm_agent.AncestorsByIDResp
+	(*agentpb.AgentApplyItem)(nil),                            // 66: crm_agent.AgentApplyItem
+	(*agentpb.ListAgentAppliesResp)(nil),                      // 67: crm_agent.ListAgentAppliesResp
+	(*agentpb.ReviewAgentApplyResp)(nil),                      // 68: crm_agent.ReviewAgentApplyResp
+	(*agentpb.AgentProfile)(nil),                              // 69: crm_agent.AgentProfile
+	(*agentpb.ResetLoginPasswordResp)(nil),                    // 70: crm_agent.ResetLoginPasswordResp
+	(*agentpb.Empty)(nil),                                     // 71: crm_agent.Empty
+	(*agentpb.ListAgentLoginLogsResp)(nil),                    // 72: crm_agent.ListAgentLoginLogsResp
+	(*agentpb.ListAgentLoginAssociationsResp)(nil),            // 73: crm_agent.ListAgentLoginAssociationsResp
+	(*agentpb.ListAgentOpLogsResp)(nil),                       // 74: crm_agent.ListAgentOpLogsResp
+	(*memberautolevelpb.CreateMemberAutoLevelResponse)(nil),   // 75: crm_member_auto_level.CreateMemberAutoLevelResponse
+	(*memberautolevelpb.UpdateMemberAutoLevelResponse)(nil),   // 76: crm_member_auto_level.UpdateMemberAutoLevelResponse
+	(*memberautolevelpb.ListMemberAutoLevelsResponse)(nil),    // 77: crm_member_auto_level.ListMemberAutoLevelsResponse
+	(*memberautolevelpb.DeleteMemberAutoLevelResponse)(nil),   // 78: crm_member_auto_level.DeleteMemberAutoLevelResponse
+	(*memberfixedlevelpb.CreateMemberFixedLevelResponse)(nil), // 79: crm_member_fixed_level.CreateMemberFixedLevelResponse
+	(*memberfixedlevelpb.UpdateMemberFixedLevelResponse)(nil), // 80: crm_member_fixed_level.UpdateMemberFixedLevelResponse
+	(*memberfixedlevelpb.ListMemberFixedLevelsResponse)(nil),  // 81: crm_member_fixed_level.ListMemberFixedLevelsResponse
+	(*memberfixedlevelpb.DeleteMemberFixedLevelResponse)(nil), // 82: crm_member_fixed_level.DeleteMemberFixedLevelResponse
+	(*vipconfigpb.GetVipConfigResponse)(nil),                  // 83: crm_vip_config.GetVipConfigResponse
+	(*vipconfigpb.UpdateVipConfigResponse)(nil),               // 84: crm_vip_config.UpdateVipConfigResponse
+	(*viplevelpb.ListVipLevelsResponse)(nil),                  // 85: crm_vip_level.ListVipLevelsResponse
+	(*viplevelpb.GetVipLevelResponse)(nil),                    // 86: crm_vip_level.GetVipLevelResponse
+	(*viplevelpb.CreateVipLevelResponse)(nil),                 // 87: crm_vip_level.CreateVipLevelResponse
+	(*viplevelpb.UpdateVipLevelResponse)(nil),                 // 88: crm_vip_level.UpdateVipLevelResponse
+	(*viplevelpb.DeleteVipLevelResponse)(nil),                 // 89: crm_vip_level.DeleteVipLevelResponse
+	(*vipicongrouppb.ListVipIconGroupsResponse)(nil),          // 90: crm_vip_icon_group.ListVipIconGroupsResponse
+	(*vipicongrouppb.UpdateVipIconGroupResponse)(nil),         // 91: crm_vip_icon_group.UpdateVipIconGroupResponse
+	(*vipicongrouppb.ResetVipIconGroupResponse)(nil),          // 92: crm_vip_icon_group.ResetVipIconGroupResponse
 }
 var file_crm_proto_depIdxs = []int32{
 	0,  // 0: crm.Ping.Ping:input_type -> crm_ping.PingRequest
@@ -217,66 +231,74 @@ var file_crm_proto_depIdxs = []int32{
 	35, // 35: crm.MemberAutoLevel.Update:input_type -> crm_member_auto_level.UpdateMemberAutoLevelRequest
 	36, // 36: crm.MemberAutoLevel.List:input_type -> crm_member_auto_level.ListMemberAutoLevelsRequest
 	37, // 37: crm.MemberAutoLevel.Delete:input_type -> crm_member_auto_level.DeleteMemberAutoLevelRequest
-	38, // 38: crm.Vip.GetConfig:input_type -> crm_vip_config.GetVipConfigRequest
-	39, // 39: crm.Vip.UpdateConfig:input_type -> crm_vip_config.UpdateVipConfigRequest
-	40, // 40: crm.Vip.ListLevels:input_type -> crm_vip_level.ListVipLevelsRequest
-	41, // 41: crm.Vip.GetLevel:input_type -> crm_vip_level.GetVipLevelRequest
-	42, // 42: crm.Vip.CreateLevel:input_type -> crm_vip_level.CreateVipLevelRequest
-	43, // 43: crm.Vip.UpdateLevel:input_type -> crm_vip_level.UpdateVipLevelRequest
-	44, // 44: crm.Vip.DeleteLevel:input_type -> crm_vip_level.DeleteVipLevelRequest
-	45, // 45: crm.Vip.ListIconGroups:input_type -> crm_vip_icon_group.ListVipIconGroupsRequest
-	46, // 46: crm.Vip.UpdateIconGroup:input_type -> crm_vip_icon_group.UpdateVipIconGroupRequest
-	47, // 47: crm.Vip.ResetIconGroup:input_type -> crm_vip_icon_group.ResetVipIconGroupRequest
-	48, // 48: crm.Ping.Ping:output_type -> crm_ping.PingResponse
-	49, // 49: crm.Init.Init:output_type -> crm_init.InitResponse
-	50, // 50: crm.AuthService.login:output_type -> crm_auth.LoginResp
-	50, // 51: crm.AuthService.refresh:output_type -> crm_auth.LoginResp
-	5,  // 52: crm.AuthService.logout:output_type -> crm_auth.Empty
-	5,  // 53: crm.AuthService.logoutAll:output_type -> crm_auth.Empty
-	51, // 54: crm.AuthService.checkToken:output_type -> crm_auth.CheckTokenResp
-	52, // 55: crm.AgentService.updateAgentLevels:output_type -> crm_agent.UpdateAgentLevelsResp
-	53, // 56: crm.AgentService.updateAgentConfig:output_type -> crm_agent.AgentConfigResp
-	53, // 57: crm.AgentService.getAgentConfig:output_type -> crm_agent.AgentConfigResp
-	54, // 58: crm.AgentService.addOperatorAgent:output_type -> crm_agent.AddAgentResp
-	54, // 59: crm.AgentService.addSubAgent:output_type -> crm_agent.AddAgentResp
-	55, // 60: crm.AgentService.listAgents:output_type -> crm_agent.ListAgentsResp
-	56, // 61: crm.AgentService.searchAgents:output_type -> crm_agent.SearchAgentsResp
-	57, // 62: crm.AgentService.listOperatorAgents:output_type -> crm_agent.ListOperatorAgentsResp
-	58, // 63: crm.AgentService.listAgentLevels:output_type -> crm_agent.ListAgentLevelsResp
-	59, // 64: crm.AgentService.treeNodeAgents:output_type -> crm_agent.TreeNodeAgentsResp
-	60, // 65: crm.AgentService.treeNodeAncestorAgents:output_type -> crm_agent.TreeNodeAncestorAgentsResp
-	61, // 66: crm.AgentService.ancestorsById:output_type -> crm_agent.AncestorsByIDResp
-	62, // 67: crm.AgentService.addAgentApply:output_type -> crm_agent.AgentApplyItem
-	63, // 68: crm.AgentService.listAgentApplies:output_type -> crm_agent.ListAgentAppliesResp
-	64, // 69: crm.AgentService.reviewAgentApply:output_type -> crm_agent.ReviewAgentApplyResp
-	65, // 70: crm.AgentService.getAgentProfile:output_type -> crm_agent.AgentProfile
-	66, // 71: crm.AgentService.resetLoginPassword:output_type -> crm_agent.ResetLoginPasswordResp
-	67, // 72: crm.AgentService.updateLoginPassword:output_type -> crm_agent.Empty
-	67, // 73: crm.AgentService.updateWithdrawPassword:output_type -> crm_agent.Empty
-	67, // 74: crm.AgentService.updateAgentShareRate:output_type -> crm_agent.Empty
-	67, // 75: crm.AgentService.updateAgentPayoutRestricted:output_type -> crm_agent.Empty
-	67, // 76: crm.AgentService.updateAgentStatus:output_type -> crm_agent.Empty
-	67, // 77: crm.AgentService.updateAgentRemark:output_type -> crm_agent.Empty
-	65, // 78: crm.AgentService.updateAgentProfile:output_type -> crm_agent.AgentProfile
-	68, // 79: crm.AgentService.listAgentLoginLogs:output_type -> crm_agent.ListAgentLoginLogsResp
-	69, // 80: crm.AgentService.listAgentLoginAssociations:output_type -> crm_agent.ListAgentLoginAssociationsResp
-	70, // 81: crm.AgentService.listAgentOpLogs:output_type -> crm_agent.ListAgentOpLogsResp
-	71, // 82: crm.MemberAutoLevel.Create:output_type -> crm_member_auto_level.CreateMemberAutoLevelResponse
-	72, // 83: crm.MemberAutoLevel.Update:output_type -> crm_member_auto_level.UpdateMemberAutoLevelResponse
-	73, // 84: crm.MemberAutoLevel.List:output_type -> crm_member_auto_level.ListMemberAutoLevelsResponse
-	74, // 85: crm.MemberAutoLevel.Delete:output_type -> crm_member_auto_level.DeleteMemberAutoLevelResponse
-	75, // 86: crm.Vip.GetConfig:output_type -> crm_vip_config.GetVipConfigResponse
-	76, // 87: crm.Vip.UpdateConfig:output_type -> crm_vip_config.UpdateVipConfigResponse
-	77, // 88: crm.Vip.ListLevels:output_type -> crm_vip_level.ListVipLevelsResponse
-	78, // 89: crm.Vip.GetLevel:output_type -> crm_vip_level.GetVipLevelResponse
-	79, // 90: crm.Vip.CreateLevel:output_type -> crm_vip_level.CreateVipLevelResponse
-	80, // 91: crm.Vip.UpdateLevel:output_type -> crm_vip_level.UpdateVipLevelResponse
-	81, // 92: crm.Vip.DeleteLevel:output_type -> crm_vip_level.DeleteVipLevelResponse
-	82, // 93: crm.Vip.ListIconGroups:output_type -> crm_vip_icon_group.ListVipIconGroupsResponse
-	83, // 94: crm.Vip.UpdateIconGroup:output_type -> crm_vip_icon_group.UpdateVipIconGroupResponse
-	84, // 95: crm.Vip.ResetIconGroup:output_type -> crm_vip_icon_group.ResetVipIconGroupResponse
-	48, // [48:96] is the sub-list for method output_type
-	0,  // [0:48] is the sub-list for method input_type
+	38, // 38: crm.MemberFixedLevel.Create:input_type -> crm_member_fixed_level.CreateMemberFixedLevelRequest
+	39, // 39: crm.MemberFixedLevel.Update:input_type -> crm_member_fixed_level.UpdateMemberFixedLevelRequest
+	40, // 40: crm.MemberFixedLevel.List:input_type -> crm_member_fixed_level.ListMemberFixedLevelsRequest
+	41, // 41: crm.MemberFixedLevel.Delete:input_type -> crm_member_fixed_level.DeleteMemberFixedLevelRequest
+	42, // 42: crm.Vip.GetConfig:input_type -> crm_vip_config.GetVipConfigRequest
+	43, // 43: crm.Vip.UpdateConfig:input_type -> crm_vip_config.UpdateVipConfigRequest
+	44, // 44: crm.Vip.ListLevels:input_type -> crm_vip_level.ListVipLevelsRequest
+	45, // 45: crm.Vip.GetLevel:input_type -> crm_vip_level.GetVipLevelRequest
+	46, // 46: crm.Vip.CreateLevel:input_type -> crm_vip_level.CreateVipLevelRequest
+	47, // 47: crm.Vip.UpdateLevel:input_type -> crm_vip_level.UpdateVipLevelRequest
+	48, // 48: crm.Vip.DeleteLevel:input_type -> crm_vip_level.DeleteVipLevelRequest
+	49, // 49: crm.Vip.ListIconGroups:input_type -> crm_vip_icon_group.ListVipIconGroupsRequest
+	50, // 50: crm.Vip.UpdateIconGroup:input_type -> crm_vip_icon_group.UpdateVipIconGroupRequest
+	51, // 51: crm.Vip.ResetIconGroup:input_type -> crm_vip_icon_group.ResetVipIconGroupRequest
+	52, // 52: crm.Ping.Ping:output_type -> crm_ping.PingResponse
+	53, // 53: crm.Init.Init:output_type -> crm_init.InitResponse
+	54, // 54: crm.AuthService.login:output_type -> crm_auth.LoginResp
+	54, // 55: crm.AuthService.refresh:output_type -> crm_auth.LoginResp
+	5,  // 56: crm.AuthService.logout:output_type -> crm_auth.Empty
+	5,  // 57: crm.AuthService.logoutAll:output_type -> crm_auth.Empty
+	55, // 58: crm.AuthService.checkToken:output_type -> crm_auth.CheckTokenResp
+	56, // 59: crm.AgentService.updateAgentLevels:output_type -> crm_agent.UpdateAgentLevelsResp
+	57, // 60: crm.AgentService.updateAgentConfig:output_type -> crm_agent.AgentConfigResp
+	57, // 61: crm.AgentService.getAgentConfig:output_type -> crm_agent.AgentConfigResp
+	58, // 62: crm.AgentService.addOperatorAgent:output_type -> crm_agent.AddAgentResp
+	58, // 63: crm.AgentService.addSubAgent:output_type -> crm_agent.AddAgentResp
+	59, // 64: crm.AgentService.listAgents:output_type -> crm_agent.ListAgentsResp
+	60, // 65: crm.AgentService.searchAgents:output_type -> crm_agent.SearchAgentsResp
+	61, // 66: crm.AgentService.listOperatorAgents:output_type -> crm_agent.ListOperatorAgentsResp
+	62, // 67: crm.AgentService.listAgentLevels:output_type -> crm_agent.ListAgentLevelsResp
+	63, // 68: crm.AgentService.treeNodeAgents:output_type -> crm_agent.TreeNodeAgentsResp
+	64, // 69: crm.AgentService.treeNodeAncestorAgents:output_type -> crm_agent.TreeNodeAncestorAgentsResp
+	65, // 70: crm.AgentService.ancestorsById:output_type -> crm_agent.AncestorsByIDResp
+	66, // 71: crm.AgentService.addAgentApply:output_type -> crm_agent.AgentApplyItem
+	67, // 72: crm.AgentService.listAgentApplies:output_type -> crm_agent.ListAgentAppliesResp
+	68, // 73: crm.AgentService.reviewAgentApply:output_type -> crm_agent.ReviewAgentApplyResp
+	69, // 74: crm.AgentService.getAgentProfile:output_type -> crm_agent.AgentProfile
+	70, // 75: crm.AgentService.resetLoginPassword:output_type -> crm_agent.ResetLoginPasswordResp
+	71, // 76: crm.AgentService.updateLoginPassword:output_type -> crm_agent.Empty
+	71, // 77: crm.AgentService.updateWithdrawPassword:output_type -> crm_agent.Empty
+	71, // 78: crm.AgentService.updateAgentShareRate:output_type -> crm_agent.Empty
+	71, // 79: crm.AgentService.updateAgentPayoutRestricted:output_type -> crm_agent.Empty
+	71, // 80: crm.AgentService.updateAgentStatus:output_type -> crm_agent.Empty
+	71, // 81: crm.AgentService.updateAgentRemark:output_type -> crm_agent.Empty
+	69, // 82: crm.AgentService.updateAgentProfile:output_type -> crm_agent.AgentProfile
+	72, // 83: crm.AgentService.listAgentLoginLogs:output_type -> crm_agent.ListAgentLoginLogsResp
+	73, // 84: crm.AgentService.listAgentLoginAssociations:output_type -> crm_agent.ListAgentLoginAssociationsResp
+	74, // 85: crm.AgentService.listAgentOpLogs:output_type -> crm_agent.ListAgentOpLogsResp
+	75, // 86: crm.MemberAutoLevel.Create:output_type -> crm_member_auto_level.CreateMemberAutoLevelResponse
+	76, // 87: crm.MemberAutoLevel.Update:output_type -> crm_member_auto_level.UpdateMemberAutoLevelResponse
+	77, // 88: crm.MemberAutoLevel.List:output_type -> crm_member_auto_level.ListMemberAutoLevelsResponse
+	78, // 89: crm.MemberAutoLevel.Delete:output_type -> crm_member_auto_level.DeleteMemberAutoLevelResponse
+	79, // 90: crm.MemberFixedLevel.Create:output_type -> crm_member_fixed_level.CreateMemberFixedLevelResponse
+	80, // 91: crm.MemberFixedLevel.Update:output_type -> crm_member_fixed_level.UpdateMemberFixedLevelResponse
+	81, // 92: crm.MemberFixedLevel.List:output_type -> crm_member_fixed_level.ListMemberFixedLevelsResponse
+	82, // 93: crm.MemberFixedLevel.Delete:output_type -> crm_member_fixed_level.DeleteMemberFixedLevelResponse
+	83, // 94: crm.Vip.GetConfig:output_type -> crm_vip_config.GetVipConfigResponse
+	84, // 95: crm.Vip.UpdateConfig:output_type -> crm_vip_config.UpdateVipConfigResponse
+	85, // 96: crm.Vip.ListLevels:output_type -> crm_vip_level.ListVipLevelsResponse
+	86, // 97: crm.Vip.GetLevel:output_type -> crm_vip_level.GetVipLevelResponse
+	87, // 98: crm.Vip.CreateLevel:output_type -> crm_vip_level.CreateVipLevelResponse
+	88, // 99: crm.Vip.UpdateLevel:output_type -> crm_vip_level.UpdateVipLevelResponse
+	89, // 100: crm.Vip.DeleteLevel:output_type -> crm_vip_level.DeleteVipLevelResponse
+	90, // 101: crm.Vip.ListIconGroups:output_type -> crm_vip_icon_group.ListVipIconGroupsResponse
+	91, // 102: crm.Vip.UpdateIconGroup:output_type -> crm_vip_icon_group.UpdateVipIconGroupResponse
+	92, // 103: crm.Vip.ResetIconGroup:output_type -> crm_vip_icon_group.ResetVipIconGroupResponse
+	52, // [52:104] is the sub-list for method output_type
+	0,  // [0:52] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -295,7 +317,7 @@ func file_crm_proto_init() {
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
-			NumServices:   6,
+			NumServices:   7,
 		},
 		GoTypes:           file_crm_proto_goTypes,
 		DependencyIndexes: file_crm_proto_depIdxs,

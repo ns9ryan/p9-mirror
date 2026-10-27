@@ -9,6 +9,7 @@ import "types/ping.proto";
 import "types/agent.proto";
 import "types/init.proto";
 import "types/member_auto_level.proto";
+import "types/member_fixed_level.proto";
 import "types/vip_config.proto";
 import "types/vip_level.proto";
 import "types/vip_icon_group.proto";
@@ -112,6 +113,20 @@ service MemberAutoLevel {
   rpc Delete(crm_member_auto_level.DeleteMemberAutoLevelRequest) returns (crm_member_auto_level.DeleteMemberAutoLevelResponse);
 }
 
+// 会员固定层级服务
+service MemberFixedLevel {
+  // 创建固定层级
+  rpc Create(crm_member_fixed_level.CreateMemberFixedLevelRequest) returns (crm_member_fixed_level.CreateMemberFixedLevelResponse);
+
+  // 修改固定层级
+  rpc Update(crm_member_fixed_level.UpdateMemberFixedLevelRequest) returns (crm_member_fixed_level.UpdateMemberFixedLevelResponse);
+
+  // 获取固定层级列表
+  rpc List(crm_member_fixed_level.ListMemberFixedLevelsRequest) returns (crm_member_fixed_level.ListMemberFixedLevelsResponse);
+
+  // 删除固定层级
+  rpc Delete(crm_member_fixed_level.DeleteMemberFixedLevelRequest) returns (crm_member_fixed_level.DeleteMemberFixedLevelResponse);
+}
 
 // VIP管理服务
 service Vip {

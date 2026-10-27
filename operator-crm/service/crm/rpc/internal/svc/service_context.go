@@ -42,7 +42,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	db := ent.NewClient(entOpts...)
 
 	// 创建数据库表
-	logx.Must(db.Schema.Create(context.Background(), migrate.WithDropIndex(true), migrate.WithDropColumn(true)))
+	logx.Must(db.Schema.Create(
+		context.Background(),
+		migrate.WithDropIndex(true),    // 允许删除旧索引
+		migrate.WithDropColumn(true),   // 允许删除旧字段
+		migrate.WithForeignKeys(false), // 不创建数据库外键约束
+	))
 
 	var rdb redis.UniversalClient
 	if c.DataRedis.Host != "" {
