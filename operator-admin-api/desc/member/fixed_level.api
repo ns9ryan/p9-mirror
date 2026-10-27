@@ -64,8 +64,6 @@ type (
 		// 层级ID
 		Id int64 `json:"id" validate:"required,gt=0"`
 	}
-	// 删除固定层级响应
-	DeleteMemberFixedLevelResponse  {}
 )
 
 @server (
@@ -84,10 +82,10 @@ service operator_admin_api {
 
 	// 修改固定层级
 	@handler Update
-	post /update (UpdateMemberFixedLevelRequest) returns (Empty)
+	post /update (UpdateMemberFixedLevelRequest) returns ()
 
 	// 删除固定层级
 	@handler Delete
-	post /delete (DeleteMemberFixedLevelRequest) returns (Empty)
+	post /delete (DeleteMemberFixedLevelRequest) returns ()
 }
 

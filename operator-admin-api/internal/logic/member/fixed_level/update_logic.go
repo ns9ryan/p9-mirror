@@ -26,8 +26,8 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
-func (l *UpdateLogic) Update(req *types.UpdateMemberFixedLevelRequest) (resp *types.Empty, err error) {
+func (l *UpdateLogic) Update(req *types.UpdateMemberFixedLevelRequest) error {
 	// todo: add your logic here and delete this line
 
-	return
+	return nil
 }

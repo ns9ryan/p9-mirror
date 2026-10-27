@@ -220,12 +220,6 @@ type DeleteMemberFixedLevelRequest struct {
 	Id int64 `json:"id" validate:"required,gt=0"`
 }
 
-type DeleteMemberFixedLevelResponse struct {
-}
-
-type Empty struct {
-}
-
 type GetAgentProfileReq struct {
 	AgentId int64 `form:"agent_id"`
 }

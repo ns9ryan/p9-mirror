@@ -17,6 +17,7 @@ import (
 	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberautolevel"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberfixedlevel"
 )
 
 // ServiceContext 分站后台服务上下文
@@ -30,8 +31,9 @@ type ServiceContext struct {
 	OperatorBaseRpc operatorservice.OperatorService // 分站基础RPC
 
 	// CRM业务RPC
-	AgentRpc           agentservice.AgentService       // 分层代理RPC
-	MemberAutoLevelRpc memberautolevel.MemberAutoLevel // 会员自动层级RPC
+	AgentRpc            agentservice.AgentService         // 分层代理RPC
+	MemberAutoLevelRpc  memberautolevel.MemberAutoLevel   // 会员自动层级RPC
+	MemberFixedLevelRpc memberfixedlevel.MemberFixedLevel // 会员固定层级RPC
 
 	// 第三方服务集成 RPC
 	IntegrationRpc integrationclient.Integration
@@ -73,8 +75,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OperatorCoreRpc: coreRpc,
 		OperatorBaseRpc: operatorservice.NewOperatorService(baseClient),
 
-		AgentRpc:           agentservice.NewAgentService(crmClient),
-		MemberAutoLevelRpc: memberautolevel.NewMemberAutoLevel(crmClient),
+		AgentRpc:            agentservice.NewAgentService(crmClient),
+		MemberAutoLevelRpc:  memberautolevel.NewMemberAutoLevel(crmClient),
+		MemberFixedLevelRpc: memberfixedlevel.NewMemberFixedLevel(crmClient),
 
 		IntegrationRpc: integrationclient.NewIntegration(integrationClient),
 

@@ -26,8 +26,8 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
-func (l *DeleteLogic) Delete(req *types.DeleteMemberFixedLevelRequest) (resp *types.Empty, err error) {
+func (l *DeleteLogic) Delete(req *types.DeleteMemberFixedLevelRequest) error {
 	// todo: add your logic here and delete this line
 
-	return
+	return nil
 }
