@@ -12,12 +12,14 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberfixedlevelpb"
 )
 
+// ListLogic 固定层级列表逻辑
 type ListLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
+// NewListLogic 创建固定层级列表逻辑
 func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	return &ListLogic{
 		ctx:    ctx,
