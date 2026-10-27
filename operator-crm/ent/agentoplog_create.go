@@ -56,9 +56,43 @@ func (_c *AgentOpLogCreate) SetOperatorCode(v string) *AgentOpLogCreate {
 	return _c
 }
 
-// SetAgentID sets the "agent_id" field.
-func (_c *AgentOpLogCreate) SetAgentID(v int64) *AgentOpLogCreate {
-	_c.mutation.SetAgentID(v)
+// SetOpTargetType sets the "op_target_type" field.
+func (_c *AgentOpLogCreate) SetOpTargetType(v int32) *AgentOpLogCreate {
+	_c.mutation.SetOpTargetType(v)
+	return _c
+}
+
+// SetOpTargetID sets the "op_target_id" field.
+func (_c *AgentOpLogCreate) SetOpTargetID(v int64) *AgentOpLogCreate {
+	_c.mutation.SetOpTargetID(v)
+	return _c
+}
+
+// SetOpTargetAccount sets the "op_target_account" field.
+func (_c *AgentOpLogCreate) SetOpTargetAccount(v string) *AgentOpLogCreate {
+	_c.mutation.SetOpTargetAccount(v)
+	return _c
+}
+
+// SetNillableOpTargetAccount sets the "op_target_account" field if the given value is not nil.
+func (_c *AgentOpLogCreate) SetNillableOpTargetAccount(v *string) *AgentOpLogCreate {
+	if v != nil {
+		_c.SetOpTargetAccount(*v)
+	}
+	return _c
+}
+
+// SetAdminType sets the "admin_type" field.
+func (_c *AgentOpLogCreate) SetAdminType(v int32) *AgentOpLogCreate {
+	_c.mutation.SetAdminType(v)
+	return _c
+}
+
+// SetNillableAdminType sets the "admin_type" field if the given value is not nil.
+func (_c *AgentOpLogCreate) SetNillableAdminType(v *int32) *AgentOpLogCreate {
+	if v != nil {
+		_c.SetAdminType(*v)
+	}
 	return _c
 }
 
@@ -173,7 +207,7 @@ func (_c *AgentOpLogCreate) SetOperatedAt(v time.Time) *AgentOpLogCreate {
 }
 
 // SetResult sets the "result" field.
-func (_c *AgentOpLogCreate) SetResult(v int64) *AgentOpLogCreate {
+func (_c *AgentOpLogCreate) SetResult(v int32) *AgentOpLogCreate {
 	_c.mutation.SetResult(v)
 	return _c
 }
@@ -249,6 +283,18 @@ func (_c *AgentOpLogCreate) defaults() error {
 		v := agentoplog.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.OpTargetAccount(); !ok {
+		v := agentoplog.DefaultOpTargetAccount
+		_c.mutation.SetOpTargetAccount(v)
+	}
+	if _, ok := _c.mutation.AdminType(); !ok {
+		v := agentoplog.DefaultAdminType
+		_c.mutation.SetAdminType(v)
+	}
+	if _, ok := _c.mutation.AdminID(); !ok {
+		v := agentoplog.DefaultAdminID
+		_c.mutation.SetAdminID(v)
+	}
 	if _, ok := _c.mutation.AdminAccount(); !ok {
 		v := agentoplog.DefaultAdminAccount
 		_c.mutation.SetAdminAccount(v)
@@ -272,8 +318,25 @@ func (_c *AgentOpLogCreate) check() error {
 			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AgentOpLog.operator_code": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.AgentID(); !ok {
-		return &ValidationError{Name: "agent_id", err: errors.New(`ent: missing required field "AgentOpLog.agent_id"`)}
+	if _, ok := _c.mutation.OpTargetType(); !ok {
+		return &ValidationError{Name: "op_target_type", err: errors.New(`ent: missing required field "AgentOpLog.op_target_type"`)}
+	}
+	if _, ok := _c.mutation.OpTargetID(); !ok {
+		return &ValidationError{Name: "op_target_id", err: errors.New(`ent: missing required field "AgentOpLog.op_target_id"`)}
+	}
+	if _, ok := _c.mutation.OpTargetAccount(); !ok {
+		return &ValidationError{Name: "op_target_account", err: errors.New(`ent: missing required field "AgentOpLog.op_target_account"`)}
+	}
+	if v, ok := _c.mutation.OpTargetAccount(); ok {
+		if err := agentoplog.OpTargetAccountValidator(v); err != nil {
+			return &ValidationError{Name: "op_target_account", err: fmt.Errorf(`ent: validator failed for field "AgentOpLog.op_target_account": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.AdminType(); !ok {
+		return &ValidationError{Name: "admin_type", err: errors.New(`ent: missing required field "AgentOpLog.admin_type"`)}
+	}
+	if _, ok := _c.mutation.AdminID(); !ok {
+		return &ValidationError{Name: "admin_id", err: errors.New(`ent: missing required field "AgentOpLog.admin_id"`)}
 	}
 	if _, ok := _c.mutation.AdminAccount(); !ok {
 		return &ValidationError{Name: "admin_account", err: errors.New(`ent: missing required field "AgentOpLog.admin_account"`)}
@@ -372,13 +435,25 @@ func (_c *AgentOpLogCreate) createSpec() (*AgentOpLog, *sqlgraph.CreateSpec) {
 		_spec.SetField(agentoplog.FieldOperatorCode, field.TypeString, value)
 		_node.OperatorCode = value
 	}
-	if value, ok := _c.mutation.AgentID(); ok {
-		_spec.SetField(agentoplog.FieldAgentID, field.TypeInt64, value)
-		_node.AgentID = value
+	if value, ok := _c.mutation.OpTargetType(); ok {
+		_spec.SetField(agentoplog.FieldOpTargetType, field.TypeInt32, value)
+		_node.OpTargetType = value
+	}
+	if value, ok := _c.mutation.OpTargetID(); ok {
+		_spec.SetField(agentoplog.FieldOpTargetID, field.TypeInt64, value)
+		_node.OpTargetID = value
+	}
+	if value, ok := _c.mutation.OpTargetAccount(); ok {
+		_spec.SetField(agentoplog.FieldOpTargetAccount, field.TypeString, value)
+		_node.OpTargetAccount = value
+	}
+	if value, ok := _c.mutation.AdminType(); ok {
+		_spec.SetField(agentoplog.FieldAdminType, field.TypeInt32, value)
+		_node.AdminType = value
 	}
 	if value, ok := _c.mutation.AdminID(); ok {
 		_spec.SetField(agentoplog.FieldAdminID, field.TypeInt64, value)
-		_node.AdminID = &value
+		_node.AdminID = value
 	}
 	if value, ok := _c.mutation.AdminAccount(); ok {
 		_spec.SetField(agentoplog.FieldAdminAccount, field.TypeString, value)
@@ -413,7 +488,7 @@ func (_c *AgentOpLogCreate) createSpec() (*AgentOpLog, *sqlgraph.CreateSpec) {
 		_node.OperatedAt = value
 	}
 	if value, ok := _c.mutation.Result(); ok {
-		_spec.SetField(agentoplog.FieldResult, field.TypeInt64, value)
+		_spec.SetField(agentoplog.FieldResult, field.TypeInt32, value)
 		_node.Result = value
 	}
 	if value, ok := _c.mutation.FailReason(); ok {
@@ -484,21 +559,39 @@ func (u *AgentOpLogUpsert) UpdateUpdatedAt() *AgentOpLogUpsert {
 	return u
 }
 
-// SetAgentID sets the "agent_id" field.
-func (u *AgentOpLogUpsert) SetAgentID(v int64) *AgentOpLogUpsert {
-	u.Set(agentoplog.FieldAgentID, v)
+// SetOpTargetType sets the "op_target_type" field.
+func (u *AgentOpLogUpsert) SetOpTargetType(v int32) *AgentOpLogUpsert {
+	u.Set(agentoplog.FieldOpTargetType, v)
 	return u
 }
 
-// UpdateAgentID sets the "agent_id" field to the value that was provided on create.
-func (u *AgentOpLogUpsert) UpdateAgentID() *AgentOpLogUpsert {
-	u.SetExcluded(agentoplog.FieldAgentID)
+// UpdateOpTargetType sets the "op_target_type" field to the value that was provided on create.
+func (u *AgentOpLogUpsert) UpdateOpTargetType() *AgentOpLogUpsert {
+	u.SetExcluded(agentoplog.FieldOpTargetType)
 	return u
 }
 
-// AddAgentID adds v to the "agent_id" field.
-func (u *AgentOpLogUpsert) AddAgentID(v int64) *AgentOpLogUpsert {
-	u.Add(agentoplog.FieldAgentID, v)
+// AddOpTargetType adds v to the "op_target_type" field.
+func (u *AgentOpLogUpsert) AddOpTargetType(v int32) *AgentOpLogUpsert {
+	u.Add(agentoplog.FieldOpTargetType, v)
+	return u
+}
+
+// SetOpTargetID sets the "op_target_id" field.
+func (u *AgentOpLogUpsert) SetOpTargetID(v int64) *AgentOpLogUpsert {
+	u.Set(agentoplog.FieldOpTargetID, v)
+	return u
+}
+
+// UpdateOpTargetID sets the "op_target_id" field to the value that was provided on create.
+func (u *AgentOpLogUpsert) UpdateOpTargetID() *AgentOpLogUpsert {
+	u.SetExcluded(agentoplog.FieldOpTargetID)
+	return u
+}
+
+// AddOpTargetID adds v to the "op_target_id" field.
+func (u *AgentOpLogUpsert) AddOpTargetID(v int64) *AgentOpLogUpsert {
+	u.Add(agentoplog.FieldOpTargetID, v)
 	return u
 }
 
@@ -581,7 +674,7 @@ func (u *AgentOpLogUpsert) UpdateOperatedAt() *AgentOpLogUpsert {
 }
 
 // SetResult sets the "result" field.
-func (u *AgentOpLogUpsert) SetResult(v int64) *AgentOpLogUpsert {
+func (u *AgentOpLogUpsert) SetResult(v int32) *AgentOpLogUpsert {
 	u.Set(agentoplog.FieldResult, v)
 	return u
 }
@@ -593,7 +686,7 @@ func (u *AgentOpLogUpsert) UpdateResult() *AgentOpLogUpsert {
 }
 
 // AddResult adds v to the "result" field.
-func (u *AgentOpLogUpsert) AddResult(v int64) *AgentOpLogUpsert {
+func (u *AgentOpLogUpsert) AddResult(v int32) *AgentOpLogUpsert {
 	u.Add(agentoplog.FieldResult, v)
 	return u
 }
@@ -638,6 +731,12 @@ func (u *AgentOpLogUpsertOne) UpdateNewValues() *AgentOpLogUpsertOne {
 		}
 		if _, exists := u.create.mutation.OperatorCode(); exists {
 			s.SetIgnore(agentoplog.FieldOperatorCode)
+		}
+		if _, exists := u.create.mutation.OpTargetAccount(); exists {
+			s.SetIgnore(agentoplog.FieldOpTargetAccount)
+		}
+		if _, exists := u.create.mutation.AdminType(); exists {
+			s.SetIgnore(agentoplog.FieldAdminType)
 		}
 		if _, exists := u.create.mutation.AdminID(); exists {
 			s.SetIgnore(agentoplog.FieldAdminID)
@@ -696,24 +795,45 @@ func (u *AgentOpLogUpsertOne) UpdateUpdatedAt() *AgentOpLogUpsertOne {
 	})
 }
 
-// SetAgentID sets the "agent_id" field.
-func (u *AgentOpLogUpsertOne) SetAgentID(v int64) *AgentOpLogUpsertOne {
+// SetOpTargetType sets the "op_target_type" field.
+func (u *AgentOpLogUpsertOne) SetOpTargetType(v int32) *AgentOpLogUpsertOne {
 	return u.Update(func(s *AgentOpLogUpsert) {
-		s.SetAgentID(v)
+		s.SetOpTargetType(v)
 	})
 }
 
-// AddAgentID adds v to the "agent_id" field.
-func (u *AgentOpLogUpsertOne) AddAgentID(v int64) *AgentOpLogUpsertOne {
+// AddOpTargetType adds v to the "op_target_type" field.
+func (u *AgentOpLogUpsertOne) AddOpTargetType(v int32) *AgentOpLogUpsertOne {
 	return u.Update(func(s *AgentOpLogUpsert) {
-		s.AddAgentID(v)
+		s.AddOpTargetType(v)
 	})
 }
 
-// UpdateAgentID sets the "agent_id" field to the value that was provided on create.
-func (u *AgentOpLogUpsertOne) UpdateAgentID() *AgentOpLogUpsertOne {
+// UpdateOpTargetType sets the "op_target_type" field to the value that was provided on create.
+func (u *AgentOpLogUpsertOne) UpdateOpTargetType() *AgentOpLogUpsertOne {
 	return u.Update(func(s *AgentOpLogUpsert) {
-		s.UpdateAgentID()
+		s.UpdateOpTargetType()
+	})
+}
+
+// SetOpTargetID sets the "op_target_id" field.
+func (u *AgentOpLogUpsertOne) SetOpTargetID(v int64) *AgentOpLogUpsertOne {
+	return u.Update(func(s *AgentOpLogUpsert) {
+		s.SetOpTargetID(v)
+	})
+}
+
+// AddOpTargetID adds v to the "op_target_id" field.
+func (u *AgentOpLogUpsertOne) AddOpTargetID(v int64) *AgentOpLogUpsertOne {
+	return u.Update(func(s *AgentOpLogUpsert) {
+		s.AddOpTargetID(v)
+	})
+}
+
+// UpdateOpTargetID sets the "op_target_id" field to the value that was provided on create.
+func (u *AgentOpLogUpsertOne) UpdateOpTargetID() *AgentOpLogUpsertOne {
+	return u.Update(func(s *AgentOpLogUpsert) {
+		s.UpdateOpTargetID()
 	})
 }
 
@@ -809,14 +929,14 @@ func (u *AgentOpLogUpsertOne) UpdateOperatedAt() *AgentOpLogUpsertOne {
 }
 
 // SetResult sets the "result" field.
-func (u *AgentOpLogUpsertOne) SetResult(v int64) *AgentOpLogUpsertOne {
+func (u *AgentOpLogUpsertOne) SetResult(v int32) *AgentOpLogUpsertOne {
 	return u.Update(func(s *AgentOpLogUpsert) {
 		s.SetResult(v)
 	})
 }
 
 // AddResult adds v to the "result" field.
-func (u *AgentOpLogUpsertOne) AddResult(v int64) *AgentOpLogUpsertOne {
+func (u *AgentOpLogUpsertOne) AddResult(v int32) *AgentOpLogUpsertOne {
 	return u.Update(func(s *AgentOpLogUpsert) {
 		s.AddResult(v)
 	})
@@ -1038,6 +1158,12 @@ func (u *AgentOpLogUpsertBulk) UpdateNewValues() *AgentOpLogUpsertBulk {
 			if _, exists := b.mutation.OperatorCode(); exists {
 				s.SetIgnore(agentoplog.FieldOperatorCode)
 			}
+			if _, exists := b.mutation.OpTargetAccount(); exists {
+				s.SetIgnore(agentoplog.FieldOpTargetAccount)
+			}
+			if _, exists := b.mutation.AdminType(); exists {
+				s.SetIgnore(agentoplog.FieldAdminType)
+			}
 			if _, exists := b.mutation.AdminID(); exists {
 				s.SetIgnore(agentoplog.FieldAdminID)
 			}
@@ -1096,24 +1222,45 @@ func (u *AgentOpLogUpsertBulk) UpdateUpdatedAt() *AgentOpLogUpsertBulk {
 	})
 }
 
-// SetAgentID sets the "agent_id" field.
-func (u *AgentOpLogUpsertBulk) SetAgentID(v int64) *AgentOpLogUpsertBulk {
+// SetOpTargetType sets the "op_target_type" field.
+func (u *AgentOpLogUpsertBulk) SetOpTargetType(v int32) *AgentOpLogUpsertBulk {
 	return u.Update(func(s *AgentOpLogUpsert) {
-		s.SetAgentID(v)
+		s.SetOpTargetType(v)
 	})
 }
 
-// AddAgentID adds v to the "agent_id" field.
-func (u *AgentOpLogUpsertBulk) AddAgentID(v int64) *AgentOpLogUpsertBulk {
+// AddOpTargetType adds v to the "op_target_type" field.
+func (u *AgentOpLogUpsertBulk) AddOpTargetType(v int32) *AgentOpLogUpsertBulk {
 	return u.Update(func(s *AgentOpLogUpsert) {
-		s.AddAgentID(v)
+		s.AddOpTargetType(v)
 	})
 }
 
-// UpdateAgentID sets the "agent_id" field to the value that was provided on create.
-func (u *AgentOpLogUpsertBulk) UpdateAgentID() *AgentOpLogUpsertBulk {
+// UpdateOpTargetType sets the "op_target_type" field to the value that was provided on create.
+func (u *AgentOpLogUpsertBulk) UpdateOpTargetType() *AgentOpLogUpsertBulk {
 	return u.Update(func(s *AgentOpLogUpsert) {
-		s.UpdateAgentID()
+		s.UpdateOpTargetType()
+	})
+}
+
+// SetOpTargetID sets the "op_target_id" field.
+func (u *AgentOpLogUpsertBulk) SetOpTargetID(v int64) *AgentOpLogUpsertBulk {
+	return u.Update(func(s *AgentOpLogUpsert) {
+		s.SetOpTargetID(v)
+	})
+}
+
+// AddOpTargetID adds v to the "op_target_id" field.
+func (u *AgentOpLogUpsertBulk) AddOpTargetID(v int64) *AgentOpLogUpsertBulk {
+	return u.Update(func(s *AgentOpLogUpsert) {
+		s.AddOpTargetID(v)
+	})
+}
+
+// UpdateOpTargetID sets the "op_target_id" field to the value that was provided on create.
+func (u *AgentOpLogUpsertBulk) UpdateOpTargetID() *AgentOpLogUpsertBulk {
+	return u.Update(func(s *AgentOpLogUpsert) {
+		s.UpdateOpTargetID()
 	})
 }
 
@@ -1209,14 +1356,14 @@ func (u *AgentOpLogUpsertBulk) UpdateOperatedAt() *AgentOpLogUpsertBulk {
 }
 
 // SetResult sets the "result" field.
-func (u *AgentOpLogUpsertBulk) SetResult(v int64) *AgentOpLogUpsertBulk {
+func (u *AgentOpLogUpsertBulk) SetResult(v int32) *AgentOpLogUpsertBulk {
 	return u.Update(func(s *AgentOpLogUpsert) {
 		s.SetResult(v)
 	})
 }
 
 // AddResult adds v to the "result" field.
-func (u *AgentOpLogUpsertBulk) AddResult(v int64) *AgentOpLogUpsertBulk {
+func (u *AgentOpLogUpsertBulk) AddResult(v int32) *AgentOpLogUpsertBulk {
 	return u.Update(func(s *AgentOpLogUpsert) {
 		s.AddResult(v)
 	})

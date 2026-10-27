@@ -20,8 +20,14 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldOperatorCode holds the string denoting the operator_code field in the database.
 	FieldOperatorCode = "operator_code"
-	// FieldAgentID holds the string denoting the agent_id field in the database.
-	FieldAgentID = "agent_id"
+	// FieldOpTargetType holds the string denoting the op_target_type field in the database.
+	FieldOpTargetType = "op_target_type"
+	// FieldOpTargetID holds the string denoting the op_target_id field in the database.
+	FieldOpTargetID = "op_target_id"
+	// FieldOpTargetAccount holds the string denoting the op_target_account field in the database.
+	FieldOpTargetAccount = "op_target_account"
+	// FieldAdminType holds the string denoting the admin_type field in the database.
+	FieldAdminType = "admin_type"
 	// FieldAdminID holds the string denoting the admin_id field in the database.
 	FieldAdminID = "admin_id"
 	// FieldAdminAccount holds the string denoting the admin_account field in the database.
@@ -54,7 +60,10 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldOperatorCode,
-	FieldAgentID,
+	FieldOpTargetType,
+	FieldOpTargetID,
+	FieldOpTargetAccount,
+	FieldAdminType,
 	FieldAdminID,
 	FieldAdminAccount,
 	FieldAction,
@@ -85,7 +94,7 @@ func ValidColumn(column string) bool {
 //	import _ "oa.98ent.com/p9/operator-crm/ent/runtime"
 var (
 	Hooks        [1]ent.Hook
-	Interceptors [1]ent.Interceptor
+	Interceptors [2]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -94,6 +103,14 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
 	OperatorCodeValidator func(string) error
+	// DefaultOpTargetAccount holds the default value on creation for the "op_target_account" field.
+	DefaultOpTargetAccount string
+	// OpTargetAccountValidator is a validator for the "op_target_account" field. It is called by the builders before save.
+	OpTargetAccountValidator func(string) error
+	// DefaultAdminType holds the default value on creation for the "admin_type" field.
+	DefaultAdminType int32
+	// DefaultAdminID holds the default value on creation for the "admin_id" field.
+	DefaultAdminID int64
 	// DefaultAdminAccount holds the default value on creation for the "admin_account" field.
 	DefaultAdminAccount string
 	// AdminAccountValidator is a validator for the "admin_account" field. It is called by the builders before save.
@@ -109,7 +126,7 @@ var (
 	// UdidValidator is a validator for the "udid" field. It is called by the builders before save.
 	UdidValidator func(string) error
 	// ResultValidator is a validator for the "result" field. It is called by the builders before save.
-	ResultValidator func(int64) error
+	ResultValidator func(int32) error
 	// FailReasonValidator is a validator for the "fail_reason" field. It is called by the builders before save.
 	FailReasonValidator func(string) error
 )
@@ -137,9 +154,24 @@ func ByOperatorCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOperatorCode, opts...).ToFunc()
 }
 
-// ByAgentID orders the results by the agent_id field.
-func ByAgentID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAgentID, opts...).ToFunc()
+// ByOpTargetType orders the results by the op_target_type field.
+func ByOpTargetType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOpTargetType, opts...).ToFunc()
+}
+
+// ByOpTargetID orders the results by the op_target_id field.
+func ByOpTargetID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOpTargetID, opts...).ToFunc()
+}
+
+// ByOpTargetAccount orders the results by the op_target_account field.
+func ByOpTargetAccount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOpTargetAccount, opts...).ToFunc()
+}
+
+// ByAdminType orders the results by the admin_type field.
+func ByAdminType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAdminType, opts...).ToFunc()
 }
 
 // ByAdminID orders the results by the admin_id field.

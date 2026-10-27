@@ -24,10 +24,16 @@ type AgentOpLog struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Operator Code | 分站编码
 	OperatorCode string `json:"operator_code,omitempty"`
-	// 被操作代理ID
-	AgentID int64 `json:"agent_id,omitempty"`
+	// 操作目标类型: 1代理 2玩家
+	OpTargetType int32 `json:"op_target_type,omitempty"`
+	// 操作目标ID
+	OpTargetID int64 `json:"op_target_id,omitempty"`
+	// 操作目标账号
+	OpTargetAccount string `json:"op_target_account,omitempty"`
+	// 操作人类型: 1管理员 2代理
+	AdminType int32 `json:"admin_type,omitempty"`
 	// 操作人用户ID
-	AdminID *int64 `json:"admin_id,omitempty"`
+	AdminID int64 `json:"admin_id,omitempty"`
 	// 操作用户名
 	AdminAccount string `json:"admin_account,omitempty"`
 	// 操作项目 code
@@ -38,14 +44,14 @@ type AgentOpLog struct {
 	AfterValue *string `json:"after_value,omitempty"`
 	// 客户端IP
 	ClientIP *string `json:"client_ip,omitempty"`
-	// 登录设备，User-Agent
+	// 登录设备 User-Agent
 	LoginDevice *string `json:"login_device,omitempty"`
 	// 设备码
 	Udid *string `json:"udid,omitempty"`
 	// 操作时间
 	OperatedAt time.Time `json:"operated_at,omitempty"`
-	// 结果：1成功 2失败
-	Result int64 `json:"result,omitempty"`
+	// 结果:1成功 2失败
+	Result int32 `json:"result,omitempty"`
 	// 失败原因，成功为空
 	FailReason   *string `json:"fail_reason,omitempty"`
 	selectValues sql.SelectValues
@@ -56,9 +62,9 @@ func (*AgentOpLog) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case agentoplog.FieldID, agentoplog.FieldAgentID, agentoplog.FieldAdminID, agentoplog.FieldResult:
+		case agentoplog.FieldID, agentoplog.FieldOpTargetType, agentoplog.FieldOpTargetID, agentoplog.FieldAdminType, agentoplog.FieldAdminID, agentoplog.FieldResult:
 			values[i] = new(sql.NullInt64)
-		case agentoplog.FieldOperatorCode, agentoplog.FieldAdminAccount, agentoplog.FieldAction, agentoplog.FieldBeforeValue, agentoplog.FieldAfterValue, agentoplog.FieldClientIP, agentoplog.FieldLoginDevice, agentoplog.FieldUdid, agentoplog.FieldFailReason:
+		case agentoplog.FieldOperatorCode, agentoplog.FieldOpTargetAccount, agentoplog.FieldAdminAccount, agentoplog.FieldAction, agentoplog.FieldBeforeValue, agentoplog.FieldAfterValue, agentoplog.FieldClientIP, agentoplog.FieldLoginDevice, agentoplog.FieldUdid, agentoplog.FieldFailReason:
 			values[i] = new(sql.NullString)
 		case agentoplog.FieldCreatedAt, agentoplog.FieldUpdatedAt, agentoplog.FieldOperatedAt:
 			values[i] = new(sql.NullTime)
@@ -101,18 +107,35 @@ func (_m *AgentOpLog) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.OperatorCode = value.String
 			}
-		case agentoplog.FieldAgentID:
+		case agentoplog.FieldOpTargetType:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field agent_id", values[i])
+				return fmt.Errorf("unexpected type %T for field op_target_type", values[i])
 			} else if value.Valid {
-				_m.AgentID = value.Int64
+				_m.OpTargetType = int32(value.Int64)
+			}
+		case agentoplog.FieldOpTargetID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field op_target_id", values[i])
+			} else if value.Valid {
+				_m.OpTargetID = value.Int64
+			}
+		case agentoplog.FieldOpTargetAccount:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field op_target_account", values[i])
+			} else if value.Valid {
+				_m.OpTargetAccount = value.String
+			}
+		case agentoplog.FieldAdminType:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field admin_type", values[i])
+			} else if value.Valid {
+				_m.AdminType = int32(value.Int64)
 			}
 		case agentoplog.FieldAdminID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field admin_id", values[i])
 			} else if value.Valid {
-				_m.AdminID = new(int64)
-				*_m.AdminID = value.Int64
+				_m.AdminID = value.Int64
 			}
 		case agentoplog.FieldAdminAccount:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -171,7 +194,7 @@ func (_m *AgentOpLog) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field result", values[i])
 			} else if value.Valid {
-				_m.Result = value.Int64
+				_m.Result = int32(value.Int64)
 			}
 		case agentoplog.FieldFailReason:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -225,13 +248,20 @@ func (_m *AgentOpLog) String() string {
 	builder.WriteString("operator_code=")
 	builder.WriteString(_m.OperatorCode)
 	builder.WriteString(", ")
-	builder.WriteString("agent_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.AgentID))
+	builder.WriteString("op_target_type=")
+	builder.WriteString(fmt.Sprintf("%v", _m.OpTargetType))
 	builder.WriteString(", ")
-	if v := _m.AdminID; v != nil {
-		builder.WriteString("admin_id=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
+	builder.WriteString("op_target_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.OpTargetID))
+	builder.WriteString(", ")
+	builder.WriteString("op_target_account=")
+	builder.WriteString(_m.OpTargetAccount)
+	builder.WriteString(", ")
+	builder.WriteString("admin_type=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AdminType))
+	builder.WriteString(", ")
+	builder.WriteString("admin_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AdminID))
 	builder.WriteString(", ")
 	builder.WriteString("admin_account=")
 	builder.WriteString(_m.AdminAccount)

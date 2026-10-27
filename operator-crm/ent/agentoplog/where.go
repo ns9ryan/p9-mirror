@@ -69,9 +69,24 @@ func OperatorCode(v string) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldEQ(FieldOperatorCode, v))
 }
 
-// AgentID applies equality check predicate on the "agent_id" field. It's identical to AgentIDEQ.
-func AgentID(v int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldEQ(FieldAgentID, v))
+// OpTargetType applies equality check predicate on the "op_target_type" field. It's identical to OpTargetTypeEQ.
+func OpTargetType(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldOpTargetType, v))
+}
+
+// OpTargetID applies equality check predicate on the "op_target_id" field. It's identical to OpTargetIDEQ.
+func OpTargetID(v int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldOpTargetID, v))
+}
+
+// OpTargetAccount applies equality check predicate on the "op_target_account" field. It's identical to OpTargetAccountEQ.
+func OpTargetAccount(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldOpTargetAccount, v))
+}
+
+// AdminType applies equality check predicate on the "admin_type" field. It's identical to AdminTypeEQ.
+func AdminType(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldAdminType, v))
 }
 
 // AdminID applies equality check predicate on the "admin_id" field. It's identical to AdminIDEQ.
@@ -120,7 +135,7 @@ func OperatedAt(v time.Time) predicate.AgentOpLog {
 }
 
 // Result applies equality check predicate on the "result" field. It's identical to ResultEQ.
-func Result(v int64) predicate.AgentOpLog {
+func Result(v int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldEQ(FieldResult, v))
 }
 
@@ -274,44 +289,189 @@ func OperatorCodeContainsFold(v string) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldContainsFold(FieldOperatorCode, v))
 }
 
-// AgentIDEQ applies the EQ predicate on the "agent_id" field.
-func AgentIDEQ(v int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldEQ(FieldAgentID, v))
+// OpTargetTypeEQ applies the EQ predicate on the "op_target_type" field.
+func OpTargetTypeEQ(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldOpTargetType, v))
 }
 
-// AgentIDNEQ applies the NEQ predicate on the "agent_id" field.
-func AgentIDNEQ(v int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldNEQ(FieldAgentID, v))
+// OpTargetTypeNEQ applies the NEQ predicate on the "op_target_type" field.
+func OpTargetTypeNEQ(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNEQ(FieldOpTargetType, v))
 }
 
-// AgentIDIn applies the In predicate on the "agent_id" field.
-func AgentIDIn(vs ...int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldIn(FieldAgentID, vs...))
+// OpTargetTypeIn applies the In predicate on the "op_target_type" field.
+func OpTargetTypeIn(vs ...int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldIn(FieldOpTargetType, vs...))
 }
 
-// AgentIDNotIn applies the NotIn predicate on the "agent_id" field.
-func AgentIDNotIn(vs ...int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldNotIn(FieldAgentID, vs...))
+// OpTargetTypeNotIn applies the NotIn predicate on the "op_target_type" field.
+func OpTargetTypeNotIn(vs ...int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNotIn(FieldOpTargetType, vs...))
 }
 
-// AgentIDGT applies the GT predicate on the "agent_id" field.
-func AgentIDGT(v int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldGT(FieldAgentID, v))
+// OpTargetTypeGT applies the GT predicate on the "op_target_type" field.
+func OpTargetTypeGT(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGT(FieldOpTargetType, v))
 }
 
-// AgentIDGTE applies the GTE predicate on the "agent_id" field.
-func AgentIDGTE(v int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldGTE(FieldAgentID, v))
+// OpTargetTypeGTE applies the GTE predicate on the "op_target_type" field.
+func OpTargetTypeGTE(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGTE(FieldOpTargetType, v))
 }
 
-// AgentIDLT applies the LT predicate on the "agent_id" field.
-func AgentIDLT(v int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldLT(FieldAgentID, v))
+// OpTargetTypeLT applies the LT predicate on the "op_target_type" field.
+func OpTargetTypeLT(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLT(FieldOpTargetType, v))
 }
 
-// AgentIDLTE applies the LTE predicate on the "agent_id" field.
-func AgentIDLTE(v int64) predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldLTE(FieldAgentID, v))
+// OpTargetTypeLTE applies the LTE predicate on the "op_target_type" field.
+func OpTargetTypeLTE(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLTE(FieldOpTargetType, v))
+}
+
+// OpTargetIDEQ applies the EQ predicate on the "op_target_id" field.
+func OpTargetIDEQ(v int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldOpTargetID, v))
+}
+
+// OpTargetIDNEQ applies the NEQ predicate on the "op_target_id" field.
+func OpTargetIDNEQ(v int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNEQ(FieldOpTargetID, v))
+}
+
+// OpTargetIDIn applies the In predicate on the "op_target_id" field.
+func OpTargetIDIn(vs ...int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldIn(FieldOpTargetID, vs...))
+}
+
+// OpTargetIDNotIn applies the NotIn predicate on the "op_target_id" field.
+func OpTargetIDNotIn(vs ...int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNotIn(FieldOpTargetID, vs...))
+}
+
+// OpTargetIDGT applies the GT predicate on the "op_target_id" field.
+func OpTargetIDGT(v int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGT(FieldOpTargetID, v))
+}
+
+// OpTargetIDGTE applies the GTE predicate on the "op_target_id" field.
+func OpTargetIDGTE(v int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGTE(FieldOpTargetID, v))
+}
+
+// OpTargetIDLT applies the LT predicate on the "op_target_id" field.
+func OpTargetIDLT(v int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLT(FieldOpTargetID, v))
+}
+
+// OpTargetIDLTE applies the LTE predicate on the "op_target_id" field.
+func OpTargetIDLTE(v int64) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLTE(FieldOpTargetID, v))
+}
+
+// OpTargetAccountEQ applies the EQ predicate on the "op_target_account" field.
+func OpTargetAccountEQ(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountNEQ applies the NEQ predicate on the "op_target_account" field.
+func OpTargetAccountNEQ(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNEQ(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountIn applies the In predicate on the "op_target_account" field.
+func OpTargetAccountIn(vs ...string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldIn(FieldOpTargetAccount, vs...))
+}
+
+// OpTargetAccountNotIn applies the NotIn predicate on the "op_target_account" field.
+func OpTargetAccountNotIn(vs ...string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNotIn(FieldOpTargetAccount, vs...))
+}
+
+// OpTargetAccountGT applies the GT predicate on the "op_target_account" field.
+func OpTargetAccountGT(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGT(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountGTE applies the GTE predicate on the "op_target_account" field.
+func OpTargetAccountGTE(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGTE(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountLT applies the LT predicate on the "op_target_account" field.
+func OpTargetAccountLT(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLT(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountLTE applies the LTE predicate on the "op_target_account" field.
+func OpTargetAccountLTE(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLTE(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountContains applies the Contains predicate on the "op_target_account" field.
+func OpTargetAccountContains(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldContains(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountHasPrefix applies the HasPrefix predicate on the "op_target_account" field.
+func OpTargetAccountHasPrefix(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldHasPrefix(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountHasSuffix applies the HasSuffix predicate on the "op_target_account" field.
+func OpTargetAccountHasSuffix(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldHasSuffix(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountEqualFold applies the EqualFold predicate on the "op_target_account" field.
+func OpTargetAccountEqualFold(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEqualFold(FieldOpTargetAccount, v))
+}
+
+// OpTargetAccountContainsFold applies the ContainsFold predicate on the "op_target_account" field.
+func OpTargetAccountContainsFold(v string) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldContainsFold(FieldOpTargetAccount, v))
+}
+
+// AdminTypeEQ applies the EQ predicate on the "admin_type" field.
+func AdminTypeEQ(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldEQ(FieldAdminType, v))
+}
+
+// AdminTypeNEQ applies the NEQ predicate on the "admin_type" field.
+func AdminTypeNEQ(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNEQ(FieldAdminType, v))
+}
+
+// AdminTypeIn applies the In predicate on the "admin_type" field.
+func AdminTypeIn(vs ...int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldIn(FieldAdminType, vs...))
+}
+
+// AdminTypeNotIn applies the NotIn predicate on the "admin_type" field.
+func AdminTypeNotIn(vs ...int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldNotIn(FieldAdminType, vs...))
+}
+
+// AdminTypeGT applies the GT predicate on the "admin_type" field.
+func AdminTypeGT(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGT(FieldAdminType, v))
+}
+
+// AdminTypeGTE applies the GTE predicate on the "admin_type" field.
+func AdminTypeGTE(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldGTE(FieldAdminType, v))
+}
+
+// AdminTypeLT applies the LT predicate on the "admin_type" field.
+func AdminTypeLT(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLT(FieldAdminType, v))
+}
+
+// AdminTypeLTE applies the LTE predicate on the "admin_type" field.
+func AdminTypeLTE(v int32) predicate.AgentOpLog {
+	return predicate.AgentOpLog(sql.FieldLTE(FieldAdminType, v))
 }
 
 // AdminIDEQ applies the EQ predicate on the "admin_id" field.
@@ -352,16 +512,6 @@ func AdminIDLT(v int64) predicate.AgentOpLog {
 // AdminIDLTE applies the LTE predicate on the "admin_id" field.
 func AdminIDLTE(v int64) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldLTE(FieldAdminID, v))
-}
-
-// AdminIDIsNil applies the IsNil predicate on the "admin_id" field.
-func AdminIDIsNil() predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldIsNull(FieldAdminID))
-}
-
-// AdminIDNotNil applies the NotNil predicate on the "admin_id" field.
-func AdminIDNotNil() predicate.AgentOpLog {
-	return predicate.AgentOpLog(sql.FieldNotNull(FieldAdminID))
 }
 
 // AdminAccountEQ applies the EQ predicate on the "admin_account" field.
@@ -910,42 +1060,42 @@ func OperatedAtLTE(v time.Time) predicate.AgentOpLog {
 }
 
 // ResultEQ applies the EQ predicate on the "result" field.
-func ResultEQ(v int64) predicate.AgentOpLog {
+func ResultEQ(v int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldEQ(FieldResult, v))
 }
 
 // ResultNEQ applies the NEQ predicate on the "result" field.
-func ResultNEQ(v int64) predicate.AgentOpLog {
+func ResultNEQ(v int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldNEQ(FieldResult, v))
 }
 
 // ResultIn applies the In predicate on the "result" field.
-func ResultIn(vs ...int64) predicate.AgentOpLog {
+func ResultIn(vs ...int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldIn(FieldResult, vs...))
 }
 
 // ResultNotIn applies the NotIn predicate on the "result" field.
-func ResultNotIn(vs ...int64) predicate.AgentOpLog {
+func ResultNotIn(vs ...int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldNotIn(FieldResult, vs...))
 }
 
 // ResultGT applies the GT predicate on the "result" field.
-func ResultGT(v int64) predicate.AgentOpLog {
+func ResultGT(v int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldGT(FieldResult, v))
 }
 
 // ResultGTE applies the GTE predicate on the "result" field.
-func ResultGTE(v int64) predicate.AgentOpLog {
+func ResultGTE(v int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldGTE(FieldResult, v))
 }
 
 // ResultLT applies the LT predicate on the "result" field.
-func ResultLT(v int64) predicate.AgentOpLog {
+func ResultLT(v int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldLT(FieldResult, v))
 }
 
 // ResultLTE applies the LTE predicate on the "result" field.
-func ResultLTE(v int64) predicate.AgentOpLog {
+func ResultLTE(v int32) predicate.AgentOpLog {
 	return predicate.AgentOpLog(sql.FieldLTE(FieldResult, v))
 }
 

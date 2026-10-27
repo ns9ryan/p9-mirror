@@ -580,37 +580,51 @@ message ListAgentLoginAssociationsResp {
 
 // ListAgentOpLogsReq 代理资料变更操作日志列表
 message ListAgentOpLogsReq {
-  // 被操作代理 ID，必填
-  int64 agent_id = 1;
+  // 操作目标 ID，必填
+  int64 op_target_id = 1;
+  // 操作目标类型 1 代理 2 会员
+  int32 op_target_type = 2;
   // 页码，从 1 开始
-  int32 page = 2;
+  int32 page = 3;
   // 每页条数，默认 20，上限 100
-  int32 page_size = 3;
+  int32 page_size = 4;
   // 操作时间起始 unix 秒，0 不限
-  int64 time_start = 4;
+  int64 time_start = 5;
   // 操作时间结束 unix 秒，0 不限
-  int64 time_end = 5;
+  int64 time_end = 6;
   // 结果：0 不限 1 成功 2 失败
-  int32 result = 6;
+  int32 result = 7;
 }
 
 // AgentOpLogItem 代理资料变更操作日志项
 message AgentOpLogItem {
   int64 id = 1;
-  int64 agent_id = 2;
-  int64 admin_id = 3;
-  string admin_account = 4;
-  string action = 5;
-  string before_value = 6;
-  string after_value = 7;
-  string client_ip = 8;
-  string login_device = 9;
-  string udid = 10;
+  // 操作目标 ID
+  int64 op_target_id = 2;
+  // 操作目标类型 1 代理 2 会员
+  int32 op_target_type = 3;
+  // 操作目标账号
+  string op_target_account = 4;
+  // 操作管理员 ID
+  int64 admin_id = 5;
+  // 操作管理员类型 1 管理员 2 代理
+  int32 admin_type = 6; 
+  // 操作管理员账号
+  string admin_account = 7;
+  // 操作动作
+  string action = 8;
+  // 操作前值
+  string before_value = 9;
+  // 操作后值
+  string after_value = 10;
+  string client_ip = 11;
+  string login_device = 12;
+  string udid = 13;
   // 操作时间 unix 秒
-  int64 operated_at = 11;
+  int64 operated_at = 14;
   // 1成功 2失败
-  int32 result = 12;
-  string fail_reason = 13;
+  int32 result = 15;
+  string fail_reason = 16;
 }
 
 // ListAgentOpLogsResp 代理资料变更操作日志列表响应

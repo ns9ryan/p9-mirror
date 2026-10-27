@@ -297,8 +297,26 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 		return nil
 	})
 	if err != nil {
+		// 记录操作日志
+		s.recordOpFail(ctx, &recordOpParams{
+			targetType:    opTargetTypeAgent,
+			targetID:      created.ID,
+			targetAccount: account,
+			action:        opActionCreate,
+			before:        "",
+			after:         account,
+		}, err)
 		return nil, err
 	}
+	// 记录操作日志
+	s.recordOpOK(ctx, &recordOpParams{
+		targetType:    opTargetTypeAgent,
+		targetID:      created.ID,
+		targetAccount: account,
+		action:        opActionCreate,
+		before:        "",
+		after:         account,
+	})
 	// 创建代理后，刷新内存树缓存
 	if _, op, oerr := requireOperator(ctx); oerr == nil {
 		s.invalidateTree(op)

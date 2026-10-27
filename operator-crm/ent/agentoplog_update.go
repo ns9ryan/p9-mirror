@@ -34,24 +34,45 @@ func (_u *AgentOpLogUpdate) SetUpdatedAt(v time.Time) *AgentOpLogUpdate {
 	return _u
 }
 
-// SetAgentID sets the "agent_id" field.
-func (_u *AgentOpLogUpdate) SetAgentID(v int64) *AgentOpLogUpdate {
-	_u.mutation.ResetAgentID()
-	_u.mutation.SetAgentID(v)
+// SetOpTargetType sets the "op_target_type" field.
+func (_u *AgentOpLogUpdate) SetOpTargetType(v int32) *AgentOpLogUpdate {
+	_u.mutation.ResetOpTargetType()
+	_u.mutation.SetOpTargetType(v)
 	return _u
 }
 
-// SetNillableAgentID sets the "agent_id" field if the given value is not nil.
-func (_u *AgentOpLogUpdate) SetNillableAgentID(v *int64) *AgentOpLogUpdate {
+// SetNillableOpTargetType sets the "op_target_type" field if the given value is not nil.
+func (_u *AgentOpLogUpdate) SetNillableOpTargetType(v *int32) *AgentOpLogUpdate {
 	if v != nil {
-		_u.SetAgentID(*v)
+		_u.SetOpTargetType(*v)
 	}
 	return _u
 }
 
-// AddAgentID adds value to the "agent_id" field.
-func (_u *AgentOpLogUpdate) AddAgentID(v int64) *AgentOpLogUpdate {
-	_u.mutation.AddAgentID(v)
+// AddOpTargetType adds value to the "op_target_type" field.
+func (_u *AgentOpLogUpdate) AddOpTargetType(v int32) *AgentOpLogUpdate {
+	_u.mutation.AddOpTargetType(v)
+	return _u
+}
+
+// SetOpTargetID sets the "op_target_id" field.
+func (_u *AgentOpLogUpdate) SetOpTargetID(v int64) *AgentOpLogUpdate {
+	_u.mutation.ResetOpTargetID()
+	_u.mutation.SetOpTargetID(v)
+	return _u
+}
+
+// SetNillableOpTargetID sets the "op_target_id" field if the given value is not nil.
+func (_u *AgentOpLogUpdate) SetNillableOpTargetID(v *int64) *AgentOpLogUpdate {
+	if v != nil {
+		_u.SetOpTargetID(*v)
+	}
+	return _u
+}
+
+// AddOpTargetID adds value to the "op_target_id" field.
+func (_u *AgentOpLogUpdate) AddOpTargetID(v int64) *AgentOpLogUpdate {
+	_u.mutation.AddOpTargetID(v)
 	return _u
 }
 
@@ -144,14 +165,14 @@ func (_u *AgentOpLogUpdate) SetNillableOperatedAt(v *time.Time) *AgentOpLogUpdat
 }
 
 // SetResult sets the "result" field.
-func (_u *AgentOpLogUpdate) SetResult(v int64) *AgentOpLogUpdate {
+func (_u *AgentOpLogUpdate) SetResult(v int32) *AgentOpLogUpdate {
 	_u.mutation.ResetResult()
 	_u.mutation.SetResult(v)
 	return _u
 }
 
 // SetNillableResult sets the "result" field if the given value is not nil.
-func (_u *AgentOpLogUpdate) SetNillableResult(v *int64) *AgentOpLogUpdate {
+func (_u *AgentOpLogUpdate) SetNillableResult(v *int32) *AgentOpLogUpdate {
 	if v != nil {
 		_u.SetResult(*v)
 	}
@@ -159,7 +180,7 @@ func (_u *AgentOpLogUpdate) SetNillableResult(v *int64) *AgentOpLogUpdate {
 }
 
 // AddResult adds value to the "result" field.
-func (_u *AgentOpLogUpdate) AddResult(v int64) *AgentOpLogUpdate {
+func (_u *AgentOpLogUpdate) AddResult(v int32) *AgentOpLogUpdate {
 	_u.mutation.AddResult(v)
 	return _u
 }
@@ -276,14 +297,17 @@ func (_u *AgentOpLogUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentoplog.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.AgentID(); ok {
-		_spec.SetField(agentoplog.FieldAgentID, field.TypeInt64, value)
+	if value, ok := _u.mutation.OpTargetType(); ok {
+		_spec.SetField(agentoplog.FieldOpTargetType, field.TypeInt32, value)
 	}
-	if value, ok := _u.mutation.AddedAgentID(); ok {
-		_spec.AddField(agentoplog.FieldAgentID, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedOpTargetType(); ok {
+		_spec.AddField(agentoplog.FieldOpTargetType, field.TypeInt32, value)
 	}
-	if _u.mutation.AdminIDCleared() {
-		_spec.ClearField(agentoplog.FieldAdminID, field.TypeInt64)
+	if value, ok := _u.mutation.OpTargetID(); ok {
+		_spec.SetField(agentoplog.FieldOpTargetID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedOpTargetID(); ok {
+		_spec.AddField(agentoplog.FieldOpTargetID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.Action(); ok {
 		_spec.SetField(agentoplog.FieldAction, field.TypeString, value)
@@ -316,10 +340,10 @@ func (_u *AgentOpLogUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 		_spec.SetField(agentoplog.FieldOperatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Result(); ok {
-		_spec.SetField(agentoplog.FieldResult, field.TypeInt64, value)
+		_spec.SetField(agentoplog.FieldResult, field.TypeInt32, value)
 	}
 	if value, ok := _u.mutation.AddedResult(); ok {
-		_spec.AddField(agentoplog.FieldResult, field.TypeInt64, value)
+		_spec.AddField(agentoplog.FieldResult, field.TypeInt32, value)
 	}
 	if value, ok := _u.mutation.FailReason(); ok {
 		_spec.SetField(agentoplog.FieldFailReason, field.TypeString, value)
@@ -353,24 +377,45 @@ func (_u *AgentOpLogUpdateOne) SetUpdatedAt(v time.Time) *AgentOpLogUpdateOne {
 	return _u
 }
 
-// SetAgentID sets the "agent_id" field.
-func (_u *AgentOpLogUpdateOne) SetAgentID(v int64) *AgentOpLogUpdateOne {
-	_u.mutation.ResetAgentID()
-	_u.mutation.SetAgentID(v)
+// SetOpTargetType sets the "op_target_type" field.
+func (_u *AgentOpLogUpdateOne) SetOpTargetType(v int32) *AgentOpLogUpdateOne {
+	_u.mutation.ResetOpTargetType()
+	_u.mutation.SetOpTargetType(v)
 	return _u
 }
 
-// SetNillableAgentID sets the "agent_id" field if the given value is not nil.
-func (_u *AgentOpLogUpdateOne) SetNillableAgentID(v *int64) *AgentOpLogUpdateOne {
+// SetNillableOpTargetType sets the "op_target_type" field if the given value is not nil.
+func (_u *AgentOpLogUpdateOne) SetNillableOpTargetType(v *int32) *AgentOpLogUpdateOne {
 	if v != nil {
-		_u.SetAgentID(*v)
+		_u.SetOpTargetType(*v)
 	}
 	return _u
 }
 
-// AddAgentID adds value to the "agent_id" field.
-func (_u *AgentOpLogUpdateOne) AddAgentID(v int64) *AgentOpLogUpdateOne {
-	_u.mutation.AddAgentID(v)
+// AddOpTargetType adds value to the "op_target_type" field.
+func (_u *AgentOpLogUpdateOne) AddOpTargetType(v int32) *AgentOpLogUpdateOne {
+	_u.mutation.AddOpTargetType(v)
+	return _u
+}
+
+// SetOpTargetID sets the "op_target_id" field.
+func (_u *AgentOpLogUpdateOne) SetOpTargetID(v int64) *AgentOpLogUpdateOne {
+	_u.mutation.ResetOpTargetID()
+	_u.mutation.SetOpTargetID(v)
+	return _u
+}
+
+// SetNillableOpTargetID sets the "op_target_id" field if the given value is not nil.
+func (_u *AgentOpLogUpdateOne) SetNillableOpTargetID(v *int64) *AgentOpLogUpdateOne {
+	if v != nil {
+		_u.SetOpTargetID(*v)
+	}
+	return _u
+}
+
+// AddOpTargetID adds value to the "op_target_id" field.
+func (_u *AgentOpLogUpdateOne) AddOpTargetID(v int64) *AgentOpLogUpdateOne {
+	_u.mutation.AddOpTargetID(v)
 	return _u
 }
 
@@ -463,14 +508,14 @@ func (_u *AgentOpLogUpdateOne) SetNillableOperatedAt(v *time.Time) *AgentOpLogUp
 }
 
 // SetResult sets the "result" field.
-func (_u *AgentOpLogUpdateOne) SetResult(v int64) *AgentOpLogUpdateOne {
+func (_u *AgentOpLogUpdateOne) SetResult(v int32) *AgentOpLogUpdateOne {
 	_u.mutation.ResetResult()
 	_u.mutation.SetResult(v)
 	return _u
 }
 
 // SetNillableResult sets the "result" field if the given value is not nil.
-func (_u *AgentOpLogUpdateOne) SetNillableResult(v *int64) *AgentOpLogUpdateOne {
+func (_u *AgentOpLogUpdateOne) SetNillableResult(v *int32) *AgentOpLogUpdateOne {
 	if v != nil {
 		_u.SetResult(*v)
 	}
@@ -478,7 +523,7 @@ func (_u *AgentOpLogUpdateOne) SetNillableResult(v *int64) *AgentOpLogUpdateOne 
 }
 
 // AddResult adds value to the "result" field.
-func (_u *AgentOpLogUpdateOne) AddResult(v int64) *AgentOpLogUpdateOne {
+func (_u *AgentOpLogUpdateOne) AddResult(v int32) *AgentOpLogUpdateOne {
 	_u.mutation.AddResult(v)
 	return _u
 }
@@ -625,14 +670,17 @@ func (_u *AgentOpLogUpdateOne) sqlSave(ctx context.Context) (_node *AgentOpLog, 
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentoplog.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.AgentID(); ok {
-		_spec.SetField(agentoplog.FieldAgentID, field.TypeInt64, value)
+	if value, ok := _u.mutation.OpTargetType(); ok {
+		_spec.SetField(agentoplog.FieldOpTargetType, field.TypeInt32, value)
 	}
-	if value, ok := _u.mutation.AddedAgentID(); ok {
-		_spec.AddField(agentoplog.FieldAgentID, field.TypeInt64, value)
+	if value, ok := _u.mutation.AddedOpTargetType(); ok {
+		_spec.AddField(agentoplog.FieldOpTargetType, field.TypeInt32, value)
 	}
-	if _u.mutation.AdminIDCleared() {
-		_spec.ClearField(agentoplog.FieldAdminID, field.TypeInt64)
+	if value, ok := _u.mutation.OpTargetID(); ok {
+		_spec.SetField(agentoplog.FieldOpTargetID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedOpTargetID(); ok {
+		_spec.AddField(agentoplog.FieldOpTargetID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.Action(); ok {
 		_spec.SetField(agentoplog.FieldAction, field.TypeString, value)
@@ -665,10 +713,10 @@ func (_u *AgentOpLogUpdateOne) sqlSave(ctx context.Context) (_node *AgentOpLog, 
 		_spec.SetField(agentoplog.FieldOperatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Result(); ok {
-		_spec.SetField(agentoplog.FieldResult, field.TypeInt64, value)
+		_spec.SetField(agentoplog.FieldResult, field.TypeInt32, value)
 	}
 	if value, ok := _u.mutation.AddedResult(); ok {
-		_spec.AddField(agentoplog.FieldResult, field.TypeInt64, value)
+		_spec.AddField(agentoplog.FieldResult, field.TypeInt32, value)
 	}
 	if value, ok := _u.mutation.FailReason(); ok {
 		_spec.SetField(agentoplog.FieldFailReason, field.TypeString, value)

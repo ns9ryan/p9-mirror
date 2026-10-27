@@ -5330,31 +5330,36 @@ func (m *AgentLoginLogMutation) ResetEdge(name string) error {
 // AgentOpLogMutation represents an operation that mutates the AgentOpLog nodes in the graph.
 type AgentOpLogMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int64
-	created_at    *time.Time
-	updated_at    *time.Time
-	operator_code *string
-	agent_id      *int64
-	addagent_id   *int64
-	admin_id      *int64
-	addadmin_id   *int64
-	admin_account *string
-	action        *string
-	before_value  *string
-	after_value   *string
-	client_ip     *string
-	login_device  *string
-	udid          *string
-	operated_at   *time.Time
-	result        *int64
-	addresult     *int64
-	fail_reason   *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*AgentOpLog, error)
-	predicates    []predicate.AgentOpLog
+	op                Op
+	typ               string
+	id                *int64
+	created_at        *time.Time
+	updated_at        *time.Time
+	operator_code     *string
+	op_target_type    *int32
+	addop_target_type *int32
+	op_target_id      *int64
+	addop_target_id   *int64
+	op_target_account *string
+	admin_type        *int32
+	addadmin_type     *int32
+	admin_id          *int64
+	addadmin_id       *int64
+	admin_account     *string
+	action            *string
+	before_value      *string
+	after_value       *string
+	client_ip         *string
+	login_device      *string
+	udid              *string
+	operated_at       *time.Time
+	result            *int32
+	addresult         *int32
+	fail_reason       *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*AgentOpLog, error)
+	predicates        []predicate.AgentOpLog
 }
 
 var _ ent.Mutation = (*AgentOpLogMutation)(nil)
@@ -5569,60 +5574,208 @@ func (m *AgentOpLogMutation) ResetOperatorCode() {
 	m.operator_code = nil
 }
 
-// SetAgentID sets the "agent_id" field.
-func (m *AgentOpLogMutation) SetAgentID(i int64) {
-	m.agent_id = &i
-	m.addagent_id = nil
+// SetOpTargetType sets the "op_target_type" field.
+func (m *AgentOpLogMutation) SetOpTargetType(i int32) {
+	m.op_target_type = &i
+	m.addop_target_type = nil
 }
 
-// AgentID returns the value of the "agent_id" field in the mutation.
-func (m *AgentOpLogMutation) AgentID() (r int64, exists bool) {
-	v := m.agent_id
+// OpTargetType returns the value of the "op_target_type" field in the mutation.
+func (m *AgentOpLogMutation) OpTargetType() (r int32, exists bool) {
+	v := m.op_target_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAgentID returns the old "agent_id" field's value of the AgentOpLog entity.
+// OldOpTargetType returns the old "op_target_type" field's value of the AgentOpLog entity.
 // If the AgentOpLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentOpLogMutation) OldAgentID(ctx context.Context) (v int64, err error) {
+func (m *AgentOpLogMutation) OldOpTargetType(ctx context.Context) (v int32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAgentID is only allowed on UpdateOne operations")
+		return v, errors.New("OldOpTargetType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAgentID requires an ID field in the mutation")
+		return v, errors.New("OldOpTargetType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAgentID: %w", err)
+		return v, fmt.Errorf("querying old value for OldOpTargetType: %w", err)
 	}
-	return oldValue.AgentID, nil
+	return oldValue.OpTargetType, nil
 }
 
-// AddAgentID adds i to the "agent_id" field.
-func (m *AgentOpLogMutation) AddAgentID(i int64) {
-	if m.addagent_id != nil {
-		*m.addagent_id += i
+// AddOpTargetType adds i to the "op_target_type" field.
+func (m *AgentOpLogMutation) AddOpTargetType(i int32) {
+	if m.addop_target_type != nil {
+		*m.addop_target_type += i
 	} else {
-		m.addagent_id = &i
+		m.addop_target_type = &i
 	}
 }
 
-// AddedAgentID returns the value that was added to the "agent_id" field in this mutation.
-func (m *AgentOpLogMutation) AddedAgentID() (r int64, exists bool) {
-	v := m.addagent_id
+// AddedOpTargetType returns the value that was added to the "op_target_type" field in this mutation.
+func (m *AgentOpLogMutation) AddedOpTargetType() (r int32, exists bool) {
+	v := m.addop_target_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetAgentID resets all changes to the "agent_id" field.
-func (m *AgentOpLogMutation) ResetAgentID() {
-	m.agent_id = nil
-	m.addagent_id = nil
+// ResetOpTargetType resets all changes to the "op_target_type" field.
+func (m *AgentOpLogMutation) ResetOpTargetType() {
+	m.op_target_type = nil
+	m.addop_target_type = nil
+}
+
+// SetOpTargetID sets the "op_target_id" field.
+func (m *AgentOpLogMutation) SetOpTargetID(i int64) {
+	m.op_target_id = &i
+	m.addop_target_id = nil
+}
+
+// OpTargetID returns the value of the "op_target_id" field in the mutation.
+func (m *AgentOpLogMutation) OpTargetID() (r int64, exists bool) {
+	v := m.op_target_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOpTargetID returns the old "op_target_id" field's value of the AgentOpLog entity.
+// If the AgentOpLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentOpLogMutation) OldOpTargetID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOpTargetID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOpTargetID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOpTargetID: %w", err)
+	}
+	return oldValue.OpTargetID, nil
+}
+
+// AddOpTargetID adds i to the "op_target_id" field.
+func (m *AgentOpLogMutation) AddOpTargetID(i int64) {
+	if m.addop_target_id != nil {
+		*m.addop_target_id += i
+	} else {
+		m.addop_target_id = &i
+	}
+}
+
+// AddedOpTargetID returns the value that was added to the "op_target_id" field in this mutation.
+func (m *AgentOpLogMutation) AddedOpTargetID() (r int64, exists bool) {
+	v := m.addop_target_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetOpTargetID resets all changes to the "op_target_id" field.
+func (m *AgentOpLogMutation) ResetOpTargetID() {
+	m.op_target_id = nil
+	m.addop_target_id = nil
+}
+
+// SetOpTargetAccount sets the "op_target_account" field.
+func (m *AgentOpLogMutation) SetOpTargetAccount(s string) {
+	m.op_target_account = &s
+}
+
+// OpTargetAccount returns the value of the "op_target_account" field in the mutation.
+func (m *AgentOpLogMutation) OpTargetAccount() (r string, exists bool) {
+	v := m.op_target_account
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOpTargetAccount returns the old "op_target_account" field's value of the AgentOpLog entity.
+// If the AgentOpLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentOpLogMutation) OldOpTargetAccount(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOpTargetAccount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOpTargetAccount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOpTargetAccount: %w", err)
+	}
+	return oldValue.OpTargetAccount, nil
+}
+
+// ResetOpTargetAccount resets all changes to the "op_target_account" field.
+func (m *AgentOpLogMutation) ResetOpTargetAccount() {
+	m.op_target_account = nil
+}
+
+// SetAdminType sets the "admin_type" field.
+func (m *AgentOpLogMutation) SetAdminType(i int32) {
+	m.admin_type = &i
+	m.addadmin_type = nil
+}
+
+// AdminType returns the value of the "admin_type" field in the mutation.
+func (m *AgentOpLogMutation) AdminType() (r int32, exists bool) {
+	v := m.admin_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAdminType returns the old "admin_type" field's value of the AgentOpLog entity.
+// If the AgentOpLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentOpLogMutation) OldAdminType(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAdminType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAdminType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAdminType: %w", err)
+	}
+	return oldValue.AdminType, nil
+}
+
+// AddAdminType adds i to the "admin_type" field.
+func (m *AgentOpLogMutation) AddAdminType(i int32) {
+	if m.addadmin_type != nil {
+		*m.addadmin_type += i
+	} else {
+		m.addadmin_type = &i
+	}
+}
+
+// AddedAdminType returns the value that was added to the "admin_type" field in this mutation.
+func (m *AgentOpLogMutation) AddedAdminType() (r int32, exists bool) {
+	v := m.addadmin_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAdminType resets all changes to the "admin_type" field.
+func (m *AgentOpLogMutation) ResetAdminType() {
+	m.admin_type = nil
+	m.addadmin_type = nil
 }
 
 // SetAdminID sets the "admin_id" field.
@@ -5643,7 +5796,7 @@ func (m *AgentOpLogMutation) AdminID() (r int64, exists bool) {
 // OldAdminID returns the old "admin_id" field's value of the AgentOpLog entity.
 // If the AgentOpLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentOpLogMutation) OldAdminID(ctx context.Context) (v *int64, err error) {
+func (m *AgentOpLogMutation) OldAdminID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAdminID is only allowed on UpdateOne operations")
 	}
@@ -5675,24 +5828,10 @@ func (m *AgentOpLogMutation) AddedAdminID() (r int64, exists bool) {
 	return *v, true
 }
 
-// ClearAdminID clears the value of the "admin_id" field.
-func (m *AgentOpLogMutation) ClearAdminID() {
-	m.admin_id = nil
-	m.addadmin_id = nil
-	m.clearedFields[agentoplog.FieldAdminID] = struct{}{}
-}
-
-// AdminIDCleared returns if the "admin_id" field was cleared in this mutation.
-func (m *AgentOpLogMutation) AdminIDCleared() bool {
-	_, ok := m.clearedFields[agentoplog.FieldAdminID]
-	return ok
-}
-
 // ResetAdminID resets all changes to the "admin_id" field.
 func (m *AgentOpLogMutation) ResetAdminID() {
 	m.admin_id = nil
 	m.addadmin_id = nil
-	delete(m.clearedFields, agentoplog.FieldAdminID)
 }
 
 // SetAdminAccount sets the "admin_account" field.
@@ -6049,13 +6188,13 @@ func (m *AgentOpLogMutation) ResetOperatedAt() {
 }
 
 // SetResult sets the "result" field.
-func (m *AgentOpLogMutation) SetResult(i int64) {
+func (m *AgentOpLogMutation) SetResult(i int32) {
 	m.result = &i
 	m.addresult = nil
 }
 
 // Result returns the value of the "result" field in the mutation.
-func (m *AgentOpLogMutation) Result() (r int64, exists bool) {
+func (m *AgentOpLogMutation) Result() (r int32, exists bool) {
 	v := m.result
 	if v == nil {
 		return
@@ -6066,7 +6205,7 @@ func (m *AgentOpLogMutation) Result() (r int64, exists bool) {
 // OldResult returns the old "result" field's value of the AgentOpLog entity.
 // If the AgentOpLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AgentOpLogMutation) OldResult(ctx context.Context) (v int64, err error) {
+func (m *AgentOpLogMutation) OldResult(ctx context.Context) (v int32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldResult is only allowed on UpdateOne operations")
 	}
@@ -6081,7 +6220,7 @@ func (m *AgentOpLogMutation) OldResult(ctx context.Context) (v int64, err error)
 }
 
 // AddResult adds i to the "result" field.
-func (m *AgentOpLogMutation) AddResult(i int64) {
+func (m *AgentOpLogMutation) AddResult(i int32) {
 	if m.addresult != nil {
 		*m.addresult += i
 	} else {
@@ -6090,7 +6229,7 @@ func (m *AgentOpLogMutation) AddResult(i int64) {
 }
 
 // AddedResult returns the value that was added to the "result" field in this mutation.
-func (m *AgentOpLogMutation) AddedResult() (r int64, exists bool) {
+func (m *AgentOpLogMutation) AddedResult() (r int32, exists bool) {
 	v := m.addresult
 	if v == nil {
 		return
@@ -6187,7 +6326,7 @@ func (m *AgentOpLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentOpLogMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 18)
 	if m.created_at != nil {
 		fields = append(fields, agentoplog.FieldCreatedAt)
 	}
@@ -6197,8 +6336,17 @@ func (m *AgentOpLogMutation) Fields() []string {
 	if m.operator_code != nil {
 		fields = append(fields, agentoplog.FieldOperatorCode)
 	}
-	if m.agent_id != nil {
-		fields = append(fields, agentoplog.FieldAgentID)
+	if m.op_target_type != nil {
+		fields = append(fields, agentoplog.FieldOpTargetType)
+	}
+	if m.op_target_id != nil {
+		fields = append(fields, agentoplog.FieldOpTargetID)
+	}
+	if m.op_target_account != nil {
+		fields = append(fields, agentoplog.FieldOpTargetAccount)
+	}
+	if m.admin_type != nil {
+		fields = append(fields, agentoplog.FieldAdminType)
 	}
 	if m.admin_id != nil {
 		fields = append(fields, agentoplog.FieldAdminID)
@@ -6247,8 +6395,14 @@ func (m *AgentOpLogMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case agentoplog.FieldOperatorCode:
 		return m.OperatorCode()
-	case agentoplog.FieldAgentID:
-		return m.AgentID()
+	case agentoplog.FieldOpTargetType:
+		return m.OpTargetType()
+	case agentoplog.FieldOpTargetID:
+		return m.OpTargetID()
+	case agentoplog.FieldOpTargetAccount:
+		return m.OpTargetAccount()
+	case agentoplog.FieldAdminType:
+		return m.AdminType()
 	case agentoplog.FieldAdminID:
 		return m.AdminID()
 	case agentoplog.FieldAdminAccount:
@@ -6286,8 +6440,14 @@ func (m *AgentOpLogMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldUpdatedAt(ctx)
 	case agentoplog.FieldOperatorCode:
 		return m.OldOperatorCode(ctx)
-	case agentoplog.FieldAgentID:
-		return m.OldAgentID(ctx)
+	case agentoplog.FieldOpTargetType:
+		return m.OldOpTargetType(ctx)
+	case agentoplog.FieldOpTargetID:
+		return m.OldOpTargetID(ctx)
+	case agentoplog.FieldOpTargetAccount:
+		return m.OldOpTargetAccount(ctx)
+	case agentoplog.FieldAdminType:
+		return m.OldAdminType(ctx)
 	case agentoplog.FieldAdminID:
 		return m.OldAdminID(ctx)
 	case agentoplog.FieldAdminAccount:
@@ -6340,12 +6500,33 @@ func (m *AgentOpLogMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetOperatorCode(v)
 		return nil
-	case agentoplog.FieldAgentID:
+	case agentoplog.FieldOpTargetType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOpTargetType(v)
+		return nil
+	case agentoplog.FieldOpTargetID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAgentID(v)
+		m.SetOpTargetID(v)
+		return nil
+	case agentoplog.FieldOpTargetAccount:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOpTargetAccount(v)
+		return nil
+	case agentoplog.FieldAdminType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAdminType(v)
 		return nil
 	case agentoplog.FieldAdminID:
 		v, ok := value.(int64)
@@ -6411,7 +6592,7 @@ func (m *AgentOpLogMutation) SetField(name string, value ent.Value) error {
 		m.SetOperatedAt(v)
 		return nil
 	case agentoplog.FieldResult:
-		v, ok := value.(int64)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -6432,8 +6613,14 @@ func (m *AgentOpLogMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *AgentOpLogMutation) AddedFields() []string {
 	var fields []string
-	if m.addagent_id != nil {
-		fields = append(fields, agentoplog.FieldAgentID)
+	if m.addop_target_type != nil {
+		fields = append(fields, agentoplog.FieldOpTargetType)
+	}
+	if m.addop_target_id != nil {
+		fields = append(fields, agentoplog.FieldOpTargetID)
+	}
+	if m.addadmin_type != nil {
+		fields = append(fields, agentoplog.FieldAdminType)
 	}
 	if m.addadmin_id != nil {
 		fields = append(fields, agentoplog.FieldAdminID)
@@ -6449,8 +6636,12 @@ func (m *AgentOpLogMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *AgentOpLogMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case agentoplog.FieldAgentID:
-		return m.AddedAgentID()
+	case agentoplog.FieldOpTargetType:
+		return m.AddedOpTargetType()
+	case agentoplog.FieldOpTargetID:
+		return m.AddedOpTargetID()
+	case agentoplog.FieldAdminType:
+		return m.AddedAdminType()
 	case agentoplog.FieldAdminID:
 		return m.AddedAdminID()
 	case agentoplog.FieldResult:
@@ -6464,12 +6655,26 @@ func (m *AgentOpLogMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AgentOpLogMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case agentoplog.FieldAgentID:
+	case agentoplog.FieldOpTargetType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOpTargetType(v)
+		return nil
+	case agentoplog.FieldOpTargetID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddAgentID(v)
+		m.AddOpTargetID(v)
+		return nil
+	case agentoplog.FieldAdminType:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAdminType(v)
 		return nil
 	case agentoplog.FieldAdminID:
 		v, ok := value.(int64)
@@ -6479,7 +6684,7 @@ func (m *AgentOpLogMutation) AddField(name string, value ent.Value) error {
 		m.AddAdminID(v)
 		return nil
 	case agentoplog.FieldResult:
-		v, ok := value.(int64)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -6493,9 +6698,6 @@ func (m *AgentOpLogMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentOpLogMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(agentoplog.FieldAdminID) {
-		fields = append(fields, agentoplog.FieldAdminID)
-	}
 	if m.FieldCleared(agentoplog.FieldBeforeValue) {
 		fields = append(fields, agentoplog.FieldBeforeValue)
 	}
@@ -6528,9 +6730,6 @@ func (m *AgentOpLogMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentOpLogMutation) ClearField(name string) error {
 	switch name {
-	case agentoplog.FieldAdminID:
-		m.ClearAdminID()
-		return nil
 	case agentoplog.FieldBeforeValue:
 		m.ClearBeforeValue()
 		return nil
@@ -6566,8 +6765,17 @@ func (m *AgentOpLogMutation) ResetField(name string) error {
 	case agentoplog.FieldOperatorCode:
 		m.ResetOperatorCode()
 		return nil
-	case agentoplog.FieldAgentID:
-		m.ResetAgentID()
+	case agentoplog.FieldOpTargetType:
+		m.ResetOpTargetType()
+		return nil
+	case agentoplog.FieldOpTargetID:
+		m.ResetOpTargetID()
+		return nil
+	case agentoplog.FieldOpTargetAccount:
+		m.ResetOpTargetAccount()
+		return nil
+	case agentoplog.FieldAdminType:
+		m.ResetAdminType()
 		return nil
 	case agentoplog.FieldAdminID:
 		m.ResetAdminID()

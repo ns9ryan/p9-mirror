@@ -14,7 +14,6 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
 	"oa.98ent.com/p9/operator-crm/ent/predicate"
-	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
 
 	"entgo.io/ent/dialect/sql"
@@ -22,36 +21,43 @@ import (
 )
 
 const (
-	opResultSuccess int64 = 1
-	opResultFail    int64 = 2
+	opResultSuccess int32 = 1 // 成功
+	opResultFail    int32 = 2 // 失败
 
-	opActionShareRate              = "share_rate"
-	opActionPayoutRestricted       = "payout_restricted"
-	opActionStatus                 = "status"
-	opActionRemark                 = "remark"
-	opActionResetLoginPassword     = "reset_login_password"
-	opActionUpdateLoginPassword    = "update_login_password"
-	opActionUpdateWithdrawPassword = "update_withdraw_password"
-	opActionProfile                = "profile"
-	opActionProfileAvatar          = "profile.avatar"
-	opActionProfileRealname        = "profile.realname"
-	opActionProfileTelegram        = "profile.telegram"
-	opActionProfileFacebook        = "profile.facebook"
-	opActionProfileWhatsapp        = "profile.whatsapp"
-	opActionProfileMobile          = "profile.mobile"
-	opActionProfileNickname        = "profile.nickname"
-	opActionProfileIDDocument      = "profile.id_document"
-	opActionProfileZalo            = "profile.zalo"
-	opActionProfileTwitter         = "profile.twitter"
-	opActionProfileLine            = "profile.line"
-	opActionProfileEmail           = "profile.email"
+	adminTypeOperator int32 = 1 // 管理员
+	adminTypeAgent    int32 = 2 // 代理
 
-	opPasswordMask  = "***"
-	opFailReasonMax = 512
-	opValueMax      = 2000
+	opTargetTypeAgent int32 = 1 // 代理
+	opTargetTypeUser  int32 = 2 // 玩家
+
+	opActionCreate                 = "agent.opAction.create"                   // 创建
+	opActionShareRate              = "agent.opAction.share_rate"               // 分享率
+	opActionPayoutRestricted       = "agent.opAction.payout_restricted"        // 提现限制
+	opActionStatus                 = "agent.opAction.status"                   // 状态
+	opActionRemark                 = "agent.opAction.remark"                   // 备注
+	opActionResetLoginPassword     = "agent.opAction.reset_login_password"     // 重置登录密码
+	opActionUpdateLoginPassword    = "agent.opAction.update_login_password"    // 更新登录密码
+	opActionUpdateWithdrawPassword = "agent.opAction.update_withdraw_password" // 更新提现密码
+	opActionProfile                = "agent.opAction.profile"                  // 资料
+	opActionProfileAvatar          = "agent.opAction.profile.avatar"           // 头像
+	opActionProfileRealname        = "agent.opAction.profile.realname"         // 真实姓名
+	opActionProfileTelegram        = "agent.opAction.profile.telegram"         // Telegram
+	opActionProfileFacebook        = "agent.opAction.profile.facebook"         // Facebook
+	opActionProfileWhatsapp        = "agent.opAction.profile.whatsapp"         // WhatsApp
+	opActionProfileMobile          = "agent.opAction.profile.mobile"           // 手机号
+	opActionProfileNickname        = "agent.opAction.profile.nickname"         // 昵称
+	opActionProfileIDDocument      = "agent.opAction.profile.id_document"      // 身份证
+	opActionProfileZalo            = "agent.opAction.profile.zalo"             // Zalo
+	opActionProfileTwitter         = "agent.opAction.profile.twitter"          // Twitter
+	opActionProfileLine            = "agent.opAction.profile.line"             // Line
+	opActionProfileEmail           = "agent.opAction.profile.email"            // 邮箱
+
+	opPasswordMask  = "***" // 密码掩码
+	opFailReasonMax = 512   // 失败原因最大长度
+	opValueMax      = 2000  // 值最大长度
 )
 
-var profileOpActions = []string{
+var profileOpActions = []string{ // 资料操作动作列表
 	opActionProfileAvatar,
 	opActionProfileRealname,
 	opActionProfileTelegram,
@@ -72,9 +78,6 @@ func (s *Service) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLo
 	if err != nil {
 		return nil, err
 	}
-	if in == nil || in.GetAgentId() <= 0 {
-		return nil, xerr.BadRequest(i18n.InvalidParam)
-	}
 
 	page := max(in.Page, 1)
 	pageSize := in.PageSize
@@ -84,16 +87,22 @@ func (s *Service) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLo
 	if pageSize > maxPageSize {
 		pageSize = maxPageSize
 	}
-
-	preds := []predicate.AgentOpLog{agentoplog.AgentIDEQ(in.GetAgentId())}
+	// preds 查询条件
+	preds := []predicate.AgentOpLog{}
+	if in.GetOpTargetId() > 0 {
+		preds = append(preds, agentoplog.OpTargetIDEQ(in.GetOpTargetId()))
+	}
+	if in.GetOpTargetType() > 0 {
+		preds = append(preds, agentoplog.OpTargetTypeEQ(in.GetOpTargetType()))
+	}
 	if in.TimeStart > 0 {
 		preds = append(preds, agentoplog.OperatedAtGTE(time.Unix(in.TimeStart, 0)))
 	}
 	if in.TimeEnd > 0 {
 		preds = append(preds, agentoplog.OperatedAtLTE(time.Unix(in.TimeEnd, 0)))
 	}
-	if in.Result == 1 || in.Result == 2 {
-		preds = append(preds, agentoplog.ResultEQ(int64(in.Result)))
+	if in.Result == opResultSuccess || in.Result == opResultFail {
+		preds = append(preds, agentoplog.ResultEQ(in.Result))
 	}
 
 	q := s.DB.AgentOpLog.Query().Where(preds...)
@@ -119,15 +128,16 @@ func (s *Service) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLo
 
 func toOpLogItem(row *ent.AgentOpLog) *agentpb.AgentOpLogItem {
 	item := &agentpb.AgentOpLogItem{
-		Id:           row.ID,
-		AgentId:      row.AgentID,
-		AdminAccount: row.AdminAccount,
-		Action:       row.Action,
-		OperatedAt:   row.OperatedAt.Unix(),
-		Result:       int32(row.Result),
-	}
-	if row.AdminID != nil {
-		item.AdminId = *row.AdminID
+		Id:              row.ID,
+		OpTargetId:      row.OpTargetID,
+		OpTargetType:    row.OpTargetType,
+		OpTargetAccount: row.OpTargetAccount,
+		AdminId:         row.AdminID,
+		AdminType:       row.AdminType,
+		AdminAccount:    row.AdminAccount,
+		Action:          row.Action,
+		OperatedAt:      row.OperatedAt.Unix(),
+		Result:          int32(row.Result),
 	}
 	if row.BeforeValue != nil {
 		item.BeforeValue = *row.BeforeValue
@@ -150,38 +160,58 @@ func toOpLogItem(row *ent.AgentOpLog) *agentpb.AgentOpLogItem {
 	return item
 }
 
-func (s *Service) recordOpOK(ctx context.Context, agentID int64, action, before, after string) {
-	s.recordOp(ctx, agentID, action, before, after, opResultSuccess, "")
+// recordOpOK 记录操作成功。
+func (s *Service) recordOpOK(ctx context.Context, p *recordOpParams) {
+	s.recordOp(ctx, p, opResultSuccess, "")
 }
 
-func (s *Service) recordOpFail(ctx context.Context, agentID int64, action, before, after string, err error) {
-	if agentID <= 0 || err == nil {
+// recordOpFail 记录操作失败。
+func (s *Service) recordOpFail(ctx context.Context, p *recordOpParams, err error) {
+	if p == nil || p.targetID <= 0 || err == nil {
 		return
 	}
-	s.recordOp(ctx, agentID, action, before, after, opResultFail, failReasonOf(err))
+	s.recordOp(ctx, p, opResultFail, failReasonOf(err))
 }
 
-func (s *Service) recordOp(ctx context.Context, agentID int64, action, before, after string, result int64, failReason string) {
-	if s == nil || s.DB == nil || agentID <= 0 || action == "" {
+// recordOpParams 记录操作参数。
+type recordOpParams struct {
+	targetType    int32
+	targetID      int64
+	targetAccount string
+	action        string
+	before        string
+	after         string
+}
+
+// recordOp 记录操作。
+func (s *Service) recordOp(ctx context.Context, p *recordOpParams, result int32, failReason string) {
+	if s == nil || s.DB == nil || p.targetID <= 0 || p.action == "" {
 		return
 	}
 	create := s.DB.AgentOpLog.Create().
-		SetAgentID(agentID).
-		SetAction(action).
+		SetOpTargetType(p.targetType).
+		SetOpTargetID(p.targetID).
+		SetAction(p.action).
 		SetOperatedAt(time.Now()).
 		SetResult(result).
-		SetAdminAccount("")
+		SetOpTargetAccount(p.targetAccount)
 
 	if c := ctxdata.ClaimsFromCtx(ctx); c != nil {
 		if c.UserID > 0 {
 			create.SetAdminID(c.UserID)
 		}
+		// 操作人类型
+		if c.UserType == ctxdata.UserTypeAgent {
+			create.SetAdminType(adminTypeAgent)
+		} else {
+			create.SetAdminType(adminTypeOperator)
+		}
 		create.SetAdminAccount(clipRunes(c.Username, 64))
 	}
-	if v := clipRunes(before, opValueMax); v != "" {
+	if v := clipRunes(p.before, opValueMax); v != "" {
 		create.SetBeforeValue(v)
 	}
-	if v := clipRunes(after, opValueMax); v != "" {
+	if v := clipRunes(p.after, opValueMax); v != "" {
 		create.SetAfterValue(v)
 	}
 	if ip := strings.TrimSpace(ctxdata.ClientIPFromCtx(ctx)); ip != "" {
@@ -200,7 +230,7 @@ func (s *Service) recordOp(ctx context.Context, agentID int64, action, before, a
 	}
 
 	if _, err := create.Save(ctx); err != nil {
-		logx.WithContext(ctx).Errorf("agent op log save action=%s agent_id=%d: %v", action, agentID, err)
+		logx.WithContext(ctx).Errorf("agent op log save action=%s target_type=%d target_id=%d: %v", p.action, p.targetType, p.targetID, err)
 	}
 }
 
