@@ -10,6 +10,7 @@ import (
 	authserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/authservice"
 	initServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/init"
 	memberautolevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberautolevel"
+	memberfixedlevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberfixedlevel"
 	pingServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/ping"
 	vipServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/vip"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
@@ -44,6 +45,9 @@ func main() {
 
 		// 会员自动层级服务
 		crmrpc.RegisterMemberAutoLevelServer(grpcServer, memberautolevelServer.NewMemberAutoLevelServer(ctx))
+
+		// 会员固定层级服务
+		crmrpc.RegisterMemberFixedLevelServer(grpcServer, memberfixedlevelServer.NewMemberFixedLevelServer(ctx))
 
 		// VIP管理服务
 		crmrpc.RegisterVipServer(grpcServer, vipServer.NewVipServer(ctx))
