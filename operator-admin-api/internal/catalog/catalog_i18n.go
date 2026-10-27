@@ -53,6 +53,18 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	add("menu.route.agentOpLogs", "资料变更记录", "資料變更記錄", "Profile change logs")
 	add("menu.route.agentLoginLog", "代理日志", "代理日誌", "Agent login logs")
 	add("menu.route.agentLoginAssociation", "关联检索", "關聯檢索", "Login associations")
+
+	// 会员管理
+	add("menu.memberManage", "会员管理", "會員管理", "Member management")
+	add("menu.memberManage.list", "会员列表", "會員列表", "Member list")
+	add("menu.route.memberAutoLevel", "会员自动层级", "會員自動層級", "Member auto levels")
+	add("menu.route.memberFixedLevel", "会员固定层级", "會員固定層級", "Member fixed levels")
+
+	// 会员层级操作权限
+	add("menu.route.memberAutoLevelCreate", "创建自动层级", "建立自動層級", "Create auto level")
+	add("menu.route.memberFixedLevelCreate", "创建固定层级", "建立固定層級", "Create fixed level")
+	add("menu.route.memberFixedLevelUpdate", "修改固定层级", "修改固定層級", "Update fixed level")
+	add("menu.route.memberFixedLevelDelete", "删除固定层级", "刪除固定層級", "Delete fixed level")
 	return out
 }
 
@@ -67,6 +79,18 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 		)
 	}
 	add("api.group.agent", "代理管理", "代理管理", "Agents")
+
+	add("api.group.member", "会员管理", "會員管理", "Members")
+
+	// 会员自动层级 API
+	add("api.memberAutoLevelList", "自动层级列表", "自動層級列表", "Auto level list")
+	add("api.memberAutoLevelCreate", "创建自动层级", "建立自動層級", "Create auto level")
+
+	// 会员固定层级 API
+	add("api.memberFixedLevelList", "固定层级列表", "固定層級列表", "Fixed level list")
+	add("api.memberFixedLevelCreate", "创建固定层级", "建立固定層級", "Create fixed level")
+	add("api.memberFixedLevelUpdate", "修改固定层级", "修改固定層級", "Update fixed level")
+	add("api.memberFixedLevelDelete", "删除固定层级", "刪除固定層級", "Delete fixed level")
 
 	add("api.agentList", "代理列表", "代理列表", "Agent list")
 	add("api.agentCreate", "分站添加代理", "分站添加代理", "Add operator agent")

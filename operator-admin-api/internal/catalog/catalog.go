@@ -19,6 +19,20 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 	return &coreclient.RegisterCatalogReq{
 		Menus: []*coreclient.RegisterMenuReq{
 			{Name: "Dashboard", Title: "menu.route.dashboard", Path: "/dashboard", MenuType: menuTypeMenu, Component: "dashboard/index", Sort: 1},
+			// 会员管理
+			{Name: "MemberManage", Title: "menu.memberManage", Path: "/member", MenuType: menuTypeDir, Sort: 10},
+			{Name: "MemberManageList", Title: "menu.memberManage.list", Path: "/member/list", MenuType: menuTypeMenu, Component: "memberManage/index", ParentName: "MemberManage", Sort: 11},
+			{Name: "MemberAutoLevel", Title: "menu.route.memberAutoLevel", Path: "/member/auto-level", MenuType: menuTypeMenu, Component: "memberManage/autoLevel/index", ParentName: "MemberManage", Sort: 12},
+			{Name: "MemberFixedLevel", Title: "menu.route.memberFixedLevel", Path: "/member/fixed-level", MenuType: menuTypeMenu, Component: "memberManage/fixedLevel/index", ParentName: "MemberManage", Sort: 13},
+
+			// 自动层级按钮权限
+			{Name: "MemberAutoLevelCreate", Title: "menu.route.memberAutoLevelCreate", MenuType: menuTypeButton, Permission: "member:auto-level:create", ParentName: "MemberAutoLevel", Sort: 121},
+
+			// 固定层级按钮权限
+			{Name: "MemberFixedLevelCreate", Title: "menu.route.memberFixedLevelCreate", MenuType: menuTypeButton, Permission: "member:fixed-level:create", ParentName: "MemberFixedLevel", Sort: 131},
+			{Name: "MemberFixedLevelUpdate", Title: "menu.route.memberFixedLevelUpdate", MenuType: menuTypeButton, Permission: "member:fixed-level:update", ParentName: "MemberFixedLevel", Sort: 132},
+			{Name: "MemberFixedLevelDelete", Title: "menu.route.memberFixedLevelDelete", MenuType: menuTypeButton, Permission: "member:fixed-level:delete", ParentName: "MemberFixedLevel", Sort: 133},
+
 			{Name: "Agent", Title: "menu.route.agent", Path: "/agent", MenuType: menuTypeDir, Sort: 20},
 			{Name: "AgentList", Title: "menu.route.agentList", Path: "/agent/list", MenuType: menuTypeMenu, Component: "agent/list/index", ParentName: "Agent", Sort: 21},
 			{Name: "AgentTree", Title: "menu.route.agentTree", HideMenu: 1, Path: "/agent/tree", MenuType: menuTypeMenu, Component: "agent/tree/index", ParentName: "Agent", Sort: 22},
@@ -68,6 +82,16 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/agent/op-logs", Method: http.MethodGet, Description: "api.agentOpLogs", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/login-log/list", Method: http.MethodPost, Description: "api.agentLoginLogList", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/login-log/associations", Method: http.MethodPost, Description: "api.agentLoginAssociations", ApiGroup: "api.group.agent", ServiceName: serviceName},
+
+			// 会员自动层级 API
+			{Path: "/member/auto-level/list", Method: http.MethodGet, Description: "api.memberAutoLevelList", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/auto-level/create", Method: http.MethodPost, Description: "api.memberAutoLevelCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
+
+			// 会员固定层级 API
+			{Path: "/member/fixed-level/list", Method: http.MethodGet, Description: "api.memberFixedLevelList", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/fixed-level/create", Method: http.MethodPost, Description: "api.memberFixedLevelCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/fixed-level/update", Method: http.MethodPost, Description: "api.memberFixedLevelUpdate", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/fixed-level/delete", Method: http.MethodPost, Description: "api.memberFixedLevelDelete", ApiGroup: "api.group.member", ServiceName: serviceName},
 		},
 		I18N: i18nSeeds(code),
 	}

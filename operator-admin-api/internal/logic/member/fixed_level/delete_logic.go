@@ -6,18 +6,21 @@ package fixed_level
 import (
 	"context"
 
+	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
-
-	"github.com/zeromicro/go-zero/core/logx"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberfixedlevelpb"
 )
 
+// DeleteLogic 会员固定层级删除逻辑
 type DeleteLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
+// NewDeleteLogic 创建固定层级删除逻辑
 func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogic {
 	return &DeleteLogic{
 		Logger: logx.WithContext(ctx),
@@ -26,8 +29,10 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 	}
 }
 
+// Delete 删除固定层级
 func (l *DeleteLogic) Delete(req *types.DeleteMemberFixedLevelRequest) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	_, err := l.svcCtx.MemberFixedLevelRpc.Delete(l.ctx, &memberfixedlevelpb.DeleteMemberFixedLevelRequest{
+		Id: req.Id, // 层级ID
+	})
+	return err
 }

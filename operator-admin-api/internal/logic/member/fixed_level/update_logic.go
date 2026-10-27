@@ -6,18 +6,21 @@ package fixed_level
 import (
 	"context"
 
+	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
-
-	"github.com/zeromicro/go-zero/core/logx"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberfixedlevelpb"
 )
 
+// UpdateLogic 会员固定层级修改逻辑
 type UpdateLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
+// NewUpdateLogic 创建固定层级修改逻辑
 func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogic {
 	return &UpdateLogic{
 		Logger: logx.WithContext(ctx),
@@ -26,8 +29,13 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 	}
 }
 
+// Update 修改固定层级
 func (l *UpdateLogic) Update(req *types.UpdateMemberFixedLevelRequest) error {
-	// todo: add your logic here and delete this line
-
-	return nil
+	_, err := l.svcCtx.MemberFixedLevelRpc.Update(l.ctx, &memberfixedlevelpb.UpdateMemberFixedLevelRequest{
+		Id:              req.Id,              // 层级ID
+		Name:            req.Name,            // 层级名称
+		Description:     req.Description,     // 层级说明
+		WithdrawalLimit: req.WithdrawalLimit, // 单笔提款金额上限
+	})
+	return err
 }
