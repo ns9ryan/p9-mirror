@@ -104,16 +104,7 @@ func (d *MemberVipLevel) Update(ctx context.Context, id int64, in MemberVipLevel
 
 // Delete 删除指定VIP等级
 func (d *MemberVipLevel) Delete(ctx context.Context, id int64) error {
-	return WithTx(ctx, d.db, func(tx *ent.Tx) error {
-		// 先确认等级存在且属于当前厅
-		if _, err := tx.MemberVipLevel.Query().
-			Where(memberviplevel.ID(id)).
-			Only(ctx); err != nil {
-			return err
-		}
-
-		return tx.MemberVipLevel.DeleteOneID(id).Exec(ctx)
-	})
+	return d.db.MemberVipLevel.DeleteOneID(id).Exec(ctx)
 }
 
 // MemberCounts 统计指定VIP等级的会员数
