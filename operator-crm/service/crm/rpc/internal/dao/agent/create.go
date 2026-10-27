@@ -300,7 +300,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 		// 记录操作日志
 		s.recordOpFail(ctx, &recordOpParams{
 			targetType:    opTargetTypeAgent,
-			targetID:      created.ID,
+			targetID:      0,
 			targetAccount: account,
 			action:        opActionCreate,
 			before:        "",
