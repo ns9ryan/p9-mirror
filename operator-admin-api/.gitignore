@@ -26,3 +26,5 @@ go.work.sum
 .vscode/
 operator-admin-api
 operator_admin_api
+
+ryan_operator_admin_api.yaml

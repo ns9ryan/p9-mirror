@@ -21,11 +21,11 @@ func ResetIconGroupHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := vip.NewResetIconGroupLogic(r.Context(), svcCtx)
-		err := l.ResetIconGroup(&req)
+		resp, err := l.ResetIconGroup(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

@@ -21,11 +21,11 @@ func UpdateLevelHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := vip.NewUpdateLevelLogic(r.Context(), svcCtx)
-		err := l.UpdateLevel(&req)
+		resp, err := l.UpdateLevel(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

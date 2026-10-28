@@ -26,8 +26,8 @@ func NewUpdateLevelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Updat
 	}
 }
 
-func (l *UpdateLevelLogic) UpdateLevel(req *types.UpdateVipLevelRequest) error {
+func (l *UpdateLevelLogic) UpdateLevel(req *types.UpdateVipLevelRequest) (resp *types.EmptyResponse, err error) {
 	// todo: add your logic here and delete this line
 
-	return nil
+	return
 }

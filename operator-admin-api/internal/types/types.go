@@ -243,6 +243,9 @@ type DeleteVipLevelRequest struct {
 	Id int64 `json:"id" validate:"required,gt=0"`
 }
 
+type EmptyResponse struct {
+}
+
 type GetAgentProfileReq struct {
 	AgentId int64 `form:"agent_id"`
 }
@@ -251,7 +254,7 @@ type GetVipConfigRequest struct {
 }
 
 type GetVipConfigResponse struct {
-	Config VipConfigInfo `json:"config"`
+	VipConfigInfo
 }
 
 type GetVipLevelRequest struct {
@@ -259,7 +262,7 @@ type GetVipLevelRequest struct {
 }
 
 type GetVipLevelResponse struct {
-	Level VipLevelInfo `json:"level"`
+	VipLevelInfo
 }
 
 type LineDefaultAgent struct {

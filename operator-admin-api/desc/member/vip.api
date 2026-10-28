@@ -3,6 +3,8 @@ syntax = "v1"
 import "../common.api"
 
 type (
+	// 获取VIP基础配置请求
+	GetVipConfigRequest  {}
 	// VIP基础配置信息
 	VipConfigInfo {
 		// VIP总开关
@@ -20,12 +22,9 @@ type (
 		// 更新时间, Unix毫秒时间戳
 		UpdatedAt int64 `json:"updated_at"`
 	}
-	// 获取VIP基础配置请求
-	GetVipConfigRequest  {}
 	// 获取VIP基础配置响应
 	GetVipConfigResponse {
-		// VIP基础配置
-		Config VipConfigInfo `json:"config"`
+		VipConfigInfo
 	}
 	// 修改VIP基础配置请求
 	UpdateVipConfigRequest {
@@ -80,8 +79,7 @@ type (
 	}
 	// 获取VIP等级响应
 	GetVipLevelResponse {
-		// VIP等级信息
-		Level VipLevelInfo `json:"level"`
+		VipLevelInfo
 	}
 	// 创建VIP等级请求
 	CreateVipLevelRequest {
@@ -173,7 +171,7 @@ service operator_admin_api {
 
 	// 修改VIP基础配置
 	@handler UpdateConfig
-	post /config/update (UpdateVipConfigRequest)
+	post /config/update (UpdateVipConfigRequest) returns (EmptyResponse)
 
 	// 获取VIP等级列表
 	@handler ListLevels
@@ -189,11 +187,11 @@ service operator_admin_api {
 
 	// 修改VIP等级
 	@handler UpdateLevel
-	post /level/update (UpdateVipLevelRequest)
+	post /level/update (UpdateVipLevelRequest) returns (EmptyResponse)
 
 	// 删除VIP等级
 	@handler DeleteLevel
-	post /level/delete (DeleteVipLevelRequest)
+	post /level/delete (DeleteVipLevelRequest) returns (EmptyResponse)
 
 	// 获取VIP图标组列表
 	@handler ListIconGroups
@@ -201,10 +199,10 @@ service operator_admin_api {
 
 	// 修改VIP图标
 	@handler UpdateIconGroup
-	post /icon/update (UpdateVipIconGroupRequest)
+	post /icon/update (UpdateVipIconGroupRequest) returns (EmptyResponse)
 
 	// 恢复默认VIP图标
 	@handler ResetIconGroup
-	post /icon/reset (ResetVipIconGroupRequest)
+	post /icon/reset (ResetVipIconGroupRequest) returns (EmptyResponse)
 }
 

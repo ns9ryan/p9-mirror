@@ -21,11 +21,11 @@ func UpdateConfigHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := vip.NewUpdateConfigLogic(r.Context(), svcCtx)
-		err := l.UpdateConfig(&req)
+		resp, err := l.UpdateConfig(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

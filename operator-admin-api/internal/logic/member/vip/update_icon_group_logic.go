@@ -26,8 +26,8 @@ func NewUpdateIconGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *U
 	}
 }
 
-func (l *UpdateIconGroupLogic) UpdateIconGroup(req *types.UpdateVipIconGroupRequest) error {
+func (l *UpdateIconGroupLogic) UpdateIconGroup(req *types.UpdateVipIconGroupRequest) (resp *types.EmptyResponse, err error) {
 	// todo: add your logic here and delete this line
 
-	return nil
+	return
 }

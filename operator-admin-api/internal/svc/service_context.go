@@ -18,6 +18,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberfixedlevel"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/vip"
 )
 
 // ServiceContext 分站后台服务上下文
@@ -34,6 +35,7 @@ type ServiceContext struct {
 	AgentRpc            agentservice.AgentService         // 分层代理RPC
 	MemberAutoLevelRpc  memberautolevel.MemberAutoLevel   // 会员自动层级RPC
 	MemberFixedLevelRpc memberfixedlevel.MemberFixedLevel // 会员固定层级RPC
+	MemberVipRpc        vip.Vip                           // 会员VIP配置、等级和图标RPC
 
 	// 第三方服务集成 RPC
 	IntegrationRpc integrationclient.Integration
@@ -78,6 +80,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		AgentRpc:            agentservice.NewAgentService(crmClient),
 		MemberAutoLevelRpc:  memberautolevel.NewMemberAutoLevel(crmClient),
 		MemberFixedLevelRpc: memberfixedlevel.NewMemberFixedLevel(crmClient),
+		MemberVipRpc:        vip.NewVip(crmClient),
 
 		IntegrationRpc: integrationclient.NewIntegration(integrationClient),
 

@@ -21,11 +21,11 @@ func UpdateIconGroupHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := vip.NewUpdateIconGroupLogic(r.Context(), svcCtx)
-		err := l.UpdateIconGroup(&req)
+		resp, err := l.UpdateIconGroup(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

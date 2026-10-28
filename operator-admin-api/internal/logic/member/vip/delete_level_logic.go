@@ -26,8 +26,8 @@ func NewDeleteLevelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delet
 	}
 }
 
-func (l *DeleteLevelLogic) DeleteLevel(req *types.DeleteVipLevelRequest) error {
+func (l *DeleteLevelLogic) DeleteLevel(req *types.DeleteVipLevelRequest) (resp *types.EmptyResponse, err error) {
 	// todo: add your logic here and delete this line
 
-	return nil
+	return
 }

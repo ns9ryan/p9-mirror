@@ -26,8 +26,8 @@ func NewResetIconGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Re
 	}
 }
 
-func (l *ResetIconGroupLogic) ResetIconGroup(req *types.ResetVipIconGroupRequest) error {
+func (l *ResetIconGroupLogic) ResetIconGroup(req *types.ResetVipIconGroupRequest) (resp *types.EmptyResponse, err error) {
 	// todo: add your logic here and delete this line
 
-	return nil
+	return
 }
