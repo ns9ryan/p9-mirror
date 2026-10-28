@@ -35,7 +35,7 @@ func (l *GetLineDefaultAgentsLogic) GetLineDefaultAgents() (*types.LineDefaultAg
 	if err != nil {
 		return nil, err
 	}
-	items := make([]types.LineDefaultAgent, 0, len(codes))
+	list := make([]types.LineDefaultAgent, 0, len(codes))
 	for _, code := range codes {
 		agentID := defaultAgentID(cfg, code)
 		item := types.LineDefaultAgent{LineCode: code, AgentId: agentID}
@@ -46,9 +46,9 @@ func (l *GetLineDefaultAgentsLogic) GetLineDefaultAgents() (*types.LineDefaultAg
 			}
 			item.ShareRate = profile.GetShareRate()
 		}
-		items = append(items, item)
+		list = append(list, item)
 	}
-	return &types.LineDefaultAgentsResp{Items: items}, nil
+	return &types.LineDefaultAgentsResp{List: list}, nil
 }
 
 func defaultAgentID(cfg *agentpb.AgentConfigResp, code string) int64 {

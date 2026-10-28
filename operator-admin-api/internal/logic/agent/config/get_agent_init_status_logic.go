@@ -55,7 +55,7 @@ func (l *GetAgentInitStatusLogic) GetAgentInitStatus() (*types.AgentInitStatusRe
 	if err != nil {
 		return nil, err
 	}
-	levelCount := int32(len(levels.GetItems()))
+	levelCount := int32(len(levels.GetList()))
 	levelsReady := levelCount >= minInitLevelCount
 
 	lines := make([]types.LineInitStatus, 0, len(codes))

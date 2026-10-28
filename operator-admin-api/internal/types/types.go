@@ -272,7 +272,7 @@ type LineDefaultAgent struct {
 }
 
 type LineDefaultAgentsResp struct {
-	Items []LineDefaultAgent `json:"items"`
+	List []LineDefaultAgent `json:"list"`
 }
 
 type LineInitStatus struct {
@@ -291,12 +291,12 @@ type ListAgentAppliesReq struct {
 }
 
 type ListAgentAppliesResp struct {
-	Items []AgentApplyItem `json:"items"`
+	List  []AgentApplyItem `json:"list"`
 	Total int64            `json:"total"`
 }
 
 type ListAgentLevelsResp struct {
-	Items []AgentLevelItem `json:"items"`
+	List []AgentLevelItem `json:"list"`
 }
 
 type ListAgentLoginAssociationsReq struct {
@@ -311,7 +311,7 @@ type ListAgentLoginAssociationsReq struct {
 }
 
 type ListAgentLoginAssociationsResp struct {
-	Items []AgentLoginAssociationItem `json:"items"`
+	List  []AgentLoginAssociationItem `json:"list"`
 	Total int64                       `json:"total"`
 }
 
@@ -327,7 +327,7 @@ type ListAgentLoginLogsReq struct {
 }
 
 type ListAgentLoginLogsResp struct {
-	Items []AgentLoginLogItem `json:"items"`
+	List  []AgentLoginLogItem `json:"list"`
 	Total int64               `json:"total"`
 }
 
@@ -342,7 +342,7 @@ type ListAgentOpLogsReq struct {
 }
 
 type ListAgentOpLogsResp struct {
-	Items []AgentOpLogItem `json:"items"`
+	List  []AgentOpLogItem `json:"list"`
 	Total int64            `json:"total"`
 }
 
@@ -364,7 +364,7 @@ type ListAgentsReq struct {
 }
 
 type ListAgentsResp struct {
-	Items []AgentListItem `json:"items"`
+	List  []AgentListItem `json:"list"`
 	Total int64           `json:"total"`
 }
 
@@ -397,7 +397,7 @@ type ListOperatorAgentsResp struct {
 }
 
 type ListPhoneCallingCodesResp struct {
-	Items []PhoneCallingCodeItem `json:"items"`
+	List []PhoneCallingCodeItem `json:"list"`
 }
 
 type ListVipIconGroupsRequest struct {
@@ -488,7 +488,7 @@ type SearchAgentsReq struct {
 }
 
 type SearchAgentsResp struct {
-	Items []AgentSearchItem `json:"items"`
+	List []AgentSearchItem `json:"list"`
 }
 
 type TreeNodeAgentItem struct {
@@ -522,11 +522,11 @@ type UpdateAgentConfigReq struct {
 }
 
 type UpdateAgentLevelsReq struct {
-	Items []AgentLevelItem `json:"items"`
+	List []AgentLevelItem `json:"list"`
 }
 
 type UpdateAgentLevelsResp struct {
-	Items []AgentLevelItem `json:"items"`
+	List []AgentLevelItem `json:"list"`
 }
 
 type UpdateAgentPayoutRestrictedReq struct {

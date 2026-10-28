@@ -21,11 +21,11 @@ func UpdateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := fixed_level.NewUpdateLogic(r.Context(), svcCtx)
-		err := l.Update(&req)
+		resp, err := l.Update(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

@@ -47,7 +47,7 @@ func (l *ListAgentOpLogsLogic) ListAgentOpLogs(req *types.ListAgentOpLogsReq) (*
 	}
 	// 获取IP地理信息
 	ipList := []string{}
-	for _, it := range rpcResp.GetItems() {
+	for _, it := range rpcResp.GetList() {
 		if it != nil && !slices.Contains(ipList, it.ClientIp) {
 			ipList = append(ipList, it.ClientIp)
 		}
@@ -58,8 +58,8 @@ func (l *ListAgentOpLogsLogic) ListAgentOpLogs(req *types.ListAgentOpLogsReq) (*
 		l.Logger.Errorf("getIpsLocation error: %v", err)
 	}
 
-	items := make([]types.AgentOpLogItem, 0, len(rpcResp.GetItems()))
-	for _, it := range rpcResp.GetItems() {
+	list := make([]types.AgentOpLogItem, 0, len(rpcResp.GetList()))
+	for _, it := range rpcResp.GetList() {
 		if it == nil {
 			continue
 		}
@@ -68,7 +68,7 @@ func (l *ListAgentOpLogsLogic) ListAgentOpLogs(req *types.ListAgentOpLogsReq) (*
 		if ipLocation, ok := ipInfoMap[it.ClientIp]; ok {
 			clientIpLocation = ipLocation
 		}
-		items = append(items, types.AgentOpLogItem{
+		list = append(list, types.AgentOpLogItem{
 			Id:                it.Id,
 			OpTargetId:        it.OpTargetId,
 			OpTargetType:      it.OpTargetType,
@@ -92,7 +92,7 @@ func (l *ListAgentOpLogsLogic) ListAgentOpLogs(req *types.ListAgentOpLogsReq) (*
 			FailReason:        localizeFailReason(l.ctx, it.FailReason),
 		})
 	}
-	return &types.ListAgentOpLogsResp{Items: items, Total: rpcResp.GetTotal()}, nil
+	return &types.ListAgentOpLogsResp{List: list, Total: rpcResp.GetTotal()}, nil
 }
 
 // 获取IP地理信息

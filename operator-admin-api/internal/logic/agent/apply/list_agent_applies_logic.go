@@ -43,7 +43,7 @@ func (l *ListAgentAppliesLogic) ListAgentApplies(req *types.ListAgentAppliesReq)
 		return nil, err
 	}
 	return &types.ListAgentAppliesResp{
-		Items: agentconv.ApplyItemsFromPB(rpcResp.GetItems()),
+		List:  agentconv.ApplyItemsFromPB(rpcResp.GetList()),
 		Total: rpcResp.GetTotal(),
 	}, nil
 }

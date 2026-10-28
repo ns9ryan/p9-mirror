@@ -16,7 +16,7 @@ type LineDefaultAgent {
 }
 
 type LineDefaultAgentsResp {
-	Items []LineDefaultAgent `json:"items"`
+	List []LineDefaultAgent `json:"list"`
 }
 
 type LineInitStatus {

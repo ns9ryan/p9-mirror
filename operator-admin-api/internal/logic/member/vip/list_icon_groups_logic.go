@@ -6,11 +6,11 @@ package vip
 import (
 	"context"
 
+	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 // ListIconGroupsLogic VIP图标组列表逻辑

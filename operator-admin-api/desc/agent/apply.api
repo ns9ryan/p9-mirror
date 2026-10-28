@@ -36,7 +36,7 @@ type ListAgentAppliesReq {
 }
 
 type ListAgentAppliesResp {
-	Items []AgentApplyItem `json:"items"`
+	List  []AgentApplyItem `json:"list"`
 	Total int64            `json:"total"`
 }
 

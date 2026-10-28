@@ -39,6 +39,6 @@ func (l *SearchAgentsLogic) SearchAgents(req *types.SearchAgentsReq) (*types.Sea
 		return nil, err
 	}
 	return &types.SearchAgentsResp{
-		Items: agentconv.SearchItemsFromPB(rpcResp.GetItems()),
+		List: agentconv.SearchItemsFromPB(rpcResp.GetList()),
 	}, nil
 }

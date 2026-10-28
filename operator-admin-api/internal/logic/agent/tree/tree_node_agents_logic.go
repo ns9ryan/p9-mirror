@@ -39,12 +39,12 @@ func (l *TreeNodeAgentsLogic) TreeNodeAgents(req *types.TreeNodeAgentsReq) ([]ty
 		return nil, err
 	}
 
-	items := make([]types.TreeNodeAgentItem, 0, len(rpcResp.GetItems()))
-	for _, it := range rpcResp.GetItems() {
+	list := make([]types.TreeNodeAgentItem, 0, len(rpcResp.GetList()))
+	for _, it := range rpcResp.GetList() {
 		if it == nil {
 			continue
 		}
-		items = append(items, types.TreeNodeAgentItem{
+		list = append(list, types.TreeNodeAgentItem{
 			Id:               it.Id,
 			Account:          it.Account,
 			LineCode:         it.LineCode,
@@ -53,5 +53,5 @@ func (l *TreeNodeAgentsLogic) TreeNodeAgents(req *types.TreeNodeAgentsReq) ([]ty
 			DirectAgentCount: it.DirectAgentCount,
 		})
 	}
-	return items, nil
+	return list, nil
 }

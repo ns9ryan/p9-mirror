@@ -19,7 +19,7 @@ type PhoneCallingCodeItem {
 }
 
 type ListPhoneCallingCodesResp {
-	Items []PhoneCallingCodeItem `json:"items"`
+	List []PhoneCallingCodeItem `json:"list"`
 }
 
 @server (

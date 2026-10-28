@@ -30,12 +30,17 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 }
 
 // Update 修改固定层级
-func (l *UpdateLogic) Update(req *types.UpdateMemberFixedLevelRequest) error {
-	_, err := l.svcCtx.MemberFixedLevelRpc.Update(l.ctx, &memberfixedlevelpb.UpdateMemberFixedLevelRequest{
+func (l *UpdateLogic) Update(req *types.UpdateMemberFixedLevelRequest) (resp *types.EmptyResponse, err error) {
+	// 修改固定层级配置
+	_, err = l.svcCtx.MemberFixedLevelRpc.Update(l.ctx, &memberfixedlevelpb.UpdateMemberFixedLevelRequest{
 		Id:              req.Id,              // 层级ID
 		Name:            req.Name,            // 层级名称
 		Description:     req.Description,     // 层级说明
 		WithdrawalLimit: req.WithdrawalLimit, // 单笔提款金额上限
 	})
-	return err
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.EmptyResponse{}, nil
 }

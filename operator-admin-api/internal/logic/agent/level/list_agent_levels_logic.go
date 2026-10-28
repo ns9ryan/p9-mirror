@@ -31,6 +31,6 @@ func (l *ListAgentLevelsLogic) ListAgentLevels() (*types.ListAgentLevelsResp, er
 		return nil, err
 	}
 	return &types.ListAgentLevelsResp{
-		Items: agentconv.LevelItemsFromPB(rpcResp.GetItems()),
+		List: agentconv.LevelItemsFromPB(rpcResp.GetList()),
 	}, nil
 }

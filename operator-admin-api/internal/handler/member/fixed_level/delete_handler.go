@@ -21,11 +21,11 @@ func DeleteHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := fixed_level.NewDeleteLogic(r.Context(), svcCtx)
-		err := l.Delete(&req)
+		resp, err := l.Delete(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

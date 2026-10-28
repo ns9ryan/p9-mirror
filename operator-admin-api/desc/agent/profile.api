@@ -133,7 +133,7 @@ type AgentOpLogItem {
 }
 
 type ListAgentOpLogsResp {
-	Items []AgentOpLogItem `json:"items"`
+	List  []AgentOpLogItem `json:"list"`
 	Total int64            `json:"total"`
 }
 

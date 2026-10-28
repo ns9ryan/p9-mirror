@@ -47,7 +47,7 @@ func (l *ListAgentLoginLogsLogic) ListAgentLoginLogs(req *types.ListAgentLoginLo
 	}
 	// 获取IP地理信息
 	ipList := []string{}
-	for _, it := range rpcResp.GetItems() {
+	for _, it := range rpcResp.GetList() {
 		if it != nil && !slices.Contains(ipList, it.LoginIp) {
 			ipList = append(ipList, it.LoginIp)
 		}
@@ -58,15 +58,15 @@ func (l *ListAgentLoginLogsLogic) ListAgentLoginLogs(req *types.ListAgentLoginLo
 		l.Logger.Errorf("getIpsLocation error: %v", err)
 	}
 
-	items := make([]types.AgentLoginLogItem, 0, len(rpcResp.GetItems()))
-	for _, it := range rpcResp.GetItems() {
+	list := make([]types.AgentLoginLogItem, 0, len(rpcResp.GetList()))
+	for _, it := range rpcResp.GetList() {
 		if it == nil {
 			continue
 		}
 		if ipLocation, ok := ipInfoMap[it.LoginIp]; ok {
 			it.LoginLocation = ipLocation
 		}
-		items = append(items, types.AgentLoginLogItem{
+		list = append(list, types.AgentLoginLogItem{
 			Id:              it.Id,
 			AgentId:         it.AgentId,
 			Account:         it.Account,
@@ -83,7 +83,7 @@ func (l *ListAgentLoginLogsLogic) ListAgentLoginLogs(req *types.ListAgentLoginLo
 			ResultLabel:     i18n.TG(l.ctx, i18n.CodeOperator, i18n.GroupFront, fmt.Sprintf("agent.loginResult.%d", it.Result)),
 		})
 	}
-	return &types.ListAgentLoginLogsResp{Items: items, Total: rpcResp.GetTotal()}, nil
+	return &types.ListAgentLoginLogsResp{List: list, Total: rpcResp.GetTotal()}, nil
 }
 
 // 获取IP地理信息

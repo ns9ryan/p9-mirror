@@ -33,7 +33,7 @@ type ListAgentsReq {
 }
 
 type ListAgentsResp {
-	Items []AgentListItem `json:"items"`
+	List  []AgentListItem `json:"list"`
 	Total int64           `json:"total"`
 }
 
@@ -45,7 +45,7 @@ type SearchAgentsReq {
 }
 
 type SearchAgentsResp {
-	Items []AgentSearchItem `json:"items"`
+	List []AgentSearchItem `json:"list"`
 }
 
 type ListOperatorAgentsReq {

@@ -27,14 +27,14 @@ func NewListPhoneCallingCodesLogic(ctx context.Context, svcCtx *svc.ServiceConte
 
 func (l *ListPhoneCallingCodesLogic) ListPhoneCallingCodes() (*types.ListPhoneCallingCodesResp, error) {
 	codes := utils.CallingCodes()
-	items := make([]types.PhoneCallingCodeItem, 0, len(codes))
+	list := make([]types.PhoneCallingCodeItem, 0, len(codes))
 	for _, c := range codes {
-		items = append(items, types.PhoneCallingCodeItem{
+		list = append(list, types.PhoneCallingCodeItem{
 			Region: c.Region,
 			Code:   c.Code,
 			Min:    int32(c.Min),
 			Max:    int32(c.Max),
 		})
 	}
-	return &types.ListPhoneCallingCodesResp{Items: items}, nil
+	return &types.ListPhoneCallingCodesResp{List: list}, nil
 }

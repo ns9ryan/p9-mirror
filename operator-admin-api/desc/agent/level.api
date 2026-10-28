@@ -10,15 +10,15 @@ info (
 import "common.api"
 
 type UpdateAgentLevelsReq {
-	Items []AgentLevelItem `json:"items"`
+	List []AgentLevelItem `json:"list"`
 }
 
 type ListAgentLevelsResp {
-	Items []AgentLevelItem `json:"items"`
+	List []AgentLevelItem `json:"list"`
 }
 
 type UpdateAgentLevelsResp {
-	Items []AgentLevelItem `json:"items"`
+	List []AgentLevelItem `json:"list"`
 }
 
 @server (

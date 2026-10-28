@@ -35,5 +35,5 @@ func (l *TreeNodeAncestorAgentsLogic) TreeNodeAncestorAgents(req *types.TreeNode
 	if err != nil {
 		return nil, err
 	}
-	return agentconv.SearchItemsFromPB(rpcResp.GetItems()), nil
+	return agentconv.SearchItemsFromPB(rpcResp.GetList()), nil
 }

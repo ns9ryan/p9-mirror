@@ -44,12 +44,12 @@ func (l *ListAgentLoginAssociationsLogic) ListAgentLoginAssociations(req *types.
 	if err != nil {
 		return nil, err
 	}
-	items := make([]types.AgentLoginAssociationItem, 0, len(rpcResp.GetItems()))
-	for _, it := range rpcResp.GetItems() {
+	list := make([]types.AgentLoginAssociationItem, 0, len(rpcResp.GetList()))
+	for _, it := range rpcResp.GetList() {
 		if it == nil {
 			continue
 		}
-		items = append(items, types.AgentLoginAssociationItem{
+		list = append(list, types.AgentLoginAssociationItem{
 			Id:                   it.Id,
 			AgentId:              it.AgentId,
 			Account:              it.Account,
@@ -64,5 +64,5 @@ func (l *ListAgentLoginAssociationsLogic) ListAgentLoginAssociations(req *types.
 			SameDeviceAgentCount: it.SameDeviceAgentCount,
 		})
 	}
-	return &types.ListAgentLoginAssociationsResp{Items: items, Total: rpcResp.GetTotal()}, nil
+	return &types.ListAgentLoginAssociationsResp{List: list, Total: rpcResp.GetTotal()}, nil
 }

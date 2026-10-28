@@ -49,7 +49,7 @@ func (l *ListAgentsLogic) ListAgents(req *types.ListAgentsReq) (*types.ListAgent
 		return nil, err
 	}
 	return &types.ListAgentsResp{
-		Items: agentconv.ListItemsFromPB(rpcResp.GetItems()),
+		List:  agentconv.ListItemsFromPB(rpcResp.GetList()),
 		Total: rpcResp.GetTotal(),
 	}, nil
 }

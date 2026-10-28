@@ -30,12 +30,12 @@ func (l *UpdateAgentLevelsLogic) UpdateAgentLevels(req *types.UpdateAgentLevelsR
 		req = &types.UpdateAgentLevelsReq{}
 	}
 	rpcResp, err := l.svcCtx.AgentRpc.UpdateAgentLevels(l.ctx, &agentpb.UpdateAgentLevelsReq{
-		Items: agentconv.LevelItemsToPB(req.Items),
+		List: agentconv.LevelItemsToPB(req.List),
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &types.UpdateAgentLevelsResp{
-		Items: agentconv.LevelItemsFromPB(rpcResp.GetItems()),
+		List: agentconv.LevelItemsFromPB(rpcResp.GetList()),
 	}, nil
 }

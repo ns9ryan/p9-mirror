@@ -36,7 +36,7 @@ type AgentLoginLogItem {
 }
 
 type ListAgentLoginLogsResp {
-	Items []AgentLoginLogItem `json:"items"`
+	List  []AgentLoginLogItem `json:"list"`
 	Total int64               `json:"total"`
 }
 
@@ -67,7 +67,7 @@ type AgentLoginAssociationItem {
 }
 
 type ListAgentLoginAssociationsResp {
-	Items []AgentLoginAssociationItem `json:"items"`
+	List  []AgentLoginAssociationItem `json:"list"`
 	Total int64                       `json:"total"`
 }
 

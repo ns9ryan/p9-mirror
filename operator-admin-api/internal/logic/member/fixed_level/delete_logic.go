@@ -30,9 +30,14 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 }
 
 // Delete 删除固定层级
-func (l *DeleteLogic) Delete(req *types.DeleteMemberFixedLevelRequest) error {
-	_, err := l.svcCtx.MemberFixedLevelRpc.Delete(l.ctx, &memberfixedlevelpb.DeleteMemberFixedLevelRequest{
+func (l *DeleteLogic) Delete(req *types.DeleteMemberFixedLevelRequest) (resp *types.EmptyResponse, err error) {
+	// 删除固定层级
+	_, err = l.svcCtx.MemberFixedLevelRpc.Delete(l.ctx, &memberfixedlevelpb.DeleteMemberFixedLevelRequest{
 		Id: req.Id, // 层级ID
 	})
-	return err
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.EmptyResponse{}, nil
 }
