@@ -30,11 +30,13 @@ project-resources
 - [Core API 文档](docs/core-api.md)
 - [Platform Base API 文档](docs/platform-base-api.md)
 - [Platform Operator API 文档](docs/platform-operator-api.md)
+- [Operator Base API 文档](docs/operator-base-api.md)
 - [Node Dispatch API 文档](docs/node-dispatch-api.md)
 - [Integration API 文档](docs/integration-api.md)
 - [File API 文档](docs/oss-api.md)
 - [Operator Admin API 文档](docs/operator-admin-api.md)
 - [会员自动层级与固定层级 API 对接文档](docs/operator-member-level-api.md)
+- [会员 VIP API 对接文档](docs/operator-vip-api.md)
 - [Operator Game API 文档](docs/operator-game-api.md)
 
 ## 说明

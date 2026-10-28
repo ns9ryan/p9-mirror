@@ -257,7 +257,7 @@ X-Lang: zh-CN
   "code": 0,
   "msg": "ok",
   "data": {
-    "items": [
+    "list": [
       { "region": "US", "code": "1" },
       { "region": "MY", "code": "60" },
       { "region": "SG", "code": "65" }
@@ -313,7 +313,7 @@ X-Lang: zh-CN
   "code": 0,
   "msg": "ok",
   "data": {
-    "items": [
+    "list": [
       {
         "id": 1002,
         "account": "agent01",
@@ -417,7 +417,7 @@ X-Lang: zh-CN
   "code": 0,
   "msg": "ok",
   "data": {
-    "items": [
+    "list": [
       {
         "id": 1002,
         "account": "agent01",
@@ -494,7 +494,7 @@ GET /agent/operator/list?level=2
   "code": 0,
   "msg": "ok",
   "data": {
-    "items": [
+    "list": [
       {
         "id": 1,
         "level": 1,
@@ -520,11 +520,11 @@ GET /agent/operator/list?level=2
 
 | 字段      | 位置   | 必填  | 类型    | 说明                                        |
 | ------- | ---- | --- | ----- | ----------------------------------------- |
-| `items` | json | 是   | array | `AgentLevelItem`；`level` 1~7，同 level 不可重复 |
+| `list` | json | 是   | array | `AgentLevelItem`；`level` 1~7，同 level 不可重复 |
 
 ```json
 {
-  "items": [
+  "list": [
     { "level": 2, "name": "总代", "alias": "总代" },
     { "level": 3, "name": "一级", "alias": "一级" }
   ]
@@ -538,7 +538,7 @@ GET /agent/operator/list?level=2
   "code": 0,
   "msg": "ok",
   "data": {
-    "items": [
+    "list": [
       { "id": 2, "level": 2, "name": "总代", "alias": "总代" },
       { "id": 3, "level": 3, "name": "一级", "alias": "一级" }
     ]
@@ -616,7 +616,7 @@ GET /agent/operator/list?level=2
   "code": 0,
   "msg": "ok",
   "data": {
-    "items": [
+    "list": [
       {
         "line_code": "CASH_PRODUCTION",
         "agent_id": 1002,
@@ -776,7 +776,7 @@ GET /agent/tree/ancestors?keyword=agent01
   "msg": "ok",
   "data": {
     "total": 1,
-    "items": [
+    "list": [
       {
         "id": 1,
         "agent_id": 61339567,
@@ -836,7 +836,7 @@ GET /agent/tree/ancestors?keyword=agent01
   "msg": "ok",
   "data": {
     "total": 1,
-    "items": [
+    "list": [
       {
         "id": 1,
         "agent_id": 61339567,
@@ -892,7 +892,7 @@ GET /agent/tree/ancestors?keyword=agent01
   "code": 0,
   "msg": "ok",
   "data": {
-    "items": [
+    "list": [
       {
         "id": 1,
         "account": "apply01",
@@ -1154,7 +1154,7 @@ GET /agent/op-logs?target_id=1001&target_type=1&page=1&page_size=20&result=0
   "msg": "ok",
   "data": {
     "total": 1,
-    "items": [
+    "list": [
       {
         "id": 1,
         "op_target_id": 1001,
