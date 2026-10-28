@@ -6,18 +6,21 @@ package vip
 import (
 	"context"
 
+	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
-
-	"github.com/zeromicro/go-zero/core/logx"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb"
 )
 
+// UpdateIconGroupLogic VIP图标修改逻辑
 type UpdateIconGroupLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
+// NewUpdateIconGroupLogic 创建VIP图标修改逻辑
 func NewUpdateIconGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateIconGroupLogic {
 	return &UpdateIconGroupLogic{
 		Logger: logx.WithContext(ctx),
@@ -26,8 +29,16 @@ func NewUpdateIconGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *U
 	}
 }
 
+// UpdateIconGroup 修改VIP图标
 func (l *UpdateIconGroupLogic) UpdateIconGroup(req *types.UpdateVipIconGroupRequest) (resp *types.EmptyResponse, err error) {
-	// todo: add your logic here and delete this line
+	// 修改当前使用的VIP图标
+	_, err = l.svcCtx.MemberVipRpc.UpdateIconGroup(l.ctx, &vipicongrouppb.UpdateVipIconGroupRequest{
+		GroupNo: *req.GroupNo, // 图标组编号
+		IconUrl: req.IconUrl,  // 自定义图标URL
+	})
+	if err != nil {
+		return nil, err
+	}
 
-	return
+	return &types.EmptyResponse{}, nil
 }
