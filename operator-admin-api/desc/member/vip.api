@@ -1,0 +1,210 @@
+syntax = "v1"
+
+import "../common.api"
+
+type (
+	// VIP基础配置信息
+	VipConfigInfo {
+		// VIP总开关
+		VipEnabled bool `json:"vip_enabled"`
+		// 晋级奖励开关
+		UpgradeRewardEnabled bool `json:"upgrade_reward_enabled"`
+		// 保级考核开关
+		RetentionCheckEnabled bool `json:"retention_check_enabled"`
+		// 奖励派发模式, 1手动领取, 2自动派发
+		RewardGrantMode int64 `json:"reward_grant_mode"`
+		// 晋级奖励洗码倍率, 放大100000倍
+		RewardWaterMultiplier int64 `json:"reward_water_multiplier"`
+		// 最近一次开启时间, Unix毫秒时间戳
+		LastEnabledAt *int64 `json:"last_enabled_at,optional"`
+		// 更新时间, Unix毫秒时间戳
+		UpdatedAt int64 `json:"updated_at"`
+	}
+	// 获取VIP基础配置请求
+	GetVipConfigRequest  {}
+	// 获取VIP基础配置响应
+	GetVipConfigResponse {
+		// VIP基础配置
+		Config VipConfigInfo `json:"config"`
+	}
+	// 修改VIP基础配置请求
+	UpdateVipConfigRequest {
+		// VIP总开关
+		VipEnabled *bool `json:"vip_enabled,optional"`
+		// 晋级奖励开关
+		UpgradeRewardEnabled *bool `json:"upgrade_reward_enabled,optional"`
+		// 保级考核开关
+		RetentionCheckEnabled *bool `json:"retention_check_enabled,optional"`
+		// 奖励派发模式, 1手动领取, 2自动派发
+		RewardGrantMode *int64 `json:"reward_grant_mode,optional" validate:"omitempty,oneof=1 2"`
+		// 晋级奖励洗码倍率, 放大100000倍
+		RewardWaterMultiplier *int64 `json:"reward_water_multiplier,optional" validate:"omitempty,gte=0"`
+	}
+	// VIP等级信息
+	VipLevelInfo {
+		// VIP等级ID
+		Id int64 `json:"id"`
+		// VIP等级编号, 从0开始
+		Level int64 `json:"level"`
+		// 晋级所需存款
+		UpgradeDeposit int64 `json:"upgrade_deposit"`
+		// 晋级所需洗码量
+		UpgradeWater int64 `json:"upgrade_water"`
+		// 保级所需存款
+		RetentionDeposit int64 `json:"retention_deposit"`
+		// 保级所需洗码量
+		RetentionWater int64 `json:"retention_water"`
+		// 晋级奖励金额
+		UpgradeReward int64 `json:"upgrade_reward"`
+		// 当前会员数
+		MemberCount int64 `json:"member_count"`
+		// 更新时间, Unix毫秒时间戳
+		UpdatedAt int64 `json:"updated_at"`
+	}
+	// VIP等级列表请求
+	ListVipLevelsRequest {
+		// 分页参数
+		PageRequest
+	}
+	// VIP等级列表响应
+	ListVipLevelsResponse {
+		// 数据总数
+		Total int64 `json:"total"`
+		// VIP等级列表
+		List []VipLevelInfo `json:"list"`
+	}
+	// 获取VIP等级请求
+	GetVipLevelRequest {
+		// VIP等级ID
+		Id int64 `form:"id" validate:"required,gt=0"`
+	}
+	// 获取VIP等级响应
+	GetVipLevelResponse {
+		// VIP等级信息
+		Level VipLevelInfo `json:"level"`
+	}
+	// 创建VIP等级请求
+	CreateVipLevelRequest {
+		// 晋级所需存款
+		UpgradeDeposit *int64 `json:"upgrade_deposit" validate:"required,gte=0"`
+		// 晋级所需洗码量
+		UpgradeWater *int64 `json:"upgrade_water" validate:"required,gte=0"`
+		// 保级所需存款
+		RetentionDeposit *int64 `json:"retention_deposit" validate:"required,gte=0"`
+		// 保级所需洗码量
+		RetentionWater *int64 `json:"retention_water" validate:"required,gte=0"`
+		// 晋级奖励金额
+		UpgradeReward *int64 `json:"upgrade_reward" validate:"required,gte=0"`
+	}
+	// 创建VIP等级响应
+	CreateVipLevelResponse {
+		// VIP等级ID
+		Id int64 `json:"id"`
+		// 服务端分配的等级编号
+		Level int64 `json:"level"`
+	}
+	// 修改VIP等级请求
+	UpdateVipLevelRequest {
+		// VIP等级ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+		// 晋级所需存款
+		UpgradeDeposit *int64 `json:"upgrade_deposit,optional" validate:"omitempty,gte=0"`
+		// 晋级所需洗码量
+		UpgradeWater *int64 `json:"upgrade_water,optional" validate:"omitempty,gte=0"`
+		// 保级所需存款
+		RetentionDeposit *int64 `json:"retention_deposit,optional" validate:"omitempty,gte=0"`
+		// 保级所需洗码量
+		RetentionWater *int64 `json:"retention_water,optional" validate:"omitempty,gte=0"`
+		// 晋级奖励金额
+		UpgradeReward *int64 `json:"upgrade_reward,optional" validate:"omitempty,gte=0"`
+	}
+	// 删除VIP等级请求
+	DeleteVipLevelRequest {
+		// VIP等级ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+	}
+	// VIP图标组信息
+	VipIconGroupInfo {
+		// 图标组ID
+		Id int64 `json:"id"`
+		// 图标组编号
+		GroupNo int64 `json:"group_no"`
+		// 起始VIP等级
+		StartLevel int64 `json:"start_level"`
+		// 结束VIP等级
+		EndLevel int64 `json:"end_level"`
+		// 系统默认图标URL
+		DefaultIconUrl string `json:"default_icon_url"`
+		// 当前使用的图标URL
+		IconUrl string `json:"icon_url"`
+		// 更新时间, Unix毫秒时间戳
+		UpdatedAt int64 `json:"updated_at"`
+	}
+	// 获取VIP图标组列表请求
+	ListVipIconGroupsRequest  {}
+	// 获取VIP图标组列表响应
+	ListVipIconGroupsResponse {
+		// VIP图标组列表
+		List []VipIconGroupInfo `json:"list"`
+	}
+	// 修改VIP图标请求
+	UpdateVipIconGroupRequest {
+		// 图标组编号
+		GroupNo *int64 `json:"group_no" validate:"required,gte=0"`
+		// 自定义图标URL
+		IconUrl string `json:"icon_url" validate:"required"`
+	}
+	// 恢复默认VIP图标请求
+	ResetVipIconGroupRequest {
+		// 图标组编号
+		GroupNo *int64 `json:"group_no" validate:"required,gte=0"`
+	}
+)
+
+@server (
+	group:      member/vip
+	prefix:     /member/vip
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	// 获取VIP基础配置
+	@handler GetConfig
+	get /config (GetVipConfigRequest) returns (GetVipConfigResponse)
+
+	// 修改VIP基础配置
+	@handler UpdateConfig
+	post /config/update (UpdateVipConfigRequest)
+
+	// 获取VIP等级列表
+	@handler ListLevels
+	get /level/list (ListVipLevelsRequest) returns (ListVipLevelsResponse)
+
+	// 获取VIP等级
+	@handler GetLevel
+	get /level/detail (GetVipLevelRequest) returns (GetVipLevelResponse)
+
+	// 创建VIP等级
+	@handler CreateLevel
+	post /level/create (CreateVipLevelRequest) returns (CreateVipLevelResponse)
+
+	// 修改VIP等级
+	@handler UpdateLevel
+	post /level/update (UpdateVipLevelRequest)
+
+	// 删除VIP等级
+	@handler DeleteLevel
+	post /level/delete (DeleteVipLevelRequest)
+
+	// 获取VIP图标组列表
+	@handler ListIconGroups
+	get /icon/list (ListVipIconGroupsRequest) returns (ListVipIconGroupsResponse)
+
+	// 修改VIP图标
+	@handler UpdateIconGroup
+	post /icon/update (UpdateVipIconGroupRequest)
+
+	// 恢复默认VIP图标
+	@handler ResetIconGroup
+	post /icon/reset (ResetVipIconGroupRequest)
+}
+

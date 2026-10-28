@@ -222,12 +222,44 @@ type CreateMemberFixedLevelResponse struct {
 	Id int64 `json:"id"`
 }
 
+type CreateVipLevelRequest struct {
+	UpgradeDeposit   *int64 `json:"upgrade_deposit" validate:"required,gte=0"`
+	UpgradeWater     *int64 `json:"upgrade_water" validate:"required,gte=0"`
+	RetentionDeposit *int64 `json:"retention_deposit" validate:"required,gte=0"`
+	RetentionWater   *int64 `json:"retention_water" validate:"required,gte=0"`
+	UpgradeReward    *int64 `json:"upgrade_reward" validate:"required,gte=0"`
+}
+
+type CreateVipLevelResponse struct {
+	Id    int64 `json:"id"`
+	Level int64 `json:"level"`
+}
+
 type DeleteMemberFixedLevelRequest struct {
+	Id int64 `json:"id" validate:"required,gt=0"`
+}
+
+type DeleteVipLevelRequest struct {
 	Id int64 `json:"id" validate:"required,gt=0"`
 }
 
 type GetAgentProfileReq struct {
 	AgentId int64 `form:"agent_id"`
+}
+
+type GetVipConfigRequest struct {
+}
+
+type GetVipConfigResponse struct {
+	Config VipConfigInfo `json:"config"`
+}
+
+type GetVipLevelRequest struct {
+	Id int64 `form:"id" validate:"required,gt=0"`
+}
+
+type GetVipLevelResponse struct {
+	Level VipLevelInfo `json:"level"`
 }
 
 type LineDefaultAgent struct {
@@ -365,6 +397,22 @@ type ListPhoneCallingCodesResp struct {
 	Items []PhoneCallingCodeItem `json:"items"`
 }
 
+type ListVipIconGroupsRequest struct {
+}
+
+type ListVipIconGroupsResponse struct {
+	List []VipIconGroupInfo `json:"list"`
+}
+
+type ListVipLevelsRequest struct {
+	PageRequest
+}
+
+type ListVipLevelsResponse struct {
+	Total int64          `json:"total"`
+	List  []VipLevelInfo `json:"list"`
+}
+
 type MemberAutoLevelInfo struct {
 	Id                 int64  `json:"id"`
 	Name               string `json:"name"`
@@ -412,6 +460,10 @@ type ResetLoginPasswordReq struct {
 
 type ResetLoginPasswordResp struct {
 	Password string `json:"password"`
+}
+
+type ResetVipIconGroupRequest struct {
+	GroupNo *int64 `json:"group_no" validate:"required,gte=0"`
 }
 
 type ReviewAgentApplyReq struct {
@@ -518,7 +570,61 @@ type UpdateMemberFixedLevelRequest struct {
 	WithdrawalLimit *int64 `json:"withdrawal_limit,optional" validate:"omitempty,gt=0"`
 }
 
+type UpdateVipConfigRequest struct {
+	VipEnabled            *bool  `json:"vip_enabled,optional"`
+	UpgradeRewardEnabled  *bool  `json:"upgrade_reward_enabled,optional"`
+	RetentionCheckEnabled *bool  `json:"retention_check_enabled,optional"`
+	RewardGrantMode       *int64 `json:"reward_grant_mode,optional" validate:"omitempty,oneof=1 2"`
+	RewardWaterMultiplier *int64 `json:"reward_water_multiplier,optional" validate:"omitempty,gte=0"`
+}
+
+type UpdateVipIconGroupRequest struct {
+	GroupNo *int64 `json:"group_no" validate:"required,gte=0"`
+	IconUrl string `json:"icon_url" validate:"required"`
+}
+
+type UpdateVipLevelRequest struct {
+	Id               int64  `json:"id" validate:"required,gt=0"`
+	UpgradeDeposit   *int64 `json:"upgrade_deposit,optional" validate:"omitempty,gte=0"`
+	UpgradeWater     *int64 `json:"upgrade_water,optional" validate:"omitempty,gte=0"`
+	RetentionDeposit *int64 `json:"retention_deposit,optional" validate:"omitempty,gte=0"`
+	RetentionWater   *int64 `json:"retention_water,optional" validate:"omitempty,gte=0"`
+	UpgradeReward    *int64 `json:"upgrade_reward,optional" validate:"omitempty,gte=0"`
+}
+
 type UpdateWithdrawPasswordReq struct {
 	AgentId  int64  `json:"agent_id"`
 	Password string `json:"password"`
+}
+
+type VipConfigInfo struct {
+	VipEnabled            bool   `json:"vip_enabled"`
+	UpgradeRewardEnabled  bool   `json:"upgrade_reward_enabled"`
+	RetentionCheckEnabled bool   `json:"retention_check_enabled"`
+	RewardGrantMode       int64  `json:"reward_grant_mode"`
+	RewardWaterMultiplier int64  `json:"reward_water_multiplier"`
+	LastEnabledAt         *int64 `json:"last_enabled_at,optional"`
+	UpdatedAt             int64  `json:"updated_at"`
+}
+
+type VipIconGroupInfo struct {
+	Id             int64  `json:"id"`
+	GroupNo        int64  `json:"group_no"`
+	StartLevel     int64  `json:"start_level"`
+	EndLevel       int64  `json:"end_level"`
+	DefaultIconUrl string `json:"default_icon_url"`
+	IconUrl        string `json:"icon_url"`
+	UpdatedAt      int64  `json:"updated_at"`
+}
+
+type VipLevelInfo struct {
+	Id               int64 `json:"id"`
+	Level            int64 `json:"level"`
+	UpgradeDeposit   int64 `json:"upgrade_deposit"`
+	UpgradeWater     int64 `json:"upgrade_water"`
+	RetentionDeposit int64 `json:"retention_deposit"`
+	RetentionWater   int64 `json:"retention_water"`
+	UpgradeReward    int64 `json:"upgrade_reward"`
+	MemberCount      int64 `json:"member_count"`
+	UpdatedAt        int64 `json:"updated_at"`
 }

@@ -15,6 +15,7 @@ import (
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
 	memberauto_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/auto_level"
 	memberfixed_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/fixed_level"
+	membervip "oa.98ent.com/p9/operator-admin-api/internal/handler/member/vip"
 	publicphone "oa.98ent.com/p9/operator-admin-api/internal/handler/public/phone"
 	publicping "oa.98ent.com/p9/operator-admin-api/internal/handler/public/ping"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
@@ -275,6 +276,65 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/member/fixed-level"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/config",
+					Handler: membervip.GetConfigHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/config/update",
+					Handler: membervip.UpdateConfigHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/icon/list",
+					Handler: membervip.ListIconGroupsHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/icon/reset",
+					Handler: membervip.ResetIconGroupHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/icon/update",
+					Handler: membervip.UpdateIconGroupHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/level/create",
+					Handler: membervip.CreateLevelHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/level/delete",
+					Handler: membervip.DeleteLevelHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/level/detail",
+					Handler: membervip.GetLevelHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/level/list",
+					Handler: membervip.ListLevelsHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/level/update",
+					Handler: membervip.UpdateLevelHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/member/vip"),
 	)
 
 	server.AddRoutes(
