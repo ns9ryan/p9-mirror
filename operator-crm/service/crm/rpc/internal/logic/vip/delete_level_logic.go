@@ -48,6 +48,18 @@ func (l *DeleteLevelLogic) DeleteLevel(in *viplevelpb.DeleteVipLevelRequest) (*v
 		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
 
+	// 只允许删除当前最高等级, 保持等级连续
+	highest, err := l.svcCtx.DAO.MemberVipLevel.GetHighest(l.ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, xerr.RpcErr(xerr.EntNotFound(i18n.InvalidParam, err))
+		}
+		return nil, xerr.RpcErr(err)
+	}
+	if highest.ID != level.ID {
+		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
+	}
+
 	// 查询当前等级关联的会员数
 	memberCounts, err := l.svcCtx.DAO.MemberVipLevel.MemberCounts(l.ctx, []int64{level.ID})
 	if err != nil {

@@ -189,7 +189,7 @@ func (s *Service) ListAgentApplies(ctx context.Context, in *agentpb.ListAgentApp
 	for _, row := range rows {
 		items = append(items, toApplyItem(row))
 	}
-	return &agentpb.ListAgentAppliesResp{Items: items, Total: int64(total)}, nil
+	return &agentpb.ListAgentAppliesResp{List: items, Total: int64(total)}, nil
 }
 
 // ReviewAgentApply 审批代理申请；通过时开户并返回明文密码。

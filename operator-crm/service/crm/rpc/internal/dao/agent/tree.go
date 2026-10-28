@@ -47,7 +47,7 @@ func (s *Service) TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgents
 		levelAlias[lvl.Level] = lvl.Alias
 	}
 
-	items := make([]*agentpb.TreeNodeAgentItem, 0, len(rows))
+	list := make([]*agentpb.TreeNodeAgentItem, 0, len(rows))
 	for _, row := range rows {
 		item := &agentpb.TreeNodeAgentItem{
 			Id:         row.ID,
@@ -59,9 +59,9 @@ func (s *Service) TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgents
 		if st := row.Edges.Stats; st != nil {
 			item.DirectAgentCount = st.DirectAgentCount
 		}
-		items = append(items, item)
+		list = append(list, item)
 	}
-	return &agentpb.TreeNodeAgentsResp{Items: items}, nil
+	return &agentpb.TreeNodeAgentsResp{List: list}, nil
 }
 
 const maxAncestorNodes = 8
@@ -91,11 +91,11 @@ func (s *Service) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNo
 	if err != nil {
 		return nil, err
 	}
-	items := make([]*agentpb.AgentSearchItem, 0, len(chain))
+	list := make([]*agentpb.AgentSearchItem, 0, len(chain))
 	for _, node := range chain {
-		items = append(items, searchItem(node, levelAlias))
+		list = append(list, searchItem(node, levelAlias))
 	}
-	return &agentpb.TreeNodeAncestorAgentsResp{Items: items}, nil
+	return &agentpb.TreeNodeAncestorAgentsResp{List: list}, nil
 }
 
 func (s *Service) findExactAgent(ctx context.Context, kw string) (*ent.AgentUser, error) {

@@ -34,7 +34,7 @@ func (s *Service) ListLevels(ctx context.Context, _ *agentpb.ListAgentLevelsReq)
 			Alias: row.Alias,
 		})
 	}
-	return &agentpb.ListAgentLevelsResp{Items: items}, nil
+	return &agentpb.ListAgentLevelsResp{List: items}, nil
 }
 
 // UpdateLevels 批量 upsert 代理等级。
@@ -43,13 +43,13 @@ func (s *Service) UpdateLevels(ctx context.Context, in *agentpb.UpdateAgentLevel
 	if err != nil {
 		return nil, err
 	}
-	if in == nil || len(in.Items) == 0 {
+	if in == nil || len(in.List) == 0 {
 		return nil, xerr.BadRequest(i18n.AgentLevelItemsRequired)
 	}
 
-	seen := make(map[int32]struct{}, len(in.Items))
-	items := make([]*agentpb.AgentLevelItem, 0, len(in.Items))
-	for _, it := range in.Items {
+	seen := make(map[int32]struct{}, len(in.List))
+	items := make([]*agentpb.AgentLevelItem, 0, len(in.List))
+	for _, it := range in.List {
 		if it == nil {
 			return nil, xerr.BadRequest(i18n.InvalidParam)
 		}
@@ -110,7 +110,7 @@ func (s *Service) UpdateLevels(ctx context.Context, in *agentpb.UpdateAgentLevel
 	if err != nil {
 		return nil, err
 	}
-	return &agentpb.UpdateAgentLevelsResp{Items: out}, nil
+	return &agentpb.UpdateAgentLevelsResp{List: out}, nil
 }
 
 // 获取最大代理层级

@@ -34,7 +34,7 @@ func (AgentProfile) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "smallint",
 			}).
-			Comment("性别：0保密，1男，2女"),
+			Comment("性别：0-未设置，1-男，2-女，3-保密"),
 
 		field.Time("birth_date").
 			Optional().

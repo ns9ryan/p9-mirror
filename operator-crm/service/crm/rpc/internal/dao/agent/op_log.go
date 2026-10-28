@@ -123,7 +123,7 @@ func (s *Service) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLo
 	for _, row := range rows {
 		items = append(items, toOpLogItem(row))
 	}
-	return &agentpb.ListAgentOpLogsResp{Items: items, Total: int64(total)}, nil
+	return &agentpb.ListAgentOpLogsResp{List: items, Total: int64(total)}, nil
 }
 
 func toOpLogItem(row *ent.AgentOpLog) *agentpb.AgentOpLogItem {
@@ -160,21 +160,8 @@ func toOpLogItem(row *ent.AgentOpLog) *agentpb.AgentOpLogItem {
 	return item
 }
 
-// recordOpOK 记录操作成功。
-func (s *Service) recordOpOK(ctx context.Context, p *recordOpParams) {
-	s.recordOp(ctx, p, opResultSuccess, "")
-}
-
-// recordOpFail 记录操作失败。
-func (s *Service) recordOpFail(ctx context.Context, p *recordOpParams, err error) {
-	if p == nil || p.targetID <= 0 || err == nil {
-		return
-	}
-	s.recordOp(ctx, p, opResultFail, failReasonOf(err))
-}
-
-// recordOpParams 记录操作参数。
-type recordOpParams struct {
+// RecordOpParams 记录操作参数。
+type RecordOpParams struct {
 	targetType    int32
 	targetID      int64
 	targetAccount string
@@ -183,9 +170,22 @@ type recordOpParams struct {
 	after         string
 }
 
+// recordOpOK 记录操作成功。
+func (s *Service) RecordOpOK(ctx context.Context, p *RecordOpParams) {
+	s.recordOp(ctx, p, opResultSuccess, "")
+}
+
+// recordOpFail 记录操作失败。
+func (s *Service) RecordOpFail(ctx context.Context, p *RecordOpParams, err error) {
+	if p == nil || err == nil {
+		return
+	}
+	s.recordOp(ctx, p, opResultFail, failReasonOf(err))
+}
+
 // recordOp 记录操作。
-func (s *Service) recordOp(ctx context.Context, p *recordOpParams, result int32, failReason string) {
-	if s == nil || s.DB == nil || p.targetID <= 0 || p.action == "" {
+func (s *Service) recordOp(ctx context.Context, p *RecordOpParams, result int32, failReason string) {
+	if s == nil || s.DB == nil || p == nil || p.action == "" {
 		return
 	}
 	create := s.DB.AgentOpLog.Create().

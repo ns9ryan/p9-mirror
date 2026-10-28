@@ -68,7 +68,7 @@ func (s *Service) ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentL
 	for _, row := range rows {
 		items = append(items, toLoginLogItem(row))
 	}
-	return &agentpb.ListAgentLoginLogsResp{Items: items, Total: int64(total)}, nil
+	return &agentpb.ListAgentLoginLogsResp{List: items, Total: int64(total)}, nil
 }
 
 func buildLoginLogPredicates(in *agentpb.ListAgentLoginLogsReq) ([]predicate.AgentLoginLog, error) {

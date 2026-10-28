@@ -26,3 +26,5 @@ go.work.sum
 /crm_rpc
 /settlement_rpc
 /rpc
+
+ryan_operator_crm.yaml

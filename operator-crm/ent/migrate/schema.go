@@ -242,7 +242,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
-		{Name: "gender", Type: field.TypeInt64, Comment: "性别：0保密，1男，2女", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "gender", Type: field.TypeInt64, Comment: "性别：0-未设置，1-男，2-女，3-保密", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "birth_date", Type: field.TypeTime, Nullable: true, Comment: "生日", SchemaType: map[string]string{"postgres": "date"}},
 		{Name: "avatar_url", Type: field.TypeString, Nullable: true, Size: 255, Comment: "头像访问地址"},
 		{Name: "nickname", Type: field.TypeString, Nullable: true, Size: 100, Comment: "昵称"},

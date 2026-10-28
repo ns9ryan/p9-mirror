@@ -27,6 +27,7 @@ type agentTree struct {
 	nodes map[int64]*agentTreeNode
 }
 
+// agentTreeCache 分站代理树缓存。
 type agentTreeCache struct {
 	mu    sync.RWMutex
 	trees map[string]*agentTree // operator_code -> tree
@@ -45,6 +46,7 @@ type agentTreeRow struct {
 	ShareRate     int32
 }
 
+// buildAgentTree 构建分站代理树。
 func buildAgentTree(rows []agentTreeRow) *agentTree {
 	nodes := make(map[int64]*agentTreeNode, len(rows))
 	for _, row := range rows {
@@ -60,6 +62,7 @@ func buildAgentTree(rows []agentTreeRow) *agentTree {
 	return &agentTree{nodes: nodes}
 }
 
+// get 获取分站代理树缓存。
 func (c *agentTreeCache) get(op string) (*agentTree, bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
@@ -67,18 +70,21 @@ func (c *agentTreeCache) get(op string) (*agentTree, bool) {
 	return t, ok
 }
 
+// set 设置分站代理树缓存。
 func (c *agentTreeCache) set(op string, t *agentTree) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.trees[op] = t
 }
 
+// invalidate 清除分站代理树缓存。
 func (c *agentTreeCache) invalidate(op string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	delete(c.trees, op)
 }
 
+// ancestorsByID 获取分站代理树的祖先链。
 func (t *agentTree) ancestorsByID(agentID int64) ([]*agentTreeNode, error) {
 	if t == nil || t.nodes == nil {
 		return nil, xerr.NotFound(i18n.AgentNotFound)
@@ -198,7 +204,7 @@ func (s *Service) AncestorsByIDRPC(ctx context.Context, in *agentpb.AncestorsByI
 			LayerRate:     n.LayerRate,
 		})
 	}
-	return &agentpb.AncestorsByIDResp{Items: items}, nil
+	return &agentpb.AncestorsByIDResp{List: items}, nil
 }
 
 func (s *Service) invalidateTree(op string) {

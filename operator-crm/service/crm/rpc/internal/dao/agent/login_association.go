@@ -67,7 +67,7 @@ func (s *Service) ListAgentLoginAssociations(ctx context.Context, in *agentpb.Li
 	if err := s.attachAssociationCounts(ctx, in, items); err != nil {
 		return nil, err
 	}
-	return &agentpb.ListAgentLoginAssociationsResp{Items: items, Total: int64(total)}, nil
+	return &agentpb.ListAgentLoginAssociationsResp{List: items, Total: int64(total)}, nil
 }
 
 func buildAssociationListPreds(in *agentpb.ListAgentLoginAssociationsReq) ([]predicate.AgentLoginLog, error) {

@@ -56,7 +56,7 @@ func (s *Service) ResetLoginPassword(ctx context.Context, req *agentpb.ResetLogi
 	}
 	agentID := req.GetAgentId()
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     opActionResetLoginPassword,
@@ -66,7 +66,7 @@ func (s *Service) ResetLoginPassword(ctx context.Context, req *agentpb.ResetLogi
 	// 加载代理
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 代理账号
@@ -74,22 +74,22 @@ func (s *Service) ResetLoginPassword(ctx context.Context, req *agentpb.ResetLogi
 	// 生成随机密码
 	plain, err := utils.GenRandomPassword(16)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	hashed, err := dao.HashPassword(plain)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetLoginPasswordHash(hashed).
 		Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
-	s.recordOpOK(ctx, opParams)
+	s.RecordOpOK(ctx, opParams)
 	return &agentpb.ResetLoginPasswordResp{Password: plain}, nil
 }
 
@@ -109,7 +109,7 @@ func (s *Service) UpdateLoginPassword(ctx context.Context, req *agentpb.UpdateLo
 	}
 	agentID := c.UserID
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     opActionUpdateLoginPassword,
@@ -119,7 +119,7 @@ func (s *Service) UpdateLoginPassword(ctx context.Context, req *agentpb.UpdateLo
 	// 加载代理
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 代理账号
@@ -127,27 +127,27 @@ func (s *Service) UpdateLoginPassword(ctx context.Context, req *agentpb.UpdateLo
 	// 校验代理状态和盐值
 	if row.Status != statusNormal || row.Salt != c.Salt {
 		err = xerr.Unauthorized(i18n.Unauthorized)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if !dao.CheckPassword(row.LoginPasswordHash, oldPw) {
 		err = xerr.Unauthorized(i18n.AuthPasswordIncorrect)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	hashed, err := dao.HashPassword(newPw)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetLoginPasswordHash(hashed).
 		Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
-	s.recordOpOK(ctx, opParams)
+	s.RecordOpOK(ctx, opParams)
 	return &agentpb.Empty{}, nil
 }
 
@@ -158,7 +158,7 @@ func (s *Service) UpdateWithdrawPassword(ctx context.Context, req *agentpb.Updat
 	}
 	agentID := req.GetAgentId()
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     opActionUpdateWithdrawPassword,
@@ -168,7 +168,7 @@ func (s *Service) UpdateWithdrawPassword(ctx context.Context, req *agentpb.Updat
 	// 加载代理
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 代理账号
@@ -176,17 +176,17 @@ func (s *Service) UpdateWithdrawPassword(ctx context.Context, req *agentpb.Updat
 	// 生成提现密码哈希
 	hashed, err := dao.HashPassword(strings.TrimSpace(req.GetPassword()))
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetWithdrawPasswordHash(hashed).
 		Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
-	s.recordOpOK(ctx, opParams)
+	s.RecordOpOK(ctx, opParams)
 	return &agentpb.Empty{}, nil
 }
 
@@ -198,7 +198,7 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 	agentID := req.GetAgentId()
 	share := int64(req.GetShareRate())
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     opActionShareRate,
@@ -206,12 +206,12 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 	}
 	if share < 0 || share > maxShareRate {
 		err := xerr.BadRequest(i18n.AgentShareRateInvalid)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 更新前占成比例
@@ -226,12 +226,12 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 			if ent.IsNotFound(err) {
 				err = xerr.BadRequest(i18n.AgentParentNotFound)
 			}
-			s.recordOpFail(ctx, opParams, err)
+			s.RecordOpFail(ctx, opParams, err)
 			return nil, err
 		}
 		if share > parent.ShareRate {
 			err = xerr.BadRequest(i18n.AgentShareRateExceedParent)
-			s.recordOpFail(ctx, opParams, err)
+			s.RecordOpFail(ctx, opParams, err)
 			return nil, err
 		}
 	}
@@ -242,25 +242,25 @@ func (s *Service) UpdateShareRate(ctx context.Context, req *agentpb.UpdateAgentS
 		Where(agentuser.ParentIDEQ(row.ID)).
 		Aggregate(ent.As(ent.Max(agentuser.FieldShareRate), "max")).
 		Scan(ctx, &childMax); err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if len(childMax) > 0 && childMax[0].Max.Valid && share < childMax[0].Max.Int64 {
 		err = xerr.BadRequest(i18n.AgentShareRateBelowChild)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if err = s.DB.AgentUser.UpdateOneID(row.ID).
 		SetShareRate(share).
 		Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if _, op, oerr := requireOperator(ctx); oerr == nil {
 		s.invalidateTree(op)
 	}
-	s.recordOpOK(ctx, opParams)
+	s.RecordOpOK(ctx, opParams)
 	return &agentpb.Empty{}, nil
 }
 
@@ -272,7 +272,7 @@ func (s *Service) UpdatePayoutRestricted(ctx context.Context, req *agentpb.Updat
 	agentID := req.GetAgentId()
 	v := int64(req.GetPayoutRestricted())
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     opActionPayoutRestricted,
@@ -280,12 +280,12 @@ func (s *Service) UpdatePayoutRestricted(ctx context.Context, req *agentpb.Updat
 	}
 	if v < payoutNormal || v > payoutLineRestricted {
 		err := xerr.BadRequest(i18n.InvalidParam)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 更新前提现限制
@@ -296,10 +296,10 @@ func (s *Service) UpdatePayoutRestricted(ctx context.Context, req *agentpb.Updat
 		SetPayoutRestricted(v).
 		Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
-	s.recordOpOK(ctx, opParams)
+	s.RecordOpOK(ctx, opParams)
 	return &agentpb.Empty{}, nil
 }
 
@@ -311,7 +311,7 @@ func (s *Service) UpdateStatus(ctx context.Context, req *agentpb.UpdateAgentStat
 	agentID := req.GetAgentId()
 	v := int64(req.GetStatus())
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     opActionStatus,
@@ -319,12 +319,12 @@ func (s *Service) UpdateStatus(ctx context.Context, req *agentpb.UpdateAgentStat
 	}
 	if v < statusNormal || v > statusDisabled {
 		err := xerr.BadRequest(i18n.InvalidParam)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 更新前状态
@@ -336,10 +336,10 @@ func (s *Service) UpdateStatus(ctx context.Context, req *agentpb.UpdateAgentStat
 		SetStatus(v).
 		Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
-	s.recordOpOK(ctx, opParams)
+	s.RecordOpOK(ctx, opParams)
 	return &agentpb.Empty{}, nil
 }
 
@@ -351,7 +351,7 @@ func (s *Service) UpdateRemark(ctx context.Context, req *agentpb.UpdateAgentRema
 	agentID := req.GetAgentId()
 	remark := strings.TrimSpace(req.GetRemark())
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     opActionRemark,
@@ -359,12 +359,12 @@ func (s *Service) UpdateRemark(ctx context.Context, req *agentpb.UpdateAgentRema
 	}
 	if utf8.RuneCountInString(remark) > 1000 {
 		err := xerr.BadRequest(i18n.InvalidParam)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 更新前备注
@@ -380,10 +380,10 @@ func (s *Service) UpdateRemark(ctx context.Context, req *agentpb.UpdateAgentRema
 	}
 	if err = upd.Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
-	s.recordOpOK(ctx, opParams)
+	s.RecordOpOK(ctx, opParams)
 	return &agentpb.Empty{}, nil
 }
 
@@ -395,14 +395,14 @@ func (s *Service) UpdateProfile(ctx context.Context, req *agentpb.UpdateAgentPro
 	agentID := req.GetAgentId()
 	ft := req.GetFieldType()
 	// 操作日志参数
-	opParams := &recordOpParams{
+	opParams := &RecordOpParams{
 		targetType: opTargetTypeAgent,
 		targetID:   agentID,
 		action:     profileActionOf(ft),
 	}
 	if ft < profileFieldAll || ft > profileFieldEmail {
 		err := xerr.BadRequest(i18n.InvalidParam)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if (ft == profileFieldMobile || ft == profileFieldAll) && req.GetMobile() != "" {
@@ -411,13 +411,13 @@ func (s *Service) UpdateProfile(ctx context.Context, req *agentpb.UpdateAgentPro
 			if ft == profileFieldMobile {
 				opParams.after = req.GetMobile()
 			}
-			s.recordOpFail(ctx, opParams, err)
+			s.RecordOpFail(ctx, opParams, err)
 			return nil, err
 		}
 	}
 	row, err := s.loadAgent(ctx, agentID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	// 操作日志参数 代理账号
@@ -428,7 +428,7 @@ func (s *Service) UpdateProfile(ctx context.Context, req *agentpb.UpdateAgentPro
 		if ent.IsNotFound(err) {
 			err = xerr.NotFound(i18n.AgentNotFound)
 		}
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	beforeVals := profileFieldValues(profile)
@@ -437,35 +437,35 @@ func (s *Service) UpdateProfile(ctx context.Context, req *agentpb.UpdateAgentPro
 	if ft == profileFieldAll {
 		for _, item := range fields {
 			if err = item.apply(upd); err != nil {
-				s.recordOpFail(ctx, opParams, err)
+				s.RecordOpFail(ctx, opParams, err)
 				return nil, err
 			}
 		}
 	} else if err = fields[ft-1].apply(upd); err != nil {
 		opParams.before = beforeVals[ft-1]
 		opParams.after = strings.TrimSpace(fields[ft-1].value)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	if err = upd.Exec(ctx); err != nil {
 		err = mapEntErr(err)
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	row, err = s.loadAgent(ctx, row.ID)
 	if err != nil {
-		s.recordOpFail(ctx, opParams, err)
+		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
 	afterVals := profileFieldValues(row.Edges.Profile)
 	if ft == profileFieldAll {
 		opParams.before, opParams.after = profileJSONDiff(beforeVals, afterVals)
-		s.recordOpOK(ctx, opParams)
+		s.RecordOpOK(ctx, opParams)
 	} else {
 		opParams.action = profileOpActions[ft-1]
 		opParams.before = beforeVals[ft-1]
 		opParams.after = afterVals[ft-1]
-		s.recordOpOK(ctx, opParams)
+		s.RecordOpOK(ctx, opParams)
 	}
 	return s.toProfile(ctx, row)
 }

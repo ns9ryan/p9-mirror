@@ -18,12 +18,12 @@ message AgentLevelItem {
 
 // UpdateAgentLevelsReq 批量更新代理等级
 message UpdateAgentLevelsReq {
-  repeated AgentLevelItem items = 1;
+  repeated AgentLevelItem list = 1;
 }
 
 // UpdateAgentLevelsResp 批量更新代理等级响应
 message UpdateAgentLevelsResp {
-  repeated AgentLevelItem items = 1;
+  repeated AgentLevelItem list = 1;
 }
 
 // UpdateAgentConfigReq 更新代理配置
@@ -184,7 +184,7 @@ message AgentListItem {
 
 // ListAgentsResp 代理列表响应
 message ListAgentsResp {
-  repeated AgentListItem items = 1;
+  repeated AgentListItem list = 1;
   int64 total = 2;
 }
 
@@ -213,7 +213,7 @@ message AgentSearchItem {
 
 // SearchAgentsResp 搜索代理响应
 message SearchAgentsResp {
-  repeated AgentSearchItem items = 1;
+  repeated AgentSearchItem list = 1;
 }
 
 // TreeNodeAncestorAgentsReq 按 ID 或账号精确查找代理及其上级
@@ -224,7 +224,7 @@ message TreeNodeAncestorAgentsReq {
 
 // TreeNodeAncestorAgentsResp 当前代理在前，其后为直接上级直到顶层
 message TreeNodeAncestorAgentsResp {
-  repeated AgentSearchItem items = 1;
+  repeated AgentSearchItem list = 1;
 }
 
 // AncestorsByIDReq 按代理 ID 获取本人及上级链（内存树缓存）
@@ -250,7 +250,7 @@ message AgentAncestorItem {
 
 // AncestorsByIDResp 当前代理在前，其后为直接上级直到顶层
 message AncestorsByIDResp {
-  repeated AgentAncestorItem items = 1;
+  repeated AgentAncestorItem list = 1;
 }
 
 // ListOperatorAgentsReq 按层级列出代理并按线路分组
@@ -275,7 +275,7 @@ message ListAgentLevelsReq {}
 
 // ListAgentLevelsResp 获取等级列表响应
 message ListAgentLevelsResp {
-  repeated AgentLevelItem items = 1;
+  repeated AgentLevelItem list = 1;
 }
 
 // TreeNodeAgentsReq 按上级 ID 获取直属代理列表
@@ -298,7 +298,7 @@ message TreeNodeAgentItem {
 
 // ListChildAgentsResp 直属代理列表响应
 message TreeNodeAgentsResp {
-  repeated TreeNodeAgentItem items = 1;
+  repeated TreeNodeAgentItem list = 1;
 }
 
 // AddAgentApplyReq 申请代理添加
@@ -364,7 +364,7 @@ message ListAgentAppliesReq {
 
 // ListAgentAppliesResp 申请代理列表响应
 message ListAgentAppliesResp {
-  repeated AgentApplyItem items = 1;
+  repeated AgentApplyItem list = 1;
   int64 total = 2;
 }
 
@@ -530,7 +530,7 @@ message AgentLoginLogItem {
 
 // ListAgentLoginLogsResp 代理登录日志列表响应
 message ListAgentLoginLogsResp {
-  repeated AgentLoginLogItem items = 1;
+  repeated AgentLoginLogItem list = 1;
   int64 total = 2;
 }
 
@@ -574,7 +574,7 @@ message AgentLoginAssociationItem {
 
 // ListAgentLoginAssociationsResp 关联检索登录日志响应
 message ListAgentLoginAssociationsResp {
-  repeated AgentLoginAssociationItem items = 1;
+  repeated AgentLoginAssociationItem list = 1;
   int64 total = 2;
 }
 
@@ -629,6 +629,6 @@ message AgentOpLogItem {
 
 // ListAgentOpLogsResp 代理资料变更操作日志列表响应
 message ListAgentOpLogsResp {
-  repeated AgentOpLogItem items = 1;
+  repeated AgentOpLogItem list = 1;
   int64 total = 2;
 }

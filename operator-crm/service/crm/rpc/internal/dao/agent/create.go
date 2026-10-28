@@ -298,7 +298,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 	})
 	if err != nil {
 		// 记录操作日志
-		s.recordOpFail(ctx, &recordOpParams{
+		s.RecordOpFail(ctx, &RecordOpParams{
 			targetType:    opTargetTypeAgent,
 			targetID:      0,
 			targetAccount: account,
@@ -309,7 +309,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 		return nil, err
 	}
 	// 记录操作日志
-	s.recordOpOK(ctx, &recordOpParams{
+	s.RecordOpOK(ctx, &RecordOpParams{
 		targetType:    opTargetTypeAgent,
 		targetID:      created.ID,
 		targetAccount: account,

@@ -199,7 +199,7 @@ func (s *Service) ListAgents(ctx context.Context, in *agentpb.ListAgentsReq) (*a
 		levelAlias[lvl.Level] = lvl.Alias
 	}
 
-	items := make([]*agentpb.AgentListItem, 0, len(rows))
+	list := make([]*agentpb.AgentListItem, 0, len(rows))
 	for _, row := range rows {
 		item := &agentpb.AgentListItem{
 			Id:               row.ID,
@@ -239,11 +239,11 @@ func (s *Service) ListAgents(ctx context.Context, in *agentpb.ListAgentsReq) (*a
 			item.UnpaidCommission = st.UnpaidCommissionAmount
 			item.VisitUv = st.VisitUv
 		}
-		items = append(items, item)
+		list = append(list, item)
 	}
 
 	return &agentpb.ListAgentsResp{
-		Items: items,
+		List:  list,
 		Total: int64(total),
 	}, nil
 }

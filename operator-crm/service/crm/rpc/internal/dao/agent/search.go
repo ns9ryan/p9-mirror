@@ -85,7 +85,7 @@ func (s *Service) SearchAgents(ctx context.Context, in *agentpb.SearchAgentsReq)
 			ShareRate:  int32(row.ShareRate),
 		})
 	}
-	return &agentpb.SearchAgentsResp{Items: items}, nil
+	return &agentpb.SearchAgentsResp{List: items}, nil
 }
 
 func searchKeywordPred(kw string) predicate.AgentUser {

@@ -27,7 +27,7 @@ type AgentProfile struct {
 	OperatorCode string `json:"operator_code,omitempty"`
 	// 所属agent ID
 	AgentID int64 `json:"agent_id,omitempty"`
-	// 性别：0保密，1男，2女
+	// 性别：0-未设置，1-男，2-女，3-保密
 	Gender int64 `json:"gender,omitempty"`
 	// 生日
 	BirthDate *time.Time `json:"birth_date,omitempty"`

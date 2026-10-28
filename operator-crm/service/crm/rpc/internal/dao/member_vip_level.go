@@ -67,12 +67,17 @@ func (d *MemberVipLevel) Get(ctx context.Context, id int64) (*ent.MemberVipLevel
 		Only(ctx)
 }
 
+// GetHighest 获取当前最高VIP等级
+func (d *MemberVipLevel) GetHighest(ctx context.Context) (*ent.MemberVipLevel, error) {
+	return d.db.MemberVipLevel.Query().
+		Order(memberviplevel.ByLevel(sql.OrderDesc())).
+		First(ctx)
+}
+
 // Create 创建VIP等级并分配下一个等级编号
 func (d *MemberVipLevel) Create(ctx context.Context, in MemberVipLevelCreate) (*ent.MemberVipLevel, error) {
 	// 初始VIP0必须由分站初始化流程创建
-	last, err := d.db.MemberVipLevel.Query().
-		Order(memberviplevel.ByLevel(sql.OrderDesc())).
-		First(ctx)
+	last, err := d.GetHighest(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, fmt.Errorf("VIP等级初始数据不存在, 请检查分站初始化状态: %w", err)
