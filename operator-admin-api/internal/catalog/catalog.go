@@ -24,8 +24,11 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "MemberManage", Title: "menu.memberManage", Path: "/member", MenuType: menuTypeDir, Sort: 10},
 			{Name: "MemberManageList", Title: "menu.memberManage.list", Path: "/member/list", MenuType: menuTypeMenu, Component: "memberManage/index", ParentName: "MemberManage", Sort: 11},
 
-			// 层级管理：自动层级和固定层级在同一页面内切换
+			// 层级管理: 自动层级和固定层级在同一页面内切换
 			{Name: "MemberLevel", Title: "menu.route.memberLevel", Path: "/member/level", MenuType: menuTypeMenu, Component: "memberManage/level/index", ParentName: "MemberManage", Sort: 12},
+
+			// VIP 管理: 基础设置、等级配置和图标设置在同一页面内切换
+			{Name: "MemberVip", Title: "menu.route.memberVip", Path: "/member/vip", MenuType: menuTypeMenu, Component: "memberManage/vip/index", ParentName: "MemberManage", Sort: 13},
 
 			// 自动层级按钮权限
 			{Name: "MemberAutoLevelCreate", Title: "menu.route.memberAutoLevelCreate", MenuType: menuTypeButton, Permission: "member:auto-level:create", ParentName: "MemberLevel", Sort: 121},
@@ -35,6 +38,7 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "MemberFixedLevelUpdate", Title: "menu.route.memberFixedLevelUpdate", MenuType: menuTypeButton, Permission: "member:fixed-level:update", ParentName: "MemberLevel", Sort: 123},
 			{Name: "MemberFixedLevelDelete", Title: "menu.route.memberFixedLevelDelete", MenuType: menuTypeButton, Permission: "member:fixed-level:delete", ParentName: "MemberLevel", Sort: 124},
 
+			// 代理管理
 			{Name: "Agent", Title: "menu.route.agent", Path: "/agent", MenuType: menuTypeDir, Sort: 20},
 			{Name: "AgentList", Title: "menu.route.agentList", Path: "/agent/list", MenuType: menuTypeMenu, Component: "agent/list/index", ParentName: "Agent", Sort: 21},
 			{Name: "AgentTree", Title: "menu.route.agentTree", HideMenu: 1, Path: "/agent/tree", MenuType: menuTypeMenu, Component: "agent/tree/index", ParentName: "Agent", Sort: 22},
@@ -59,6 +63,7 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "AgentApplyReview", Title: "menu.route.agentApplyReview", HideMenu: 1, MenuType: menuTypeButton, Permission: "agent:apply:review", ParentName: "AgentApply", Sort: 251},
 		},
 		Apis: []*coreclient.CreateApiReq{
+			// 代理 API
 			{Path: "/agent/list", Method: http.MethodPost, Description: "api.agentList", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/create", Method: http.MethodPost, Description: "api.agentCreate", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/search", Method: http.MethodPost, Description: "api.agentSearch", ApiGroup: "api.group.agent", ServiceName: serviceName},
@@ -94,6 +99,22 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/member/fixed-level/create", Method: http.MethodPost, Description: "api.memberFixedLevelCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
 			{Path: "/member/fixed-level/update", Method: http.MethodPost, Description: "api.memberFixedLevelUpdate", ApiGroup: "api.group.member", ServiceName: serviceName},
 			{Path: "/member/fixed-level/delete", Method: http.MethodPost, Description: "api.memberFixedLevelDelete", ApiGroup: "api.group.member", ServiceName: serviceName},
+
+			// VIP 基础配置 API
+			{Path: "/member/vip/config", Method: http.MethodGet, Description: "api.memberVipConfigGet", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/vip/config/update", Method: http.MethodPost, Description: "api.memberVipConfigUpdate", ApiGroup: "api.group.member", ServiceName: serviceName},
+
+			// VIP 等级 API
+			{Path: "/member/vip/level/list", Method: http.MethodGet, Description: "api.memberVipLevelList", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/vip/level/detail", Method: http.MethodGet, Description: "api.memberVipLevelGet", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/vip/level/create", Method: http.MethodPost, Description: "api.memberVipLevelCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/vip/level/update", Method: http.MethodPost, Description: "api.memberVipLevelUpdate", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/vip/level/delete", Method: http.MethodPost, Description: "api.memberVipLevelDelete", ApiGroup: "api.group.member", ServiceName: serviceName},
+
+			// VIP 图标 API
+			{Path: "/member/vip/icon/list", Method: http.MethodGet, Description: "api.memberVipIconList", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/vip/icon/update", Method: http.MethodPost, Description: "api.memberVipIconUpdate", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/vip/icon/reset", Method: http.MethodPost, Description: "api.memberVipIconReset", ApiGroup: "api.group.member", ServiceName: serviceName},
 		},
 		I18N: i18nSeeds(code),
 	}

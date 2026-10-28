@@ -58,6 +58,7 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	add("menu.memberManage", "会员管理", "會員管理", "Member management")
 	add("menu.memberManage.list", "会员列表", "會員列表", "Member list")
 	add("menu.route.memberLevel", "层级管理", "層級管理", "Member levels")
+	add("menu.route.memberVip", "VIP管理", "VIP管理", "VIP management")
 
 	// 层级管理操作权限
 	add("menu.route.memberAutoLevelCreate", "创建自动层级", "建立自動層級", "Create auto level")
@@ -90,6 +91,22 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 	add("api.memberFixedLevelCreate", "创建固定层级", "建立固定層級", "Create fixed level")
 	add("api.memberFixedLevelUpdate", "修改固定层级", "修改固定層級", "Update fixed level")
 	add("api.memberFixedLevelDelete", "删除固定层级", "刪除固定層級", "Delete fixed level")
+
+	// VIP 基础配置 API
+	add("api.memberVipConfigGet", "获取VIP基础配置", "獲取VIP基礎配置", "Get VIP base config")
+	add("api.memberVipConfigUpdate", "修改VIP基础配置", "修改VIP基礎配置", "Update VIP base config")
+
+	// VIP 等级 API
+	add("api.memberVipLevelList", "VIP等级列表", "VIP等級列表", "VIP level list")
+	add("api.memberVipLevelGet", "获取VIP等级详情", "獲取VIP等級詳情", "Get VIP level detail")
+	add("api.memberVipLevelCreate", "创建VIP等级", "建立VIP等級", "Create VIP level")
+	add("api.memberVipLevelUpdate", "修改VIP等级", "修改VIP等級", "Update VIP level")
+	add("api.memberVipLevelDelete", "删除VIP等级", "刪除VIP等級", "Delete VIP level")
+
+	// VIP 图标 API
+	add("api.memberVipIconList", "VIP图标组列表", "VIP圖標組列表", "VIP icon group list")
+	add("api.memberVipIconUpdate", "修改VIP图标", "修改VIP圖標", "Update VIP icon")
+	add("api.memberVipIconReset", "恢复默认VIP图标", "恢復預設VIP圖標", "Reset VIP icon")
 
 	add("api.agentList", "代理列表", "代理列表", "Agent list")
 	add("api.agentCreate", "分站添加代理", "分站添加代理", "Add operator agent")
@@ -147,6 +164,7 @@ func frontI18n(i18nCode string) []*coreclient.I18NItem {
 	add("agent.adminType.1", "分站管理员", "分站管理員", "Operator admin")
 	add("agent.adminType.2", "分站代理", "分站代理", "Operator agent")
 	add("agent.opAction.create", "创建代理", "創建代理", "Create agent")
+	add("agent.opAction.delete", "删除代理", "刪除代理", "Delete agent")
 	add("agent.opAction.share_rate", "更新占成", "更新佔成", "Update share rate")
 	add("agent.opAction.payout_restricted", "更新出款限制", "更新出款限制", "Update payout restriction")
 	add("agent.opAction.status", "更新状态", "更新狀態", "Update status")
@@ -229,5 +247,8 @@ func errorI18n(i18nCode string) []*coreclient.I18NItem {
 	add("agent.applyPendingExists", "该账号已有待审核申请", "該賬號已有待審核申請", "Pending apply already exists")
 	add("agent.applyMemberCodeExists", "该会员已申请过代理", "該會員已申請過代理", "Member already applied")
 	add("agent.notFound", "代理不存在", "代理不存在", "Agent not found")
+	add("agent.hasChildren", "代理有下级，无法删除", "代理有下級，無法刪除", "Agent has children, cannot delete")
+	add("agent.cannotDeleteRoot", "根代理无法删除", "根代理無法刪除", "Root agent cannot delete")
+	add("agent.isDesignated", "代理已被指定为默认代理线路，无法删除", "代理已被指定為默認代理線路，無法刪除", "Agent is designated as default agent line, cannot delete")
 	return out
 }
