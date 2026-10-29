@@ -7,6 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
+
 	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/core/common/coreadapt"
 	"oa.98ent.com/p9/core/common/middleware"
@@ -16,6 +17,7 @@ import (
 	"oa.98ent.com/p9/operator-admin-api/internal/locales"
 	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/member"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberfixedlevel"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/vip"
@@ -33,6 +35,7 @@ type ServiceContext struct {
 
 	// CRM业务RPC
 	AgentRpc            agentservice.AgentService         // 分层代理RPC
+	MemberRpc           member.Member                     // 会员管理RPC
 	MemberAutoLevelRpc  memberautolevel.MemberAutoLevel   // 会员自动层级RPC
 	MemberFixedLevelRpc memberfixedlevel.MemberFixedLevel // 会员固定层级RPC
 	MemberVipRpc        vip.Vip                           // 会员VIP配置、等级和图标RPC
@@ -78,6 +81,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		OperatorBaseRpc: operatorservice.NewOperatorService(baseClient),
 
 		AgentRpc:            agentservice.NewAgentService(crmClient),
+		MemberRpc:           member.NewMember(crmClient),
 		MemberAutoLevelRpc:  memberautolevel.NewMemberAutoLevel(crmClient),
 		MemberFixedLevelRpc: memberfixedlevel.NewMemberFixedLevel(crmClient),
 		MemberVipRpc:        vip.NewVip(crmClient),

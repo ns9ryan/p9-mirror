@@ -5,8 +5,9 @@ go 1.26.0
 require (
 	github.com/duke-git/lancet/v2 v2.3.9
 	github.com/zeromicro/go-zero v1.10.3
-	oa.98ent.com/p9/common v1.0.12
+	oa.98ent.com/p9/common v1.0.14
 	oa.98ent.com/p9/core v1.2.2
+	oa.98ent.com/p9/integration v0.0.0-20261022032859-d992f8bd28ba
 	oa.98ent.com/p9/operator-base v0.0.0
 	oa.98ent.com/p9/operator-crm v0.0.0
 )
@@ -64,7 +65,7 @@ require (
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.66.1 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
-	github.com/redis/go-redis/v9 v9.21.0 // indirect
+	github.com/redis/go-redis/v9 v9.22.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/titanous/json5 v1.0.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
@@ -110,6 +111,7 @@ require (
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b // indirect
 	k8s.io/utils v0.0.0-20260319190234-28399d86e0b5 // indirect
+	oa.98ent.com/p9/platform-base v0.1.1 // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.0 // indirect
