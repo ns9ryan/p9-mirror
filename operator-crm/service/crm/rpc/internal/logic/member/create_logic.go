@@ -183,16 +183,12 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 
 // validMemberAccount 校验会员账号格式
 func validMemberAccount(account string) bool {
-	return len(account) >= 4 &&
-		len(account) <= 20 &&
-		memberAccountPattern.MatchString(account)
+	return len(account) >= 4 && len(account) <= 20 && memberAccountPattern.MatchString(account)
 }
 
 // validMemberPassword 校验会员密码格式
 func validMemberPassword(password string) bool {
-	return len(password) >= 8 &&
-		len(password) <= 32 &&
-		memberPasswordPattern.MatchString(password)
+	return len(password) >= 8 && len(password) <= 32 && memberPasswordPattern.MatchString(password)
 }
 
 // generateMemberCode 生成当前厅唯一的12位会员编号

@@ -202,7 +202,7 @@ func (s *Service) recordOp(ctx context.Context, p *RecordOpParams, result int32,
 			create.SetAdminID(c.UserID)
 		}
 		// 操作人类型
-		if c.UserType == ctxdata.UserTypeAgent {
+		if c.UserType.IsAgent() {
 			create.SetAdminType(adminTypeAgent)
 		} else {
 			create.SetAdminType(adminTypeOperator)

@@ -15,6 +15,7 @@ import (
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
 	memberauto_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/auto_level"
 	memberfixed_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/fixed_level"
+	membermanage "oa.98ent.com/p9/operator-admin-api/internal/handler/member/manage"
 	membervip "oa.98ent.com/p9/operator-admin-api/internal/handler/member/vip"
 	publicphone "oa.98ent.com/p9/operator-admin-api/internal/handler/public/phone"
 	publicping "oa.98ent.com/p9/operator-admin-api/internal/handler/public/ping"
@@ -276,6 +277,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/member/fixed-level"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: membermanage.CreateHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/member"),
 	)
 
 	server.AddRoutes(

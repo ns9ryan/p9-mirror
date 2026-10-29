@@ -27,6 +27,7 @@ import (
 
 // 会员管理
 import (
+	"member/manage.api"
 	"member/auto_level.api"
 	"member/fixed_level.api"
 	"member/vip.api"

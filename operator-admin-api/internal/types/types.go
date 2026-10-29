@@ -222,6 +222,19 @@ type CreateMemberFixedLevelResponse struct {
 	Id int64 `json:"id"`
 }
 
+type CreateMemberRequest struct {
+	Account  string  `json:"account" validate:"required,min=4,max=20"`
+	Password string  `json:"password" validate:"required,min=8,max=32"`
+	Nickname *string `json:"nickname,optional" validate:"omitempty,max=100"`
+	AgentId  int64   `json:"agent_id" validate:"required,gt=0"`
+	Remark   *string `json:"remark,optional" validate:"omitempty,max=200"`
+}
+
+type CreateMemberResponse struct {
+	Id   int64  `json:"id"`
+	Code string `json:"code"`
+}
+
 type CreateVipLevelRequest struct {
 	UpgradeDeposit   *int64 `json:"upgrade_deposit" validate:"required,gte=0"`
 	UpgradeWater     *int64 `json:"upgrade_water" validate:"required,gte=0"`

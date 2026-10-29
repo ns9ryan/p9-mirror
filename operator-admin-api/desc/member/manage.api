@@ -1,0 +1,38 @@
+syntax = "v1"
+
+import "../common.api"
+
+type (
+	// 创建会员请求
+	CreateMemberRequest {
+		// 会员登录账号, 4-20位
+		Account string `json:"account" validate:"required,min=4,max=20"`
+		// 初始密码, 8-32位
+		Password string `json:"password" validate:"required,min=8,max=32"`
+		// 会员昵称, 不填写时使用账号
+		Nickname *string `json:"nickname,optional" validate:"omitempty,max=100"`
+		// 所属分层代理ID
+		AgentId int64 `json:"agent_id" validate:"required,gt=0"`
+		// 后台会员备注, 最多200个字符
+		Remark *string `json:"remark,optional" validate:"omitempty,max=200"`
+	}
+	// 创建会员响应
+	CreateMemberResponse {
+		// 会员ID
+		Id int64 `json:"id"`
+		// 会员对外编号, 12位数字
+		Code string `json:"code"`
+	}
+)
+
+@server (
+	group:      member/manage
+	prefix:     /member
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	// 创建会员
+	@handler Create
+	post /create (CreateMemberRequest) returns (CreateMemberResponse)
+}
+
