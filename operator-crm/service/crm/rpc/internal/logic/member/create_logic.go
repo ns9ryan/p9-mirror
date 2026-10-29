@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/rand/v2"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -35,6 +36,12 @@ const (
 	registerChannelAdmin  = "admin"   // TODO: 注册渠道枚举统一后替换临时值
 )
 
+// 会员账号仅允许英文字母, 数字, 横杠和下横杠
+var memberAccountPattern = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+
+// 会员密码仅允许ASCII可见字符, 不包含空格
+var memberPasswordPattern = regexp.MustCompile(`^[\x21-\x7E]+$`)
+
 // CreateLogic 会员创建逻辑
 type CreateLogic struct {
 	ctx    context.Context
@@ -65,13 +72,11 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 	// 规范化并校验输入
 	account := strings.TrimSpace(in.GetAccount())
 	password := in.GetPassword()
-	if account == "" || strings.TrimSpace(password) == "" ||
-		in.GetAgentId() <= 0 ||
-		utf8.RuneCountInString(account) > 64 ||
-		len(password) > 72 {
+	if !validMemberAccount(account) || !validMemberPassword(password) || in.GetAgentId() <= 0 {
 		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
 
+	// 处理会员昵称
 	nickname := strings.TrimSpace(in.GetNickname())
 	if nickname == "" {
 		// TODO: 昵称库完成后, 改为从昵称库生成默认昵称
@@ -81,6 +86,7 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
 
+	// 处理后台会员备注
 	var remark *string
 	if in.Remark != nil {
 		value := strings.TrimSpace(in.GetRemark())
@@ -173,6 +179,20 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 		Id:   created.ID,
 		Code: created.Code,
 	}, nil
+}
+
+// validMemberAccount 校验会员账号格式
+func validMemberAccount(account string) bool {
+	return len(account) >= 4 &&
+		len(account) <= 20 &&
+		memberAccountPattern.MatchString(account)
+}
+
+// validMemberPassword 校验会员密码格式
+func validMemberPassword(password string) bool {
+	return len(password) >= 8 &&
+		len(password) <= 32 &&
+		memberPasswordPattern.MatchString(password)
 }
 
 // generateMemberCode 生成当前厅唯一的12位会员编号
