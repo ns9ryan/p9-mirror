@@ -464,6 +464,11 @@ message UpdateAgentStatusReq {
   int32 status = 2;
 }
 
+// DeleteAgentReq 软删除代理
+message DeleteAgentReq {
+  int64 agent_id = 1;
+}
+
 message UpdateAgentRemarkReq {
   int64 agent_id = 1;
   // 空字符串清空

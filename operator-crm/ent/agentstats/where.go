@@ -65,6 +65,11 @@ func UpdatedAt(v time.Time) predicate.AgentStats {
 	return predicate.AgentStats(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// OperatorCode applies equality check predicate on the "operator_code" field. It's identical to OperatorCodeEQ.
+func OperatorCode(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldEQ(FieldOperatorCode, v))
+}
+
 // AgentID applies equality check predicate on the "agent_id" field. It's identical to AgentIDEQ.
 func AgentID(v int64) predicate.AgentStats {
 	return predicate.AgentStats(sql.FieldEQ(FieldAgentID, v))
@@ -188,6 +193,71 @@ func UpdatedAtLT(v time.Time) predicate.AgentStats {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.AgentStats {
 	return predicate.AgentStats(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// OperatorCodeEQ applies the EQ predicate on the "operator_code" field.
+func OperatorCodeEQ(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeNEQ applies the NEQ predicate on the "operator_code" field.
+func OperatorCodeNEQ(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldNEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeIn applies the In predicate on the "operator_code" field.
+func OperatorCodeIn(vs ...string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeNotIn applies the NotIn predicate on the "operator_code" field.
+func OperatorCodeNotIn(vs ...string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldNotIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeGT applies the GT predicate on the "operator_code" field.
+func OperatorCodeGT(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldGT(FieldOperatorCode, v))
+}
+
+// OperatorCodeGTE applies the GTE predicate on the "operator_code" field.
+func OperatorCodeGTE(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldGTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeLT applies the LT predicate on the "operator_code" field.
+func OperatorCodeLT(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldLT(FieldOperatorCode, v))
+}
+
+// OperatorCodeLTE applies the LTE predicate on the "operator_code" field.
+func OperatorCodeLTE(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldLTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeContains applies the Contains predicate on the "operator_code" field.
+func OperatorCodeContains(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldContains(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasPrefix applies the HasPrefix predicate on the "operator_code" field.
+func OperatorCodeHasPrefix(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldHasPrefix(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasSuffix applies the HasSuffix predicate on the "operator_code" field.
+func OperatorCodeHasSuffix(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldHasSuffix(FieldOperatorCode, v))
+}
+
+// OperatorCodeEqualFold applies the EqualFold predicate on the "operator_code" field.
+func OperatorCodeEqualFold(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldEqualFold(FieldOperatorCode, v))
+}
+
+// OperatorCodeContainsFold applies the ContainsFold predicate on the "operator_code" field.
+func OperatorCodeContainsFold(v string) predicate.AgentStats {
+	return predicate.AgentStats(sql.FieldContainsFold(FieldOperatorCode, v))
 }
 
 // AgentIDEQ applies the EQ predicate on the "agent_id" field.

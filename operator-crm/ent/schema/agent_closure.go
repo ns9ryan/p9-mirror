@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"context"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
@@ -8,6 +10,9 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
+
+	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 )
 
 // AgentClosure 定义代理祖先与子孙的闭包关系，包含自身。
@@ -63,6 +68,23 @@ func (AgentClosure) Indexes() []ent.Index {
 			StorageKey("idx_agent_closure_descendant"),
 		index.Fields("ancestor_id", "depth").
 			StorageKey("idx_agent_closure_ancestor"),
+	}
+}
+
+// Mixin 定义代理闭包表公共字段
+func (AgentClosure) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		entmixin.OperatorCodeNotNullMixin{},
+	}
+}
+
+// Interceptors 定义代理闭包表查询隔离
+func (AgentClosure) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
 	}
 }
 

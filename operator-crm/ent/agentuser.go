@@ -24,6 +24,8 @@ type AgentUser struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Updated At | 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Deleted At | 删除时间
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	// Operator Code | 分站编码
 	OperatorCode string `json:"operator_code,omitempty"`
 	// 登录账号, 保留原始大小写
@@ -210,7 +212,7 @@ func (*AgentUser) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case agentuser.FieldOperatorCode, agentuser.FieldAccount, agentuser.FieldCode, agentuser.FieldAgentLineCode, agentuser.FieldPromoCode, agentuser.FieldLoginPasswordHash, agentuser.FieldWithdrawPasswordHash, agentuser.FieldSalt, agentuser.FieldRemark, agentuser.FieldRegisterIP, agentuser.FieldLastLoginIP, agentuser.FieldLastLoginUdid:
 			values[i] = new(sql.NullString)
-		case agentuser.FieldCreatedAt, agentuser.FieldUpdatedAt, agentuser.FieldRegisterAt, agentuser.FieldLastLoginAt:
+		case agentuser.FieldCreatedAt, agentuser.FieldUpdatedAt, agentuser.FieldDeletedAt, agentuser.FieldRegisterAt, agentuser.FieldLastLoginAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -244,6 +246,13 @@ func (_m *AgentUser) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
+			}
+		case agentuser.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				_m.DeletedAt = new(time.Time)
+				*_m.DeletedAt = value.Time
 			}
 		case agentuser.FieldOperatorCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -483,6 +492,11 @@ func (_m *AgentUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	if v := _m.DeletedAt; v != nil {
+		builder.WriteString("deleted_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("operator_code=")
 	builder.WriteString(_m.OperatorCode)

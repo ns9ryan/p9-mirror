@@ -4,12 +4,20 @@ package crm;
 
 option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc";
 
-import "types/auth.proto";
+// 基础服务
 import "types/ping.proto";
-import "types/agent.proto";
 import "types/init.proto";
+
+// 代理服务
+import "types/auth.proto";
+import "types/agent.proto";
+
+// 会员管理
+import "types/member.proto";
 import "types/member_auto_level.proto";
 import "types/member_fixed_level.proto";
+
+// VIP 管理
 import "types/vip_config.proto";
 import "types/vip_level.proto";
 import "types/vip_icon_group.proto";
@@ -87,6 +95,8 @@ service AgentService {
   // group: agent
   rpc updateAgentStatus(crm_agent.UpdateAgentStatusReq) returns (crm_agent.Empty);
   // group: agent
+  rpc deleteAgent(crm_agent.DeleteAgentReq) returns (crm_agent.Empty);
+  // group: agent
   rpc updateAgentRemark(crm_agent.UpdateAgentRemarkReq) returns (crm_agent.Empty);
   // group: agent
   rpc updateAgentProfile(crm_agent.UpdateAgentProfileReq) returns (crm_agent.AgentProfile);
@@ -96,6 +106,20 @@ service AgentService {
   rpc listAgentLoginAssociations(crm_agent.ListAgentLoginAssociationsReq) returns (crm_agent.ListAgentLoginAssociationsResp);
   // group: agent
   rpc listAgentOpLogs(crm_agent.ListAgentOpLogsReq) returns (crm_agent.ListAgentOpLogsResp);
+}
+
+// 会员管理服务
+service Member {
+  // ==================== 会员管理 ====================
+
+  // 创建会员
+  rpc Create(crm_member.CreateMemberRequest) returns (crm_member.CreateMemberResponse);
+
+  // 获取会员列表
+  rpc List(crm_member.ListMembersRequest) returns (crm_member.ListMembersResponse);
+
+  // 查看会员敏感信息
+  rpc GetSensitiveInfo(crm_member.GetMemberSensitiveInfoRequest) returns (crm_member.GetMemberSensitiveInfoResponse);
 }
 
 // 会员自动层级服务

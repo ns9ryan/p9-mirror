@@ -15,6 +15,8 @@ import (
 // 代理祖先-子孙闭包，含自己
 type AgentClosure struct {
 	config `json:"-"`
+	// Operator Code | 分站编码
+	OperatorCode string `json:"operator_code,omitempty"`
 	// 祖先agent ID
 	AncestorID int64 `json:"ancestor_id,omitempty"`
 	// 子孙agent ID
@@ -67,6 +69,8 @@ func (*AgentClosure) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case agentclosure.FieldAncestorID, agentclosure.FieldDescendantID, agentclosure.FieldDepth:
 			values[i] = new(sql.NullInt64)
+		case agentclosure.FieldOperatorCode:
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -82,6 +86,12 @@ func (_m *AgentClosure) assignValues(columns []string, values []any) error {
 	}
 	for i := range columns {
 		switch columns[i] {
+		case agentclosure.FieldOperatorCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
+			} else if value.Valid {
+				_m.OperatorCode = value.String
+			}
 		case agentclosure.FieldAncestorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field ancestor_id", values[i])
@@ -145,6 +155,9 @@ func (_m *AgentClosure) Unwrap() *AgentClosure {
 func (_m *AgentClosure) String() string {
 	var builder strings.Builder
 	builder.WriteString("AgentClosure(")
+	builder.WriteString("operator_code=")
+	builder.WriteString(_m.OperatorCode)
+	builder.WriteString(", ")
 	builder.WriteString("ancestor_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.AncestorID))
 	builder.WriteString(", ")

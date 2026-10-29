@@ -45,4 +45,7 @@ const (
 	AgentApplyAccountUsedByOther   = "agent.applyAccountUsedByOther"
 	AgentApplyMemberCodeExists     = "agent.applyMemberCodeExists"
 	AgentNotFound                  = "agent.notFound"
+	AgentHasChildren               = "agent.hasChildren"
+	AgentCannotDeleteRoot          = "agent.cannotDeleteRoot"
+	AgentIsDesignated              = "agent.isDesignated"
 )

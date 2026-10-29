@@ -3,6 +3,7 @@
 package agentclosure
 
 import (
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -10,6 +11,8 @@ import (
 const (
 	// Label holds the string label denoting the agentclosure type in the database.
 	Label = "agent_closure"
+	// FieldOperatorCode holds the string denoting the operator_code field in the database.
+	FieldOperatorCode = "operator_code"
 	// FieldAncestorID holds the string denoting the ancestor_id field in the database.
 	FieldAncestorID = "ancestor_id"
 	// FieldDescendantID holds the string denoting the descendant_id field in the database.
@@ -42,6 +45,7 @@ const (
 
 // Columns holds all SQL columns for agentclosure fields.
 var Columns = []string{
+	FieldOperatorCode,
 	FieldAncestorID,
 	FieldDescendantID,
 	FieldDepth,
@@ -57,13 +61,27 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "oa.98ent.com/p9/operator-crm/ent/runtime"
 var (
+	Hooks        [1]ent.Hook
+	Interceptors [2]ent.Interceptor
+	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	OperatorCodeValidator func(string) error
 	// DepthValidator is a validator for the "depth" field. It is called by the builders before save.
 	DepthValidator func(int64) error
 )
 
 // OrderOption defines the ordering options for the AgentClosure queries.
 type OrderOption func(*sql.Selector)
+
+// ByOperatorCode orders the results by the operator_code field.
+func ByOperatorCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOperatorCode, opts...).ToFunc()
+}
 
 // ByAncestorID orders the results by the ancestor_id field.
 func ByAncestorID(opts ...sql.OrderTermOption) OrderOption {

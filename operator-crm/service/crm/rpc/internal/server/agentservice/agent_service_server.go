@@ -157,6 +157,12 @@ func (s *AgentServiceServer) UpdateAgentStatus(ctx context.Context, in *agentpb.
 }
 
 // group: agent
+func (s *AgentServiceServer) DeleteAgent(ctx context.Context, in *agentpb.DeleteAgentReq) (*agentpb.Empty, error) {
+	l := agentservicelogic.NewDeleteAgentLogic(ctx, s.svcCtx)
+	return l.DeleteAgent(in)
+}
+
+// group: agent
 func (s *AgentServiceServer) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateAgentRemarkLogic(ctx, s.svcCtx)
 	return l.UpdateAgentRemark(in)

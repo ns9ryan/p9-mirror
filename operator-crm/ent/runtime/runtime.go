@@ -240,8 +240,35 @@ func init() {
 			return nil
 		}
 	}()
+	agentclosureMixin := schema.AgentClosure{}.Mixin()
+	agentclosureMixinHooks0 := agentclosureMixin[0].Hooks()
+	agentclosure.Hooks[0] = agentclosureMixinHooks0[0]
+	agentclosureMixinInters0 := agentclosureMixin[0].Interceptors()
+	agentclosureInters := schema.AgentClosure{}.Interceptors()
+	agentclosure.Interceptors[0] = agentclosureMixinInters0[0]
+	agentclosure.Interceptors[1] = agentclosureInters[0]
+	agentclosureMixinFields0 := agentclosureMixin[0].Fields()
+	_ = agentclosureMixinFields0
 	agentclosureFields := schema.AgentClosure{}.Fields()
 	_ = agentclosureFields
+	// agentclosureDescOperatorCode is the schema descriptor for operator_code field.
+	agentclosureDescOperatorCode := agentclosureMixinFields0[0].Descriptor()
+	// agentclosure.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	agentclosure.OperatorCodeValidator = func() func(string) error {
+		validators := agentclosureDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentclosureDescDepth is the schema descriptor for depth field.
 	agentclosureDescDepth := agentclosureFields[2].Descriptor()
 	// agentclosure.DepthValidator is a validator for the "depth" field. It is called by the builders before save.
@@ -948,8 +975,16 @@ func init() {
 		}
 	}()
 	agentstatsMixin := schema.AgentStats{}.Mixin()
+	agentstatsMixinHooks2 := agentstatsMixin[2].Hooks()
+	agentstats.Hooks[0] = agentstatsMixinHooks2[0]
+	agentstatsMixinInters2 := agentstatsMixin[2].Interceptors()
+	agentstatsInters := schema.AgentStats{}.Interceptors()
+	agentstats.Interceptors[0] = agentstatsMixinInters2[0]
+	agentstats.Interceptors[1] = agentstatsInters[0]
 	agentstatsMixinFields1 := agentstatsMixin[1].Fields()
 	_ = agentstatsMixinFields1
+	agentstatsMixinFields2 := agentstatsMixin[2].Fields()
+	_ = agentstatsMixinFields2
 	agentstatsFields := schema.AgentStats{}.Fields()
 	_ = agentstatsFields
 	// agentstatsDescCreatedAt is the schema descriptor for created_at field.
@@ -962,6 +997,24 @@ func init() {
 	agentstats.DefaultUpdatedAt = agentstatsDescUpdatedAt.Default.(func() time.Time)
 	// agentstats.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	agentstats.UpdateDefaultUpdatedAt = agentstatsDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// agentstatsDescOperatorCode is the schema descriptor for operator_code field.
+	agentstatsDescOperatorCode := agentstatsMixinFields2[0].Descriptor()
+	// agentstats.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	agentstats.OperatorCodeValidator = func() func(string) error {
+		validators := agentstatsDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// agentstatsDescDirectMemberCount is the schema descriptor for direct_member_count field.
 	agentstatsDescDirectMemberCount := agentstatsFields[1].Descriptor()
 	// agentstats.DefaultDirectMemberCount holds the default value on creation for the direct_member_count field.
@@ -1012,15 +1065,20 @@ func init() {
 	agentstats.VisitUvValidator = agentstatsDescVisitUv.Validators[0].(func(int64) error)
 	agentuserMixin := schema.AgentUser{}.Mixin()
 	agentuserMixinHooks2 := agentuserMixin[2].Hooks()
+	agentuserMixinHooks3 := agentuserMixin[3].Hooks()
 	agentuser.Hooks[0] = agentuserMixinHooks2[0]
+	agentuser.Hooks[1] = agentuserMixinHooks3[0]
 	agentuserMixinInters2 := agentuserMixin[2].Interceptors()
+	agentuserMixinInters3 := agentuserMixin[3].Interceptors()
 	agentuserInters := schema.AgentUser{}.Interceptors()
 	agentuser.Interceptors[0] = agentuserMixinInters2[0]
-	agentuser.Interceptors[1] = agentuserInters[0]
+	agentuser.Interceptors[1] = agentuserMixinInters3[0]
+	agentuser.Interceptors[2] = agentuserInters[0]
+	agentuser.Interceptors[3] = agentuserInters[1]
 	agentuserMixinFields1 := agentuserMixin[1].Fields()
 	_ = agentuserMixinFields1
-	agentuserMixinFields2 := agentuserMixin[2].Fields()
-	_ = agentuserMixinFields2
+	agentuserMixinFields3 := agentuserMixin[3].Fields()
+	_ = agentuserMixinFields3
 	agentuserFields := schema.AgentUser{}.Fields()
 	_ = agentuserFields
 	// agentuserDescCreatedAt is the schema descriptor for created_at field.
@@ -1034,7 +1092,7 @@ func init() {
 	// agentuser.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	agentuser.UpdateDefaultUpdatedAt = agentuserDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// agentuserDescOperatorCode is the schema descriptor for operator_code field.
-	agentuserDescOperatorCode := agentuserMixinFields2[0].Descriptor()
+	agentuserDescOperatorCode := agentuserMixinFields3[0].Descriptor()
 	// agentuser.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
 	agentuser.OperatorCodeValidator = func() func(string) error {
 		validators := agentuserDescOperatorCode.Validators

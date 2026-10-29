@@ -22,6 +22,12 @@ type AgentClosureCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetOperatorCode sets the "operator_code" field.
+func (_c *AgentClosureCreate) SetOperatorCode(v string) *AgentClosureCreate {
+	_c.mutation.SetOperatorCode(v)
+	return _c
+}
+
 // SetAncestorID sets the "ancestor_id" field.
 func (_c *AgentClosureCreate) SetAncestorID(v int64) *AgentClosureCreate {
 	_c.mutation.SetAncestorID(v)
@@ -84,6 +90,14 @@ func (_c *AgentClosureCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *AgentClosureCreate) check() error {
+	if _, ok := _c.mutation.OperatorCode(); !ok {
+		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "AgentClosure.operator_code"`)}
+	}
+	if v, ok := _c.mutation.OperatorCode(); ok {
+		if err := agentclosure.OperatorCodeValidator(v); err != nil {
+			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "AgentClosure.operator_code": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.AncestorID(); !ok {
 		return &ValidationError{Name: "ancestor_id", err: errors.New(`ent: missing required field "AgentClosure.ancestor_id"`)}
 	}
@@ -127,6 +141,10 @@ func (_c *AgentClosureCreate) createSpec() (*AgentClosure, *sqlgraph.CreateSpec)
 		_spec = sqlgraph.NewCreateSpec(agentclosure.Table, nil)
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.OperatorCode(); ok {
+		_spec.SetField(agentclosure.FieldOperatorCode, field.TypeString, value)
+		_node.OperatorCode = value
+	}
 	if value, ok := _c.mutation.Depth(); ok {
 		_spec.SetField(agentclosure.FieldDepth, field.TypeInt64, value)
 		_node.Depth = value
@@ -172,7 +190,7 @@ func (_c *AgentClosureCreate) createSpec() (*AgentClosure, *sqlgraph.CreateSpec)
 // of the `INSERT` statement. For example:
 //
 //	client.AgentClosure.Create().
-//		SetAncestorID(v).
+//		SetOperatorCode(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -181,7 +199,7 @@ func (_c *AgentClosureCreate) createSpec() (*AgentClosure, *sqlgraph.CreateSpec)
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AgentClosureUpsert) {
-//			SetAncestorID(v+v).
+//			SetOperatorCode(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *AgentClosureCreate) OnConflict(opts ...sql.ConflictOption) *AgentClosureUpsertOne {
@@ -246,6 +264,9 @@ func (u *AgentClosureUpsert) AddDepth(v int64) *AgentClosureUpsert {
 func (u *AgentClosureUpsertOne) UpdateNewValues() *AgentClosureUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(agentclosure.FieldOperatorCode)
+		}
 		if _, exists := u.create.mutation.AncestorID(); exists {
 			s.SetIgnore(agentclosure.FieldAncestorID)
 		}
@@ -415,7 +436,7 @@ func (_c *AgentClosureCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AgentClosureUpsert) {
-//			SetAncestorID(v+v).
+//			SetOperatorCode(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *AgentClosureCreateBulk) OnConflict(opts ...sql.ConflictOption) *AgentClosureUpsertBulk {
@@ -456,6 +477,9 @@ func (u *AgentClosureUpsertBulk) UpdateNewValues() *AgentClosureUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(agentclosure.FieldOperatorCode)
+			}
 			if _, exists := b.mutation.AncestorID(); exists {
 				s.SetIgnore(agentclosure.FieldAncestorID)
 			}

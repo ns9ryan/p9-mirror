@@ -231,13 +231,16 @@ func (AgentUser) Indexes() []ent.Index {
 			StorageKey("uk_agent_user_id_operator"),
 		index.Fields("operator_code", "account").
 			Unique().
-			StorageKey("uk_agent_user_operator_account"),
+			StorageKey("uk_agent_user_operator_account").
+			Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 		index.Fields("operator_code", "code").
 			Unique().
-			StorageKey("uk_agent_user_operator_code"),
+			StorageKey("uk_agent_user_operator_code").
+			Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 		index.Fields("operator_code", "promo_code").
 			Unique().
-			StorageKey("uk_agent_user_operator_promo"),
+			StorageKey("uk_agent_user_operator_promo").
+			Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 		index.Fields("operator_code", "parent_id").
 			StorageKey("idx_agent_user_operator_parent"),
 	}
@@ -248,6 +251,7 @@ func (AgentUser) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
+		entmixin.SoftDeleteMixin{},
 		entmixin.OperatorCodeNotNullMixin{},
 	}
 }
@@ -257,6 +261,10 @@ func (AgentUser) Interceptors() []ent.Interceptor {
 	return []ent.Interceptor{
 		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
 			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterSoftDelete(ctx, q)
 			return nil
 		}),
 	}

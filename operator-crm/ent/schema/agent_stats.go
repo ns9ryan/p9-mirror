@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"context"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -9,6 +11,7 @@ import (
 	"entgo.io/ent/schema/index"
 
 	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-crm/ent/intercept"
 )
 
 // AgentStats 定义代理统计表结构。
@@ -92,6 +95,17 @@ func (AgentStats) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
+		entmixin.OperatorCodeNotNullMixin{},
+	}
+}
+
+// Interceptors 定义代理统计表查询隔离
+func (AgentStats) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
 	}
 }
 

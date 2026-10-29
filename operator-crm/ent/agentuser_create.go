@@ -52,6 +52,20 @@ func (_c *AgentUserCreate) SetNillableUpdatedAt(v *time.Time) *AgentUserCreate {
 	return _c
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_c *AgentUserCreate) SetDeletedAt(v time.Time) *AgentUserCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_c *AgentUserCreate) SetNillableDeletedAt(v *time.Time) *AgentUserCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
+	}
+	return _c
+}
+
 // SetOperatorCode sets the "operator_code" field.
 func (_c *AgentUserCreate) SetOperatorCode(v string) *AgentUserCreate {
 	_c.mutation.SetOperatorCode(v)
@@ -666,6 +680,10 @@ func (_c *AgentUserCreate) createSpec() (*AgentUser, *sqlgraph.CreateSpec) {
 		_spec.SetField(agentuser.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
+	if value, ok := _c.mutation.DeletedAt(); ok {
+		_spec.SetField(agentuser.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = &value
+	}
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(agentuser.FieldOperatorCode, field.TypeString, value)
 		_node.OperatorCode = value
@@ -941,6 +959,24 @@ func (u *AgentUserUpsert) SetUpdatedAt(v time.Time) *AgentUserUpsert {
 // UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
 func (u *AgentUserUpsert) UpdateUpdatedAt() *AgentUserUpsert {
 	u.SetExcluded(agentuser.FieldUpdatedAt)
+	return u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *AgentUserUpsert) SetDeletedAt(v time.Time) *AgentUserUpsert {
+	u.Set(agentuser.FieldDeletedAt, v)
+	return u
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *AgentUserUpsert) UpdateDeletedAt() *AgentUserUpsert {
+	u.SetExcluded(agentuser.FieldDeletedAt)
+	return u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *AgentUserUpsert) ClearDeletedAt() *AgentUserUpsert {
+	u.SetNull(agentuser.FieldDeletedAt)
 	return u
 }
 
@@ -1369,6 +1405,27 @@ func (u *AgentUserUpsertOne) SetUpdatedAt(v time.Time) *AgentUserUpsertOne {
 func (u *AgentUserUpsertOne) UpdateUpdatedAt() *AgentUserUpsertOne {
 	return u.Update(func(s *AgentUserUpsert) {
 		s.UpdateUpdatedAt()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *AgentUserUpsertOne) SetDeletedAt(v time.Time) *AgentUserUpsertOne {
+	return u.Update(func(s *AgentUserUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *AgentUserUpsertOne) UpdateDeletedAt() *AgentUserUpsertOne {
+	return u.Update(func(s *AgentUserUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *AgentUserUpsertOne) ClearDeletedAt() *AgentUserUpsertOne {
+	return u.Update(func(s *AgentUserUpsert) {
+		s.ClearDeletedAt()
 	})
 }
 
@@ -2023,6 +2080,27 @@ func (u *AgentUserUpsertBulk) SetUpdatedAt(v time.Time) *AgentUserUpsertBulk {
 func (u *AgentUserUpsertBulk) UpdateUpdatedAt() *AgentUserUpsertBulk {
 	return u.Update(func(s *AgentUserUpsert) {
 		s.UpdateUpdatedAt()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *AgentUserUpsertBulk) SetDeletedAt(v time.Time) *AgentUserUpsertBulk {
+	return u.Update(func(s *AgentUserUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *AgentUserUpsertBulk) UpdateDeletedAt() *AgentUserUpsertBulk {
+	return u.Update(func(s *AgentUserUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *AgentUserUpsertBulk) ClearDeletedAt() *AgentUserUpsertBulk {
+	return u.Update(func(s *AgentUserUpsert) {
+		s.ClearDeletedAt()
 	})
 }
 

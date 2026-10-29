@@ -138,7 +138,6 @@ func (s *Service) LoadAgentTree(ctx context.Context) (*agentTree, error) {
 		return t, nil
 	}
 	rows, err := s.DB.AgentUser.Query().
-		Where(agentuser.OperatorCodeEQ(op)).
 		Select(
 			agentuser.FieldID, agentuser.FieldParentID,
 			agentuser.FieldAccount, agentuser.FieldLevel,
@@ -189,12 +188,12 @@ func (s *Service) AncestorsByIDRPC(ctx context.Context, in *agentpb.AncestorsByI
 	if err != nil {
 		return nil, err
 	}
-	items := make([]*agentpb.AgentAncestorItem, 0, len(chain))
+	list := make([]*agentpb.AgentAncestorItem, 0, len(chain))
 	for _, n := range chain {
 		if n == nil {
 			continue
 		}
-		items = append(items, &agentpb.AgentAncestorItem{
+		list = append(list, &agentpb.AgentAncestorItem{
 			Id:            n.ID,
 			ParentId:      n.ParentID,
 			Account:       n.Account,
@@ -204,7 +203,7 @@ func (s *Service) AncestorsByIDRPC(ctx context.Context, in *agentpb.AncestorsByI
 			LayerRate:     n.LayerRate,
 		})
 	}
-	return &agentpb.AncestorsByIDResp{List: items}, nil
+	return &agentpb.AncestorsByIDResp{List: list}, nil
 }
 
 func (s *Service) invalidateTree(op string) {

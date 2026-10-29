@@ -619,12 +619,14 @@ func (c *AgentClosureClient) QueryDescendant(_m *AgentClosure) *AgentUserQuery {
 
 // Hooks returns the client hooks.
 func (c *AgentClosureClient) Hooks() []Hook {
-	return c.hooks.AgentClosure
+	hooks := c.hooks.AgentClosure
+	return append(hooks[:len(hooks):len(hooks)], agentclosure.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *AgentClosureClient) Interceptors() []Interceptor {
-	return c.inters.AgentClosure
+	inters := c.inters.AgentClosure
+	return append(inters[:len(inters):len(inters)], agentclosure.Interceptors[:]...)
 }
 
 func (c *AgentClosureClient) mutate(ctx context.Context, m *AgentClosureMutation) (Value, error) {
@@ -1459,12 +1461,14 @@ func (c *AgentStatsClient) QueryAgent(_m *AgentStats) *AgentUserQuery {
 
 // Hooks returns the client hooks.
 func (c *AgentStatsClient) Hooks() []Hook {
-	return c.hooks.AgentStats
+	hooks := c.hooks.AgentStats
+	return append(hooks[:len(hooks):len(hooks)], agentstats.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
 func (c *AgentStatsClient) Interceptors() []Interceptor {
-	return c.inters.AgentStats
+	inters := c.inters.AgentStats
+	return append(inters[:len(inters):len(inters)], agentstats.Interceptors[:]...)
 }
 
 func (c *AgentStatsClient) mutate(ctx context.Context, m *AgentStatsMutation) (Value, error) {

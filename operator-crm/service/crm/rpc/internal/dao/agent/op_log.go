@@ -31,6 +31,7 @@ const (
 	opTargetTypeUser  int32 = 2 // 玩家
 
 	opActionCreate                 = "agent.opAction.create"                   // 创建
+	opActionDelete                 = "agent.opAction.delete"                   // 删除
 	opActionShareRate              = "agent.opAction.share_rate"               // 分享率
 	opActionPayoutRestricted       = "agent.opAction.payout_restricted"        // 提现限制
 	opActionStatus                 = "agent.opAction.status"                   // 状态

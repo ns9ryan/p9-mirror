@@ -19,6 +19,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
+	FieldDeletedAt = "deleted_at"
 	// FieldOperatorCode holds the string denoting the operator_code field in the database.
 	FieldOperatorCode = "operator_code"
 	// FieldAccount holds the string denoting the account field in the database.
@@ -142,6 +144,7 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldDeletedAt,
 	FieldOperatorCode,
 	FieldAccount,
 	FieldCode,
@@ -192,8 +195,8 @@ func ValidColumn(column string) bool {
 //
 //	import _ "oa.98ent.com/p9/operator-crm/ent/runtime"
 var (
-	Hooks        [1]ent.Hook
-	Interceptors [2]ent.Interceptor
+	Hooks        [2]ent.Hook
+	Interceptors [4]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -262,6 +265,11 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByDeletedAt orders the results by the deleted_at field.
+func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
 }
 
 // ByOperatorCode orders the results by the operator_code field.

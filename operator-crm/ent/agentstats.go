@@ -23,6 +23,8 @@ type AgentStats struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Updated At | 更新时间
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Operator Code | 分站编码
+	OperatorCode string `json:"operator_code,omitempty"`
 	// 被统计的agent ID
 	AgentID int64 `json:"agent_id,omitempty"`
 	// 直属会员数
@@ -74,6 +76,8 @@ func (*AgentStats) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case agentstats.FieldID, agentstats.FieldAgentID, agentstats.FieldDirectMemberCount, agentstats.FieldDirectAgentCount, agentstats.FieldTotalMemberCount, agentstats.FieldTotalAgentCount, agentstats.FieldTotalCommissionAmount, agentstats.FieldUnpaidCommissionAmount, agentstats.FieldCommissionClaimCount, agentstats.FieldVisitUv:
 			values[i] = new(sql.NullInt64)
+		case agentstats.FieldOperatorCode:
+			values[i] = new(sql.NullString)
 		case agentstats.FieldCreatedAt, agentstats.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
@@ -108,6 +112,12 @@ func (_m *AgentStats) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
+			}
+		case agentstats.FieldOperatorCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
+			} else if value.Valid {
+				_m.OperatorCode = value.String
 			}
 		case agentstats.FieldAgentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -209,6 +219,9 @@ func (_m *AgentStats) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("operator_code=")
+	builder.WriteString(_m.OperatorCode)
 	builder.WriteString(", ")
 	builder.WriteString("agent_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.AgentID))

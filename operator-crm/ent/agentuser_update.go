@@ -36,6 +36,26 @@ func (_u *AgentUserUpdate) SetUpdatedAt(v time.Time) *AgentUserUpdate {
 	return _u
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *AgentUserUpdate) SetDeletedAt(v time.Time) *AgentUserUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *AgentUserUpdate) SetNillableDeletedAt(v *time.Time) *AgentUserUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *AgentUserUpdate) ClearDeletedAt() *AgentUserUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
 // SetAccount sets the "account" field.
 func (_u *AgentUserUpdate) SetAccount(v string) *AgentUserUpdate {
 	_u.mutation.SetAccount(v)
@@ -810,6 +830,12 @@ func (_u *AgentUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentuser.FieldUpdatedAt, field.TypeTime, value)
 	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(agentuser.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(agentuser.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := _u.mutation.Account(); ok {
 		_spec.SetField(agentuser.FieldAccount, field.TypeString, value)
 	}
@@ -1231,6 +1257,26 @@ type AgentUserUpdateOne struct {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *AgentUserUpdateOne) SetUpdatedAt(v time.Time) *AgentUserUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *AgentUserUpdateOne) SetDeletedAt(v time.Time) *AgentUserUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *AgentUserUpdateOne) SetNillableDeletedAt(v *time.Time) *AgentUserUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *AgentUserUpdateOne) ClearDeletedAt() *AgentUserUpdateOne {
+	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -2037,6 +2083,12 @@ func (_u *AgentUserUpdateOne) sqlSave(ctx context.Context) (_node *AgentUser, er
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(agentuser.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(agentuser.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(agentuser.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.Account(); ok {
 		_spec.SetField(agentuser.FieldAccount, field.TypeString, value)

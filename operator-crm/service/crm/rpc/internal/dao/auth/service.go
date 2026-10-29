@@ -19,10 +19,13 @@ import (
 )
 
 const (
-	statusNormal    int64 = 1                   // 正常
-	blacklistPrefix       = "crm:agent:jwt:bl:" // 黑名单前缀
-	udidMaxLen            = 128                 // 设备码最大长度
-	uaMaxLen              = 512                 // 用户代理最大长度
+	statusNormal   int64 = 1 // 正常
+	statusFrozen   int64 = 2 // 冻结
+	statusDisabled int64 = 3 // 禁用
+
+	blacklistPrefix = "crm:agent:jwt:bl:" // 黑名单前缀
+	udidMaxLen      = 128                 // 设备码最大长度
+	uaMaxLen        = 512                 // 用户代理最大长度
 
 	loginTypePassword int32 = 1 // 账号密码
 
@@ -101,7 +104,7 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 		}
 		return nil, xerr.Unauthorized(i18n.AuthAccountOrPasswordIncorrect)
 	}
-	if u.Status != statusNormal {
+	if u.Status == statusDisabled {
 		if werr := s.writeLoginLog(ctx, in, u.ID, parentID, loginResultDisabled); werr != nil {
 			return nil, werr
 		}
@@ -210,7 +213,7 @@ func (s *Service) CheckToken(ctx context.Context, raw string) (*authpb.CheckToke
 		}
 		return nil, err
 	}
-	if u.Status != statusNormal {
+	if u.Status == statusDisabled {
 		return nil, xerr.Forbidden(i18n.AuthUserDisabled)
 	}
 	if u.Salt != c.Salt {
@@ -237,7 +240,7 @@ func (s *Service) sessionUser(ctx context.Context, c *Claims) (*ent.AgentUser, e
 		}
 		return nil, err
 	}
-	if u.Status != statusNormal || u.Salt != c.Salt {
+	if u.Status == statusDisabled || u.Salt != c.Salt {
 		return nil, xerr.Unauthorized(i18n.Unauthorized)
 	}
 	if u.OperatorCode == "" || u.OperatorCode != c.OperatorCode {

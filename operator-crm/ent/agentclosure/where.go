@@ -8,6 +8,11 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/predicate"
 )
 
+// OperatorCode applies equality check predicate on the "operator_code" field. It's identical to OperatorCodeEQ.
+func OperatorCode(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldEQ(FieldOperatorCode, v))
+}
+
 // AncestorID applies equality check predicate on the "ancestor_id" field. It's identical to AncestorIDEQ.
 func AncestorID(v int64) predicate.AgentClosure {
 	return predicate.AgentClosure(sql.FieldEQ(FieldAncestorID, v))
@@ -21,6 +26,71 @@ func DescendantID(v int64) predicate.AgentClosure {
 // Depth applies equality check predicate on the "depth" field. It's identical to DepthEQ.
 func Depth(v int64) predicate.AgentClosure {
 	return predicate.AgentClosure(sql.FieldEQ(FieldDepth, v))
+}
+
+// OperatorCodeEQ applies the EQ predicate on the "operator_code" field.
+func OperatorCodeEQ(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeNEQ applies the NEQ predicate on the "operator_code" field.
+func OperatorCodeNEQ(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldNEQ(FieldOperatorCode, v))
+}
+
+// OperatorCodeIn applies the In predicate on the "operator_code" field.
+func OperatorCodeIn(vs ...string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeNotIn applies the NotIn predicate on the "operator_code" field.
+func OperatorCodeNotIn(vs ...string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldNotIn(FieldOperatorCode, vs...))
+}
+
+// OperatorCodeGT applies the GT predicate on the "operator_code" field.
+func OperatorCodeGT(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldGT(FieldOperatorCode, v))
+}
+
+// OperatorCodeGTE applies the GTE predicate on the "operator_code" field.
+func OperatorCodeGTE(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldGTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeLT applies the LT predicate on the "operator_code" field.
+func OperatorCodeLT(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldLT(FieldOperatorCode, v))
+}
+
+// OperatorCodeLTE applies the LTE predicate on the "operator_code" field.
+func OperatorCodeLTE(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldLTE(FieldOperatorCode, v))
+}
+
+// OperatorCodeContains applies the Contains predicate on the "operator_code" field.
+func OperatorCodeContains(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldContains(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasPrefix applies the HasPrefix predicate on the "operator_code" field.
+func OperatorCodeHasPrefix(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldHasPrefix(FieldOperatorCode, v))
+}
+
+// OperatorCodeHasSuffix applies the HasSuffix predicate on the "operator_code" field.
+func OperatorCodeHasSuffix(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldHasSuffix(FieldOperatorCode, v))
+}
+
+// OperatorCodeEqualFold applies the EqualFold predicate on the "operator_code" field.
+func OperatorCodeEqualFold(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldEqualFold(FieldOperatorCode, v))
+}
+
+// OperatorCodeContainsFold applies the ContainsFold predicate on the "operator_code" field.
+func OperatorCodeContainsFold(v string) predicate.AgentClosure {
+	return predicate.AgentClosure(sql.FieldContainsFold(FieldOperatorCode, v))
 }
 
 // AncestorIDEQ applies the EQ predicate on the "ancestor_id" field.

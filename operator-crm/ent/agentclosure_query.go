@@ -260,12 +260,12 @@ func (_q *AgentClosureQuery) WithDescendant(opts ...func(*AgentUserQuery)) *Agen
 // Example:
 //
 //	var v []struct {
-//		AncestorID int64 `json:"ancestor_id,omitempty"`
+//		OperatorCode string `json:"operator_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.AgentClosure.Query().
-//		GroupBy(agentclosure.FieldAncestorID).
+//		GroupBy(agentclosure.FieldOperatorCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *AgentClosureQuery) GroupBy(field string, fields ...string) *AgentClosureGroupBy {
@@ -283,11 +283,11 @@ func (_q *AgentClosureQuery) GroupBy(field string, fields ...string) *AgentClosu
 // Example:
 //
 //	var v []struct {
-//		AncestorID int64 `json:"ancestor_id,omitempty"`
+//		OperatorCode string `json:"operator_code,omitempty"`
 //	}
 //
 //	client.AgentClosure.Query().
-//		Select(agentclosure.FieldAncestorID).
+//		Select(agentclosure.FieldOperatorCode).
 //		Scan(ctx, &v)
 func (_q *AgentClosureQuery) Select(fields ...string) *AgentClosureSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

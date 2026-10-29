@@ -51,6 +51,7 @@ var (
 	}
 	// AgentClosureColumns holds the columns for the "agent_closure" table.
 	AgentClosureColumns = []*schema.Column{
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
 		{Name: "depth", Type: field.TypeInt64, Comment: "0=自己，1=直属上级，越大越接近分站", SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "ancestor_id", Type: field.TypeInt64, Comment: "祖先agent ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "descendant_id", Type: field.TypeInt64, Comment: "子孙agent ID", SchemaType: map[string]string{"postgres": "bigint"}},
@@ -60,17 +61,17 @@ var (
 		Name:       "agent_closure",
 		Comment:    "代理祖先-子孙闭包，含自己",
 		Columns:    AgentClosureColumns,
-		PrimaryKey: []*schema.Column{AgentClosureColumns[1], AgentClosureColumns[2]},
+		PrimaryKey: []*schema.Column{AgentClosureColumns[2], AgentClosureColumns[3]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "fk_agent_closure_ancestor",
-				Columns:    []*schema.Column{AgentClosureColumns[1]},
+				Columns:    []*schema.Column{AgentClosureColumns[2]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "fk_agent_closure_descendant",
-				Columns:    []*schema.Column{AgentClosureColumns[2]},
+				Columns:    []*schema.Column{AgentClosureColumns[3]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -79,12 +80,12 @@ var (
 			{
 				Name:    "idx_agent_closure_descendant",
 				Unique:  false,
-				Columns: []*schema.Column{AgentClosureColumns[2], AgentClosureColumns[0]},
+				Columns: []*schema.Column{AgentClosureColumns[3], AgentClosureColumns[1]},
 			},
 			{
 				Name:    "idx_agent_closure_ancestor",
 				Unique:  false,
-				Columns: []*schema.Column{AgentClosureColumns[1], AgentClosureColumns[0]},
+				Columns: []*schema.Column{AgentClosureColumns[2], AgentClosureColumns[1]},
 			},
 		},
 	}
@@ -287,6 +288,7 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
 		{Name: "direct_member_count", Type: field.TypeInt64, Comment: "直属会员数", Default: 0},
 		{Name: "direct_agent_count", Type: field.TypeInt64, Comment: "直属代理数", Default: 0},
 		{Name: "total_member_count", Type: field.TypeInt64, Comment: "所有会员数", Default: 0},
@@ -306,7 +308,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "fk_agent_stats_agent",
-				Columns:    []*schema.Column{AgentStatsColumns[11]},
+				Columns:    []*schema.Column{AgentStatsColumns[12]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -315,7 +317,7 @@ var (
 			{
 				Name:    "uk_agent_stats_agent",
 				Unique:  true,
-				Columns: []*schema.Column{AgentStatsColumns[11]},
+				Columns: []*schema.Column{AgentStatsColumns[12]},
 			},
 		},
 	}
@@ -324,6 +326,7 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "Deleted At | 删除时间"},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
 		{Name: "account", Type: field.TypeString, Size: 64, Comment: "登录账号, 保留原始大小写", SchemaType: map[string]string{"postgres": "citext"}},
 		{Name: "code", Type: field.TypeString, Size: 64, Comment: "代理编码"},
@@ -357,13 +360,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "fk_agent_user_parent",
-				Columns:    []*schema.Column{AgentUserColumns[24]},
+				Columns:    []*schema.Column{AgentUserColumns[25]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Restrict,
 			},
 			{
 				Symbol:     "fk_agent_user_top",
-				Columns:    []*schema.Column{AgentUserColumns[25]},
+				Columns:    []*schema.Column{AgentUserColumns[26]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.Restrict,
 			},
@@ -372,27 +375,36 @@ var (
 			{
 				Name:    "uk_agent_user_id_operator",
 				Unique:  true,
-				Columns: []*schema.Column{AgentUserColumns[0], AgentUserColumns[3]},
+				Columns: []*schema.Column{AgentUserColumns[0], AgentUserColumns[4]},
 			},
 			{
 				Name:    "uk_agent_user_operator_account",
 				Unique:  true,
-				Columns: []*schema.Column{AgentUserColumns[3], AgentUserColumns[4]},
+				Columns: []*schema.Column{AgentUserColumns[4], AgentUserColumns[5]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "uk_agent_user_operator_code",
 				Unique:  true,
-				Columns: []*schema.Column{AgentUserColumns[3], AgentUserColumns[5]},
+				Columns: []*schema.Column{AgentUserColumns[4], AgentUserColumns[6]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "uk_agent_user_operator_promo",
 				Unique:  true,
-				Columns: []*schema.Column{AgentUserColumns[3], AgentUserColumns[13]},
+				Columns: []*schema.Column{AgentUserColumns[4], AgentUserColumns[14]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "idx_agent_user_operator_parent",
 				Unique:  false,
-				Columns: []*schema.Column{AgentUserColumns[3], AgentUserColumns[24]},
+				Columns: []*schema.Column{AgentUserColumns[4], AgentUserColumns[25]},
 			},
 		},
 	}

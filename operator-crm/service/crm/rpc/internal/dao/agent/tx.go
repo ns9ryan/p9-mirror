@@ -43,9 +43,18 @@ func insertClosures(ctx context.Context, tx *ent.Tx, newID, parentID int64) erro
 
 // 更新代理统计表 代理直属下级数及总代理数
 func bumpAgentCounts(ctx context.Context, tx *ent.Tx, parentID int64) error {
+	return adjustAgentCounts(ctx, tx, parentID, 1)
+}
+
+// 扣减代理统计表 代理直属下级数及总代理数（软删叶子代理后调用）
+func debumpAgentCounts(ctx context.Context, tx *ent.Tx, parentID int64) error {
+	return adjustAgentCounts(ctx, tx, parentID, -1)
+}
+
+func adjustAgentCounts(ctx context.Context, tx *ent.Tx, parentID int64, delta int64) error {
 	if _, err := tx.AgentStats.Update().
 		Where(agentstats.AgentIDEQ(parentID)).
-		AddDirectAgentCount(1).
+		AddDirectAgentCount(delta).
 		Save(ctx); err != nil {
 		return err
 	}
@@ -64,7 +73,7 @@ func bumpAgentCounts(ctx context.Context, tx *ent.Tx, parentID int64) error {
 	}
 	_, err = tx.AgentStats.Update().
 		Where(agentstats.AgentIDIn(ids...)).
-		AddTotalAgentCount(1).
+		AddTotalAgentCount(delta).
 		Save(ctx)
 	return err
 }

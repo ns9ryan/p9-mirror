@@ -513,12 +513,12 @@ func (s *Service) loadAgent(ctx context.Context, id int64) (*ent.AgentUser, erro
 	if id <= 0 {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
-	ctx, op, err := requireOperator(ctx)
+	ctx, _, err := requireOperator(ctx)
 	if err != nil {
 		return nil, err
 	}
 	row, err := s.DB.AgentUser.Query().
-		Where(agentuser.IDEQ(id), agentuser.OperatorCodeEQ(op)).
+		Where(agentuser.IDEQ(id)).
 		WithProfile().
 		Only(ctx)
 	if ent.IsNotFound(err) {

@@ -11,6 +11,30 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
 )
 
+// IsDesignatedAgent 判断代理是否被指定为生产、Demo、测试、信用Demo、信用测试代理。
+func (s *Service) IsDesignatedAgent(ctx context.Context, agentID int64) (bool, error) {
+	cfg, err := s.DB.AgentConfig.Query().Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	ids := []*int64{
+		cfg.CashProductionAgentID,
+		cfg.CashDemoAgentID,
+		cfg.CashTestAgentID,
+		cfg.CreditDemoAgentID,
+		cfg.CreditTestAgentID,
+	}
+	for _, id := range ids {
+		if id != nil && *id == agentID {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 // GetConfig 读取当前租户代理配置；无配置时返回全 0。
 func (s *Service) GetConfig(ctx context.Context) (*agentpb.AgentConfigResp, error) {
 	ctx, _, err := requireOperator(ctx)

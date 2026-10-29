@@ -1507,6 +1507,7 @@ type AgentClosureMutation struct {
 	config
 	op                Op
 	typ               string
+	operator_code     *string
 	depth             *int64
 	adddepth          *int64
 	clearedFields     map[string]struct{}
@@ -1555,6 +1556,25 @@ func (m AgentClosureMutation) Tx() (*Tx, error) {
 	tx := &Tx{config: m.config}
 	tx.init()
 	return tx, nil
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *AgentClosureMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *AgentClosureMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *AgentClosureMutation) ResetOperatorCode() {
+	m.operator_code = nil
 }
 
 // SetAncestorID sets the "ancestor_id" field.
@@ -1722,7 +1742,10 @@ func (m *AgentClosureMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentClosureMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
+	if m.operator_code != nil {
+		fields = append(fields, agentclosure.FieldOperatorCode)
+	}
 	if m.ancestor != nil {
 		fields = append(fields, agentclosure.FieldAncestorID)
 	}
@@ -1740,6 +1763,8 @@ func (m *AgentClosureMutation) Fields() []string {
 // schema.
 func (m *AgentClosureMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case agentclosure.FieldOperatorCode:
+		return m.OperatorCode()
 	case agentclosure.FieldAncestorID:
 		return m.AncestorID()
 	case agentclosure.FieldDescendantID:
@@ -1762,6 +1787,13 @@ func (m *AgentClosureMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *AgentClosureMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case agentclosure.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
+		return nil
 	case agentclosure.FieldAncestorID:
 		v, ok := value.(int64)
 		if !ok {
@@ -1847,6 +1879,9 @@ func (m *AgentClosureMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AgentClosureMutation) ResetField(name string) error {
 	switch name {
+	case agentclosure.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
 	case agentclosure.FieldAncestorID:
 		m.ResetAncestorID()
 		return nil
@@ -8606,6 +8641,7 @@ type AgentStatsMutation struct {
 	id                          *int64
 	created_at                  *time.Time
 	updated_at                  *time.Time
+	operator_code               *string
 	direct_member_count         *int64
 	adddirect_member_count      *int64
 	direct_agent_count          *int64
@@ -8804,6 +8840,42 @@ func (m *AgentStatsMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *AgentStatsMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// SetOperatorCode sets the "operator_code" field.
+func (m *AgentStatsMutation) SetOperatorCode(s string) {
+	m.operator_code = &s
+}
+
+// OperatorCode returns the value of the "operator_code" field in the mutation.
+func (m *AgentStatsMutation) OperatorCode() (r string, exists bool) {
+	v := m.operator_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOperatorCode returns the old "operator_code" field's value of the AgentStats entity.
+// If the AgentStats object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentStatsMutation) OldOperatorCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOperatorCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOperatorCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOperatorCode: %w", err)
+	}
+	return oldValue.OperatorCode, nil
+}
+
+// ResetOperatorCode resets all changes to the "operator_code" field.
+func (m *AgentStatsMutation) ResetOperatorCode() {
+	m.operator_code = nil
 }
 
 // SetAgentID sets the "agent_id" field.
@@ -9351,12 +9423,15 @@ func (m *AgentStatsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentStatsMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, agentstats.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, agentstats.FieldUpdatedAt)
+	}
+	if m.operator_code != nil {
+		fields = append(fields, agentstats.FieldOperatorCode)
 	}
 	if m.agent != nil {
 		fields = append(fields, agentstats.FieldAgentID)
@@ -9397,6 +9472,8 @@ func (m *AgentStatsMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case agentstats.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case agentstats.FieldOperatorCode:
+		return m.OperatorCode()
 	case agentstats.FieldAgentID:
 		return m.AgentID()
 	case agentstats.FieldDirectMemberCount:
@@ -9428,6 +9505,8 @@ func (m *AgentStatsMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldCreatedAt(ctx)
 	case agentstats.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case agentstats.FieldOperatorCode:
+		return m.OldOperatorCode(ctx)
 	case agentstats.FieldAgentID:
 		return m.OldAgentID(ctx)
 	case agentstats.FieldDirectMemberCount:
@@ -9468,6 +9547,13 @@ func (m *AgentStatsMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case agentstats.FieldOperatorCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOperatorCode(v)
 		return nil
 	case agentstats.FieldAgentID:
 		v, ok := value.(int64)
@@ -9686,6 +9772,9 @@ func (m *AgentStatsMutation) ResetField(name string) error {
 	case agentstats.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case agentstats.FieldOperatorCode:
+		m.ResetOperatorCode()
+		return nil
 	case agentstats.FieldAgentID:
 		m.ResetAgentID()
 		return nil
@@ -9799,6 +9888,7 @@ type AgentUserMutation struct {
 	id                     *int64
 	created_at             *time.Time
 	updated_at             *time.Time
+	deleted_at             *time.Time
 	operator_code          *string
 	account                *string
 	code                   *string
@@ -10027,6 +10117,55 @@ func (m *AgentUserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *AgentUserMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *AgentUserMutation) SetDeletedAt(t time.Time) {
+	m.deleted_at = &t
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *AgentUserMutation) DeletedAt() (r time.Time, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the AgentUser entity.
+// If the AgentUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentUserMutation) OldDeletedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (m *AgentUserMutation) ClearDeletedAt() {
+	m.deleted_at = nil
+	m.clearedFields[agentuser.FieldDeletedAt] = struct{}{}
+}
+
+// DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
+func (m *AgentUserMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[agentuser.FieldDeletedAt]
+	return ok
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *AgentUserMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	delete(m.clearedFields, agentuser.FieldDeletedAt)
 }
 
 // SetOperatorCode sets the "operator_code" field.
@@ -11496,12 +11635,15 @@ func (m *AgentUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentUserMutation) Fields() []string {
-	fields := make([]string, 0, 25)
+	fields := make([]string, 0, 26)
 	if m.created_at != nil {
 		fields = append(fields, agentuser.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, agentuser.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, agentuser.FieldDeletedAt)
 	}
 	if m.operator_code != nil {
 		fields = append(fields, agentuser.FieldOperatorCode)
@@ -11584,6 +11726,8 @@ func (m *AgentUserMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case agentuser.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case agentuser.FieldDeletedAt:
+		return m.DeletedAt()
 	case agentuser.FieldOperatorCode:
 		return m.OperatorCode()
 	case agentuser.FieldAccount:
@@ -11643,6 +11787,8 @@ func (m *AgentUserMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldCreatedAt(ctx)
 	case agentuser.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case agentuser.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
 	case agentuser.FieldOperatorCode:
 		return m.OldOperatorCode(ctx)
 	case agentuser.FieldAccount:
@@ -11711,6 +11857,13 @@ func (m *AgentUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case agentuser.FieldDeletedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
 		return nil
 	case agentuser.FieldOperatorCode:
 		v, ok := value.(string)
@@ -11990,6 +12143,9 @@ func (m *AgentUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AgentUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(agentuser.FieldDeletedAt) {
+		fields = append(fields, agentuser.FieldDeletedAt)
+	}
 	if m.FieldCleared(agentuser.FieldParentID) {
 		fields = append(fields, agentuser.FieldParentID)
 	}
@@ -12031,6 +12187,9 @@ func (m *AgentUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AgentUserMutation) ClearField(name string) error {
 	switch name {
+	case agentuser.FieldDeletedAt:
+		m.ClearDeletedAt()
+		return nil
 	case agentuser.FieldParentID:
 		m.ClearParentID()
 		return nil
@@ -12071,6 +12230,9 @@ func (m *AgentUserMutation) ResetField(name string) error {
 		return nil
 	case agentuser.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case agentuser.FieldDeletedAt:
+		m.ResetDeletedAt()
 		return nil
 	case agentuser.FieldOperatorCode:
 		m.ResetOperatorCode()
