@@ -25,6 +25,16 @@ func (d *MemberAutoLevel) Create(ctx context.Context, name string, minDeposit, m
 		Save(ctx)
 }
 
+// GetDefaultTx 获取默认自动层级
+func (d *MemberAutoLevel) GetDefaultTx(ctx context.Context, tx *ent.Tx) (*ent.MemberAutoLevel, error) {
+	return tx.MemberAutoLevel.Query().
+		Where(
+			entlevel.MinDepositEQ(0), // 晋级要求的累计存款金额
+			entlevel.MinWaterEQ(0),   // 晋级要求的累计洗码量
+		).
+		Only(ctx)
+}
+
 // HasThresholdConflict 检查晋级条件是否与已有层级冲突
 func (d *MemberAutoLevel) HasThresholdConflict(ctx context.Context, minDeposit, minWater int64) (bool, error) {
 	// 两项条件必须分别严格大于当前厅所有已有层级

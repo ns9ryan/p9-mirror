@@ -67,6 +67,13 @@ func (d *MemberVipLevel) Get(ctx context.Context, id int64) (*ent.MemberVipLevel
 		Only(ctx)
 }
 
+// GetDefaultTx 获取默认VIP等级
+func (d *MemberVipLevel) GetDefaultTx(ctx context.Context, tx *ent.Tx) (*ent.MemberVipLevel, error) {
+	return tx.MemberVipLevel.Query().
+		Where(memberviplevel.LevelEQ(0)). // VIP等级编号, 从0开始连续递增
+		Only(ctx)
+}
+
 // GetHighest 获取当前最高VIP等级
 func (d *MemberVipLevel) GetHighest(ctx context.Context) (*ent.MemberVipLevel, error) {
 	return d.db.MemberVipLevel.Query().
