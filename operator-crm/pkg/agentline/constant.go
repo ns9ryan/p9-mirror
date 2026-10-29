@@ -32,6 +32,31 @@ func IsValid(code string) bool {
 	return slices.Contains(all, code)
 }
 
+// IsCashProduction 判断代理子线路编码是否为现金正式线路
+func IsCashProduction(code string) bool {
+	return code == CashProduction
+}
+
+// IsCashDemo 判断代理子线路编码是否为现金试玩线路
+func IsCashDemo(code string) bool {
+	return code == CashDemo
+}
+
+// IsCashTest 判断代理子线路编码是否为现金测试线路
+func IsCashTest(code string) bool {
+	return code == CashTest
+}
+
+// IsCreditDemo 判断代理子线路编码是否为信誉试玩线路
+func IsCreditDemo(code string) bool {
+	return code == CreditDemo
+}
+
+// IsCreditTest 判断代理子线路编码是否为信誉测试线路
+func IsCreditTest(code string) bool {
+	return code == CreditTest
+}
+
 // All 获取全部代理子线路编码
 func All() []string {
 	return slices.Clone(all)

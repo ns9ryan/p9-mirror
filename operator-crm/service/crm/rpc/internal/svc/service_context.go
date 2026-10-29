@@ -57,18 +57,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DB:       c.DataRedis.DB,
 		})
 	}
+	// 创建代理管理服务
+	agentServ := agent.New(db)
 
 	return &ServiceContext{
 		Config: c,
 		DB:     db,
 		Redis:  rdb,
 		DAO:    dao.New(db),
-		Auth: auth.New(db, rdb, auth.Config{
+		Auth: auth.New(db, agentServ, rdb, auth.Config{
 			AccessSecret:  c.AgentAdminJwt.AccessSecret,
 			AccessExpire:  c.AgentAdminJwt.AccessExpire,
 			RefreshSecret: c.AgentAdminJwt.RefreshSecret,
 			RefreshExpire: c.AgentAdminJwt.RefreshExpire,
 		}),
-		Agent: agent.New(db),
+		Agent: agentServ,
 	}
 }

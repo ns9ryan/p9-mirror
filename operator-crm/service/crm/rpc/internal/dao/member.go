@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"oa.98ent.com/p9/operator-crm/ent"
+	"oa.98ent.com/p9/operator-crm/ent/member"
+	"oa.98ent.com/p9/operator-crm/ent/memberauth"
 )
 
 // Member 会员数据访问
@@ -46,6 +48,27 @@ type MemberCreate struct {
 	RegisterIP         *string // 注册IP
 	RegisterDeviceCode *string // 注册设备标识
 	RegisterDomain     *string // 注册域名
+}
+
+// CodeExistsTx 检查当前厅的会员编号是否已存在
+func (*Member) CodeExistsTx(ctx context.Context, tx *ent.Tx, code string) (bool, error) {
+	return tx.Member.Query().
+		Where(member.CodeEQ(code)). // 会员对外编号, 12位数字
+		Exist(ctx)
+}
+
+// InviteCodeExistsTx 检查当前厅的会员邀请码是否已存在
+func (*Member) InviteCodeExistsTx(ctx context.Context, tx *ent.Tx, code string) (bool, error) {
+	return tx.Member.Query().
+		Where(member.InviteCodeEQ(code)). // 会员专属邀请码
+		Exist(ctx)
+}
+
+// UsernameExistsTx 检查当前厅的会员登录账号是否已存在
+func (*Member) UsernameExistsTx(ctx context.Context, tx *ent.Tx, username string) (bool, error) {
+	return tx.MemberAuth.Query().
+		Where(memberauth.UsernameEQ(username)). // 会员登录账号, 保留原始大小写
+		Exist(ctx)
 }
 
 // CreateTx 在事务中创建会员及其初始业务记录
