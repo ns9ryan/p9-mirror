@@ -50,7 +50,7 @@ type MemberCreate struct {
 
 // CreateTx 在事务中创建会员及其初始业务记录
 func (d *Member) CreateTx(ctx context.Context, tx *ent.Tx, in MemberCreate) (*ent.Member, error) {
-	// 获取默认等级
+	// 获取默认自动层级
 	autoLevel, err := d.autoLevel.GetDefaultTx(ctx, tx)
 	if err != nil {
 		return nil, fmt.Errorf("查询默认自动层级失败: %w", err)

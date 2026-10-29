@@ -5,7 +5,6 @@ import (
 
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
-	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
@@ -86,7 +85,8 @@ func (s *Service) UpdateConfig(ctx context.Context, in *agentpb.UpdateAgentConfi
 		if id == 0 {
 			continue
 		}
-		ok, err := s.DB.AgentUser.Query().Where(agentuser.IDEQ(id)).Exist(ctx)
+		// 检查代理用户ID是否存在
+		ok, err := s.CheckAgentExistByID(ctx, id)
 		if err != nil {
 			return nil, err
 		}

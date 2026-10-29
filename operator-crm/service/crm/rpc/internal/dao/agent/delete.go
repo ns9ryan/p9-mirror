@@ -6,7 +6,6 @@ import (
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
-	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
@@ -24,7 +23,7 @@ func (s *Service) DeleteAgent(ctx context.Context, req *agentpb.DeleteAgentReq) 
 		action:     opActionDelete,
 	}
 
-	row, err := s.loadAgent(ctx, agentID)
+	row, err := s.LoadAgent(ctx, agentID)
 	if err != nil {
 		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
@@ -36,10 +35,8 @@ func (s *Service) DeleteAgent(ctx context.Context, req *agentpb.DeleteAgentReq) 
 		s.RecordOpFail(ctx, opParams, err)
 		return nil, err
 	}
-
-	childCount, err := s.DB.AgentUser.Query().
-		Where(agentuser.ParentIDEQ(row.ID)).
-		Count(ctx)
+	// 统计父级代理用户数量,如果大于0,则不能删除
+	childCount, err := s.CountAgentByParentID(ctx, row.ID)
 	if err != nil {
 		s.RecordOpFail(ctx, opParams, err)
 		return nil, err

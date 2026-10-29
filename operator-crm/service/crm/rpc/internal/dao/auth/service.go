@@ -12,6 +12,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/agent"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/authpb"
 
@@ -49,13 +50,14 @@ type Config struct {
 // Service 处理代理登录、刷新、退出和令牌校验。
 type Service struct {
 	DB     *ent.Client
+	Agent  *agent.Service
 	Redis  redis.UniversalClient
 	Config Config
 }
 
 // New 创建鉴权服务。
-func New(db *ent.Client, rdb redis.UniversalClient, c Config) *Service {
-	return &Service{DB: db, Redis: rdb, Config: c}
+func New(db *ent.Client, agent *agent.Service, rdb redis.UniversalClient, c Config) *Service {
+	return &Service{DB: db, Agent: agent, Redis: rdb, Config: c}
 }
 
 // Login 校验代理账号并签发令牌对。
@@ -80,11 +82,8 @@ func (s *Service) Login(ctx context.Context, in *authpb.LoginReq) (*authpb.Login
 	if in.LoginType != loginTypePassword || in.DeviceType < deviceTypePCWeb || in.DeviceType > deviceTypePCClient {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
-
-	u, err := s.DB.AgentUser.Query().
-		Where(agentuser.AccountEQ(account)).
-		WithProfile().
-		Only(ctx)
+	// 获取代理用户及其Profile
+	u, err := s.Agent.FecthAgentWithProfileByAccount(ctx, account)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			if werr := s.writeLoginLog(ctx, in, 0, 0, loginResultNotFound); werr != nil {
@@ -184,7 +183,7 @@ func (s *Service) LogoutAll(ctx context.Context) error {
 	if claims == nil || claims.UserID == 0 {
 		return xerr.Unauthorized(i18n.Unauthorized)
 	}
-	return s.rotateSalt(ctx, claims.UserID)
+	return s.Agent.RotateSalt(ctx, claims.UserID)
 }
 
 // CheckToken 校验访问令牌，并返回当前代理身份。
@@ -206,7 +205,13 @@ func (s *Service) CheckToken(ctx context.Context, raw string) (*authpb.CheckToke
 	if err := s.ensureActive(ctx, raw); err != nil {
 		return nil, err
 	}
-	u, err := s.agentByID(withOperator(ctx, c.OperatorCode), c.UserID, false)
+	// 代理用户字段列表
+	agentUserFields := []string{
+		agentuser.FieldID, agentuser.FieldAccount,
+		agentuser.FieldOperatorCode, agentuser.FieldSalt,
+	}
+	// 获取代理用户信息
+	u, err := s.Agent.FecthAgentByID(withOperator(ctx, c.OperatorCode), c.UserID, agentUserFields...)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.Forbidden(i18n.AuthUserNotFound)
@@ -233,7 +238,7 @@ func (s *Service) CheckToken(ctx context.Context, raw string) (*authpb.CheckToke
 }
 
 func (s *Service) sessionUser(ctx context.Context, c *Claims) (*ent.AgentUser, error) {
-	u, err := s.agentByID(withOperator(ctx, c.OperatorCode), c.UserID, true)
+	u, err := s.Agent.FecthAgentWithProfileByID(withOperator(ctx, c.OperatorCode), c.UserID)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.Unauthorized(i18n.Unauthorized)
@@ -249,32 +254,20 @@ func (s *Service) sessionUser(ctx context.Context, c *Claims) (*ent.AgentUser, e
 	return u, nil
 }
 
-func (s *Service) agentByID(ctx context.Context, id int64, withProfile bool) (*ent.AgentUser, error) {
-	q := s.DB.AgentUser.Query().Where(agentuser.ID(id))
-	if withProfile {
-		q = q.WithProfile()
-	}
-	return q.Only(ctx)
-}
-
 // 更新代理登录信息
 func (s *Service) touchLogin(ctx context.Context, u *ent.AgentUser, udid string) error {
 	now := time.Now()
-	upd := s.DB.AgentUser.UpdateOneID(u.ID).
-		SetLastLoginAt(now).
-		AddLoginCount(1)
 	if ip := utils.NormalizeIP(ctxdata.ClientIPFromCtx(ctx)); net.ParseIP(ip) != nil {
-		upd.SetLastLoginIP(ip)
 		u.LastLoginIP = &ip
 	}
+	u.LastLoginAt = &now
 	if udid = clip(strings.TrimSpace(udid), udidMaxLen); udid != "" {
-		upd.SetLastLoginUdid(udid)
 		u.LastLoginUdid = &udid
 	}
-	if err := upd.Exec(ctx); err != nil {
+	// 更新代理登录信息
+	if err := s.Agent.TouchLogin(ctx, u); err != nil {
 		return err
 	}
-	u.LastLoginAt = &now
 	u.LoginCount++
 	return nil
 }
@@ -324,24 +317,6 @@ func (s *Service) signPair(ctx context.Context, u *ent.AgentUser) (*authpb.Token
 		Expire:        accessExp,
 		RefreshExpire: refreshExp,
 	}, nil
-}
-
-func (s *Service) rotateSalt(ctx context.Context, userID int64) error {
-	salt, err := utils.GenShortID()
-	if err != nil {
-		return err
-	}
-	n, err := s.DB.AgentUser.Update().
-		Where(agentuser.ID(userID)).
-		SetSalt(salt).
-		Save(ctx)
-	if err != nil {
-		return err
-	}
-	if n == 0 {
-		return xerr.NotFound(i18n.AuthUserNotFound)
-	}
-	return nil
 }
 
 func (s *Service) blacklist(ctx context.Context, token string, expUnix int64) error {

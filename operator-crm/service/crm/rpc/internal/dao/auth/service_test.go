@@ -12,7 +12,7 @@ import (
 )
 
 func TestLoginRequiresFields(t *testing.T) {
-	s := New(nil, nil, Config{})
+	s := New(nil, nil, nil, Config{})
 	_, err := s.Login(context.Background(), &authpb.LoginReq{Password: "pw", OperatorCode: "op"})
 	assertKey(t, err, i18n.AuthUsernamePasswordRequired)
 
@@ -21,7 +21,7 @@ func TestLoginRequiresFields(t *testing.T) {
 }
 
 func TestLogoutRequiresRedis(t *testing.T) {
-	s := New(nil, nil, Config{RefreshSecret: "refresh"})
+	s := New(nil, nil, nil, Config{RefreshSecret: "refresh"})
 	ctx := ctxdata.WithClaims(context.Background(), &ctxdata.Claims{UserID: 1, Salt: "salt", ExpiresAt: 1})
 	ctx = ctxdata.WithRawToken(ctx, "access-token")
 	err := s.Logout(ctx, &authpb.LogoutReq{RefreshToken: "refresh-token"})

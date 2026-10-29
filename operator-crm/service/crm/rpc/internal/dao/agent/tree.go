@@ -99,8 +99,14 @@ func (s *Service) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNo
 }
 
 func (s *Service) findExactAgent(ctx context.Context, kw string) (*ent.AgentUser, error) {
+	agentUserFields := []string{
+		agentuser.FieldID, agentuser.FieldAccount,
+		agentuser.FieldLevel, agentuser.FieldAgentLineCode,
+		agentuser.FieldShareRate, agentuser.FieldParentID,
+	}
+	// 如果kw是纯数字，则认为是代理ID
 	if id, ok := dao.ParsePureDigitsID(kw); ok {
-		row, err := s.agentByID(ctx, id)
+		row, err := s.FecthAgentByID(ctx, id, agentUserFields...)
 		if err == nil {
 			return row, nil
 		}
@@ -108,27 +114,24 @@ func (s *Service) findExactAgent(ctx context.Context, kw string) (*ent.AgentUser
 			return nil, err
 		}
 	}
-	row, err := s.DB.AgentUser.Query().
-		Where(agentuser.AccountEQ(kw)).
-		Select(agentuser.FieldID, agentuser.FieldAccount, agentuser.FieldLevel, agentuser.FieldAgentLineCode, agentuser.FieldShareRate, agentuser.FieldParentID).
-		Only(ctx)
+	// 获取代理用户及其Profile
+	row, err := s.FecthAgentByAccount(ctx, kw, agentUserFields...)
 	if ent.IsNotFound(err) {
 		return nil, xerr.NotFound(i18n.AgentNotFound)
 	}
 	return row, err
 }
 
-func (s *Service) agentByID(ctx context.Context, id int64) (*ent.AgentUser, error) {
-	return s.DB.AgentUser.Query().
-		Where(agentuser.IDEQ(id)).
-		Select(agentuser.FieldID, agentuser.FieldAccount, agentuser.FieldLevel, agentuser.FieldAgentLineCode, agentuser.FieldShareRate, agentuser.FieldParentID).
-		Only(ctx)
-}
-
 func (s *Service) ancestorChain(ctx context.Context, start *ent.AgentUser) ([]*ent.AgentUser, error) {
 	chain := make([]*ent.AgentUser, 0, maxAncestorNodes)
 	seen := make(map[int64]struct{}, maxAncestorNodes)
 	cur := start
+	// 获取agent_user表字段列表
+	agentUserFields := []string{
+		agentuser.FieldID, agentuser.FieldAccount,
+		agentuser.FieldLevel, agentuser.FieldAgentLineCode,
+		agentuser.FieldShareRate, agentuser.FieldParentID,
+	}
 	for len(chain) < maxAncestorNodes && cur != nil {
 		if _, ok := seen[cur.ID]; ok {
 			break
@@ -138,7 +141,8 @@ func (s *Service) ancestorChain(ctx context.Context, start *ent.AgentUser) ([]*e
 		if cur.ParentID == nil || *cur.ParentID <= 0 {
 			break
 		}
-		parent, err := s.agentByID(ctx, *cur.ParentID)
+		// 获取上级代理用户
+		parent, err := s.FecthAgentByID(ctx, *cur.ParentID, agentUserFields...)
 		if ent.IsNotFound(err) {
 			break
 		}

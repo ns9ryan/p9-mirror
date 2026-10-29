@@ -56,11 +56,6 @@ func (s *Service) AddSubAgent(ctx context.Context, in *agentpb.AddSubAgentReq) (
 	return s.createUnderParent(ctx, in.Agent, claims.UserID, registerSourceAgent, false)
 }
 
-// 根据代理ID获取代理用户
-func (s *Service) getAgentUserByID(ctx context.Context, id int64) (*ent.AgentUser, error) {
-	return s.DB.AgentUser.Query().Where(agentuser.IDEQ(id)).Only(ctx)
-}
-
 // 获取root代理ID没有则创建root代理
 func (s *Service) resolveDesignatedParent(ctx context.Context) (int64, error) {
 	rootAgent, err := s.DB.AgentUser.
@@ -187,7 +182,7 @@ func (s *Service) createUnderParent(ctx context.Context, fields *agentpb.AgentCr
 		return nil, xerr.BadRequest(i18n.AgentShareRateInvalid)
 	}
 	// 获取上级代理用户信息
-	parent, err := s.getAgentUserByID(ctx, parentID)
+	parent, err := s.FecthAgentByID(ctx, parentID)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.BadRequest(i18n.AgentParentNotFound)

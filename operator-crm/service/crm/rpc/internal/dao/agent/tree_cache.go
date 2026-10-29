@@ -137,13 +137,14 @@ func (s *Service) LoadAgentTree(ctx context.Context) (*agentTree, error) {
 	if t, ok := s.treeCache.get(op); ok {
 		return t, nil
 	}
-	rows, err := s.DB.AgentUser.Query().
-		Select(
-			agentuser.FieldID, agentuser.FieldParentID,
-			agentuser.FieldAccount, agentuser.FieldLevel,
-			agentuser.FieldAgentLineCode, agentuser.FieldShareRate,
-		).
-		All(ctx)
+	// 获取代理用户字段列表
+	agentUserFields := []string{
+		agentuser.FieldID, agentuser.FieldParentID,
+		agentuser.FieldAccount, agentuser.FieldLevel,
+		agentuser.FieldAgentLineCode, agentuser.FieldShareRate,
+	}
+	// 获取所有代理用户
+	rows, err := s.FecthAllAgents(ctx, agentUserFields...)
 	if err != nil {
 		return nil, err
 	}

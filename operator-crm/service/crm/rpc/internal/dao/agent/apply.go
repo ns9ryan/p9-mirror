@@ -68,9 +68,7 @@ func (s *Service) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyRe
 		return nil, xerr.BadRequest(i18n.AgentShareRateInvalid)
 	}
 	// 查询代理账号是否存在
-	exists, err := s.DB.AgentUser.Query().
-		Where(agentuser.AccountEQ(account)).
-		Exist(ctx)
+	exists, err := s.CheckAgentExistByAccount(ctx, account)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +247,7 @@ func (s *Service) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentA
 			return nil, xerr.BadRequest(i18n.AgentDesignatedAgentMissing)
 		}
 		parentID := *cfg.CashProductionAgentID
-		parent, perr := s.getAgentUserByID(ctx, parentID)
+		parent, perr := s.FecthAgentByID(ctx, parentID, agentuser.FieldAgentType, agentuser.FieldAgentLineCode)
 		if perr != nil {
 			if ent.IsNotFound(perr) {
 				return nil, xerr.BadRequest(i18n.AgentDesignatedAgentInvalid)
