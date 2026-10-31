@@ -7,7 +7,7 @@ import (
 
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
-	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
+	memberdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/viplevelpb"
@@ -79,7 +79,7 @@ func (l *UpdateLevelLogic) UpdateLevel(in *viplevelpb.UpdateVipLevelRequest) (*v
 	}
 
 	// 更新VIP等级配置
-	if err := l.svcCtx.DAO.MemberVipLevel.Update(l.ctx, level.ID, dao.MemberVipLevelUpdate{
+	if err := l.svcCtx.DAO.MemberVipLevel.Update(l.ctx, level.ID, memberdao.VIPLevelUpdate{
 		UpgradeDeposit:   in.UpgradeDeposit,   // 晋级所需存款金额
 		UpgradeWater:     in.UpgradeWater,     // 晋级所需洗码量
 		RetentionDeposit: in.RetentionDeposit, // 保级所需存款金额

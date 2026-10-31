@@ -1,4 +1,4 @@
-package dao
+package member
 
 import (
 	"context"
@@ -7,17 +7,17 @@ import (
 	"entgo.io/ent/dialect/sql"
 
 	"oa.98ent.com/p9/operator-crm/ent"
-	"oa.98ent.com/p9/operator-crm/ent/member"
+	entmember "oa.98ent.com/p9/operator-crm/ent/member"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 )
 
-// MemberVipLevel 会员VIP等级数据访问
-type MemberVipLevel struct {
+// VIPLevel 会员VIP等级数据访问
+type VIPLevel struct {
 	db *ent.Client // Ent数据库客户端
 }
 
-// MemberVipLevelCreate VIP等级创建参数
-type MemberVipLevelCreate struct {
+// VIPLevelCreate VIP等级创建参数
+type VIPLevelCreate struct {
 	UpgradeDeposit   int64 // 晋级所需存款金额
 	UpgradeWater     int64 // 晋级所需洗码量
 	RetentionDeposit int64 // 保级所需存款金额
@@ -25,8 +25,8 @@ type MemberVipLevelCreate struct {
 	UpgradeReward    int64 // 晋级奖励金额
 }
 
-// MemberVipLevelUpdate VIP等级更新字段
-type MemberVipLevelUpdate struct {
+// VIPLevelUpdate VIP等级更新字段
+type VIPLevelUpdate struct {
 	UpgradeDeposit   *int64 // 晋级所需存款金额
 	UpgradeWater     *int64 // 晋级所需洗码量
 	RetentionDeposit *int64 // 保级所需存款金额
@@ -34,8 +34,13 @@ type MemberVipLevelUpdate struct {
 	UpgradeReward    *int64 // 晋级奖励金额
 }
 
+// NewVIPLevel 创建VIP等级数据访问
+func NewVIPLevel(db *ent.Client) *VIPLevel {
+	return &VIPLevel{db: db}
+}
+
 // List 获取VIP等级分页列表
-func (d *MemberVipLevel) List(ctx context.Context, offset, limit int) ([]*ent.MemberVipLevel, int64, error) {
+func (d *VIPLevel) List(ctx context.Context, offset, limit int) ([]*ent.MemberVipLevel, int64, error) {
 	query := d.db.MemberVipLevel.Query()
 
 	// 统计等级总数
@@ -61,28 +66,28 @@ func (d *MemberVipLevel) List(ctx context.Context, offset, limit int) ([]*ent.Me
 }
 
 // Get 根据ID获取VIP等级
-func (d *MemberVipLevel) Get(ctx context.Context, id int64) (*ent.MemberVipLevel, error) {
+func (d *VIPLevel) Get(ctx context.Context, id int64) (*ent.MemberVipLevel, error) {
 	return d.db.MemberVipLevel.Query().
 		Where(memberviplevel.ID(id)).
 		Only(ctx)
 }
 
 // GetDefaultTx 获取默认VIP等级
-func (d *MemberVipLevel) GetDefaultTx(ctx context.Context, tx *ent.Tx) (*ent.MemberVipLevel, error) {
+func (d *VIPLevel) GetDefaultTx(ctx context.Context, tx *ent.Tx) (*ent.MemberVipLevel, error) {
 	return tx.MemberVipLevel.Query().
 		Where(memberviplevel.LevelEQ(0)). // VIP等级编号, 从0开始连续递增
 		Only(ctx)
 }
 
 // GetHighest 获取当前最高VIP等级
-func (d *MemberVipLevel) GetHighest(ctx context.Context) (*ent.MemberVipLevel, error) {
+func (d *VIPLevel) GetHighest(ctx context.Context) (*ent.MemberVipLevel, error) {
 	return d.db.MemberVipLevel.Query().
 		Order(memberviplevel.ByLevel(sql.OrderDesc())).
 		First(ctx)
 }
 
 // Create 创建VIP等级并分配下一个等级编号
-func (d *MemberVipLevel) Create(ctx context.Context, in MemberVipLevelCreate) (*ent.MemberVipLevel, error) {
+func (d *VIPLevel) Create(ctx context.Context, in VIPLevelCreate) (*ent.MemberVipLevel, error) {
 	// 初始VIP0必须由分站初始化流程创建
 	last, err := d.GetHighest(ctx)
 	if err != nil {
@@ -104,7 +109,7 @@ func (d *MemberVipLevel) Create(ctx context.Context, in MemberVipLevelCreate) (*
 }
 
 // Update 修改VIP等级配置
-func (d *MemberVipLevel) Update(ctx context.Context, id int64, in MemberVipLevelUpdate) error {
+func (d *VIPLevel) Update(ctx context.Context, id int64, in VIPLevelUpdate) error {
 	return d.db.MemberVipLevel.UpdateOneID(id).
 		SetNillableUpgradeDeposit(in.UpgradeDeposit).     // 晋级所需存款金额
 		SetNillableUpgradeWater(in.UpgradeWater).         // 晋级所需洗码量
@@ -115,12 +120,12 @@ func (d *MemberVipLevel) Update(ctx context.Context, id int64, in MemberVipLevel
 }
 
 // Delete 删除指定VIP等级
-func (d *MemberVipLevel) Delete(ctx context.Context, id int64) error {
+func (d *VIPLevel) Delete(ctx context.Context, id int64) error {
 	return d.db.MemberVipLevel.DeleteOneID(id).Exec(ctx)
 }
 
 // MemberCounts 统计指定VIP等级的会员数
-func (d *MemberVipLevel) MemberCounts(ctx context.Context, levelIDs []int64) (map[int64]int64, error) {
+func (d *VIPLevel) MemberCounts(ctx context.Context, levelIDs []int64) (map[int64]int64, error) {
 	counts := make(map[int64]int64, len(levelIDs))
 	if len(levelIDs) == 0 {
 		return counts, nil
@@ -133,8 +138,8 @@ func (d *MemberVipLevel) MemberCounts(ctx context.Context, levelIDs []int64) (ma
 	}
 
 	err := d.db.Member.Query().
-		Where(member.VipLevelIDIn(levelIDs...)).
-		GroupBy(member.FieldVipLevelID).
+		Where(entmember.VipLevelIDIn(levelIDs...)).
+		GroupBy(entmember.FieldVipLevelID).
 		Aggregate(ent.Count()).
 		Scan(ctx, &results)
 	if err != nil {

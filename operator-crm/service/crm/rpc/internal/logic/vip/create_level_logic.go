@@ -7,7 +7,7 @@ import (
 
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
-	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
+	memberdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/viplevelpb"
@@ -36,7 +36,7 @@ func (l *CreateLevelLogic) CreateLevel(in *viplevelpb.CreateVipLevelRequest) (*v
 	}
 
 	// 创建VIP等级, 等级编号由DAO根据当前最高等级分配
-	level, err := l.svcCtx.DAO.MemberVipLevel.Create(l.ctx, dao.MemberVipLevelCreate{
+	level, err := l.svcCtx.DAO.MemberVipLevel.Create(l.ctx, memberdao.VIPLevelCreate{
 		UpgradeDeposit:   in.UpgradeDeposit,   // 晋级所需存款金额
 		UpgradeWater:     in.UpgradeWater,     // 晋级所需洗码量
 		RetentionDeposit: in.RetentionDeposit, // 保级所需存款金额

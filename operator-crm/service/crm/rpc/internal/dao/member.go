@@ -7,13 +7,14 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/member"
 	"oa.98ent.com/p9/operator-crm/ent/memberauth"
+	memberdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 )
 
 // Member 会员数据访问
 type Member struct {
-	db        *ent.Client      // Ent数据库客户端
-	autoLevel *MemberAutoLevel // 会员自动层级DAO
-	vipLevel  *MemberVipLevel  // 会员VIP等级DAO
+	db        *ent.Client         // Ent数据库客户端
+	autoLevel *MemberAutoLevel    // 会员自动层级DAO
+	vipLevel  *memberdao.VIPLevel // 会员VIP等级DAO
 }
 
 // MemberCreate 会员创建参数
