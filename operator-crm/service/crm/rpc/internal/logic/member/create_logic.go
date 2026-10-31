@@ -12,11 +12,13 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 
 	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/common/password"
 	"oa.98ent.com/p9/common/utils"
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 	agentdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/agent"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dbtx"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb"
@@ -71,8 +73,8 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 
 	// 规范化并校验输入
 	account := strings.TrimSpace(in.GetAccount())
-	password := in.GetPassword()
-	if !validMemberAccount(account) || !validMemberPassword(password) || in.GetAgentId() <= 0 {
+	passwordValue := in.GetPassword()
+	if !validMemberAccount(account) || !validMemberPassword(passwordValue) || in.GetAgentId() <= 0 {
 		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
 
@@ -108,14 +110,14 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 	}
 
 	// 生成登录密码哈希
-	passwordHash, err := dao.HashPassword(password)
+	passwordHash, err := password.Hash(passwordValue)
 	if err != nil {
 		return nil, xerr.RpcErr(err)
 	}
 
 	// 会员及代理统计必须在同一事务中更新
 	var created *ent.Member
-	err = dao.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
+	err = dbtx.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
 		// 检查当前厅的登录账号
 		exists, err := l.svcCtx.DAO.Member.UsernameExistsTx(l.ctx, tx, account)
 		if err != nil {
