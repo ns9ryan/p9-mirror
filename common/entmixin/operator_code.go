@@ -79,11 +79,8 @@ func FilterOperatorCode(ctx context.Context, q Query) {
 	if ctxdata.TenantSkipped(ctx) {
 		return
 	}
-	c := ctxdata.ClaimsFromCtx(ctx)
-	if c == nil {
-		return
-	}
-	q.WhereP(operatorCodeWhere(c.OperatorCode))
+
+	q.WhereP(operatorCodeWhere(ctxdata.OperatorCodeFromCtx(ctx)))
 }
 
 func operatorCodeWhere(code string) func(*sql.Selector) {

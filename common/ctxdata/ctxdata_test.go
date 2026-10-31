@@ -83,6 +83,32 @@ func TestClientIPRoundTrip(t *testing.T) {
 	}
 }
 
+func TestUserAgentRoundTrip(t *testing.T) {
+	ctx := WithUserAgent(context.Background(), "Mozilla/5.0")
+	if UserAgentFromCtx(ctx) != "Mozilla/5.0" {
+		t.Fatal("value")
+	}
+	md, ok := metadata.FromOutgoingContext(ctx)
+	if !ok || first(md, headerUserAgent) != "Mozilla/5.0" {
+		t.Fatalf("outgoing %v", md)
+	}
+	in := metadata.NewIncomingContext(context.Background(), metadata.Pairs(headerUserAgent, "curl/8"))
+	if UserAgentFromCtx(in) != "curl/8" {
+		t.Fatal("incoming")
+	}
+}
+
+func TestUdidRoundTrip(t *testing.T) {
+	ctx := WithUdid(context.Background(), "device-1")
+	if UdidFromCtx(ctx) != "device-1" {
+		t.Fatal("value")
+	}
+	md, ok := metadata.FromOutgoingContext(ctx)
+	if !ok || first(md, headerUdid) != "device-1" {
+		t.Fatalf("outgoing %v", md)
+	}
+}
+
 func TestClaimsHolderSeesChildWithClaims(t *testing.T) {
 	parent := WithClaimsHolder(context.Background())
 	child := WithClaims(parent, &Claims{UserID: 9, OperatorCode: "A", Username: "alice"})

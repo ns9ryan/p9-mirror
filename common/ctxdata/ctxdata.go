@@ -8,25 +8,23 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+// ctxKey 上下文键
 type ctxKey int
 
 const (
 	claimsKey ctxKey = iota + 1
 	rawTokenKey
 	clientIPKey
+	userAgentKey
+	udidKey
 )
 
-type skipTenantKey struct{}
-type skipSoftDeleteKey struct{}
-
-type claimsBox struct {
-	c *Claims
-}
-
+// header 头部
 const (
 	headerUserID       = "x-user-id"
 	headerUserCode     = "x-user-code"
 	headerUsername     = "x-username"
+	headerUserType     = "x-user-type"
 	headerOperatorCode = "x-operator-code"
 	headerRoleCodes    = "x-role-codes"
 	headerSalt         = "x-salt"
@@ -35,20 +33,34 @@ const (
 	headerIsPlatform   = "x-is-platform"
 	headerTokenType    = "x-token-type"
 	headerClientIP     = "x-client-ip"
+	headerUserAgent    = "x-user-agent"
+	headerUdid         = "x-udid"
 )
+
+// skipTenantKey 跳过租户
+type skipTenantKey struct{}
+
+// skipSoftDeleteKey 跳过软删除
+type skipSoftDeleteKey struct{}
+
+// claimsBox 身份盒子
+type claimsBox struct {
+	c *Claims
+}
 
 // Claims 用户身份信息
 type Claims struct {
-	UserID       int64
-	UserCode     string
-	Username     string
-	OperatorCode string
-	RoleCodes    []string
-	Salt         string
-	ExpiresAt    int64
-	IsPlatform   bool
-	TokenType    string
-	ClientIP     string
+	UserID       int64     // 用户ID
+	UserCode     string    // 用户代码
+	Username     string    // 用户名
+	UserType     UserType  // 用户类型 [platform, operator, agent]
+	OperatorCode string    // 操作员代码
+	RoleCodes    []string  // 角色代码
+	Salt         string    // 盐
+	ExpiresAt    int64     // 过期时间
+	IsPlatform   bool      // 是否是总网
+	TokenType    TokenType // 令牌类型 [access, refresh, preview]
+	ClientIP     string    // 客户端IP
 }
 
 // WithClaimsHolder 在外层放入可写的身份盒子，内层 WithClaims 会回写，外层仍能读到。
@@ -73,12 +85,13 @@ func WithClaims(ctx context.Context, c *Claims) context.Context {
 		headerUserID, strconv.FormatInt(c.UserID, 10),
 		headerUserCode, c.UserCode,
 		headerUsername, c.Username,
+		headerUserType, string(c.UserType),
 		headerOperatorCode, c.OperatorCode,
 		headerRoleCodes, strings.Join(c.RoleCodes, ","),
 		headerSalt, c.Salt,
 		headerExpiresAt, strconv.FormatInt(c.ExpiresAt, 10),
 		headerIsPlatform, formatBool(c.IsPlatform),
-		headerTokenType, c.TokenType,
+		headerTokenType, c.TokenType.String(),
 		headerClientIP, c.ClientIP,
 	)
 }
@@ -133,6 +146,25 @@ func WithRawToken(ctx context.Context, token string) context.Context {
 	return metadata.AppendToOutgoingContext(ctx, headerRawToken, token)
 }
 
+// WithUserType 添加用户类型到上下文
+func WithUserType(ctx context.Context, userType UserType) context.Context {
+	if c := ClaimsFromCtx(ctx); c != nil {
+		next := *c
+		next.UserType = userType
+		return WithClaims(ctx, &next)
+	}
+	return WithClaims(ctx, &Claims{UserType: userType})
+}
+
+// UserTypeFromCtx 从上下文中获取用户类型
+func UserTypeFromCtx(ctx context.Context) UserType {
+	c := ClaimsFromCtx(ctx)
+	if c == nil {
+		return ""
+	}
+	return c.UserType
+}
+
 // RawTokenFromCtx 从上下文中获取原始令牌
 func RawTokenFromCtx(ctx context.Context) string {
 	if s, _ := ctx.Value(rawTokenKey).(string); s != "" {
@@ -166,6 +198,50 @@ func ClientIPFromCtx(ctx context.Context) string {
 	return first(md, headerClientIP)
 }
 
+// WithUserAgent 添加 User-Agent 到上下文，并写入 gRPC outgoing metadata。
+func WithUserAgent(ctx context.Context, ua string) context.Context {
+	ua = strings.TrimSpace(ua)
+	if ua == "" {
+		return ctx
+	}
+	ctx = context.WithValue(ctx, userAgentKey, ua)
+	return metadata.AppendToOutgoingContext(ctx, headerUserAgent, ua)
+}
+
+// UserAgentFromCtx 从上下文中获取 User-Agent。
+func UserAgentFromCtx(ctx context.Context) string {
+	if s, _ := ctx.Value(userAgentKey).(string); s != "" {
+		return s
+	}
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return ""
+	}
+	return first(md, headerUserAgent)
+}
+
+// WithUdid 添加设备码到上下文，并写入 gRPC outgoing metadata。
+func WithUdid(ctx context.Context, udid string) context.Context {
+	udid = strings.TrimSpace(udid)
+	if udid == "" {
+		return ctx
+	}
+	ctx = context.WithValue(ctx, udidKey, udid)
+	return metadata.AppendToOutgoingContext(ctx, headerUdid, udid)
+}
+
+// UdidFromCtx 从上下文中获取设备码。
+func UdidFromCtx(ctx context.Context) string {
+	if s, _ := ctx.Value(udidKey).(string); s != "" {
+		return s
+	}
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return ""
+	}
+	return first(md, headerUdid)
+}
+
 // SkipTenant 跳过租户
 func SkipTenant(ctx context.Context) context.Context {
 	return context.WithValue(ctx, skipTenantKey{}, true)
@@ -196,6 +272,7 @@ func claimsFromIncomingMD(ctx context.Context) *Claims {
 	}
 	userID := parseInt(first(md, headerUserID))
 	username := first(md, headerUsername)
+	userType := UserType(first(md, headerUserType))
 	operatorCode := first(md, headerOperatorCode)
 	isPlatform := parseBool(first(md, headerIsPlatform))
 	if userID == 0 && username == "" && operatorCode == "" && !isPlatform {
@@ -209,12 +286,13 @@ func claimsFromIncomingMD(ctx context.Context) *Claims {
 		UserID:       userID,
 		UserCode:     first(md, headerUserCode),
 		Username:     username,
+		UserType:     userType,
 		OperatorCode: operatorCode,
 		RoleCodes:    codes,
 		Salt:         first(md, headerSalt),
 		ExpiresAt:    parseInt(first(md, headerExpiresAt)),
 		IsPlatform:   isPlatform,
-		TokenType:    first(md, headerTokenType),
+		TokenType:    TokenType(first(md, headerTokenType)),
 		ClientIP:     first(md, headerClientIP),
 	}
 }
