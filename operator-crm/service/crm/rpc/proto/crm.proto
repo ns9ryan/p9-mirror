@@ -50,61 +50,61 @@ service AuthService {
 
 // 代理管理服务
 service AgentService {
-  // group: agent
+  // group: agent 更新代理层级
   rpc updateAgentLevels(crm_agent.UpdateAgentLevelsReq) returns (crm_agent.UpdateAgentLevelsResp);
-  // group: agent
+  // group: agent 更新代理配置
   rpc updateAgentConfig(crm_agent.UpdateAgentConfigReq) returns (crm_agent.AgentConfigResp);
-  // group: agent
+  // group: agent 获取代理配置
   rpc getAgentConfig(crm_agent.GetAgentConfigReq) returns (crm_agent.AgentConfigResp);
-  // group: agent
+  // group: agent 分站新增代理包括初始化分站各个代理线路
   rpc addOperatorAgent(crm_agent.AddOperatorAgentReq) returns (crm_agent.AddAgentResp);
-  // group: agent
+  // group: agent 新增直属代理
   rpc addSubAgent(crm_agent.AddSubAgentReq) returns (crm_agent.AddAgentResp);
-  // group: agent
+  // group: agent 分页查询代理
   rpc listAgents(crm_agent.ListAgentsReq) returns (crm_agent.ListAgentsResp);
-  // group: agent
+  // group: agent 搜索代理
   rpc searchAgents(crm_agent.SearchAgentsReq) returns (crm_agent.SearchAgentsResp);
-  // group: agent
+  // group: agent 按等级查询代理列表
   rpc listOperatorAgents(crm_agent.ListOperatorAgentsReq) returns (crm_agent.ListOperatorAgentsResp);
-  // group: agent
+  // group: agent 获取代理层级
   rpc listAgentLevels(crm_agent.ListAgentLevelsReq) returns (crm_agent.ListAgentLevelsResp);
-  // group: agent
+  // group: agent 获取代理树
   rpc treeNodeAgents(crm_agent.TreeNodeAgentsReq) returns (crm_agent.TreeNodeAgentsResp);
-  // group: agent
+  // group: agent 获取代理祖先
   rpc treeNodeAncestorAgents(crm_agent.TreeNodeAncestorAgentsReq) returns (crm_agent.TreeNodeAncestorAgentsResp);
-  // group: agent
+  // group: agent 获取代理祖先
   rpc ancestorsById(crm_agent.AncestorsByIDReq) returns (crm_agent.AncestorsByIDResp);
-  // group: agent
+  // group: agent 新增代理申请
   rpc addAgentApply(crm_agent.AddAgentApplyReq) returns (crm_agent.AgentApplyItem);
-  // group: agent
+  // group: agent 分页查询代理申请列表
   rpc listAgentApplies(crm_agent.ListAgentAppliesReq) returns (crm_agent.ListAgentAppliesResp);
-  // group: agent
+  // group: agent 审批代理申请
   rpc reviewAgentApply(crm_agent.ReviewAgentApplyReq) returns (crm_agent.ReviewAgentApplyResp);
-  // group: agent
+  // group: agent 获取代理个人信息
   rpc getAgentProfile(crm_agent.GetAgentProfileReq) returns (crm_agent.AgentProfile);
-  // group: agent
+  // group: agent 重置登录密码
   rpc resetLoginPassword(crm_agent.ResetLoginPasswordReq) returns (crm_agent.ResetLoginPasswordResp);
-  // group: agent
+  // group: agent 更新登录密码
   rpc updateLoginPassword(crm_agent.UpdateLoginPasswordReq) returns (crm_agent.Empty);
-  // group: agent
+  // group: agent 更新提现密码
   rpc updateWithdrawPassword(crm_agent.UpdateWithdrawPasswordReq) returns (crm_agent.Empty);
-  // group: agent
+  // group: agent 更新代理占成比例
   rpc updateAgentShareRate(crm_agent.UpdateAgentShareRateReq) returns (crm_agent.Empty);
-  // group: agent
+  // group: agent 更新代理提现限制
   rpc updateAgentPayoutRestricted(crm_agent.UpdateAgentPayoutRestrictedReq) returns (crm_agent.Empty);
-  // group: agent
+  // group: agent 更新代理状态
   rpc updateAgentStatus(crm_agent.UpdateAgentStatusReq) returns (crm_agent.Empty);
-  // group: agent
+  // group: agent 软删除代理
   rpc deleteAgent(crm_agent.DeleteAgentReq) returns (crm_agent.Empty);
-  // group: agent
+  // group: agent 更新代理备注
   rpc updateAgentRemark(crm_agent.UpdateAgentRemarkReq) returns (crm_agent.Empty);
-  // group: agent
+  // group: agent 更新代理个人信息
   rpc updateAgentProfile(crm_agent.UpdateAgentProfileReq) returns (crm_agent.AgentProfile);
-  // group: agent
+  // group: agent 查询代理登录日志
   rpc listAgentLoginLogs(crm_agent.ListAgentLoginLogsReq) returns (crm_agent.ListAgentLoginLogsResp);
-  // group: agent
+  // group: agent 查询代理登录关联
   rpc listAgentLoginAssociations(crm_agent.ListAgentLoginAssociationsReq) returns (crm_agent.ListAgentLoginAssociationsResp);
-  // group: agent
+  // group: agent 查询代理操作日志
   rpc listAgentOpLogs(crm_agent.ListAgentOpLogsReq) returns (crm_agent.ListAgentOpLogsResp);
 }
 

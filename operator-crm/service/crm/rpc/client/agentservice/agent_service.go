@@ -17,61 +17,61 @@ import (
 
 type (
 	AgentService interface {
-		// group: agent
+		// group: agent 更新代理层级
 		UpdateAgentLevels(ctx context.Context, in *agentpb.UpdateAgentLevelsReq, opts ...grpc.CallOption) (*agentpb.UpdateAgentLevelsResp, error)
-		// group: agent
+		// group: agent 更新代理配置
 		UpdateAgentConfig(ctx context.Context, in *agentpb.UpdateAgentConfigReq, opts ...grpc.CallOption) (*agentpb.AgentConfigResp, error)
-		// group: agent
+		// group: agent 获取代理配置
 		GetAgentConfig(ctx context.Context, in *agentpb.GetAgentConfigReq, opts ...grpc.CallOption) (*agentpb.AgentConfigResp, error)
-		// group: agent
+		// group: agent 分站新增代理包括初始化分站各个代理线路
 		AddOperatorAgent(ctx context.Context, in *agentpb.AddOperatorAgentReq, opts ...grpc.CallOption) (*agentpb.AddAgentResp, error)
-		// group: agent
+		// group: agent 新增直属代理
 		AddSubAgent(ctx context.Context, in *agentpb.AddSubAgentReq, opts ...grpc.CallOption) (*agentpb.AddAgentResp, error)
-		// group: agent
+		// group: agent 分页查询代理
 		ListAgents(ctx context.Context, in *agentpb.ListAgentsReq, opts ...grpc.CallOption) (*agentpb.ListAgentsResp, error)
-		// group: agent
+		// group: agent 搜索代理
 		SearchAgents(ctx context.Context, in *agentpb.SearchAgentsReq, opts ...grpc.CallOption) (*agentpb.SearchAgentsResp, error)
-		// group: agent
+		// group: agent 按等级查询代理列表
 		ListOperatorAgents(ctx context.Context, in *agentpb.ListOperatorAgentsReq, opts ...grpc.CallOption) (*agentpb.ListOperatorAgentsResp, error)
-		// group: agent
+		// group: agent 获取代理层级
 		ListAgentLevels(ctx context.Context, in *agentpb.ListAgentLevelsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLevelsResp, error)
-		// group: agent
+		// group: agent 获取代理树
 		TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAgentsResp, error)
-		// group: agent
+		// group: agent 获取代理祖先
 		TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error)
-		// group: agent
+		// group: agent 获取代理祖先
 		AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq, opts ...grpc.CallOption) (*agentpb.AncestorsByIDResp, error)
-		// group: agent
+		// group: agent 新增代理申请
 		AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error)
-		// group: agent
+		// group: agent 分页查询代理申请列表
 		ListAgentApplies(ctx context.Context, in *agentpb.ListAgentAppliesReq, opts ...grpc.CallOption) (*agentpb.ListAgentAppliesResp, error)
-		// group: agent
+		// group: agent 审批代理申请
 		ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentApplyReq, opts ...grpc.CallOption) (*agentpb.ReviewAgentApplyResp, error)
-		// group: agent
+		// group: agent 获取代理个人信息
 		GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
-		// group: agent
+		// group: agent 重置登录密码
 		ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.ResetLoginPasswordResp, error)
-		// group: agent
+		// group: agent 更新登录密码
 		UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
-		// group: agent
+		// group: agent 更新提现密码
 		UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
-		// group: agent
+		// group: agent 更新代理占成比例
 		UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
-		// group: agent
+		// group: agent 更新代理提现限制
 		UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
-		// group: agent
+		// group: agent 更新代理状态
 		UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
-		// group: agent
+		// group: agent 软删除代理
 		DeleteAgent(ctx context.Context, in *agentpb.DeleteAgentReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
-		// group: agent
+		// group: agent 更新代理备注
 		UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error)
-		// group: agent
+		// group: agent 更新代理个人信息
 		UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error)
-		// group: agent
+		// group: agent 查询代理登录日志
 		ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginLogsResp, error)
-		// group: agent
+		// group: agent 查询代理登录关联
 		ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginAssociationsResp, error)
-		// group: agent
+		// group: agent 查询代理操作日志
 		ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentOpLogsResp, error)
 	}
 
@@ -86,169 +86,169 @@ func NewAgentService(cli zrpc.Client) AgentService {
 	}
 }
 
-// group: agent
+// group: agent 更新代理层级
 func (m *defaultAgentService) UpdateAgentLevels(ctx context.Context, in *agentpb.UpdateAgentLevelsReq, opts ...grpc.CallOption) (*agentpb.UpdateAgentLevelsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentLevels(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新代理配置
 func (m *defaultAgentService) UpdateAgentConfig(ctx context.Context, in *agentpb.UpdateAgentConfigReq, opts ...grpc.CallOption) (*agentpb.AgentConfigResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentConfig(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 获取代理配置
 func (m *defaultAgentService) GetAgentConfig(ctx context.Context, in *agentpb.GetAgentConfigReq, opts ...grpc.CallOption) (*agentpb.AgentConfigResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.GetAgentConfig(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 分站新增代理包括初始化分站各个代理线路
 func (m *defaultAgentService) AddOperatorAgent(ctx context.Context, in *agentpb.AddOperatorAgentReq, opts ...grpc.CallOption) (*agentpb.AddAgentResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.AddOperatorAgent(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 新增直属代理
 func (m *defaultAgentService) AddSubAgent(ctx context.Context, in *agentpb.AddSubAgentReq, opts ...grpc.CallOption) (*agentpb.AddAgentResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.AddSubAgent(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 分页查询代理
 func (m *defaultAgentService) ListAgents(ctx context.Context, in *agentpb.ListAgentsReq, opts ...grpc.CallOption) (*agentpb.ListAgentsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListAgents(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 搜索代理
 func (m *defaultAgentService) SearchAgents(ctx context.Context, in *agentpb.SearchAgentsReq, opts ...grpc.CallOption) (*agentpb.SearchAgentsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.SearchAgents(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 按等级查询代理列表
 func (m *defaultAgentService) ListOperatorAgents(ctx context.Context, in *agentpb.ListOperatorAgentsReq, opts ...grpc.CallOption) (*agentpb.ListOperatorAgentsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListOperatorAgents(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 获取代理层级
 func (m *defaultAgentService) ListAgentLevels(ctx context.Context, in *agentpb.ListAgentLevelsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLevelsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListAgentLevels(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 获取代理树
 func (m *defaultAgentService) TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAgentsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.TreeNodeAgents(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 获取代理祖先
 func (m *defaultAgentService) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq, opts ...grpc.CallOption) (*agentpb.TreeNodeAncestorAgentsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.TreeNodeAncestorAgents(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 获取代理祖先
 func (m *defaultAgentService) AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq, opts ...grpc.CallOption) (*agentpb.AncestorsByIDResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.AncestorsById(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 新增代理申请
 func (m *defaultAgentService) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq, opts ...grpc.CallOption) (*agentpb.AgentApplyItem, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.AddAgentApply(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 分页查询代理申请列表
 func (m *defaultAgentService) ListAgentApplies(ctx context.Context, in *agentpb.ListAgentAppliesReq, opts ...grpc.CallOption) (*agentpb.ListAgentAppliesResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListAgentApplies(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 审批代理申请
 func (m *defaultAgentService) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentApplyReq, opts ...grpc.CallOption) (*agentpb.ReviewAgentApplyResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ReviewAgentApply(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 获取代理个人信息
 func (m *defaultAgentService) GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.GetAgentProfile(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 重置登录密码
 func (m *defaultAgentService) ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.ResetLoginPasswordResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ResetLoginPassword(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新登录密码
 func (m *defaultAgentService) UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateLoginPassword(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新提现密码
 func (m *defaultAgentService) UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateWithdrawPassword(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新代理占成比例
 func (m *defaultAgentService) UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentShareRate(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新代理提现限制
 func (m *defaultAgentService) UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentPayoutRestricted(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新代理状态
 func (m *defaultAgentService) UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentStatus(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 软删除代理
 func (m *defaultAgentService) DeleteAgent(ctx context.Context, in *agentpb.DeleteAgentReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.DeleteAgent(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新代理备注
 func (m *defaultAgentService) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq, opts ...grpc.CallOption) (*agentpb.Empty, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentRemark(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 更新代理个人信息
 func (m *defaultAgentService) UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq, opts ...grpc.CallOption) (*agentpb.AgentProfile, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.UpdateAgentProfile(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 查询代理登录日志
 func (m *defaultAgentService) ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginLogsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListAgentLoginLogs(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 查询代理登录关联
 func (m *defaultAgentService) ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq, opts ...grpc.CallOption) (*agentpb.ListAgentLoginAssociationsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListAgentLoginAssociations(ctx, in, opts...)
 }
 
-// group: agent
+// group: agent 查询代理操作日志
 func (m *defaultAgentService) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq, opts ...grpc.CallOption) (*agentpb.ListAgentOpLogsResp, error) {
 	client := crmrpc.NewAgentServiceClient(m.cli.Conn())
 	return client.ListAgentOpLogs(ctx, in, opts...)

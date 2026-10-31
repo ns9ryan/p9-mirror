@@ -91,6 +91,13 @@ func (AgentApply) Fields() []ent.Field {
 			Match(trimmedNonEmpty).
 			Comment("申请备注"),
 
+		field.String("register_ip").
+			NotEmpty().
+			SchemaType(map[string]string{
+				dialect.Postgres: "inet",
+			}).
+			Comment("注册IP"),
+
 		field.Time("register_at").
 			SchemaType(map[string]string{
 				dialect.Postgres: "timestamptz(3)",

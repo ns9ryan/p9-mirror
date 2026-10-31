@@ -44,6 +44,8 @@ type AgentApply struct {
 	RejectReason *string `json:"reject_reason,omitempty"`
 	// 申请备注
 	ApplyRemark *string `json:"apply_remark,omitempty"`
+	// 注册IP
+	RegisterIP string `json:"register_ip,omitempty"`
 	// 申请/注册时间
 	RegisterAt time.Time `json:"register_at,omitempty"`
 	// 审核时间
@@ -62,7 +64,7 @@ func (*AgentApply) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case agentapply.FieldID, agentapply.FieldRegisterSource, agentapply.FieldApplyShareRate, agentapply.FieldAuditStatus, agentapply.FieldAgentID:
 			values[i] = new(sql.NullInt64)
-		case agentapply.FieldOperatorCode, agentapply.FieldAccount, agentapply.FieldRealname, agentapply.FieldMobile, agentapply.FieldMemberAccount, agentapply.FieldMemberCode, agentapply.FieldRejectReason, agentapply.FieldApplyRemark, agentapply.FieldAuditor:
+		case agentapply.FieldOperatorCode, agentapply.FieldAccount, agentapply.FieldRealname, agentapply.FieldMobile, agentapply.FieldMemberAccount, agentapply.FieldMemberCode, agentapply.FieldRejectReason, agentapply.FieldApplyRemark, agentapply.FieldRegisterIP, agentapply.FieldAuditor:
 			values[i] = new(sql.NullString)
 		case agentapply.FieldCreatedAt, agentapply.FieldUpdatedAt, agentapply.FieldRegisterAt, agentapply.FieldAuditedAt:
 			values[i] = new(sql.NullTime)
@@ -166,6 +168,12 @@ func (_m *AgentApply) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.ApplyRemark = new(string)
 				*_m.ApplyRemark = value.String
+			}
+		case agentapply.FieldRegisterIP:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field register_ip", values[i])
+			} else if value.Valid {
+				_m.RegisterIP = value.String
 			}
 		case agentapply.FieldRegisterAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -272,6 +280,9 @@ func (_m *AgentApply) String() string {
 		builder.WriteString("apply_remark=")
 		builder.WriteString(*v)
 	}
+	builder.WriteString(", ")
+	builder.WriteString("register_ip=")
+	builder.WriteString(_m.RegisterIP)
 	builder.WriteString(", ")
 	builder.WriteString("register_at=")
 	builder.WriteString(_m.RegisterAt.Format(time.ANSIC))

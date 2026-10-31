@@ -319,6 +319,8 @@ message AddAgentApplyReq {
   string member_code = 7;
   // 申请备注，可选
   string apply_remark = 8;
+  // 注册 IP，必填
+  string register_ip = 9;
 }
 
 // AgentApplyItem 代理申请项
@@ -521,15 +523,15 @@ message AgentLoginLogItem {
   int64 id = 1;
   int64 agent_id = 2;
   string account = 3;
-  int32 login_type = 4;
-  string login_ip = 5;
-  string login_location = 6;
-  string udid = 7;
-  string login_device = 8;
-  int32 device_type = 9;
+  int32 login_type = 4; // 登录类型：1账号密码 2注册
+  string login_ip = 5; // 登录IP
+  string login_location = 6; // 登录地点
+  string udid = 7; // 设备码
+  string login_device = 8; // 登录设备
+  int32 device_type = 9; // 设备类型
   // 登录时间 unix 秒
   int64 login_at = 10;
-  // 1成功 2密码错误 3账号停用 4账号不存在
+  // 结果：1成功 2密码错误 3账号停用 4账号不存在
   int32 result = 11;
 }
 
@@ -568,6 +570,7 @@ message AgentLoginAssociationItem {
   string login_location = 5;
   string udid = 6;
   string login_device = 7;
+  // 设备类型：0 不限 1 PC网页 2 H5 3 Android 4 iOS 5 PC客户端
   int32 device_type = 8;
   // 登录时间 unix 秒
   int64 login_at = 9;

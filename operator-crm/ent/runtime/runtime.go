@@ -222,8 +222,12 @@ func init() {
 			return nil
 		}
 	}()
+	// agentapplyDescRegisterIP is the schema descriptor for register_ip field.
+	agentapplyDescRegisterIP := agentapplyFields[10].Descriptor()
+	// agentapply.RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
+	agentapply.RegisterIPValidator = agentapplyDescRegisterIP.Validators[0].(func(string) error)
 	// agentapplyDescAuditor is the schema descriptor for auditor field.
-	agentapplyDescAuditor := agentapplyFields[12].Descriptor()
+	agentapplyDescAuditor := agentapplyFields[13].Descriptor()
 	// agentapply.AuditorValidator is a validator for the "auditor" field. It is called by the builders before save.
 	agentapply.AuditorValidator = func() func(string) error {
 		validators := agentapplyDescAuditor.Validators

@@ -25,6 +25,7 @@ var (
 		{Name: "audit_status", Type: field.TypeInt64, Comment: "审核状态：1待审核 2已通过 3人工拒绝 4风控拒绝", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "reject_reason", Type: field.TypeString, Nullable: true, Size: 500, Comment: "拒绝理由"},
 		{Name: "apply_remark", Type: field.TypeString, Nullable: true, Size: 500, Comment: "申请备注"},
+		{Name: "register_ip", Type: field.TypeString, Comment: "注册IP", SchemaType: map[string]string{"postgres": "inet"}},
 		{Name: "register_at", Type: field.TypeTime, Comment: "申请/注册时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "audited_at", Type: field.TypeTime, Nullable: true, Comment: "审核时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "auditor", Type: field.TypeString, Nullable: true, Size: 64, Comment: "审核人"},

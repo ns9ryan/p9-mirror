@@ -140,6 +140,12 @@ func (_c *AgentApplyCreate) SetNillableApplyRemark(v *string) *AgentApplyCreate 
 	return _c
 }
 
+// SetRegisterIP sets the "register_ip" field.
+func (_c *AgentApplyCreate) SetRegisterIP(v string) *AgentApplyCreate {
+	_c.mutation.SetRegisterIP(v)
+	return _c
+}
+
 // SetRegisterAt sets the "register_at" field.
 func (_c *AgentApplyCreate) SetRegisterAt(v time.Time) *AgentApplyCreate {
 	_c.mutation.SetRegisterAt(v)
@@ -342,6 +348,14 @@ func (_c *AgentApplyCreate) check() error {
 			return &ValidationError{Name: "apply_remark", err: fmt.Errorf(`ent: validator failed for field "AgentApply.apply_remark": %w`, err)}
 		}
 	}
+	if _, ok := _c.mutation.RegisterIP(); !ok {
+		return &ValidationError{Name: "register_ip", err: errors.New(`ent: missing required field "AgentApply.register_ip"`)}
+	}
+	if v, ok := _c.mutation.RegisterIP(); ok {
+		if err := agentapply.RegisterIPValidator(v); err != nil {
+			return &ValidationError{Name: "register_ip", err: fmt.Errorf(`ent: validator failed for field "AgentApply.register_ip": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.RegisterAt(); !ok {
 		return &ValidationError{Name: "register_at", err: errors.New(`ent: missing required field "AgentApply.register_at"`)}
 	}
@@ -434,6 +448,10 @@ func (_c *AgentApplyCreate) createSpec() (*AgentApply, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ApplyRemark(); ok {
 		_spec.SetField(agentapply.FieldApplyRemark, field.TypeString, value)
 		_node.ApplyRemark = &value
+	}
+	if value, ok := _c.mutation.RegisterIP(); ok {
+		_spec.SetField(agentapply.FieldRegisterIP, field.TypeString, value)
+		_node.RegisterIP = value
 	}
 	if value, ok := _c.mutation.RegisterAt(); ok {
 		_spec.SetField(agentapply.FieldRegisterAt, field.TypeTime, value)
@@ -662,6 +680,18 @@ func (u *AgentApplyUpsert) UpdateApplyRemark() *AgentApplyUpsert {
 // ClearApplyRemark clears the value of the "apply_remark" field.
 func (u *AgentApplyUpsert) ClearApplyRemark() *AgentApplyUpsert {
 	u.SetNull(agentapply.FieldApplyRemark)
+	return u
+}
+
+// SetRegisterIP sets the "register_ip" field.
+func (u *AgentApplyUpsert) SetRegisterIP(v string) *AgentApplyUpsert {
+	u.Set(agentapply.FieldRegisterIP, v)
+	return u
+}
+
+// UpdateRegisterIP sets the "register_ip" field to the value that was provided on create.
+func (u *AgentApplyUpsert) UpdateRegisterIP() *AgentApplyUpsert {
+	u.SetExcluded(agentapply.FieldRegisterIP)
 	return u
 }
 
@@ -977,6 +1007,20 @@ func (u *AgentApplyUpsertOne) UpdateApplyRemark() *AgentApplyUpsertOne {
 func (u *AgentApplyUpsertOne) ClearApplyRemark() *AgentApplyUpsertOne {
 	return u.Update(func(s *AgentApplyUpsert) {
 		s.ClearApplyRemark()
+	})
+}
+
+// SetRegisterIP sets the "register_ip" field.
+func (u *AgentApplyUpsertOne) SetRegisterIP(v string) *AgentApplyUpsertOne {
+	return u.Update(func(s *AgentApplyUpsert) {
+		s.SetRegisterIP(v)
+	})
+}
+
+// UpdateRegisterIP sets the "register_ip" field to the value that was provided on create.
+func (u *AgentApplyUpsertOne) UpdateRegisterIP() *AgentApplyUpsertOne {
+	return u.Update(func(s *AgentApplyUpsert) {
+		s.UpdateRegisterIP()
 	})
 }
 
@@ -1470,6 +1514,20 @@ func (u *AgentApplyUpsertBulk) UpdateApplyRemark() *AgentApplyUpsertBulk {
 func (u *AgentApplyUpsertBulk) ClearApplyRemark() *AgentApplyUpsertBulk {
 	return u.Update(func(s *AgentApplyUpsert) {
 		s.ClearApplyRemark()
+	})
+}
+
+// SetRegisterIP sets the "register_ip" field.
+func (u *AgentApplyUpsertBulk) SetRegisterIP(v string) *AgentApplyUpsertBulk {
+	return u.Update(func(s *AgentApplyUpsert) {
+		s.SetRegisterIP(v)
+	})
+}
+
+// UpdateRegisterIP sets the "register_ip" field to the value that was provided on create.
+func (u *AgentApplyUpsertBulk) UpdateRegisterIP() *AgentApplyUpsertBulk {
+	return u.Update(func(s *AgentApplyUpsert) {
+		s.UpdateRegisterIP()
 	})
 }
 

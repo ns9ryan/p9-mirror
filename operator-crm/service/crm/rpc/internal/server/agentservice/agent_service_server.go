@@ -24,169 +24,169 @@ func NewAgentServiceServer(svcCtx *svc.ServiceContext) *AgentServiceServer {
 	}
 }
 
-// group: agent
+// group: agent 更新代理层级
 func (s *AgentServiceServer) UpdateAgentLevels(ctx context.Context, in *agentpb.UpdateAgentLevelsReq) (*agentpb.UpdateAgentLevelsResp, error) {
 	l := agentservicelogic.NewUpdateAgentLevelsLogic(ctx, s.svcCtx)
 	return l.UpdateAgentLevels(in)
 }
 
-// group: agent
+// group: agent 更新代理配置
 func (s *AgentServiceServer) UpdateAgentConfig(ctx context.Context, in *agentpb.UpdateAgentConfigReq) (*agentpb.AgentConfigResp, error) {
 	l := agentservicelogic.NewUpdateAgentConfigLogic(ctx, s.svcCtx)
 	return l.UpdateAgentConfig(in)
 }
 
-// group: agent
+// group: agent 获取代理配置
 func (s *AgentServiceServer) GetAgentConfig(ctx context.Context, in *agentpb.GetAgentConfigReq) (*agentpb.AgentConfigResp, error) {
 	l := agentservicelogic.NewGetAgentConfigLogic(ctx, s.svcCtx)
 	return l.GetAgentConfig(in)
 }
 
-// group: agent
+// group: agent 分站新增代理包括初始化分站各个代理线路
 func (s *AgentServiceServer) AddOperatorAgent(ctx context.Context, in *agentpb.AddOperatorAgentReq) (*agentpb.AddAgentResp, error) {
 	l := agentservicelogic.NewAddOperatorAgentLogic(ctx, s.svcCtx)
 	return l.AddOperatorAgent(in)
 }
 
-// group: agent
+// group: agent 新增直属代理
 func (s *AgentServiceServer) AddSubAgent(ctx context.Context, in *agentpb.AddSubAgentReq) (*agentpb.AddAgentResp, error) {
 	l := agentservicelogic.NewAddSubAgentLogic(ctx, s.svcCtx)
 	return l.AddSubAgent(in)
 }
 
-// group: agent
+// group: agent 分页查询代理
 func (s *AgentServiceServer) ListAgents(ctx context.Context, in *agentpb.ListAgentsReq) (*agentpb.ListAgentsResp, error) {
 	l := agentservicelogic.NewListAgentsLogic(ctx, s.svcCtx)
 	return l.ListAgents(in)
 }
 
-// group: agent
+// group: agent 搜索代理
 func (s *AgentServiceServer) SearchAgents(ctx context.Context, in *agentpb.SearchAgentsReq) (*agentpb.SearchAgentsResp, error) {
 	l := agentservicelogic.NewSearchAgentsLogic(ctx, s.svcCtx)
 	return l.SearchAgents(in)
 }
 
-// group: agent
+// group: agent 按等级查询代理列表
 func (s *AgentServiceServer) ListOperatorAgents(ctx context.Context, in *agentpb.ListOperatorAgentsReq) (*agentpb.ListOperatorAgentsResp, error) {
 	l := agentservicelogic.NewListOperatorAgentsLogic(ctx, s.svcCtx)
 	return l.ListOperatorAgents(in)
 }
 
-// group: agent
+// group: agent 获取代理层级
 func (s *AgentServiceServer) ListAgentLevels(ctx context.Context, in *agentpb.ListAgentLevelsReq) (*agentpb.ListAgentLevelsResp, error) {
 	l := agentservicelogic.NewListAgentLevelsLogic(ctx, s.svcCtx)
 	return l.ListAgentLevels(in)
 }
 
-// group: agent
+// group: agent 获取代理树
 func (s *AgentServiceServer) TreeNodeAgents(ctx context.Context, in *agentpb.TreeNodeAgentsReq) (*agentpb.TreeNodeAgentsResp, error) {
 	l := agentservicelogic.NewTreeNodeAgentsLogic(ctx, s.svcCtx)
 	return l.TreeNodeAgents(in)
 }
 
-// group: agent
+// group: agent 获取代理祖先
 func (s *AgentServiceServer) TreeNodeAncestorAgents(ctx context.Context, in *agentpb.TreeNodeAncestorAgentsReq) (*agentpb.TreeNodeAncestorAgentsResp, error) {
 	l := agentservicelogic.NewTreeNodeAncestorAgentsLogic(ctx, s.svcCtx)
 	return l.TreeNodeAncestorAgents(in)
 }
 
-// group: agent
+// group: agent 获取代理祖先
 func (s *AgentServiceServer) AncestorsById(ctx context.Context, in *agentpb.AncestorsByIDReq) (*agentpb.AncestorsByIDResp, error) {
 	l := agentservicelogic.NewAncestorsByIdLogic(ctx, s.svcCtx)
 	return l.AncestorsById(in)
 }
 
-// group: agent
+// group: agent 新增代理申请
 func (s *AgentServiceServer) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyReq) (*agentpb.AgentApplyItem, error) {
 	l := agentservicelogic.NewAddAgentApplyLogic(ctx, s.svcCtx)
 	return l.AddAgentApply(in)
 }
 
-// group: agent
+// group: agent 分页查询代理申请列表
 func (s *AgentServiceServer) ListAgentApplies(ctx context.Context, in *agentpb.ListAgentAppliesReq) (*agentpb.ListAgentAppliesResp, error) {
 	l := agentservicelogic.NewListAgentAppliesLogic(ctx, s.svcCtx)
 	return l.ListAgentApplies(in)
 }
 
-// group: agent
+// group: agent 审批代理申请
 func (s *AgentServiceServer) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentApplyReq) (*agentpb.ReviewAgentApplyResp, error) {
 	l := agentservicelogic.NewReviewAgentApplyLogic(ctx, s.svcCtx)
 	return l.ReviewAgentApply(in)
 }
 
-// group: agent
+// group: agent 获取代理个人信息
 func (s *AgentServiceServer) GetAgentProfile(ctx context.Context, in *agentpb.GetAgentProfileReq) (*agentpb.AgentProfile, error) {
 	l := agentservicelogic.NewGetAgentProfileLogic(ctx, s.svcCtx)
 	return l.GetAgentProfile(in)
 }
 
-// group: agent
+// group: agent 重置登录密码
 func (s *AgentServiceServer) ResetLoginPassword(ctx context.Context, in *agentpb.ResetLoginPasswordReq) (*agentpb.ResetLoginPasswordResp, error) {
 	l := agentservicelogic.NewResetLoginPasswordLogic(ctx, s.svcCtx)
 	return l.ResetLoginPassword(in)
 }
 
-// group: agent
+// group: agent 更新登录密码
 func (s *AgentServiceServer) UpdateLoginPassword(ctx context.Context, in *agentpb.UpdateLoginPasswordReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateLoginPasswordLogic(ctx, s.svcCtx)
 	return l.UpdateLoginPassword(in)
 }
 
-// group: agent
+// group: agent 更新提现密码
 func (s *AgentServiceServer) UpdateWithdrawPassword(ctx context.Context, in *agentpb.UpdateWithdrawPasswordReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateWithdrawPasswordLogic(ctx, s.svcCtx)
 	return l.UpdateWithdrawPassword(in)
 }
 
-// group: agent
+// group: agent 更新代理占成比例
 func (s *AgentServiceServer) UpdateAgentShareRate(ctx context.Context, in *agentpb.UpdateAgentShareRateReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateAgentShareRateLogic(ctx, s.svcCtx)
 	return l.UpdateAgentShareRate(in)
 }
 
-// group: agent
+// group: agent 更新代理提现限制
 func (s *AgentServiceServer) UpdateAgentPayoutRestricted(ctx context.Context, in *agentpb.UpdateAgentPayoutRestrictedReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateAgentPayoutRestrictedLogic(ctx, s.svcCtx)
 	return l.UpdateAgentPayoutRestricted(in)
 }
 
-// group: agent
+// group: agent 更新代理状态
 func (s *AgentServiceServer) UpdateAgentStatus(ctx context.Context, in *agentpb.UpdateAgentStatusReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateAgentStatusLogic(ctx, s.svcCtx)
 	return l.UpdateAgentStatus(in)
 }
 
-// group: agent
+// group: agent 软删除代理
 func (s *AgentServiceServer) DeleteAgent(ctx context.Context, in *agentpb.DeleteAgentReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewDeleteAgentLogic(ctx, s.svcCtx)
 	return l.DeleteAgent(in)
 }
 
-// group: agent
+// group: agent 更新代理备注
 func (s *AgentServiceServer) UpdateAgentRemark(ctx context.Context, in *agentpb.UpdateAgentRemarkReq) (*agentpb.Empty, error) {
 	l := agentservicelogic.NewUpdateAgentRemarkLogic(ctx, s.svcCtx)
 	return l.UpdateAgentRemark(in)
 }
 
-// group: agent
+// group: agent 更新代理个人信息
 func (s *AgentServiceServer) UpdateAgentProfile(ctx context.Context, in *agentpb.UpdateAgentProfileReq) (*agentpb.AgentProfile, error) {
 	l := agentservicelogic.NewUpdateAgentProfileLogic(ctx, s.svcCtx)
 	return l.UpdateAgentProfile(in)
 }
 
-// group: agent
+// group: agent 查询代理登录日志
 func (s *AgentServiceServer) ListAgentLoginLogs(ctx context.Context, in *agentpb.ListAgentLoginLogsReq) (*agentpb.ListAgentLoginLogsResp, error) {
 	l := agentservicelogic.NewListAgentLoginLogsLogic(ctx, s.svcCtx)
 	return l.ListAgentLoginLogs(in)
 }
 
-// group: agent
+// group: agent 查询代理登录关联
 func (s *AgentServiceServer) ListAgentLoginAssociations(ctx context.Context, in *agentpb.ListAgentLoginAssociationsReq) (*agentpb.ListAgentLoginAssociationsResp, error) {
 	l := agentservicelogic.NewListAgentLoginAssociationsLogic(ctx, s.svcCtx)
 	return l.ListAgentLoginAssociations(in)
 }
 
-// group: agent
+// group: agent 查询代理操作日志
 func (s *AgentServiceServer) ListAgentOpLogs(ctx context.Context, in *agentpb.ListAgentOpLogsReq) (*agentpb.ListAgentOpLogsResp, error) {
 	l := agentservicelogic.NewListAgentOpLogsLogic(ctx, s.svcCtx)
 	return l.ListAgentOpLogs(in)

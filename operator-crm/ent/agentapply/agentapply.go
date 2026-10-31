@@ -40,6 +40,8 @@ const (
 	FieldRejectReason = "reject_reason"
 	// FieldApplyRemark holds the string denoting the apply_remark field in the database.
 	FieldApplyRemark = "apply_remark"
+	// FieldRegisterIP holds the string denoting the register_ip field in the database.
+	FieldRegisterIP = "register_ip"
 	// FieldRegisterAt holds the string denoting the register_at field in the database.
 	FieldRegisterAt = "register_at"
 	// FieldAuditedAt holds the string denoting the audited_at field in the database.
@@ -68,6 +70,7 @@ var Columns = []string{
 	FieldAuditStatus,
 	FieldRejectReason,
 	FieldApplyRemark,
+	FieldRegisterIP,
 	FieldRegisterAt,
 	FieldAuditedAt,
 	FieldAuditor,
@@ -122,6 +125,8 @@ var (
 	RejectReasonValidator func(string) error
 	// ApplyRemarkValidator is a validator for the "apply_remark" field. It is called by the builders before save.
 	ApplyRemarkValidator func(string) error
+	// RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
+	RegisterIPValidator func(string) error
 	// AuditorValidator is a validator for the "auditor" field. It is called by the builders before save.
 	AuditorValidator func(string) error
 )
@@ -197,6 +202,11 @@ func ByRejectReason(opts ...sql.OrderTermOption) OrderOption {
 // ByApplyRemark orders the results by the apply_remark field.
 func ByApplyRemark(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldApplyRemark, opts...).ToFunc()
+}
+
+// ByRegisterIP orders the results by the register_ip field.
+func ByRegisterIP(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRegisterIP, opts...).ToFunc()
 }
 
 // ByRegisterAt orders the results by the register_at field.

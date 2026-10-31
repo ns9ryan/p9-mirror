@@ -119,6 +119,11 @@ func ApplyRemark(v string) predicate.AgentApply {
 	return predicate.AgentApply(sql.FieldEQ(FieldApplyRemark, v))
 }
 
+// RegisterIP applies equality check predicate on the "register_ip" field. It's identical to RegisterIPEQ.
+func RegisterIP(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldEQ(FieldRegisterIP, v))
+}
+
 // RegisterAt applies equality check predicate on the "register_at" field. It's identical to RegisterAtEQ.
 func RegisterAt(v time.Time) predicate.AgentApply {
 	return predicate.AgentApply(sql.FieldEQ(FieldRegisterAt, v))
@@ -877,6 +882,71 @@ func ApplyRemarkEqualFold(v string) predicate.AgentApply {
 // ApplyRemarkContainsFold applies the ContainsFold predicate on the "apply_remark" field.
 func ApplyRemarkContainsFold(v string) predicate.AgentApply {
 	return predicate.AgentApply(sql.FieldContainsFold(FieldApplyRemark, v))
+}
+
+// RegisterIPEQ applies the EQ predicate on the "register_ip" field.
+func RegisterIPEQ(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldEQ(FieldRegisterIP, v))
+}
+
+// RegisterIPNEQ applies the NEQ predicate on the "register_ip" field.
+func RegisterIPNEQ(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldNEQ(FieldRegisterIP, v))
+}
+
+// RegisterIPIn applies the In predicate on the "register_ip" field.
+func RegisterIPIn(vs ...string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldIn(FieldRegisterIP, vs...))
+}
+
+// RegisterIPNotIn applies the NotIn predicate on the "register_ip" field.
+func RegisterIPNotIn(vs ...string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldNotIn(FieldRegisterIP, vs...))
+}
+
+// RegisterIPGT applies the GT predicate on the "register_ip" field.
+func RegisterIPGT(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldGT(FieldRegisterIP, v))
+}
+
+// RegisterIPGTE applies the GTE predicate on the "register_ip" field.
+func RegisterIPGTE(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldGTE(FieldRegisterIP, v))
+}
+
+// RegisterIPLT applies the LT predicate on the "register_ip" field.
+func RegisterIPLT(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldLT(FieldRegisterIP, v))
+}
+
+// RegisterIPLTE applies the LTE predicate on the "register_ip" field.
+func RegisterIPLTE(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldLTE(FieldRegisterIP, v))
+}
+
+// RegisterIPContains applies the Contains predicate on the "register_ip" field.
+func RegisterIPContains(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldContains(FieldRegisterIP, v))
+}
+
+// RegisterIPHasPrefix applies the HasPrefix predicate on the "register_ip" field.
+func RegisterIPHasPrefix(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldHasPrefix(FieldRegisterIP, v))
+}
+
+// RegisterIPHasSuffix applies the HasSuffix predicate on the "register_ip" field.
+func RegisterIPHasSuffix(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldHasSuffix(FieldRegisterIP, v))
+}
+
+// RegisterIPEqualFold applies the EqualFold predicate on the "register_ip" field.
+func RegisterIPEqualFold(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldEqualFold(FieldRegisterIP, v))
+}
+
+// RegisterIPContainsFold applies the ContainsFold predicate on the "register_ip" field.
+func RegisterIPContainsFold(v string) predicate.AgentApply {
+	return predicate.AgentApply(sql.FieldContainsFold(FieldRegisterIP, v))
 }
 
 // RegisterAtEQ applies the EQ predicate on the "register_at" field.

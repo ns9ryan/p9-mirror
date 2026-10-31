@@ -94,6 +94,7 @@ type AgentApplyMutation struct {
 	addaudit_status     *int64
 	reject_reason       *string
 	apply_remark        *string
+	register_ip         *string
 	register_at         *time.Time
 	audited_at          *time.Time
 	auditor             *string
@@ -763,6 +764,42 @@ func (m *AgentApplyMutation) ResetApplyRemark() {
 	delete(m.clearedFields, agentapply.FieldApplyRemark)
 }
 
+// SetRegisterIP sets the "register_ip" field.
+func (m *AgentApplyMutation) SetRegisterIP(s string) {
+	m.register_ip = &s
+}
+
+// RegisterIP returns the value of the "register_ip" field in the mutation.
+func (m *AgentApplyMutation) RegisterIP() (r string, exists bool) {
+	v := m.register_ip
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRegisterIP returns the old "register_ip" field's value of the AgentApply entity.
+// If the AgentApply object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AgentApplyMutation) OldRegisterIP(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRegisterIP is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRegisterIP requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRegisterIP: %w", err)
+	}
+	return oldValue.RegisterIP, nil
+}
+
+// ResetRegisterIP resets all changes to the "register_ip" field.
+func (m *AgentApplyMutation) ResetRegisterIP() {
+	m.register_ip = nil
+}
+
 // SetRegisterAt sets the "register_at" field.
 func (m *AgentApplyMutation) SetRegisterAt(t time.Time) {
 	m.register_at = &t
@@ -1001,7 +1038,7 @@ func (m *AgentApplyMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AgentApplyMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.created_at != nil {
 		fields = append(fields, agentapply.FieldCreatedAt)
 	}
@@ -1040,6 +1077,9 @@ func (m *AgentApplyMutation) Fields() []string {
 	}
 	if m.apply_remark != nil {
 		fields = append(fields, agentapply.FieldApplyRemark)
+	}
+	if m.register_ip != nil {
+		fields = append(fields, agentapply.FieldRegisterIP)
 	}
 	if m.register_at != nil {
 		fields = append(fields, agentapply.FieldRegisterAt)
@@ -1087,6 +1127,8 @@ func (m *AgentApplyMutation) Field(name string) (ent.Value, bool) {
 		return m.RejectReason()
 	case agentapply.FieldApplyRemark:
 		return m.ApplyRemark()
+	case agentapply.FieldRegisterIP:
+		return m.RegisterIP()
 	case agentapply.FieldRegisterAt:
 		return m.RegisterAt()
 	case agentapply.FieldAuditedAt:
@@ -1130,6 +1172,8 @@ func (m *AgentApplyMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldRejectReason(ctx)
 	case agentapply.FieldApplyRemark:
 		return m.OldApplyRemark(ctx)
+	case agentapply.FieldRegisterIP:
+		return m.OldRegisterIP(ctx)
 	case agentapply.FieldRegisterAt:
 		return m.OldRegisterAt(ctx)
 	case agentapply.FieldAuditedAt:
@@ -1237,6 +1281,13 @@ func (m *AgentApplyMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetApplyRemark(v)
+		return nil
+	case agentapply.FieldRegisterIP:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRegisterIP(v)
 		return nil
 	case agentapply.FieldRegisterAt:
 		v, ok := value.(time.Time)
@@ -1437,6 +1488,9 @@ func (m *AgentApplyMutation) ResetField(name string) error {
 		return nil
 	case agentapply.FieldApplyRemark:
 		m.ResetApplyRemark()
+		return nil
+	case agentapply.FieldRegisterIP:
+		m.ResetRegisterIP()
 		return nil
 	case agentapply.FieldRegisterAt:
 		m.ResetRegisterAt()

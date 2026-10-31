@@ -207,6 +207,20 @@ func (_u *AgentApplyUpdate) ClearApplyRemark() *AgentApplyUpdate {
 	return _u
 }
 
+// SetRegisterIP sets the "register_ip" field.
+func (_u *AgentApplyUpdate) SetRegisterIP(v string) *AgentApplyUpdate {
+	_u.mutation.SetRegisterIP(v)
+	return _u
+}
+
+// SetNillableRegisterIP sets the "register_ip" field if the given value is not nil.
+func (_u *AgentApplyUpdate) SetNillableRegisterIP(v *string) *AgentApplyUpdate {
+	if v != nil {
+		_u.SetRegisterIP(*v)
+	}
+	return _u
+}
+
 // SetRegisterAt sets the "register_at" field.
 func (_u *AgentApplyUpdate) SetRegisterAt(v time.Time) *AgentApplyUpdate {
 	_u.mutation.SetRegisterAt(v)
@@ -387,6 +401,11 @@ func (_u *AgentApplyUpdate) check() error {
 			return &ValidationError{Name: "apply_remark", err: fmt.Errorf(`ent: validator failed for field "AgentApply.apply_remark": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.RegisterIP(); ok {
+		if err := agentapply.RegisterIPValidator(v); err != nil {
+			return &ValidationError{Name: "register_ip", err: fmt.Errorf(`ent: validator failed for field "AgentApply.register_ip": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Auditor(); ok {
 		if err := agentapply.AuditorValidator(v); err != nil {
 			return &ValidationError{Name: "auditor", err: fmt.Errorf(`ent: validator failed for field "AgentApply.auditor": %w`, err)}
@@ -454,6 +473,9 @@ func (_u *AgentApplyUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	}
 	if _u.mutation.ApplyRemarkCleared() {
 		_spec.ClearField(agentapply.FieldApplyRemark, field.TypeString)
+	}
+	if value, ok := _u.mutation.RegisterIP(); ok {
+		_spec.SetField(agentapply.FieldRegisterIP, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.RegisterAt(); ok {
 		_spec.SetField(agentapply.FieldRegisterAt, field.TypeTime, value)
@@ -678,6 +700,20 @@ func (_u *AgentApplyUpdateOne) ClearApplyRemark() *AgentApplyUpdateOne {
 	return _u
 }
 
+// SetRegisterIP sets the "register_ip" field.
+func (_u *AgentApplyUpdateOne) SetRegisterIP(v string) *AgentApplyUpdateOne {
+	_u.mutation.SetRegisterIP(v)
+	return _u
+}
+
+// SetNillableRegisterIP sets the "register_ip" field if the given value is not nil.
+func (_u *AgentApplyUpdateOne) SetNillableRegisterIP(v *string) *AgentApplyUpdateOne {
+	if v != nil {
+		_u.SetRegisterIP(*v)
+	}
+	return _u
+}
+
 // SetRegisterAt sets the "register_at" field.
 func (_u *AgentApplyUpdateOne) SetRegisterAt(v time.Time) *AgentApplyUpdateOne {
 	_u.mutation.SetRegisterAt(v)
@@ -871,6 +907,11 @@ func (_u *AgentApplyUpdateOne) check() error {
 			return &ValidationError{Name: "apply_remark", err: fmt.Errorf(`ent: validator failed for field "AgentApply.apply_remark": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.RegisterIP(); ok {
+		if err := agentapply.RegisterIPValidator(v); err != nil {
+			return &ValidationError{Name: "register_ip", err: fmt.Errorf(`ent: validator failed for field "AgentApply.register_ip": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Auditor(); ok {
 		if err := agentapply.AuditorValidator(v); err != nil {
 			return &ValidationError{Name: "auditor", err: fmt.Errorf(`ent: validator failed for field "AgentApply.auditor": %w`, err)}
@@ -955,6 +996,9 @@ func (_u *AgentApplyUpdateOne) sqlSave(ctx context.Context) (_node *AgentApply, 
 	}
 	if _u.mutation.ApplyRemarkCleared() {
 		_spec.ClearField(agentapply.FieldApplyRemark, field.TypeString)
+	}
+	if value, ok := _u.mutation.RegisterIP(); ok {
+		_spec.SetField(agentapply.FieldRegisterIP, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.RegisterAt(); ok {
 		_spec.SetField(agentapply.FieldRegisterAt, field.TypeTime, value)

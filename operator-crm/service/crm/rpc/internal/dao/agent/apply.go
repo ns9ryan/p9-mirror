@@ -107,6 +107,7 @@ func (s *Service) AddAgentApply(ctx context.Context, in *agentpb.AddAgentApplyRe
 		SetMemberAccount(memberAccount).
 		SetMemberCode(memberCode).
 		SetAuditStatus(auditStatusPending).
+		SetRegisterIP(in.RegisterIp).
 		SetRegisterAt(now)
 	if v := strings.TrimSpace(in.ApplyRemark); v != "" {
 		c.SetApplyRemark(v)
@@ -265,7 +266,7 @@ func (s *Service) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentA
 		}
 		mobile := row.Mobile
 		realname := row.Realname
-		fields := &agentpb.AgentCreateFields{
+		agentCreateFields := &agentpb.AgentCreateFields{
 			Account:       row.Account,
 			Code:          row.Account,
 			Password:      password,
@@ -273,10 +274,11 @@ func (s *Service) ReviewAgentApply(ctx context.Context, in *agentpb.ReviewAgentA
 			AgentLineCode: parent.AgentLineCode,
 			ShareRate:     int32(row.ApplyShareRate),
 			PromoCode:     strings.ToUpper(promoCode),
+			RegisterIp:    row.RegisterIP,
 			Mobile:        &mobile,
 			Realname:      &realname,
 		}
-		created, cerr := s.createUnderParent(ctx, fields, parentID, row.RegisterSource, false)
+		created, cerr := s.createUnderParent(ctx, agentCreateFields, parentID, row.RegisterSource, false)
 		if cerr != nil {
 			return nil, cerr
 		}
