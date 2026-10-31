@@ -7,7 +7,7 @@ import (
 
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
-	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
+	memberdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb"
@@ -39,7 +39,7 @@ func (l *UpdateConfigLogic) UpdateConfig(in *vipconfigpb.UpdateVipConfigRequest)
 	}
 
 	// 修改VIP基础配置, 最近开启时间由DAO维护
-	if err := l.svcCtx.DAO.MemberVipConfig.UpdateConfig(l.ctx, dao.MemberVipConfigUpdate{
+	if err := l.svcCtx.DAO.MemberVipConfig.Update(l.ctx, memberdao.VIPConfigUpdate{
 		VipEnabled:            in.VipEnabled,            // VIP总开关
 		UpgradeRewardEnabled:  in.UpgradeRewardEnabled,  // 晋级奖励开关
 		RetentionCheckEnabled: in.RetentionCheckEnabled, // 保级考核开关

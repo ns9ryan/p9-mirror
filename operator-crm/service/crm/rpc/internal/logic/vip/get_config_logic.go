@@ -31,7 +31,7 @@ func NewGetConfigLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetConf
 // GetConfig 获取VIP基础配置
 func (l *GetConfigLogic) GetConfig(in *vipconfigpb.GetVipConfigRequest) (*vipconfigpb.GetVipConfigResponse, error) {
 	// 查询当前厅VIP基础配置
-	config, err := l.svcCtx.DAO.MemberVipConfig.GetConfig(l.ctx)
+	config, err := l.svcCtx.DAO.MemberVipConfig.Get(l.ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			// 配置不存在, 请检查分站初始化状态

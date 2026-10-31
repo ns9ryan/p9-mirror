@@ -12,7 +12,7 @@ type Group struct {
 	MemberAutoLevel  MemberAutoLevel  // 会员自动层级
 	MemberFixedLevel MemberFixedLevel // 会员固定层级
 
-	MemberVipConfig    MemberVipConfig         // 会员VIP配置
+	MemberVipConfig    *memberdao.VIPConfig    // 会员VIP配置
 	MemberVipLevel     MemberVipLevel          // 会员VIP等级
 	MemberVipIconGroup *memberdao.VIPIconGroup // 会员VIP图标组
 }
@@ -22,7 +22,7 @@ func New(db *ent.Client) *Group {
 	group := &Group{
 		MemberAutoLevel:    MemberAutoLevel{db: db},
 		MemberFixedLevel:   MemberFixedLevel{db: db},
-		MemberVipConfig:    MemberVipConfig{db: db},
+		MemberVipConfig:    memberdao.NewVIPConfig(db),
 		MemberVipLevel:     MemberVipLevel{db: db},
 		MemberVipIconGroup: memberdao.NewVIPIconGroup(db),
 	}

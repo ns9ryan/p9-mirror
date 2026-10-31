@@ -1,4 +1,4 @@
-package dao
+package member
 
 import (
 	"context"
@@ -7,13 +7,13 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 )
 
-// MemberVipConfig 会员VIP配置数据访问
-type MemberVipConfig struct {
+// VIPConfig 会员VIP配置数据访问
+type VIPConfig struct {
 	db *ent.Client // Ent数据库客户端
 }
 
-// MemberVipConfigUpdate VIP配置更新字段
-type MemberVipConfigUpdate struct {
+// VIPConfigUpdate VIP配置更新字段
+type VIPConfigUpdate struct {
 	VipEnabled            *bool  // VIP总开关
 	UpgradeRewardEnabled  *bool  // 晋级奖励开关
 	RetentionCheckEnabled *bool  // 保级考核开关
@@ -21,15 +21,20 @@ type MemberVipConfigUpdate struct {
 	RewardWaterMultiplier *int64 // VIP晋级奖励洗码倍率, 放大100000倍存储
 }
 
-// GetConfig 获取当前厅VIP基础配置
-func (d *MemberVipConfig) GetConfig(ctx context.Context) (*ent.MemberVipConfig, error) {
+// NewVIPConfig 创建VIP配置数据访问
+func NewVIPConfig(db *ent.Client) *VIPConfig {
+	return &VIPConfig{db: db}
+}
+
+// Get 获取当前厅VIP基础配置
+func (d *VIPConfig) Get(ctx context.Context) (*ent.MemberVipConfig, error) {
 	return d.db.MemberVipConfig.Query().Only(ctx)
 }
 
-// UpdateConfig 更新当前厅已初始化的VIP基础配置
-func (d *MemberVipConfig) UpdateConfig(ctx context.Context, in MemberVipConfigUpdate) error {
+// Update 更新当前厅已初始化的VIP基础配置
+func (d *VIPConfig) Update(ctx context.Context, in VIPConfigUpdate) error {
 	// 查询已有配置, 不存在时直接返回错误
-	config, err := d.GetConfig(ctx)
+	config, err := d.Get(ctx)
 	if err != nil {
 		return err
 	}
