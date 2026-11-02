@@ -5,23 +5,30 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/migrate"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/config"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/agent"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/auth"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 )
 
+// ServiceContext CRM RPC服务上下文
 type ServiceContext struct {
 	Config config.Config
 	DB     *ent.Client           // Ent数据库客户端
 	Redis  redis.UniversalClient // 令牌黑名单
-	DAO    *dao.Group            // 数据访问
-	Auth   *auth.Service         // 代理鉴权
-	Agent  *agent.Service        // 代理管理
+
+	// 业务数据访问
+	DAO    *dao.Group      // 通用业务DAO
+	Member *member.Service // 会员管理
+	Auth   *auth.Service   // 代理鉴权
+	Agent  *agent.Service  // 代理管理
 }
 
+// NewServiceContext 创建CRM RPC服务上下文
 func NewServiceContext(c config.Config) *ServiceContext {
 	// 创建数据库驱动
 	driver, err := c.DatabaseConf.NewDriver()
@@ -57,6 +64,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DB:       c.DataRedis.DB,
 		})
 	}
+
+	// 创建业务数据访问
+	daoGroup := dao.New(db)
+	memberServ := member.New(db, &daoGroup.MemberAutoLevel, &daoGroup.MemberVipLevel)
 	// 创建代理管理服务
 	agentServ := agent.New(db)
 
@@ -64,7 +75,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config: c,
 		DB:     db,
 		Redis:  rdb,
-		DAO:    dao.New(db),
+		DAO:    daoGroup,
+		Member: memberServ,
 		Auth: auth.New(db, agentServ, rdb, auth.Config{
 			AccessSecret:  c.AgentAdminJwt.AccessSecret,
 			AccessExpire:  c.AgentAdminJwt.AccessExpire,

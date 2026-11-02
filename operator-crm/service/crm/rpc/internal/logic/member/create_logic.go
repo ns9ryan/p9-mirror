@@ -17,6 +17,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao"
 	agentdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/agent"
+	memberdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/i18n"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb"
@@ -117,7 +118,7 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 	var created *ent.Member
 	err = dao.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
 		// 检查当前厅的登录账号
-		exists, err := l.svcCtx.DAO.Member.UsernameExistsTx(l.ctx, tx, account)
+		exists, err := l.svcCtx.Member.UsernameExistsTx(l.ctx, tx, account)
 		if err != nil {
 			return fmt.Errorf("检查会员账号是否重复失败: %w", err)
 		}
@@ -126,19 +127,19 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 		}
 
 		// 生成唯一会员编号
-		code, err := generateMemberCode(l.ctx, tx, &l.svcCtx.DAO.Member)
+		code, err := generateMemberCode(l.ctx, tx, l.svcCtx.Member)
 		if err != nil {
 			return err
 		}
 
 		// 生成唯一会员邀请码
-		inviteCode, err := generateMemberInviteCode(l.ctx, tx, &l.svcCtx.DAO.Member)
+		inviteCode, err := generateMemberInviteCode(l.ctx, tx, l.svcCtx.Member)
 		if err != nil {
 			return err
 		}
 
 		// 创建会员主体及初始业务记录
-		createdMember, err := l.svcCtx.DAO.Member.CreateTx(l.ctx, tx, dao.MemberCreate{
+		createdMember, err := l.svcCtx.Member.CreateTx(l.ctx, tx, memberdao.CreateParams{
 			Code:            code,                        // 会员对外编号
 			InviteCode:      inviteCode,                  // 会员专属邀请码
 			AgentID:         in.GetAgentId(),             // 会员所属分层代理ID
@@ -192,7 +193,7 @@ func validMemberPassword(password string) bool {
 }
 
 // generateMemberCode 生成当前厅唯一的12位会员编号
-func generateMemberCode(ctx context.Context, tx *ent.Tx, memberDAO *dao.Member) (string, error) {
+func generateMemberCode(ctx context.Context, tx *ent.Tx, memberDAO *memberdao.Service) (string, error) {
 	for i := 0; i < memberCodeAttempts; i++ {
 		code := strconv.FormatInt(memberCodeMin+rand.Int64N(memberCodeRange), 10)
 
@@ -209,7 +210,7 @@ func generateMemberCode(ctx context.Context, tx *ent.Tx, memberDAO *dao.Member) 
 }
 
 // generateMemberInviteCode 生成当前厅唯一的会员邀请码
-func generateMemberInviteCode(ctx context.Context, tx *ent.Tx, memberDAO *dao.Member) (string, error) {
+func generateMemberInviteCode(ctx context.Context, tx *ent.Tx, memberDAO *memberdao.Service) (string, error) {
 	for i := 0; i < memberInviteCodeAttempts; i++ {
 		code, err := utils.GenShortID()
 		if err != nil {
