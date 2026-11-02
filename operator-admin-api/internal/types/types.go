@@ -401,6 +401,32 @@ type ListMemberFixedLevelsResponse struct {
 	List  []MemberFixedLevelInfo `json:"list"`
 }
 
+type ListMembersRequest struct {
+	Keyword         string  `form:"keyword,optional"`
+	TimeType        int32   `form:"time_type,optional"`
+	StartAt         *int64  `form:"start_at,optional"`
+	EndAt           *int64  `form:"end_at,optional"`
+	AutoLevelId     *int64  `form:"auto_level_id,optional"`
+	FixedLevelId    *int64  `form:"fixed_level_id,optional"`
+	RegisterMethod  *string `form:"register_method,optional"`
+	RegisterChannel *string `form:"register_channel,optional"`
+	Status          *int64  `form:"status,optional"`
+	AgentId         *int64  `form:"agent_id,optional"`
+	BettingDisabled bool    `form:"betting_disabled,optional"`
+	NoPhone         bool    `form:"no_phone,optional"`
+	NoEmail         bool    `form:"no_email,optional"`
+	Deposited       bool    `form:"deposited,optional"`
+	NotDeposited    bool    `form:"not_deposited,optional"`
+	SortBy          int32   `form:"sort_by,optional"`
+	SortOrder       int32   `form:"sort_order,optional"`
+	PageRequest
+}
+
+type ListMembersResponse struct {
+	Total int64            `json:"total"`
+	List  []MemberListItem `json:"list"`
+}
+
 type ListOperatorAgentsReq struct {
 	Level int32 `form:"level"`
 }
@@ -447,6 +473,62 @@ type MemberFixedLevelInfo struct {
 	CurrentMemberCount int64  `json:"current_member_count"`
 	CreatedAt          int64  `json:"created_at"`
 	UpdatedAt          int64  `json:"updated_at"`
+}
+
+type MemberLevelInfo struct {
+	AutoLevelId   int64                      `json:"auto_level_id"`
+	AutoLevelName string                     `json:"auto_level_name"`
+	FixedLevels   []MemberListFixedLevelInfo `json:"fixed_levels"`
+	VipLevelId    int64                      `json:"vip_level_id"`
+	VipLevel      int64                      `json:"vip_level"`
+}
+
+type MemberListFixedLevelInfo struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
+type MemberListItem struct {
+	Id                 int64           `json:"id"`
+	Code               string          `json:"code"`
+	Account            string          `json:"account"`
+	Nickname           string          `json:"nickname"`
+	AgentId            int64           `json:"agent_id"`
+	AgentAccount       string          `json:"agent_account"`
+	Levels             MemberLevelInfo `json:"levels"`
+	Status             int64           `json:"status"`
+	ChatDisabled       bool            `json:"chat_disabled"`
+	BettingDisabled    bool            `json:"betting_disabled"`
+	WithdrawalDisabled bool            `json:"withdrawal_disabled"`
+	RegisterMethod     string          `json:"register_method"`
+	RegisterChannel    string          `json:"register_channel"`
+	CreatedAt          int64           `json:"created_at"`
+	LastLoginAt        *int64          `json:"last_login_at,optional"`
+	LastLoginIp        *string         `json:"last_login_ip,optional"`
+	Phone              *string         `json:"phone,optional"`
+	Email              *string         `json:"email,optional"`
+	InviterMemberId    *int64          `json:"inviter_member_id,optional"`
+	Remark             *string         `json:"remark,optional"`
+	Stats              MemberStatsInfo `json:"stats"`
+}
+
+type MemberStatsInfo struct {
+	TotalDeposit               int64  `json:"total_deposit"`
+	TotalDepositCount          int64  `json:"total_deposit_count"`
+	TotalWithdrawal            int64  `json:"total_withdrawal"`
+	TotalWithdrawalCount       int64  `json:"total_withdrawal_count"`
+	TotalDepositWithdrawalDiff int64  `json:"total_deposit_withdrawal_diff"`
+	TotalBet                   int64  `json:"total_bet"`
+	TotalValidBet              int64  `json:"total_valid_bet"`
+	TotalWater                 int64  `json:"total_water"`
+	TotalWinLoss               int64  `json:"total_win_loss"`
+	CurrentPeriodDeposit       int64  `json:"current_period_deposit"`
+	CurrentPeriodWithdrawal    int64  `json:"current_period_withdrawal"`
+	CurrentPeriodBet           int64  `json:"current_period_bet"`
+	CurrentPeriodValidBet      int64  `json:"current_period_valid_bet"`
+	CurrentPeriodWater         int64  `json:"current_period_water"`
+	CurrentPeriodWinLoss       int64  `json:"current_period_win_loss"`
+	CurrentPeriodStartedAt     *int64 `json:"current_period_started_at,optional"`
 }
 
 type OperatorAgentLineGroup struct {

@@ -36,7 +36,7 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 	}
 }
 
-// List 获取当前厅会员列表	todo
+// List 获取会员列表
 func (l *ListLogic) List(in *memberpb.ListMembersRequest) (*memberpb.ListMembersResponse, error) {
 	// 校验分站运营身份和当前厅
 	claims := ctxdata.ClaimsFromCtx(l.ctx)

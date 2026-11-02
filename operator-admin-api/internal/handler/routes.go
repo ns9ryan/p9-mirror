@@ -288,6 +288,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/create",
 					Handler: membermanage.CreateHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/list",
+					Handler: membermanage.ListHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/member"),
