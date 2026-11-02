@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	entmember "oa.98ent.com/p9/operator-crm/ent/member"
@@ -149,7 +150,6 @@ func (s *Service) List(ctx context.Context, in ListParams) ([]*ent.Member, int64
 	}
 
 	return rows, int64(total), nil
-
 }
 
 // listWhere 构建会员列表查询条件
