@@ -10,5 +10,5 @@ import "types/member_wallet_ping.proto";
 // 会员钱包健康检查服务
 service Ping {
   // 健康检查
-  rpc Ping(member_ping.PingRequest) returns (member_ping.PingResponse);
+  rpc Ping(member_wallet_ping.PingRequest) returns (member_wallet_ping.PingResponse);
 }

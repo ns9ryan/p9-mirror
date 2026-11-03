@@ -25,17 +25,17 @@ var File_member_wallet_proto protoreflect.FileDescriptor
 
 const file_member_wallet_proto_rawDesc = "" +
 	"\n" +
-	"\x13member_wallet.proto\x12\rmember_wallet\x1a\x1etypes/member_wallet_ping.proto2C\n" +
-	"\x04Ping\x12;\n" +
-	"\x04Ping\x12\x18.member_ping.PingRequest\x1a\x19.member_ping.PingResponseBNZLoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpcb\x06proto3"
+	"\x13member_wallet.proto\x12\rmember_wallet\x1a\x1etypes/member_wallet_ping.proto2Q\n" +
+	"\x04Ping\x12I\n" +
+	"\x04Ping\x12\x1f.member_wallet_ping.PingRequest\x1a .member_wallet_ping.PingResponseBNZLoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpcb\x06proto3"
 
 var file_member_wallet_proto_goTypes = []any{
-	(*pingpb.PingRequest)(nil),  // 0: member_ping.PingRequest
-	(*pingpb.PingResponse)(nil), // 1: member_ping.PingResponse
+	(*pingpb.PingRequest)(nil),  // 0: member_wallet_ping.PingRequest
+	(*pingpb.PingResponse)(nil), // 1: member_wallet_ping.PingResponse
 }
 var file_member_wallet_proto_depIdxs = []int32{
-	0, // 0: member_wallet.Ping.Ping:input_type -> member_ping.PingRequest
-	1, // 1: member_wallet.Ping.Ping:output_type -> member_ping.PingResponse
+	0, // 0: member_wallet.Ping.Ping:input_type -> member_wallet_ping.PingRequest
+	1, // 1: member_wallet.Ping.Ping:output_type -> member_wallet_ping.PingResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

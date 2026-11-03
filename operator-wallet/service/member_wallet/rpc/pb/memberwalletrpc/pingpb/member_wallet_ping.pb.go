@@ -99,7 +99,7 @@ var File_types_member_wallet_ping_proto protoreflect.FileDescriptor
 
 const file_types_member_wallet_ping_proto_rawDesc = "" +
 	"\n" +
-	"\x1etypes/member_wallet_ping.proto\x12\vmember_ping\"\r\n" +
+	"\x1etypes/member_wallet_ping.proto\x12\x12member_wallet_ping\"\r\n" +
 	"\vPingRequest\"\x0e\n" +
 	"\fPingResponseBUZSoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpbb\x06proto3"
 
@@ -117,8 +117,8 @@ func file_types_member_wallet_ping_proto_rawDescGZIP() []byte {
 
 var file_types_member_wallet_ping_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_types_member_wallet_ping_proto_goTypes = []any{
-	(*PingRequest)(nil),  // 0: member_ping.PingRequest
-	(*PingResponse)(nil), // 1: member_ping.PingResponse
+	(*PingRequest)(nil),  // 0: member_wallet_ping.PingRequest
+	(*PingResponse)(nil), // 1: member_wallet_ping.PingResponse
 }
 var file_types_member_wallet_ping_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
