@@ -82,6 +82,10 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 
 	add("api.group.member", "会员管理", "會員管理", "Members")
 
+	// 会员管理 API
+	add("api.memberList", "会员列表", "會員列表", "Member list")
+	add("api.memberCreate", "创建会员", "建立會員", "Create member")
+
 	// 会员自动层级 API
 	add("api.memberAutoLevelList", "自动层级列表", "自動層級列表", "Auto level list")
 	add("api.memberAutoLevelCreate", "创建自动层级", "建立自動層級", "Create auto level")

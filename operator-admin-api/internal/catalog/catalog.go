@@ -90,6 +90,10 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/agent/login-log/list", Method: http.MethodPost, Description: "api.agentLoginLogList", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/login-log/associations", Method: http.MethodPost, Description: "api.agentLoginAssociations", ApiGroup: "api.group.agent", ServiceName: serviceName},
 
+			// 会员管理 API
+			{Path: "/member/list", Method: http.MethodGet, Description: "api.memberList", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/create", Method: http.MethodPost, Description: "api.memberCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
+
 			// 会员自动层级 API
 			{Path: "/member/auto-level/list", Method: http.MethodGet, Description: "api.memberAutoLevelList", ApiGroup: "api.group.member", ServiceName: serviceName},
 			{Path: "/member/auto-level/create", Method: http.MethodPost, Description: "api.memberAutoLevelCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
