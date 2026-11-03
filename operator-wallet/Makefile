@@ -44,7 +44,7 @@ build-linux: export CGO_ENABLED := 0
 build-linux: export GOOS := linux
 build-linux: export GOARCH := $(GOARCH)
 build-linux: # 编译会员钱包 Linux RPC 程序
-	$(GO) build -trimpath -ldflags="$(LDFLAGS)" -o member_wallet_rpc ./service/member/rpc
+	$(GO) build -trimpath -ldflags="$(LDFLAGS)" -o member_wallet_rpc ./service/member_wallet/rpc
 
 .PHONY: docker
 docker: build-linux # 构建会员钱包 RPC 镜像
