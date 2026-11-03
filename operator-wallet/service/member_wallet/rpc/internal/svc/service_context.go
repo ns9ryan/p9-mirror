@@ -1,6 +1,6 @@
 package svc
 
-import "oa.98ent.com/p9/operator-wallet/service/member/rpc/internal/config"
+import "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/config"
 
 type ServiceContext struct {
 	Config config.Config

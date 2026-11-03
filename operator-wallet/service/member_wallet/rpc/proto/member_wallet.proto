@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package member;
+package member_wallet;
 
-option go_package = "oa.98ent.com/p9/operator-wallet/service/member/rpc/pb/memberrpc";
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc";
 
 // 基础服务
 import "types/member_wallet_ping.proto";

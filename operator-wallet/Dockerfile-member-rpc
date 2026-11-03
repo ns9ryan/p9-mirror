@@ -11,7 +11,7 @@ RUN apk add --no-cache tzdata ca-certificates
 
 # 复制会员钱包 RPC 程序及配置文件
 COPY ./member_wallet_rpc ./member_wallet_rpc
-COPY ./service/member/rpc/etc/member_wallet.yaml ./etc/member_wallet.yaml
+COPY service/member_wallet/rpc/etc/member_wallet.yaml ./etc/member_wallet.yaml
 RUN chmod +x ./member_wallet_rpc
 
 EXPOSE 39005

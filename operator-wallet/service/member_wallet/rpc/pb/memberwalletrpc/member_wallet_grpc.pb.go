@@ -4,14 +4,14 @@
 // - protoc             v6.32.1
 // source: member_wallet.proto
 
-package memberrpc
+package memberwalletrpc
 
 import (
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	pingpb "oa.98ent.com/p9/operator-wallet/service/member/rpc/pb/memberrpc/pingpb"
+	pingpb "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,7 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Ping_Ping_FullMethodName = "/member.Ping/Ping"
+	Ping_Ping_FullMethodName = "/member_wallet.Ping/Ping"
 )
 
 // PingClient is the client API for Ping service.
@@ -115,7 +115,7 @@ func _Ping_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Ping_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "member.Ping",
+	ServiceName: "member_wallet.Ping",
 	HandlerType: (*PingServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

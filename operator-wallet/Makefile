@@ -18,7 +18,7 @@ DOCKER_PLATFORM ?= linux/$(GOARCH)
 DOCKER_REPO ?= 192.168.10.220:5000/p9
 MEMBER_IMAGE := member-wallet-rpc
 
-MEMBER_RPC_PROTO_PATH := service/member/rpc/proto
+MEMBER_RPC_PROTO_PATH := service/member_wallet/rpc/proto
 ENT_DIR := ent
 
 .PHONY: rpc-member

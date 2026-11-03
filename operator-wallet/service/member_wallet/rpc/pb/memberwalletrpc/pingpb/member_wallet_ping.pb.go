@@ -101,7 +101,7 @@ const file_types_member_wallet_ping_proto_rawDesc = "" +
 	"\n" +
 	"\x1etypes/member_wallet_ping.proto\x12\vmember_ping\"\r\n" +
 	"\vPingRequest\"\x0e\n" +
-	"\fPingResponseBHZFoa.98ent.com/p9/operator-wallet/service/member/rpc/pb/memberrpc/pingpbb\x06proto3"
+	"\fPingResponseBUZSoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpbb\x06proto3"
 
 var (
 	file_types_member_wallet_ping_proto_rawDescOnce sync.Once

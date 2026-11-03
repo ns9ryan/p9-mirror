@@ -3,8 +3,8 @@ package pinglogic
 import (
 	"context"
 
-	"oa.98ent.com/p9/operator-wallet/service/member/rpc/internal/svc"
-	"oa.98ent.com/p9/operator-wallet/service/member/rpc/pb/memberrpc/pingpb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/svc"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

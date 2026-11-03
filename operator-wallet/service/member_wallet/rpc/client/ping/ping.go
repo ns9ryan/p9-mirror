@@ -7,9 +7,9 @@ package ping
 import (
 	"context"
 
-	"oa.98ent.com/p9/operator-wallet/service/member/rpc/pb/memberrpc"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc"
 
-	"oa.98ent.com/p9/operator-wallet/service/member/rpc/pb/memberrpc/pingpb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -34,6 +34,6 @@ func NewPing(cli zrpc.Client) Ping {
 
 // 健康检查
 func (m *defaultPing) Ping(ctx context.Context, in *pingpb.PingRequest, opts ...grpc.CallOption) (*pingpb.PingResponse, error) {
-	client := memberrpc.NewPingClient(m.cli.Conn())
+	client := memberwalletrpc.NewPingClient(m.cli.Conn())
 	return client.Ping(ctx, in, opts...)
 }
