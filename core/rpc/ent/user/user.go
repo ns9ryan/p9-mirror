@@ -132,7 +132,7 @@ func ValidColumn(column string) bool {
 //	import _ "oa.98ent.com/p9/core/rpc/ent/runtime"
 var (
 	Hooks        [2]ent.Hook
-	Interceptors [2]ent.Interceptor
+	Interceptors [4]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

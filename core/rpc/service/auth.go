@@ -18,6 +18,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+// LoginReq 登录请求
 type LoginReq struct {
 	Username     string `json:"username"`
 	Password     string `json:"password"`
@@ -26,6 +27,7 @@ type LoginReq struct {
 	UserAgent    string `json:"-"`
 }
 
+// TokenInfo 令牌信息
 type TokenInfo struct {
 	AccessToken   string `json:"access_token"`
 	RefreshToken  string `json:"refresh_token"`
@@ -33,19 +35,23 @@ type TokenInfo struct {
 	RefreshExpire int64  `json:"refresh_expire"`
 }
 
+// LoginResult 登录结果
 type LoginResult struct {
 	Token TokenInfo  `json:"token"`
 	User  UserPublic `json:"user"`
 }
 
+// RefreshReq 刷新令牌请求
 type RefreshReq struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+// LogoutReq 退出登录请求
 type LogoutReq struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+// UserPublic 用户公共信息
 type UserPublic struct {
 	ID                 int64    `json:"id"`
 	UserCode           string   `json:"user_code"`
@@ -65,6 +71,7 @@ type UserPublic struct {
 	IPWhitelist        []string `json:"ip_whitelist"`
 }
 
+// toPublic 转换为用户公共信息
 func toPublic(u *model.User, roles UserRoles) UserPublic {
 	if roles.Codes == nil {
 		roles.Codes = []string{}
@@ -96,6 +103,7 @@ func toPublic(u *model.User, roles UserRoles) UserPublic {
 	return out
 }
 
+// Login 登录
 func (d *Deps) Login(ctx context.Context, req LoginReq) (*LoginResult, error) {
 	req.Username = strings.TrimSpace(req.Username)
 	res, u, reason, err := d.doLogin(ctx, req)
@@ -103,10 +111,12 @@ func (d *Deps) Login(ctx context.Context, req LoginReq) (*LoginResult, error) {
 	return res, err
 }
 
+// doLogin 执行登录
 func (d *Deps) doLogin(ctx context.Context, req LoginReq) (*LoginResult, *model.User, string, error) {
 	if req.Username == "" || req.Password == "" {
 		return nil, nil, coreI18n.AuthUsernamePasswordRequired, xerr.BadRequest(coreI18n.AuthUsernamePasswordRequired)
 	}
+	// 登录用户
 	u, err := d.loginUser(ctx, req)
 	if err != nil {
 		return nil, nil, xerr.AsError(err).Message, err
@@ -135,16 +145,15 @@ func (d *Deps) doLogin(ctx context.Context, req LoginReq) (*LoginResult, *model.
 	if err != nil {
 		return nil, u, xerr.AsError(err).Message, err
 	}
+	// 更新用户登录信息
 	d.touchLogin(ctx, u, req.ClientIP)
 	return &LoginResult{Token: tok, User: toPublic(u, roles)}, u, "", nil
 }
 
+// writeLoginLog 写入登录日志
 func (d *Deps) writeLoginLog(ctx context.Context, req LoginReq, u *model.User, ok bool, reason string) {
 	if d == nil || d.Client == nil {
 		return
-	}
-	if code := d.loginLogOperatorCode(req, u); code != "" {
-		ctx = ctxdata.WithClaims(ctx, &ctxdata.Claims{OperatorCode: code})
 	}
 	username := req.Username
 	if username == "" {
@@ -179,16 +188,7 @@ func (d *Deps) writeLoginLog(ctx context.Context, req LoginReq, u *model.User, o
 	}
 }
 
-func (d *Deps) loginLogOperatorCode(req LoginReq, u *model.User) string {
-	if u != nil && u.OperatorCode != nil && *u.OperatorCode != "" {
-		return *u.OperatorCode
-	}
-	if d.Mode != ModeOn {
-		return ""
-	}
-	return strings.TrimSpace(req.OperatorCode)
-}
-
+// clip 裁剪字符串
 func clip(s string, n int) string {
 	if n <= 0 || len(s) <= n {
 		return s
@@ -196,6 +196,7 @@ func clip(s string, n int) string {
 	return s[:n]
 }
 
+// loginUser 登录用户
 func (d *Deps) loginUser(ctx context.Context, req LoginReq) (*model.User, error) {
 	q := d.Client.User.Query().Where(user.DeletedAtIsNil(), user.UsernameEqualFold(req.Username))
 	if d.Mode != ModeOn {
@@ -208,11 +209,8 @@ func (d *Deps) loginUser(ctx context.Context, req LoginReq) (*model.User, error)
 		}
 		return userFromEnt(row), nil
 	}
-	code := strings.TrimSpace(req.OperatorCode)
-	if code == "" {
-		return nil, xerr.BadRequest(coreI18n.AuthOperatorCodeRequired)
-	}
-	row, err := q.Where(user.OperatorCodeEQ(code)).Only(ctx)
+
+	row, err := q.Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, xerr.Unauthorized(coreI18n.AuthPasswordIncorrect)
@@ -222,6 +220,7 @@ func (d *Deps) loginUser(ctx context.Context, req LoginReq) (*model.User, error)
 	return userFromEnt(row), nil
 }
 
+// touchLogin 更新用户登录信息
 func (d *Deps) touchLogin(ctx context.Context, u *model.User, ip string) {
 	upd := d.Client.User.UpdateOneID(u.ID).SetLastLoginAt(time.Now())
 	if parsed := net.ParseIP(ip); parsed != nil {
@@ -230,9 +229,10 @@ func (d *Deps) touchLogin(ctx context.Context, u *model.User, ip string) {
 	_ = upd.Exec(ctx)
 }
 
+// Refresh 刷新Token
 func (d *Deps) Refresh(ctx context.Context, req RefreshReq) (*LoginResult, error) {
 	raw := jwt.StripBearer(req.RefreshToken)
-	c, err := jwt.ParseTyped(d.JWTRefreshSecret, raw, jwt.TokenRefresh)
+	c, err := jwt.ParseTyped(d.JWTRefreshSecret, raw, ctxdata.TokenTypeRefresh)
 	if err != nil {
 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
 	}

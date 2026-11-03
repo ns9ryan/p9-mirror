@@ -20,7 +20,7 @@ GOARCH=amd64
 DOCKER_PLATFORM=linux/amd64
 
 # The repository of docker | Docker 仓库地址
-DOCKER_REPO=192.168.0.15:5000/p9
+DOCKER_REPO=192.168.10.220:5000/p9
 
 .PHONY: fmt
 fmt: # Format the codes | 格式化代码

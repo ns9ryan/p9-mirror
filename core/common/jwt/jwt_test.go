@@ -5,6 +5,7 @@ import (
 	"time"
 
 	jwtv5 "github.com/golang-jwt/jwt/v5"
+	"oa.98ent.com/p9/common/ctxdata"
 )
 
 func TestSignParseRoundTrip(t *testing.T) {
@@ -15,7 +16,7 @@ func TestSignParseRoundTrip(t *testing.T) {
 		OperatorCode: "demo",
 		RoleCodes:    []string{"super_admin"},
 		Salt:         "s1",
-		TokenType:    TokenAccess,
+		TokenType:    ctxdata.TokenTypeAccess,
 		ClientIP:     "10.0.0.1",
 	})
 	if err != nil {
@@ -28,7 +29,7 @@ func TestSignParseRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c.UserID != 1 || c.Salt != "s1" || c.OperatorCode != "demo" || c.TokenType != TokenAccess || c.ClientIP != "10.0.0.1" {
+	if c.UserID != 1 || c.Salt != "s1" || c.OperatorCode != "demo" || !c.TokenType.IsAccess() || c.ClientIP != "10.0.0.1" {
 		t.Fatalf("claims %+v", c)
 	}
 	if _, err := Parse("other", tok); err == nil {
@@ -37,22 +38,22 @@ func TestSignParseRoundTrip(t *testing.T) {
 }
 
 func TestParseTypedRejectsWrongType(t *testing.T) {
-	access, _, err := Sign("access-secret", 60, Claims{UserID: 1, Salt: "s1", TokenType: TokenAccess})
+	access, _, err := Sign("access-secret", 60, Claims{UserID: 1, Salt: "s1", TokenType: ctxdata.TokenTypeAccess})
 	if err != nil {
 		t.Fatal(err)
 	}
-	refresh, _, err := Sign("refresh-secret", 120, Claims{UserID: 1, Salt: "s1", TokenType: TokenRefresh})
+	refresh, _, err := Sign("refresh-secret", 120, Claims{UserID: 1, Salt: "s1", TokenType: ctxdata.TokenTypeRefresh})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := ParseTyped("refresh-secret", access, TokenRefresh); err == nil {
+	if _, err := ParseTyped("refresh-secret", access, ctxdata.TokenTypeRefresh); err == nil {
 		t.Fatal("access must not parse as refresh")
 	}
-	if _, err := ParseTyped("access-secret", refresh, TokenAccess); err == nil {
+	if _, err := ParseTyped("access-secret", refresh, ctxdata.TokenTypeAccess); err == nil {
 		t.Fatal("refresh must not parse as access")
 	}
-	c, err := ParseTyped("refresh-secret", refresh, TokenRefresh)
-	if err != nil || c.Salt != "s1" || c.TokenType != TokenRefresh {
+	c, err := ParseTyped("refresh-secret", refresh, ctxdata.TokenTypeRefresh)
+	if err != nil || c.Salt != "s1" || !c.TokenType.IsRefresh() {
 		t.Fatalf("refresh parse %+v %v", c, err)
 	}
 }
@@ -65,7 +66,7 @@ func TestSignParsePreview(t *testing.T) {
 		OperatorCode: "demo",
 		RoleCodes:    []string{"super_admin"},
 		Salt:         "s1",
-		TokenType:    TokenPreview,
+		TokenType:    ctxdata.TokenTypePreview,
 		IsPlatform:   true,
 	})
 	if err != nil {
@@ -78,16 +79,16 @@ func TestSignParsePreview(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c.UserID != 8 || c.Username != "admin" || c.Salt != "s1" || c.OperatorCode != "demo" || c.TokenType != TokenPreview || !c.IsPlatform {
+	if c.UserID != 8 || c.Username != "admin" || c.Salt != "s1" || c.OperatorCode != "demo" || !c.TokenType.IsPreview() || !c.IsPlatform {
 		t.Fatalf("claims %+v", c)
 	}
-	if _, err := ParseTyped("secret", tok, TokenRefresh); err == nil {
+	if _, err := ParseTyped("secret", tok, ctxdata.TokenTypeRefresh); err == nil {
 		t.Fatal("preview must not parse as refresh")
 	}
-	if _, err := ParseTyped("secret", tok, TokenAccess); err == nil {
+	if _, err := ParseTyped("secret", tok, ctxdata.TokenTypeAccess); err == nil {
 		t.Fatal("preview must not parse as access")
 	}
-	got, err := ParseTyped("secret", tok, TokenPreview)
+	got, err := ParseTyped("secret", tok, ctxdata.TokenTypePreview)
 	if err != nil || got.RoleCodes[0] != "super_admin" {
 		t.Fatalf("preview parse %+v %v", got, err)
 	}
@@ -103,7 +104,7 @@ func TestStripBearer(t *testing.T) {
 }
 
 func TestParseExpired(t *testing.T) {
-	tok := mustSignExpired(t, "secret", Claims{UserID: 1, Salt: "s1", TokenType: TokenAccess})
+	tok := mustSignExpired(t, "secret", Claims{UserID: 1, Salt: "s1", TokenType: ctxdata.TokenTypeAccess})
 	_, err := Parse("secret", tok)
 	if err == nil {
 		t.Fatal("expected expired token")

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/core/rpc/ent/i18nlang"
@@ -18,6 +19,7 @@ type I18nLangCreate struct {
 	config
 	mutation *I18nLangMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -271,6 +273,7 @@ func (_c *I18nLangCreate) createSpec() (*I18nLang, *sqlgraph.CreateSpec) {
 		_node = &I18nLang{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(i18nlang.Table, sqlgraph.NewFieldSpec(i18nlang.FieldID, field.TypeInt64))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -310,11 +313,330 @@ func (_c *I18nLangCreate) createSpec() (*I18nLang, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.I18nLang.Create().
+//		SetCreatedAt(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.I18nLangUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *I18nLangCreate) OnConflict(opts ...sql.ConflictOption) *I18nLangUpsertOne {
+	_c.conflict = opts
+	return &I18nLangUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.I18nLang.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *I18nLangCreate) OnConflictColumns(columns ...string) *I18nLangUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &I18nLangUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// I18nLangUpsertOne is the builder for "upsert"-ing
+	//  one I18nLang node.
+	I18nLangUpsertOne struct {
+		create *I18nLangCreate
+	}
+
+	// I18nLangUpsert is the "OnConflict" setter.
+	I18nLangUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *I18nLangUpsert) SetUpdatedAt(v time.Time) *I18nLangUpsert {
+	u.Set(i18nlang.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *I18nLangUpsert) UpdateUpdatedAt() *I18nLangUpsert {
+	u.SetExcluded(i18nlang.FieldUpdatedAt)
+	return u
+}
+
+// SetLang sets the "lang" field.
+func (u *I18nLangUpsert) SetLang(v string) *I18nLangUpsert {
+	u.Set(i18nlang.FieldLang, v)
+	return u
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *I18nLangUpsert) UpdateLang() *I18nLangUpsert {
+	u.SetExcluded(i18nlang.FieldLang)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *I18nLangUpsert) SetName(v string) *I18nLangUpsert {
+	u.Set(i18nlang.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *I18nLangUpsert) UpdateName() *I18nLangUpsert {
+	u.SetExcluded(i18nlang.FieldName)
+	return u
+}
+
+// SetI18nKey sets the "i18n_key" field.
+func (u *I18nLangUpsert) SetI18nKey(v string) *I18nLangUpsert {
+	u.Set(i18nlang.FieldI18nKey, v)
+	return u
+}
+
+// UpdateI18nKey sets the "i18n_key" field to the value that was provided on create.
+func (u *I18nLangUpsert) UpdateI18nKey() *I18nLangUpsert {
+	u.SetExcluded(i18nlang.FieldI18nKey)
+	return u
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *I18nLangUpsert) SetDisabled(v int16) *I18nLangUpsert {
+	u.Set(i18nlang.FieldDisabled, v)
+	return u
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *I18nLangUpsert) UpdateDisabled() *I18nLangUpsert {
+	u.SetExcluded(i18nlang.FieldDisabled)
+	return u
+}
+
+// AddDisabled adds v to the "disabled" field.
+func (u *I18nLangUpsert) AddDisabled(v int16) *I18nLangUpsert {
+	u.Add(i18nlang.FieldDisabled, v)
+	return u
+}
+
+// SetSortNo sets the "sort_no" field.
+func (u *I18nLangUpsert) SetSortNo(v int) *I18nLangUpsert {
+	u.Set(i18nlang.FieldSortNo, v)
+	return u
+}
+
+// UpdateSortNo sets the "sort_no" field to the value that was provided on create.
+func (u *I18nLangUpsert) UpdateSortNo() *I18nLangUpsert {
+	u.SetExcluded(i18nlang.FieldSortNo)
+	return u
+}
+
+// AddSortNo adds v to the "sort_no" field.
+func (u *I18nLangUpsert) AddSortNo(v int) *I18nLangUpsert {
+	u.Add(i18nlang.FieldSortNo, v)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.I18nLang.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(i18nlang.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *I18nLangUpsertOne) UpdateNewValues() *I18nLangUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(i18nlang.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(i18nlang.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(i18nlang.FieldOperatorCode)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.I18nLang.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *I18nLangUpsertOne) Ignore() *I18nLangUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *I18nLangUpsertOne) DoNothing() *I18nLangUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the I18nLangCreate.OnConflict
+// documentation for more info.
+func (u *I18nLangUpsertOne) Update(set func(*I18nLangUpsert)) *I18nLangUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&I18nLangUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *I18nLangUpsertOne) SetUpdatedAt(v time.Time) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *I18nLangUpsertOne) UpdateUpdatedAt() *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetLang sets the "lang" field.
+func (u *I18nLangUpsertOne) SetLang(v string) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetLang(v)
+	})
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *I18nLangUpsertOne) UpdateLang() *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateLang()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *I18nLangUpsertOne) SetName(v string) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *I18nLangUpsertOne) UpdateName() *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetI18nKey sets the "i18n_key" field.
+func (u *I18nLangUpsertOne) SetI18nKey(v string) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetI18nKey(v)
+	})
+}
+
+// UpdateI18nKey sets the "i18n_key" field to the value that was provided on create.
+func (u *I18nLangUpsertOne) UpdateI18nKey() *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateI18nKey()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *I18nLangUpsertOne) SetDisabled(v int16) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// AddDisabled adds v to the "disabled" field.
+func (u *I18nLangUpsertOne) AddDisabled(v int16) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.AddDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *I18nLangUpsertOne) UpdateDisabled() *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// SetSortNo sets the "sort_no" field.
+func (u *I18nLangUpsertOne) SetSortNo(v int) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetSortNo(v)
+	})
+}
+
+// AddSortNo adds v to the "sort_no" field.
+func (u *I18nLangUpsertOne) AddSortNo(v int) *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.AddSortNo(v)
+	})
+}
+
+// UpdateSortNo sets the "sort_no" field to the value that was provided on create.
+func (u *I18nLangUpsertOne) UpdateSortNo() *I18nLangUpsertOne {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateSortNo()
+	})
+}
+
+// Exec executes the query.
+func (u *I18nLangUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for I18nLangCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *I18nLangUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *I18nLangUpsertOne) ID(ctx context.Context) (id int64, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *I18nLangUpsertOne) IDX(ctx context.Context) int64 {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // I18nLangCreateBulk is the builder for creating many I18nLang entities in bulk.
 type I18nLangCreateBulk struct {
 	config
 	err      error
 	builders []*I18nLangCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the I18nLang entities in the database.
@@ -344,6 +666,7 @@ func (_c *I18nLangCreateBulk) Save(ctx context.Context) ([]*I18nLang, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -394,6 +717,224 @@ func (_c *I18nLangCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *I18nLangCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.I18nLang.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.I18nLangUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *I18nLangCreateBulk) OnConflict(opts ...sql.ConflictOption) *I18nLangUpsertBulk {
+	_c.conflict = opts
+	return &I18nLangUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.I18nLang.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *I18nLangCreateBulk) OnConflictColumns(columns ...string) *I18nLangUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &I18nLangUpsertBulk{
+		create: _c,
+	}
+}
+
+// I18nLangUpsertBulk is the builder for "upsert"-ing
+// a bulk of I18nLang nodes.
+type I18nLangUpsertBulk struct {
+	create *I18nLangCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.I18nLang.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(i18nlang.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *I18nLangUpsertBulk) UpdateNewValues() *I18nLangUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(i18nlang.FieldID)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(i18nlang.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(i18nlang.FieldOperatorCode)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.I18nLang.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *I18nLangUpsertBulk) Ignore() *I18nLangUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *I18nLangUpsertBulk) DoNothing() *I18nLangUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the I18nLangCreateBulk.OnConflict
+// documentation for more info.
+func (u *I18nLangUpsertBulk) Update(set func(*I18nLangUpsert)) *I18nLangUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&I18nLangUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *I18nLangUpsertBulk) SetUpdatedAt(v time.Time) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *I18nLangUpsertBulk) UpdateUpdatedAt() *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetLang sets the "lang" field.
+func (u *I18nLangUpsertBulk) SetLang(v string) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetLang(v)
+	})
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *I18nLangUpsertBulk) UpdateLang() *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateLang()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *I18nLangUpsertBulk) SetName(v string) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *I18nLangUpsertBulk) UpdateName() *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetI18nKey sets the "i18n_key" field.
+func (u *I18nLangUpsertBulk) SetI18nKey(v string) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetI18nKey(v)
+	})
+}
+
+// UpdateI18nKey sets the "i18n_key" field to the value that was provided on create.
+func (u *I18nLangUpsertBulk) UpdateI18nKey() *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateI18nKey()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *I18nLangUpsertBulk) SetDisabled(v int16) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// AddDisabled adds v to the "disabled" field.
+func (u *I18nLangUpsertBulk) AddDisabled(v int16) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.AddDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *I18nLangUpsertBulk) UpdateDisabled() *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// SetSortNo sets the "sort_no" field.
+func (u *I18nLangUpsertBulk) SetSortNo(v int) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.SetSortNo(v)
+	})
+}
+
+// AddSortNo adds v to the "sort_no" field.
+func (u *I18nLangUpsertBulk) AddSortNo(v int) *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.AddSortNo(v)
+	})
+}
+
+// UpdateSortNo sets the "sort_no" field to the value that was provided on create.
+func (u *I18nLangUpsertBulk) UpdateSortNo() *I18nLangUpsertBulk {
+	return u.Update(func(s *I18nLangUpsert) {
+		s.UpdateSortNo()
+	})
+}
+
+// Exec executes the query.
+func (u *I18nLangUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the I18nLangCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for I18nLangCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *I18nLangUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package member;
+
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member/rpc/pb/memberrpc";
+
+// 基础服务
+import "types/member_wallet_ping.proto";
+
+// 会员钱包健康检查服务
+service Ping {
+  // 健康检查
+  rpc Ping(member_ping.PingRequest) returns (member_ping.PingResponse);
+}

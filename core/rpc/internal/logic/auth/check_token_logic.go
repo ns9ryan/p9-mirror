@@ -32,6 +32,6 @@ func (l *CheckTokenLogic) CheckToken(in *core.CheckTokenReq) (*core.CheckTokenRe
 	return &core.CheckTokenResp{
 		UserId: c.UserID, UserCode: c.UserCode, Username: c.Username, OperatorCode: c.OperatorCode,
 		RoleCodes: c.RoleCodes, Salt: c.Salt, ExpiresAt: c.ExpiresAt,
-		IsPlatform: c.IsPlatform, TokenType: c.TokenType,
+		IsPlatform: c.IsPlatform, TokenType: c.TokenType.String(),
 	}, nil
 }

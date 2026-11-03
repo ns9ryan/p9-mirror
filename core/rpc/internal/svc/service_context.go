@@ -6,10 +6,8 @@ import (
 	"strings"
 
 	"oa.98ent.com/p9/common/entdb"
-	"oa.98ent.com/p9/common/entmixin"
 	"oa.98ent.com/p9/core/rpc/casbinx"
 	"oa.98ent.com/p9/core/rpc/ent"
-	"oa.98ent.com/p9/core/rpc/ent/intercept"
 	"oa.98ent.com/p9/core/rpc/ent/migrate"
 	_ "oa.98ent.com/p9/core/rpc/ent/runtime"
 	"oa.98ent.com/p9/core/rpc/internal/config"
@@ -45,8 +43,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	// 创建Ent客户端
 	client := ent.NewClient(entOpts...)
-	// 附加租户过滤器
-	attachTenant(client)
 	// 创建数据库表
 	logx.Must(client.Schema.Create(ctx, migrate.WithDropIndex(true), migrate.WithDropColumn(true)))
 	// 初始化Redis客户端
@@ -80,22 +76,4 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		InitToken:        c.InitToken,
 	}
 	return &ServiceContext{Config: c, Deps: deps}
-}
-
-// attachTenant 附加租户过滤器
-func attachTenant(c *ent.Client) {
-	fOperatorCode := intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
-		entmixin.FilterOperatorCode(ctx, q)
-		return nil
-	})
-	fSoftDelete := intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
-		entmixin.FilterSoftDelete(ctx, q)
-		return nil
-	})
-	c.User.Intercept(fOperatorCode, fSoftDelete)
-	c.Role.Intercept(fOperatorCode)
-	c.I18nLang.Intercept(fOperatorCode)
-	c.LoginLog.Intercept(fOperatorCode)
-	c.AdminActionLog.Intercept(fOperatorCode)
-	c.ErrorLog.Intercept(fOperatorCode)
 }

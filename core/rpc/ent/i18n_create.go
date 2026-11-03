@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/core/rpc/ent/i18n"
@@ -18,6 +19,7 @@ type I18nCreate struct {
 	config
 	mutation *I18nMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -217,6 +219,7 @@ func (_c *I18nCreate) createSpec() (*I18n, *sqlgraph.CreateSpec) {
 		_node = &I18n{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(i18n.Table, sqlgraph.NewFieldSpec(i18n.FieldID, field.TypeInt64))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -252,11 +255,301 @@ func (_c *I18nCreate) createSpec() (*I18n, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.I18n.Create().
+//		SetCreatedAt(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.I18nUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *I18nCreate) OnConflict(opts ...sql.ConflictOption) *I18nUpsertOne {
+	_c.conflict = opts
+	return &I18nUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.I18n.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *I18nCreate) OnConflictColumns(columns ...string) *I18nUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &I18nUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// I18nUpsertOne is the builder for "upsert"-ing
+	//  one I18n node.
+	I18nUpsertOne struct {
+		create *I18nCreate
+	}
+
+	// I18nUpsert is the "OnConflict" setter.
+	I18nUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *I18nUpsert) SetUpdatedAt(v time.Time) *I18nUpsert {
+	u.Set(i18n.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *I18nUpsert) UpdateUpdatedAt() *I18nUpsert {
+	u.SetExcluded(i18n.FieldUpdatedAt)
+	return u
+}
+
+// SetI18nCode sets the "i18n_code" field.
+func (u *I18nUpsert) SetI18nCode(v string) *I18nUpsert {
+	u.Set(i18n.FieldI18nCode, v)
+	return u
+}
+
+// UpdateI18nCode sets the "i18n_code" field to the value that was provided on create.
+func (u *I18nUpsert) UpdateI18nCode() *I18nUpsert {
+	u.SetExcluded(i18n.FieldI18nCode)
+	return u
+}
+
+// SetI18nGroup sets the "i18n_group" field.
+func (u *I18nUpsert) SetI18nGroup(v string) *I18nUpsert {
+	u.Set(i18n.FieldI18nGroup, v)
+	return u
+}
+
+// UpdateI18nGroup sets the "i18n_group" field to the value that was provided on create.
+func (u *I18nUpsert) UpdateI18nGroup() *I18nUpsert {
+	u.SetExcluded(i18n.FieldI18nGroup)
+	return u
+}
+
+// SetTransKey sets the "trans_key" field.
+func (u *I18nUpsert) SetTransKey(v string) *I18nUpsert {
+	u.Set(i18n.FieldTransKey, v)
+	return u
+}
+
+// UpdateTransKey sets the "trans_key" field to the value that was provided on create.
+func (u *I18nUpsert) UpdateTransKey() *I18nUpsert {
+	u.SetExcluded(i18n.FieldTransKey)
+	return u
+}
+
+// SetLang sets the "lang" field.
+func (u *I18nUpsert) SetLang(v string) *I18nUpsert {
+	u.Set(i18n.FieldLang, v)
+	return u
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *I18nUpsert) UpdateLang() *I18nUpsert {
+	u.SetExcluded(i18n.FieldLang)
+	return u
+}
+
+// SetValue sets the "value" field.
+func (u *I18nUpsert) SetValue(v string) *I18nUpsert {
+	u.Set(i18n.FieldValue, v)
+	return u
+}
+
+// UpdateValue sets the "value" field to the value that was provided on create.
+func (u *I18nUpsert) UpdateValue() *I18nUpsert {
+	u.SetExcluded(i18n.FieldValue)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.I18n.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(i18n.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *I18nUpsertOne) UpdateNewValues() *I18nUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(i18n.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(i18n.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.I18n.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *I18nUpsertOne) Ignore() *I18nUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *I18nUpsertOne) DoNothing() *I18nUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the I18nCreate.OnConflict
+// documentation for more info.
+func (u *I18nUpsertOne) Update(set func(*I18nUpsert)) *I18nUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&I18nUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *I18nUpsertOne) SetUpdatedAt(v time.Time) *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *I18nUpsertOne) UpdateUpdatedAt() *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetI18nCode sets the "i18n_code" field.
+func (u *I18nUpsertOne) SetI18nCode(v string) *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetI18nCode(v)
+	})
+}
+
+// UpdateI18nCode sets the "i18n_code" field to the value that was provided on create.
+func (u *I18nUpsertOne) UpdateI18nCode() *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateI18nCode()
+	})
+}
+
+// SetI18nGroup sets the "i18n_group" field.
+func (u *I18nUpsertOne) SetI18nGroup(v string) *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetI18nGroup(v)
+	})
+}
+
+// UpdateI18nGroup sets the "i18n_group" field to the value that was provided on create.
+func (u *I18nUpsertOne) UpdateI18nGroup() *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateI18nGroup()
+	})
+}
+
+// SetTransKey sets the "trans_key" field.
+func (u *I18nUpsertOne) SetTransKey(v string) *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetTransKey(v)
+	})
+}
+
+// UpdateTransKey sets the "trans_key" field to the value that was provided on create.
+func (u *I18nUpsertOne) UpdateTransKey() *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateTransKey()
+	})
+}
+
+// SetLang sets the "lang" field.
+func (u *I18nUpsertOne) SetLang(v string) *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetLang(v)
+	})
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *I18nUpsertOne) UpdateLang() *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateLang()
+	})
+}
+
+// SetValue sets the "value" field.
+func (u *I18nUpsertOne) SetValue(v string) *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetValue(v)
+	})
+}
+
+// UpdateValue sets the "value" field to the value that was provided on create.
+func (u *I18nUpsertOne) UpdateValue() *I18nUpsertOne {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateValue()
+	})
+}
+
+// Exec executes the query.
+func (u *I18nUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for I18nCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *I18nUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *I18nUpsertOne) ID(ctx context.Context) (id int64, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *I18nUpsertOne) IDX(ctx context.Context) int64 {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // I18nCreateBulk is the builder for creating many I18n entities in bulk.
 type I18nCreateBulk struct {
 	config
 	err      error
 	builders []*I18nCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the I18n entities in the database.
@@ -286,6 +579,7 @@ func (_c *I18nCreateBulk) Save(ctx context.Context) ([]*I18n, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -336,6 +630,207 @@ func (_c *I18nCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *I18nCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.I18n.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.I18nUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *I18nCreateBulk) OnConflict(opts ...sql.ConflictOption) *I18nUpsertBulk {
+	_c.conflict = opts
+	return &I18nUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.I18n.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *I18nCreateBulk) OnConflictColumns(columns ...string) *I18nUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &I18nUpsertBulk{
+		create: _c,
+	}
+}
+
+// I18nUpsertBulk is the builder for "upsert"-ing
+// a bulk of I18n nodes.
+type I18nUpsertBulk struct {
+	create *I18nCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.I18n.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(i18n.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *I18nUpsertBulk) UpdateNewValues() *I18nUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(i18n.FieldID)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(i18n.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.I18n.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *I18nUpsertBulk) Ignore() *I18nUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *I18nUpsertBulk) DoNothing() *I18nUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the I18nCreateBulk.OnConflict
+// documentation for more info.
+func (u *I18nUpsertBulk) Update(set func(*I18nUpsert)) *I18nUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&I18nUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *I18nUpsertBulk) SetUpdatedAt(v time.Time) *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *I18nUpsertBulk) UpdateUpdatedAt() *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetI18nCode sets the "i18n_code" field.
+func (u *I18nUpsertBulk) SetI18nCode(v string) *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetI18nCode(v)
+	})
+}
+
+// UpdateI18nCode sets the "i18n_code" field to the value that was provided on create.
+func (u *I18nUpsertBulk) UpdateI18nCode() *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateI18nCode()
+	})
+}
+
+// SetI18nGroup sets the "i18n_group" field.
+func (u *I18nUpsertBulk) SetI18nGroup(v string) *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetI18nGroup(v)
+	})
+}
+
+// UpdateI18nGroup sets the "i18n_group" field to the value that was provided on create.
+func (u *I18nUpsertBulk) UpdateI18nGroup() *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateI18nGroup()
+	})
+}
+
+// SetTransKey sets the "trans_key" field.
+func (u *I18nUpsertBulk) SetTransKey(v string) *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetTransKey(v)
+	})
+}
+
+// UpdateTransKey sets the "trans_key" field to the value that was provided on create.
+func (u *I18nUpsertBulk) UpdateTransKey() *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateTransKey()
+	})
+}
+
+// SetLang sets the "lang" field.
+func (u *I18nUpsertBulk) SetLang(v string) *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetLang(v)
+	})
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *I18nUpsertBulk) UpdateLang() *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateLang()
+	})
+}
+
+// SetValue sets the "value" field.
+func (u *I18nUpsertBulk) SetValue(v string) *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.SetValue(v)
+	})
+}
+
+// UpdateValue sets the "value" field to the value that was provided on create.
+func (u *I18nUpsertBulk) UpdateValue() *I18nUpsertBulk {
+	return u.Update(func(s *I18nUpsert) {
+		s.UpdateValue()
+	})
+}
+
+// Exec executes the query.
+func (u *I18nUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the I18nCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for I18nCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *I18nUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

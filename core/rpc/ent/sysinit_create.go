@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/core/rpc/ent/sysinit"
@@ -18,6 +19,7 @@ type SysInitCreate struct {
 	config
 	mutation *SysInitMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -149,6 +151,7 @@ func (_c *SysInitCreate) createSpec() (*SysInit, *sqlgraph.CreateSpec) {
 		_node = &SysInit{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(sysinit.Table, sqlgraph.NewFieldSpec(sysinit.FieldID, field.TypeInt64))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -168,11 +171,197 @@ func (_c *SysInitCreate) createSpec() (*SysInit, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.SysInit.Create().
+//		SetCreatedAt(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SysInitUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *SysInitCreate) OnConflict(opts ...sql.ConflictOption) *SysInitUpsertOne {
+	_c.conflict = opts
+	return &SysInitUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.SysInit.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *SysInitCreate) OnConflictColumns(columns ...string) *SysInitUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &SysInitUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// SysInitUpsertOne is the builder for "upsert"-ing
+	//  one SysInit node.
+	SysInitUpsertOne struct {
+		create *SysInitCreate
+	}
+
+	// SysInitUpsert is the "OnConflict" setter.
+	SysInitUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *SysInitUpsert) SetUpdatedAt(v time.Time) *SysInitUpsert {
+	u.Set(sysinit.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *SysInitUpsert) UpdateUpdatedAt() *SysInitUpsert {
+	u.SetExcluded(sysinit.FieldUpdatedAt)
+	return u
+}
+
+// SetInitKey sets the "init_key" field.
+func (u *SysInitUpsert) SetInitKey(v string) *SysInitUpsert {
+	u.Set(sysinit.FieldInitKey, v)
+	return u
+}
+
+// UpdateInitKey sets the "init_key" field to the value that was provided on create.
+func (u *SysInitUpsert) UpdateInitKey() *SysInitUpsert {
+	u.SetExcluded(sysinit.FieldInitKey)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.SysInit.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sysinit.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *SysInitUpsertOne) UpdateNewValues() *SysInitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(sysinit.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(sysinit.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.SysInit.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *SysInitUpsertOne) Ignore() *SysInitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SysInitUpsertOne) DoNothing() *SysInitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SysInitCreate.OnConflict
+// documentation for more info.
+func (u *SysInitUpsertOne) Update(set func(*SysInitUpsert)) *SysInitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SysInitUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *SysInitUpsertOne) SetUpdatedAt(v time.Time) *SysInitUpsertOne {
+	return u.Update(func(s *SysInitUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *SysInitUpsertOne) UpdateUpdatedAt() *SysInitUpsertOne {
+	return u.Update(func(s *SysInitUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetInitKey sets the "init_key" field.
+func (u *SysInitUpsertOne) SetInitKey(v string) *SysInitUpsertOne {
+	return u.Update(func(s *SysInitUpsert) {
+		s.SetInitKey(v)
+	})
+}
+
+// UpdateInitKey sets the "init_key" field to the value that was provided on create.
+func (u *SysInitUpsertOne) UpdateInitKey() *SysInitUpsertOne {
+	return u.Update(func(s *SysInitUpsert) {
+		s.UpdateInitKey()
+	})
+}
+
+// Exec executes the query.
+func (u *SysInitUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SysInitCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SysInitUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *SysInitUpsertOne) ID(ctx context.Context) (id int64, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *SysInitUpsertOne) IDX(ctx context.Context) int64 {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // SysInitCreateBulk is the builder for creating many SysInit entities in bulk.
 type SysInitCreateBulk struct {
 	config
 	err      error
 	builders []*SysInitCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the SysInit entities in the database.
@@ -202,6 +391,7 @@ func (_c *SysInitCreateBulk) Save(ctx context.Context) ([]*SysInit, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -252,6 +442,151 @@ func (_c *SysInitCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *SysInitCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.SysInit.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SysInitUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *SysInitCreateBulk) OnConflict(opts ...sql.ConflictOption) *SysInitUpsertBulk {
+	_c.conflict = opts
+	return &SysInitUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.SysInit.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *SysInitCreateBulk) OnConflictColumns(columns ...string) *SysInitUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &SysInitUpsertBulk{
+		create: _c,
+	}
+}
+
+// SysInitUpsertBulk is the builder for "upsert"-ing
+// a bulk of SysInit nodes.
+type SysInitUpsertBulk struct {
+	create *SysInitCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.SysInit.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sysinit.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *SysInitUpsertBulk) UpdateNewValues() *SysInitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(sysinit.FieldID)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(sysinit.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.SysInit.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *SysInitUpsertBulk) Ignore() *SysInitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SysInitUpsertBulk) DoNothing() *SysInitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SysInitCreateBulk.OnConflict
+// documentation for more info.
+func (u *SysInitUpsertBulk) Update(set func(*SysInitUpsert)) *SysInitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SysInitUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *SysInitUpsertBulk) SetUpdatedAt(v time.Time) *SysInitUpsertBulk {
+	return u.Update(func(s *SysInitUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *SysInitUpsertBulk) UpdateUpdatedAt() *SysInitUpsertBulk {
+	return u.Update(func(s *SysInitUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetInitKey sets the "init_key" field.
+func (u *SysInitUpsertBulk) SetInitKey(v string) *SysInitUpsertBulk {
+	return u.Update(func(s *SysInitUpsert) {
+		s.SetInitKey(v)
+	})
+}
+
+// UpdateInitKey sets the "init_key" field to the value that was provided on create.
+func (u *SysInitUpsertBulk) UpdateInitKey() *SysInitUpsertBulk {
+	return u.Update(func(s *SysInitUpsert) {
+		s.UpdateInitKey()
+	})
+}
+
+// Exec executes the query.
+func (u *SysInitUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the SysInitCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SysInitCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SysInitUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

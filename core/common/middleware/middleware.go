@@ -11,7 +11,6 @@ import (
 	"oa.98ent.com/p9/common/xerr"
 
 	coreI18n "oa.98ent.com/p9/core/common/i18n"
-	"oa.98ent.com/p9/core/common/jwt"
 
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -44,7 +43,7 @@ func JWT(c Client) rest.Middleware {
 				return
 			}
 			// 预览模式下不允许写操作
-			if claims != nil && claims.TokenType == jwt.TokenPreview && previewWriteDenied(r.Method, r.URL.Path) {
+			if claims != nil && claims.TokenType.IsPreview() && previewWriteDenied(r.Method, r.URL.Path) {
 				response.FailCtx(ctx, w, xerr.Forbidden(coreI18n.AuthPreviewReadOnly))
 				return
 			}
@@ -70,7 +69,7 @@ func JWTWithoutError(c Client) rest.Middleware {
 				return
 			}
 			// 预览模式下不允许写操作
-			if claims != nil && claims.TokenType == jwt.TokenPreview && previewWriteDenied(r.Method, r.URL.Path) {
+			if claims != nil && claims.TokenType.IsPreview() && previewWriteDenied(r.Method, r.URL.Path) {
 				response.FailCtx(ctx, w, xerr.Forbidden(coreI18n.AuthPreviewReadOnly))
 				return
 			}

@@ -28,16 +28,23 @@ func (a *auth) CheckToken(ctx context.Context, token string) (*ctxdata.Claims, e
 	if codes == nil {
 		codes = []string{}
 	}
+	// 根据响应中的 is_platform 字段判断用户类型
+	userType := ctxdata.UserTypeOperator
+	if resp.IsPlatform {
+		userType = ctxdata.UserTypePlatform
+	}
+
 	return &ctxdata.Claims{
 		UserID:       resp.UserId,
 		UserCode:     resp.UserCode,
 		Username:     resp.Username,
+		UserType:     userType,
 		OperatorCode: resp.OperatorCode,
 		RoleCodes:    codes,
 		Salt:         resp.Salt,
 		ExpiresAt:    resp.ExpiresAt,
 		IsPlatform:   resp.IsPlatform,
-		TokenType:    resp.TokenType,
+		TokenType:    ctxdata.TokenType(resp.TokenType),
 		ClientIP:     ctxdata.ClientIPFromCtx(ctx),
 	}, nil
 }

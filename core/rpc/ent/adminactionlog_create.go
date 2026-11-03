@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/core/rpc/ent/adminactionlog"
@@ -19,6 +20,7 @@ type AdminActionLogCreate struct {
 	config
 	mutation *AdminActionLogMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetOperatorCode sets the "operator_code" field.
@@ -294,6 +296,7 @@ func (_c *AdminActionLogCreate) createSpec() (*AdminActionLog, *sqlgraph.CreateS
 		_node = &AdminActionLog{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(adminactionlog.Table, sqlgraph.NewFieldSpec(adminactionlog.FieldID, field.TypeInt64))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -366,11 +369,548 @@ func (_c *AdminActionLogCreate) createSpec() (*AdminActionLog, *sqlgraph.CreateS
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AdminActionLog.Create().
+//		SetOperatorCode(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AdminActionLogUpsert) {
+//			SetOperatorCode(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *AdminActionLogCreate) OnConflict(opts ...sql.ConflictOption) *AdminActionLogUpsertOne {
+	_c.conflict = opts
+	return &AdminActionLogUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AdminActionLog.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *AdminActionLogCreate) OnConflictColumns(columns ...string) *AdminActionLogUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &AdminActionLogUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// AdminActionLogUpsertOne is the builder for "upsert"-ing
+	//  one AdminActionLog node.
+	AdminActionLogUpsertOne struct {
+		create *AdminActionLogCreate
+	}
+
+	// AdminActionLogUpsert is the "OnConflict" setter.
+	AdminActionLogUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUserID sets the "user_id" field.
+func (u *AdminActionLogUpsert) SetUserID(v int64) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateUserID() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldUserID)
+	return u
+}
+
+// SetRequestMethod sets the "request_method" field.
+func (u *AdminActionLogUpsert) SetRequestMethod(v string) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldRequestMethod, v)
+	return u
+}
+
+// UpdateRequestMethod sets the "request_method" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateRequestMethod() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldRequestMethod)
+	return u
+}
+
+// SetRequestPath sets the "request_path" field.
+func (u *AdminActionLogUpsert) SetRequestPath(v string) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldRequestPath, v)
+	return u
+}
+
+// UpdateRequestPath sets the "request_path" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateRequestPath() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldRequestPath)
+	return u
+}
+
+// SetRequestQuery sets the "request_query" field.
+func (u *AdminActionLogUpsert) SetRequestQuery(v string) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldRequestQuery, v)
+	return u
+}
+
+// UpdateRequestQuery sets the "request_query" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateRequestQuery() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldRequestQuery)
+	return u
+}
+
+// ClearRequestQuery clears the value of the "request_query" field.
+func (u *AdminActionLogUpsert) ClearRequestQuery() *AdminActionLogUpsert {
+	u.SetNull(adminactionlog.FieldRequestQuery)
+	return u
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *AdminActionLogUpsert) SetRequestBody(v string) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldRequestBody, v)
+	return u
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateRequestBody() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldRequestBody)
+	return u
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *AdminActionLogUpsert) ClearRequestBody() *AdminActionLogUpsert {
+	u.SetNull(adminactionlog.FieldRequestBody)
+	return u
+}
+
+// SetActionResult sets the "action_result" field.
+func (u *AdminActionLogUpsert) SetActionResult(v int16) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldActionResult, v)
+	return u
+}
+
+// UpdateActionResult sets the "action_result" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateActionResult() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldActionResult)
+	return u
+}
+
+// AddActionResult adds v to the "action_result" field.
+func (u *AdminActionLogUpsert) AddActionResult(v int16) *AdminActionLogUpsert {
+	u.Add(adminactionlog.FieldActionResult, v)
+	return u
+}
+
+// SetResponseStatus sets the "response_status" field.
+func (u *AdminActionLogUpsert) SetResponseStatus(v int) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldResponseStatus, v)
+	return u
+}
+
+// UpdateResponseStatus sets the "response_status" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateResponseStatus() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldResponseStatus)
+	return u
+}
+
+// AddResponseStatus adds v to the "response_status" field.
+func (u *AdminActionLogUpsert) AddResponseStatus(v int) *AdminActionLogUpsert {
+	u.Add(adminactionlog.FieldResponseStatus, v)
+	return u
+}
+
+// SetResponseBody sets the "response_body" field.
+func (u *AdminActionLogUpsert) SetResponseBody(v string) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldResponseBody, v)
+	return u
+}
+
+// UpdateResponseBody sets the "response_body" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateResponseBody() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldResponseBody)
+	return u
+}
+
+// ClearResponseBody clears the value of the "response_body" field.
+func (u *AdminActionLogUpsert) ClearResponseBody() *AdminActionLogUpsert {
+	u.SetNull(adminactionlog.FieldResponseBody)
+	return u
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *AdminActionLogUpsert) SetDurationMs(v int) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldDurationMs, v)
+	return u
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateDurationMs() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldDurationMs)
+	return u
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *AdminActionLogUpsert) AddDurationMs(v int) *AdminActionLogUpsert {
+	u.Add(adminactionlog.FieldDurationMs, v)
+	return u
+}
+
+// SetClientIP sets the "client_ip" field.
+func (u *AdminActionLogUpsert) SetClientIP(v string) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldClientIP, v)
+	return u
+}
+
+// UpdateClientIP sets the "client_ip" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateClientIP() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldClientIP)
+	return u
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *AdminActionLogUpsert) SetUserAgent(v string) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldUserAgent, v)
+	return u
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateUserAgent() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldUserAgent)
+	return u
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *AdminActionLogUpsert) ClearUserAgent() *AdminActionLogUpsert {
+	u.SetNull(adminactionlog.FieldUserAgent)
+	return u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *AdminActionLogUpsert) SetCreatedAt(v time.Time) *AdminActionLogUpsert {
+	u.Set(adminactionlog.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *AdminActionLogUpsert) UpdateCreatedAt() *AdminActionLogUpsert {
+	u.SetExcluded(adminactionlog.FieldCreatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.AdminActionLog.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(adminactionlog.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AdminActionLogUpsertOne) UpdateNewValues() *AdminActionLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(adminactionlog.FieldID)
+		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(adminactionlog.FieldOperatorCode)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AdminActionLog.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *AdminActionLogUpsertOne) Ignore() *AdminActionLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AdminActionLogUpsertOne) DoNothing() *AdminActionLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AdminActionLogCreate.OnConflict
+// documentation for more info.
+func (u *AdminActionLogUpsertOne) Update(set func(*AdminActionLogUpsert)) *AdminActionLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AdminActionLogUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *AdminActionLogUpsertOne) SetUserID(v int64) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateUserID() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetRequestMethod sets the "request_method" field.
+func (u *AdminActionLogUpsertOne) SetRequestMethod(v string) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestMethod(v)
+	})
+}
+
+// UpdateRequestMethod sets the "request_method" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateRequestMethod() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestMethod()
+	})
+}
+
+// SetRequestPath sets the "request_path" field.
+func (u *AdminActionLogUpsertOne) SetRequestPath(v string) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestPath(v)
+	})
+}
+
+// UpdateRequestPath sets the "request_path" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateRequestPath() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestPath()
+	})
+}
+
+// SetRequestQuery sets the "request_query" field.
+func (u *AdminActionLogUpsertOne) SetRequestQuery(v string) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestQuery(v)
+	})
+}
+
+// UpdateRequestQuery sets the "request_query" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateRequestQuery() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestQuery()
+	})
+}
+
+// ClearRequestQuery clears the value of the "request_query" field.
+func (u *AdminActionLogUpsertOne) ClearRequestQuery() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearRequestQuery()
+	})
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *AdminActionLogUpsertOne) SetRequestBody(v string) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestBody(v)
+	})
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateRequestBody() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestBody()
+	})
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *AdminActionLogUpsertOne) ClearRequestBody() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearRequestBody()
+	})
+}
+
+// SetActionResult sets the "action_result" field.
+func (u *AdminActionLogUpsertOne) SetActionResult(v int16) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetActionResult(v)
+	})
+}
+
+// AddActionResult adds v to the "action_result" field.
+func (u *AdminActionLogUpsertOne) AddActionResult(v int16) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.AddActionResult(v)
+	})
+}
+
+// UpdateActionResult sets the "action_result" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateActionResult() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateActionResult()
+	})
+}
+
+// SetResponseStatus sets the "response_status" field.
+func (u *AdminActionLogUpsertOne) SetResponseStatus(v int) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetResponseStatus(v)
+	})
+}
+
+// AddResponseStatus adds v to the "response_status" field.
+func (u *AdminActionLogUpsertOne) AddResponseStatus(v int) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.AddResponseStatus(v)
+	})
+}
+
+// UpdateResponseStatus sets the "response_status" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateResponseStatus() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateResponseStatus()
+	})
+}
+
+// SetResponseBody sets the "response_body" field.
+func (u *AdminActionLogUpsertOne) SetResponseBody(v string) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetResponseBody(v)
+	})
+}
+
+// UpdateResponseBody sets the "response_body" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateResponseBody() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateResponseBody()
+	})
+}
+
+// ClearResponseBody clears the value of the "response_body" field.
+func (u *AdminActionLogUpsertOne) ClearResponseBody() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearResponseBody()
+	})
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *AdminActionLogUpsertOne) SetDurationMs(v int) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetDurationMs(v)
+	})
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *AdminActionLogUpsertOne) AddDurationMs(v int) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.AddDurationMs(v)
+	})
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateDurationMs() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateDurationMs()
+	})
+}
+
+// SetClientIP sets the "client_ip" field.
+func (u *AdminActionLogUpsertOne) SetClientIP(v string) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetClientIP(v)
+	})
+}
+
+// UpdateClientIP sets the "client_ip" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateClientIP() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateClientIP()
+	})
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *AdminActionLogUpsertOne) SetUserAgent(v string) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetUserAgent(v)
+	})
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateUserAgent() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateUserAgent()
+	})
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *AdminActionLogUpsertOne) ClearUserAgent() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearUserAgent()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *AdminActionLogUpsertOne) SetCreatedAt(v time.Time) *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *AdminActionLogUpsertOne) UpdateCreatedAt() *AdminActionLogUpsertOne {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *AdminActionLogUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AdminActionLogCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AdminActionLogUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *AdminActionLogUpsertOne) ID(ctx context.Context) (id int64, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *AdminActionLogUpsertOne) IDX(ctx context.Context) int64 {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // AdminActionLogCreateBulk is the builder for creating many AdminActionLog entities in bulk.
 type AdminActionLogCreateBulk struct {
 	config
 	err      error
 	builders []*AdminActionLogCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the AdminActionLog entities in the database.
@@ -400,6 +940,7 @@ func (_c *AdminActionLogCreateBulk) Save(ctx context.Context) ([]*AdminActionLog
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -450,6 +991,340 @@ func (_c *AdminActionLogCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *AdminActionLogCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AdminActionLog.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AdminActionLogUpsert) {
+//			SetOperatorCode(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *AdminActionLogCreateBulk) OnConflict(opts ...sql.ConflictOption) *AdminActionLogUpsertBulk {
+	_c.conflict = opts
+	return &AdminActionLogUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AdminActionLog.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *AdminActionLogCreateBulk) OnConflictColumns(columns ...string) *AdminActionLogUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &AdminActionLogUpsertBulk{
+		create: _c,
+	}
+}
+
+// AdminActionLogUpsertBulk is the builder for "upsert"-ing
+// a bulk of AdminActionLog nodes.
+type AdminActionLogUpsertBulk struct {
+	create *AdminActionLogCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.AdminActionLog.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(adminactionlog.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AdminActionLogUpsertBulk) UpdateNewValues() *AdminActionLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(adminactionlog.FieldID)
+			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(adminactionlog.FieldOperatorCode)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AdminActionLog.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *AdminActionLogUpsertBulk) Ignore() *AdminActionLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AdminActionLogUpsertBulk) DoNothing() *AdminActionLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AdminActionLogCreateBulk.OnConflict
+// documentation for more info.
+func (u *AdminActionLogUpsertBulk) Update(set func(*AdminActionLogUpsert)) *AdminActionLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AdminActionLogUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *AdminActionLogUpsertBulk) SetUserID(v int64) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateUserID() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetRequestMethod sets the "request_method" field.
+func (u *AdminActionLogUpsertBulk) SetRequestMethod(v string) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestMethod(v)
+	})
+}
+
+// UpdateRequestMethod sets the "request_method" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateRequestMethod() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestMethod()
+	})
+}
+
+// SetRequestPath sets the "request_path" field.
+func (u *AdminActionLogUpsertBulk) SetRequestPath(v string) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestPath(v)
+	})
+}
+
+// UpdateRequestPath sets the "request_path" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateRequestPath() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestPath()
+	})
+}
+
+// SetRequestQuery sets the "request_query" field.
+func (u *AdminActionLogUpsertBulk) SetRequestQuery(v string) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestQuery(v)
+	})
+}
+
+// UpdateRequestQuery sets the "request_query" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateRequestQuery() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestQuery()
+	})
+}
+
+// ClearRequestQuery clears the value of the "request_query" field.
+func (u *AdminActionLogUpsertBulk) ClearRequestQuery() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearRequestQuery()
+	})
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *AdminActionLogUpsertBulk) SetRequestBody(v string) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetRequestBody(v)
+	})
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateRequestBody() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateRequestBody()
+	})
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *AdminActionLogUpsertBulk) ClearRequestBody() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearRequestBody()
+	})
+}
+
+// SetActionResult sets the "action_result" field.
+func (u *AdminActionLogUpsertBulk) SetActionResult(v int16) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetActionResult(v)
+	})
+}
+
+// AddActionResult adds v to the "action_result" field.
+func (u *AdminActionLogUpsertBulk) AddActionResult(v int16) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.AddActionResult(v)
+	})
+}
+
+// UpdateActionResult sets the "action_result" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateActionResult() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateActionResult()
+	})
+}
+
+// SetResponseStatus sets the "response_status" field.
+func (u *AdminActionLogUpsertBulk) SetResponseStatus(v int) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetResponseStatus(v)
+	})
+}
+
+// AddResponseStatus adds v to the "response_status" field.
+func (u *AdminActionLogUpsertBulk) AddResponseStatus(v int) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.AddResponseStatus(v)
+	})
+}
+
+// UpdateResponseStatus sets the "response_status" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateResponseStatus() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateResponseStatus()
+	})
+}
+
+// SetResponseBody sets the "response_body" field.
+func (u *AdminActionLogUpsertBulk) SetResponseBody(v string) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetResponseBody(v)
+	})
+}
+
+// UpdateResponseBody sets the "response_body" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateResponseBody() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateResponseBody()
+	})
+}
+
+// ClearResponseBody clears the value of the "response_body" field.
+func (u *AdminActionLogUpsertBulk) ClearResponseBody() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearResponseBody()
+	})
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *AdminActionLogUpsertBulk) SetDurationMs(v int) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetDurationMs(v)
+	})
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *AdminActionLogUpsertBulk) AddDurationMs(v int) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.AddDurationMs(v)
+	})
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateDurationMs() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateDurationMs()
+	})
+}
+
+// SetClientIP sets the "client_ip" field.
+func (u *AdminActionLogUpsertBulk) SetClientIP(v string) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetClientIP(v)
+	})
+}
+
+// UpdateClientIP sets the "client_ip" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateClientIP() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateClientIP()
+	})
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *AdminActionLogUpsertBulk) SetUserAgent(v string) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetUserAgent(v)
+	})
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateUserAgent() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateUserAgent()
+	})
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *AdminActionLogUpsertBulk) ClearUserAgent() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.ClearUserAgent()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *AdminActionLogUpsertBulk) SetCreatedAt(v time.Time) *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *AdminActionLogUpsertBulk) UpdateCreatedAt() *AdminActionLogUpsertBulk {
+	return u.Update(func(s *AdminActionLogUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *AdminActionLogUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AdminActionLogCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AdminActionLogCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AdminActionLogUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

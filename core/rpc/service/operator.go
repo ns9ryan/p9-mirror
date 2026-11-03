@@ -25,6 +25,7 @@ type PreviewToken struct {
 	HomePath     string
 }
 
+// IssuePreviewToken 颁发预览令牌
 func (d *Deps) IssuePreviewToken(ctx context.Context, req IssuePreviewTokenReq) (*PreviewToken, error) {
 	if d.Mode != ModeOn {
 		return nil, xerr.BadRequest(coreI18n.OperatorAPIOnlyOnMode)
@@ -54,7 +55,7 @@ func (d *Deps) IssuePreviewToken(ctx context.Context, req IssuePreviewTokenReq) 
 		OperatorCode: code,
 		RoleCodes:    []string{RoleSuperAdmin},
 		Salt:         admin.Salt,
-		TokenType:    jwt.TokenPreview,
+		TokenType:    ctxdata.TokenTypePreview,
 		IsPlatform:   d.IsPlatformMode(),
 		ClientIP:     utils.NormalizeIP(ctxdata.ClientIPFromCtx(ctx)),
 	})

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/core/rpc/ent/api"
@@ -18,6 +19,7 @@ type APICreate struct {
 	config
 	mutation *APIMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -226,6 +228,7 @@ func (_c *APICreate) createSpec() (*API, *sqlgraph.CreateSpec) {
 		_node = &API{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(api.Table, sqlgraph.NewFieldSpec(api.FieldID, field.TypeInt64))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -265,11 +268,340 @@ func (_c *APICreate) createSpec() (*API, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.API.Create().
+//		SetCreatedAt(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.APIUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *APICreate) OnConflict(opts ...sql.ConflictOption) *APIUpsertOne {
+	_c.conflict = opts
+	return &APIUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.API.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *APICreate) OnConflictColumns(columns ...string) *APIUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &APIUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// APIUpsertOne is the builder for "upsert"-ing
+	//  one API node.
+	APIUpsertOne struct {
+		create *APICreate
+	}
+
+	// APIUpsert is the "OnConflict" setter.
+	APIUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *APIUpsert) SetUpdatedAt(v time.Time) *APIUpsert {
+	u.Set(api.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *APIUpsert) UpdateUpdatedAt() *APIUpsert {
+	u.SetExcluded(api.FieldUpdatedAt)
+	return u
+}
+
+// SetDescription sets the "description" field.
+func (u *APIUpsert) SetDescription(v string) *APIUpsert {
+	u.Set(api.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *APIUpsert) UpdateDescription() *APIUpsert {
+	u.SetExcluded(api.FieldDescription)
+	return u
+}
+
+// SetAPIGroup sets the "api_group" field.
+func (u *APIUpsert) SetAPIGroup(v string) *APIUpsert {
+	u.Set(api.FieldAPIGroup, v)
+	return u
+}
+
+// UpdateAPIGroup sets the "api_group" field to the value that was provided on create.
+func (u *APIUpsert) UpdateAPIGroup() *APIUpsert {
+	u.SetExcluded(api.FieldAPIGroup)
+	return u
+}
+
+// SetMethod sets the "method" field.
+func (u *APIUpsert) SetMethod(v string) *APIUpsert {
+	u.Set(api.FieldMethod, v)
+	return u
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *APIUpsert) UpdateMethod() *APIUpsert {
+	u.SetExcluded(api.FieldMethod)
+	return u
+}
+
+// SetPath sets the "path" field.
+func (u *APIUpsert) SetPath(v string) *APIUpsert {
+	u.Set(api.FieldPath, v)
+	return u
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *APIUpsert) UpdatePath() *APIUpsert {
+	u.SetExcluded(api.FieldPath)
+	return u
+}
+
+// SetIsRequired sets the "is_required" field.
+func (u *APIUpsert) SetIsRequired(v int16) *APIUpsert {
+	u.Set(api.FieldIsRequired, v)
+	return u
+}
+
+// UpdateIsRequired sets the "is_required" field to the value that was provided on create.
+func (u *APIUpsert) UpdateIsRequired() *APIUpsert {
+	u.SetExcluded(api.FieldIsRequired)
+	return u
+}
+
+// AddIsRequired adds v to the "is_required" field.
+func (u *APIUpsert) AddIsRequired(v int16) *APIUpsert {
+	u.Add(api.FieldIsRequired, v)
+	return u
+}
+
+// SetServiceName sets the "service_name" field.
+func (u *APIUpsert) SetServiceName(v string) *APIUpsert {
+	u.Set(api.FieldServiceName, v)
+	return u
+}
+
+// UpdateServiceName sets the "service_name" field to the value that was provided on create.
+func (u *APIUpsert) UpdateServiceName() *APIUpsert {
+	u.SetExcluded(api.FieldServiceName)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.API.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(api.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *APIUpsertOne) UpdateNewValues() *APIUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(api.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(api.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.API.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *APIUpsertOne) Ignore() *APIUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *APIUpsertOne) DoNothing() *APIUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the APICreate.OnConflict
+// documentation for more info.
+func (u *APIUpsertOne) Update(set func(*APIUpsert)) *APIUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&APIUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *APIUpsertOne) SetUpdatedAt(v time.Time) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *APIUpsertOne) UpdateUpdatedAt() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *APIUpsertOne) SetDescription(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *APIUpsertOne) UpdateDescription() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// SetAPIGroup sets the "api_group" field.
+func (u *APIUpsertOne) SetAPIGroup(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.SetAPIGroup(v)
+	})
+}
+
+// UpdateAPIGroup sets the "api_group" field to the value that was provided on create.
+func (u *APIUpsertOne) UpdateAPIGroup() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateAPIGroup()
+	})
+}
+
+// SetMethod sets the "method" field.
+func (u *APIUpsertOne) SetMethod(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.SetMethod(v)
+	})
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *APIUpsertOne) UpdateMethod() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateMethod()
+	})
+}
+
+// SetPath sets the "path" field.
+func (u *APIUpsertOne) SetPath(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.SetPath(v)
+	})
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *APIUpsertOne) UpdatePath() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdatePath()
+	})
+}
+
+// SetIsRequired sets the "is_required" field.
+func (u *APIUpsertOne) SetIsRequired(v int16) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.SetIsRequired(v)
+	})
+}
+
+// AddIsRequired adds v to the "is_required" field.
+func (u *APIUpsertOne) AddIsRequired(v int16) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.AddIsRequired(v)
+	})
+}
+
+// UpdateIsRequired sets the "is_required" field to the value that was provided on create.
+func (u *APIUpsertOne) UpdateIsRequired() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateIsRequired()
+	})
+}
+
+// SetServiceName sets the "service_name" field.
+func (u *APIUpsertOne) SetServiceName(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.SetServiceName(v)
+	})
+}
+
+// UpdateServiceName sets the "service_name" field to the value that was provided on create.
+func (u *APIUpsertOne) UpdateServiceName() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateServiceName()
+	})
+}
+
+// Exec executes the query.
+func (u *APIUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for APICreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *APIUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *APIUpsertOne) ID(ctx context.Context) (id int64, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *APIUpsertOne) IDX(ctx context.Context) int64 {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // APICreateBulk is the builder for creating many API entities in bulk.
 type APICreateBulk struct {
 	config
 	err      error
 	builders []*APICreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the API entities in the database.
@@ -299,6 +631,7 @@ func (_c *APICreateBulk) Save(ctx context.Context) ([]*API, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -349,6 +682,228 @@ func (_c *APICreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *APICreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.API.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.APIUpsert) {
+//			SetCreatedAt(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *APICreateBulk) OnConflict(opts ...sql.ConflictOption) *APIUpsertBulk {
+	_c.conflict = opts
+	return &APIUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.API.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *APICreateBulk) OnConflictColumns(columns ...string) *APIUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &APIUpsertBulk{
+		create: _c,
+	}
+}
+
+// APIUpsertBulk is the builder for "upsert"-ing
+// a bulk of API nodes.
+type APIUpsertBulk struct {
+	create *APICreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.API.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(api.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *APIUpsertBulk) UpdateNewValues() *APIUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(api.FieldID)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(api.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.API.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *APIUpsertBulk) Ignore() *APIUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *APIUpsertBulk) DoNothing() *APIUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the APICreateBulk.OnConflict
+// documentation for more info.
+func (u *APIUpsertBulk) Update(set func(*APIUpsert)) *APIUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&APIUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *APIUpsertBulk) SetUpdatedAt(v time.Time) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *APIUpsertBulk) UpdateUpdatedAt() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *APIUpsertBulk) SetDescription(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *APIUpsertBulk) UpdateDescription() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// SetAPIGroup sets the "api_group" field.
+func (u *APIUpsertBulk) SetAPIGroup(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.SetAPIGroup(v)
+	})
+}
+
+// UpdateAPIGroup sets the "api_group" field to the value that was provided on create.
+func (u *APIUpsertBulk) UpdateAPIGroup() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateAPIGroup()
+	})
+}
+
+// SetMethod sets the "method" field.
+func (u *APIUpsertBulk) SetMethod(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.SetMethod(v)
+	})
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *APIUpsertBulk) UpdateMethod() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateMethod()
+	})
+}
+
+// SetPath sets the "path" field.
+func (u *APIUpsertBulk) SetPath(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.SetPath(v)
+	})
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *APIUpsertBulk) UpdatePath() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdatePath()
+	})
+}
+
+// SetIsRequired sets the "is_required" field.
+func (u *APIUpsertBulk) SetIsRequired(v int16) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.SetIsRequired(v)
+	})
+}
+
+// AddIsRequired adds v to the "is_required" field.
+func (u *APIUpsertBulk) AddIsRequired(v int16) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.AddIsRequired(v)
+	})
+}
+
+// UpdateIsRequired sets the "is_required" field to the value that was provided on create.
+func (u *APIUpsertBulk) UpdateIsRequired() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateIsRequired()
+	})
+}
+
+// SetServiceName sets the "service_name" field.
+func (u *APIUpsertBulk) SetServiceName(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.SetServiceName(v)
+	})
+}
+
+// UpdateServiceName sets the "service_name" field to the value that was provided on create.
+func (u *APIUpsertBulk) UpdateServiceName() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
+		s.UpdateServiceName()
+	})
+}
+
+// Exec executes the query.
+func (u *APIUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the APICreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for APICreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *APIUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

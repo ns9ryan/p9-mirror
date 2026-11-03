@@ -12,6 +12,7 @@ import (
 	"oa.98ent.com/p9/core/rpc/model"
 )
 
+// Logout 退出登录
 func (d *Deps) Logout(ctx context.Context, refreshToken string) error {
 	claims := ctxdata.ClaimsFromCtx(ctx)
 	if claims == nil {
@@ -32,7 +33,7 @@ func (d *Deps) parseOwnRefresh(claims *ctxdata.Claims, refreshToken string) (str
 	if raw == "" {
 		return "", 0, xerr.BadRequest(coreI18n.AuthRefreshTokenRequired)
 	}
-	c, err := jwt.ParseTyped(d.JWTRefreshSecret, raw, jwt.TokenRefresh)
+	c, err := jwt.ParseTyped(d.JWTRefreshSecret, raw, ctxdata.TokenTypeRefresh)
 	if err != nil || c.UserID != claims.UserID || c.Salt != claims.Salt {
 		return "", 0, xerr.Unauthorized(coreI18n.Unauthorized)
 	}
@@ -43,6 +44,7 @@ func (d *Deps) parseOwnRefresh(claims *ctxdata.Claims, refreshToken string) (str
 	return raw, exp, nil
 }
 
+// LogoutAll 退出所有登录 重置用户盐所有登录的令牌全部失效
 func (d *Deps) LogoutAll(ctx context.Context) error {
 	claims := ctxdata.ClaimsFromCtx(ctx)
 	if claims == nil {
@@ -51,6 +53,7 @@ func (d *Deps) LogoutAll(ctx context.Context) error {
 	return d.RotateSalt(ctx, claims.UserID)
 }
 
+// CurrentUser 当前用户
 func (d *Deps) CurrentUser(ctx context.Context) (UserPublic, error) {
 	claims := ctxdata.ClaimsFromCtx(ctx)
 	if claims == nil {
@@ -70,6 +73,7 @@ func (d *Deps) CurrentUser(ctx context.Context) (UserPublic, error) {
 	return toPublic(u, roles), nil
 }
 
+// CheckToken 检查令牌
 func (d *Deps) CheckToken(ctx context.Context, raw string) (*ctxdata.Claims, error) {
 	raw = jwt.StripBearer(raw)
 	claims, err := jwt.Parse(d.JWTSecret, raw)
@@ -79,7 +83,7 @@ func (d *Deps) CheckToken(ctx context.Context, raw string) (*ctxdata.Claims, err
 		}
 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
 	}
-	if claims.TokenType == jwt.TokenRefresh {
+	if claims.TokenType.IsRefresh() {
 		return nil, xerr.Forbidden(coreI18n.AuthInvalidToken)
 	}
 	if err := d.checkTokenClientIP(ctx, claims); err != nil {
@@ -88,7 +92,7 @@ func (d *Deps) CheckToken(ctx context.Context, raw string) (*ctxdata.Claims, err
 	if d.TokenBlacklisted(ctx, raw) {
 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
 	}
-	// if claims.TokenType == jwt.TokenPreview {
+	// if claims.TokenType.IsPreview() {
 	// 	return d.checkPreviewToken(ctx, claims)
 	// }
 	u, err := d.ActiveUserByID(ctx, claims.UserID)
@@ -133,47 +137,48 @@ func (d *Deps) CheckToken(ctx context.Context, raw string) (*ctxdata.Claims, err
 	}, nil
 }
 
-func (d *Deps) checkPreviewToken(ctx context.Context, claims *jwt.Claims) (*ctxdata.Claims, error) {
-	if claims.OperatorCode == "" {
-		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
-	}
-	if claims.UserID == 0 {
-		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
-	}
-	u, err := d.ActiveUserByID(ctxdata.SkipTenant(ctx), claims.UserID)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return nil, xerr.NotFound(coreI18n.UserNotFound)
-		}
-		return nil, err
-	}
-	if u.Status != model.StatusNormal || u.Salt != claims.Salt {
-		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
-	}
-	if u.OperatorCode == nil || *u.OperatorCode != claims.OperatorCode {
-		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
-	}
-	codes := claims.RoleCodes
-	if codes == nil {
-		codes = []string{}
-	}
-	exp := int64(0)
-	if claims.ExpiresAt != nil {
-		exp = claims.ExpiresAt.Unix()
-	}
-	return &ctxdata.Claims{
-		UserID:       u.ID,
-		UserCode:     u.UserCode,
-		Username:     u.Username,
-		OperatorCode: claims.OperatorCode,
-		RoleCodes:    codes,
-		Salt:         u.Salt,
-		ExpiresAt:    exp,
-		IsPlatform:   true,
-		TokenType:    jwt.TokenPreview,
-		ClientIP:     claims.ClientIP,
-	}, nil
-}
+// checkPreviewToken 检查预览令牌
+// func (d *Deps) checkPreviewToken(ctx context.Context, claims *jwt.Claims) (*ctxdata.Claims, error) {
+// 	if claims.OperatorCode == "" {
+// 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+// 	}
+// 	if claims.UserID == 0 {
+// 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+// 	}
+// 	u, err := d.ActiveUserByID(ctxdata.SkipTenant(ctx), claims.UserID)
+// 	if err != nil {
+// 		if ent.IsNotFound(err) {
+// 			return nil, xerr.NotFound(coreI18n.UserNotFound)
+// 		}
+// 		return nil, err
+// 	}
+// 	if u.Status != model.StatusNormal || u.Salt != claims.Salt {
+// 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+// 	}
+// 	if u.OperatorCode == nil || *u.OperatorCode != claims.OperatorCode {
+// 		return nil, xerr.Unauthorized(coreI18n.Unauthorized)
+// 	}
+// 	codes := claims.RoleCodes
+// 	if codes == nil {
+// 		codes = []string{}
+// 	}
+// 	exp := int64(0)
+// 	if claims.ExpiresAt != nil {
+// 		exp = claims.ExpiresAt.Unix()
+// 	}
+// 	return &ctxdata.Claims{
+// 		UserID:       u.ID,
+// 		UserCode:     u.UserCode,
+// 		Username:     u.Username,
+// 		OperatorCode: claims.OperatorCode,
+// 		RoleCodes:    codes,
+// 		Salt:         u.Salt,
+// 		ExpiresAt:    exp,
+// 		IsPlatform:   true,
+// 		TokenType:    ctxdata.TokenTypePreview,
+// 		ClientIP:     claims.ClientIP,
+// 	}, nil
+// }
 
 func (d *Deps) checkTokenClientIP(ctx context.Context, claims *jwt.Claims) error {
 	got := utils.NormalizeIP(claims.ClientIP)

@@ -199,11 +199,11 @@ func (d *Deps) TokenBlacklisted(ctx context.Context, token string) bool {
 
 func (d *Deps) SignTokenPair(ctx context.Context, u *model.User, roleCodes []string) (TokenInfo, error) {
 	base := d.tokenClaims(ctx, u, roleCodes)
-	access, accessExp, err := jwt.Sign(d.JWTSecret, d.JWTExpire, base.WithType(jwt.TokenAccess))
+	access, accessExp, err := jwt.Sign(d.JWTSecret, d.JWTExpire, base.WithType(ctxdata.TokenTypeAccess))
 	if err != nil {
 		return TokenInfo{}, err
 	}
-	refresh, refreshExp, err := jwt.Sign(d.JWTRefreshSecret, d.JWTRefreshExpire, base.WithType(jwt.TokenRefresh))
+	refresh, refreshExp, err := jwt.Sign(d.JWTRefreshSecret, d.JWTRefreshExpire, base.WithType(ctxdata.TokenTypeRefresh))
 	if err != nil {
 		return TokenInfo{}, err
 	}

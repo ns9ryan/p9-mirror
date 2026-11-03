@@ -1,7 +1,10 @@
 package schema
 
 import (
+	"context"
+
 	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/core/rpc/ent/intercept"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -28,6 +31,20 @@ func (User) Mixin() []ent.Mixin {
 		entmixin.TimeMixin{},
 		entmixin.SoftDeleteMixin{},
 		entmixin.OperatorCodeMixin{},
+	}
+}
+
+// Interceptors 定义用户表查询隔离
+func (User) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterSoftDelete(ctx, q)
+			return nil
+		}),
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/core/rpc/ent/errorlog"
@@ -19,6 +20,7 @@ type ErrorLogCreate struct {
 	config
 	mutation *ErrorLogMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetOperatorCode sets the "operator_code" field.
@@ -329,6 +331,7 @@ func (_c *ErrorLogCreate) createSpec() (*ErrorLog, *sqlgraph.CreateSpec) {
 		_node = &ErrorLog{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(errorlog.Table, sqlgraph.NewFieldSpec(errorlog.FieldID, field.TypeInt64))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -409,11 +412,626 @@ func (_c *ErrorLogCreate) createSpec() (*ErrorLog, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ErrorLog.Create().
+//		SetOperatorCode(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ErrorLogUpsert) {
+//			SetOperatorCode(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ErrorLogCreate) OnConflict(opts ...sql.ConflictOption) *ErrorLogUpsertOne {
+	_c.conflict = opts
+	return &ErrorLogUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ErrorLog.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ErrorLogCreate) OnConflictColumns(columns ...string) *ErrorLogUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ErrorLogUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// ErrorLogUpsertOne is the builder for "upsert"-ing
+	//  one ErrorLog node.
+	ErrorLogUpsertOne struct {
+		create *ErrorLogCreate
+	}
+
+	// ErrorLogUpsert is the "OnConflict" setter.
+	ErrorLogUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUserID sets the "user_id" field.
+func (u *ErrorLogUpsert) SetUserID(v int64) *ErrorLogUpsert {
+	u.Set(errorlog.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateUserID() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldUserID)
+	return u
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *ErrorLogUpsert) ClearUserID() *ErrorLogUpsert {
+	u.SetNull(errorlog.FieldUserID)
+	return u
+}
+
+// SetRequestMethod sets the "request_method" field.
+func (u *ErrorLogUpsert) SetRequestMethod(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldRequestMethod, v)
+	return u
+}
+
+// UpdateRequestMethod sets the "request_method" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateRequestMethod() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldRequestMethod)
+	return u
+}
+
+// SetRequestPath sets the "request_path" field.
+func (u *ErrorLogUpsert) SetRequestPath(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldRequestPath, v)
+	return u
+}
+
+// UpdateRequestPath sets the "request_path" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateRequestPath() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldRequestPath)
+	return u
+}
+
+// SetRequestQuery sets the "request_query" field.
+func (u *ErrorLogUpsert) SetRequestQuery(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldRequestQuery, v)
+	return u
+}
+
+// UpdateRequestQuery sets the "request_query" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateRequestQuery() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldRequestQuery)
+	return u
+}
+
+// ClearRequestQuery clears the value of the "request_query" field.
+func (u *ErrorLogUpsert) ClearRequestQuery() *ErrorLogUpsert {
+	u.SetNull(errorlog.FieldRequestQuery)
+	return u
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *ErrorLogUpsert) SetRequestBody(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldRequestBody, v)
+	return u
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateRequestBody() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldRequestBody)
+	return u
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *ErrorLogUpsert) ClearRequestBody() *ErrorLogUpsert {
+	u.SetNull(errorlog.FieldRequestBody)
+	return u
+}
+
+// SetServiceName sets the "service_name" field.
+func (u *ErrorLogUpsert) SetServiceName(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldServiceName, v)
+	return u
+}
+
+// UpdateServiceName sets the "service_name" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateServiceName() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldServiceName)
+	return u
+}
+
+// SetResponseStatus sets the "response_status" field.
+func (u *ErrorLogUpsert) SetResponseStatus(v int) *ErrorLogUpsert {
+	u.Set(errorlog.FieldResponseStatus, v)
+	return u
+}
+
+// UpdateResponseStatus sets the "response_status" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateResponseStatus() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldResponseStatus)
+	return u
+}
+
+// AddResponseStatus adds v to the "response_status" field.
+func (u *ErrorLogUpsert) AddResponseStatus(v int) *ErrorLogUpsert {
+	u.Add(errorlog.FieldResponseStatus, v)
+	return u
+}
+
+// SetResponseBody sets the "response_body" field.
+func (u *ErrorLogUpsert) SetResponseBody(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldResponseBody, v)
+	return u
+}
+
+// UpdateResponseBody sets the "response_body" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateResponseBody() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldResponseBody)
+	return u
+}
+
+// ClearResponseBody clears the value of the "response_body" field.
+func (u *ErrorLogUpsert) ClearResponseBody() *ErrorLogUpsert {
+	u.SetNull(errorlog.FieldResponseBody)
+	return u
+}
+
+// SetSubject sets the "subject" field.
+func (u *ErrorLogUpsert) SetSubject(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldSubject, v)
+	return u
+}
+
+// UpdateSubject sets the "subject" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateSubject() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldSubject)
+	return u
+}
+
+// ClearSubject clears the value of the "subject" field.
+func (u *ErrorLogUpsert) ClearSubject() *ErrorLogUpsert {
+	u.SetNull(errorlog.FieldSubject)
+	return u
+}
+
+// SetDetail sets the "detail" field.
+func (u *ErrorLogUpsert) SetDetail(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldDetail, v)
+	return u
+}
+
+// UpdateDetail sets the "detail" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateDetail() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldDetail)
+	return u
+}
+
+// ClearDetail clears the value of the "detail" field.
+func (u *ErrorLogUpsert) ClearDetail() *ErrorLogUpsert {
+	u.SetNull(errorlog.FieldDetail)
+	return u
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *ErrorLogUpsert) SetDurationMs(v int) *ErrorLogUpsert {
+	u.Set(errorlog.FieldDurationMs, v)
+	return u
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateDurationMs() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldDurationMs)
+	return u
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *ErrorLogUpsert) AddDurationMs(v int) *ErrorLogUpsert {
+	u.Add(errorlog.FieldDurationMs, v)
+	return u
+}
+
+// SetClientIP sets the "client_ip" field.
+func (u *ErrorLogUpsert) SetClientIP(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldClientIP, v)
+	return u
+}
+
+// UpdateClientIP sets the "client_ip" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateClientIP() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldClientIP)
+	return u
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *ErrorLogUpsert) SetUserAgent(v string) *ErrorLogUpsert {
+	u.Set(errorlog.FieldUserAgent, v)
+	return u
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateUserAgent() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldUserAgent)
+	return u
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *ErrorLogUpsert) ClearUserAgent() *ErrorLogUpsert {
+	u.SetNull(errorlog.FieldUserAgent)
+	return u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *ErrorLogUpsert) SetCreatedAt(v time.Time) *ErrorLogUpsert {
+	u.Set(errorlog.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *ErrorLogUpsert) UpdateCreatedAt() *ErrorLogUpsert {
+	u.SetExcluded(errorlog.FieldCreatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.ErrorLog.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(errorlog.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *ErrorLogUpsertOne) UpdateNewValues() *ErrorLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(errorlog.FieldID)
+		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(errorlog.FieldOperatorCode)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ErrorLog.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ErrorLogUpsertOne) Ignore() *ErrorLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ErrorLogUpsertOne) DoNothing() *ErrorLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ErrorLogCreate.OnConflict
+// documentation for more info.
+func (u *ErrorLogUpsertOne) Update(set func(*ErrorLogUpsert)) *ErrorLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ErrorLogUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *ErrorLogUpsertOne) SetUserID(v int64) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateUserID() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *ErrorLogUpsertOne) ClearUserID() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearUserID()
+	})
+}
+
+// SetRequestMethod sets the "request_method" field.
+func (u *ErrorLogUpsertOne) SetRequestMethod(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestMethod(v)
+	})
+}
+
+// UpdateRequestMethod sets the "request_method" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateRequestMethod() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestMethod()
+	})
+}
+
+// SetRequestPath sets the "request_path" field.
+func (u *ErrorLogUpsertOne) SetRequestPath(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestPath(v)
+	})
+}
+
+// UpdateRequestPath sets the "request_path" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateRequestPath() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestPath()
+	})
+}
+
+// SetRequestQuery sets the "request_query" field.
+func (u *ErrorLogUpsertOne) SetRequestQuery(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestQuery(v)
+	})
+}
+
+// UpdateRequestQuery sets the "request_query" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateRequestQuery() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestQuery()
+	})
+}
+
+// ClearRequestQuery clears the value of the "request_query" field.
+func (u *ErrorLogUpsertOne) ClearRequestQuery() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearRequestQuery()
+	})
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *ErrorLogUpsertOne) SetRequestBody(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestBody(v)
+	})
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateRequestBody() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestBody()
+	})
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *ErrorLogUpsertOne) ClearRequestBody() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearRequestBody()
+	})
+}
+
+// SetServiceName sets the "service_name" field.
+func (u *ErrorLogUpsertOne) SetServiceName(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetServiceName(v)
+	})
+}
+
+// UpdateServiceName sets the "service_name" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateServiceName() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateServiceName()
+	})
+}
+
+// SetResponseStatus sets the "response_status" field.
+func (u *ErrorLogUpsertOne) SetResponseStatus(v int) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetResponseStatus(v)
+	})
+}
+
+// AddResponseStatus adds v to the "response_status" field.
+func (u *ErrorLogUpsertOne) AddResponseStatus(v int) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.AddResponseStatus(v)
+	})
+}
+
+// UpdateResponseStatus sets the "response_status" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateResponseStatus() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateResponseStatus()
+	})
+}
+
+// SetResponseBody sets the "response_body" field.
+func (u *ErrorLogUpsertOne) SetResponseBody(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetResponseBody(v)
+	})
+}
+
+// UpdateResponseBody sets the "response_body" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateResponseBody() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateResponseBody()
+	})
+}
+
+// ClearResponseBody clears the value of the "response_body" field.
+func (u *ErrorLogUpsertOne) ClearResponseBody() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearResponseBody()
+	})
+}
+
+// SetSubject sets the "subject" field.
+func (u *ErrorLogUpsertOne) SetSubject(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetSubject(v)
+	})
+}
+
+// UpdateSubject sets the "subject" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateSubject() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateSubject()
+	})
+}
+
+// ClearSubject clears the value of the "subject" field.
+func (u *ErrorLogUpsertOne) ClearSubject() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearSubject()
+	})
+}
+
+// SetDetail sets the "detail" field.
+func (u *ErrorLogUpsertOne) SetDetail(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetDetail(v)
+	})
+}
+
+// UpdateDetail sets the "detail" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateDetail() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateDetail()
+	})
+}
+
+// ClearDetail clears the value of the "detail" field.
+func (u *ErrorLogUpsertOne) ClearDetail() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearDetail()
+	})
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *ErrorLogUpsertOne) SetDurationMs(v int) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetDurationMs(v)
+	})
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *ErrorLogUpsertOne) AddDurationMs(v int) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.AddDurationMs(v)
+	})
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateDurationMs() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateDurationMs()
+	})
+}
+
+// SetClientIP sets the "client_ip" field.
+func (u *ErrorLogUpsertOne) SetClientIP(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetClientIP(v)
+	})
+}
+
+// UpdateClientIP sets the "client_ip" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateClientIP() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateClientIP()
+	})
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *ErrorLogUpsertOne) SetUserAgent(v string) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetUserAgent(v)
+	})
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateUserAgent() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateUserAgent()
+	})
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *ErrorLogUpsertOne) ClearUserAgent() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearUserAgent()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *ErrorLogUpsertOne) SetCreatedAt(v time.Time) *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *ErrorLogUpsertOne) UpdateCreatedAt() *ErrorLogUpsertOne {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *ErrorLogUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ErrorLogCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ErrorLogUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ErrorLogUpsertOne) ID(ctx context.Context) (id int64, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ErrorLogUpsertOne) IDX(ctx context.Context) int64 {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // ErrorLogCreateBulk is the builder for creating many ErrorLog entities in bulk.
 type ErrorLogCreateBulk struct {
 	config
 	err      error
 	builders []*ErrorLogCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the ErrorLog entities in the database.
@@ -443,6 +1061,7 @@ func (_c *ErrorLogCreateBulk) Save(ctx context.Context) ([]*ErrorLog, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -493,6 +1112,382 @@ func (_c *ErrorLogCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *ErrorLogCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ErrorLog.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ErrorLogUpsert) {
+//			SetOperatorCode(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ErrorLogCreateBulk) OnConflict(opts ...sql.ConflictOption) *ErrorLogUpsertBulk {
+	_c.conflict = opts
+	return &ErrorLogUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ErrorLog.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ErrorLogCreateBulk) OnConflictColumns(columns ...string) *ErrorLogUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ErrorLogUpsertBulk{
+		create: _c,
+	}
+}
+
+// ErrorLogUpsertBulk is the builder for "upsert"-ing
+// a bulk of ErrorLog nodes.
+type ErrorLogUpsertBulk struct {
+	create *ErrorLogCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.ErrorLog.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(errorlog.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *ErrorLogUpsertBulk) UpdateNewValues() *ErrorLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(errorlog.FieldID)
+			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(errorlog.FieldOperatorCode)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ErrorLog.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ErrorLogUpsertBulk) Ignore() *ErrorLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ErrorLogUpsertBulk) DoNothing() *ErrorLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ErrorLogCreateBulk.OnConflict
+// documentation for more info.
+func (u *ErrorLogUpsertBulk) Update(set func(*ErrorLogUpsert)) *ErrorLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ErrorLogUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *ErrorLogUpsertBulk) SetUserID(v int64) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateUserID() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *ErrorLogUpsertBulk) ClearUserID() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearUserID()
+	})
+}
+
+// SetRequestMethod sets the "request_method" field.
+func (u *ErrorLogUpsertBulk) SetRequestMethod(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestMethod(v)
+	})
+}
+
+// UpdateRequestMethod sets the "request_method" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateRequestMethod() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestMethod()
+	})
+}
+
+// SetRequestPath sets the "request_path" field.
+func (u *ErrorLogUpsertBulk) SetRequestPath(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestPath(v)
+	})
+}
+
+// UpdateRequestPath sets the "request_path" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateRequestPath() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestPath()
+	})
+}
+
+// SetRequestQuery sets the "request_query" field.
+func (u *ErrorLogUpsertBulk) SetRequestQuery(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestQuery(v)
+	})
+}
+
+// UpdateRequestQuery sets the "request_query" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateRequestQuery() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestQuery()
+	})
+}
+
+// ClearRequestQuery clears the value of the "request_query" field.
+func (u *ErrorLogUpsertBulk) ClearRequestQuery() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearRequestQuery()
+	})
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *ErrorLogUpsertBulk) SetRequestBody(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetRequestBody(v)
+	})
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateRequestBody() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateRequestBody()
+	})
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *ErrorLogUpsertBulk) ClearRequestBody() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearRequestBody()
+	})
+}
+
+// SetServiceName sets the "service_name" field.
+func (u *ErrorLogUpsertBulk) SetServiceName(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetServiceName(v)
+	})
+}
+
+// UpdateServiceName sets the "service_name" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateServiceName() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateServiceName()
+	})
+}
+
+// SetResponseStatus sets the "response_status" field.
+func (u *ErrorLogUpsertBulk) SetResponseStatus(v int) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetResponseStatus(v)
+	})
+}
+
+// AddResponseStatus adds v to the "response_status" field.
+func (u *ErrorLogUpsertBulk) AddResponseStatus(v int) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.AddResponseStatus(v)
+	})
+}
+
+// UpdateResponseStatus sets the "response_status" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateResponseStatus() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateResponseStatus()
+	})
+}
+
+// SetResponseBody sets the "response_body" field.
+func (u *ErrorLogUpsertBulk) SetResponseBody(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetResponseBody(v)
+	})
+}
+
+// UpdateResponseBody sets the "response_body" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateResponseBody() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateResponseBody()
+	})
+}
+
+// ClearResponseBody clears the value of the "response_body" field.
+func (u *ErrorLogUpsertBulk) ClearResponseBody() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearResponseBody()
+	})
+}
+
+// SetSubject sets the "subject" field.
+func (u *ErrorLogUpsertBulk) SetSubject(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetSubject(v)
+	})
+}
+
+// UpdateSubject sets the "subject" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateSubject() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateSubject()
+	})
+}
+
+// ClearSubject clears the value of the "subject" field.
+func (u *ErrorLogUpsertBulk) ClearSubject() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearSubject()
+	})
+}
+
+// SetDetail sets the "detail" field.
+func (u *ErrorLogUpsertBulk) SetDetail(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetDetail(v)
+	})
+}
+
+// UpdateDetail sets the "detail" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateDetail() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateDetail()
+	})
+}
+
+// ClearDetail clears the value of the "detail" field.
+func (u *ErrorLogUpsertBulk) ClearDetail() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearDetail()
+	})
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *ErrorLogUpsertBulk) SetDurationMs(v int) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetDurationMs(v)
+	})
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *ErrorLogUpsertBulk) AddDurationMs(v int) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.AddDurationMs(v)
+	})
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateDurationMs() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateDurationMs()
+	})
+}
+
+// SetClientIP sets the "client_ip" field.
+func (u *ErrorLogUpsertBulk) SetClientIP(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetClientIP(v)
+	})
+}
+
+// UpdateClientIP sets the "client_ip" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateClientIP() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateClientIP()
+	})
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *ErrorLogUpsertBulk) SetUserAgent(v string) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetUserAgent(v)
+	})
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateUserAgent() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateUserAgent()
+	})
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *ErrorLogUpsertBulk) ClearUserAgent() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.ClearUserAgent()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *ErrorLogUpsertBulk) SetCreatedAt(v time.Time) *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *ErrorLogUpsertBulk) UpdateCreatedAt() *ErrorLogUpsertBulk {
+	return u.Update(func(s *ErrorLogUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *ErrorLogUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ErrorLogCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ErrorLogCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ErrorLogUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

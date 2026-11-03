@@ -15,7 +15,7 @@ import (
 
 func TestCheckTokenExpired(t *testing.T) {
 	d := &Deps{JWTSecret: "secret"}
-	tok := mustSignExpired(t, "secret", jwt.Claims{UserID: 1, Salt: "s1", TokenType: jwt.TokenAccess})
+	tok := mustSignExpired(t, "secret", jwt.Claims{UserID: 1, Salt: "s1", TokenType: ctxdata.TokenTypeAccess})
 	_, err := d.CheckToken(context.Background(), tok)
 	got := xerr.AsError(err)
 	if got.Status != xerr.StatusTokenExpired || got.Message != coreI18n.TokenExpired {
@@ -29,7 +29,7 @@ func TestCheckTokenInvalidAndRefreshType(t *testing.T) {
 	if got := xerr.AsError(err); got.Status != 401 {
 		t.Fatalf("invalid token %+v", got)
 	}
-	refresh, _, err := jwt.Sign("secret", 60, jwt.Claims{UserID: 1, Salt: "s1", TokenType: jwt.TokenRefresh})
+	refresh, _, err := jwt.Sign("secret", 60, jwt.Claims{UserID: 1, Salt: "s1", TokenType: ctxdata.TokenTypeRefresh})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func TestCheckTokenInvalidAndRefreshType(t *testing.T) {
 func TestCheckTokenPreviewMissingOperator(t *testing.T) {
 	d := &Deps{JWTSecret: "secret"}
 	tok, _, err := jwt.Sign("secret", 60, jwt.Claims{
-		TokenType: jwt.TokenPreview,
+		TokenType: ctxdata.TokenTypePreview,
 		RoleCodes: []string{"super_admin"},
 	})
 	if err != nil {
@@ -57,7 +57,7 @@ func TestCheckTokenPreviewMissingOperator(t *testing.T) {
 func TestCheckTokenClientIP(t *testing.T) {
 	d := &Deps{JWTSecret: "secret"}
 	tok, _, err := jwt.Sign("secret", 60, jwt.Claims{
-		UserID: 1, Salt: "s1", TokenType: jwt.TokenAccess, ClientIP: "10.0.0.1",
+		UserID: 1, Salt: "s1", TokenType: ctxdata.TokenTypeAccess, ClientIP: "10.0.0.1",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -70,7 +70,7 @@ func TestCheckTokenClientIP(t *testing.T) {
 	if got := xerr.AsError(err); got.Status != 401 || got.Message != coreI18n.AuthIPMismatch {
 		t.Fatalf("mismatch %+v", got)
 	}
-	old, _, err := jwt.Sign("secret", 60, jwt.Claims{UserID: 1, Salt: "s1", TokenType: jwt.TokenAccess})
+	old, _, err := jwt.Sign("secret", 60, jwt.Claims{UserID: 1, Salt: "s1", TokenType: ctxdata.TokenTypeAccess})
 	if err != nil {
 		t.Fatal(err)
 	}

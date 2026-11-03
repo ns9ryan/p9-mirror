@@ -6,3 +6,7 @@ core_rpc.exe
 *.exe
 api/.DS_Store
 .DS_Store
+
+ryan_core_operator_api.yaml
+ryan_core_operator_rpc.yaml
+ryan_core_platform_rpc.yaml

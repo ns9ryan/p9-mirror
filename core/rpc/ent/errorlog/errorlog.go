@@ -95,7 +95,7 @@ func ValidColumn(column string) bool {
 //	import _ "oa.98ent.com/p9/core/rpc/ent/runtime"
 var (
 	Hooks        [1]ent.Hook
-	Interceptors [1]ent.Interceptor
+	Interceptors [2]ent.Interceptor
 	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
 	OperatorCodeValidator func(string) error
 	// RequestMethodValidator is a validator for the "request_method" field. It is called by the builders before save.

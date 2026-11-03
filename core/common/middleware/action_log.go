@@ -11,7 +11,6 @@ import (
 
 	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/common/utils"
-	"oa.98ent.com/p9/core/common/jwt"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
@@ -54,7 +53,7 @@ func ActionLog(rec ActionRecorder) rest.Middleware {
 			start := time.Now()
 			next(cw, r)
 			claims := ctxdata.ClaimsFromCtx(r.Context())
-			if claims == nil || claims.UserID == 0 || claims.TokenType == jwt.TokenPreview {
+			if claims == nil || claims.UserID == 0 || claims.TokenType.IsPreview() {
 				return
 			}
 			status := cw.status

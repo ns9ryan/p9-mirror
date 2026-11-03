@@ -66,7 +66,9 @@ func init() {
 	adminactionlogMixinHooks1 := adminactionlogMixin[1].Hooks()
 	adminactionlog.Hooks[0] = adminactionlogMixinHooks1[0]
 	adminactionlogMixinInters1 := adminactionlogMixin[1].Interceptors()
+	adminactionlogInters := schema.AdminActionLog{}.Interceptors()
 	adminactionlog.Interceptors[0] = adminactionlogMixinInters1[0]
+	adminactionlog.Interceptors[1] = adminactionlogInters[0]
 	adminactionlogMixinFields1 := adminactionlogMixin[1].Fields()
 	_ = adminactionlogMixinFields1
 	adminactionlogFields := schema.AdminActionLog{}.Fields()
@@ -143,7 +145,9 @@ func init() {
 	errorlogMixinHooks1 := errorlogMixin[1].Hooks()
 	errorlog.Hooks[0] = errorlogMixinHooks1[0]
 	errorlogMixinInters1 := errorlogMixin[1].Interceptors()
+	errorlogInters := schema.ErrorLog{}.Interceptors()
 	errorlog.Interceptors[0] = errorlogMixinInters1[0]
+	errorlog.Interceptors[1] = errorlogInters[0]
 	errorlogMixinFields1 := errorlogMixin[1].Fields()
 	_ = errorlogMixinFields1
 	errorlogFields := schema.ErrorLog{}.Fields()
@@ -217,7 +221,9 @@ func init() {
 	i18nlangMixinHooks2 := i18nlangMixin[2].Hooks()
 	i18nlang.Hooks[0] = i18nlangMixinHooks2[0]
 	i18nlangMixinInters2 := i18nlangMixin[2].Interceptors()
+	i18nlangInters := schema.I18nLang{}.Interceptors()
 	i18nlang.Interceptors[0] = i18nlangMixinInters2[0]
+	i18nlang.Interceptors[1] = i18nlangInters[0]
 	i18nlangMixinFields1 := i18nlangMixin[1].Fields()
 	_ = i18nlangMixinFields1
 	i18nlangMixinFields2 := i18nlangMixin[2].Fields()
@@ -266,7 +272,9 @@ func init() {
 	loginlogMixinHooks1 := loginlogMixin[1].Hooks()
 	loginlog.Hooks[0] = loginlogMixinHooks1[0]
 	loginlogMixinInters1 := loginlogMixin[1].Interceptors()
+	loginlogInters := schema.LoginLog{}.Interceptors()
 	loginlog.Interceptors[0] = loginlogMixinInters1[0]
+	loginlog.Interceptors[1] = loginlogInters[0]
 	loginlogMixinFields1 := loginlogMixin[1].Fields()
 	_ = loginlogMixinFields1
 	loginlogFields := schema.LoginLog{}.Fields()
@@ -368,7 +376,9 @@ func init() {
 	roleMixinHooks2 := roleMixin[2].Hooks()
 	role.Hooks[0] = roleMixinHooks2[0]
 	roleMixinInters2 := roleMixin[2].Interceptors()
+	roleInters := schema.Role{}.Interceptors()
 	role.Interceptors[0] = roleMixinInters2[0]
+	role.Interceptors[1] = roleInters[0]
 	roleMixinFields1 := roleMixin[1].Fields()
 	_ = roleMixinFields1
 	roleMixinFields2 := roleMixin[2].Fields()
@@ -439,8 +449,11 @@ func init() {
 	user.Hooks[1] = userMixinHooks3[0]
 	userMixinInters2 := userMixin[2].Interceptors()
 	userMixinInters3 := userMixin[3].Interceptors()
+	userInters := schema.User{}.Interceptors()
 	user.Interceptors[0] = userMixinInters2[0]
 	user.Interceptors[1] = userMixinInters3[0]
+	user.Interceptors[2] = userInters[0]
+	user.Interceptors[3] = userInters[1]
 	userMixinFields1 := userMixin[1].Fields()
 	_ = userMixinFields1
 	userMixinFields3 := userMixin[3].Fields()

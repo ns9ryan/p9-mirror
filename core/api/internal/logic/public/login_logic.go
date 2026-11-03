@@ -3,6 +3,7 @@ package public
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/common/utils"
@@ -37,6 +38,8 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		ip = utils.ClientIP(l.r)
 		ctx = ctxdata.WithClientIP(ctx, ip)
 	}
+	// 设置分站编码到上下文
+	ctx = ctxdata.WithOperatorCode(ctx, strings.TrimSpace(req.OperatorCode))
 	out, err := l.svcCtx.Core.Login(ctx, &coreclient.LoginReq{
 		Username:     req.Username,
 		Password:     req.Password,

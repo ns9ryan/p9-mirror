@@ -1,9 +1,11 @@
 package schema
 
 import (
+	"context"
 	"time"
 
 	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/core/rpc/ent/intercept"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -26,6 +28,16 @@ func (LoginLog) Annotations() []schema.Annotation {
 
 func (LoginLog) Mixin() []ent.Mixin {
 	return []ent.Mixin{entmixin.IDMixin{}, entmixin.OperatorCodeMixin{}}
+}
+
+// Interceptors 定义登录日志表查询隔离
+func (LoginLog) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			entmixin.FilterOperatorCode(ctx, q)
+			return nil
+		}),
+	}
 }
 
 func (LoginLog) Fields() []ent.Field {

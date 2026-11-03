@@ -22,7 +22,7 @@ func TestLoginRefreshTokenBindsClientIP(t *testing.T) {
 	if err != nil || access.ClientIP != "10.0.0.1" {
 		t.Fatalf("access %+v %v", access, err)
 	}
-	refresh, err := jwt.ParseTyped(d.JWTRefreshSecret, res.Token.RefreshToken, jwt.TokenRefresh)
+	refresh, err := jwt.ParseTyped(d.JWTRefreshSecret, res.Token.RefreshToken, ctxdata.TokenTypeRefresh)
 	if err != nil || refresh.ClientIP != "10.0.0.1" {
 		t.Fatalf("refresh %+v %v", refresh, err)
 	}

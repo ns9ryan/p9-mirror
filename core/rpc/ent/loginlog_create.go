@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/core/rpc/ent/loginlog"
@@ -19,6 +20,7 @@ type LoginLogCreate struct {
 	config
 	mutation *LoginLogMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetOperatorCode sets the "operator_code" field.
@@ -243,6 +245,7 @@ func (_c *LoginLogCreate) createSpec() (*LoginLog, *sqlgraph.CreateSpec) {
 		_node = &LoginLog{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(loginlog.Table, sqlgraph.NewFieldSpec(loginlog.FieldID, field.TypeInt64))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -299,11 +302,431 @@ func (_c *LoginLogCreate) createSpec() (*LoginLog, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LoginLog.Create().
+//		SetOperatorCode(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LoginLogUpsert) {
+//			SetOperatorCode(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LoginLogCreate) OnConflict(opts ...sql.ConflictOption) *LoginLogUpsertOne {
+	_c.conflict = opts
+	return &LoginLogUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LoginLog.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LoginLogCreate) OnConflictColumns(columns ...string) *LoginLogUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LoginLogUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LoginLogUpsertOne is the builder for "upsert"-ing
+	//  one LoginLog node.
+	LoginLogUpsertOne struct {
+		create *LoginLogCreate
+	}
+
+	// LoginLogUpsert is the "OnConflict" setter.
+	LoginLogUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUserID sets the "user_id" field.
+func (u *LoginLogUpsert) SetUserID(v int64) *LoginLogUpsert {
+	u.Set(loginlog.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateUserID() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldUserID)
+	return u
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *LoginLogUpsert) ClearUserID() *LoginLogUpsert {
+	u.SetNull(loginlog.FieldUserID)
+	return u
+}
+
+// SetUsername sets the "username" field.
+func (u *LoginLogUpsert) SetUsername(v string) *LoginLogUpsert {
+	u.Set(loginlog.FieldUsername, v)
+	return u
+}
+
+// UpdateUsername sets the "username" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateUsername() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldUsername)
+	return u
+}
+
+// SetLoginResult sets the "login_result" field.
+func (u *LoginLogUpsert) SetLoginResult(v int16) *LoginLogUpsert {
+	u.Set(loginlog.FieldLoginResult, v)
+	return u
+}
+
+// UpdateLoginResult sets the "login_result" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateLoginResult() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldLoginResult)
+	return u
+}
+
+// AddLoginResult adds v to the "login_result" field.
+func (u *LoginLogUpsert) AddLoginResult(v int16) *LoginLogUpsert {
+	u.Add(loginlog.FieldLoginResult, v)
+	return u
+}
+
+// SetFailureReason sets the "failure_reason" field.
+func (u *LoginLogUpsert) SetFailureReason(v string) *LoginLogUpsert {
+	u.Set(loginlog.FieldFailureReason, v)
+	return u
+}
+
+// UpdateFailureReason sets the "failure_reason" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateFailureReason() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldFailureReason)
+	return u
+}
+
+// ClearFailureReason clears the value of the "failure_reason" field.
+func (u *LoginLogUpsert) ClearFailureReason() *LoginLogUpsert {
+	u.SetNull(loginlog.FieldFailureReason)
+	return u
+}
+
+// SetLoginIP sets the "login_ip" field.
+func (u *LoginLogUpsert) SetLoginIP(v string) *LoginLogUpsert {
+	u.Set(loginlog.FieldLoginIP, v)
+	return u
+}
+
+// UpdateLoginIP sets the "login_ip" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateLoginIP() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldLoginIP)
+	return u
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *LoginLogUpsert) SetDeviceID(v int64) *LoginLogUpsert {
+	u.Set(loginlog.FieldDeviceID, v)
+	return u
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateDeviceID() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldDeviceID)
+	return u
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *LoginLogUpsert) AddDeviceID(v int64) *LoginLogUpsert {
+	u.Add(loginlog.FieldDeviceID, v)
+	return u
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *LoginLogUpsert) ClearDeviceID() *LoginLogUpsert {
+	u.SetNull(loginlog.FieldDeviceID)
+	return u
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *LoginLogUpsert) SetUserAgent(v string) *LoginLogUpsert {
+	u.Set(loginlog.FieldUserAgent, v)
+	return u
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateUserAgent() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldUserAgent)
+	return u
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *LoginLogUpsert) ClearUserAgent() *LoginLogUpsert {
+	u.SetNull(loginlog.FieldUserAgent)
+	return u
+}
+
+// SetLoginAt sets the "login_at" field.
+func (u *LoginLogUpsert) SetLoginAt(v time.Time) *LoginLogUpsert {
+	u.Set(loginlog.FieldLoginAt, v)
+	return u
+}
+
+// UpdateLoginAt sets the "login_at" field to the value that was provided on create.
+func (u *LoginLogUpsert) UpdateLoginAt() *LoginLogUpsert {
+	u.SetExcluded(loginlog.FieldLoginAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.LoginLog.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(loginlog.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *LoginLogUpsertOne) UpdateNewValues() *LoginLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(loginlog.FieldID)
+		}
+		if _, exists := u.create.mutation.OperatorCode(); exists {
+			s.SetIgnore(loginlog.FieldOperatorCode)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LoginLog.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LoginLogUpsertOne) Ignore() *LoginLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LoginLogUpsertOne) DoNothing() *LoginLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LoginLogCreate.OnConflict
+// documentation for more info.
+func (u *LoginLogUpsertOne) Update(set func(*LoginLogUpsert)) *LoginLogUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LoginLogUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *LoginLogUpsertOne) SetUserID(v int64) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateUserID() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *LoginLogUpsertOne) ClearUserID() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearUserID()
+	})
+}
+
+// SetUsername sets the "username" field.
+func (u *LoginLogUpsertOne) SetUsername(v string) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetUsername(v)
+	})
+}
+
+// UpdateUsername sets the "username" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateUsername() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateUsername()
+	})
+}
+
+// SetLoginResult sets the "login_result" field.
+func (u *LoginLogUpsertOne) SetLoginResult(v int16) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetLoginResult(v)
+	})
+}
+
+// AddLoginResult adds v to the "login_result" field.
+func (u *LoginLogUpsertOne) AddLoginResult(v int16) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.AddLoginResult(v)
+	})
+}
+
+// UpdateLoginResult sets the "login_result" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateLoginResult() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateLoginResult()
+	})
+}
+
+// SetFailureReason sets the "failure_reason" field.
+func (u *LoginLogUpsertOne) SetFailureReason(v string) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetFailureReason(v)
+	})
+}
+
+// UpdateFailureReason sets the "failure_reason" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateFailureReason() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateFailureReason()
+	})
+}
+
+// ClearFailureReason clears the value of the "failure_reason" field.
+func (u *LoginLogUpsertOne) ClearFailureReason() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearFailureReason()
+	})
+}
+
+// SetLoginIP sets the "login_ip" field.
+func (u *LoginLogUpsertOne) SetLoginIP(v string) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetLoginIP(v)
+	})
+}
+
+// UpdateLoginIP sets the "login_ip" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateLoginIP() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateLoginIP()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *LoginLogUpsertOne) SetDeviceID(v int64) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *LoginLogUpsertOne) AddDeviceID(v int64) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.AddDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateDeviceID() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *LoginLogUpsertOne) ClearDeviceID() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearDeviceID()
+	})
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *LoginLogUpsertOne) SetUserAgent(v string) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetUserAgent(v)
+	})
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateUserAgent() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateUserAgent()
+	})
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *LoginLogUpsertOne) ClearUserAgent() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearUserAgent()
+	})
+}
+
+// SetLoginAt sets the "login_at" field.
+func (u *LoginLogUpsertOne) SetLoginAt(v time.Time) *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetLoginAt(v)
+	})
+}
+
+// UpdateLoginAt sets the "login_at" field to the value that was provided on create.
+func (u *LoginLogUpsertOne) UpdateLoginAt() *LoginLogUpsertOne {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateLoginAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LoginLogUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LoginLogCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LoginLogUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LoginLogUpsertOne) ID(ctx context.Context) (id int64, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LoginLogUpsertOne) IDX(ctx context.Context) int64 {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LoginLogCreateBulk is the builder for creating many LoginLog entities in bulk.
 type LoginLogCreateBulk struct {
 	config
 	err      error
 	builders []*LoginLogCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LoginLog entities in the database.
@@ -333,6 +756,7 @@ func (_c *LoginLogCreateBulk) Save(ctx context.Context) ([]*LoginLog, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -383,6 +807,277 @@ func (_c *LoginLogCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LoginLogCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LoginLog.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LoginLogUpsert) {
+//			SetOperatorCode(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LoginLogCreateBulk) OnConflict(opts ...sql.ConflictOption) *LoginLogUpsertBulk {
+	_c.conflict = opts
+	return &LoginLogUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LoginLog.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LoginLogCreateBulk) OnConflictColumns(columns ...string) *LoginLogUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LoginLogUpsertBulk{
+		create: _c,
+	}
+}
+
+// LoginLogUpsertBulk is the builder for "upsert"-ing
+// a bulk of LoginLog nodes.
+type LoginLogUpsertBulk struct {
+	create *LoginLogCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LoginLog.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(loginlog.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *LoginLogUpsertBulk) UpdateNewValues() *LoginLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(loginlog.FieldID)
+			}
+			if _, exists := b.mutation.OperatorCode(); exists {
+				s.SetIgnore(loginlog.FieldOperatorCode)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LoginLog.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LoginLogUpsertBulk) Ignore() *LoginLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LoginLogUpsertBulk) DoNothing() *LoginLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LoginLogCreateBulk.OnConflict
+// documentation for more info.
+func (u *LoginLogUpsertBulk) Update(set func(*LoginLogUpsert)) *LoginLogUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LoginLogUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *LoginLogUpsertBulk) SetUserID(v int64) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateUserID() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *LoginLogUpsertBulk) ClearUserID() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearUserID()
+	})
+}
+
+// SetUsername sets the "username" field.
+func (u *LoginLogUpsertBulk) SetUsername(v string) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetUsername(v)
+	})
+}
+
+// UpdateUsername sets the "username" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateUsername() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateUsername()
+	})
+}
+
+// SetLoginResult sets the "login_result" field.
+func (u *LoginLogUpsertBulk) SetLoginResult(v int16) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetLoginResult(v)
+	})
+}
+
+// AddLoginResult adds v to the "login_result" field.
+func (u *LoginLogUpsertBulk) AddLoginResult(v int16) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.AddLoginResult(v)
+	})
+}
+
+// UpdateLoginResult sets the "login_result" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateLoginResult() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateLoginResult()
+	})
+}
+
+// SetFailureReason sets the "failure_reason" field.
+func (u *LoginLogUpsertBulk) SetFailureReason(v string) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetFailureReason(v)
+	})
+}
+
+// UpdateFailureReason sets the "failure_reason" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateFailureReason() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateFailureReason()
+	})
+}
+
+// ClearFailureReason clears the value of the "failure_reason" field.
+func (u *LoginLogUpsertBulk) ClearFailureReason() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearFailureReason()
+	})
+}
+
+// SetLoginIP sets the "login_ip" field.
+func (u *LoginLogUpsertBulk) SetLoginIP(v string) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetLoginIP(v)
+	})
+}
+
+// UpdateLoginIP sets the "login_ip" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateLoginIP() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateLoginIP()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *LoginLogUpsertBulk) SetDeviceID(v int64) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *LoginLogUpsertBulk) AddDeviceID(v int64) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.AddDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateDeviceID() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *LoginLogUpsertBulk) ClearDeviceID() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearDeviceID()
+	})
+}
+
+// SetUserAgent sets the "user_agent" field.
+func (u *LoginLogUpsertBulk) SetUserAgent(v string) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetUserAgent(v)
+	})
+}
+
+// UpdateUserAgent sets the "user_agent" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateUserAgent() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateUserAgent()
+	})
+}
+
+// ClearUserAgent clears the value of the "user_agent" field.
+func (u *LoginLogUpsertBulk) ClearUserAgent() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.ClearUserAgent()
+	})
+}
+
+// SetLoginAt sets the "login_at" field.
+func (u *LoginLogUpsertBulk) SetLoginAt(v time.Time) *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.SetLoginAt(v)
+	})
+}
+
+// UpdateLoginAt sets the "login_at" field to the value that was provided on create.
+func (u *LoginLogUpsertBulk) UpdateLoginAt() *LoginLogUpsertBulk {
+	return u.Update(func(s *LoginLogUpsert) {
+		s.UpdateLoginAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LoginLogUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LoginLogCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LoginLogCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LoginLogUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

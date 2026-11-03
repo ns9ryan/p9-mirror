@@ -1,0 +1,20 @@
+FROM alpine:3.22
+
+ARG AUTHOR="p9.work@gmail.com"
+LABEL org.opencontainers.image.authors=${AUTHOR}
+
+WORKDIR /app
+
+# 设置容器时区并安装运行依赖
+ENV TZ=Asia/Shanghai
+RUN apk add --no-cache tzdata ca-certificates
+
+# 复制会员钱包 RPC 程序及配置文件
+COPY ./member_wallet_rpc ./member_wallet_rpc
+COPY ./service/member/rpc/etc/member_wallet.yaml ./etc/member_wallet.yaml
+RUN chmod +x ./member_wallet_rpc
+
+EXPOSE 39005
+
+ENTRYPOINT ["./member_wallet_rpc"]
+CMD ["-f", "etc/member_wallet.yaml"]
