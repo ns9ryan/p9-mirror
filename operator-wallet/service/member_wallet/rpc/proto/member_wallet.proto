@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package wallet;
+package member_wallet;
 
 option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc";
 
