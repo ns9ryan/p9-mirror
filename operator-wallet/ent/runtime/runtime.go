@@ -17,6 +17,8 @@ func init() {
 	memberwalletMixin := schema.MemberWallet{}.Mixin()
 	memberwalletHooks := schema.MemberWallet{}.Hooks()
 	memberwallet.Hooks[0] = memberwalletHooks[0]
+	memberwalletInters := schema.MemberWallet{}.Interceptors()
+	memberwallet.Interceptors[0] = memberwalletInters[0]
 	memberwalletMixinFields1 := memberwalletMixin[1].Fields()
 	_ = memberwalletMixinFields1
 	memberwalletFields := schema.MemberWallet{}.Fields()

@@ -312,7 +312,8 @@ func (c *MemberWalletClient) Hooks() []Hook {
 
 // Interceptors returns the client interceptors.
 func (c *MemberWalletClient) Interceptors() []Interceptor {
-	return c.inters.MemberWallet
+	inters := c.inters.MemberWallet
+	return append(inters[:len(inters):len(inters)], memberwallet.Interceptors[:]...)
 }
 
 func (c *MemberWalletClient) mutate(ctx context.Context, m *MemberWalletMutation) (Value, error) {
