@@ -127,6 +127,14 @@ func (MemberWalletLedger) Indexes() []ent.Index {
 			Unique().
 			StorageKey("uk_member_wallet_ledger_operation"),
 
+		// 同一厅的一笔存款订单只能入账一次本金
+		index.Fields("operator_code", "business_no").
+			Unique().
+			StorageKey("uk_member_wallet_ledger_deposit_credit").
+			Annotations(
+				entsql.IndexWhere("business_type = 1 AND business_action = 1001"),
+			),
+
 		// 查询钱包资金明细, 支持按时间倒序分页
 		index.Fields("operator_code", "wallet_id", "created_at", "id").
 			StorageKey("idx_member_wallet_ledger_wallet_created"),

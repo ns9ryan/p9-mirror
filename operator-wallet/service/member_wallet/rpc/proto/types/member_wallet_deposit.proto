@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package member_wallet_deposit;
+
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb";
+
+// 存款本金入账请求
+message DepositCreditRequest {
+  // ==================== 业务标识 ====================
+
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 存款订单号
+  string deposit_order_no = 3;
+
+  // ==================== 入账信息 ====================
+
+  // 订单币种编码
+  string currency_code = 4;
+  // 入账金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 存款本金入账响应
+message DepositCreditResponse {}

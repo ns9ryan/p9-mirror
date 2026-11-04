@@ -73,6 +73,14 @@ var (
 				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[6], MemberWalletLedgerColumns[2]},
 			},
 			{
+				Name:    "uk_member_wallet_ledger_deposit_credit",
+				Unique:  true,
+				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[9]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "business_type = 1 AND business_action = 1001",
+				},
+			},
+			{
 				Name:    "idx_member_wallet_ledger_wallet_created",
 				Unique:  false,
 				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[10], MemberWalletLedgerColumns[0]},

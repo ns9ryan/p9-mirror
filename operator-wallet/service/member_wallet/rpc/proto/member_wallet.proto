@@ -7,8 +7,17 @@ option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/p
 // 基础服务
 import "types/member_wallet_ping.proto";
 
+// 会员钱包
+import "types/member_wallet_deposit.proto";
+
 // 会员钱包健康检查服务
 service Ping {
   // 健康检查
   rpc Ping(member_wallet_ping.PingRequest) returns (member_wallet_ping.PingResponse);
+}
+
+// 会员钱包资金服务
+service MemberWallet {
+  // 存款本金入账
+  rpc DepositCredit(member_wallet_deposit.DepositCreditRequest) returns (member_wallet_deposit.DepositCreditResponse);
 }

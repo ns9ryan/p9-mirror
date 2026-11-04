@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	depositpb "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
 	pingpb "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpb"
 )
 
@@ -121,6 +122,114 @@ var Ping_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Ping",
 			Handler:    _Ping_Ping_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "member_wallet.proto",
+}
+
+const (
+	MemberWallet_DepositCredit_FullMethodName = "/member_wallet.MemberWallet/DepositCredit"
+)
+
+// MemberWalletClient is the client API for MemberWallet service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// 会员钱包资金服务
+type MemberWalletClient interface {
+	// 存款本金入账
+	DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
+}
+
+type memberWalletClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMemberWalletClient(cc grpc.ClientConnInterface) MemberWalletClient {
+	return &memberWalletClient{cc}
+}
+
+func (c *memberWalletClient) DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(depositpb.DepositCreditResponse)
+	err := c.cc.Invoke(ctx, MemberWallet_DepositCredit_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MemberWalletServer is the server API for MemberWallet service.
+// All implementations must embed UnimplementedMemberWalletServer
+// for forward compatibility.
+//
+// 会员钱包资金服务
+type MemberWalletServer interface {
+	// 存款本金入账
+	DepositCredit(context.Context, *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error)
+	mustEmbedUnimplementedMemberWalletServer()
+}
+
+// UnimplementedMemberWalletServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedMemberWalletServer struct{}
+
+func (UnimplementedMemberWalletServer) DepositCredit(context.Context, *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DepositCredit not implemented")
+}
+func (UnimplementedMemberWalletServer) mustEmbedUnimplementedMemberWalletServer() {}
+func (UnimplementedMemberWalletServer) testEmbeddedByValue()                      {}
+
+// UnsafeMemberWalletServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MemberWalletServer will
+// result in compilation errors.
+type UnsafeMemberWalletServer interface {
+	mustEmbedUnimplementedMemberWalletServer()
+}
+
+func RegisterMemberWalletServer(s grpc.ServiceRegistrar, srv MemberWalletServer) {
+	// If the following call panics, it indicates UnimplementedMemberWalletServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&MemberWallet_ServiceDesc, srv)
+}
+
+func _MemberWallet_DepositCredit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(depositpb.DepositCreditRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberWalletServer).DepositCredit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MemberWallet_DepositCredit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberWalletServer).DepositCredit(ctx, req.(*depositpb.DepositCreditRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MemberWallet_ServiceDesc is the grpc.ServiceDesc for MemberWallet service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MemberWallet_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "member_wallet.MemberWallet",
+	HandlerType: (*MemberWalletServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "DepositCredit",
+			Handler:    _MemberWallet_DepositCredit_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
