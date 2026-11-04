@@ -1703,6 +1703,7 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 const (
 	Member_Create_FullMethodName           = "/crm.Member/Create"
 	Member_List_FullMethodName             = "/crm.Member/List"
+	Member_GetDetail_FullMethodName        = "/crm.Member/GetDetail"
 	Member_GetSensitiveInfo_FullMethodName = "/crm.Member/GetSensitiveInfo"
 )
 
@@ -1716,6 +1717,8 @@ type MemberClient interface {
 	Create(ctx context.Context, in *memberpb.CreateMemberRequest, opts ...grpc.CallOption) (*memberpb.CreateMemberResponse, error)
 	// 获取会员列表
 	List(ctx context.Context, in *memberpb.ListMembersRequest, opts ...grpc.CallOption) (*memberpb.ListMembersResponse, error)
+	// 获取会员详情
+	GetDetail(ctx context.Context, in *memberpb.GetMemberDetailRequest, opts ...grpc.CallOption) (*memberpb.GetMemberDetailResponse, error)
 	// 查看会员敏感信息
 	GetSensitiveInfo(ctx context.Context, in *memberpb.GetMemberSensitiveInfoRequest, opts ...grpc.CallOption) (*memberpb.GetMemberSensitiveInfoResponse, error)
 }
@@ -1748,6 +1751,16 @@ func (c *memberClient) List(ctx context.Context, in *memberpb.ListMembersRequest
 	return out, nil
 }
 
+func (c *memberClient) GetDetail(ctx context.Context, in *memberpb.GetMemberDetailRequest, opts ...grpc.CallOption) (*memberpb.GetMemberDetailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(memberpb.GetMemberDetailResponse)
+	err := c.cc.Invoke(ctx, Member_GetDetail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *memberClient) GetSensitiveInfo(ctx context.Context, in *memberpb.GetMemberSensitiveInfoRequest, opts ...grpc.CallOption) (*memberpb.GetMemberSensitiveInfoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(memberpb.GetMemberSensitiveInfoResponse)
@@ -1768,6 +1781,8 @@ type MemberServer interface {
 	Create(context.Context, *memberpb.CreateMemberRequest) (*memberpb.CreateMemberResponse, error)
 	// 获取会员列表
 	List(context.Context, *memberpb.ListMembersRequest) (*memberpb.ListMembersResponse, error)
+	// 获取会员详情
+	GetDetail(context.Context, *memberpb.GetMemberDetailRequest) (*memberpb.GetMemberDetailResponse, error)
 	// 查看会员敏感信息
 	GetSensitiveInfo(context.Context, *memberpb.GetMemberSensitiveInfoRequest) (*memberpb.GetMemberSensitiveInfoResponse, error)
 	mustEmbedUnimplementedMemberServer()
@@ -1785,6 +1800,9 @@ func (UnimplementedMemberServer) Create(context.Context, *memberpb.CreateMemberR
 }
 func (UnimplementedMemberServer) List(context.Context, *memberpb.ListMembersRequest) (*memberpb.ListMembersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedMemberServer) GetDetail(context.Context, *memberpb.GetMemberDetailRequest) (*memberpb.GetMemberDetailResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetDetail not implemented")
 }
 func (UnimplementedMemberServer) GetSensitiveInfo(context.Context, *memberpb.GetMemberSensitiveInfoRequest) (*memberpb.GetMemberSensitiveInfoResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetSensitiveInfo not implemented")
@@ -1846,6 +1864,24 @@ func _Member_List_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Member_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(memberpb.GetMemberDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberServer).GetDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Member_GetDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberServer).GetDetail(ctx, req.(*memberpb.GetMemberDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Member_GetSensitiveInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(memberpb.GetMemberSensitiveInfoRequest)
 	if err := dec(in); err != nil {
@@ -1878,6 +1914,10 @@ var Member_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "List",
 			Handler:    _Member_List_Handler,
+		},
+		{
+			MethodName: "GetDetail",
+			Handler:    _Member_GetDetail_Handler,
 		},
 		{
 			MethodName: "GetSensitiveInfo",

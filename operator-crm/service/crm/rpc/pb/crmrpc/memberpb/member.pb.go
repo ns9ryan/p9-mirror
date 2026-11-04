@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TODO: 充值业务的数据来源和命名明确后, 增加首次成功充值时间筛选类型.
+// TODO: 充值业务的数据来源和命名明确后, 增加首次成功充值时间筛选类型
 // 会员列表时间筛选类型
 type MemberTimeType int32
 
@@ -75,8 +75,8 @@ func (MemberTimeType) EnumDescriptor() ([]byte, []int) {
 	return file_types_member_proto_rawDescGZIP(), []int{0}
 }
 
-// TODO: 钱包服务接入后, 增加钱包余额排序.
-// TODO: 充值业务的数据来源和命名明确后, 增加首存金额排序.
+// TODO: 钱包服务接入后, 增加钱包余额排序
+// TODO: 充值业务的数据来源和命名明确后, 增加首存金额排序
 // 会员列表排序字段
 type MemberSortField int32
 
@@ -191,7 +191,7 @@ func (MemberSortOrder) EnumDescriptor() ([]byte, []int) {
 	return file_types_member_proto_rawDescGZIP(), []int{2}
 }
 
-// TODO: 会员资料模型明确后, 扩展真实姓名、证件号码等敏感字段.
+// TODO: 会员资料模型明确后, 扩展真实姓名、证件号码等敏感字段
 // 会员敏感信息类型
 type MemberSensitiveField int32
 
@@ -245,6 +245,326 @@ func (MemberSensitiveField) EnumDescriptor() ([]byte, []int) {
 	return file_types_member_proto_rawDescGZIP(), []int{3}
 }
 
+// 固定层级信息
+type MemberFixedLevelInfo struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 固定层级 ID
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// 固定层级名称
+	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MemberFixedLevelInfo) Reset() {
+	*x = MemberFixedLevelInfo{}
+	mi := &file_types_member_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MemberFixedLevelInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MemberFixedLevelInfo) ProtoMessage() {}
+
+func (x *MemberFixedLevelInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MemberFixedLevelInfo.ProtoReflect.Descriptor instead.
+func (*MemberFixedLevelInfo) Descriptor() ([]byte, []int) {
+	return file_types_member_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *MemberFixedLevelInfo) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *MemberFixedLevelInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+// 会员等级信息
+type MemberLevelInfo struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 自动层级 ID
+	AutoLevelId int64 `protobuf:"varint,1,opt,name=auto_level_id,json=autoLevelId,proto3" json:"auto_level_id,omitempty"`
+	// 自动层级名称
+	AutoLevelName string `protobuf:"bytes,2,opt,name=auto_level_name,json=autoLevelName,proto3" json:"auto_level_name,omitempty"`
+	// 已分配的固定层级列表
+	FixedLevels []*MemberFixedLevelInfo `protobuf:"bytes,3,rep,name=fixed_levels,json=fixedLevels,proto3" json:"fixed_levels,omitempty"`
+	// VIP 等级 ID
+	VipLevelId int64 `protobuf:"varint,4,opt,name=vip_level_id,json=vipLevelId,proto3" json:"vip_level_id,omitempty"`
+	// VIP 等级编号
+	VipLevel      int64 `protobuf:"varint,5,opt,name=vip_level,json=vipLevel,proto3" json:"vip_level,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MemberLevelInfo) Reset() {
+	*x = MemberLevelInfo{}
+	mi := &file_types_member_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MemberLevelInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MemberLevelInfo) ProtoMessage() {}
+
+func (x *MemberLevelInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MemberLevelInfo.ProtoReflect.Descriptor instead.
+func (*MemberLevelInfo) Descriptor() ([]byte, []int) {
+	return file_types_member_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *MemberLevelInfo) GetAutoLevelId() int64 {
+	if x != nil {
+		return x.AutoLevelId
+	}
+	return 0
+}
+
+func (x *MemberLevelInfo) GetAutoLevelName() string {
+	if x != nil {
+		return x.AutoLevelName
+	}
+	return ""
+}
+
+func (x *MemberLevelInfo) GetFixedLevels() []*MemberFixedLevelInfo {
+	if x != nil {
+		return x.FixedLevels
+	}
+	return nil
+}
+
+func (x *MemberLevelInfo) GetVipLevelId() int64 {
+	if x != nil {
+		return x.VipLevelId
+	}
+	return 0
+}
+
+func (x *MemberLevelInfo) GetVipLevel() int64 {
+	if x != nil {
+		return x.VipLevel
+	}
+	return 0
+}
+
+// 会员统计信息
+// 金额使用厅结算币种的最小单位
+// 没有统计记录时, 统计金额和次数返回 0
+type MemberStatsInfo struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 累计充值金额
+	TotalDeposit int64 `protobuf:"varint,1,opt,name=total_deposit,json=totalDeposit,proto3" json:"total_deposit,omitempty"`
+	// 累计充值成功次数
+	TotalDepositCount int64 `protobuf:"varint,2,opt,name=total_deposit_count,json=totalDepositCount,proto3" json:"total_deposit_count,omitempty"`
+	// 累计提现金额
+	TotalWithdrawal int64 `protobuf:"varint,3,opt,name=total_withdrawal,json=totalWithdrawal,proto3" json:"total_withdrawal,omitempty"`
+	// 累计提现成功次数
+	TotalWithdrawalCount int64 `protobuf:"varint,4,opt,name=total_withdrawal_count,json=totalWithdrawalCount,proto3" json:"total_withdrawal_count,omitempty"`
+	// 总存提差额, 累计充值金额减去累计提现金额
+	TotalDepositWithdrawalDiff int64 `protobuf:"varint,5,opt,name=total_deposit_withdrawal_diff,json=totalDepositWithdrawalDiff,proto3" json:"total_deposit_withdrawal_diff,omitempty"`
+	// 累计投注金额
+	TotalBet int64 `protobuf:"varint,6,opt,name=total_bet,json=totalBet,proto3" json:"total_bet,omitempty"`
+	// 累计有效投注金额
+	TotalValidBet int64 `protobuf:"varint,7,opt,name=total_valid_bet,json=totalValidBet,proto3" json:"total_valid_bet,omitempty"`
+	// 累计洗码量
+	TotalWater int64 `protobuf:"varint,8,opt,name=total_water,json=totalWater,proto3" json:"total_water,omitempty"`
+	// 累计会员净输赢金额, 正数盈利, 负数亏损
+	TotalWinLoss int64 `protobuf:"varint,9,opt,name=total_win_loss,json=totalWinLoss,proto3" json:"total_win_loss,omitempty"`
+	// 当前周期充值金额
+	CurrentPeriodDeposit int64 `protobuf:"varint,10,opt,name=current_period_deposit,json=currentPeriodDeposit,proto3" json:"current_period_deposit,omitempty"`
+	// 当前周期提现金额
+	CurrentPeriodWithdrawal int64 `protobuf:"varint,11,opt,name=current_period_withdrawal,json=currentPeriodWithdrawal,proto3" json:"current_period_withdrawal,omitempty"`
+	// 当前周期投注金额
+	CurrentPeriodBet int64 `protobuf:"varint,12,opt,name=current_period_bet,json=currentPeriodBet,proto3" json:"current_period_bet,omitempty"`
+	// 当前周期有效投注金额
+	CurrentPeriodValidBet int64 `protobuf:"varint,13,opt,name=current_period_valid_bet,json=currentPeriodValidBet,proto3" json:"current_period_valid_bet,omitempty"`
+	// 当前周期洗码量
+	CurrentPeriodWater int64 `protobuf:"varint,14,opt,name=current_period_water,json=currentPeriodWater,proto3" json:"current_period_water,omitempty"`
+	// 当前周期会员净输赢金额, 正数盈利, 负数亏损
+	CurrentPeriodWinLoss int64 `protobuf:"varint,15,opt,name=current_period_win_loss,json=currentPeriodWinLoss,proto3" json:"current_period_win_loss,omitempty"`
+	// 当前结算周期开始时间, Unix 毫秒时间戳
+	CurrentPeriodStartedAt *int64 `protobuf:"varint,16,opt,name=current_period_started_at,json=currentPeriodStartedAt,proto3,oneof" json:"current_period_started_at,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *MemberStatsInfo) Reset() {
+	*x = MemberStatsInfo{}
+	mi := &file_types_member_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MemberStatsInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MemberStatsInfo) ProtoMessage() {}
+
+func (x *MemberStatsInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MemberStatsInfo.ProtoReflect.Descriptor instead.
+func (*MemberStatsInfo) Descriptor() ([]byte, []int) {
+	return file_types_member_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *MemberStatsInfo) GetTotalDeposit() int64 {
+	if x != nil {
+		return x.TotalDeposit
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalDepositCount() int64 {
+	if x != nil {
+		return x.TotalDepositCount
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalWithdrawal() int64 {
+	if x != nil {
+		return x.TotalWithdrawal
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalWithdrawalCount() int64 {
+	if x != nil {
+		return x.TotalWithdrawalCount
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalDepositWithdrawalDiff() int64 {
+	if x != nil {
+		return x.TotalDepositWithdrawalDiff
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalBet() int64 {
+	if x != nil {
+		return x.TotalBet
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalValidBet() int64 {
+	if x != nil {
+		return x.TotalValidBet
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalWater() int64 {
+	if x != nil {
+		return x.TotalWater
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetTotalWinLoss() int64 {
+	if x != nil {
+		return x.TotalWinLoss
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetCurrentPeriodDeposit() int64 {
+	if x != nil {
+		return x.CurrentPeriodDeposit
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetCurrentPeriodWithdrawal() int64 {
+	if x != nil {
+		return x.CurrentPeriodWithdrawal
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetCurrentPeriodBet() int64 {
+	if x != nil {
+		return x.CurrentPeriodBet
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetCurrentPeriodValidBet() int64 {
+	if x != nil {
+		return x.CurrentPeriodValidBet
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetCurrentPeriodWater() int64 {
+	if x != nil {
+		return x.CurrentPeriodWater
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetCurrentPeriodWinLoss() int64 {
+	if x != nil {
+		return x.CurrentPeriodWinLoss
+	}
+	return 0
+}
+
+func (x *MemberStatsInfo) GetCurrentPeriodStartedAt() int64 {
+	if x != nil && x.CurrentPeriodStartedAt != nil {
+		return *x.CurrentPeriodStartedAt
+	}
+	return 0
+}
+
 // 创建会员请求
 type CreateMemberRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -264,7 +584,7 @@ type CreateMemberRequest struct {
 
 func (x *CreateMemberRequest) Reset() {
 	*x = CreateMemberRequest{}
-	mi := &file_types_member_proto_msgTypes[0]
+	mi := &file_types_member_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -276,7 +596,7 @@ func (x *CreateMemberRequest) String() string {
 func (*CreateMemberRequest) ProtoMessage() {}
 
 func (x *CreateMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[0]
+	mi := &file_types_member_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -289,7 +609,7 @@ func (x *CreateMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateMemberRequest.ProtoReflect.Descriptor instead.
 func (*CreateMemberRequest) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{0}
+	return file_types_member_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CreateMemberRequest) GetAccount() string {
@@ -340,7 +660,7 @@ type CreateMemberResponse struct {
 
 func (x *CreateMemberResponse) Reset() {
 	*x = CreateMemberResponse{}
-	mi := &file_types_member_proto_msgTypes[1]
+	mi := &file_types_member_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -352,7 +672,7 @@ func (x *CreateMemberResponse) String() string {
 func (*CreateMemberResponse) ProtoMessage() {}
 
 func (x *CreateMemberResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[1]
+	mi := &file_types_member_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -365,7 +685,7 @@ func (x *CreateMemberResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateMemberResponse.ProtoReflect.Descriptor instead.
 func (*CreateMemberResponse) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{1}
+	return file_types_member_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CreateMemberResponse) GetId() int64 {
@@ -378,107 +698,6 @@ func (x *CreateMemberResponse) GetId() int64 {
 func (x *CreateMemberResponse) GetCode() string {
 	if x != nil {
 		return x.Code
-	}
-	return ""
-}
-
-// 查看会员敏感信息请求
-type GetMemberSensitiveInfoRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 会员数据库主键
-	MemberId int64 `protobuf:"varint,1,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
-	// 要查看的敏感信息类型
-	Field         MemberSensitiveField `protobuf:"varint,2,opt,name=field,proto3,enum=crm_member.MemberSensitiveField" json:"field,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetMemberSensitiveInfoRequest) Reset() {
-	*x = GetMemberSensitiveInfoRequest{}
-	mi := &file_types_member_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetMemberSensitiveInfoRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMemberSensitiveInfoRequest) ProtoMessage() {}
-
-func (x *GetMemberSensitiveInfoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMemberSensitiveInfoRequest.ProtoReflect.Descriptor instead.
-func (*GetMemberSensitiveInfoRequest) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GetMemberSensitiveInfoRequest) GetMemberId() int64 {
-	if x != nil {
-		return x.MemberId
-	}
-	return 0
-}
-
-func (x *GetMemberSensitiveInfoRequest) GetField() MemberSensitiveField {
-	if x != nil {
-		return x.Field
-	}
-	return MemberSensitiveField_MEMBER_SENSITIVE_FIELD_UNSPECIFIED
-}
-
-// 查看会员敏感信息响应
-type GetMemberSensitiveInfoResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 指定敏感字段的完整值
-	Value         string `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetMemberSensitiveInfoResponse) Reset() {
-	*x = GetMemberSensitiveInfoResponse{}
-	mi := &file_types_member_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetMemberSensitiveInfoResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMemberSensitiveInfoResponse) ProtoMessage() {}
-
-func (x *GetMemberSensitiveInfoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMemberSensitiveInfoResponse.ProtoReflect.Descriptor instead.
-func (*GetMemberSensitiveInfoResponse) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *GetMemberSensitiveInfoResponse) GetValue() string {
-	if x != nil {
-		return x.Value
 	}
 	return ""
 }
@@ -530,7 +749,7 @@ type ListMembersRequest struct {
 
 func (x *ListMembersRequest) Reset() {
 	*x = ListMembersRequest{}
-	mi := &file_types_member_proto_msgTypes[4]
+	mi := &file_types_member_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -542,7 +761,7 @@ func (x *ListMembersRequest) String() string {
 func (*ListMembersRequest) ProtoMessage() {}
 
 func (x *ListMembersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[4]
+	mi := &file_types_member_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -555,7 +774,7 @@ func (x *ListMembersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMembersRequest.ProtoReflect.Descriptor instead.
 func (*ListMembersRequest) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{4}
+	return file_types_member_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ListMembersRequest) GetPage() int64 {
@@ -691,326 +910,6 @@ func (x *ListMembersRequest) GetSortOrder() MemberSortOrder {
 	return MemberSortOrder_MEMBER_SORT_ORDER_UNSPECIFIED
 }
 
-// 固定层级信息
-type MemberFixedLevelInfo struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 固定层级 ID
-	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	// 固定层级名称
-	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *MemberFixedLevelInfo) Reset() {
-	*x = MemberFixedLevelInfo{}
-	mi := &file_types_member_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *MemberFixedLevelInfo) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MemberFixedLevelInfo) ProtoMessage() {}
-
-func (x *MemberFixedLevelInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MemberFixedLevelInfo.ProtoReflect.Descriptor instead.
-func (*MemberFixedLevelInfo) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *MemberFixedLevelInfo) GetId() int64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *MemberFixedLevelInfo) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-// 会员等级信息
-type MemberLevelInfo struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 自动层级 ID
-	AutoLevelId int64 `protobuf:"varint,1,opt,name=auto_level_id,json=autoLevelId,proto3" json:"auto_level_id,omitempty"`
-	// 自动层级名称
-	AutoLevelName string `protobuf:"bytes,2,opt,name=auto_level_name,json=autoLevelName,proto3" json:"auto_level_name,omitempty"`
-	// 已分配的固定层级列表
-	FixedLevels []*MemberFixedLevelInfo `protobuf:"bytes,3,rep,name=fixed_levels,json=fixedLevels,proto3" json:"fixed_levels,omitempty"`
-	// VIP 等级 ID
-	VipLevelId int64 `protobuf:"varint,4,opt,name=vip_level_id,json=vipLevelId,proto3" json:"vip_level_id,omitempty"`
-	// VIP 等级编号
-	VipLevel      int64 `protobuf:"varint,5,opt,name=vip_level,json=vipLevel,proto3" json:"vip_level,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *MemberLevelInfo) Reset() {
-	*x = MemberLevelInfo{}
-	mi := &file_types_member_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *MemberLevelInfo) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MemberLevelInfo) ProtoMessage() {}
-
-func (x *MemberLevelInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MemberLevelInfo.ProtoReflect.Descriptor instead.
-func (*MemberLevelInfo) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *MemberLevelInfo) GetAutoLevelId() int64 {
-	if x != nil {
-		return x.AutoLevelId
-	}
-	return 0
-}
-
-func (x *MemberLevelInfo) GetAutoLevelName() string {
-	if x != nil {
-		return x.AutoLevelName
-	}
-	return ""
-}
-
-func (x *MemberLevelInfo) GetFixedLevels() []*MemberFixedLevelInfo {
-	if x != nil {
-		return x.FixedLevels
-	}
-	return nil
-}
-
-func (x *MemberLevelInfo) GetVipLevelId() int64 {
-	if x != nil {
-		return x.VipLevelId
-	}
-	return 0
-}
-
-func (x *MemberLevelInfo) GetVipLevel() int64 {
-	if x != nil {
-		return x.VipLevel
-	}
-	return 0
-}
-
-// 会员统计信息
-// 金额使用厅结算币种的最小单位.
-// 没有统计记录时, 统计金额和次数返回 0.
-type MemberStatsInfo struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 累计充值金额
-	TotalDeposit int64 `protobuf:"varint,1,opt,name=total_deposit,json=totalDeposit,proto3" json:"total_deposit,omitempty"`
-	// 累计充值成功次数
-	TotalDepositCount int64 `protobuf:"varint,2,opt,name=total_deposit_count,json=totalDepositCount,proto3" json:"total_deposit_count,omitempty"`
-	// 累计提现金额
-	TotalWithdrawal int64 `protobuf:"varint,3,opt,name=total_withdrawal,json=totalWithdrawal,proto3" json:"total_withdrawal,omitempty"`
-	// 累计提现成功次数
-	TotalWithdrawalCount int64 `protobuf:"varint,4,opt,name=total_withdrawal_count,json=totalWithdrawalCount,proto3" json:"total_withdrawal_count,omitempty"`
-	// 总存提差额, 累计充值金额减去累计提现金额
-	TotalDepositWithdrawalDiff int64 `protobuf:"varint,5,opt,name=total_deposit_withdrawal_diff,json=totalDepositWithdrawalDiff,proto3" json:"total_deposit_withdrawal_diff,omitempty"`
-	// 累计投注金额
-	TotalBet int64 `protobuf:"varint,6,opt,name=total_bet,json=totalBet,proto3" json:"total_bet,omitempty"`
-	// 累计有效投注金额
-	TotalValidBet int64 `protobuf:"varint,7,opt,name=total_valid_bet,json=totalValidBet,proto3" json:"total_valid_bet,omitempty"`
-	// 累计洗码量
-	TotalWater int64 `protobuf:"varint,8,opt,name=total_water,json=totalWater,proto3" json:"total_water,omitempty"`
-	// 累计会员净输赢金额, 正数盈利, 负数亏损
-	TotalWinLoss int64 `protobuf:"varint,9,opt,name=total_win_loss,json=totalWinLoss,proto3" json:"total_win_loss,omitempty"`
-	// 当前周期充值金额
-	CurrentPeriodDeposit int64 `protobuf:"varint,10,opt,name=current_period_deposit,json=currentPeriodDeposit,proto3" json:"current_period_deposit,omitempty"`
-	// 当前周期提现金额
-	CurrentPeriodWithdrawal int64 `protobuf:"varint,11,opt,name=current_period_withdrawal,json=currentPeriodWithdrawal,proto3" json:"current_period_withdrawal,omitempty"`
-	// 当前周期投注金额
-	CurrentPeriodBet int64 `protobuf:"varint,12,opt,name=current_period_bet,json=currentPeriodBet,proto3" json:"current_period_bet,omitempty"`
-	// 当前周期有效投注金额
-	CurrentPeriodValidBet int64 `protobuf:"varint,13,opt,name=current_period_valid_bet,json=currentPeriodValidBet,proto3" json:"current_period_valid_bet,omitempty"`
-	// 当前周期洗码量
-	CurrentPeriodWater int64 `protobuf:"varint,14,opt,name=current_period_water,json=currentPeriodWater,proto3" json:"current_period_water,omitempty"`
-	// 当前周期会员净输赢金额, 正数盈利, 负数亏损
-	CurrentPeriodWinLoss int64 `protobuf:"varint,15,opt,name=current_period_win_loss,json=currentPeriodWinLoss,proto3" json:"current_period_win_loss,omitempty"`
-	// 当前结算周期开始时间, Unix 毫秒时间戳
-	CurrentPeriodStartedAt *int64 `protobuf:"varint,16,opt,name=current_period_started_at,json=currentPeriodStartedAt,proto3,oneof" json:"current_period_started_at,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *MemberStatsInfo) Reset() {
-	*x = MemberStatsInfo{}
-	mi := &file_types_member_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *MemberStatsInfo) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MemberStatsInfo) ProtoMessage() {}
-
-func (x *MemberStatsInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MemberStatsInfo.ProtoReflect.Descriptor instead.
-func (*MemberStatsInfo) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *MemberStatsInfo) GetTotalDeposit() int64 {
-	if x != nil {
-		return x.TotalDeposit
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalDepositCount() int64 {
-	if x != nil {
-		return x.TotalDepositCount
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalWithdrawal() int64 {
-	if x != nil {
-		return x.TotalWithdrawal
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalWithdrawalCount() int64 {
-	if x != nil {
-		return x.TotalWithdrawalCount
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalDepositWithdrawalDiff() int64 {
-	if x != nil {
-		return x.TotalDepositWithdrawalDiff
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalBet() int64 {
-	if x != nil {
-		return x.TotalBet
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalValidBet() int64 {
-	if x != nil {
-		return x.TotalValidBet
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalWater() int64 {
-	if x != nil {
-		return x.TotalWater
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetTotalWinLoss() int64 {
-	if x != nil {
-		return x.TotalWinLoss
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetCurrentPeriodDeposit() int64 {
-	if x != nil {
-		return x.CurrentPeriodDeposit
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetCurrentPeriodWithdrawal() int64 {
-	if x != nil {
-		return x.CurrentPeriodWithdrawal
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetCurrentPeriodBet() int64 {
-	if x != nil {
-		return x.CurrentPeriodBet
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetCurrentPeriodValidBet() int64 {
-	if x != nil {
-		return x.CurrentPeriodValidBet
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetCurrentPeriodWater() int64 {
-	if x != nil {
-		return x.CurrentPeriodWater
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetCurrentPeriodWinLoss() int64 {
-	if x != nil {
-		return x.CurrentPeriodWinLoss
-	}
-	return 0
-}
-
-func (x *MemberStatsInfo) GetCurrentPeriodStartedAt() int64 {
-	if x != nil && x.CurrentPeriodStartedAt != nil {
-		return *x.CurrentPeriodStartedAt
-	}
-	return 0
-}
-
 // 会员列表项
 type MemberListItem struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -1062,7 +961,7 @@ type MemberListItem struct {
 
 func (x *MemberListItem) Reset() {
 	*x = MemberListItem{}
-	mi := &file_types_member_proto_msgTypes[8]
+	mi := &file_types_member_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1074,7 +973,7 @@ func (x *MemberListItem) String() string {
 func (*MemberListItem) ProtoMessage() {}
 
 func (x *MemberListItem) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[8]
+	mi := &file_types_member_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1087,7 +986,7 @@ func (x *MemberListItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MemberListItem.ProtoReflect.Descriptor instead.
 func (*MemberListItem) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{8}
+	return file_types_member_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *MemberListItem) GetId() int64 {
@@ -1250,7 +1149,7 @@ type ListMembersResponse struct {
 
 func (x *ListMembersResponse) Reset() {
 	*x = ListMembersResponse{}
-	mi := &file_types_member_proto_msgTypes[9]
+	mi := &file_types_member_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1262,7 +1161,7 @@ func (x *ListMembersResponse) String() string {
 func (*ListMembersResponse) ProtoMessage() {}
 
 func (x *ListMembersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_types_member_proto_msgTypes[9]
+	mi := &file_types_member_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1275,7 +1174,7 @@ func (x *ListMembersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMembersResponse.ProtoReflect.Descriptor instead.
 func (*ListMembersResponse) Descriptor() ([]byte, []int) {
-	return file_types_member_proto_rawDescGZIP(), []int{9}
+	return file_types_member_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ListMembersResponse) GetTotal() int64 {
@@ -1292,58 +1191,448 @@ func (x *ListMembersResponse) GetList() []*MemberListItem {
 	return nil
 }
 
+// 获取会员详情请求
+type GetMemberDetailRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 会员数据库主键
+	MemberId      int64 `protobuf:"varint,1,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMemberDetailRequest) Reset() {
+	*x = GetMemberDetailRequest{}
+	mi := &file_types_member_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMemberDetailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMemberDetailRequest) ProtoMessage() {}
+
+func (x *GetMemberDetailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMemberDetailRequest.ProtoReflect.Descriptor instead.
+func (*GetMemberDetailRequest) Descriptor() ([]byte, []int) {
+	return file_types_member_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetMemberDetailRequest) GetMemberId() int64 {
+	if x != nil {
+		return x.MemberId
+	}
+	return 0
+}
+
+// 获取会员详情响应
+type GetMemberDetailResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 会员数据库主键
+	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// 12 位会员对外编号
+	Code string `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`
+	// 会员登录账号
+	Account *string `protobuf:"bytes,3,opt,name=account,proto3,oneof" json:"account,omitempty"`
+	// 会员昵称
+	Nickname string `protobuf:"bytes,4,opt,name=nickname,proto3" json:"nickname,omitempty"`
+	// 会员头像 URL
+	AvatarUrl string `protobuf:"bytes,5,opt,name=avatar_url,json=avatarUrl,proto3" json:"avatar_url,omitempty"`
+	// 会员头像框 URL
+	AvatarFrameUrl string `protobuf:"bytes,6,opt,name=avatar_frame_url,json=avatarFrameUrl,proto3" json:"avatar_frame_url,omitempty"`
+	// 会员生日, YYYY-MM-DD
+	Birthday *string `protobuf:"bytes,7,opt,name=birthday,proto3,oneof" json:"birthday,omitempty"`
+	// 性别: 0 未设置, 1 男, 2 女, 3 保密
+	Gender int64 `protobuf:"varint,8,opt,name=gender,proto3" json:"gender,omitempty"`
+	// 会员国家或地区编码
+	RegionCode *string `protobuf:"bytes,9,opt,name=region_code,json=regionCode,proto3,oneof" json:"region_code,omitempty"`
+	// 所属分层代理 ID
+	AgentId int64 `protobuf:"varint,10,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	// 所属分层代理账号
+	AgentAccount string `protobuf:"bytes,11,opt,name=agent_account,json=agentAccount,proto3" json:"agent_account,omitempty"`
+	// 所属代理线路编码
+	AgentLineCode string `protobuf:"bytes,12,opt,name=agent_line_code,json=agentLineCode,proto3" json:"agent_line_code,omitempty"`
+	// 会员当前等级信息
+	Levels *MemberLevelInfo `protobuf:"bytes,13,opt,name=levels,proto3" json:"levels,omitempty"`
+	// 会员状态: 1 正常, 2 冻结, 3 禁用
+	Status int64 `protobuf:"varint,14,opt,name=status,proto3" json:"status,omitempty"`
+	// 是否禁止发言
+	ChatDisabled bool `protobuf:"varint,15,opt,name=chat_disabled,json=chatDisabled,proto3" json:"chat_disabled,omitempty"`
+	// 是否禁止投注
+	BettingDisabled bool `protobuf:"varint,16,opt,name=betting_disabled,json=bettingDisabled,proto3" json:"betting_disabled,omitempty"`
+	// 是否禁止提款
+	WithdrawalDisabled bool `protobuf:"varint,17,opt,name=withdrawal_disabled,json=withdrawalDisabled,proto3" json:"withdrawal_disabled,omitempty"`
+	// 注册方式
+	RegisterMethod string `protobuf:"bytes,18,opt,name=register_method,json=registerMethod,proto3" json:"register_method,omitempty"`
+	// 注册渠道
+	RegisterChannel string `protobuf:"bytes,19,opt,name=register_channel,json=registerChannel,proto3" json:"register_channel,omitempty"`
+	// 注册时间, Unix 毫秒时间戳
+	CreatedAt int64 `protobuf:"varint,20,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// 注册 IP
+	RegisterIp *string `protobuf:"bytes,21,opt,name=register_ip,json=registerIp,proto3,oneof" json:"register_ip,omitempty"`
+	// 注册设备标识
+	RegisterDeviceCode *string `protobuf:"bytes,22,opt,name=register_device_code,json=registerDeviceCode,proto3,oneof" json:"register_device_code,omitempty"`
+	// 注册域名
+	RegisterDomain *string `protobuf:"bytes,23,opt,name=register_domain,json=registerDomain,proto3,oneof" json:"register_domain,omitempty"`
+	// 最后登录时间, Unix 毫秒时间戳
+	LastLoginAt *int64 `protobuf:"varint,24,opt,name=last_login_at,json=lastLoginAt,proto3,oneof" json:"last_login_at,omitempty"`
+	// 最后登录 IP
+	LastLoginIp *string `protobuf:"bytes,25,opt,name=last_login_ip,json=lastLoginIp,proto3,oneof" json:"last_login_ip,omitempty"`
+	// 邀请人会员 ID
+	InviterMemberId *int64 `protobuf:"varint,26,opt,name=inviter_member_id,json=inviterMemberId,proto3,oneof" json:"inviter_member_id,omitempty"`
+	// 后台会员备注
+	Remark *string `protobuf:"bytes,27,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
+	// 会员统计, 无统计记录时返回零值
+	Stats         *MemberStatsInfo `protobuf:"bytes,28,opt,name=stats,proto3" json:"stats,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMemberDetailResponse) Reset() {
+	*x = GetMemberDetailResponse{}
+	mi := &file_types_member_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMemberDetailResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMemberDetailResponse) ProtoMessage() {}
+
+func (x *GetMemberDetailResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMemberDetailResponse.ProtoReflect.Descriptor instead.
+func (*GetMemberDetailResponse) Descriptor() ([]byte, []int) {
+	return file_types_member_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetMemberDetailResponse) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *GetMemberDetailResponse) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetAccount() string {
+	if x != nil && x.Account != nil {
+		return *x.Account
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetNickname() string {
+	if x != nil {
+		return x.Nickname
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetAvatarUrl() string {
+	if x != nil {
+		return x.AvatarUrl
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetAvatarFrameUrl() string {
+	if x != nil {
+		return x.AvatarFrameUrl
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetBirthday() string {
+	if x != nil && x.Birthday != nil {
+		return *x.Birthday
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetGender() int64 {
+	if x != nil {
+		return x.Gender
+	}
+	return 0
+}
+
+func (x *GetMemberDetailResponse) GetRegionCode() string {
+	if x != nil && x.RegionCode != nil {
+		return *x.RegionCode
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetAgentId() int64 {
+	if x != nil {
+		return x.AgentId
+	}
+	return 0
+}
+
+func (x *GetMemberDetailResponse) GetAgentAccount() string {
+	if x != nil {
+		return x.AgentAccount
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetAgentLineCode() string {
+	if x != nil {
+		return x.AgentLineCode
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetLevels() *MemberLevelInfo {
+	if x != nil {
+		return x.Levels
+	}
+	return nil
+}
+
+func (x *GetMemberDetailResponse) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
+func (x *GetMemberDetailResponse) GetChatDisabled() bool {
+	if x != nil {
+		return x.ChatDisabled
+	}
+	return false
+}
+
+func (x *GetMemberDetailResponse) GetBettingDisabled() bool {
+	if x != nil {
+		return x.BettingDisabled
+	}
+	return false
+}
+
+func (x *GetMemberDetailResponse) GetWithdrawalDisabled() bool {
+	if x != nil {
+		return x.WithdrawalDisabled
+	}
+	return false
+}
+
+func (x *GetMemberDetailResponse) GetRegisterMethod() string {
+	if x != nil {
+		return x.RegisterMethod
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetRegisterChannel() string {
+	if x != nil {
+		return x.RegisterChannel
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+func (x *GetMemberDetailResponse) GetRegisterIp() string {
+	if x != nil && x.RegisterIp != nil {
+		return *x.RegisterIp
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetRegisterDeviceCode() string {
+	if x != nil && x.RegisterDeviceCode != nil {
+		return *x.RegisterDeviceCode
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetRegisterDomain() string {
+	if x != nil && x.RegisterDomain != nil {
+		return *x.RegisterDomain
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetLastLoginAt() int64 {
+	if x != nil && x.LastLoginAt != nil {
+		return *x.LastLoginAt
+	}
+	return 0
+}
+
+func (x *GetMemberDetailResponse) GetLastLoginIp() string {
+	if x != nil && x.LastLoginIp != nil {
+		return *x.LastLoginIp
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetInviterMemberId() int64 {
+	if x != nil && x.InviterMemberId != nil {
+		return *x.InviterMemberId
+	}
+	return 0
+}
+
+func (x *GetMemberDetailResponse) GetRemark() string {
+	if x != nil && x.Remark != nil {
+		return *x.Remark
+	}
+	return ""
+}
+
+func (x *GetMemberDetailResponse) GetStats() *MemberStatsInfo {
+	if x != nil {
+		return x.Stats
+	}
+	return nil
+}
+
+// 查看会员敏感信息请求
+type GetMemberSensitiveInfoRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 会员数据库主键
+	MemberId int64 `protobuf:"varint,1,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
+	// 要查看的敏感信息类型
+	Field         MemberSensitiveField `protobuf:"varint,2,opt,name=field,proto3,enum=crm_member.MemberSensitiveField" json:"field,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMemberSensitiveInfoRequest) Reset() {
+	*x = GetMemberSensitiveInfoRequest{}
+	mi := &file_types_member_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMemberSensitiveInfoRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMemberSensitiveInfoRequest) ProtoMessage() {}
+
+func (x *GetMemberSensitiveInfoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMemberSensitiveInfoRequest.ProtoReflect.Descriptor instead.
+func (*GetMemberSensitiveInfoRequest) Descriptor() ([]byte, []int) {
+	return file_types_member_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetMemberSensitiveInfoRequest) GetMemberId() int64 {
+	if x != nil {
+		return x.MemberId
+	}
+	return 0
+}
+
+func (x *GetMemberSensitiveInfoRequest) GetField() MemberSensitiveField {
+	if x != nil {
+		return x.Field
+	}
+	return MemberSensitiveField_MEMBER_SENSITIVE_FIELD_UNSPECIFIED
+}
+
+// 查看会员敏感信息响应
+type GetMemberSensitiveInfoResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 指定敏感字段的完整值
+	Value         string `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMemberSensitiveInfoResponse) Reset() {
+	*x = GetMemberSensitiveInfoResponse{}
+	mi := &file_types_member_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMemberSensitiveInfoResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMemberSensitiveInfoResponse) ProtoMessage() {}
+
+func (x *GetMemberSensitiveInfoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMemberSensitiveInfoResponse.ProtoReflect.Descriptor instead.
+func (*GetMemberSensitiveInfoResponse) Descriptor() ([]byte, []int) {
+	return file_types_member_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetMemberSensitiveInfoResponse) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
 var File_types_member_proto protoreflect.FileDescriptor
 
 const file_types_member_proto_rawDesc = "" +
 	"\n" +
 	"\x12types/member.proto\x12\n" +
-	"crm_member\"\xbc\x01\n" +
-	"\x13CreateMemberRequest\x12\x18\n" +
-	"\aaccount\x18\x01 \x01(\tR\aaccount\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1f\n" +
-	"\bnickname\x18\x03 \x01(\tH\x00R\bnickname\x88\x01\x01\x12\x19\n" +
-	"\bagent_id\x18\x04 \x01(\x03R\aagentId\x12\x1b\n" +
-	"\x06remark\x18\x05 \x01(\tH\x01R\x06remark\x88\x01\x01B\v\n" +
-	"\t_nicknameB\t\n" +
-	"\a_remark\":\n" +
-	"\x14CreateMemberResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
-	"\x04code\x18\x02 \x01(\tR\x04code\"t\n" +
-	"\x1dGetMemberSensitiveInfoRequest\x12\x1b\n" +
-	"\tmember_id\x18\x01 \x01(\x03R\bmemberId\x126\n" +
-	"\x05field\x18\x02 \x01(\x0e2 .crm_member.MemberSensitiveFieldR\x05field\"6\n" +
-	"\x1eGetMemberSensitiveInfoResponse\x12\x14\n" +
-	"\x05value\x18\x01 \x01(\tR\x05value\"\xd7\x06\n" +
-	"\x12ListMembersRequest\x12\x12\n" +
-	"\x04page\x18\x01 \x01(\x03R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\x03R\bpageSize\x12\x18\n" +
-	"\akeyword\x18\x03 \x01(\tR\akeyword\x127\n" +
-	"\ttime_type\x18\x04 \x01(\x0e2\x1a.crm_member.MemberTimeTypeR\btimeType\x12\x1e\n" +
-	"\bstart_at\x18\x05 \x01(\x03H\x00R\astartAt\x88\x01\x01\x12\x1a\n" +
-	"\x06end_at\x18\x06 \x01(\x03H\x01R\x05endAt\x88\x01\x01\x12'\n" +
-	"\rauto_level_id\x18\a \x01(\x03H\x02R\vautoLevelId\x88\x01\x01\x12)\n" +
-	"\x0efixed_level_id\x18\b \x01(\x03H\x03R\ffixedLevelId\x88\x01\x01\x12,\n" +
-	"\x0fregister_method\x18\t \x01(\tH\x04R\x0eregisterMethod\x88\x01\x01\x12.\n" +
-	"\x10register_channel\x18\n" +
-	" \x01(\tH\x05R\x0fregisterChannel\x88\x01\x01\x12\x1b\n" +
-	"\x06status\x18\v \x01(\x03H\x06R\x06status\x88\x01\x01\x12\x1e\n" +
-	"\bagent_id\x18\f \x01(\x03H\aR\aagentId\x88\x01\x01\x12)\n" +
-	"\x10betting_disabled\x18\r \x01(\bR\x0fbettingDisabled\x12\x19\n" +
-	"\bno_phone\x18\x0e \x01(\bR\anoPhone\x12\x19\n" +
-	"\bno_email\x18\x0f \x01(\bR\anoEmail\x12\x1c\n" +
-	"\tdeposited\x18\x10 \x01(\bR\tdeposited\x12#\n" +
-	"\rnot_deposited\x18\x11 \x01(\bR\fnotDeposited\x124\n" +
-	"\asort_by\x18\x12 \x01(\x0e2\x1b.crm_member.MemberSortFieldR\x06sortBy\x12:\n" +
-	"\n" +
-	"sort_order\x18\x13 \x01(\x0e2\x1b.crm_member.MemberSortOrderR\tsortOrderB\v\n" +
-	"\t_start_atB\t\n" +
-	"\a_end_atB\x10\n" +
-	"\x0e_auto_level_idB\x11\n" +
-	"\x0f_fixed_level_idB\x12\n" +
-	"\x10_register_methodB\x13\n" +
-	"\x11_register_channelB\t\n" +
-	"\a_statusB\v\n" +
-	"\t_agent_id\":\n" +
+	"crm_member\":\n" +
 	"\x14MemberFixedLevelInfo\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"\xe1\x01\n" +
@@ -1373,7 +1662,48 @@ const file_types_member_proto_rawDesc = "" +
 	"\x14current_period_water\x18\x0e \x01(\x03R\x12currentPeriodWater\x125\n" +
 	"\x17current_period_win_loss\x18\x0f \x01(\x03R\x14currentPeriodWinLoss\x12>\n" +
 	"\x19current_period_started_at\x18\x10 \x01(\x03H\x00R\x16currentPeriodStartedAt\x88\x01\x01B\x1c\n" +
-	"\x1a_current_period_started_at\"\xcd\x06\n" +
+	"\x1a_current_period_started_at\"\xbc\x01\n" +
+	"\x13CreateMemberRequest\x12\x18\n" +
+	"\aaccount\x18\x01 \x01(\tR\aaccount\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x1f\n" +
+	"\bnickname\x18\x03 \x01(\tH\x00R\bnickname\x88\x01\x01\x12\x19\n" +
+	"\bagent_id\x18\x04 \x01(\x03R\aagentId\x12\x1b\n" +
+	"\x06remark\x18\x05 \x01(\tH\x01R\x06remark\x88\x01\x01B\v\n" +
+	"\t_nicknameB\t\n" +
+	"\a_remark\":\n" +
+	"\x14CreateMemberResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x04code\x18\x02 \x01(\tR\x04code\"\xd7\x06\n" +
+	"\x12ListMembersRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x03R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x03R\bpageSize\x12\x18\n" +
+	"\akeyword\x18\x03 \x01(\tR\akeyword\x127\n" +
+	"\ttime_type\x18\x04 \x01(\x0e2\x1a.crm_member.MemberTimeTypeR\btimeType\x12\x1e\n" +
+	"\bstart_at\x18\x05 \x01(\x03H\x00R\astartAt\x88\x01\x01\x12\x1a\n" +
+	"\x06end_at\x18\x06 \x01(\x03H\x01R\x05endAt\x88\x01\x01\x12'\n" +
+	"\rauto_level_id\x18\a \x01(\x03H\x02R\vautoLevelId\x88\x01\x01\x12)\n" +
+	"\x0efixed_level_id\x18\b \x01(\x03H\x03R\ffixedLevelId\x88\x01\x01\x12,\n" +
+	"\x0fregister_method\x18\t \x01(\tH\x04R\x0eregisterMethod\x88\x01\x01\x12.\n" +
+	"\x10register_channel\x18\n" +
+	" \x01(\tH\x05R\x0fregisterChannel\x88\x01\x01\x12\x1b\n" +
+	"\x06status\x18\v \x01(\x03H\x06R\x06status\x88\x01\x01\x12\x1e\n" +
+	"\bagent_id\x18\f \x01(\x03H\aR\aagentId\x88\x01\x01\x12)\n" +
+	"\x10betting_disabled\x18\r \x01(\bR\x0fbettingDisabled\x12\x19\n" +
+	"\bno_phone\x18\x0e \x01(\bR\anoPhone\x12\x19\n" +
+	"\bno_email\x18\x0f \x01(\bR\anoEmail\x12\x1c\n" +
+	"\tdeposited\x18\x10 \x01(\bR\tdeposited\x12#\n" +
+	"\rnot_deposited\x18\x11 \x01(\bR\fnotDeposited\x124\n" +
+	"\asort_by\x18\x12 \x01(\x0e2\x1b.crm_member.MemberSortFieldR\x06sortBy\x12:\n" +
+	"\n" +
+	"sort_order\x18\x13 \x01(\x0e2\x1b.crm_member.MemberSortOrderR\tsortOrderB\v\n" +
+	"\t_start_atB\t\n" +
+	"\a_end_atB\x10\n" +
+	"\x0e_auto_level_idB\x11\n" +
+	"\x0f_fixed_level_idB\x12\n" +
+	"\x10_register_methodB\x13\n" +
+	"\x11_register_channelB\t\n" +
+	"\a_statusB\v\n" +
+	"\t_agent_id\"\xcd\x06\n" +
 	"\x0eMemberListItem\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04code\x18\x02 \x01(\tR\x04code\x12\x18\n" +
@@ -1406,7 +1736,59 @@ const file_types_member_proto_rawDesc = "" +
 	"\a_remark\"[\n" +
 	"\x13ListMembersResponse\x12\x14\n" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12.\n" +
-	"\x04list\x18\x02 \x03(\v2\x1a.crm_member.MemberListItemR\x04list*r\n" +
+	"\x04list\x18\x02 \x03(\v2\x1a.crm_member.MemberListItemR\x04list\"5\n" +
+	"\x16GetMemberDetailRequest\x12\x1b\n" +
+	"\tmember_id\x18\x01 \x01(\x03R\bmemberId\"\xd2\t\n" +
+	"\x17GetMemberDetailResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x04code\x18\x02 \x01(\tR\x04code\x12\x1d\n" +
+	"\aaccount\x18\x03 \x01(\tH\x00R\aaccount\x88\x01\x01\x12\x1a\n" +
+	"\bnickname\x18\x04 \x01(\tR\bnickname\x12\x1d\n" +
+	"\n" +
+	"avatar_url\x18\x05 \x01(\tR\tavatarUrl\x12(\n" +
+	"\x10avatar_frame_url\x18\x06 \x01(\tR\x0eavatarFrameUrl\x12\x1f\n" +
+	"\bbirthday\x18\a \x01(\tH\x01R\bbirthday\x88\x01\x01\x12\x16\n" +
+	"\x06gender\x18\b \x01(\x03R\x06gender\x12$\n" +
+	"\vregion_code\x18\t \x01(\tH\x02R\n" +
+	"regionCode\x88\x01\x01\x12\x19\n" +
+	"\bagent_id\x18\n" +
+	" \x01(\x03R\aagentId\x12#\n" +
+	"\ragent_account\x18\v \x01(\tR\fagentAccount\x12&\n" +
+	"\x0fagent_line_code\x18\f \x01(\tR\ragentLineCode\x123\n" +
+	"\x06levels\x18\r \x01(\v2\x1b.crm_member.MemberLevelInfoR\x06levels\x12\x16\n" +
+	"\x06status\x18\x0e \x01(\x03R\x06status\x12#\n" +
+	"\rchat_disabled\x18\x0f \x01(\bR\fchatDisabled\x12)\n" +
+	"\x10betting_disabled\x18\x10 \x01(\bR\x0fbettingDisabled\x12/\n" +
+	"\x13withdrawal_disabled\x18\x11 \x01(\bR\x12withdrawalDisabled\x12'\n" +
+	"\x0fregister_method\x18\x12 \x01(\tR\x0eregisterMethod\x12)\n" +
+	"\x10register_channel\x18\x13 \x01(\tR\x0fregisterChannel\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x14 \x01(\x03R\tcreatedAt\x12$\n" +
+	"\vregister_ip\x18\x15 \x01(\tH\x03R\n" +
+	"registerIp\x88\x01\x01\x125\n" +
+	"\x14register_device_code\x18\x16 \x01(\tH\x04R\x12registerDeviceCode\x88\x01\x01\x12,\n" +
+	"\x0fregister_domain\x18\x17 \x01(\tH\x05R\x0eregisterDomain\x88\x01\x01\x12'\n" +
+	"\rlast_login_at\x18\x18 \x01(\x03H\x06R\vlastLoginAt\x88\x01\x01\x12'\n" +
+	"\rlast_login_ip\x18\x19 \x01(\tH\aR\vlastLoginIp\x88\x01\x01\x12/\n" +
+	"\x11inviter_member_id\x18\x1a \x01(\x03H\bR\x0finviterMemberId\x88\x01\x01\x12\x1b\n" +
+	"\x06remark\x18\x1b \x01(\tH\tR\x06remark\x88\x01\x01\x121\n" +
+	"\x05stats\x18\x1c \x01(\v2\x1b.crm_member.MemberStatsInfoR\x05statsB\n" +
+	"\n" +
+	"\b_accountB\v\n" +
+	"\t_birthdayB\x0e\n" +
+	"\f_region_codeB\x0e\n" +
+	"\f_register_ipB\x17\n" +
+	"\x15_register_device_codeB\x12\n" +
+	"\x10_register_domainB\x10\n" +
+	"\x0e_last_login_atB\x10\n" +
+	"\x0e_last_login_ipB\x14\n" +
+	"\x12_inviter_member_idB\t\n" +
+	"\a_remark\"t\n" +
+	"\x1dGetMemberSensitiveInfoRequest\x12\x1b\n" +
+	"\tmember_id\x18\x01 \x01(\x03R\bmemberId\x126\n" +
+	"\x05field\x18\x02 \x01(\x0e2 .crm_member.MemberSensitiveFieldR\x05field\"6\n" +
+	"\x1eGetMemberSensitiveInfoResponse\x12\x14\n" +
+	"\x05value\x18\x01 \x01(\tR\x05value*r\n" +
 	"\x0eMemberTimeType\x12 \n" +
 	"\x1cMEMBER_TIME_TYPE_UNSPECIFIED\x10\x00\x12\x1d\n" +
 	"\x19MEMBER_TIME_TYPE_REGISTER\x10\x01\x12\x1f\n" +
@@ -1439,37 +1821,41 @@ func file_types_member_proto_rawDescGZIP() []byte {
 }
 
 var file_types_member_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_types_member_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_types_member_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_types_member_proto_goTypes = []any{
 	(MemberTimeType)(0),                    // 0: crm_member.MemberTimeType
 	(MemberSortField)(0),                   // 1: crm_member.MemberSortField
 	(MemberSortOrder)(0),                   // 2: crm_member.MemberSortOrder
 	(MemberSensitiveField)(0),              // 3: crm_member.MemberSensitiveField
-	(*CreateMemberRequest)(nil),            // 4: crm_member.CreateMemberRequest
-	(*CreateMemberResponse)(nil),           // 5: crm_member.CreateMemberResponse
-	(*GetMemberSensitiveInfoRequest)(nil),  // 6: crm_member.GetMemberSensitiveInfoRequest
-	(*GetMemberSensitiveInfoResponse)(nil), // 7: crm_member.GetMemberSensitiveInfoResponse
-	(*ListMembersRequest)(nil),             // 8: crm_member.ListMembersRequest
-	(*MemberFixedLevelInfo)(nil),           // 9: crm_member.MemberFixedLevelInfo
-	(*MemberLevelInfo)(nil),                // 10: crm_member.MemberLevelInfo
-	(*MemberStatsInfo)(nil),                // 11: crm_member.MemberStatsInfo
-	(*MemberListItem)(nil),                 // 12: crm_member.MemberListItem
-	(*ListMembersResponse)(nil),            // 13: crm_member.ListMembersResponse
+	(*MemberFixedLevelInfo)(nil),           // 4: crm_member.MemberFixedLevelInfo
+	(*MemberLevelInfo)(nil),                // 5: crm_member.MemberLevelInfo
+	(*MemberStatsInfo)(nil),                // 6: crm_member.MemberStatsInfo
+	(*CreateMemberRequest)(nil),            // 7: crm_member.CreateMemberRequest
+	(*CreateMemberResponse)(nil),           // 8: crm_member.CreateMemberResponse
+	(*ListMembersRequest)(nil),             // 9: crm_member.ListMembersRequest
+	(*MemberListItem)(nil),                 // 10: crm_member.MemberListItem
+	(*ListMembersResponse)(nil),            // 11: crm_member.ListMembersResponse
+	(*GetMemberDetailRequest)(nil),         // 12: crm_member.GetMemberDetailRequest
+	(*GetMemberDetailResponse)(nil),        // 13: crm_member.GetMemberDetailResponse
+	(*GetMemberSensitiveInfoRequest)(nil),  // 14: crm_member.GetMemberSensitiveInfoRequest
+	(*GetMemberSensitiveInfoResponse)(nil), // 15: crm_member.GetMemberSensitiveInfoResponse
 }
 var file_types_member_proto_depIdxs = []int32{
-	3,  // 0: crm_member.GetMemberSensitiveInfoRequest.field:type_name -> crm_member.MemberSensitiveField
+	4,  // 0: crm_member.MemberLevelInfo.fixed_levels:type_name -> crm_member.MemberFixedLevelInfo
 	0,  // 1: crm_member.ListMembersRequest.time_type:type_name -> crm_member.MemberTimeType
 	1,  // 2: crm_member.ListMembersRequest.sort_by:type_name -> crm_member.MemberSortField
 	2,  // 3: crm_member.ListMembersRequest.sort_order:type_name -> crm_member.MemberSortOrder
-	9,  // 4: crm_member.MemberLevelInfo.fixed_levels:type_name -> crm_member.MemberFixedLevelInfo
-	10, // 5: crm_member.MemberListItem.levels:type_name -> crm_member.MemberLevelInfo
-	11, // 6: crm_member.MemberListItem.stats:type_name -> crm_member.MemberStatsInfo
-	12, // 7: crm_member.ListMembersResponse.list:type_name -> crm_member.MemberListItem
-	8,  // [8:8] is the sub-list for method output_type
-	8,  // [8:8] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	5,  // 4: crm_member.MemberListItem.levels:type_name -> crm_member.MemberLevelInfo
+	6,  // 5: crm_member.MemberListItem.stats:type_name -> crm_member.MemberStatsInfo
+	10, // 6: crm_member.ListMembersResponse.list:type_name -> crm_member.MemberListItem
+	5,  // 7: crm_member.GetMemberDetailResponse.levels:type_name -> crm_member.MemberLevelInfo
+	6,  // 8: crm_member.GetMemberDetailResponse.stats:type_name -> crm_member.MemberStatsInfo
+	3,  // 9: crm_member.GetMemberSensitiveInfoRequest.field:type_name -> crm_member.MemberSensitiveField
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_types_member_proto_init() }
@@ -1477,17 +1863,18 @@ func file_types_member_proto_init() {
 	if File_types_member_proto != nil {
 		return
 	}
-	file_types_member_proto_msgTypes[0].OneofWrappers = []any{}
-	file_types_member_proto_msgTypes[4].OneofWrappers = []any{}
-	file_types_member_proto_msgTypes[7].OneofWrappers = []any{}
-	file_types_member_proto_msgTypes[8].OneofWrappers = []any{}
+	file_types_member_proto_msgTypes[2].OneofWrappers = []any{}
+	file_types_member_proto_msgTypes[3].OneofWrappers = []any{}
+	file_types_member_proto_msgTypes[5].OneofWrappers = []any{}
+	file_types_member_proto_msgTypes[6].OneofWrappers = []any{}
+	file_types_member_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_member_proto_rawDesc), len(file_types_member_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

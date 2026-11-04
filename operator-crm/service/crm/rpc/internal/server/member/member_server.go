@@ -36,6 +36,12 @@ func (s *MemberServer) List(ctx context.Context, in *memberpb.ListMembersRequest
 	return l.List(in)
 }
 
+// 获取会员详情
+func (s *MemberServer) GetDetail(ctx context.Context, in *memberpb.GetMemberDetailRequest) (*memberpb.GetMemberDetailResponse, error) {
+	l := memberlogic.NewGetDetailLogic(ctx, s.svcCtx)
+	return l.GetDetail(in)
+}
+
 // 查看会员敏感信息
 func (s *MemberServer) GetSensitiveInfo(ctx context.Context, in *memberpb.GetMemberSensitiveInfoRequest) (*memberpb.GetMemberSensitiveInfoResponse, error) {
 	l := memberlogic.NewGetSensitiveInfoLogic(ctx, s.svcCtx)

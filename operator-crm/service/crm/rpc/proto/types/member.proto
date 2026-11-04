@@ -4,7 +4,9 @@ package crm_member;
 
 option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb";
 
-// TODO: 充值业务的数据来源和命名明确后, 增加首次成功充值时间筛选类型.
+// ==================== 枚举定义 ====================
+
+// TODO: 充值业务的数据来源和命名明确后, 增加首次成功充值时间筛选类型
 // 会员列表时间筛选类型
 enum MemberTimeType {
   // 不筛选时间
@@ -15,8 +17,8 @@ enum MemberTimeType {
   MEMBER_TIME_TYPE_LAST_LOGIN = 2;
 }
 
-// TODO: 钱包服务接入后, 增加钱包余额排序.
-// TODO: 充值业务的数据来源和命名明确后, 增加首存金额排序.
+// TODO: 钱包服务接入后, 增加钱包余额排序
+// TODO: 充值业务的数据来源和命名明确后, 增加首存金额排序
 // 会员列表排序字段
 enum MemberSortField {
   // 未指定时, 按注册时间倒序
@@ -41,7 +43,7 @@ enum MemberSortOrder {
   MEMBER_SORT_ORDER_DESC = 2;
 }
 
-// TODO: 会员资料模型明确后, 扩展真实姓名、证件号码等敏感字段.
+// TODO: 会员资料模型明确后, 扩展真实姓名、证件号码等敏感字段
 // 会员敏感信息类型
 enum MemberSensitiveField {
   // 无效值, 服务端应返回参数错误
@@ -51,6 +53,90 @@ enum MemberSensitiveField {
   // 邮箱
   MEMBER_SENSITIVE_FIELD_EMAIL = 2;
 }
+
+// ==================== 公共数据结构 ====================
+
+// 固定层级信息
+message MemberFixedLevelInfo {
+  // 固定层级 ID
+  int64 id = 1;
+  // 固定层级名称
+  string name = 2;
+}
+
+// 会员等级信息
+message MemberLevelInfo {
+  // ==================== 自动层级 ====================
+
+  // 自动层级 ID
+  int64 auto_level_id = 1;
+  // 自动层级名称
+  string auto_level_name = 2;
+
+  // ==================== 固定层级 ====================
+
+  // 已分配的固定层级列表
+  repeated MemberFixedLevelInfo fixed_levels = 3;
+
+  // ==================== VIP 等级 ====================
+
+  // VIP 等级 ID
+  int64 vip_level_id = 4;
+  // VIP 等级编号
+  int64 vip_level = 5;
+}
+
+// 会员统计信息
+// 金额使用厅结算币种的最小单位
+// 没有统计记录时, 统计金额和次数返回 0
+message MemberStatsInfo {
+  // ==================== 累计资金统计 ====================
+
+  // 累计充值金额
+  int64 total_deposit = 1;
+  // 累计充值成功次数
+  int64 total_deposit_count = 2;
+  // 累计提现金额
+  int64 total_withdrawal = 3;
+  // 累计提现成功次数
+  int64 total_withdrawal_count = 4;
+  // 总存提差额, 累计充值金额减去累计提现金额
+  int64 total_deposit_withdrawal_diff = 5;
+
+  // ==================== 累计游戏统计 ====================
+
+  // 累计投注金额
+  int64 total_bet = 6;
+  // 累计有效投注金额
+  int64 total_valid_bet = 7;
+  // 累计洗码量
+  int64 total_water = 8;
+  // 累计会员净输赢金额, 正数盈利, 负数亏损
+  int64 total_win_loss = 9;
+
+  // TODO: 游戏注单及结算规则明确后, 增加未结算金额.
+
+  // ==================== 当前结算周期统计 ====================
+
+  // 当前周期充值金额
+  int64 current_period_deposit = 10;
+  // 当前周期提现金额
+  int64 current_period_withdrawal = 11;
+  // 当前周期投注金额
+  int64 current_period_bet = 12;
+  // 当前周期有效投注金额
+  int64 current_period_valid_bet = 13;
+  // 当前周期洗码量
+  int64 current_period_water = 14;
+  // 当前周期会员净输赢金额, 正数盈利, 负数亏损
+  int64 current_period_win_loss = 15;
+  // 当前结算周期开始时间, Unix 毫秒时间戳
+  optional int64 current_period_started_at = 16;
+
+  // TODO: 优惠业务及统计口径明确后, 增加当前周期优惠金额.
+}
+
+// ==================== 会员创建 ====================
 
 // 创建会员请求
 message CreateMemberRequest {
@@ -74,19 +160,7 @@ message CreateMemberResponse {
   string code = 2;
 }
 
-// 查看会员敏感信息请求
-message GetMemberSensitiveInfoRequest {
-  // 会员数据库主键
-  int64 member_id = 1;
-  // 要查看的敏感信息类型
-  MemberSensitiveField field = 2;
-}
-
-// 查看会员敏感信息响应
-message GetMemberSensitiveInfoResponse {
-  // 指定敏感字段的完整值
-  string value = 1;
-}
+// ==================== 会员列表 ====================
 
 // 会员列表请求
 message ListMembersRequest {
@@ -145,86 +219,6 @@ message ListMembersRequest {
   MemberSortField sort_by = 18;
   // 排序方向, 未指定时默认降序; 未指定排序字段时不生效
   MemberSortOrder sort_order = 19;
-}
-
-// 固定层级信息
-message MemberFixedLevelInfo {
-  // 固定层级 ID
-  int64 id = 1;
-  // 固定层级名称
-  string name = 2;
-}
-
-// 会员等级信息
-message MemberLevelInfo {
-  // ==================== 自动层级 ====================
-
-  // 自动层级 ID
-  int64 auto_level_id = 1;
-  // 自动层级名称
-  string auto_level_name = 2;
-
-  // ==================== 固定层级 ====================
-
-  // 已分配的固定层级列表
-  repeated MemberFixedLevelInfo fixed_levels = 3;
-
-  // ==================== VIP 等级 ====================
-
-  // VIP 等级 ID
-  int64 vip_level_id = 4;
-  // VIP 等级编号
-  int64 vip_level = 5;
-}
-
-// 会员统计信息
-// 金额使用厅结算币种的最小单位.
-// 没有统计记录时, 统计金额和次数返回 0.
-message MemberStatsInfo {
-  // ==================== 累计资金统计 ====================
-
-  // 累计充值金额
-  int64 total_deposit = 1;
-  // 累计充值成功次数
-  int64 total_deposit_count = 2;
-  // 累计提现金额
-  int64 total_withdrawal = 3;
-  // 累计提现成功次数
-  int64 total_withdrawal_count = 4;
-  // 总存提差额, 累计充值金额减去累计提现金额
-  int64 total_deposit_withdrawal_diff = 5;
-
-  // ==================== 累计游戏统计 ====================
-
-  // 累计投注金额
-  int64 total_bet = 6;
-  // 累计有效投注金额
-  int64 total_valid_bet = 7;
-  // 累计洗码量
-  int64 total_water = 8;
-  // 累计会员净输赢金额, 正数盈利, 负数亏损
-  int64 total_win_loss = 9;
-
-  // TODO: 游戏注单及结算规则明确后, 增加未结算金额.
-
-  // ==================== 当前结算周期统计 ====================
-
-  // 当前周期充值金额
-  int64 current_period_deposit = 10;
-  // 当前周期提现金额
-  int64 current_period_withdrawal = 11;
-  // 当前周期投注金额
-  int64 current_period_bet = 12;
-  // 当前周期有效投注金额
-  int64 current_period_valid_bet = 13;
-  // 当前周期洗码量
-  int64 current_period_water = 14;
-  // 当前周期会员净输赢金额, 正数盈利, 负数亏损
-  int64 current_period_win_loss = 15;
-  // 当前结算周期开始时间, Unix 毫秒时间戳
-  optional int64 current_period_started_at = 16;
-
-  // TODO: 优惠业务及统计口径明确后, 增加当前周期优惠金额.
 }
 
 // 会员列表项
@@ -301,4 +295,111 @@ message ListMembersResponse {
   int64 total = 1;
   // 会员列表
   repeated MemberListItem list = 2;
+}
+
+// ==================== 会员详情 ====================
+
+// 获取会员详情请求
+message GetMemberDetailRequest {
+  // 会员数据库主键
+  int64 member_id = 1;
+}
+
+// 获取会员详情响应
+message GetMemberDetailResponse {
+  // ==================== 会员基本信息 ====================
+
+  // 会员数据库主键
+  int64 id = 1;
+  // 12 位会员对外编号
+  string code = 2;
+  // 会员登录账号
+  optional string account = 3;
+  // 会员昵称
+  string nickname = 4;
+  // 会员头像 URL
+  string avatar_url = 5;
+  // 会员头像框 URL
+  string avatar_frame_url = 6;
+  // 会员生日, YYYY-MM-DD
+  optional string birthday = 7;
+  // 性别: 0 未设置, 1 男, 2 女, 3 保密
+  int64 gender = 8;
+  // 会员国家或地区编码
+  optional string region_code = 9;
+
+  // ==================== 代理归属 ====================
+
+  // 所属分层代理 ID
+  int64 agent_id = 10;
+  // 所属分层代理账号
+  string agent_account = 11;
+  // 所属代理线路编码
+  string agent_line_code = 12;
+
+  // ==================== 会员等级 ====================
+
+  // 会员当前等级信息
+  MemberLevelInfo levels = 13;
+
+  // ==================== 状态与业务限制 ====================
+
+  // 会员状态: 1 正常, 2 冻结, 3 禁用
+  int64 status = 14;
+  // 是否禁止发言
+  bool chat_disabled = 15;
+  // 是否禁止投注
+  bool betting_disabled = 16;
+  // 是否禁止提款
+  bool withdrawal_disabled = 17;
+
+  // ==================== 注册信息 ====================
+
+  // 注册方式
+  string register_method = 18;
+  // 注册渠道
+  string register_channel = 19;
+  // 注册时间, Unix 毫秒时间戳
+  int64 created_at = 20;
+  // 注册 IP
+  optional string register_ip = 21;
+  // 注册设备标识
+  optional string register_device_code = 22;
+  // 注册域名
+  optional string register_domain = 23;
+
+  // ==================== 最后登录信息 ====================
+
+  // 最后登录时间, Unix 毫秒时间戳
+  optional int64 last_login_at = 24;
+  // 最后登录 IP
+  optional string last_login_ip = 25;
+
+  // ==================== 运营信息 ====================
+
+  // 邀请人会员 ID
+  optional int64 inviter_member_id = 26;
+  // 后台会员备注
+  optional string remark = 27;
+
+  // ==================== 统计信息 ====================
+
+  // 会员统计, 无统计记录时返回零值
+  MemberStatsInfo stats = 28;
+}
+
+// ==================== 会员敏感信息 ====================
+
+// 查看会员敏感信息请求
+message GetMemberSensitiveInfoRequest {
+  // 会员数据库主键
+  int64 member_id = 1;
+  // 要查看的敏感信息类型
+  MemberSensitiveField field = 2;
+}
+
+// 查看会员敏感信息响应
+message GetMemberSensitiveInfoResponse {
+  // 指定敏感字段的完整值
+  string value = 1;
 }

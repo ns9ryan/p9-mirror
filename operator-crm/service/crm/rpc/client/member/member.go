@@ -21,6 +21,8 @@ type (
 		Create(ctx context.Context, in *memberpb.CreateMemberRequest, opts ...grpc.CallOption) (*memberpb.CreateMemberResponse, error)
 		// 获取会员列表
 		List(ctx context.Context, in *memberpb.ListMembersRequest, opts ...grpc.CallOption) (*memberpb.ListMembersResponse, error)
+		// 获取会员详情
+		GetDetail(ctx context.Context, in *memberpb.GetMemberDetailRequest, opts ...grpc.CallOption) (*memberpb.GetMemberDetailResponse, error)
 		// 查看会员敏感信息
 		GetSensitiveInfo(ctx context.Context, in *memberpb.GetMemberSensitiveInfoRequest, opts ...grpc.CallOption) (*memberpb.GetMemberSensitiveInfoResponse, error)
 	}
@@ -46,6 +48,12 @@ func (m *defaultMember) Create(ctx context.Context, in *memberpb.CreateMemberReq
 func (m *defaultMember) List(ctx context.Context, in *memberpb.ListMembersRequest, opts ...grpc.CallOption) (*memberpb.ListMembersResponse, error) {
 	client := crmrpc.NewMemberClient(m.cli.Conn())
 	return client.List(ctx, in, opts...)
+}
+
+// 获取会员详情
+func (m *defaultMember) GetDetail(ctx context.Context, in *memberpb.GetMemberDetailRequest, opts ...grpc.CallOption) (*memberpb.GetMemberDetailResponse, error) {
+	client := crmrpc.NewMemberClient(m.cli.Conn())
+	return client.GetDetail(ctx, in, opts...)
 }
 
 // 查看会员敏感信息

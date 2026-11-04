@@ -118,6 +118,9 @@ service Member {
   // 获取会员列表
   rpc List(crm_member.ListMembersRequest) returns (crm_member.ListMembersResponse);
 
+  // 获取会员详情
+  rpc GetDetail(crm_member.GetMemberDetailRequest) returns (crm_member.GetMemberDetailResponse);
+
   // 查看会员敏感信息
   rpc GetSensitiveInfo(crm_member.GetMemberSensitiveInfoRequest) returns (crm_member.GetMemberSensitiveInfoResponse);
 }
