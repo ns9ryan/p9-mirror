@@ -7,7 +7,9 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
+
 	"oa.98ent.com/p9/common/entmixin"
+	"oa.98ent.com/p9/operator-wallet/ent/intercept"
 )
 
 // MemberWallet 定义会员钱包表结构
@@ -85,6 +87,13 @@ func (MemberWallet) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entmixin.IDMixin{},
 		entmixin.TimeMixin{},
+	}
+}
+
+// Interceptors 定义会员钱包表查询隔离
+func (MemberWallet) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		entmixin.RequiredOperatorCodeInterceptor(intercept.NewQuery),
 	}
 }
 
