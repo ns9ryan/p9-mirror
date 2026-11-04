@@ -8,7 +8,12 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentuser"
 	entmember "oa.98ent.com/p9/operator-crm/ent/member"
 	"oa.98ent.com/p9/operator-crm/ent/memberauth"
+	"oa.98ent.com/p9/operator-crm/ent/memberautolevel"
+	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevel"
+	"oa.98ent.com/p9/operator-crm/ent/memberfixedlevelassignment"
 	"oa.98ent.com/p9/operator-crm/ent/memberprofile"
+	"oa.98ent.com/p9/operator-crm/ent/memberstats"
+	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 )
 
 // GetDetail 查询会员详情及关联信息
@@ -53,17 +58,53 @@ func (s *Service) GetDetail(ctx context.Context, memberID int64) (*ent.Member, e
 
 	// ==================== 等级与统计 ====================
 
-	// 加载会员自动层级和VIP等级
-	query.WithAutoLevel()
-	query.WithVipLevel()
+	// 加载会员自动层级
+	query.WithAutoLevel(func(q *ent.MemberAutoLevelQuery) {
+		q.Select(
+			memberautolevel.FieldName, // 自动层级名称
+		)
+	})
+
+	// 加载会员VIP等级
+	query.WithVipLevel(func(q *ent.MemberVipLevelQuery) {
+		q.Select(
+			memberviplevel.FieldLevel, // VIP等级编号
+		)
+	})
 
 	// 加载会员固定层级及分配信息
 	query.WithFixedLevelAssignments(func(q *ent.MemberFixedLevelAssignmentQuery) {
-		q.WithFixedLevel()
+		q.Select(
+			memberfixedlevelassignment.FieldFixedLevelID, // 固定层级ID
+		)
+
+		q.WithFixedLevel(func(q *ent.MemberFixedLevelQuery) {
+			q.Select(
+				memberfixedlevel.FieldName, // 固定层级名称
+			)
+		})
 	})
 
 	// 加载会员累计及当前周期统计, 允许统计记录不存在
-	query.WithStats()
+	query.WithStats(func(q *ent.MemberStatsQuery) {
+		q.Select(
+			memberstats.FieldTotalDeposit,         // 累计充值金额
+			memberstats.FieldTotalDepositCount,    // 累计充值成功次数
+			memberstats.FieldTotalWithdrawal,      // 累计提现金额
+			memberstats.FieldTotalWithdrawalCount, // 累计提现成功次数
+			memberstats.FieldTotalBet,             // 累计投注金额
+			memberstats.FieldTotalValidBet,        // 累计有效投注金额
+			memberstats.FieldTotalWater,           // 累计洗码量
+			memberstats.FieldTotalWinLoss,         // 累计会员净输赢金额
+			memberstats.FieldLastDeposit,          // 当前结算周期充值金额
+			memberstats.FieldLastWithdrawal,       // 当前结算周期提现金额
+			memberstats.FieldLastBet,              // 当前结算周期投注金额
+			memberstats.FieldLastValidBet,         // 当前结算周期有效投注金额
+			memberstats.FieldLastWater,            // 当前结算周期洗码量
+			memberstats.FieldLastWinLoss,          // 当前结算周期会员净输赢金额
+			memberstats.FieldPeriodStartedAt,      // 当前结算周期开始时间
+		)
+	})
 
 	m, err := query.Only(ctx)
 	if err != nil {
