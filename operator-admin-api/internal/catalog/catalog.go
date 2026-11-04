@@ -94,6 +94,7 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			// 会员管理 API
 			{Path: "/member/list", Method: http.MethodGet, Description: "api.memberList", ApiGroup: "api.group.member", ServiceName: serviceName},
 			{Path: "/member/create", Method: http.MethodPost, Description: "api.memberCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/detail", Method: http.MethodGet, Description: "api.memberDetail", ApiGroup: "api.group.member", ServiceName: serviceName},
 
 			// 会员自动层级 API
 			{Path: "/member/auto-level/list", Method: http.MethodGet, Description: "api.memberAutoLevelList", ApiGroup: "api.group.member", ServiceName: serviceName},
