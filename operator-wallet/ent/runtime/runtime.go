@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 	"oa.98ent.com/p9/operator-wallet/ent/schema"
 )
 
@@ -95,6 +96,77 @@ func init() {
 	memberwallet.DefaultUnsettledBalance = memberwalletDescUnsettledBalance.Default.(int64)
 	// memberwallet.UnsettledBalanceValidator is a validator for the "unsettled_balance" field. It is called by the builders before save.
 	memberwallet.UnsettledBalanceValidator = memberwalletDescUnsettledBalance.Validators[0].(func(int64) error)
+	memberwalletledgerHooks := schema.MemberWalletLedger{}.Hooks()
+	memberwalletledger.Hooks[0] = memberwalletledgerHooks[0]
+	memberwalletledger.Hooks[1] = memberwalletledgerHooks[1]
+	memberwalletledgerInters := schema.MemberWalletLedger{}.Interceptors()
+	memberwalletledger.Interceptors[0] = memberwalletledgerInters[0]
+	memberwalletledgerFields := schema.MemberWalletLedger{}.Fields()
+	_ = memberwalletledgerFields
+	// memberwalletledgerDescOperatorCode is the schema descriptor for operator_code field.
+	memberwalletledgerDescOperatorCode := memberwalletledgerFields[0].Descriptor()
+	// memberwalletledger.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	memberwalletledger.OperatorCodeValidator = func() func(string) error {
+		validators := memberwalletledgerDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberwalletledgerDescWalletID is the schema descriptor for wallet_id field.
+	memberwalletledgerDescWalletID := memberwalletledgerFields[1].Descriptor()
+	// memberwalletledger.WalletIDValidator is a validator for the "wallet_id" field. It is called by the builders before save.
+	memberwalletledger.WalletIDValidator = memberwalletledgerDescWalletID.Validators[0].(func(int64) error)
+	// memberwalletledgerDescBalanceType is the schema descriptor for balance_type field.
+	memberwalletledgerDescBalanceType := memberwalletledgerFields[2].Descriptor()
+	// memberwalletledger.BalanceTypeValidator is a validator for the "balance_type" field. It is called by the builders before save.
+	memberwalletledger.BalanceTypeValidator = memberwalletledgerDescBalanceType.Validators[0].(func(int64) error)
+	// memberwalletledgerDescBalanceBefore is the schema descriptor for balance_before field.
+	memberwalletledgerDescBalanceBefore := memberwalletledgerFields[4].Descriptor()
+	// memberwalletledger.BalanceBeforeValidator is a validator for the "balance_before" field. It is called by the builders before save.
+	memberwalletledger.BalanceBeforeValidator = memberwalletledgerDescBalanceBefore.Validators[0].(func(int64) error)
+	// memberwalletledgerDescBalanceAfter is the schema descriptor for balance_after field.
+	memberwalletledgerDescBalanceAfter := memberwalletledgerFields[5].Descriptor()
+	// memberwalletledger.BalanceAfterValidator is a validator for the "balance_after" field. It is called by the builders before save.
+	memberwalletledger.BalanceAfterValidator = memberwalletledgerDescBalanceAfter.Validators[0].(func(int64) error)
+	// memberwalletledgerDescBusinessType is the schema descriptor for business_type field.
+	memberwalletledgerDescBusinessType := memberwalletledgerFields[7].Descriptor()
+	// memberwalletledger.BusinessTypeValidator is a validator for the "business_type" field. It is called by the builders before save.
+	memberwalletledger.BusinessTypeValidator = memberwalletledgerDescBusinessType.Validators[0].(func(int64) error)
+	// memberwalletledgerDescBusinessAction is the schema descriptor for business_action field.
+	memberwalletledgerDescBusinessAction := memberwalletledgerFields[8].Descriptor()
+	// memberwalletledger.BusinessActionValidator is a validator for the "business_action" field. It is called by the builders before save.
+	memberwalletledger.BusinessActionValidator = memberwalletledgerDescBusinessAction.Validators[0].(func(int64) error)
+	// memberwalletledgerDescBusinessNo is the schema descriptor for business_no field.
+	memberwalletledgerDescBusinessNo := memberwalletledgerFields[9].Descriptor()
+	// memberwalletledger.BusinessNoValidator is a validator for the "business_no" field. It is called by the builders before save.
+	memberwalletledger.BusinessNoValidator = func() func(string) error {
+		validators := memberwalletledgerDescBusinessNo.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(business_no string) error {
+			for _, fn := range fns {
+				if err := fn(business_no); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberwalletledgerDescCreatedAt is the schema descriptor for created_at field.
+	memberwalletledgerDescCreatedAt := memberwalletledgerFields[10].Descriptor()
+	// memberwalletledger.DefaultCreatedAt holds the default value on creation for the created_at field.
+	memberwalletledger.DefaultCreatedAt = memberwalletledgerDescCreatedAt.Default.(func() time.Time)
 }
 
 const (

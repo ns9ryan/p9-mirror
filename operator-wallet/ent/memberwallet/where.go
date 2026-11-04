@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 	"oa.98ent.com/p9/operator-wallet/ent/predicate"
 )
@@ -553,6 +554,29 @@ func UnsettledBalanceLT(v int64) predicate.MemberWallet {
 // UnsettledBalanceLTE applies the LTE predicate on the "unsettled_balance" field.
 func UnsettledBalanceLTE(v int64) predicate.MemberWallet {
 	return predicate.MemberWallet(sql.FieldLTE(FieldUnsettledBalance, v))
+}
+
+// HasLedgers applies the HasEdge predicate on the "ledgers" edge.
+func HasLedgers() predicate.MemberWallet {
+	return predicate.MemberWallet(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, LedgersTable, LedgersColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLedgersWith applies the HasEdge predicate on the "ledgers" edge with a given conditions (other predicates).
+func HasLedgersWith(preds ...predicate.MemberWalletLedger) predicate.MemberWallet {
+	return predicate.MemberWallet(func(s *sql.Selector) {
+		step := newLedgersStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,16 +13,18 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 	"oa.98ent.com/p9/operator-wallet/ent/predicate"
 )
 
 // MemberWalletQuery is the builder for querying MemberWallet entities.
 type MemberWalletQuery struct {
 	config
-	ctx        *QueryContext
-	order      []memberwallet.OrderOption
-	inters     []Interceptor
-	predicates []predicate.MemberWallet
+	ctx         *QueryContext
+	order       []memberwallet.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.MemberWallet
+	withLedgers *MemberWalletLedgerQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +59,28 @@ func (_q *MemberWalletQuery) Unique(unique bool) *MemberWalletQuery {
 func (_q *MemberWalletQuery) Order(o ...memberwallet.OrderOption) *MemberWalletQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryLedgers chains the current query on the "ledgers" edge.
+func (_q *MemberWalletQuery) QueryLedgers() *MemberWalletLedgerQuery {
+	query := (&MemberWalletLedgerClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(memberwallet.Table, memberwallet.FieldID, selector),
+			sqlgraph.To(memberwalletledger.Table, memberwalletledger.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, memberwallet.LedgersTable, memberwallet.LedgersColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first MemberWallet entity from the query.
@@ -245,15 +270,27 @@ func (_q *MemberWalletQuery) Clone() *MemberWalletQuery {
 		return nil
 	}
 	return &MemberWalletQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]memberwallet.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.MemberWallet{}, _q.predicates...),
+		config:      _q.config,
+		ctx:         _q.ctx.Clone(),
+		order:       append([]memberwallet.OrderOption{}, _q.order...),
+		inters:      append([]Interceptor{}, _q.inters...),
+		predicates:  append([]predicate.MemberWallet{}, _q.predicates...),
+		withLedgers: _q.withLedgers.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithLedgers tells the query-builder to eager-load the nodes that are connected to
+// the "ledgers" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *MemberWalletQuery) WithLedgers(opts ...func(*MemberWalletLedgerQuery)) *MemberWalletQuery {
+	query := (&MemberWalletLedgerClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withLedgers = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,8 +369,11 @@ func (_q *MemberWalletQuery) prepareQuery(ctx context.Context) error {
 
 func (_q *MemberWalletQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MemberWallet, error) {
 	var (
-		nodes = []*MemberWallet{}
-		_spec = _q.querySpec()
+		nodes       = []*MemberWallet{}
+		_spec       = _q.querySpec()
+		loadedTypes = [1]bool{
+			_q.withLedgers != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*MemberWallet).scanValues(nil, columns)
@@ -341,6 +381,7 @@ func (_q *MemberWalletQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &MemberWallet{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +393,45 @@ func (_q *MemberWalletQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withLedgers; query != nil {
+		if err := _q.loadLedgers(ctx, query, nodes,
+			func(n *MemberWallet) { n.Edges.Ledgers = []*MemberWalletLedger{} },
+			func(n *MemberWallet, e *MemberWalletLedger) { n.Edges.Ledgers = append(n.Edges.Ledgers, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (_q *MemberWalletQuery) loadLedgers(ctx context.Context, query *MemberWalletLedgerQuery, nodes []*MemberWallet, init func(*MemberWallet), assign func(*MemberWallet, *MemberWalletLedger)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*MemberWallet)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(memberwalletledger.FieldWalletID)
+	}
+	query.Where(predicate.MemberWalletLedger(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(memberwallet.LedgersColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.WalletID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "wallet_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (_q *MemberWalletQuery) sqlCount(ctx context.Context) (int, error) {

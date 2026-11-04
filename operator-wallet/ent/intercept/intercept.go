@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"oa.98ent.com/p9/operator-wallet/ent"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 	"oa.98ent.com/p9/operator-wallet/ent/predicate"
 )
 
@@ -95,11 +96,40 @@ func (f TraverseMemberWallet) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.MemberWalletQuery", q)
 }
 
+// The MemberWalletLedgerFunc type is an adapter to allow the use of ordinary function as a Querier.
+type MemberWalletLedgerFunc func(context.Context, *ent.MemberWalletLedgerQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f MemberWalletLedgerFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.MemberWalletLedgerQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.MemberWalletLedgerQuery", q)
+}
+
+// The TraverseMemberWalletLedger type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseMemberWalletLedger func(context.Context, *ent.MemberWalletLedgerQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseMemberWalletLedger) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseMemberWalletLedger) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.MemberWalletLedgerQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.MemberWalletLedgerQuery", q)
+}
+
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
 	case *ent.MemberWalletQuery:
 		return &query[*ent.MemberWalletQuery, predicate.MemberWallet, memberwallet.OrderOption]{typ: ent.TypeMemberWallet, tq: q}, nil
+	case *ent.MemberWalletLedgerQuery:
+		return &query[*ent.MemberWalletLedgerQuery, predicate.MemberWalletLedger, memberwalletledger.OrderOption]{typ: ent.TypeMemberWalletLedger, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

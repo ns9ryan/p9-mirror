@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
@@ -69,6 +70,13 @@ func (MemberWallet) Fields() []ent.Field {
 			NonNegative().
 			Default(0).
 			Comment("游戏未结算余额"),
+	}
+}
+
+// Edges 定义会员钱包表关联关系
+func (MemberWallet) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("ledgers", MemberWalletLedger.Type),
 	}
 }
 

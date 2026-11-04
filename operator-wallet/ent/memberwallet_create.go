@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 )
 
 // MemberWalletCreate is the builder for creating a MemberWallet entity.
@@ -135,6 +136,21 @@ func (_c *MemberWalletCreate) SetNillableUnsettledBalance(v *int64) *MemberWalle
 func (_c *MemberWalletCreate) SetID(v int64) *MemberWalletCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// AddLedgerIDs adds the "ledgers" edge to the MemberWalletLedger entity by IDs.
+func (_c *MemberWalletCreate) AddLedgerIDs(ids ...int64) *MemberWalletCreate {
+	_c.mutation.AddLedgerIDs(ids...)
+	return _c
+}
+
+// AddLedgers adds the "ledgers" edges to the MemberWalletLedger entity.
+func (_c *MemberWalletCreate) AddLedgers(v ...*MemberWalletLedger) *MemberWalletCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddLedgerIDs(ids...)
 }
 
 // Mutation returns the MemberWalletMutation object of the builder.
@@ -344,6 +360,22 @@ func (_c *MemberWalletCreate) createSpec() (*MemberWallet, *sqlgraph.CreateSpec)
 	if value, ok := _c.mutation.UnsettledBalance(); ok {
 		_spec.SetField(memberwallet.FieldUnsettledBalance, field.TypeInt64, value)
 		_node.UnsettledBalance = value
+	}
+	if nodes := _c.mutation.LedgersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   memberwallet.LedgersTable,
+			Columns: []string{memberwallet.LedgersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(memberwalletledger.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

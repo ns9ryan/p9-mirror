@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -35,8 +36,17 @@ const (
 	FieldFrozenBalance = "frozen_balance"
 	// FieldUnsettledBalance holds the string denoting the unsettled_balance field in the database.
 	FieldUnsettledBalance = "unsettled_balance"
+	// EdgeLedgers holds the string denoting the ledgers edge name in mutations.
+	EdgeLedgers = "ledgers"
 	// Table holds the table name of the memberwallet in the database.
 	Table = "member_wallet"
+	// LedgersTable is the table that holds the ledgers relation/edge.
+	LedgersTable = "member_wallet_ledger"
+	// LedgersInverseTable is the table name for the MemberWalletLedger entity.
+	// It exists in this package in order to avoid circular dependency with the "memberwalletledger" package.
+	LedgersInverseTable = "member_wallet_ledger"
+	// LedgersColumn is the table column denoting the ledgers relation/edge.
+	LedgersColumn = "wallet_id"
 )
 
 // Columns holds all SQL columns for memberwallet fields.
@@ -156,4 +166,25 @@ func ByFrozenBalance(opts ...sql.OrderTermOption) OrderOption {
 // ByUnsettledBalance orders the results by the unsettled_balance field.
 func ByUnsettledBalance(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUnsettledBalance, opts...).ToFunc()
+}
+
+// ByLedgersCount orders the results by ledgers count.
+func ByLedgersCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newLedgersStep(), opts...)
+	}
+}
+
+// ByLedgers orders the results by ledgers terms.
+func ByLedgers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newLedgersStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newLedgersStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(LedgersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, LedgersTable, LedgersColumn),
+	)
 }

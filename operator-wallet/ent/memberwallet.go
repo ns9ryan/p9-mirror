@@ -39,7 +39,28 @@ type MemberWallet struct {
 	FrozenBalance int64 `json:"frozen_balance,omitempty"`
 	// 游戏未结算余额
 	UnsettledBalance int64 `json:"unsettled_balance,omitempty"`
-	selectValues     sql.SelectValues
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the MemberWalletQuery when eager-loading is set.
+	Edges        MemberWalletEdges `json:"edges"`
+	selectValues sql.SelectValues
+}
+
+// MemberWalletEdges holds the relations/edges for other nodes in the graph.
+type MemberWalletEdges struct {
+	// Ledgers holds the value of the ledgers edge.
+	Ledgers []*MemberWalletLedger `json:"ledgers,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// LedgersOrErr returns the Ledgers value or an error if the edge
+// was not loaded in eager-loading.
+func (e MemberWalletEdges) LedgersOrErr() ([]*MemberWalletLedger, error) {
+	if e.loadedTypes[0] {
+		return e.Ledgers, nil
+	}
+	return nil, &NotLoadedError{edge: "ledgers"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -147,6 +168,11 @@ func (_m *MemberWallet) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *MemberWallet) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryLedgers queries the "ledgers" edge of the MemberWallet entity.
+func (_m *MemberWallet) QueryLedgers() *MemberWalletLedgerQuery {
+	return NewMemberWalletClient(_m.config).QueryLedgers(_m)
 }
 
 // Update returns a builder for updating this MemberWallet.

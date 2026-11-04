@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// MemberWallet is the client for interacting with the MemberWallet builders.
 	MemberWallet *MemberWalletClient
+	// MemberWalletLedger is the client for interacting with the MemberWalletLedger builders.
+	MemberWalletLedger *MemberWalletLedgerClient
 
 	// lazily loaded.
 	client     *Client
@@ -146,6 +148,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.MemberWallet = NewMemberWalletClient(tx.config)
+	tx.MemberWalletLedger = NewMemberWalletLedgerClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

@@ -8,3 +8,6 @@ import (
 
 // MemberWallet is the predicate function for memberwallet builders.
 type MemberWallet func(*sql.Selector)
+
+// MemberWalletLedger is the predicate function for memberwalletledger builders.
+type MemberWalletLedger func(*sql.Selector)

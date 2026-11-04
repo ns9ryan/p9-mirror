@@ -37,9 +37,57 @@ var (
 			},
 		},
 	}
+	// MemberWalletLedgerColumns holds the columns for the "member_wallet_ledger" table.
+	MemberWalletLedgerColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
+		{Name: "balance_type", Type: field.TypeInt64, Comment: "余额类型: 1可用余额, 2冻结余额, 3未结算余额", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "change_amount", Type: field.TypeInt64, Comment: "变动金额, 正数增加, 负数减少"},
+		{Name: "balance_before", Type: field.TypeInt64, Comment: "变动前余额"},
+		{Name: "balance_after", Type: field.TypeInt64, Comment: "变动后余额"},
+		{Name: "operation_id", Type: field.TypeUUID, Comment: "钱包资金操作唯一标识"},
+		{Name: "business_type", Type: field.TypeInt64, Comment: "一级业务类型: 1存款, 2提现, 3游戏, 4活动, 5任务, 6佣金, 7系统奖励", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "business_action", Type: field.TypeInt64, Comment: "具体资金操作类型", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "business_no", Type: field.TypeString, Size: 128, Comment: "原始业务单号"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "流水创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "wallet_id", Type: field.TypeInt64, Comment: "所属钱包ID", SchemaType: map[string]string{"postgres": "bigint"}},
+	}
+	// MemberWalletLedgerTable holds the schema information for the "member_wallet_ledger" table.
+	MemberWalletLedgerTable = &schema.Table{
+		Name:       "member_wallet_ledger",
+		Comment:    "会员钱包资金流水表",
+		Columns:    MemberWalletLedgerColumns,
+		PrimaryKey: []*schema.Column{MemberWalletLedgerColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "member_wallet_ledger_member_wallet_ledgers",
+				Columns:    []*schema.Column{MemberWalletLedgerColumns[11]},
+				RefColumns: []*schema.Column{MemberWalletColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uk_member_wallet_ledger_operation",
+				Unique:  true,
+				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[6], MemberWalletLedgerColumns[2]},
+			},
+			{
+				Name:    "idx_member_wallet_ledger_wallet_created",
+				Unique:  false,
+				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[10], MemberWalletLedgerColumns[0]},
+			},
+			{
+				Name:    "idx_member_wallet_ledger_business_no",
+				Unique:  false,
+				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[7], MemberWalletLedgerColumns[9]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		MemberWalletTable,
+		MemberWalletLedgerTable,
 	}
 )
 
@@ -51,5 +99,18 @@ func init() {
 		"ck_member_wallet_balance":           "balance >= 0",
 		"ck_member_wallet_frozen_balance":    "frozen_balance >= 0",
 		"ck_member_wallet_unsettled_balance": "unsettled_balance >= 0",
+	}
+	MemberWalletLedgerTable.ForeignKeys[0].RefTable = MemberWalletTable
+	MemberWalletLedgerTable.Annotation = &entsql.Annotation{
+		Table: "member_wallet_ledger",
+	}
+	MemberWalletLedgerTable.Annotation.Checks = map[string]string{
+		"ck_member_wallet_ledger_balance_after":       "balance_after >= 0",
+		"ck_member_wallet_ledger_balance_before":      "balance_before >= 0",
+		"ck_member_wallet_ledger_balance_consistency": "balance_after = balance_before + change_amount",
+		"ck_member_wallet_ledger_balance_type":        "balance_type > 0",
+		"ck_member_wallet_ledger_business_action":     "business_action > 0",
+		"ck_member_wallet_ledger_business_type":       "business_type > 0",
+		"ck_member_wallet_ledger_change_amount":       "change_amount <> 0",
 	}
 }
