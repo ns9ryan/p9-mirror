@@ -33,7 +33,7 @@ type CreateLedgerParams struct {
 	BusinessNo     string    // 原始业务单号
 }
 
-// GetByBusinessTx 根据业务类型和业务单号查询流水
+// GetByBusinessTx 根据业务类型, 操作类型和业务单号查询流水
 func (d *MemberWalletLedger) GetByBusinessTx(ctx context.Context, tx *ent.Tx, businessType, businessAction int64, businessNo string) (*ent.MemberWalletLedger, error) {
 	return tx.MemberWalletLedger.Query().
 		Where(
@@ -50,7 +50,7 @@ func (d *MemberWalletLedger) GetByOperationTx(ctx context.Context, tx *ent.Tx, w
 		Where(
 			memberwalletledger.WalletIDEQ(walletID),       // 所属钱包ID
 			memberwalletledger.OperationIDEQ(operationID), // 钱包资金操作唯一标识
-			memberwalletledger.BalanceTypeEQ(balanceType), // 一级业务类型: 1存款, 2提现, 3游戏, 4活动, 5任务, 6佣金, 7系统奖励
+			memberwalletledger.BalanceTypeEQ(balanceType), // 余额类型: 1可用余额, 2冻结余额, 3未结算余额
 		).
 		Only(ctx)
 }
