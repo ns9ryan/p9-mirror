@@ -16,7 +16,7 @@ GOARCH ?= amd64
 LDFLAGS := -s -w
 
 DOCKER_PLATFORM ?= linux/$(GOARCH)
-DOCKER_REPO ?= 192.168.0.15:5000/p9
+DOCKER_REPO ?= 192.168.10.220:5000/p9
 CRM_IMAGE := $(PROJECT)-rpc
 SETTLEMENT_IMAGE := operator-settlement-rpc
 
@@ -36,14 +36,14 @@ rpc-settlement: # 生成 Settlement RPC 代码
 rpc: rpc-crm rpc-settlement # 生成两个 RPC
 
 .PHONY: ent-new
-ent-new: # 新建 Ent Schema，需要指定 name 参数
+ent-new: # 新建 Ent Schema, 需要指定 name 参数
 ifndef name
 	$(error name is required, example: make ent-new name=Member)
 endif
 	$(GO) run entgo.io/ent/cmd/ent new $(name)
 
 .PHONY: ent
-ent: # 生成 Ent 代码，至少有一个业务 Schema 后再执行
+ent: # 生成 Ent 代码, 至少有一个业务 Schema 后再执行
 	$(GO) generate ./$(ENT_DIR)
 
 .PHONY: build-linux
