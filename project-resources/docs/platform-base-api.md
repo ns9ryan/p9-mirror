@@ -9,6 +9,8 @@
 - 国家地区
 - 服务健康检查
 
+总站默认头像、默认头像框和 VIP 默认图标的前端查询、上传及保存接口，见 [总站素材接口文档](./platform-base-resource-api.md)。
+
 语言管理已从 `platform-base` 移除，统一由 Core 管理。语言相关接口请参考同目录的 [core-api.md](./core-api.md)。
 
 ---

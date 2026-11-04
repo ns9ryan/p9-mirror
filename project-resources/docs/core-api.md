@@ -2,7 +2,7 @@
 
 ## 一、HTTP API
 
-core-api 默认 `http://192.168.0.15:18000`，前缀 `/admin`。JSON 字段以 `[api/desc](../api/desc)` 为准。
+core-api 默认 `http://192.168.10.220:18000`，前缀 `/admin`。JSON 字段以 `[api/desc](../api/desc)` 为准。
 
 `PartnerMode` 在 `rpc/etc/core.yaml`：`"on"` 分分站，`"off"` 平台。`on` 时 `operator_code` 只信 JWT，忽略请求体里的分站字段。
 
