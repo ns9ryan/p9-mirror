@@ -9,12 +9,14 @@ import (
 	"oa.98ent.com/p9/operator-wallet/ent/migrate"
 	_ "oa.98ent.com/p9/operator-wallet/ent/runtime"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/config"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/dao"
 )
 
 // ServiceContext 会员钱包RPC服务上下文
 type ServiceContext struct {
 	Config config.Config
 	DB     *ent.Client // Ent数据库客户端
+	DAO    *dao.Group  // 钱包数据访问
 }
 
 // NewServiceContext 创建会员钱包RPC服务上下文
@@ -48,5 +50,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c,
 		DB:     db,
+		DAO:    dao.New(db),
 	}
 }
