@@ -167,3 +167,63 @@ func TestClaimsFromIncomingPreviewPlatform(t *testing.T) {
 		t.Fatalf("%+v", got)
 	}
 }
+
+func TestOperatorClaimsFromCtx(t *testing.T) {
+	tests := []struct {
+		name   string
+		claims *Claims
+		wantOK bool
+	}{
+		{
+			name: "身份不存在",
+		},
+		{
+			name: "用户ID无效",
+			claims: &Claims{
+				UserType:     UserTypeOperator,
+				OperatorCode: "OP001",
+			},
+		},
+		{
+			name: "用户类型不匹配",
+			claims: &Claims{
+				UserID:       1,
+				UserType:     UserTypeAgent,
+				OperatorCode: "OP001",
+			},
+		},
+		{
+			name: "厅编码为空",
+			claims: &Claims{
+				UserID:   1,
+				UserType: UserTypeOperator,
+			},
+		},
+		{
+			name: "有效的分站运营身份",
+			claims: &Claims{
+				UserID:       1,
+				UserType:     UserTypeOperator,
+				OperatorCode: "OP001",
+			},
+			wantOK: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := context.Background()
+			if tt.claims != nil {
+				ctx = WithClaims(ctx, tt.claims)
+			}
+
+			got, ok := OperatorClaimsFromCtx(ctx)
+			if ok != tt.wantOK {
+				t.Fatalf("want ok=%v, got ok=%v", tt.wantOK, ok)
+			}
+			if ok && got != tt.claims {
+				t.Fatalf("want claims=%+v, got claims=%+v", tt.claims, got)
+			}
+		})
+	}
+}

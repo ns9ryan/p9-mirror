@@ -39,11 +39,7 @@ func NewListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ListLogic {
 // List 获取会员列表
 func (l *ListLogic) List(in *memberpb.ListMembersRequest) (*memberpb.ListMembersResponse, error) {
 	// 校验分站运营身份和当前厅
-	claims := ctxdata.ClaimsFromCtx(l.ctx)
-	if claims == nil ||
-		claims.UserID <= 0 ||
-		claims.UserType != ctxdata.UserTypeOperator ||
-		claims.OperatorCode == "" {
+	if _, ok := ctxdata.OperatorClaimsFromCtx(l.ctx); !ok {
 		return nil, xerr.RpcErr(xerr.Unauthorized(i18n.Unauthorized))
 	}
 

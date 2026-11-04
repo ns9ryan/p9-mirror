@@ -104,6 +104,19 @@ func ClaimsFromCtx(ctx context.Context) *Claims {
 	return claimsFromIncomingMD(ctx)
 }
 
+// OperatorClaimsFromCtx 获取有效的分站运营身份
+func OperatorClaimsFromCtx(ctx context.Context) (*Claims, bool) {
+	claims := ClaimsFromCtx(ctx)
+	if claims == nil ||
+		claims.UserID <= 0 ||
+		!claims.UserType.IsOperator() ||
+		claims.OperatorCode == "" {
+		return nil, false
+	}
+
+	return claims, true
+}
+
 func boxFrom(ctx context.Context) *claimsBox {
 	box, _ := ctx.Value(claimsKey).(*claimsBox)
 	return box

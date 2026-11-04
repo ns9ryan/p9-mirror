@@ -21,3 +21,5 @@ go.work.sum
 # Editor/IDE
 .idea/
 .vscode/
+
+ryan_member_wallet.yaml

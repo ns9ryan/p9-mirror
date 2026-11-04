@@ -14,6 +14,7 @@ require (
 	github.com/zeromicro/go-zero v1.10.3
 	go.opentelemetry.io/otel v1.46.0
 	go.opentelemetry.io/otel/trace v1.46.0
+	golang.org/x/crypto v0.55.0
 	golang.org/x/text v0.42.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260918162117-cecb64721679
 	google.golang.org/grpc v1.84.0
@@ -37,7 +38,6 @@ require (
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/titanous/json5 v1.0.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
-	golang.org/x/crypto v0.55.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect

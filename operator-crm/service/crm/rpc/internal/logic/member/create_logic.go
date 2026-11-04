@@ -61,12 +61,8 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 // Create 创建会员
 func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.CreateMemberResponse, error) {
-	if in == nil {
-		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
-	}
-
-	// 校验当前厅上下文
-	if ctxdata.OperatorCodeFromCtx(l.ctx) == "" {
+	// 校验分站运营身份和当前厅
+	if _, ok := ctxdata.OperatorClaimsFromCtx(l.ctx); !ok {
 		return nil, xerr.RpcErr(xerr.Unauthorized(i18n.Unauthorized))
 	}
 

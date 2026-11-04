@@ -8,3 +8,12 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379        # Etcd地址
   Key: member-wallet-rpc  # 服务注册Key
+
+# 数据库配置
+DatabaseConf:
+  Host:     127.0.0.1       # 数据库地址
+  Port:     15432           # 数据库端口
+  DBName:   p9_operator     # 数据库名称
+  Username: root            # 数据库用户名
+  Password: root            # 数据库密码
+  SSLMode:  disable         # SSL模式
