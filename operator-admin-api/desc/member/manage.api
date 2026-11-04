@@ -78,15 +78,15 @@ type (
 	}
 	// 会员等级信息
 	MemberLevelInfo {
-        // ==================== 自动层级 ====================
+		// ==================== 自动层级 ====================
 		// 自动层级ID
 		AutoLevelId int64 `json:"auto_level_id"`
 		// 自动层级名称
 		AutoLevelName string `json:"auto_level_name"`
-        // ==================== 固定层级 ====================
+		// ==================== 固定层级 ====================
 		// 已分配的固定层级列表
 		FixedLevels []MemberListFixedLevelInfo `json:"fixed_levels"`
-        // ==================== VIP等级 ====================
+		// ==================== VIP等级 ====================
 		// VIP等级ID
 		VipLevelId int64 `json:"vip_level_id"`
 		// VIP等级编号
@@ -94,7 +94,7 @@ type (
 	}
 	// 会员统计信息, 金额使用厅结算币种最小单位
 	MemberStatsInfo {
-        // ==================== 累计资金统计 ====================
+		// ==================== 累计资金统计 ====================
 		// 累计充值金额
 		TotalDeposit int64 `json:"total_deposit"`
 		// 累计充值成功次数
@@ -105,7 +105,7 @@ type (
 		TotalWithdrawalCount int64 `json:"total_withdrawal_count"`
 		// 累计存提差额
 		TotalDepositWithdrawalDiff int64 `json:"total_deposit_withdrawal_diff"`
-        // ==================== 累计游戏统计 ====================
+		// ==================== 累计游戏统计 ====================
 		// 累计投注金额
 		TotalBet int64 `json:"total_bet"`
 		// 累计有效投注金额
@@ -114,7 +114,7 @@ type (
 		TotalWater int64 `json:"total_water"`
 		// 累计会员净输赢
 		TotalWinLoss int64 `json:"total_win_loss"`
-        // ==================== 当前结算周期统计 ====================
+		// ==================== 当前结算周期统计 ====================
 		// 当前周期充值金额
 		CurrentPeriodDeposit int64 `json:"current_period_deposit"`
 		// 当前周期提现金额
@@ -187,6 +187,78 @@ type (
 		// 当前页会员列表
 		List []MemberListItem `json:"list"`
 	}
+	// 获取会员详情请求
+	GetMemberDetailRequest {
+		// 会员数据库主键
+		MemberId int64 `form:"member_id" validate:"required,gt=0"`
+	}
+	// 获取会员详情响应
+	GetMemberDetailResponse {
+		// ==================== 会员基本信息 ====================
+		// 会员数据库主键
+		Id int64 `json:"id"`
+		// 12位会员对外编号
+		Code string `json:"code"`
+		// 会员登录账号
+		Account *string `json:"account,optional"`
+		// 会员昵称
+		Nickname string `json:"nickname"`
+		// 会员头像 URL
+		AvatarUrl string `json:"avatar_url"`
+		// 会员头像框 URL
+		AvatarFrameUrl string `json:"avatar_frame_url"`
+		// 会员生日, YYYY-MM-DD
+		Birthday *string `json:"birthday,optional"`
+		// 性别: 0未设置, 1男, 2女, 3保密
+		Gender int64 `json:"gender"`
+		// 会员国家或地区编码
+		RegionCode *string `json:"region_code,optional"`
+		// ==================== 代理归属 ====================
+		// 所属分层代理ID
+		AgentId int64 `json:"agent_id"`
+		// 所属分层代理账号
+		AgentAccount string `json:"agent_account"`
+		// 所属代理线路编码
+		AgentLineCode string `json:"agent_line_code"`
+		// ==================== 会员等级 ====================
+		// 会员当前等级信息
+		Levels MemberLevelInfo `json:"levels"`
+		// ==================== 状态与业务限制 ====================
+		// 会员状态: 1正常, 2冻结, 3禁用
+		Status int64 `json:"status"`
+		// 是否禁止发言
+		ChatDisabled bool `json:"chat_disabled"`
+		// 是否禁止投注
+		BettingDisabled bool `json:"betting_disabled"`
+		// 是否禁止提款
+		WithdrawalDisabled bool `json:"withdrawal_disabled"`
+		// ==================== 注册信息 ====================
+		// 注册方式
+		RegisterMethod string `json:"register_method"`
+		// 注册渠道
+		RegisterChannel string `json:"register_channel"`
+		// 注册时间, Unix毫秒时间戳
+		CreatedAt int64 `json:"created_at"`
+		// 注册IP
+		RegisterIp *string `json:"register_ip,optional"`
+		// 注册设备标识
+		RegisterDeviceCode *string `json:"register_device_code,optional"`
+		// 注册域名
+		RegisterDomain *string `json:"register_domain,optional"`
+		// ==================== 最后登录信息 ====================
+		// 最后登录时间, Unix毫秒时间戳
+		LastLoginAt *int64 `json:"last_login_at,optional"`
+		// 最后登录IP
+		LastLoginIp *string `json:"last_login_ip,optional"`
+		// ==================== 运营信息 ====================
+		// 邀请人会员ID
+		InviterMemberId *int64 `json:"inviter_member_id,optional"`
+		// 后台会员备注
+		Remark *string `json:"remark,optional"`
+		// ==================== 统计信息 ====================
+		// 会员统计, 无统计记录时返回零值
+		Stats MemberStatsInfo `json:"stats"`
+	}
 )
 
 @server (
@@ -202,5 +274,9 @@ service operator_admin_api {
 	// 获取会员列表
 	@handler List
 	get /list (ListMembersRequest) returns (ListMembersResponse)
+
+	// 获取会员详情
+	@handler GetDetail
+	get /detail (GetMemberDetailRequest) returns (GetMemberDetailResponse)
 }
 

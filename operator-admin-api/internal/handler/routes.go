@@ -17,6 +17,7 @@ import (
 	memberfixed_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/fixed_level"
 	membermanage "oa.98ent.com/p9/operator-admin-api/internal/handler/member/manage"
 	membervip "oa.98ent.com/p9/operator-admin-api/internal/handler/member/vip"
+	publicinitialize "oa.98ent.com/p9/operator-admin-api/internal/handler/public/initialize"
 	publicphone "oa.98ent.com/p9/operator-admin-api/internal/handler/public/phone"
 	publicping "oa.98ent.com/p9/operator-admin-api/internal/handler/public/ping"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
@@ -60,12 +61,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/agent/config/update",
 					Handler: agentconfig.UpdateAgentConfigHandler(serverCtx),
-				},
-				{
-					// 检测分站代理线与等级是否完成初始化
-					Method:  http.MethodGet,
-					Path:    "/agent/init/status",
-					Handler: agentconfig.GetAgentInitStatusHandler(serverCtx),
 				},
 				{
 					// 已开通代理线的默认代理
@@ -290,6 +285,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodGet,
+					Path:    "/detail",
+					Handler: membermanage.GetDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
 					Path:    "/list",
 					Handler: membermanage.ListHandler(serverCtx),
 				},
@@ -355,6 +355,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/member/vip"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					// 检测分站代理线与等级是否完成初始化
+					Method:  http.MethodGet,
+					Path:    "/init/status",
+					Handler: publicinitialize.GetInitStatusHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 
 	server.AddRoutes(

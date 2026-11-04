@@ -19,18 +19,6 @@ type LineDefaultAgentsResp {
 	List []LineDefaultAgent `json:"list"`
 }
 
-type LineInitStatus {
-	LineCode    string `json:"line_code"`
-	Initialized bool   `json:"initialized"`
-}
-
-type AgentInitStatusResp {
-	Ready       bool             `json:"ready"`
-	LevelsReady bool             `json:"levels_ready"`
-	LevelCount  int32            `json:"level_count"`
-	Lines       []LineInitStatus `json:"lines"`
-}
-
 type UpdateAgentConfigReq {
 	MaxShareRate          int32 `json:"max_share_rate"`
 	ApplyMinShareRate     int32 `json:"apply_min_share_rate"`
@@ -60,9 +48,5 @@ service operator_admin_api {
 	@doc "已开通代理线的默认代理"
 	@handler getLineDefaultAgents
 	get /agent/line/defaults returns (LineDefaultAgentsResp)
-
-	@doc "检测分站代理线与等级是否完成初始化"
-	@handler getAgentInitStatus
-	get /agent/init/status returns (AgentInitStatusResp)
 }
 

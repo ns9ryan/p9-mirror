@@ -78,8 +78,13 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 			&coreclient.I18NItem{I18NCode: i18nCode, I18NGroup: i18n.GroupAPI, TransKey: key, Lang: i18n.LangEN, Value: en},
 		)
 	}
+	// 初始化 API
+	add("api.initStatus", "初始化状态检测", "初始化狀態檢測", "Init status check")
+
+	// 代理管理 API
 	add("api.group.agent", "代理管理", "代理管理", "Agents")
 
+	// 会员管理 API
 	add("api.group.member", "会员管理", "會員管理", "Members")
 
 	// 会员管理 API
@@ -121,7 +126,6 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 	add("api.agentConfigGet", "获取代理配置", "獲取代理配置", "Get agent config")
 	add("api.agentConfigUpdate", "更新代理配置", "更新代理配置", "Update agent config")
 	add("api.agentLineDefaults", "代理线默认代理", "代理線默認代理", "Default agents by line")
-	add("api.agentInitStatus", "代理初始化检测", "代理初始化檢測", "Agent init status")
 	add("api.agentTreeNode", "代理树节点", "代理樹節點", "Agent tree node")
 	add("api.agentTreeAncestors", "代理上级链", "代理上級鏈", "Agent ancestor chain")
 	add("api.agentApplyList", "代理申请列表", "代理申請列表", "Agent apply list")

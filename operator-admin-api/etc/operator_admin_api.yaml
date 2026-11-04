@@ -30,4 +30,4 @@ CrmRpc:
 
 # 第三方服务集成 RPC配置
 IntegrationRpc:
-  Target: 192.168.0.15:19005
+  Target: 192.168.10.220:19005

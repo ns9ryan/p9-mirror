@@ -63,6 +63,8 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "AgentApplyReview", Title: "menu.route.agentApplyReview", HideMenu: 1, MenuType: menuTypeButton, Permission: "agent:apply:review", ParentName: "AgentApply", Sort: 251},
 		},
 		Apis: []*coreclient.CreateApiReq{
+			// 初始化 API
+			{Path: "/init/status", Method: http.MethodGet, Description: "api.initStatus", ApiGroup: "api.group.public", ServiceName: serviceName},
 			// 代理 API
 			{Path: "/agent/list", Method: http.MethodPost, Description: "api.agentList", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/create", Method: http.MethodPost, Description: "api.agentCreate", ApiGroup: "api.group.agent", ServiceName: serviceName},
@@ -73,7 +75,6 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/agent/config", Method: http.MethodGet, Description: "api.agentConfigGet", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/config/update", Method: http.MethodPost, Description: "api.agentConfigUpdate", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/line/defaults", Method: http.MethodGet, Description: "api.agentLineDefaults", ApiGroup: "api.group.agent", ServiceName: serviceName},
-			{Path: "/agent/init/status", Method: http.MethodGet, Description: "api.agentInitStatus", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/tree/node", Method: http.MethodGet, Description: "api.agentTreeNode", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/tree/ancestors", Method: http.MethodGet, Description: "api.agentTreeAncestors", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/apply/list", Method: http.MethodPost, Description: "api.agentApplyList", ApiGroup: "api.group.agent", ServiceName: serviceName},

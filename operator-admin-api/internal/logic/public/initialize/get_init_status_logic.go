@@ -1,33 +1,39 @@
-package config
+// Code scaffolded by goctl. Safe to edit.
+// goctl 1.10.2
+
+package initialize
 
 import (
 	"context"
 
-	agentlogic "oa.98ent.com/p9/operator-admin-api/internal/logic/agent"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
 
+	agentlogic "oa.98ent.com/p9/operator-admin-api/internal/logic/agent"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+// 最低初始化等级数量
 const minInitLevelCount = 3
 
-type GetAgentInitStatusLogic struct {
+type GetInitStatusLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewGetAgentInitStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetAgentInitStatusLogic {
-	return &GetAgentInitStatusLogic{
+// 检测分站代理线与等级是否完成初始化
+func NewGetInitStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetInitStatusLogic {
+	return &GetInitStatusLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *GetAgentInitStatusLogic) GetAgentInitStatus() (*types.AgentInitStatusResp, error) {
+func (l *GetInitStatusLogic) GetInitStatus() (resp *types.InitStatusResp, err error) {
 	codes, err := agentlogic.OpenedLineCodes(l.ctx, l.svcCtx)
 	if err != nil {
 		return nil, err
@@ -67,7 +73,7 @@ func (l *GetAgentInitStatusLogic) GetAgentInitStatus() (*types.AgentInitStatusRe
 		}
 		lines = append(lines, types.LineInitStatus{LineCode: code, Initialized: initialized})
 	}
-	return &types.AgentInitStatusResp{
+	return &types.InitStatusResp{
 		Ready:       levelsReady && linesReady,
 		LevelsReady: levelsReady,
 		LevelCount:  levelCount,

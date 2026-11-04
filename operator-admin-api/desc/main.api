@@ -11,6 +11,7 @@ info (
 import (
 	"public/ping.api"
 	"public/phone.api"
+	"public/initialize.api"
 )
 
 // 代理管理

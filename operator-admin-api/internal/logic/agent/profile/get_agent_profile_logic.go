@@ -26,15 +26,16 @@ func NewGetAgentProfileLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetAgentProfileLogic) GetAgentProfile(req *types.GetAgentProfileReq) (*types.AgentProfile, error) {
-	if req == nil {
-		req = &types.GetAgentProfileReq{}
-	}
+	// 通过代理RPC获取代理个人信息
 	rpcResp, err := l.svcCtx.AgentRpc.GetAgentProfile(l.ctx, &agentpb.GetAgentProfileReq{
 		AgentId: req.AgentId,
 	})
 	if err != nil {
+		logx.Errorw("get agent profile failed", logx.Field("error", err))
 		return nil, err
 	}
+	// 转换为API响应格式
 	out := agentconv.ProfileFromPB(rpcResp)
+
 	return &out, nil
 }

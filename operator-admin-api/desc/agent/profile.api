@@ -39,6 +39,9 @@ type AgentProfile {
 	Twitter           string `json:"twitter"`
 	Line              string `json:"line"`
 	Email             string `json:"email"`
+	Country           string `json:"country"`
+	Currency          string `json:"currency"`
+	TimeZone          string `json:"time_zone"`
 }
 
 type ResetLoginPasswordReq {

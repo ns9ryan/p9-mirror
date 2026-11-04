@@ -66,13 +66,6 @@ type AgentCreateFields struct {
 type AgentEmpty struct {
 }
 
-type AgentInitStatusResp struct {
-	Ready       bool             `json:"ready"`
-	LevelsReady bool             `json:"levels_ready"`
-	LevelCount  int32            `json:"level_count"`
-	Lines       []LineInitStatus `json:"lines"`
-}
-
 type AgentLevelItem struct {
 	Id    int64  `json:"id,optional"`
 	Level int32  `json:"level"`
@@ -191,6 +184,9 @@ type AgentProfile struct {
 	Twitter           string `json:"twitter"`
 	Line              string `json:"line"`
 	Email             string `json:"email"`
+	Country           string `json:"country"`
+	Currency          string `json:"currency"`
+	TimeZone          string `json:"time_zone"`
 }
 
 type AgentSearchItem struct {
@@ -263,6 +259,41 @@ type GetAgentProfileReq struct {
 	AgentId int64 `form:"agent_id"`
 }
 
+type GetMemberDetailRequest struct {
+	MemberId int64 `form:"member_id" validate:"required,gt=0"`
+}
+
+type GetMemberDetailResponse struct {
+	Id                 int64           `json:"id"`
+	Code               string          `json:"code"`
+	Account            *string         `json:"account,optional"`
+	Nickname           string          `json:"nickname"`
+	AvatarUrl          string          `json:"avatar_url"`
+	AvatarFrameUrl     string          `json:"avatar_frame_url"`
+	Birthday           *string         `json:"birthday,optional"`
+	Gender             int64           `json:"gender"`
+	RegionCode         *string         `json:"region_code,optional"`
+	AgentId            int64           `json:"agent_id"`
+	AgentAccount       string          `json:"agent_account"`
+	AgentLineCode      string          `json:"agent_line_code"`
+	Levels             MemberLevelInfo `json:"levels"`
+	Status             int64           `json:"status"`
+	ChatDisabled       bool            `json:"chat_disabled"`
+	BettingDisabled    bool            `json:"betting_disabled"`
+	WithdrawalDisabled bool            `json:"withdrawal_disabled"`
+	RegisterMethod     string          `json:"register_method"`
+	RegisterChannel    string          `json:"register_channel"`
+	CreatedAt          int64           `json:"created_at"`
+	RegisterIp         *string         `json:"register_ip,optional"`
+	RegisterDeviceCode *string         `json:"register_device_code,optional"`
+	RegisterDomain     *string         `json:"register_domain,optional"`
+	LastLoginAt        *int64          `json:"last_login_at,optional"`
+	LastLoginIp        *string         `json:"last_login_ip,optional"`
+	InviterMemberId    *int64          `json:"inviter_member_id,optional"`
+	Remark             *string         `json:"remark,optional"`
+	Stats              MemberStatsInfo `json:"stats"`
+}
+
 type GetVipConfigRequest struct {
 }
 
@@ -276,6 +307,13 @@ type GetVipLevelRequest struct {
 
 type GetVipLevelResponse struct {
 	VipLevelInfo
+}
+
+type InitStatusResp struct {
+	Ready       bool             `json:"ready"`
+	LevelsReady bool             `json:"levels_ready"`
+	LevelCount  int32            `json:"level_count"`
+	Lines       []LineInitStatus `json:"lines"`
 }
 
 type LineDefaultAgent struct {
