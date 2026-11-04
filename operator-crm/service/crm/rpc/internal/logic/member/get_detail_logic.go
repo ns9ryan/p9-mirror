@@ -32,13 +32,14 @@ func NewGetDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetDeta
 
 // GetDetail 获取会员详情
 func (l *GetDetailLogic) GetDetail(in *memberpb.GetMemberDetailRequest) (*memberpb.GetMemberDetailResponse, error) {
-	if in.GetMemberId() <= 0 {
-		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
-	}
-
 	// 校验分站运营身份和当前厅
 	if _, ok := ctxdata.OperatorClaimsFromCtx(l.ctx); !ok {
 		return nil, xerr.RpcErr(xerr.Unauthorized(i18n.Unauthorized))
+	}
+
+	// 校验会员ID
+	if in.GetMemberId() <= 0 {
+		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
 
 	// 查询会员详情及关联信息
@@ -99,8 +100,8 @@ func memberDetailResponse(m *ent.Member) *memberpb.GetMemberDetailResponse {
 
 	// 所属分层代理
 	if agent := m.Edges.Agent; agent != nil {
-		resp.AgentAccount = agent.Account
-		resp.AgentLineCode = agent.AgentLineCode
+		resp.AgentAccount = agent.Account        // 所属分层代理账号
+		resp.AgentLineCode = agent.AgentLineCode // 所属代理线路编码
 	}
 
 	// 会员登录账号
@@ -110,24 +111,22 @@ func memberDetailResponse(m *ent.Member) *memberpb.GetMemberDetailResponse {
 
 	// 会员个人资料
 	if profile := m.Edges.Profile; profile != nil {
-		resp.Nickname = profile.Nickname
-		resp.AvatarUrl = profile.AvatarURL
-		resp.AvatarFrameUrl = profile.AvatarFrameURL
-		resp.Gender = profile.Gender
-		resp.RegionCode = profile.RegionCode
-		resp.Remark = profile.Remark
+		resp.Nickname = profile.Nickname             // 会员昵称
+		resp.AvatarUrl = profile.AvatarURL           // 会员头像URL
+		resp.AvatarFrameUrl = profile.AvatarFrameURL // 会员头像框URL
+		resp.Gender = profile.Gender                 // 性别
+		resp.RegionCode = profile.RegionCode         // 国家或地区编码
+		resp.Remark = profile.Remark                 // 后台会员备注
 
-		// 生日使用 YYYY-MM-DD 格式
+		// 会员生日, YYYY-MM-DD
 		if profile.Birthday != nil {
-			birthday := profile.Birthday.Format("2006-01-02")
-			resp.Birthday = &birthday
+			resp.Birthday = new(profile.Birthday.Format("2006-01-02"))
 		}
 	}
 
-	// 最后登录时间
+	// 最后登录时间, Unix毫秒时间戳
 	if m.LastLoginAt != nil {
-		lastLoginAt := m.LastLoginAt.UnixMilli()
-		resp.LastLoginAt = &lastLoginAt
+		resp.LastLoginAt = new(m.LastLoginAt.UnixMilli())
 	}
 
 	// ==================== 会员等级信息 ====================
