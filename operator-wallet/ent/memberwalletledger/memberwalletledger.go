@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 )
 
 const (
@@ -15,6 +16,8 @@ const (
 	Label = "member_wallet_ledger"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldGlobalID holds the string denoting the global_id field in the database.
+	FieldGlobalID = "global_id"
 	// FieldOperatorCode holds the string denoting the operator_code field in the database.
 	FieldOperatorCode = "operator_code"
 	// FieldWalletID holds the string denoting the wallet_id field in the database.
@@ -53,6 +56,7 @@ const (
 // Columns holds all SQL columns for memberwalletledger fields.
 var Columns = []string{
 	FieldID,
+	FieldGlobalID,
 	FieldOperatorCode,
 	FieldWalletID,
 	FieldBalanceType,
@@ -84,6 +88,8 @@ func ValidColumn(column string) bool {
 var (
 	Hooks        [2]ent.Hook
 	Interceptors [1]ent.Interceptor
+	// DefaultGlobalID holds the default value on creation for the "global_id" field.
+	DefaultGlobalID func() uuid.UUID
 	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
 	OperatorCodeValidator func(string) error
 	// WalletIDValidator is a validator for the "wallet_id" field. It is called by the builders before save.
@@ -110,6 +116,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByGlobalID orders the results by the global_id field.
+func ByGlobalID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGlobalID, opts...).ToFunc()
 }
 
 // ByOperatorCode orders the results by the operator_code field.

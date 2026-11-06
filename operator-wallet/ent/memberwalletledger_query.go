@@ -300,12 +300,12 @@ func (_q *MemberWalletLedgerQuery) WithWallet(opts ...func(*MemberWalletQuery)) 
 // Example:
 //
 //	var v []struct {
-//		OperatorCode string `json:"operator_code,omitempty"`
+//		GlobalID uuid.UUID `json:"global_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.MemberWalletLedger.Query().
-//		GroupBy(memberwalletledger.FieldOperatorCode).
+//		GroupBy(memberwalletledger.FieldGlobalID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *MemberWalletLedgerQuery) GroupBy(field string, fields ...string) *MemberWalletLedgerGroupBy {
@@ -323,11 +323,11 @@ func (_q *MemberWalletLedgerQuery) GroupBy(field string, fields ...string) *Memb
 // Example:
 //
 //	var v []struct {
-//		OperatorCode string `json:"operator_code,omitempty"`
+//		GlobalID uuid.UUID `json:"global_id,omitempty"`
 //	}
 //
 //	client.MemberWalletLedger.Query().
-//		Select(memberwalletledger.FieldOperatorCode).
+//		Select(memberwalletledger.FieldGlobalID).
 //		Scan(ctx, &v)
 func (_q *MemberWalletLedgerQuery) Select(fields ...string) *MemberWalletLedgerSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

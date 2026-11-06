@@ -27,6 +27,14 @@ type MemberWalletLedger struct {
 func (MemberWalletLedger) Fields() []ent.Field {
 	return []ent.Field{
 
+		// ==================== 流水标识 ====================
+
+		field.UUID("global_id", uuid.UUID{}).
+			Unique().
+			Immutable().
+			Default(uuid.New).
+			Comment("资金流水全局唯一标识"),
+
 		// ==================== 钱包归属 ====================
 
 		field.String("operator_code").

@@ -20,6 +20,8 @@ type MemberWalletLedger struct {
 	// ID of the ent.
 	// Primary key | 主键ID
 	ID int64 `json:"id,omitempty"`
+	// 资金流水全局唯一标识
+	GlobalID uuid.UUID `json:"global_id,omitempty"`
 	// 所属厅业务编码
 	OperatorCode string `json:"operator_code,omitempty"`
 	// 所属钱包ID
@@ -79,7 +81,7 @@ func (*MemberWalletLedger) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case memberwalletledger.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case memberwalletledger.FieldOperationID:
+		case memberwalletledger.FieldGlobalID, memberwalletledger.FieldOperationID:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -102,6 +104,12 @@ func (_m *MemberWalletLedger) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case memberwalletledger.FieldGlobalID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field global_id", values[i])
+			} else if value != nil {
+				_m.GlobalID = *value
+			}
 		case memberwalletledger.FieldOperatorCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
@@ -209,6 +217,9 @@ func (_m *MemberWalletLedger) String() string {
 	var builder strings.Builder
 	builder.WriteString("MemberWalletLedger(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("global_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.GlobalID))
+	builder.WriteString(", ")
 	builder.WriteString("operator_code=")
 	builder.WriteString(_m.OperatorCode)
 	builder.WriteString(", ")

@@ -1082,6 +1082,7 @@ type MemberWalletLedgerMutation struct {
 	op                 Op
 	typ                string
 	id                 *int64
+	global_id          *uuid.UUID
 	operator_code      *string
 	balance_type       *int64
 	addbalance_type    *int64
@@ -1208,6 +1209,42 @@ func (m *MemberWalletLedgerMutation) IDs(ctx context.Context) ([]int64, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetGlobalID sets the "global_id" field.
+func (m *MemberWalletLedgerMutation) SetGlobalID(u uuid.UUID) {
+	m.global_id = &u
+}
+
+// GlobalID returns the value of the "global_id" field in the mutation.
+func (m *MemberWalletLedgerMutation) GlobalID() (r uuid.UUID, exists bool) {
+	v := m.global_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGlobalID returns the old "global_id" field's value of the MemberWalletLedger entity.
+// If the MemberWalletLedger object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberWalletLedgerMutation) OldGlobalID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGlobalID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGlobalID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGlobalID: %w", err)
+	}
+	return oldValue.GlobalID, nil
+}
+
+// ResetGlobalID resets all changes to the "global_id" field.
+func (m *MemberWalletLedgerMutation) ResetGlobalID() {
+	m.global_id = nil
 }
 
 // SetOperatorCode sets the "operator_code" field.
@@ -1787,7 +1824,10 @@ func (m *MemberWalletLedgerMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MemberWalletLedgerMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
+	if m.global_id != nil {
+		fields = append(fields, memberwalletledger.FieldGlobalID)
+	}
 	if m.operator_code != nil {
 		fields = append(fields, memberwalletledger.FieldOperatorCode)
 	}
@@ -1829,6 +1869,8 @@ func (m *MemberWalletLedgerMutation) Fields() []string {
 // schema.
 func (m *MemberWalletLedgerMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case memberwalletledger.FieldGlobalID:
+		return m.GlobalID()
 	case memberwalletledger.FieldOperatorCode:
 		return m.OperatorCode()
 	case memberwalletledger.FieldWalletID:
@@ -1860,6 +1902,8 @@ func (m *MemberWalletLedgerMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *MemberWalletLedgerMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case memberwalletledger.FieldGlobalID:
+		return m.OldGlobalID(ctx)
 	case memberwalletledger.FieldOperatorCode:
 		return m.OldOperatorCode(ctx)
 	case memberwalletledger.FieldWalletID:
@@ -1891,6 +1935,13 @@ func (m *MemberWalletLedgerMutation) OldField(ctx context.Context, name string) 
 // type.
 func (m *MemberWalletLedgerMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case memberwalletledger.FieldGlobalID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGlobalID(v)
+		return nil
 	case memberwalletledger.FieldOperatorCode:
 		v, ok := value.(string)
 		if !ok {
@@ -2092,6 +2143,9 @@ func (m *MemberWalletLedgerMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *MemberWalletLedgerMutation) ResetField(name string) error {
 	switch name {
+	case memberwalletledger.FieldGlobalID:
+		m.ResetGlobalID()
+		return nil
 	case memberwalletledger.FieldOperatorCode:
 		m.ResetOperatorCode()
 		return nil

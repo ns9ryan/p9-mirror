@@ -56,6 +56,11 @@ func IDLTE(id int64) predicate.MemberWalletLedger {
 	return predicate.MemberWalletLedger(sql.FieldLTE(FieldID, id))
 }
 
+// GlobalID applies equality check predicate on the "global_id" field. It's identical to GlobalIDEQ.
+func GlobalID(v uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldEQ(FieldGlobalID, v))
+}
+
 // OperatorCode applies equality check predicate on the "operator_code" field. It's identical to OperatorCodeEQ.
 func OperatorCode(v string) predicate.MemberWalletLedger {
 	return predicate.MemberWalletLedger(sql.FieldEQ(FieldOperatorCode, v))
@@ -109,6 +114,46 @@ func BusinessNo(v string) predicate.MemberWalletLedger {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.MemberWalletLedger {
 	return predicate.MemberWalletLedger(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// GlobalIDEQ applies the EQ predicate on the "global_id" field.
+func GlobalIDEQ(v uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldEQ(FieldGlobalID, v))
+}
+
+// GlobalIDNEQ applies the NEQ predicate on the "global_id" field.
+func GlobalIDNEQ(v uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldNEQ(FieldGlobalID, v))
+}
+
+// GlobalIDIn applies the In predicate on the "global_id" field.
+func GlobalIDIn(vs ...uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldIn(FieldGlobalID, vs...))
+}
+
+// GlobalIDNotIn applies the NotIn predicate on the "global_id" field.
+func GlobalIDNotIn(vs ...uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldNotIn(FieldGlobalID, vs...))
+}
+
+// GlobalIDGT applies the GT predicate on the "global_id" field.
+func GlobalIDGT(v uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldGT(FieldGlobalID, v))
+}
+
+// GlobalIDGTE applies the GTE predicate on the "global_id" field.
+func GlobalIDGTE(v uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldGTE(FieldGlobalID, v))
+}
+
+// GlobalIDLT applies the LT predicate on the "global_id" field.
+func GlobalIDLT(v uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldLT(FieldGlobalID, v))
+}
+
+// GlobalIDLTE applies the LTE predicate on the "global_id" field.
+func GlobalIDLTE(v uuid.UUID) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldLTE(FieldGlobalID, v))
 }
 
 // OperatorCodeEQ applies the EQ predicate on the "operator_code" field.

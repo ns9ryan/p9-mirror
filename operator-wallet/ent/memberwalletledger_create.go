@@ -24,6 +24,20 @@ type MemberWalletLedgerCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetGlobalID sets the "global_id" field.
+func (_c *MemberWalletLedgerCreate) SetGlobalID(v uuid.UUID) *MemberWalletLedgerCreate {
+	_c.mutation.SetGlobalID(v)
+	return _c
+}
+
+// SetNillableGlobalID sets the "global_id" field if the given value is not nil.
+func (_c *MemberWalletLedgerCreate) SetNillableGlobalID(v *uuid.UUID) *MemberWalletLedgerCreate {
+	if v != nil {
+		_c.SetGlobalID(*v)
+	}
+	return _c
+}
+
 // SetOperatorCode sets the "operator_code" field.
 func (_c *MemberWalletLedgerCreate) SetOperatorCode(v string) *MemberWalletLedgerCreate {
 	_c.mutation.SetOperatorCode(v)
@@ -146,6 +160,13 @@ func (_c *MemberWalletLedgerCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *MemberWalletLedgerCreate) defaults() error {
+	if _, ok := _c.mutation.GlobalID(); !ok {
+		if memberwalletledger.DefaultGlobalID == nil {
+			return fmt.Errorf("ent: uninitialized memberwalletledger.DefaultGlobalID (forgotten import ent/runtime?)")
+		}
+		v := memberwalletledger.DefaultGlobalID()
+		_c.mutation.SetGlobalID(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		if memberwalletledger.DefaultCreatedAt == nil {
 			return fmt.Errorf("ent: uninitialized memberwalletledger.DefaultCreatedAt (forgotten import ent/runtime?)")
@@ -158,6 +179,9 @@ func (_c *MemberWalletLedgerCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *MemberWalletLedgerCreate) check() error {
+	if _, ok := _c.mutation.GlobalID(); !ok {
+		return &ValidationError{Name: "global_id", err: errors.New(`ent: missing required field "MemberWalletLedger.global_id"`)}
+	}
 	if _, ok := _c.mutation.OperatorCode(); !ok {
 		return &ValidationError{Name: "operator_code", err: errors.New(`ent: missing required field "MemberWalletLedger.operator_code"`)}
 	}
@@ -267,6 +291,10 @@ func (_c *MemberWalletLedgerCreate) createSpec() (*MemberWalletLedger, *sqlgraph
 		_node.ID = id
 		_spec.ID.Value = id
 	}
+	if value, ok := _c.mutation.GlobalID(); ok {
+		_spec.SetField(memberwalletledger.FieldGlobalID, field.TypeUUID, value)
+		_node.GlobalID = value
+	}
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(memberwalletledger.FieldOperatorCode, field.TypeString, value)
 		_node.OperatorCode = value
@@ -331,7 +359,7 @@ func (_c *MemberWalletLedgerCreate) createSpec() (*MemberWalletLedger, *sqlgraph
 // of the `INSERT` statement. For example:
 //
 //	client.MemberWalletLedger.Create().
-//		SetOperatorCode(v).
+//		SetGlobalID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -340,7 +368,7 @@ func (_c *MemberWalletLedgerCreate) createSpec() (*MemberWalletLedger, *sqlgraph
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.MemberWalletLedgerUpsert) {
-//			SetOperatorCode(v+v).
+//			SetGlobalID(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *MemberWalletLedgerCreate) OnConflict(opts ...sql.ConflictOption) *MemberWalletLedgerUpsertOne {
@@ -392,6 +420,9 @@ func (u *MemberWalletLedgerUpsertOne) UpdateNewValues() *MemberWalletLedgerUpser
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(memberwalletledger.FieldID)
+		}
+		if _, exists := u.create.mutation.GlobalID(); exists {
+			s.SetIgnore(memberwalletledger.FieldGlobalID)
 		}
 		if _, exists := u.create.mutation.OperatorCode(); exists {
 			s.SetIgnore(memberwalletledger.FieldOperatorCode)
@@ -592,7 +623,7 @@ func (_c *MemberWalletLedgerCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.MemberWalletLedgerUpsert) {
-//			SetOperatorCode(v+v).
+//			SetGlobalID(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *MemberWalletLedgerCreateBulk) OnConflict(opts ...sql.ConflictOption) *MemberWalletLedgerUpsertBulk {
@@ -638,6 +669,9 @@ func (u *MemberWalletLedgerUpsertBulk) UpdateNewValues() *MemberWalletLedgerUpse
 		for _, b := range u.create.builders {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(memberwalletledger.FieldID)
+			}
+			if _, exists := b.mutation.GlobalID(); exists {
+				s.SetIgnore(memberwalletledger.FieldGlobalID)
 			}
 			if _, exists := b.mutation.OperatorCode(); exists {
 				s.SetIgnore(memberwalletledger.FieldOperatorCode)

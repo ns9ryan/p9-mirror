@@ -40,6 +40,7 @@ var (
 	// MemberWalletLedgerColumns holds the columns for the "member_wallet_ledger" table.
 	MemberWalletLedgerColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "global_id", Type: field.TypeUUID, Unique: true, Comment: "资金流水全局唯一标识"},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
 		{Name: "balance_type", Type: field.TypeInt64, Comment: "余额类型: 1可用余额, 2冻结余额, 3未结算余额", SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "change_amount", Type: field.TypeInt64, Comment: "变动金额, 正数增加, 负数减少"},
@@ -61,7 +62,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "member_wallet_ledger_member_wallet_ledgers",
-				Columns:    []*schema.Column{MemberWalletLedgerColumns[11]},
+				Columns:    []*schema.Column{MemberWalletLedgerColumns[12]},
 				RefColumns: []*schema.Column{MemberWalletColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -70,12 +71,12 @@ var (
 			{
 				Name:    "uk_member_wallet_ledger_operation",
 				Unique:  true,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[6], MemberWalletLedgerColumns[2]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[12], MemberWalletLedgerColumns[7], MemberWalletLedgerColumns[3]},
 			},
 			{
 				Name:    "uk_member_wallet_ledger_deposit_credit",
 				Unique:  true,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[9]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[10]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "business_type = 1 AND business_action = 1001",
 				},
@@ -83,12 +84,12 @@ var (
 			{
 				Name:    "idx_member_wallet_ledger_wallet_created",
 				Unique:  false,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[10], MemberWalletLedgerColumns[0]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[12], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[0]},
 			},
 			{
 				Name:    "idx_member_wallet_ledger_business_no",
 				Unique:  false,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[1], MemberWalletLedgerColumns[7], MemberWalletLedgerColumns[9]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[8], MemberWalletLedgerColumns[10]},
 			},
 		},
 	}
