@@ -21,7 +21,7 @@ type CreateLedgerParams struct {
 	WalletID int64 // 所属钱包ID
 
 	// 余额变动
-	BalanceType   int64 // 余额类型
+	BalanceType   int64 // 余额类型, 具体枚举见 enum.BalanceType
 	ChangeAmount  int64 // 变动金额
 	BalanceBefore int64 // 变动前余额
 	BalanceAfter  int64 // 变动后余额
@@ -29,7 +29,7 @@ type CreateLedgerParams struct {
 	// 操作与业务来源
 	OperationID    uuid.UUID // 钱包操作唯一标识
 	BusinessType   int64     // 一级业务类型, 具体枚举见 enum.BusinessType
-	BusinessAction int64     // 具体操作类型
+	BusinessAction int64     // 具体操作类型, 具体枚举见 enum.BusinessAction
 	BusinessNo     string    // 原始业务单号
 }
 
@@ -50,7 +50,7 @@ func (d *MemberWalletLedger) GetByOperationTx(ctx context.Context, tx *ent.Tx, w
 		Where(
 			memberwalletledger.WalletIDEQ(walletID),       // 所属钱包ID
 			memberwalletledger.OperationIDEQ(operationID), // 钱包资金操作唯一标识
-			memberwalletledger.BalanceTypeEQ(balanceType), // 余额类型: 1可用余额, 2冻结余额, 3未结算余额
+			memberwalletledger.BalanceTypeEQ(balanceType), // 余额类型, 具体枚举见 enum.BalanceType
 		).
 		Only(ctx)
 }
@@ -69,7 +69,7 @@ func (d *MemberWalletLedger) ListByOperationTx(ctx context.Context, tx *ent.Tx, 
 func newMemberWalletLedgerCreate(tx *ent.Tx, in CreateLedgerParams) *ent.MemberWalletLedgerCreate {
 	return tx.MemberWalletLedger.Create().
 		SetWalletID(in.WalletID).             // 所属钱包ID
-		SetBalanceType(in.BalanceType).       // 余额类型
+		SetBalanceType(in.BalanceType).       // 余额类型, 具体枚举见 enum.BalanceType
 		SetChangeAmount(in.ChangeAmount).     // 变动金额
 		SetBalanceBefore(in.BalanceBefore).   // 变动前余额
 		SetBalanceAfter(in.BalanceAfter).     // 变动后余额
