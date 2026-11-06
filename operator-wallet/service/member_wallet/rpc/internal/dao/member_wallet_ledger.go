@@ -28,7 +28,7 @@ type CreateLedgerParams struct {
 
 	// 操作与业务来源
 	OperationID    uuid.UUID // 钱包操作唯一标识
-	BusinessType   int64     // 一级业务类型
+	BusinessType   int64     // 一级业务类型, 具体枚举见 enum.BusinessType
 	BusinessAction int64     // 具体操作类型
 	BusinessNo     string    // 原始业务单号
 }
@@ -37,8 +37,8 @@ type CreateLedgerParams struct {
 func (d *MemberWalletLedger) GetByBusinessTx(ctx context.Context, tx *ent.Tx, businessType, businessAction int64, businessNo string) (*ent.MemberWalletLedger, error) {
 	return tx.MemberWalletLedger.Query().
 		Where(
-			memberwalletledger.BusinessTypeEQ(businessType),     // 一级业务类型: 1存款, 2提现, 3游戏, 4活动, 5任务, 6佣金, 7系统奖励
-			memberwalletledger.BusinessActionEQ(businessAction), // 具体资金操作类型
+			memberwalletledger.BusinessTypeEQ(businessType),     // 一级业务类型, 具体枚举见 enum.BusinessType
+			memberwalletledger.BusinessActionEQ(businessAction), // 具体资金操作类型, 具体枚举见 enum.BusinessAction
 			memberwalletledger.BusinessNoEQ(businessNo),         // 原始业务单号
 		).
 		Only(ctx)
@@ -55,9 +55,18 @@ func (d *MemberWalletLedger) GetByOperationTx(ctx context.Context, tx *ent.Tx, w
 		Only(ctx)
 }
 
-// CreateTx 在当前事务中创建资金流水
-// operator_code 由Ent Hook从可信上下文自动写入
-func (d *MemberWalletLedger) CreateTx(ctx context.Context, tx *ent.Tx, in CreateLedgerParams) (*ent.MemberWalletLedger, error) {
+// ListByOperationTx 根据钱包和操作标识查询整组资金流水
+func (d *MemberWalletLedger) ListByOperationTx(ctx context.Context, tx *ent.Tx, walletID int64, operationID uuid.UUID) ([]*ent.MemberWalletLedger, error) {
+	return tx.MemberWalletLedger.Query().
+		Where(
+			memberwalletledger.WalletIDEQ(walletID),       // 所属钱包ID
+			memberwalletledger.OperationIDEQ(operationID), // 钱包资金操作唯一标识
+		).
+		All(ctx)
+}
+
+// newMemberWalletLedgerCreate 统一构造资金流水创建器
+func newMemberWalletLedgerCreate(tx *ent.Tx, in CreateLedgerParams) *ent.MemberWalletLedgerCreate {
 	return tx.MemberWalletLedger.Create().
 		SetWalletID(in.WalletID).             // 所属钱包ID
 		SetBalanceType(in.BalanceType).       // 余额类型
@@ -65,10 +74,41 @@ func (d *MemberWalletLedger) CreateTx(ctx context.Context, tx *ent.Tx, in Create
 		SetBalanceBefore(in.BalanceBefore).   // 变动前余额
 		SetBalanceAfter(in.BalanceAfter).     // 变动后余额
 		SetOperationID(in.OperationID).       // 钱包操作唯一标识
-		SetBusinessType(in.BusinessType).     // 一级业务类型
-		SetBusinessAction(in.BusinessAction). // 具体操作类型
-		SetBusinessNo(in.BusinessNo).         // 原始业务单号
-		Save(ctx)
+		SetBusinessType(in.BusinessType).     // 一级业务类型, 具体枚举见 enum.BusinessType
+		SetBusinessAction(in.BusinessAction). // 具体资金操作类型, 具体枚举见 enum.BusinessAction
+		SetBusinessNo(in.BusinessNo)          // 原始业务单号
+}
+
+// CreateTx 在当前事务中创建单条资金流水
+// operator_code 由Ent Hook从可信上下文自动写入
+func (d *MemberWalletLedger) CreateTx(ctx context.Context, tx *ent.Tx, in CreateLedgerParams) (*ent.MemberWalletLedger, error) {
+	return newMemberWalletLedgerCreate(tx, in).Save(ctx)
+}
+
+// CreateManyTx 在当前事务中批量创建资金流水
+func (d *MemberWalletLedger) CreateManyTx(ctx context.Context, tx *ent.Tx, items []CreateLedgerParams) error {
+	if len(items) == 0 {
+		return nil
+	}
+
+	// 确保同一批流水属于同一次钱包操作
+	first := items[0]
+	for _, item := range items[1:] {
+		if item.WalletID != first.WalletID ||
+			item.OperationID != first.OperationID ||
+			item.BusinessType != first.BusinessType ||
+			item.BusinessAction != first.BusinessAction ||
+			item.BusinessNo != first.BusinessNo {
+			return errors.New("member wallet ledger batch contains inconsistent operation fields")
+		}
+	}
+
+	builders := make([]*ent.MemberWalletLedgerCreate, 0, len(items))
+	for _, item := range items {
+		builders = append(builders, newMemberWalletLedgerCreate(tx, item))
+	}
+
+	return tx.MemberWalletLedger.CreateBulk(builders...).Exec(ctx)
 }
 
 // IsDepositCreditUniqueConflict 判断是否触发存款入账唯一约束

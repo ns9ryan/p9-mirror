@@ -14,6 +14,14 @@ type MemberWallet struct {
 	db *ent.Client // Ent数据库客户端
 }
 
+// UpdateBalancesParams 更新钱包余额参数
+type UpdateBalancesParams struct {
+	WalletID         int64 // 钱包ID
+	Balance          int64 // 更新后的可用余额
+	FrozenBalance    int64 // 更新后的冻结余额
+	UnsettledBalance int64 // 更新后的游戏未结算余额
+}
+
 // GetForUpdateTx 查询并锁定会员钱包
 func (d *MemberWallet) GetForUpdateTx(ctx context.Context, tx *ent.Tx, memberGlobalID uuid.UUID) (*ent.MemberWallet, error) {
 	return tx.MemberWallet.Query().
@@ -26,6 +34,16 @@ func (d *MemberWallet) GetForUpdateTx(ctx context.Context, tx *ent.Tx, memberGlo
 func (d *MemberWallet) UpdateAvailableBalanceTx(ctx context.Context, tx *ent.Tx, walletID, balance int64) error {
 	_, err := tx.MemberWallet.UpdateOneID(walletID).
 		SetBalance(balance). // 设置更新后的可用余额
+		Save(ctx)
+	return err
+}
+
+// UpdateBalancesTx 在当前事务中一次更新钱包余额
+func (d *MemberWallet) UpdateBalancesTx(ctx context.Context, tx *ent.Tx, in UpdateBalancesParams) error {
+	_, err := tx.MemberWallet.UpdateOneID(in.WalletID).
+		SetBalance(in.Balance).                   // 更新后的可用余额
+		SetFrozenBalance(in.FrozenBalance).       // 更新后的冻结余额
+		SetUnsettledBalance(in.UnsettledBalance). // 更新后的未结算余额
 		Save(ctx)
 	return err
 }
