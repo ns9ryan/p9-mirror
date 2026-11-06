@@ -24,6 +24,18 @@ func NewMemberServer(svcCtx *svc.ServiceContext) *MemberServer {
 	}
 }
 
+// 修改会员关联的自动层级
+func (s *MemberServer) UpdateAutoLevel(ctx context.Context, in *memberpb.UpdateMemberAutoLevelRequest) (*memberpb.UpdateMemberLevelsResponse, error) {
+	l := memberlogic.NewUpdateAutoLevelLogic(ctx, s.svcCtx)
+	return l.UpdateAutoLevel(in)
+}
+
+// 全量替换会员固定层级
+func (s *MemberServer) UpdateFixedLevels(ctx context.Context, in *memberpb.UpdateMemberFixedLevelsRequest) (*memberpb.UpdateMemberLevelsResponse, error) {
+	l := memberlogic.NewUpdateFixedLevelsLogic(ctx, s.svcCtx)
+	return l.UpdateFixedLevels(in)
+}
+
 // 创建会员
 func (s *MemberServer) Create(ctx context.Context, in *memberpb.CreateMemberRequest) (*memberpb.CreateMemberResponse, error) {
 	l := memberlogic.NewCreateLogic(ctx, s.svcCtx)

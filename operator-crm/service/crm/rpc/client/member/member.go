@@ -17,6 +17,10 @@ import (
 
 type (
 	Member interface {
+		// 修改会员关联的自动层级
+		UpdateAutoLevel(ctx context.Context, in *memberpb.UpdateMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberpb.UpdateMemberLevelsResponse, error)
+		// 全量替换会员固定层级
+		UpdateFixedLevels(ctx context.Context, in *memberpb.UpdateMemberFixedLevelsRequest, opts ...grpc.CallOption) (*memberpb.UpdateMemberLevelsResponse, error)
 		// 创建会员
 		Create(ctx context.Context, in *memberpb.CreateMemberRequest, opts ...grpc.CallOption) (*memberpb.CreateMemberResponse, error)
 		// 获取会员列表
@@ -36,6 +40,18 @@ func NewMember(cli zrpc.Client) Member {
 	return &defaultMember{
 		cli: cli,
 	}
+}
+
+// 修改会员关联的自动层级
+func (m *defaultMember) UpdateAutoLevel(ctx context.Context, in *memberpb.UpdateMemberAutoLevelRequest, opts ...grpc.CallOption) (*memberpb.UpdateMemberLevelsResponse, error) {
+	client := crmrpc.NewMemberClient(m.cli.Conn())
+	return client.UpdateAutoLevel(ctx, in, opts...)
+}
+
+// 全量替换会员固定层级
+func (m *defaultMember) UpdateFixedLevels(ctx context.Context, in *memberpb.UpdateMemberFixedLevelsRequest, opts ...grpc.CallOption) (*memberpb.UpdateMemberLevelsResponse, error) {
+	client := crmrpc.NewMemberClient(m.cli.Conn())
+	return client.UpdateFixedLevels(ctx, in, opts...)
 }
 
 // 创建会员

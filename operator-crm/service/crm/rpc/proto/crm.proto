@@ -110,6 +110,10 @@ service AgentService {
 
 // 会员管理服务
 service Member {
+  // 修改会员关联的自动层级
+  rpc UpdateAutoLevel(crm_member.UpdateMemberAutoLevelRequest) returns (crm_member.UpdateMemberLevelsResponse);
+  // 全量替换会员固定层级
+  rpc UpdateFixedLevels(crm_member.UpdateMemberFixedLevelsRequest) returns (crm_member.UpdateMemberLevelsResponse);
   // ==================== 会员管理 ====================
 
   // 创建会员
