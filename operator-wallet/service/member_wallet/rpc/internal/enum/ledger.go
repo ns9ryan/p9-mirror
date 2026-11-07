@@ -12,9 +12,7 @@ const (
 // IsValid 判断余额类型是否有效
 func (t BalanceType) IsValid() bool {
 	switch t {
-	case BalanceTypeAvailable,
-		BalanceTypeFrozen,
-		BalanceTypeUnsettled:
+	case BalanceTypeAvailable, BalanceTypeFrozen, BalanceTypeUnsettled:
 		return true
 	default:
 		return false
@@ -161,5 +159,3 @@ func (a BusinessAction) IsValidFor(businessType BusinessType) bool {
 
 	return false
 }
-
-// TODO: 后续接入新业务时, 按所属 BusinessType 补充资金操作类型
