@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strings"
 	"unicode/utf8"
 
 	"github.com/google/uuid"
@@ -174,7 +175,7 @@ func validateRecordParams(memberWallet *ent.MemberWallet, in RecordParams) error
 		return invalidRecordParams("business action does not match business type")
 	}
 
-	if in.BusinessNo == "" || utf8.RuneCountInString(in.BusinessNo) > 128 {
+	if in.BusinessNo == "" || strings.TrimSpace(in.BusinessNo) != in.BusinessNo || utf8.RuneCountInString(in.BusinessNo) > 128 {
 		return invalidRecordParams("invalid business number")
 	}
 
