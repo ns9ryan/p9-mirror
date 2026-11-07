@@ -9,7 +9,19 @@ const (
 	BalanceTypeUnsettled BalanceType = 3 // 游戏未结算余额
 )
 
-// BusinessType 资金业务主类型 (1: 存款, 2: 提现, 3: 游戏, 4: 活动, 5: 任务, 6: 佣金, 7: 系统奖励)
+// IsValid 判断余额类型是否有效
+func (t BalanceType) IsValid() bool {
+	switch t {
+	case BalanceTypeAvailable,
+		BalanceTypeFrozen,
+		BalanceTypeUnsettled:
+		return true
+	default:
+		return false
+	}
+}
+
+// BusinessType 资金业务主类型
 type BusinessType int64
 
 const (
@@ -22,16 +34,23 @@ const (
 	BusinessTypeSystemReward BusinessType = 7 // 系统奖励
 )
 
-// BusinessAction 具体资金操作类型
-//
-// 编码按 BusinessType 分段:
-// 1000-1999: 存款
-// 2000-2999: 提现
-// 3000-3999: 游戏
-// 4000-4999: 活动
-// 5000-5999: 任务
-// 6000-6999: 佣金
-// 7000-7999: 系统奖励
+// IsValid 判断业务主类型是否有效
+func (t BusinessType) IsValid() bool {
+	switch t {
+	case BusinessTypeDeposit,
+		BusinessTypeWithdraw,
+		BusinessTypeGame,
+		BusinessTypeActivity,
+		BusinessTypeTask,
+		BusinessTypeCommission,
+		BusinessTypeSystemReward:
+		return true
+	default:
+		return false
+	}
+}
+
+// BusinessAction 具体资金操作类型, 按业务主类型分段编码
 type BusinessAction int64
 
 const (
@@ -87,5 +106,60 @@ const (
 	BusinessActionFeedbackReward BusinessAction = 7001 // 有奖反馈奖励入账
 	BusinessActionVIPReward      BusinessAction = 7002 // VIP 奖励入账
 )
+
+// IsValidFor 判断操作类型是否属于指定业务主类型
+func (a BusinessAction) IsValidFor(businessType BusinessType) bool {
+	switch businessType {
+	// 存款
+	case BusinessTypeDeposit:
+		switch a {
+		case BusinessActionDepositCredit, BusinessActionDepositBonus:
+			return true
+		}
+
+	// 提现
+	case BusinessTypeWithdraw:
+		switch a {
+		case BusinessActionWithdrawalFreeze,
+			BusinessActionWithdrawalPayout,
+			BusinessActionWithdrawalFee,
+			BusinessActionWithdrawalUnfreeze:
+			return true
+		}
+
+	// 游戏
+	case BusinessTypeGame:
+		switch a {
+		case BusinessActionGameBet,
+			BusinessActionGameSettlement,
+			BusinessActionGameBetCancel,
+			BusinessActionGameTip,
+			BusinessActionGameRebate,
+			BusinessActionGameSettlementRollback:
+			return true
+		}
+
+	// 活动
+	case BusinessTypeActivity:
+		return a == BusinessActionActivityReward
+
+	// 任务
+	case BusinessTypeTask:
+		return a == BusinessActionTaskReward
+
+	// 佣金
+	case BusinessTypeCommission:
+		return a == BusinessActionCommissionCredit
+
+	// 系统奖励
+	case BusinessTypeSystemReward:
+		switch a {
+		case BusinessActionFeedbackReward, BusinessActionVIPReward:
+			return true
+		}
+	}
+
+	return false
+}
 
 // TODO: 后续接入新业务时, 按所属 BusinessType 补充资金操作类型
