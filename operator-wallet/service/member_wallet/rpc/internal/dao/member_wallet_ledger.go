@@ -111,18 +111,27 @@ func (d *MemberWalletLedger) CreateManyTx(ctx context.Context, tx *ent.Tx, items
 	return tx.MemberWalletLedger.CreateBulk(builders...).Exec(ctx)
 }
 
-// IsDepositCreditUniqueConflict 判断是否触发存款入账唯一约束
+// IsDepositOrderUniqueConflict 判断是否触发存款订单唯一约束
+func IsDepositOrderUniqueConflict(err error) bool {
+	return isUniqueConstraintConflict(err, "uk_member_wallet_ledger_deposit_credit")
+}
+
+// IsWalletOperationUniqueConflict 判断是否触发钱包操作唯一约束
+func IsWalletOperationUniqueConflict(err error) bool {
+	return isUniqueConstraintConflict(err, "uk_member_wallet_ledger_operation")
+}
+
+// IsDepositCreditUniqueConflict 判断是否触发存款入账相关唯一约束
 func IsDepositCreditUniqueConflict(err error) bool {
+	return IsDepositOrderUniqueConflict(err) || IsWalletOperationUniqueConflict(err)
+}
+
+// isUniqueConstraintConflict 判断是否触发指定唯一约束
+func isUniqueConstraintConflict(err error, constraintName string) bool {
 	var pgErr *pgconn.PgError
-	if !errors.As(err, &pgErr) || pgErr.Code != "23505" {
+	if !errors.As(err, &pgErr) || pgErr == nil {
 		return false
 	}
 
-	switch pgErr.ConstraintName {
-	case "uk_member_wallet_ledger_deposit_credit",
-		"uk_member_wallet_ledger_operation":
-		return true
-	default:
-		return false
-	}
+	return pgErr.Code == "23505" && pgErr.ConstraintName == constraintName
 }

@@ -1,3 +1,7 @@
+// ============================================================================
+// 记账器、初始化、记账执行流程
+// ============================================================================
+
 package wallet
 
 import (
@@ -12,9 +16,9 @@ import (
 
 // recorder 绑定一个事务和一个会员钱包, 负责执行该钱包的资金记账
 type recorder struct {
-	tx           *ent.Tx
-	dao          *dao.Group
-	memberWallet *ent.MemberWallet
+	tx           *ent.Tx           // 当前记账事务
+	dao          *dao.Group        // 钱包数据访问
+	memberWallet *ent.MemberWallet // 当前会员钱包及余额快照
 }
 
 // NewRecorder 创建事务级记账器, memberWallet 必须由调用方在 tx 中查询并锁定
