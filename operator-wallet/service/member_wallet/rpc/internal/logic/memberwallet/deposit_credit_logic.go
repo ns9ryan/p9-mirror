@@ -2,7 +2,7 @@ package memberwalletlogic
 
 import (
 	"context"
-	"math"
+	"errors"
 	"strings"
 	"unicode/utf8"
 
@@ -16,6 +16,7 @@ import (
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/enum"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/svc"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/wallet"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
 )
 
@@ -63,7 +64,7 @@ func (l *DepositCreditLogic) DepositCredit(in *depositpb.DepositCreditRequest) (
 	// 余额更新和流水写入必须在同一个事务中
 	err = dao.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
 		// 查询并锁定会员钱包
-		wallet, err := l.svcCtx.DAO.MemberWallet.GetForUpdateTx(l.ctx, tx, params.memberGlobalID)
+		memberWallet, err := l.svcCtx.DAO.MemberWallet.GetForUpdateTx(l.ctx, tx, params.memberGlobalID)
 		if err != nil {
 			if ent.IsNotFound(err) {
 				return status.Error(codes.NotFound, "会员钱包不存在")
@@ -72,84 +73,30 @@ func (l *DepositCreditLogic) DepositCredit(in *depositpb.DepositCreditRequest) (
 		}
 
 		// 校验钱包币种
-		if wallet.CurrencyCode != params.currencyCode {
+		if memberWallet.CurrencyCode != params.currencyCode {
 			return status.Error(codes.FailedPrecondition, "存款币种与钱包币种不一致")
 		}
 
-		// 根据存款订单检查幂等
-		existingLedger, err := l.svcCtx.DAO.MemberWalletLedger.GetByBusinessTx(
-			l.ctx,
-			tx,
-			int64(enum.BusinessTypeDeposit),
-			int64(enum.BusinessActionDepositCredit),
-			params.depositOrderNo,
-		)
-		if err == nil {
-			// 相同订单和操作信息表示此前已成功入账
-			if existingLedger.WalletID == wallet.ID &&
-				existingLedger.BalanceType == int64(enum.BalanceTypeAvailable) &&
-				existingLedger.OperationID == params.operationID &&
-				existingLedger.ChangeAmount == params.amount {
-				return nil
-			}
-
-			return status.Error(codes.AlreadyExists, "存款订单已存在, 请求信息不一致")
-		}
-		if !ent.IsNotFound(err) {
-			return l.internalError("查询存款入账流水失败", err)
-		}
-
-		// 检查钱包操作标识是否已使用
-		existingLedger, err = l.svcCtx.DAO.MemberWalletLedger.GetByOperationTx(
-			l.ctx,
-			tx,
-			wallet.ID,
-			params.operationID,
-			int64(enum.BalanceTypeAvailable),
-		)
-		if err == nil {
-			return status.Error(codes.AlreadyExists, "钱包操作标识已被使用")
-		}
-		if !ent.IsNotFound(err) {
-			return l.internalError("查询钱包操作标识失败", err)
-		}
-
-		// 检查余额是否溢出
-		if wallet.Balance > math.MaxInt64-params.amount {
-			return status.Error(codes.OutOfRange, "入账后余额超出允许范围")
-		}
-
-		// 计算余额变动
-		balanceBefore := wallet.Balance
-		balanceAfter := balanceBefore + params.amount
-
-		// 更新会员可用余额
-		if err := l.svcCtx.DAO.MemberWallet.UpdateAvailableBalanceTx(
-			l.ctx,
-			tx,
-			wallet.ID,
-			balanceAfter,
-		); err != nil {
-			return l.internalError("更新会员钱包余额失败", err)
-		}
-
-		// 写入会员钱包资金流水
-		_, err = l.svcCtx.DAO.MemberWalletLedger.CreateTx(l.ctx, tx, dao.CreateLedgerParams{
-			WalletID:       wallet.ID,                               // 所属钱包ID
-			BalanceType:    int64(enum.BalanceTypeAvailable),        // 余额类型
-			ChangeAmount:   params.amount,                           // 变动金额
-			BalanceBefore:  balanceBefore,                           // 变动前余额
-			BalanceAfter:   balanceAfter,                            // 变动后余额
-			OperationID:    params.operationID,                      // 钱包操作唯一标识
-			BusinessType:   int64(enum.BusinessTypeDeposit),         // 一级业务类型
-			BusinessAction: int64(enum.BusinessActionDepositCredit), // 具体操作类型
-			BusinessNo:     params.depositOrderNo,                   // 原始业务单号
-		})
+		// 创建绑定当前事务和钱包的记账器
+		recorder, err := wallet.NewRecorder(tx, l.svcCtx.DAO, memberWallet)
 		if err != nil {
-			if dao.IsDepositCreditUniqueConflict(err) {
-				return status.Error(codes.AlreadyExists, "存款订单或钱包操作标识已被使用")
-			}
-			return l.internalError("创建存款资金流水失败", err)
+			return l.internalError("初始化钱包记账器失败", err)
+		}
+
+		// 执行统一资金记账
+		if err := recorder.Record(l.ctx, wallet.RecordParams{
+			OperationID:    params.operationID,
+			BusinessType:   enum.BusinessTypeDeposit,
+			BusinessAction: enum.BusinessActionDepositCredit,
+			BusinessNo:     params.depositOrderNo,
+			Changes: []wallet.BalanceChange{
+				{
+					BalanceType:  enum.BalanceTypeAvailable,
+					ChangeAmount: params.amount,
+				},
+			},
+		}); err != nil {
+			return l.mapRecordError(err)
 		}
 
 		return nil
@@ -212,4 +159,30 @@ func parseDepositCreditRequest(in *depositpb.DepositCreditRequest) (depositCredi
 func (l *DepositCreditLogic) internalError(action string, err error) error {
 	l.Errorf("%s: %v", action, err)
 	return status.Error(codes.Internal, "存款本金入账失败")
+}
+
+// mapRecordError 将统一记账错误转换为RPC业务错误
+func (l *DepositCreditLogic) mapRecordError(err error) error {
+	switch {
+	case errors.Is(err, wallet.ErrInvalidRecordParams):
+		return status.Error(codes.InvalidArgument, "存款记账参数无效")
+
+	case errors.Is(err, wallet.ErrOperationConflict):
+		return status.Error(codes.AlreadyExists, "钱包操作标识已被使用")
+
+	case errors.Is(err, wallet.ErrBalanceOverflow):
+		return status.Error(codes.OutOfRange, "入账后余额超出允许范围")
+
+	case errors.Is(err, wallet.ErrInsufficientBalance):
+		return status.Error(codes.FailedPrecondition, "钱包余额不足")
+
+	case dao.IsDepositOrderUniqueConflict(err):
+		return status.Error(codes.AlreadyExists, "存款订单已存在")
+
+	case dao.IsWalletOperationUniqueConflict(err):
+		return status.Error(codes.AlreadyExists, "钱包操作标识已被使用")
+
+	default:
+		return l.internalError("统一资金记账失败", err)
+	}
 }
