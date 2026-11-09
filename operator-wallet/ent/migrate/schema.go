@@ -82,6 +82,14 @@ var (
 				},
 			},
 			{
+				Name:    "uk_member_wallet_ledger_game_bet",
+				Unique:  true,
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[10], MemberWalletLedgerColumns[3]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "business_type = 3 AND business_action = 3001",
+				},
+			},
+			{
 				Name:    "idx_member_wallet_ledger_wallet_created",
 				Unique:  false,
 				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[12], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[0]},

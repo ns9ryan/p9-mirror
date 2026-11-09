@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package member_wallet_game;
+
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb";
+
+// 游戏下注请求
+message GameBetRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 游戏厂商原始下注单号
+  string provider_bet_no = 3;
+
+  // 下注信息
+  string currency_code = 4;
+  // 下注金额, 币种最小单位
+  int64 bet_amount = 5;
+}
+
+// 游戏下注响应
+message GameBetResponse {}

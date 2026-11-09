@@ -11,6 +11,7 @@ import (
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb"
 )
 
 type MemberWalletServer struct {
@@ -28,4 +29,10 @@ func NewMemberWalletServer(svcCtx *svc.ServiceContext) *MemberWalletServer {
 func (s *MemberWalletServer) DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error) {
 	l := memberwalletlogic.NewDepositCreditLogic(ctx, s.svcCtx)
 	return l.DepositCredit(in)
+}
+
+// 游戏下注
+func (s *MemberWalletServer) GameBet(ctx context.Context, in *gamepb.GameBetRequest) (*gamepb.GameBetResponse, error) {
+	l := memberwalletlogic.NewGameBetLogic(ctx, s.svcCtx)
+	return l.GameBet(in)
 }

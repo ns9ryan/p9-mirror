@@ -9,6 +9,7 @@ import "types/member_wallet_ping.proto";
 
 // 会员钱包
 import "types/member_wallet_deposit.proto";
+import "types/member_wallet_game.proto";
 
 // 会员钱包健康检查服务
 service Ping {
@@ -20,4 +21,7 @@ service Ping {
 service MemberWallet {
   // 存款本金入账
   rpc DepositCredit(member_wallet_deposit.DepositCreditRequest) returns (member_wallet_deposit.DepositCreditResponse);
+
+  // 游戏下注
+  rpc GameBet(member_wallet_game.GameBetRequest) returns (member_wallet_game.GameBetResponse);
 }

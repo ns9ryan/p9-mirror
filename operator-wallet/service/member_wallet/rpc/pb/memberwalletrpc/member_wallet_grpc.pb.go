@@ -12,6 +12,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	depositpb "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
+	gamepb "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb"
 	pingpb "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpb"
 )
 
@@ -130,6 +131,7 @@ var Ping_ServiceDesc = grpc.ServiceDesc{
 
 const (
 	MemberWallet_DepositCredit_FullMethodName = "/member_wallet.MemberWallet/DepositCredit"
+	MemberWallet_GameBet_FullMethodName       = "/member_wallet.MemberWallet/GameBet"
 )
 
 // MemberWalletClient is the client API for MemberWallet service.
@@ -140,6 +142,8 @@ const (
 type MemberWalletClient interface {
 	// 存款本金入账
 	DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
+	// 游戏下注
+	GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error)
 }
 
 type memberWalletClient struct {
@@ -160,6 +164,16 @@ func (c *memberWalletClient) DepositCredit(ctx context.Context, in *depositpb.De
 	return out, nil
 }
 
+func (c *memberWalletClient) GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(gamepb.GameBetResponse)
+	err := c.cc.Invoke(ctx, MemberWallet_GameBet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MemberWalletServer is the server API for MemberWallet service.
 // All implementations must embed UnimplementedMemberWalletServer
 // for forward compatibility.
@@ -168,6 +182,8 @@ func (c *memberWalletClient) DepositCredit(ctx context.Context, in *depositpb.De
 type MemberWalletServer interface {
 	// 存款本金入账
 	DepositCredit(context.Context, *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error)
+	// 游戏下注
+	GameBet(context.Context, *gamepb.GameBetRequest) (*gamepb.GameBetResponse, error)
 	mustEmbedUnimplementedMemberWalletServer()
 }
 
@@ -180,6 +196,9 @@ type UnimplementedMemberWalletServer struct{}
 
 func (UnimplementedMemberWalletServer) DepositCredit(context.Context, *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DepositCredit not implemented")
+}
+func (UnimplementedMemberWalletServer) GameBet(context.Context, *gamepb.GameBetRequest) (*gamepb.GameBetResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GameBet not implemented")
 }
 func (UnimplementedMemberWalletServer) mustEmbedUnimplementedMemberWalletServer() {}
 func (UnimplementedMemberWalletServer) testEmbeddedByValue()                      {}
@@ -220,6 +239,24 @@ func _MemberWallet_DepositCredit_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MemberWallet_GameBet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(gamepb.GameBetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberWalletServer).GameBet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MemberWallet_GameBet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberWalletServer).GameBet(ctx, req.(*gamepb.GameBetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MemberWallet_ServiceDesc is the grpc.ServiceDesc for MemberWallet service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -230,6 +267,10 @@ var MemberWallet_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DepositCredit",
 			Handler:    _MemberWallet_DepositCredit_Handler,
+		},
+		{
+			MethodName: "GameBet",
+			Handler:    _MemberWallet_GameBet_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -143,6 +143,14 @@ func (MemberWalletLedger) Indexes() []ent.Index {
 				entsql.IndexWhere("business_type = 1 AND business_action = 1001"),
 			),
 
+		// 同一厅的一笔游戏下注只能记账一次
+		index.Fields("operator_code", "business_no", "balance_type").
+			Unique().
+			StorageKey("uk_member_wallet_ledger_game_bet").
+			Annotations(
+				entsql.IndexWhere("business_type = 3 AND business_action = 3001"),
+			),
+
 		// 查询钱包资金明细, 支持按时间倒序分页
 		index.Fields("operator_code", "wallet_id", "created_at", "id").
 			StorageKey("idx_member_wallet_ledger_wallet_created"),

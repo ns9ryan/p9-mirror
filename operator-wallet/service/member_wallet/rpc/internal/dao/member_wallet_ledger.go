@@ -44,6 +44,17 @@ func (d *MemberWalletLedger) GetByBusinessTx(ctx context.Context, tx *ent.Tx, bu
 		Only(ctx)
 }
 
+// ListByBusinessTx 根据业务类型、操作类型和业务单号查询流水
+func (d *MemberWalletLedger) ListByBusinessTx(ctx context.Context, tx *ent.Tx, businessType, businessAction int64, businessNo string) ([]*ent.MemberWalletLedger, error) {
+	return tx.MemberWalletLedger.Query().
+		Where(
+			memberwalletledger.BusinessTypeEQ(businessType),     // 一级业务类型, 具体枚举见 enum.BusinessType
+			memberwalletledger.BusinessActionEQ(businessAction), // 具体资金操作类型, 具体枚举见 enum.BusinessAction
+			memberwalletledger.BusinessNoEQ(businessNo),         // 原始业务单号
+		).
+		All(ctx)
+}
+
 // GetByOperationTx 根据钱包操作标识查询流水
 func (d *MemberWalletLedger) GetByOperationTx(ctx context.Context, tx *ent.Tx, walletID int64, operationID uuid.UUID, balanceType int64) (*ent.MemberWalletLedger, error) {
 	return tx.MemberWalletLedger.Query().
@@ -134,4 +145,9 @@ func isUniqueConstraintConflict(err error, constraintName string) bool {
 	}
 
 	return pgErr.Code == "23505" && pgErr.ConstraintName == constraintName
+}
+
+// IsGameBetUniqueConflict 判断是否触发游戏下注唯一约束
+func IsGameBetUniqueConflict(err error) bool {
+	return isUniqueConstraintConflict(err, "uk_member_wallet_ledger_game_bet")
 }

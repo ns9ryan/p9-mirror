@@ -10,6 +10,7 @@ import (
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc"
 
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -19,6 +20,8 @@ type (
 	MemberWallet interface {
 		// 存款本金入账
 		DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
+		// 游戏下注
+		GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error)
 	}
 
 	defaultMemberWallet struct {
@@ -36,4 +39,10 @@ func NewMemberWallet(cli zrpc.Client) MemberWallet {
 func (m *defaultMemberWallet) DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error) {
 	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
 	return client.DepositCredit(ctx, in, opts...)
+}
+
+// 游戏下注
+func (m *defaultMemberWallet) GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.GameBet(ctx, in, opts...)
 }
