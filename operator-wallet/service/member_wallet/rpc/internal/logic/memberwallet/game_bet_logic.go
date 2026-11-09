@@ -186,16 +186,14 @@ func parseGameBetRequest(in *gamepb.GameBetRequest) (gameBetParams, error) {
 }
 
 // matchGameBetRecords 判断已有流水是否与本次下注完全一致
-func matchGameBetRecords(
-	existing []*ent.MemberWalletLedger,
-	walletID int64,
-	providerBetNo string,
-	betAmount int64,
-) bool {
+func matchGameBetRecords(existing []*ent.MemberWalletLedger, walletID int64, providerBetNo string, betAmount int64) bool {
 	// 一次下注必须同时存在可用余额和未结算余额两条流水
-	if len(existing) != 2 {
+	if len(existing) != 2 || existing[0] == nil || existing[1] == nil {
 		return false
 	}
+
+	// 两条流水必须属于同一次钱包操作
+	operationID := existing[0].OperationID
 
 	changes := map[enum.BalanceType]int64{
 		enum.BalanceTypeAvailable: -betAmount,
@@ -205,6 +203,7 @@ func matchGameBetRecords(
 	for _, ledger := range existing {
 		if ledger == nil ||
 			ledger.WalletID != walletID ||
+			ledger.OperationID != operationID ||
 			ledger.BusinessType != int64(enum.BusinessTypeGame) ||
 			ledger.BusinessAction != int64(enum.BusinessActionGameBet) ||
 			ledger.BusinessNo != providerBetNo {
@@ -217,9 +216,11 @@ func matchGameBetRecords(
 			return false
 		}
 
+		// 移除已匹配的余额类型, 防止重复匹配
 		delete(changes, balanceType)
 	}
 
+	// 两种余额变动均匹配, 才视为同一笔下注
 	return len(changes) == 0
 }
 
