@@ -151,3 +151,8 @@ func isUniqueConstraintConflict(err error, constraintName string) bool {
 func IsGameBetUniqueConflict(err error) bool {
 	return isUniqueConstraintConflict(err, "uk_member_wallet_ledger_game_bet")
 }
+
+// IsGameBetCancelUniqueConflict 判断是否触发游戏下注取消唯一约束
+func IsGameBetCancelUniqueConflict(err error) bool {
+	return isUniqueConstraintConflict(err, "uk_member_wallet_ledger_game_bet_cancel")
+}

@@ -132,6 +132,7 @@ var Ping_ServiceDesc = grpc.ServiceDesc{
 const (
 	MemberWallet_DepositCredit_FullMethodName = "/member_wallet.MemberWallet/DepositCredit"
 	MemberWallet_GameBet_FullMethodName       = "/member_wallet.MemberWallet/GameBet"
+	MemberWallet_GameBetCancel_FullMethodName = "/member_wallet.MemberWallet/GameBetCancel"
 )
 
 // MemberWalletClient is the client API for MemberWallet service.
@@ -144,6 +145,8 @@ type MemberWalletClient interface {
 	DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
 	// 游戏下注
 	GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error)
+	// 游戏下注取消
+	GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest, opts ...grpc.CallOption) (*gamepb.GameBetCancelResponse, error)
 }
 
 type memberWalletClient struct {
@@ -174,6 +177,16 @@ func (c *memberWalletClient) GameBet(ctx context.Context, in *gamepb.GameBetRequ
 	return out, nil
 }
 
+func (c *memberWalletClient) GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest, opts ...grpc.CallOption) (*gamepb.GameBetCancelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(gamepb.GameBetCancelResponse)
+	err := c.cc.Invoke(ctx, MemberWallet_GameBetCancel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MemberWalletServer is the server API for MemberWallet service.
 // All implementations must embed UnimplementedMemberWalletServer
 // for forward compatibility.
@@ -184,6 +197,8 @@ type MemberWalletServer interface {
 	DepositCredit(context.Context, *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error)
 	// 游戏下注
 	GameBet(context.Context, *gamepb.GameBetRequest) (*gamepb.GameBetResponse, error)
+	// 游戏下注取消
+	GameBetCancel(context.Context, *gamepb.GameBetCancelRequest) (*gamepb.GameBetCancelResponse, error)
 	mustEmbedUnimplementedMemberWalletServer()
 }
 
@@ -199,6 +214,9 @@ func (UnimplementedMemberWalletServer) DepositCredit(context.Context, *depositpb
 }
 func (UnimplementedMemberWalletServer) GameBet(context.Context, *gamepb.GameBetRequest) (*gamepb.GameBetResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GameBet not implemented")
+}
+func (UnimplementedMemberWalletServer) GameBetCancel(context.Context, *gamepb.GameBetCancelRequest) (*gamepb.GameBetCancelResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GameBetCancel not implemented")
 }
 func (UnimplementedMemberWalletServer) mustEmbedUnimplementedMemberWalletServer() {}
 func (UnimplementedMemberWalletServer) testEmbeddedByValue()                      {}
@@ -257,6 +275,24 @@ func _MemberWallet_GameBet_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MemberWallet_GameBetCancel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(gamepb.GameBetCancelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberWalletServer).GameBetCancel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MemberWallet_GameBetCancel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberWalletServer).GameBetCancel(ctx, req.(*gamepb.GameBetCancelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MemberWallet_ServiceDesc is the grpc.ServiceDesc for MemberWallet service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -271,6 +307,10 @@ var MemberWallet_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GameBet",
 			Handler:    _MemberWallet_GameBet_Handler,
+		},
+		{
+			MethodName: "GameBetCancel",
+			Handler:    _MemberWallet_GameBetCancel_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

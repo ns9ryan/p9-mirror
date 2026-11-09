@@ -36,3 +36,9 @@ func (s *MemberWalletServer) GameBet(ctx context.Context, in *gamepb.GameBetRequ
 	l := memberwalletlogic.NewGameBetLogic(ctx, s.svcCtx)
 	return l.GameBet(in)
 }
+
+// 游戏下注取消
+func (s *MemberWalletServer) GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest) (*gamepb.GameBetCancelResponse, error) {
+	l := memberwalletlogic.NewGameBetCancelLogic(ctx, s.svcCtx)
+	return l.GameBetCancel(in)
+}

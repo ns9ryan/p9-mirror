@@ -22,6 +22,8 @@ type (
 		DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
 		// 游戏下注
 		GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error)
+		// 游戏下注取消
+		GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest, opts ...grpc.CallOption) (*gamepb.GameBetCancelResponse, error)
 	}
 
 	defaultMemberWallet struct {
@@ -45,4 +47,10 @@ func (m *defaultMemberWallet) DepositCredit(ctx context.Context, in *depositpb.D
 func (m *defaultMemberWallet) GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error) {
 	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
 	return client.GameBet(ctx, in, opts...)
+}
+
+// 游戏下注取消
+func (m *defaultMemberWallet) GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest, opts ...grpc.CallOption) (*gamepb.GameBetCancelResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.GameBetCancel(ctx, in, opts...)
 }

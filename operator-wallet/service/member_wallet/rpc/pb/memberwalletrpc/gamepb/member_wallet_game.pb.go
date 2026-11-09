@@ -140,6 +140,116 @@ func (*GameBetResponse) Descriptor() ([]byte, []int) {
 	return file_types_member_wallet_game_proto_rawDescGZIP(), []int{1}
 }
 
+// 游戏下注取消请求
+type GameBetCancelRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 会员全局唯一标识
+	MemberGlobalId string `protobuf:"bytes,1,opt,name=member_global_id,json=memberGlobalId,proto3" json:"member_global_id,omitempty"`
+	// 钱包操作唯一标识, UUID
+	OperationId string `protobuf:"bytes,2,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
+	// 原始游戏厂商下注单号
+	ProviderBetNo string `protobuf:"bytes,3,opt,name=provider_bet_no,json=providerBetNo,proto3" json:"provider_bet_no,omitempty"`
+	// 钱包结算币种编码
+	CurrencyCode  string `protobuf:"bytes,4,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameBetCancelRequest) Reset() {
+	*x = GameBetCancelRequest{}
+	mi := &file_types_member_wallet_game_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameBetCancelRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameBetCancelRequest) ProtoMessage() {}
+
+func (x *GameBetCancelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_wallet_game_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameBetCancelRequest.ProtoReflect.Descriptor instead.
+func (*GameBetCancelRequest) Descriptor() ([]byte, []int) {
+	return file_types_member_wallet_game_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GameBetCancelRequest) GetMemberGlobalId() string {
+	if x != nil {
+		return x.MemberGlobalId
+	}
+	return ""
+}
+
+func (x *GameBetCancelRequest) GetOperationId() string {
+	if x != nil {
+		return x.OperationId
+	}
+	return ""
+}
+
+func (x *GameBetCancelRequest) GetProviderBetNo() string {
+	if x != nil {
+		return x.ProviderBetNo
+	}
+	return ""
+}
+
+func (x *GameBetCancelRequest) GetCurrencyCode() string {
+	if x != nil {
+		return x.CurrencyCode
+	}
+	return ""
+}
+
+// 游戏下注取消响应
+type GameBetCancelResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameBetCancelResponse) Reset() {
+	*x = GameBetCancelResponse{}
+	mi := &file_types_member_wallet_game_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameBetCancelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameBetCancelResponse) ProtoMessage() {}
+
+func (x *GameBetCancelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_types_member_wallet_game_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameBetCancelResponse.ProtoReflect.Descriptor instead.
+func (*GameBetCancelResponse) Descriptor() ([]byte, []int) {
+	return file_types_member_wallet_game_proto_rawDescGZIP(), []int{3}
+}
+
 var File_types_member_wallet_game_proto protoreflect.FileDescriptor
 
 const file_types_member_wallet_game_proto_rawDesc = "" +
@@ -152,7 +262,13 @@ const file_types_member_wallet_game_proto_rawDesc = "" +
 	"\rcurrency_code\x18\x04 \x01(\tR\fcurrencyCode\x12\x1d\n" +
 	"\n" +
 	"bet_amount\x18\x05 \x01(\x03R\tbetAmount\"\x11\n" +
-	"\x0fGameBetResponseBUZSoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepbb\x06proto3"
+	"\x0fGameBetResponse\"\xb0\x01\n" +
+	"\x14GameBetCancelRequest\x12(\n" +
+	"\x10member_global_id\x18\x01 \x01(\tR\x0ememberGlobalId\x12!\n" +
+	"\foperation_id\x18\x02 \x01(\tR\voperationId\x12&\n" +
+	"\x0fprovider_bet_no\x18\x03 \x01(\tR\rproviderBetNo\x12#\n" +
+	"\rcurrency_code\x18\x04 \x01(\tR\fcurrencyCode\"\x17\n" +
+	"\x15GameBetCancelResponseBUZSoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepbb\x06proto3"
 
 var (
 	file_types_member_wallet_game_proto_rawDescOnce sync.Once
@@ -166,10 +282,12 @@ func file_types_member_wallet_game_proto_rawDescGZIP() []byte {
 	return file_types_member_wallet_game_proto_rawDescData
 }
 
-var file_types_member_wallet_game_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_types_member_wallet_game_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_types_member_wallet_game_proto_goTypes = []any{
-	(*GameBetRequest)(nil),  // 0: member_wallet_game.GameBetRequest
-	(*GameBetResponse)(nil), // 1: member_wallet_game.GameBetResponse
+	(*GameBetRequest)(nil),        // 0: member_wallet_game.GameBetRequest
+	(*GameBetResponse)(nil),       // 1: member_wallet_game.GameBetResponse
+	(*GameBetCancelRequest)(nil),  // 2: member_wallet_game.GameBetCancelRequest
+	(*GameBetCancelResponse)(nil), // 3: member_wallet_game.GameBetCancelResponse
 }
 var file_types_member_wallet_game_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -190,7 +308,7 @@ func file_types_member_wallet_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_types_member_wallet_game_proto_rawDesc), len(file_types_member_wallet_game_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

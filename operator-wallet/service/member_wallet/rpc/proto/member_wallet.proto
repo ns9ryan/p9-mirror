@@ -24,4 +24,6 @@ service MemberWallet {
 
   // 游戏下注
   rpc GameBet(member_wallet_game.GameBetRequest) returns (member_wallet_game.GameBetResponse);
+  // 游戏下注取消
+  rpc GameBetCancel(member_wallet_game.GameBetCancelRequest) returns (member_wallet_game.GameBetCancelResponse);
 }

@@ -29,28 +29,33 @@ const file_member_wallet_proto_rawDesc = "" +
 	"\n" +
 	"\x13member_wallet.proto\x12\rmember_wallet\x1a\x1etypes/member_wallet_ping.proto\x1a!types/member_wallet_deposit.proto\x1a\x1etypes/member_wallet_game.proto2Q\n" +
 	"\x04Ping\x12I\n" +
-	"\x04Ping\x12\x1f.member_wallet_ping.PingRequest\x1a .member_wallet_ping.PingResponse2\xce\x01\n" +
+	"\x04Ping\x12\x1f.member_wallet_ping.PingRequest\x1a .member_wallet_ping.PingResponse2\xb4\x02\n" +
 	"\fMemberWallet\x12j\n" +
 	"\rDepositCredit\x12+.member_wallet_deposit.DepositCreditRequest\x1a,.member_wallet_deposit.DepositCreditResponse\x12R\n" +
-	"\aGameBet\x12\".member_wallet_game.GameBetRequest\x1a#.member_wallet_game.GameBetResponseBNZLoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpcb\x06proto3"
+	"\aGameBet\x12\".member_wallet_game.GameBetRequest\x1a#.member_wallet_game.GameBetResponse\x12d\n" +
+	"\rGameBetCancel\x12(.member_wallet_game.GameBetCancelRequest\x1a).member_wallet_game.GameBetCancelResponseBNZLoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpcb\x06proto3"
 
 var file_member_wallet_proto_goTypes = []any{
 	(*pingpb.PingRequest)(nil),              // 0: member_wallet_ping.PingRequest
 	(*depositpb.DepositCreditRequest)(nil),  // 1: member_wallet_deposit.DepositCreditRequest
 	(*gamepb.GameBetRequest)(nil),           // 2: member_wallet_game.GameBetRequest
-	(*pingpb.PingResponse)(nil),             // 3: member_wallet_ping.PingResponse
-	(*depositpb.DepositCreditResponse)(nil), // 4: member_wallet_deposit.DepositCreditResponse
-	(*gamepb.GameBetResponse)(nil),          // 5: member_wallet_game.GameBetResponse
+	(*gamepb.GameBetCancelRequest)(nil),     // 3: member_wallet_game.GameBetCancelRequest
+	(*pingpb.PingResponse)(nil),             // 4: member_wallet_ping.PingResponse
+	(*depositpb.DepositCreditResponse)(nil), // 5: member_wallet_deposit.DepositCreditResponse
+	(*gamepb.GameBetResponse)(nil),          // 6: member_wallet_game.GameBetResponse
+	(*gamepb.GameBetCancelResponse)(nil),    // 7: member_wallet_game.GameBetCancelResponse
 }
 var file_member_wallet_proto_depIdxs = []int32{
 	0, // 0: member_wallet.Ping.Ping:input_type -> member_wallet_ping.PingRequest
 	1, // 1: member_wallet.MemberWallet.DepositCredit:input_type -> member_wallet_deposit.DepositCreditRequest
 	2, // 2: member_wallet.MemberWallet.GameBet:input_type -> member_wallet_game.GameBetRequest
-	3, // 3: member_wallet.Ping.Ping:output_type -> member_wallet_ping.PingResponse
-	4, // 4: member_wallet.MemberWallet.DepositCredit:output_type -> member_wallet_deposit.DepositCreditResponse
-	5, // 5: member_wallet.MemberWallet.GameBet:output_type -> member_wallet_game.GameBetResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	3, // 3: member_wallet.MemberWallet.GameBetCancel:input_type -> member_wallet_game.GameBetCancelRequest
+	4, // 4: member_wallet.Ping.Ping:output_type -> member_wallet_ping.PingResponse
+	5, // 5: member_wallet.MemberWallet.DepositCredit:output_type -> member_wallet_deposit.DepositCreditResponse
+	6, // 6: member_wallet.MemberWallet.GameBet:output_type -> member_wallet_game.GameBetResponse
+	7, // 7: member_wallet.MemberWallet.GameBetCancel:output_type -> member_wallet_game.GameBetCancelResponse
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
