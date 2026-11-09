@@ -11,7 +11,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/operator-wallet/ent"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/enum"
@@ -53,83 +52,68 @@ func (l *GameBetLogic) GameBet(in *gamepb.GameBetRequest) (*gamepb.GameBetRespon
 		return nil, err
 	}
 
-	// 校验当前厅身份, 钱包数据范围由 Ent Interceptor 根据上下文隔离
-	operatorCode := ctxdata.OperatorCodeFromCtx(l.ctx)
-	if operatorCode == "" ||
-		strings.TrimSpace(operatorCode) != operatorCode ||
-		utf8.RuneCountInString(operatorCode) > 64 {
-		return nil, status.Error(codes.Unauthenticated, "缺少有效的厅身份")
-	}
-
-	// 余额更新和流水写入必须在同一个事务中
-	err = dao.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
-		// 查询并锁定会员钱包
-		memberWallet, err := l.svcCtx.DAO.MemberWallet.GetForUpdateTx(l.ctx, tx, params.memberGlobalID)
-		if err != nil {
-			if ent.IsNotFound(err) {
-				return status.Error(codes.NotFound, "会员钱包不存在")
-			}
-			return l.internalError("查询会员钱包失败", err)
-		}
-
-		// 校验钱包币种
-		if memberWallet.CurrencyCode != params.currencyCode {
-			return status.Error(codes.FailedPrecondition, "下注币种与钱包币种不一致")
-		}
-
-		// 按原始下注单号检查业务幂等
-		existing, err := l.svcCtx.DAO.MemberWalletLedger.ListByBusinessTx(
-			l.ctx,
-			tx,
-			int64(enum.BusinessTypeGame),      // 游戏
-			int64(enum.BusinessActionGameBet), // 游戏下注
-			params.providerBetNo,              // 游戏厂商原始下注单号
-		)
-		if err != nil {
-			return l.internalError("查询游戏下注流水失败", err)
-		}
-
-		if len(existing) > 0 {
-			if !matchGameBetRecords(
-				existing,
-				memberWallet.ID,
+	// 校验厅身份, 锁定会员钱包并执行事务
+	err = withLockedMemberWalletTx(
+		l.ctx,
+		l.svcCtx,
+		params.memberGlobalID,
+		params.currencyCode,
+		"下注币种与钱包币种不一致",
+		func(tx *ent.Tx, memberWallet *ent.MemberWallet) error {
+			// 按原始下注单号检查业务幂等
+			existing, err := l.svcCtx.DAO.MemberWalletLedger.ListByBusinessTx(
+				l.ctx,
+				tx,
+				int64(enum.BusinessTypeGame),
+				int64(enum.BusinessActionGameBet),
 				params.providerBetNo,
-				params.betAmount,
-			) {
-				return status.Error(codes.AlreadyExists, "游戏下注订单已存在")
+			)
+			if err != nil {
+				return l.internalError("查询游戏下注流水失败", err)
+			}
+
+			if len(existing) > 0 {
+				if !matchGameBetRecords(
+					existing,
+					memberWallet.ID,
+					params.providerBetNo,
+					params.betAmount,
+				) {
+					return status.Error(codes.AlreadyExists, "游戏下注订单已存在")
+				}
+
+				return nil
+			}
+
+			// 创建绑定当前事务和钱包的记账器
+			recorder, err := wallet.NewRecorder(tx, l.svcCtx.DAO, memberWallet)
+			if err != nil {
+				return l.internalError("初始化钱包记账器失败", err)
+			}
+
+			// 执行统一资金记账
+			if err := recorder.Record(l.ctx, wallet.RecordParams{
+				OperationID:    params.operationID,
+				BusinessType:   enum.BusinessTypeGame,
+				BusinessAction: enum.BusinessActionGameBet,
+				BusinessNo:     params.providerBetNo,
+				Changes: []wallet.BalanceChange{
+					{
+						BalanceType:  enum.BalanceTypeAvailable,
+						ChangeAmount: -params.betAmount,
+					},
+					{
+						BalanceType:  enum.BalanceTypeUnsettled,
+						ChangeAmount: params.betAmount,
+					},
+				},
+			}); err != nil {
+				return l.mapRecordError(err)
 			}
 
 			return nil
-		}
-
-		// 创建绑定当前事务和钱包的记账器
-		recorder, err := wallet.NewRecorder(tx, l.svcCtx.DAO, memberWallet)
-		if err != nil {
-			return l.internalError("初始化钱包记账器失败", err)
-		}
-
-		// 执行统一资金记账
-		if err := recorder.Record(l.ctx, wallet.RecordParams{
-			OperationID:    params.operationID,
-			BusinessType:   enum.BusinessTypeGame,
-			BusinessAction: enum.BusinessActionGameBet,
-			BusinessNo:     params.providerBetNo,
-			Changes: []wallet.BalanceChange{
-				{
-					BalanceType:  enum.BalanceTypeAvailable,
-					ChangeAmount: -params.betAmount,
-				},
-				{
-					BalanceType:  enum.BalanceTypeUnsettled,
-					ChangeAmount: params.betAmount,
-				},
-			},
-		}); err != nil {
-			return l.mapRecordError(err)
-		}
-
-		return nil
-	})
+		},
+	)
 	if err != nil {
 		// 保留事务回调中已经转换好的业务错误
 		if _, ok := status.FromError(err); ok {
@@ -187,41 +171,21 @@ func parseGameBetRequest(in *gamepb.GameBetRequest) (gameBetParams, error) {
 
 // matchGameBetRecords 判断已有流水是否与本次下注完全一致
 func matchGameBetRecords(existing []*ent.MemberWalletLedger, walletID int64, providerBetNo string, betAmount int64) bool {
-	// 一次下注必须同时存在可用余额和未结算余额两条流水
-	if len(existing) != 2 || existing[0] == nil || existing[1] == nil {
+	if betAmount <= 0 {
 		return false
 	}
 
-	// 两条流水必须属于同一次钱包操作
-	operationID := existing[0].OperationID
-
-	changes := map[enum.BalanceType]int64{
-		enum.BalanceTypeAvailable: -betAmount,
-		enum.BalanceTypeUnsettled: betAmount,
-	}
-
-	for _, ledger := range existing {
-		if ledger == nil ||
-			ledger.WalletID != walletID ||
-			ledger.OperationID != operationID ||
-			ledger.BusinessType != int64(enum.BusinessTypeGame) ||
-			ledger.BusinessAction != int64(enum.BusinessActionGameBet) ||
-			ledger.BusinessNo != providerBetNo {
-			return false
-		}
-
-		balanceType := enum.BalanceType(ledger.BalanceType)
-		amount, exists := changes[balanceType]
-		if !exists || amount != ledger.ChangeAmount {
-			return false
-		}
-
-		// 移除已匹配的余额类型, 防止重复匹配
-		delete(changes, balanceType)
-	}
-
-	// 两种余额变动均匹配, 才视为同一笔下注
-	return len(changes) == 0
+	return matchBusinessLedgerChanges(
+		existing,
+		walletID,
+		enum.BusinessTypeGame,
+		enum.BusinessActionGameBet,
+		providerBetNo,
+		map[enum.BalanceType]int64{
+			enum.BalanceTypeAvailable: -betAmount,
+			enum.BalanceTypeUnsettled: betAmount,
+		},
+	)
 }
 
 // internalError 记录内部错误并返回统一RPC错误

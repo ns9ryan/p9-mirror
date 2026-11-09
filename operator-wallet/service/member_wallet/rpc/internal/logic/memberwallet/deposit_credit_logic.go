@@ -11,7 +11,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/operator-wallet/ent"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/dao"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/enum"
@@ -53,54 +52,39 @@ func (l *DepositCreditLogic) DepositCredit(in *depositpb.DepositCreditRequest) (
 		return nil, err
 	}
 
-	// 校验当前厅身份, 钱包数据范围由 Ent Interceptor 根据上下文隔离
-	operatorCode := ctxdata.OperatorCodeFromCtx(l.ctx)
-	if operatorCode == "" ||
-		strings.TrimSpace(operatorCode) != operatorCode ||
-		utf8.RuneCountInString(operatorCode) > 64 {
-		return nil, status.Error(codes.Unauthenticated, "缺少有效的厅身份")
-	}
-
-	// 余额更新和流水写入必须在同一个事务中
-	err = dao.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
-		// 查询并锁定会员钱包
-		memberWallet, err := l.svcCtx.DAO.MemberWallet.GetForUpdateTx(l.ctx, tx, params.memberGlobalID)
-		if err != nil {
-			if ent.IsNotFound(err) {
-				return status.Error(codes.NotFound, "会员钱包不存在")
+	// 校验厅身份, 锁定会员钱包并执行事务
+	err = withLockedMemberWalletTx(
+		l.ctx,
+		l.svcCtx,
+		params.memberGlobalID,
+		params.currencyCode,
+		"存款币种与钱包币种不一致",
+		func(tx *ent.Tx, memberWallet *ent.MemberWallet) error {
+			// 创建绑定当前事务和钱包的记账器
+			recorder, err := wallet.NewRecorder(tx, l.svcCtx.DAO, memberWallet)
+			if err != nil {
+				return l.internalError("初始化钱包记账器失败", err)
 			}
-			return l.internalError("查询会员钱包失败", err)
-		}
 
-		// 校验钱包币种
-		if memberWallet.CurrencyCode != params.currencyCode {
-			return status.Error(codes.FailedPrecondition, "存款币种与钱包币种不一致")
-		}
-
-		// 创建绑定当前事务和钱包的记账器
-		recorder, err := wallet.NewRecorder(tx, l.svcCtx.DAO, memberWallet)
-		if err != nil {
-			return l.internalError("初始化钱包记账器失败", err)
-		}
-
-		// 执行统一资金记账
-		if err := recorder.Record(l.ctx, wallet.RecordParams{
-			OperationID:    params.operationID,
-			BusinessType:   enum.BusinessTypeDeposit,
-			BusinessAction: enum.BusinessActionDepositCredit,
-			BusinessNo:     params.depositOrderNo,
-			Changes: []wallet.BalanceChange{
-				{
-					BalanceType:  enum.BalanceTypeAvailable,
-					ChangeAmount: params.amount,
+			// 执行统一资金记账
+			if err := recorder.Record(l.ctx, wallet.RecordParams{
+				OperationID:    params.operationID,
+				BusinessType:   enum.BusinessTypeDeposit,
+				BusinessAction: enum.BusinessActionDepositCredit,
+				BusinessNo:     params.depositOrderNo,
+				Changes: []wallet.BalanceChange{
+					{
+						BalanceType:  enum.BalanceTypeAvailable,
+						ChangeAmount: params.amount,
+					},
 				},
-			},
-		}); err != nil {
-			return l.mapRecordError(err)
-		}
+			}); err != nil {
+				return l.mapRecordError(err)
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 	if err != nil {
 		// 保留事务回调中已经转换好的业务错误
 		if _, ok := status.FromError(err); ok {
