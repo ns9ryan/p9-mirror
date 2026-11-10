@@ -8,7 +8,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func TestWalletStateValidate(t *testing.T) {
+// TestStateValidate 验证钱包运行时状态的合法性
+func TestStateValidate(t *testing.T) {
 	base := State{
 		WalletID:       1,
 		WalletGlobalID: uuid.New(),

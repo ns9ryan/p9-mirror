@@ -60,9 +60,7 @@ func (s State) Validate() error {
 		return invalidWalletState("invalid currency code")
 
 	// 校验余额
-	case s.Balance < 0 ||
-		s.FrozenBalance < 0 ||
-		s.UnsettledBalance < 0:
+	case s.Balance < 0 || s.FrozenBalance < 0 || s.UnsettledBalance < 0:
 		return invalidWalletState("negative wallet balance")
 
 	// 校验版本
