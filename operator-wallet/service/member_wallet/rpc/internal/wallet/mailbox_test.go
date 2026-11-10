@@ -107,6 +107,22 @@ func TestMailboxDequeueContextCanceled(t *testing.T) {
 	}
 }
 
+// TestMailboxEnqueueContextCanceled 验证消息入队支持 Context 取消
+func TestMailboxEnqueueContextCanceled(t *testing.T) {
+	m, err := newMailbox(1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer m.close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	if err := m.enqueue(ctx, "message"); !errors.Is(err, context.Canceled) {
+		t.Fatalf("expected context.Canceled, got %v", err)
+	}
+}
+
 // TestNewMailboxInvalidCapacity 验证创建队列时拒绝无效容量
 func TestNewMailboxInvalidCapacity(t *testing.T) {
 	for _, capacity := range []int{0, -1} {

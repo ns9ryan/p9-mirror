@@ -54,10 +54,12 @@ func (m *mailbox) enqueue(ctx context.Context, message any) error {
 		return errNilMailboxMessage
 	}
 
+	// 提前检查已取消的上下文, 避免继续执行入队操作
 	if err := ctx.Err(); err != nil {
 		return err
 	}
 
+	// 读锁允许多个入队操作并发执行, 同时阻止队列在入队期间被关闭
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
@@ -66,14 +68,20 @@ func (m *mailbox) enqueue(ctx context.Context, message any) error {
 	}
 
 	select {
+	case <-ctx.Done():
+		// 处理预检查后发生的上下文取消
+		return ctx.Err()
+
 	case m.queue <- message:
 		return nil
+
 	default:
+		// 使用非阻塞入队, 避免队列已满时阻塞调用方
 		return ErrMailboxFull
 	}
 }
 
-// dequeue 从队列中获取下一条消息
+// dequeue 按 FIFO 顺序获取下一条消息
 func (m *mailbox) dequeue(ctx context.Context) (any, error) {
 	if m == nil {
 		return nil, ErrMailboxClosed
@@ -83,18 +91,22 @@ func (m *mailbox) dequeue(ctx context.Context) (any, error) {
 		return nil, errNilMailboxContext
 	}
 
+	// 提前检查已取消的上下文, 避免继续等待消息
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
 
+	// 等待消息到达或上下文取消
 	select {
 	case message, ok := <-m.queue:
 		if !ok {
+			// 队列已关闭且没有剩余消息
 			return nil, ErrMailboxClosed
 		}
 		return message, nil
 
 	case <-ctx.Done():
+		// 等待期间响应上下文取消
 		return nil, ctx.Err()
 	}
 }
@@ -105,6 +117,7 @@ func (m *mailbox) close() {
 		return
 	}
 
+	// 写锁与入队操作的读锁互斥, 确保关闭时没有入队操作正在执行
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
