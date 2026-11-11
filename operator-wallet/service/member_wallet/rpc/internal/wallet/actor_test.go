@@ -72,6 +72,22 @@ func newTestActor(t *testing.T, pool *workerPool, mailboxCapacity int, handler a
 	return a
 }
 
+// waitSignalContext 在 wait 进入 select 时通知测试
+type waitSignalContext struct {
+	context.Context
+	doneCalled chan struct{}
+}
+
+// Done 通知测试 wait 已通过 Context 预检查
+func (c *waitSignalContext) Done() <-chan struct{} {
+	select {
+	case c.doneCalled <- struct{}{}:
+	default:
+	}
+
+	return c.Context.Done()
+}
+
 // ---- Actor 创建 ----
 
 // TestNewActorRejectsInvalidConfig 验证 Actor 拒绝无效配置
@@ -350,6 +366,86 @@ func TestActorWaitContextCanceled(t *testing.T) {
 
 	// Context 取消只结束本次等待, 不会关闭 Actor
 	a.close()
+	if err := a.wait(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// TestActorWaitContextCanceledWhileWaiting 验证等待期间取消 Context
+func TestActorWaitContextCanceledWhileWaiting(t *testing.T) {
+	pool := newTestWorkerPool(t, 1)
+
+	started := make(chan struct{})
+	release := make(chan struct{})
+
+	a := newTestActor(t, pool, 1, func(_ *State, _ any) {
+		// 暂停 Handler, 确保 Actor 不会提前退出
+		close(started)
+		<-release
+	})
+
+	var releaseOnce sync.Once
+	releaseAll := func() {
+		releaseOnce.Do(func() { close(release) })
+	}
+	t.Cleanup(releaseAll)
+
+	if err := a.enqueue(context.Background(), "message"); err != nil {
+		t.Fatal(err)
+	}
+
+	// 等待 Handler 开始执行, 确保 Actor 仍处于运行状态
+	select {
+	case <-started:
+	case <-time.After(2 * time.Second):
+		t.Fatal("actor handler did not start")
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	waitCtx := &waitSignalContext{
+		Context:    ctx,
+		doneCalled: make(chan struct{}, 1),
+	}
+
+	waitResult := make(chan error, 1)
+
+	// 在独立 Goroutine 中等待 Actor 退出
+	go func() {
+		waitResult <- a.wait(waitCtx)
+	}()
+
+	// 确保 wait 已通过预检查并调用 Done(), 即将进入 select 等待
+	select {
+	case <-waitCtx.doneCalled:
+	case <-time.After(2 * time.Second):
+		t.Fatal("actor wait did not enter select")
+	}
+
+	// 等待期间取消 Context, 本次等待应立即返回
+	cancel()
+
+	select {
+	case err := <-waitResult:
+		if !errors.Is(err, context.Canceled) {
+			t.Fatalf("expected context.Canceled, got %v", err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("actor wait did not return after context cancellation")
+	}
+
+	// Context 取消只结束本次等待, 不应该关闭 Actor
+	select {
+	case <-a.done:
+		t.Fatal("actor exited after wait context cancellation")
+	default:
+	}
+
+	// 释放 Handler, 再正常关闭并等待 Actor 退出
+	a.close()
+	releaseAll()
+
 	if err := a.wait(context.Background()); err != nil {
 		t.Fatal(err)
 	}
