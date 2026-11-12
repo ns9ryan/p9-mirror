@@ -42,6 +42,7 @@ var (
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
 		{Name: "global_id", Type: field.TypeUUID, Unique: true, Comment: "资金流水全局唯一标识"},
 		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "所属厅业务编码"},
+		{Name: "member_id", Type: field.TypeInt64, Comment: "CRM会员ID"},
 		{Name: "balance_type", Type: field.TypeInt64, Comment: "余额类型: 1可用余额, 2冻结余额, 3未结算余额", SchemaType: map[string]string{"postgres": "smallint"}},
 		{Name: "change_amount", Type: field.TypeInt64, Comment: "变动金额, 正数增加, 负数减少"},
 		{Name: "balance_before", Type: field.TypeInt64, Comment: "变动前余额"},
@@ -62,7 +63,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "member_wallet_ledger_member_wallet_ledgers",
-				Columns:    []*schema.Column{MemberWalletLedgerColumns[12]},
+				Columns:    []*schema.Column{MemberWalletLedgerColumns[13]},
 				RefColumns: []*schema.Column{MemberWalletColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -71,12 +72,12 @@ var (
 			{
 				Name:    "uk_member_wallet_ledger_operation",
 				Unique:  true,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[12], MemberWalletLedgerColumns[7], MemberWalletLedgerColumns[3]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[13], MemberWalletLedgerColumns[8], MemberWalletLedgerColumns[4]},
 			},
 			{
 				Name:    "uk_member_wallet_ledger_deposit_credit",
 				Unique:  true,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[10]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[11]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "business_type = 1 AND business_action = 1001",
 				},
@@ -84,7 +85,7 @@ var (
 			{
 				Name:    "uk_member_wallet_ledger_game_bet",
 				Unique:  true,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[10], MemberWalletLedgerColumns[3]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[4]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "business_type = 3 AND business_action = 3001",
 				},
@@ -92,7 +93,7 @@ var (
 			{
 				Name:    "uk_member_wallet_ledger_game_bet_cancel",
 				Unique:  true,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[10], MemberWalletLedgerColumns[3]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[4]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "business_type = 3 AND business_action = 3003",
 				},
@@ -100,12 +101,12 @@ var (
 			{
 				Name:    "idx_member_wallet_ledger_wallet_created",
 				Unique:  false,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[12], MemberWalletLedgerColumns[11], MemberWalletLedgerColumns[0]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[13], MemberWalletLedgerColumns[12], MemberWalletLedgerColumns[0]},
 			},
 			{
 				Name:    "idx_member_wallet_ledger_business_no",
 				Unique:  false,
-				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[8], MemberWalletLedgerColumns[10]},
+				Columns: []*schema.Column{MemberWalletLedgerColumns[2], MemberWalletLedgerColumns[9], MemberWalletLedgerColumns[11]},
 			},
 		},
 	}

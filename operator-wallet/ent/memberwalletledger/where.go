@@ -66,6 +66,11 @@ func OperatorCode(v string) predicate.MemberWalletLedger {
 	return predicate.MemberWalletLedger(sql.FieldEQ(FieldOperatorCode, v))
 }
 
+// MemberID applies equality check predicate on the "member_id" field. It's identical to MemberIDEQ.
+func MemberID(v int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldEQ(FieldMemberID, v))
+}
+
 // WalletID applies equality check predicate on the "wallet_id" field. It's identical to WalletIDEQ.
 func WalletID(v int64) predicate.MemberWalletLedger {
 	return predicate.MemberWalletLedger(sql.FieldEQ(FieldWalletID, v))
@@ -219,6 +224,46 @@ func OperatorCodeEqualFold(v string) predicate.MemberWalletLedger {
 // OperatorCodeContainsFold applies the ContainsFold predicate on the "operator_code" field.
 func OperatorCodeContainsFold(v string) predicate.MemberWalletLedger {
 	return predicate.MemberWalletLedger(sql.FieldContainsFold(FieldOperatorCode, v))
+}
+
+// MemberIDEQ applies the EQ predicate on the "member_id" field.
+func MemberIDEQ(v int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldEQ(FieldMemberID, v))
+}
+
+// MemberIDNEQ applies the NEQ predicate on the "member_id" field.
+func MemberIDNEQ(v int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldNEQ(FieldMemberID, v))
+}
+
+// MemberIDIn applies the In predicate on the "member_id" field.
+func MemberIDIn(vs ...int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldIn(FieldMemberID, vs...))
+}
+
+// MemberIDNotIn applies the NotIn predicate on the "member_id" field.
+func MemberIDNotIn(vs ...int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldNotIn(FieldMemberID, vs...))
+}
+
+// MemberIDGT applies the GT predicate on the "member_id" field.
+func MemberIDGT(v int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldGT(FieldMemberID, v))
+}
+
+// MemberIDGTE applies the GTE predicate on the "member_id" field.
+func MemberIDGTE(v int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldGTE(FieldMemberID, v))
+}
+
+// MemberIDLT applies the LT predicate on the "member_id" field.
+func MemberIDLT(v int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldLT(FieldMemberID, v))
+}
+
+// MemberIDLTE applies the LTE predicate on the "member_id" field.
+func MemberIDLTE(v int64) predicate.MemberWalletLedger {
+	return predicate.MemberWalletLedger(sql.FieldLTE(FieldMemberID, v))
 }
 
 // WalletIDEQ applies the EQ predicate on the "wallet_id" field.

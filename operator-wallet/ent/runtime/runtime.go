@@ -125,32 +125,36 @@ func init() {
 			return nil
 		}
 	}()
+	// memberwalletledgerDescMemberID is the schema descriptor for member_id field.
+	memberwalletledgerDescMemberID := memberwalletledgerFields[2].Descriptor()
+	// memberwalletledger.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
+	memberwalletledger.MemberIDValidator = memberwalletledgerDescMemberID.Validators[0].(func(int64) error)
 	// memberwalletledgerDescWalletID is the schema descriptor for wallet_id field.
-	memberwalletledgerDescWalletID := memberwalletledgerFields[2].Descriptor()
+	memberwalletledgerDescWalletID := memberwalletledgerFields[3].Descriptor()
 	// memberwalletledger.WalletIDValidator is a validator for the "wallet_id" field. It is called by the builders before save.
 	memberwalletledger.WalletIDValidator = memberwalletledgerDescWalletID.Validators[0].(func(int64) error)
 	// memberwalletledgerDescBalanceType is the schema descriptor for balance_type field.
-	memberwalletledgerDescBalanceType := memberwalletledgerFields[3].Descriptor()
+	memberwalletledgerDescBalanceType := memberwalletledgerFields[4].Descriptor()
 	// memberwalletledger.BalanceTypeValidator is a validator for the "balance_type" field. It is called by the builders before save.
 	memberwalletledger.BalanceTypeValidator = memberwalletledgerDescBalanceType.Validators[0].(func(int64) error)
 	// memberwalletledgerDescBalanceBefore is the schema descriptor for balance_before field.
-	memberwalletledgerDescBalanceBefore := memberwalletledgerFields[5].Descriptor()
+	memberwalletledgerDescBalanceBefore := memberwalletledgerFields[6].Descriptor()
 	// memberwalletledger.BalanceBeforeValidator is a validator for the "balance_before" field. It is called by the builders before save.
 	memberwalletledger.BalanceBeforeValidator = memberwalletledgerDescBalanceBefore.Validators[0].(func(int64) error)
 	// memberwalletledgerDescBalanceAfter is the schema descriptor for balance_after field.
-	memberwalletledgerDescBalanceAfter := memberwalletledgerFields[6].Descriptor()
+	memberwalletledgerDescBalanceAfter := memberwalletledgerFields[7].Descriptor()
 	// memberwalletledger.BalanceAfterValidator is a validator for the "balance_after" field. It is called by the builders before save.
 	memberwalletledger.BalanceAfterValidator = memberwalletledgerDescBalanceAfter.Validators[0].(func(int64) error)
 	// memberwalletledgerDescBusinessType is the schema descriptor for business_type field.
-	memberwalletledgerDescBusinessType := memberwalletledgerFields[8].Descriptor()
+	memberwalletledgerDescBusinessType := memberwalletledgerFields[9].Descriptor()
 	// memberwalletledger.BusinessTypeValidator is a validator for the "business_type" field. It is called by the builders before save.
 	memberwalletledger.BusinessTypeValidator = memberwalletledgerDescBusinessType.Validators[0].(func(int64) error)
 	// memberwalletledgerDescBusinessAction is the schema descriptor for business_action field.
-	memberwalletledgerDescBusinessAction := memberwalletledgerFields[9].Descriptor()
+	memberwalletledgerDescBusinessAction := memberwalletledgerFields[10].Descriptor()
 	// memberwalletledger.BusinessActionValidator is a validator for the "business_action" field. It is called by the builders before save.
 	memberwalletledger.BusinessActionValidator = memberwalletledgerDescBusinessAction.Validators[0].(func(int64) error)
 	// memberwalletledgerDescBusinessNo is the schema descriptor for business_no field.
-	memberwalletledgerDescBusinessNo := memberwalletledgerFields[10].Descriptor()
+	memberwalletledgerDescBusinessNo := memberwalletledgerFields[11].Descriptor()
 	// memberwalletledger.BusinessNoValidator is a validator for the "business_no" field. It is called by the builders before save.
 	memberwalletledger.BusinessNoValidator = func() func(string) error {
 		validators := memberwalletledgerDescBusinessNo.Validators
@@ -168,7 +172,7 @@ func init() {
 		}
 	}()
 	// memberwalletledgerDescCreatedAt is the schema descriptor for created_at field.
-	memberwalletledgerDescCreatedAt := memberwalletledgerFields[11].Descriptor()
+	memberwalletledgerDescCreatedAt := memberwalletledgerFields[12].Descriptor()
 	// memberwalletledger.DefaultCreatedAt holds the default value on creation for the created_at field.
 	memberwalletledger.DefaultCreatedAt = memberwalletledgerDescCreatedAt.Default.(func() time.Time)
 }

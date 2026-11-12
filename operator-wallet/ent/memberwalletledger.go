@@ -24,6 +24,8 @@ type MemberWalletLedger struct {
 	GlobalID uuid.UUID `json:"global_id,omitempty"`
 	// 所属厅业务编码
 	OperatorCode string `json:"operator_code,omitempty"`
+	// CRM会员ID
+	MemberID int64 `json:"member_id,omitempty"`
 	// 所属钱包ID
 	WalletID int64 `json:"wallet_id,omitempty"`
 	// 余额类型: 1可用余额, 2冻结余额, 3未结算余额
@@ -75,7 +77,7 @@ func (*MemberWalletLedger) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case memberwalletledger.FieldID, memberwalletledger.FieldWalletID, memberwalletledger.FieldBalanceType, memberwalletledger.FieldChangeAmount, memberwalletledger.FieldBalanceBefore, memberwalletledger.FieldBalanceAfter, memberwalletledger.FieldBusinessType, memberwalletledger.FieldBusinessAction:
+		case memberwalletledger.FieldID, memberwalletledger.FieldMemberID, memberwalletledger.FieldWalletID, memberwalletledger.FieldBalanceType, memberwalletledger.FieldChangeAmount, memberwalletledger.FieldBalanceBefore, memberwalletledger.FieldBalanceAfter, memberwalletledger.FieldBusinessType, memberwalletledger.FieldBusinessAction:
 			values[i] = new(sql.NullInt64)
 		case memberwalletledger.FieldOperatorCode, memberwalletledger.FieldBusinessNo:
 			values[i] = new(sql.NullString)
@@ -115,6 +117,12 @@ func (_m *MemberWalletLedger) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field operator_code", values[i])
 			} else if value.Valid {
 				_m.OperatorCode = value.String
+			}
+		case memberwalletledger.FieldMemberID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field member_id", values[i])
+			} else if value.Valid {
+				_m.MemberID = value.Int64
 			}
 		case memberwalletledger.FieldWalletID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -222,6 +230,9 @@ func (_m *MemberWalletLedger) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("operator_code=")
 	builder.WriteString(_m.OperatorCode)
+	builder.WriteString(", ")
+	builder.WriteString("member_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.MemberID))
 	builder.WriteString(", ")
 	builder.WriteString("wallet_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.WalletID))

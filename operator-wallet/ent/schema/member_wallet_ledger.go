@@ -43,6 +43,11 @@ func (MemberWalletLedger) Fields() []ent.Field {
 			Immutable().
 			Comment("所属厅业务编码"),
 
+		field.Int64("member_id").
+			Positive().
+			Immutable().
+			Comment("CRM会员ID"),
+
 		field.Int64("wallet_id").
 			Positive().
 			Immutable().

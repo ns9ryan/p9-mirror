@@ -20,6 +20,8 @@ const (
 	FieldGlobalID = "global_id"
 	// FieldOperatorCode holds the string denoting the operator_code field in the database.
 	FieldOperatorCode = "operator_code"
+	// FieldMemberID holds the string denoting the member_id field in the database.
+	FieldMemberID = "member_id"
 	// FieldWalletID holds the string denoting the wallet_id field in the database.
 	FieldWalletID = "wallet_id"
 	// FieldBalanceType holds the string denoting the balance_type field in the database.
@@ -58,6 +60,7 @@ var Columns = []string{
 	FieldID,
 	FieldGlobalID,
 	FieldOperatorCode,
+	FieldMemberID,
 	FieldWalletID,
 	FieldBalanceType,
 	FieldChangeAmount,
@@ -92,6 +95,8 @@ var (
 	DefaultGlobalID func() uuid.UUID
 	// OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
 	OperatorCodeValidator func(string) error
+	// MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
+	MemberIDValidator func(int64) error
 	// WalletIDValidator is a validator for the "wallet_id" field. It is called by the builders before save.
 	WalletIDValidator func(int64) error
 	// BalanceTypeValidator is a validator for the "balance_type" field. It is called by the builders before save.
@@ -126,6 +131,11 @@ func ByGlobalID(opts ...sql.OrderTermOption) OrderOption {
 // ByOperatorCode orders the results by the operator_code field.
 func ByOperatorCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOperatorCode, opts...).ToFunc()
+}
+
+// ByMemberID orders the results by the member_id field.
+func ByMemberID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMemberID, opts...).ToFunc()
 }
 
 // ByWalletID orders the results by the wallet_id field.

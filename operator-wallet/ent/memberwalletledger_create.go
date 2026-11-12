@@ -44,6 +44,12 @@ func (_c *MemberWalletLedgerCreate) SetOperatorCode(v string) *MemberWalletLedge
 	return _c
 }
 
+// SetMemberID sets the "member_id" field.
+func (_c *MemberWalletLedgerCreate) SetMemberID(v int64) *MemberWalletLedgerCreate {
+	_c.mutation.SetMemberID(v)
+	return _c
+}
+
 // SetWalletID sets the "wallet_id" field.
 func (_c *MemberWalletLedgerCreate) SetWalletID(v int64) *MemberWalletLedgerCreate {
 	_c.mutation.SetWalletID(v)
@@ -190,6 +196,14 @@ func (_c *MemberWalletLedgerCreate) check() error {
 			return &ValidationError{Name: "operator_code", err: fmt.Errorf(`ent: validator failed for field "MemberWalletLedger.operator_code": %w`, err)}
 		}
 	}
+	if _, ok := _c.mutation.MemberID(); !ok {
+		return &ValidationError{Name: "member_id", err: errors.New(`ent: missing required field "MemberWalletLedger.member_id"`)}
+	}
+	if v, ok := _c.mutation.MemberID(); ok {
+		if err := memberwalletledger.MemberIDValidator(v); err != nil {
+			return &ValidationError{Name: "member_id", err: fmt.Errorf(`ent: validator failed for field "MemberWalletLedger.member_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.WalletID(); !ok {
 		return &ValidationError{Name: "wallet_id", err: errors.New(`ent: missing required field "MemberWalletLedger.wallet_id"`)}
 	}
@@ -298,6 +312,10 @@ func (_c *MemberWalletLedgerCreate) createSpec() (*MemberWalletLedger, *sqlgraph
 	if value, ok := _c.mutation.OperatorCode(); ok {
 		_spec.SetField(memberwalletledger.FieldOperatorCode, field.TypeString, value)
 		_node.OperatorCode = value
+	}
+	if value, ok := _c.mutation.MemberID(); ok {
+		_spec.SetField(memberwalletledger.FieldMemberID, field.TypeInt64, value)
+		_node.MemberID = value
 	}
 	if value, ok := _c.mutation.BalanceType(); ok {
 		_spec.SetField(memberwalletledger.FieldBalanceType, field.TypeInt64, value)
@@ -426,6 +444,9 @@ func (u *MemberWalletLedgerUpsertOne) UpdateNewValues() *MemberWalletLedgerUpser
 		}
 		if _, exists := u.create.mutation.OperatorCode(); exists {
 			s.SetIgnore(memberwalletledger.FieldOperatorCode)
+		}
+		if _, exists := u.create.mutation.MemberID(); exists {
+			s.SetIgnore(memberwalletledger.FieldMemberID)
 		}
 		if _, exists := u.create.mutation.WalletID(); exists {
 			s.SetIgnore(memberwalletledger.FieldWalletID)
@@ -675,6 +696,9 @@ func (u *MemberWalletLedgerUpsertBulk) UpdateNewValues() *MemberWalletLedgerUpse
 			}
 			if _, exists := b.mutation.OperatorCode(); exists {
 				s.SetIgnore(memberwalletledger.FieldOperatorCode)
+			}
+			if _, exists := b.mutation.MemberID(); exists {
+				s.SetIgnore(memberwalletledger.FieldMemberID)
 			}
 			if _, exists := b.mutation.WalletID(); exists {
 				s.SetIgnore(memberwalletledger.FieldWalletID)
