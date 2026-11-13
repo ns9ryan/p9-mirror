@@ -69,6 +69,10 @@ func TestNewWalletEventWithdrawalFreeze(t *testing.T) {
 		t.Fatalf("unexpected balances: before=%+v, after=%+v", event.Before, event.After)
 	}
 
+	if len(event.Ledgers) != 2 {
+		t.Fatalf("expected 2 ledgers, got %d", len(event.Ledgers))
+	}
+
 	// 提现冻结产生两条 Ledger
 	expectedLedgers := []walletLedgerEvent{
 		{

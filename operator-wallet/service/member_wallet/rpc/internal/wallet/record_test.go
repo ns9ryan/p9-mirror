@@ -196,3 +196,92 @@ func TestPrepareRecordRejectsInvalidChanges(t *testing.T) {
 		})
 	}
 }
+
+// TestSameRecordParams 验证资金操作的参数一致性判断
+func TestSameRecordParams(t *testing.T) {
+	base := RecordParams{
+		OperationID:    uuid.New(),
+		BusinessType:   enum.BusinessTypeWithdraw,
+		BusinessAction: enum.BusinessActionWithdrawalFreeze,
+		BusinessNo:     "W10001",
+		Changes: []BalanceChange{
+			{BalanceType: enum.BalanceTypeAvailable, ChangeAmount: -300},
+			{BalanceType: enum.BalanceTypeFrozen, ChangeAmount: 300},
+		},
+	}
+
+	tests := []struct {
+		name   string
+		modify func(*RecordParams)
+		want   bool
+	}{
+		{
+			name: "same operation",
+			want: true,
+		},
+		{
+			name: "different change order",
+			modify: func(p *RecordParams) {
+				p.Changes[0], p.Changes[1] = p.Changes[1], p.Changes[0]
+			},
+			want: true,
+		},
+		{
+			name: "different operation ID",
+			modify: func(p *RecordParams) {
+				p.OperationID = uuid.New()
+			},
+		},
+		{
+			name: "different business type",
+			modify: func(p *RecordParams) {
+				p.BusinessType = enum.BusinessTypeGame
+			},
+		},
+		{
+			name: "different business action",
+			modify: func(p *RecordParams) {
+				p.BusinessAction = enum.BusinessActionWithdrawalPayout
+			},
+		},
+		{
+			name: "different business number",
+			modify: func(p *RecordParams) {
+				p.BusinessNo = "W10002"
+			},
+		},
+		{
+			name: "different amount",
+			modify: func(p *RecordParams) {
+				p.Changes[0].ChangeAmount = -200
+			},
+		},
+		{
+			name: "different balance type",
+			modify: func(p *RecordParams) {
+				p.Changes[1].BalanceType = enum.BalanceTypeUnsettled
+			},
+		},
+		{
+			name: "different change count",
+			modify: func(p *RecordParams) {
+				p.Changes = p.Changes[:1]
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			params := base
+			params.Changes = slices.Clone(base.Changes)
+
+			if tt.modify != nil {
+				tt.modify(&params)
+			}
+
+			if got := sameRecordParams(base, params); got != tt.want {
+				t.Fatalf("sameRecordParams() = %t, want %t", got, tt.want)
+			}
+		})
+	}
+}

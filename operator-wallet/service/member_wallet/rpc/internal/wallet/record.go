@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"slices"
 	"strings"
 	"unicode/utf8"
 
@@ -199,4 +200,25 @@ func prepareRecord(state State, params RecordParams) (preparedRecord, error) {
 		nextState: next,
 		ledgers:   ledgers,
 	}, nil
+}
+
+// sameRecordParams 判断两次资金请求是否为同一操作且内容一致
+// 调用前应完成参数校验, 保证每种余额类型最多出现一次
+func sameRecordParams(a, b RecordParams) bool {
+	if a.OperationID != b.OperationID ||
+		a.BusinessType != b.BusinessType ||
+		a.BusinessAction != b.BusinessAction ||
+		a.BusinessNo != b.BusinessNo ||
+		len(a.Changes) != len(b.Changes) {
+		return false
+	}
+
+	// 余额变动顺序不影响操作一致性
+	for _, change := range a.Changes {
+		if !slices.Contains(b.Changes, change) {
+			return false
+		}
+	}
+
+	return true
 }
