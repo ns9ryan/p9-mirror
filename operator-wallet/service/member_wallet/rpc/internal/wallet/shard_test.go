@@ -147,7 +147,7 @@ func TestShardConcurrentGetOrCreate(t *testing.T) {
 	results := make(chan result, requestCount)
 
 	// 提前启动所有 Goroutine, 让它们等待同一个关闭信号
-	for i := 0; i < requestCount; i++ {
+	for range requestCount {
 		go func() {
 			<-start
 
@@ -162,7 +162,7 @@ func TestShardConcurrentGetOrCreate(t *testing.T) {
 
 	// 收集全部结果, 验证所有请求返回的都是同一个 Actor
 	var first *actor
-	for i := 0; i < requestCount; i++ {
+	for range requestCount {
 		got := <-results
 		if got.err != nil {
 			t.Fatal(got.err)
@@ -319,7 +319,7 @@ func TestShardCloseDrainsActors(t *testing.T) {
 	// 不同 Actor 可以并发执行, 因此不要求跨钱包的完成顺序
 	// 只验证关闭前接受的消息 1、2、3 都已经处理
 	seen := make(map[int]bool)
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		seen[<-processed] = true
 	}
 
@@ -432,7 +432,7 @@ func TestShardConcurrentCreateAndClose(t *testing.T) {
 	results := make(chan error, requestCount)
 
 	// 每个 Goroutine 使用不同的钱包标识, 模拟不同钱包同时进入 Shard
-	for i := 0; i < requestCount; i++ {
+	for i := range requestCount {
 		state := testWalletState()
 		state.WalletID = int64(i + 1)
 
@@ -451,7 +451,7 @@ func TestShardConcurrentCreateAndClose(t *testing.T) {
 
 	// 创建请求要么在关闭前成功, 要么在关闭后被拒绝
 	// 其他错误说明并发创建或关闭流程存在异常
-	for i := 0; i < requestCount; i++ {
+	for range requestCount {
 		select {
 		case err := <-results:
 			if err != nil && !errors.Is(err, ErrShardClosed) {

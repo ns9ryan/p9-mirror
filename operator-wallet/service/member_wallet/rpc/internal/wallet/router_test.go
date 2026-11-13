@@ -46,7 +46,7 @@ func TestRouterReturnsValidShardIndex(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		shardIndex, err := r.route(uuid.New())
 		if err != nil {
 			t.Fatal(err)
@@ -101,7 +101,7 @@ func TestRouterWithSingleShard(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		shardIndex, err := r.route(uuid.New())
 		if err != nil {
 			t.Fatal(err)

@@ -211,7 +211,7 @@ func TestActorRunsDifferentWalletsConcurrently(t *testing.T) {
 	}
 
 	// 必须等两个 Handler 都开始执行, 才能证明不同 Actor 可以并发运行
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		select {
 		case <-started:
 		case <-time.After(2 * time.Second):

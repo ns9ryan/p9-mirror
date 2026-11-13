@@ -69,7 +69,7 @@ func TestNewEngineRejectsInvalidConfig(t *testing.T) {
 func TestEngineRoutesWalletsToShards(t *testing.T) {
 	e := newTestEngine(t, 8, 4, func(_ *State, _ any) {})
 
-	for i := 0; i < 32; i++ {
+	for i := range 32 {
 		state := testWalletState()
 		state.WalletID = int64(i + 1)
 
@@ -176,7 +176,7 @@ func TestEngineConcurrentGetOrCreate(t *testing.T) {
 	results := make(chan result, requestCount)
 
 	// 让所有 Goroutine 等待同一个启动信号
-	for i := 0; i < requestCount; i++ {
+	for range requestCount {
 		go func() {
 			<-start
 
@@ -189,7 +189,7 @@ func TestEngineConcurrentGetOrCreate(t *testing.T) {
 	close(start)
 
 	var first *actor
-	for i := 0; i < requestCount; i++ {
+	for range requestCount {
 		select {
 		case got := <-results:
 			if got.err != nil {
@@ -315,7 +315,7 @@ func TestEngineCloseDrainsPendingMessages(t *testing.T) {
 
 	// 不同钱包允许并发处理, 这里只校验消息完整性
 	seen := make(map[int]bool)
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		seen[<-processed] = true
 	}
 	for _, message := range []int{1, 2, 3} {
@@ -420,7 +420,7 @@ func TestEngineConcurrentCreateAndClose(t *testing.T) {
 	closeDone := make(chan struct{})
 
 	// 每个请求使用独立钱包, 让多个 Shard 同时参与竞争
-	for i := 0; i < requestCount; i++ {
+	for i := range requestCount {
 		state := testWalletState()
 		state.WalletID = int64(i + 1)
 
@@ -440,7 +440,7 @@ func TestEngineConcurrentCreateAndClose(t *testing.T) {
 	}()
 
 	// 关闭前的创建允许成功, 关闭后的创建必须被拒绝
-	for i := 0; i < requestCount; i++ {
+	for range requestCount {
 		select {
 		case err := <-results:
 			if err != nil && !errors.Is(err, ErrEngineClosed) {
