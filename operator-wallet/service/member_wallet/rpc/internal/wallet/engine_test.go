@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/enum"
 )
 
 // ---- 测试辅助方法 ----
@@ -468,5 +470,302 @@ func TestEngineConcurrentCreateAndClose(t *testing.T) {
 	// 所有创建和关闭操作结束后, Engine 必须拒绝新请求
 	if _, err := e.get(uuid.New()); !errors.Is(err, ErrEngineClosed) {
 		t.Fatalf("expected ErrEngineClosed, got %v", err)
+	}
+}
+
+// ---- 资金操作提交 ----
+
+// testSubmitParams 创建有效的测试资金操作参数
+func testSubmitParams() RecordParams {
+	return RecordParams{
+		OperationID:    uuid.New(),
+		BusinessType:   enum.BusinessTypeDeposit,
+		BusinessAction: enum.BusinessActionDepositCredit,
+		BusinessNo:     "D10001",
+		Changes: []BalanceChange{
+			{
+				BalanceType:  enum.BalanceTypeAvailable,
+				ChangeAmount: 100,
+			},
+		},
+	}
+}
+
+// TestEngineSubmitRoutesAndReturnsResult 验证资金操作路由及结果返回
+func TestEngineSubmitRoutesAndReturnsResult(t *testing.T) {
+	handled := make(chan operationMessage, 1)
+
+	// 使用模拟 Handler 验证 Engine 提交流程, 不涉及真实 Kafka
+	e := newTestEngine(t, 8, 4, func(state *State, message any) {
+		m := message.(operationMessage)
+		handled <- m
+
+		state.Balance += m.params.Changes[0].ChangeAmount
+		state.Version++
+
+		m.reply <- operationReply{
+			result: OperationResult{
+				OperationID:      m.params.OperationID,
+				WalletGlobalID:   state.WalletGlobalID,
+				Version:          state.Version,
+				Balance:          state.Balance,
+				FrozenBalance:    state.FrozenBalance,
+				UnsettledBalance: state.UnsettledBalance,
+			},
+		}
+	})
+
+	state := testWalletState()
+	state.Balance = 500
+	state.Version = 7
+
+	if _, err := e.getOrCreate(state); err != nil {
+		t.Fatal(err)
+	}
+
+	params := testSubmitParams()
+
+	result, err := e.submit(context.Background(), state.WalletGlobalID, params)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 验证 Actor 返回的操作结果
+	if result.OperationID != params.OperationID ||
+		result.WalletGlobalID != state.WalletGlobalID ||
+		result.Version != 8 ||
+		result.Balance != 600 {
+		t.Fatalf("unexpected operation result: %+v", result)
+	}
+
+	// 验证消息使用了正确的 Kafka Partition
+	index, err := e.router.route(state.WalletGlobalID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	message := <-handled
+	if message.partition != int32(index) {
+		t.Fatalf("expected partition %d, got %d", index, message.partition)
+	}
+	if message.params.OperationID != params.OperationID {
+		t.Fatal("operation ID changed during submission")
+	}
+}
+
+// TestEngineSubmitRejectsInvalidRequests 验证提交入口的基础校验
+func TestEngineSubmitRejectsInvalidRequests(t *testing.T) {
+	e := newTestEngine(t, 2, 1, func(_ *State, _ any) {})
+
+	walletGlobalID := uuid.New()
+	params := testSubmitParams()
+
+	// Context 不能为空
+	if _, err := e.submit(nil, walletGlobalID, params); !errors.Is(err, errNilEngineContext) {
+		t.Fatalf("expected errNilEngineContext, got %v", err)
+	}
+
+	// 已取消的请求不应进入 Engine
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	if _, err := e.submit(ctx, walletGlobalID, params); !errors.Is(err, context.Canceled) {
+		t.Fatalf("expected context.Canceled, got %v", err)
+	}
+
+	// 无效的记账参数应提前拒绝
+	invalid := params
+	invalid.Changes = nil
+
+	if _, err := e.submit(context.Background(), walletGlobalID, invalid); !errors.Is(err, ErrInvalidRecordParams) {
+		t.Fatalf("expected ErrInvalidRecordParams, got %v", err)
+	}
+
+	// 钱包标识不能为空
+	if _, err := e.submit(context.Background(), uuid.Nil, params); !errors.Is(err, ErrInvalidWalletGlobalID) {
+		t.Fatalf("expected ErrInvalidWalletGlobalID, got %v", err)
+	}
+
+	// 尚未初始化的 Actor 不允许直接处理资金操作
+	if _, err := e.submit(context.Background(), walletGlobalID, params); !errors.Is(err, ErrWalletActorNotFound) {
+		t.Fatalf("expected ErrWalletActorNotFound, got %v", err)
+	}
+
+	// Engine 关闭后拒绝新操作
+	e.close()
+
+	if _, err := e.submit(context.Background(), walletGlobalID, params); !errors.Is(err, ErrEngineClosed) {
+		t.Fatalf("expected ErrEngineClosed, got %v", err)
+	}
+}
+
+// TestEngineSubmitReturnsHandlerError 验证 Actor 错误能够返回给调用方
+func TestEngineSubmitReturnsHandlerError(t *testing.T) {
+	expectedErr := errors.New("test producer failure")
+
+	e := newTestEngine(t, 1, 1, func(_ *State, message any) {
+		m := message.(operationMessage)
+		m.reply <- operationReply{err: expectedErr}
+	})
+
+	state := testWalletState()
+	if _, err := e.getOrCreate(state); err != nil {
+		t.Fatal(err)
+	}
+
+	_, err := e.submit(context.Background(), state.WalletGlobalID, testSubmitParams())
+	if !errors.Is(err, expectedErr) {
+		t.Fatalf("expected producer failure, got %v", err)
+	}
+}
+
+// TestEngineSubmitDoesNotBlockClose 验证等待 Actor 结果时不持有 Engine 读锁
+func TestEngineSubmitDoesNotBlockClose(t *testing.T) {
+	started := make(chan struct{})
+	release := make(chan struct{})
+
+	e := newTestEngine(t, 2, 1, func(state *State, message any) {
+		m := message.(operationMessage)
+
+		close(started)
+		<-release
+
+		m.reply <- operationReply{
+			result: OperationResult{
+				OperationID:    m.params.OperationID,
+				WalletGlobalID: state.WalletGlobalID,
+			},
+		}
+	})
+
+	// 测试提前退出时也必须释放 Handler
+	var releaseOnce sync.Once
+	releaseAll := func() {
+		releaseOnce.Do(func() { close(release) })
+	}
+	t.Cleanup(releaseAll)
+
+	state := testWalletState()
+	if _, err := e.getOrCreate(state); err != nil {
+		t.Fatal(err)
+	}
+
+	submitDone := make(chan error, 1)
+
+	go func() {
+		_, err := e.submit(context.Background(), state.WalletGlobalID, testSubmitParams())
+		submitDone <- err
+	}()
+
+	// 确认消息已经进入 Actor, 且 Handler 尚未完成
+	select {
+	case <-started:
+	case <-time.After(5 * time.Second):
+		t.Fatal("actor handler did not start")
+	}
+
+	// Engine.close 不应被 submit 的结果等待阻塞
+	closeDone := make(chan struct{})
+
+	go func() {
+		e.close()
+		close(closeDone)
+	}()
+
+	select {
+	case <-closeDone:
+	case <-time.After(5 * time.Second):
+		t.Fatal("engine close was blocked by submit")
+	}
+
+	// 关闭 Engine 不应取消已接受的资金操作
+	select {
+	case err := <-submitDone:
+		t.Fatalf("submit returned before handler completed: %v", err)
+	default:
+	}
+
+	releaseAll()
+
+	select {
+	case err := <-submitDone:
+		if err != nil {
+			t.Fatalf("submit failed after engine close: %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("submit did not finish")
+	}
+}
+
+// TestEngineSubmitContextCanceledAfterEnqueue 验证取消等待不会取消已入队消息
+func TestEngineSubmitContextCanceledAfterEnqueue(t *testing.T) {
+	started := make(chan struct{})
+	release := make(chan struct{})
+	processed := make(chan struct{})
+
+	e := newTestEngine(t, 2, 1, func(state *State, message any) {
+		m := message.(operationMessage)
+
+		close(started)
+		<-release
+
+		// 模拟资金操作已完成, 即使 RPC 不再等待也应能通知结果
+		m.reply <- operationReply{
+			result: OperationResult{
+				OperationID:    m.params.OperationID,
+				WalletGlobalID: state.WalletGlobalID,
+			},
+		}
+
+		close(processed)
+	})
+
+	var releaseOnce sync.Once
+	releaseAll := func() {
+		releaseOnce.Do(func() { close(release) })
+	}
+	t.Cleanup(releaseAll)
+
+	state := testWalletState()
+	if _, err := e.getOrCreate(state); err != nil {
+		t.Fatal(err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	submitDone := make(chan error, 1)
+
+	go func() {
+		_, err := e.submit(ctx, state.WalletGlobalID, testSubmitParams())
+		submitDone <- err
+	}()
+
+	// 等待 Actor 开始处理, 确保消息已经入队
+	select {
+	case <-started:
+	case <-time.After(5 * time.Second):
+		t.Fatal("actor handler did not start")
+	}
+
+	// 取消的是 RPC 等待, 不是已经接受的资金操作
+	cancel()
+
+	select {
+	case err := <-submitDone:
+		if !errors.Is(err, context.Canceled) {
+			t.Fatalf("expected context.Canceled, got %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("submit did not respond to cancellation")
+	}
+
+	// 恢复 Handler, 确认操作仍能处理完毕
+	releaseAll()
+
+	select {
+	case <-processed:
+	case <-time.After(5 * time.Second):
+		t.Fatal("accepted operation did not finish")
 	}
 }

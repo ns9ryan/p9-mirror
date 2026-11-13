@@ -37,6 +37,9 @@ var (
 	// ErrEngineNotClosed 表示 Engine 尚未进入关闭流程
 	ErrEngineNotClosed = errors.New("wallet engine is not closed")
 
+	// ErrWalletActorNotFound 表示钱包 Actor 尚未初始化
+	ErrWalletActorNotFound = errors.New("wallet actor not found")
+
 	errNilEngine        = errors.New("wallet engine is nil")
 	errNilEngineContext = errors.New("wallet engine context is nil")
 )
@@ -136,6 +139,69 @@ func (e *engine) getOrCreate(state State) (*actor, error) {
 	}
 
 	return e.shards[index].getOrCreate(state)
+}
+
+// submit 向指定钱包提交资金操作, 并等待 Actor 返回处理结果
+func (e *engine) submit(ctx context.Context, walletGlobalID uuid.UUID, params RecordParams) (OperationResult, error) {
+	if e == nil {
+		return OperationResult{}, errNilEngine
+	}
+	if ctx == nil {
+		return OperationResult{}, errNilEngineContext
+	}
+	if err := ctx.Err(); err != nil {
+		return OperationResult{}, err
+	}
+
+	// 校验资金操作参数, 避免无效请求进入 Mailbox
+	if err := params.validate(); err != nil {
+		return OperationResult{}, err
+	}
+
+	// 读锁保护状态检查、路由和入队, 避免与 Engine 关闭交错
+	e.mu.RLock()
+
+	if e.closed {
+		e.mu.RUnlock()
+		return OperationResult{}, ErrEngineClosed
+	}
+
+	index, err := e.router.route(walletGlobalID)
+	if err != nil {
+		e.mu.RUnlock()
+		return OperationResult{}, err
+	}
+
+	// 只接收已初始化的钱包, 不在资金提交时创建 Actor
+	a, err := e.shards[index].get(walletGlobalID)
+	if err != nil {
+		e.mu.RUnlock()
+		return OperationResult{}, err
+	}
+	if a == nil {
+		e.mu.RUnlock()
+		return OperationResult{}, ErrWalletActorNotFound
+	}
+
+	// Shard 下标同时也是目标 Kafka Partition
+	message := newOperationMessage(params, int32(index))
+	err = a.enqueue(ctx, message)
+
+	// 入队完成后立即释放锁, 不持锁等待资金处理结果
+	e.mu.RUnlock()
+
+	if err != nil {
+		return OperationResult{}, err
+	}
+
+	// 消息已由 Actor 接管, Context 只控制当前调用方的等待
+	select {
+	case reply := <-message.reply:
+		return reply.result, reply.err
+
+	case <-ctx.Done():
+		return OperationResult{}, ctx.Err()
+	}
 }
 
 // close 停止接收钱包请求, 并通知全部 Shard 关闭
