@@ -172,7 +172,8 @@ func (e *engine) submit(ctx context.Context, walletGlobalID uuid.UUID, params Re
 		return OperationResult{}, err
 	}
 
-	// 只接收已初始化的钱包, 不在资金提交时创建 Actor
+	// e.get() 内部也会获取 Engine 读锁, 这里直接访问 Shard 避免重复加锁
+	// 当前读锁已保证 Engine 不会在查找 Actor 和入队期间关闭
 	a, err := e.shards[index].get(walletGlobalID)
 	if err != nil {
 		e.mu.RUnlock()
