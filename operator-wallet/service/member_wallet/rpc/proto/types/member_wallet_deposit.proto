@@ -25,3 +25,26 @@ message DepositCreditRequest {
 
 // 存款本金入账响应
 message DepositCreditResponse {}
+
+
+// 存款赠送入账请求
+message DepositBonusRequest {
+  // ==================== 业务标识 ====================
+
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 存款订单号
+  string deposit_order_no = 3;
+
+  // ==================== 入账信息 ====================
+
+  // 订单币种编码
+  string currency_code = 4;
+  // 赠送金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 存款赠送入账响应
+message DepositBonusResponse {}

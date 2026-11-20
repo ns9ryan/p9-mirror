@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package member_wallet_withdraw;
+
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/withdrawpb";
+
+// 提现冻结请求
+message WithdrawalFreezeRequest {
+  // ==================== 业务标识 ====================
+
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 提现订单号
+  string withdrawal_order_no = 3;
+
+  // ==================== 冻结信息 ====================
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 冻结金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 提现冻结响应
+message WithdrawalFreezeResponse {}
+
+
+// 提现出款请求
+message WithdrawalPayoutRequest {
+  // ==================== 业务标识 ====================
+
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 提现订单号
+  string withdrawal_order_no = 3;
+
+  // ==================== 出款信息 ====================
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 实际出款金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 提现出款响应
+message WithdrawalPayoutResponse {}
+
+
+// 提现手续费请求
+message WithdrawalFeeRequest {
+  // ==================== 业务标识 ====================
+
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 提现订单号
+  string withdrawal_order_no = 3;
+
+  // ==================== 手续费信息 ====================
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 手续费金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 提现手续费响应
+message WithdrawalFeeResponse {}
+
+
+// 提现解冻退回请求
+message WithdrawalUnfreezeRequest {
+  // ==================== 业务标识 ====================
+
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 提现订单号
+  string withdrawal_order_no = 3;
+
+  // ==================== 解冻信息 ====================
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 解冻金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 提现解冻退回响应
+message WithdrawalUnfreezeResponse {}

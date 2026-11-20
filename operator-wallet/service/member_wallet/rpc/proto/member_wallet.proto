@@ -4,12 +4,16 @@ package member_wallet;
 
 option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc";
 
+// ==================== 基础服务 ====================
+
 // 基础服务
 import "types/member_wallet_ping.proto";
 
-// 会员钱包
+// ==================== 会员钱包 ====================
+
 import "types/member_wallet_deposit.proto";
 import "types/member_wallet_game.proto";
+import "types/member_wallet_withdraw.proto";
 
 // 会员钱包健康检查服务
 service Ping {
@@ -19,11 +23,35 @@ service Ping {
 
 // 会员钱包资金服务
 service MemberWallet {
+  // ==================== 存款 ====================
+
   // 存款本金入账
   rpc DepositCredit(member_wallet_deposit.DepositCreditRequest) returns (member_wallet_deposit.DepositCreditResponse);
 
+  // 存款赠送入账
+  rpc DepositBonus(member_wallet_deposit.DepositBonusRequest) returns (member_wallet_deposit.DepositBonusResponse);
+
+
+  // ==================== 提现 ====================
+
+  // 提现冻结
+  rpc WithdrawalFreeze(member_wallet_withdraw.WithdrawalFreezeRequest) returns (member_wallet_withdraw.WithdrawalFreezeResponse);
+
+  // 提现出款
+  rpc WithdrawalPayout(member_wallet_withdraw.WithdrawalPayoutRequest) returns (member_wallet_withdraw.WithdrawalPayoutResponse);
+
+  // 提现手续费
+  rpc WithdrawalFee(member_wallet_withdraw.WithdrawalFeeRequest) returns (member_wallet_withdraw.WithdrawalFeeResponse);
+
+  // 提现解冻退回
+  rpc WithdrawalUnfreeze(member_wallet_withdraw.WithdrawalUnfreezeRequest) returns (member_wallet_withdraw.WithdrawalUnfreezeResponse);
+
+
+  // ==================== 游戏 ====================
+
   // 游戏下注
   rpc GameBet(member_wallet_game.GameBetRequest) returns (member_wallet_game.GameBetResponse);
+
   // 游戏下注取消
   rpc GameBetCancel(member_wallet_game.GameBetCancelRequest) returns (member_wallet_game.GameBetCancelResponse);
 }
