@@ -53,7 +53,7 @@ type (
 		// 有奖反馈奖励入账
 		FeedbackReward(ctx context.Context, in *rewardpb.FeedbackRewardRequest, opts ...grpc.CallOption) (*rewardpb.FeedbackRewardResponse, error)
 		// VIP 奖励入账
-		VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest, opts ...grpc.CallOption) (*rewardpb.VIPRewardResponse, error)
+		VipReward(ctx context.Context, in *rewardpb.VipRewardRequest, opts ...grpc.CallOption) (*rewardpb.VipRewardResponse, error)
 	}
 
 	defaultMemberWallet struct {
@@ -164,7 +164,7 @@ func (m *defaultMemberWallet) FeedbackReward(ctx context.Context, in *rewardpb.F
 }
 
 // VIP 奖励入账
-func (m *defaultMemberWallet) VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest, opts ...grpc.CallOption) (*rewardpb.VIPRewardResponse, error) {
+func (m *defaultMemberWallet) VipReward(ctx context.Context, in *rewardpb.VipRewardRequest, opts ...grpc.CallOption) (*rewardpb.VipRewardResponse, error) {
 	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
-	return client.VIPReward(ctx, in, opts...)
+	return client.VipReward(ctx, in, opts...)
 }

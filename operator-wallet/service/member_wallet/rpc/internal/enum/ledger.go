@@ -102,7 +102,7 @@ const (
 	// ---------------------------------------------------------------------
 
 	BusinessActionFeedbackReward BusinessAction = 7001 // 有奖反馈奖励入账
-	BusinessActionVIPReward      BusinessAction = 7002 // VIP 奖励入账
+	BusinessActionVipReward      BusinessAction = 7002 // VIP 奖励入账
 )
 
 // IsValidFor 判断操作类型是否属于指定业务主类型
@@ -152,7 +152,7 @@ func (a BusinessAction) IsValidFor(businessType BusinessType) bool {
 	// 系统奖励
 	case BusinessTypeSystemReward:
 		switch a {
-		case BusinessActionFeedbackReward, BusinessActionVIPReward:
+		case BusinessActionFeedbackReward, BusinessActionVipReward:
 			return true
 		}
 	}

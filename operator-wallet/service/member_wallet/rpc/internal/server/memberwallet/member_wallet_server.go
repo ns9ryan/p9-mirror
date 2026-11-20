@@ -124,7 +124,7 @@ func (s *MemberWalletServer) FeedbackReward(ctx context.Context, in *rewardpb.Fe
 }
 
 // VIP 奖励入账
-func (s *MemberWalletServer) VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest) (*rewardpb.VIPRewardResponse, error) {
-	l := memberwalletlogic.NewVIPRewardLogic(ctx, s.svcCtx)
-	return l.VIPReward(in)
+func (s *MemberWalletServer) VipReward(ctx context.Context, in *rewardpb.VipRewardRequest) (*rewardpb.VipRewardResponse, error) {
+	l := memberwalletlogic.NewVipRewardLogic(ctx, s.svcCtx)
+	return l.VipReward(in)
 }

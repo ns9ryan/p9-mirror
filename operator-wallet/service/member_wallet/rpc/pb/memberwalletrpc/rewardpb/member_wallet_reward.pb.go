@@ -498,7 +498,7 @@ func (*FeedbackRewardResponse) Descriptor() ([]byte, []int) {
 }
 
 // VIP 奖励入账请求
-type VIPRewardRequest struct {
+type VipRewardRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 会员全局唯一标识
 	MemberGlobalId string `protobuf:"bytes,1,opt,name=member_global_id,json=memberGlobalId,proto3" json:"member_global_id,omitempty"`
@@ -514,20 +514,20 @@ type VIPRewardRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *VIPRewardRequest) Reset() {
-	*x = VIPRewardRequest{}
+func (x *VipRewardRequest) Reset() {
+	*x = VipRewardRequest{}
 	mi := &file_types_member_wallet_reward_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *VIPRewardRequest) String() string {
+func (x *VipRewardRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VIPRewardRequest) ProtoMessage() {}
+func (*VipRewardRequest) ProtoMessage() {}
 
-func (x *VIPRewardRequest) ProtoReflect() protoreflect.Message {
+func (x *VipRewardRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_types_member_wallet_reward_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -539,40 +539,40 @@ func (x *VIPRewardRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use VIPRewardRequest.ProtoReflect.Descriptor instead.
-func (*VIPRewardRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use VipRewardRequest.ProtoReflect.Descriptor instead.
+func (*VipRewardRequest) Descriptor() ([]byte, []int) {
 	return file_types_member_wallet_reward_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *VIPRewardRequest) GetMemberGlobalId() string {
+func (x *VipRewardRequest) GetMemberGlobalId() string {
 	if x != nil {
 		return x.MemberGlobalId
 	}
 	return ""
 }
 
-func (x *VIPRewardRequest) GetOperationId() string {
+func (x *VipRewardRequest) GetOperationId() string {
 	if x != nil {
 		return x.OperationId
 	}
 	return ""
 }
 
-func (x *VIPRewardRequest) GetVipRewardOrderNo() string {
+func (x *VipRewardRequest) GetVipRewardOrderNo() string {
 	if x != nil {
 		return x.VipRewardOrderNo
 	}
 	return ""
 }
 
-func (x *VIPRewardRequest) GetCurrencyCode() string {
+func (x *VipRewardRequest) GetCurrencyCode() string {
 	if x != nil {
 		return x.CurrencyCode
 	}
 	return ""
 }
 
-func (x *VIPRewardRequest) GetAmount() int64 {
+func (x *VipRewardRequest) GetAmount() int64 {
 	if x != nil {
 		return x.Amount
 	}
@@ -580,26 +580,26 @@ func (x *VIPRewardRequest) GetAmount() int64 {
 }
 
 // VIP 奖励入账响应
-type VIPRewardResponse struct {
+type VipRewardResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *VIPRewardResponse) Reset() {
-	*x = VIPRewardResponse{}
+func (x *VipRewardResponse) Reset() {
+	*x = VipRewardResponse{}
 	mi := &file_types_member_wallet_reward_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *VIPRewardResponse) String() string {
+func (x *VipRewardResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VIPRewardResponse) ProtoMessage() {}
+func (*VipRewardResponse) ProtoMessage() {}
 
-func (x *VIPRewardResponse) ProtoReflect() protoreflect.Message {
+func (x *VipRewardResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_types_member_wallet_reward_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -611,8 +611,8 @@ func (x *VIPRewardResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use VIPRewardResponse.ProtoReflect.Descriptor instead.
-func (*VIPRewardResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use VipRewardResponse.ProtoReflect.Descriptor instead.
+func (*VipRewardResponse) Descriptor() ([]byte, []int) {
 	return file_types_member_wallet_reward_proto_rawDescGZIP(), []int{9}
 }
 
@@ -649,13 +649,13 @@ const file_types_member_wallet_reward_proto_rawDesc = "" +
 	"\rcurrency_code\x18\x04 \x01(\tR\fcurrencyCode\x12\x16\n" +
 	"\x06amount\x18\x05 \x01(\x03R\x06amount\"\x18\n" +
 	"\x16FeedbackRewardResponse\"\xcb\x01\n" +
-	"\x10VIPRewardRequest\x12(\n" +
+	"\x10VipRewardRequest\x12(\n" +
 	"\x10member_global_id\x18\x01 \x01(\tR\x0ememberGlobalId\x12!\n" +
 	"\foperation_id\x18\x02 \x01(\tR\voperationId\x12-\n" +
 	"\x13vip_reward_order_no\x18\x03 \x01(\tR\x10vipRewardOrderNo\x12#\n" +
 	"\rcurrency_code\x18\x04 \x01(\tR\fcurrencyCode\x12\x16\n" +
 	"\x06amount\x18\x05 \x01(\x03R\x06amount\"\x13\n" +
-	"\x11VIPRewardResponseBWZUoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/rewardpbb\x06proto3"
+	"\x11VipRewardResponseBWZUoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/rewardpbb\x06proto3"
 
 var (
 	file_types_member_wallet_reward_proto_rawDescOnce sync.Once
@@ -679,8 +679,8 @@ var file_types_member_wallet_reward_proto_goTypes = []any{
 	(*CommissionCreditResponse)(nil), // 5: member_wallet_reward.CommissionCreditResponse
 	(*FeedbackRewardRequest)(nil),    // 6: member_wallet_reward.FeedbackRewardRequest
 	(*FeedbackRewardResponse)(nil),   // 7: member_wallet_reward.FeedbackRewardResponse
-	(*VIPRewardRequest)(nil),         // 8: member_wallet_reward.VIPRewardRequest
-	(*VIPRewardResponse)(nil),        // 9: member_wallet_reward.VIPRewardResponse
+	(*VipRewardRequest)(nil),         // 8: member_wallet_reward.VipRewardRequest
+	(*VipRewardResponse)(nil),        // 9: member_wallet_reward.VipRewardResponse
 }
 var file_types_member_wallet_reward_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

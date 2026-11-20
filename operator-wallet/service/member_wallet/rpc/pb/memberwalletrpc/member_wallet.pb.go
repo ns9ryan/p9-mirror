@@ -51,7 +51,7 @@ const file_member_wallet_proto_rawDesc = "" +
 	"TaskReward\x12'.member_wallet_reward.TaskRewardRequest\x1a(.member_wallet_reward.TaskRewardResponse\x12q\n" +
 	"\x10CommissionCredit\x12-.member_wallet_reward.CommissionCreditRequest\x1a..member_wallet_reward.CommissionCreditResponse\x12k\n" +
 	"\x0eFeedbackReward\x12+.member_wallet_reward.FeedbackRewardRequest\x1a,.member_wallet_reward.FeedbackRewardResponse\x12\\\n" +
-	"\tVIPReward\x12&.member_wallet_reward.VIPRewardRequest\x1a'.member_wallet_reward.VIPRewardResponseBNZLoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpcb\x06proto3"
+	"\tVipReward\x12&.member_wallet_reward.VipRewardRequest\x1a'.member_wallet_reward.VipRewardResponseBNZLoa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpcb\x06proto3"
 
 var file_member_wallet_proto_goTypes = []any{
 	(*pingpb.PingRequest)(nil),                    // 0: member_wallet_ping.PingRequest
@@ -71,7 +71,7 @@ var file_member_wallet_proto_goTypes = []any{
 	(*rewardpb.TaskRewardRequest)(nil),            // 14: member_wallet_reward.TaskRewardRequest
 	(*rewardpb.CommissionCreditRequest)(nil),      // 15: member_wallet_reward.CommissionCreditRequest
 	(*rewardpb.FeedbackRewardRequest)(nil),        // 16: member_wallet_reward.FeedbackRewardRequest
-	(*rewardpb.VIPRewardRequest)(nil),             // 17: member_wallet_reward.VIPRewardRequest
+	(*rewardpb.VipRewardRequest)(nil),             // 17: member_wallet_reward.VipRewardRequest
 	(*pingpb.PingResponse)(nil),                   // 18: member_wallet_ping.PingResponse
 	(*depositpb.DepositCreditResponse)(nil),       // 19: member_wallet_deposit.DepositCreditResponse
 	(*depositpb.DepositBonusResponse)(nil),        // 20: member_wallet_deposit.DepositBonusResponse
@@ -89,7 +89,7 @@ var file_member_wallet_proto_goTypes = []any{
 	(*rewardpb.TaskRewardResponse)(nil),           // 32: member_wallet_reward.TaskRewardResponse
 	(*rewardpb.CommissionCreditResponse)(nil),     // 33: member_wallet_reward.CommissionCreditResponse
 	(*rewardpb.FeedbackRewardResponse)(nil),       // 34: member_wallet_reward.FeedbackRewardResponse
-	(*rewardpb.VIPRewardResponse)(nil),            // 35: member_wallet_reward.VIPRewardResponse
+	(*rewardpb.VipRewardResponse)(nil),            // 35: member_wallet_reward.VipRewardResponse
 }
 var file_member_wallet_proto_depIdxs = []int32{
 	0,  // 0: member_wallet.Ping.Ping:input_type -> member_wallet_ping.PingRequest
@@ -109,7 +109,7 @@ var file_member_wallet_proto_depIdxs = []int32{
 	14, // 14: member_wallet.MemberWallet.TaskReward:input_type -> member_wallet_reward.TaskRewardRequest
 	15, // 15: member_wallet.MemberWallet.CommissionCredit:input_type -> member_wallet_reward.CommissionCreditRequest
 	16, // 16: member_wallet.MemberWallet.FeedbackReward:input_type -> member_wallet_reward.FeedbackRewardRequest
-	17, // 17: member_wallet.MemberWallet.VIPReward:input_type -> member_wallet_reward.VIPRewardRequest
+	17, // 17: member_wallet.MemberWallet.VipReward:input_type -> member_wallet_reward.VipRewardRequest
 	18, // 18: member_wallet.Ping.Ping:output_type -> member_wallet_ping.PingResponse
 	19, // 19: member_wallet.MemberWallet.DepositCredit:output_type -> member_wallet_deposit.DepositCreditResponse
 	20, // 20: member_wallet.MemberWallet.DepositBonus:output_type -> member_wallet_deposit.DepositBonusResponse
@@ -127,7 +127,7 @@ var file_member_wallet_proto_depIdxs = []int32{
 	32, // 32: member_wallet.MemberWallet.TaskReward:output_type -> member_wallet_reward.TaskRewardResponse
 	33, // 33: member_wallet.MemberWallet.CommissionCredit:output_type -> member_wallet_reward.CommissionCreditResponse
 	34, // 34: member_wallet.MemberWallet.FeedbackReward:output_type -> member_wallet_reward.FeedbackRewardResponse
-	35, // 35: member_wallet.MemberWallet.VIPReward:output_type -> member_wallet_reward.VIPRewardResponse
+	35, // 35: member_wallet.MemberWallet.VipReward:output_type -> member_wallet_reward.VipRewardResponse
 	18, // [18:36] is the sub-list for method output_type
 	0,  // [0:18] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name

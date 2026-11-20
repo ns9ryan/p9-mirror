@@ -81,7 +81,7 @@ message FeedbackRewardResponse {}
 
 
 // VIP 奖励入账请求
-message VIPRewardRequest {
+message VipRewardRequest {
   // 会员全局唯一标识
   string member_global_id = 1;
   // 钱包操作唯一标识, UUID
@@ -96,4 +96,4 @@ message VIPRewardRequest {
 }
 
 // VIP 奖励入账响应
-message VIPRewardResponse {}
+message VipRewardResponse {}

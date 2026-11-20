@@ -84,5 +84,5 @@ service MemberWallet {
   rpc FeedbackReward(member_wallet_reward.FeedbackRewardRequest) returns (member_wallet_reward.FeedbackRewardResponse);
 
   // VIP 奖励入账
-  rpc VIPReward(member_wallet_reward.VIPRewardRequest) returns (member_wallet_reward.VIPRewardResponse);
+  rpc VipReward(member_wallet_reward.VipRewardRequest) returns (member_wallet_reward.VipRewardResponse);
 }

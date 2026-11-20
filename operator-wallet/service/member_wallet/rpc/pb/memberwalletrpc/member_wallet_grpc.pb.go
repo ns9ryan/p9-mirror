@@ -148,7 +148,7 @@ const (
 	MemberWallet_TaskReward_FullMethodName             = "/member_wallet.MemberWallet/TaskReward"
 	MemberWallet_CommissionCredit_FullMethodName       = "/member_wallet.MemberWallet/CommissionCredit"
 	MemberWallet_FeedbackReward_FullMethodName         = "/member_wallet.MemberWallet/FeedbackReward"
-	MemberWallet_VIPReward_FullMethodName              = "/member_wallet.MemberWallet/VIPReward"
+	MemberWallet_VipReward_FullMethodName              = "/member_wallet.MemberWallet/VipReward"
 )
 
 // MemberWalletClient is the client API for MemberWallet service.
@@ -190,7 +190,7 @@ type MemberWalletClient interface {
 	// 有奖反馈奖励入账
 	FeedbackReward(ctx context.Context, in *rewardpb.FeedbackRewardRequest, opts ...grpc.CallOption) (*rewardpb.FeedbackRewardResponse, error)
 	// VIP 奖励入账
-	VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest, opts ...grpc.CallOption) (*rewardpb.VIPRewardResponse, error)
+	VipReward(ctx context.Context, in *rewardpb.VipRewardRequest, opts ...grpc.CallOption) (*rewardpb.VipRewardResponse, error)
 }
 
 type memberWalletClient struct {
@@ -361,10 +361,10 @@ func (c *memberWalletClient) FeedbackReward(ctx context.Context, in *rewardpb.Fe
 	return out, nil
 }
 
-func (c *memberWalletClient) VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest, opts ...grpc.CallOption) (*rewardpb.VIPRewardResponse, error) {
+func (c *memberWalletClient) VipReward(ctx context.Context, in *rewardpb.VipRewardRequest, opts ...grpc.CallOption) (*rewardpb.VipRewardResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(rewardpb.VIPRewardResponse)
-	err := c.cc.Invoke(ctx, MemberWallet_VIPReward_FullMethodName, in, out, cOpts...)
+	out := new(rewardpb.VipRewardResponse)
+	err := c.cc.Invoke(ctx, MemberWallet_VipReward_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -410,7 +410,7 @@ type MemberWalletServer interface {
 	// 有奖反馈奖励入账
 	FeedbackReward(context.Context, *rewardpb.FeedbackRewardRequest) (*rewardpb.FeedbackRewardResponse, error)
 	// VIP 奖励入账
-	VIPReward(context.Context, *rewardpb.VIPRewardRequest) (*rewardpb.VIPRewardResponse, error)
+	VipReward(context.Context, *rewardpb.VipRewardRequest) (*rewardpb.VipRewardResponse, error)
 	mustEmbedUnimplementedMemberWalletServer()
 }
 
@@ -469,8 +469,8 @@ func (UnimplementedMemberWalletServer) CommissionCredit(context.Context, *reward
 func (UnimplementedMemberWalletServer) FeedbackReward(context.Context, *rewardpb.FeedbackRewardRequest) (*rewardpb.FeedbackRewardResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method FeedbackReward not implemented")
 }
-func (UnimplementedMemberWalletServer) VIPReward(context.Context, *rewardpb.VIPRewardRequest) (*rewardpb.VIPRewardResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method VIPReward not implemented")
+func (UnimplementedMemberWalletServer) VipReward(context.Context, *rewardpb.VipRewardRequest) (*rewardpb.VipRewardResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method VipReward not implemented")
 }
 func (UnimplementedMemberWalletServer) mustEmbedUnimplementedMemberWalletServer() {}
 func (UnimplementedMemberWalletServer) testEmbeddedByValue()                      {}
@@ -781,20 +781,20 @@ func _MemberWallet_FeedbackReward_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MemberWallet_VIPReward_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(rewardpb.VIPRewardRequest)
+func _MemberWallet_VipReward_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(rewardpb.VipRewardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberWalletServer).VIPReward(ctx, in)
+		return srv.(MemberWalletServer).VipReward(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MemberWallet_VIPReward_FullMethodName,
+		FullMethod: MemberWallet_VipReward_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberWalletServer).VIPReward(ctx, req.(*rewardpb.VIPRewardRequest))
+		return srv.(MemberWalletServer).VipReward(ctx, req.(*rewardpb.VipRewardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -871,8 +871,8 @@ var MemberWallet_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MemberWallet_FeedbackReward_Handler,
 		},
 		{
-			MethodName: "VIPReward",
-			Handler:    _MemberWallet_VIPReward_Handler,
+			MethodName: "VipReward",
+			Handler:    _MemberWallet_VipReward_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
