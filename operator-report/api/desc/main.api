@@ -1,0 +1,23 @@
+syntax = "v1"
+
+info (
+	title:   "Operator Report API"
+	desc:    "Operator Report Service API"
+	author:  "Operator Report Team"
+	version: "1.0.0"
+	// host:    "localhost:18003"
+	schemes: "http"
+)
+
+import "ping.api"
+import "dashboard.api"
+
+// 通用响应类型
+type Response {
+	Code       int         `json:"code" comment:"错误码"`
+	Message    string      `json:"message" comment:"错误消息"`
+	Data       interface{} `json:"data" comment:"响应数据"`
+	UpdatedAt  int64 // 数据最后更新时间戳
+	ValidUntil int64 // 数据有效期（用于缓存指导）
+}
+

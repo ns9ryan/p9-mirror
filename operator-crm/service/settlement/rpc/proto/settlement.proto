@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package settlement;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/settlement/rpc/pb/settlementrpc";
+
+import "types/settlement_ping.proto";
+
+// 结算健康检查服务
+service PingService {
+  // 健康检查
+  rpc Ping(settlement_ping.PingRequest) returns (settlement_ping.PingResponse);
+}

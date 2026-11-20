@@ -1,0 +1,30 @@
+syntax = "v1"
+
+info (
+	title:   "oss api"
+	desc:    "shared types for oss-api"
+	author:  "p9"
+	version: "v1"
+)
+
+type IDQuery {
+	ID uint64 `form:"id"`
+}
+
+type IDReq {
+	ID  uint64   `form:"id,optional" json:"id,optional"`
+	IDs []uint64 `json:"ids,optional"`
+}
+
+type FileData {
+	URL          string `json:"url"`
+	Key          string `json:"key"`
+	Scene        string `json:"scene,optional,omitempty"`
+	Visibility   string `json:"visibility,optional,omitempty"`
+	URLExpiresIn int    `json:"url_expires_in,optional,omitempty"`
+}
+
+type BucketSpec {
+	Mode    string `json:"mode"`
+	SignTTL int    `json:"sign_ttl,optional,omitempty"`
+}

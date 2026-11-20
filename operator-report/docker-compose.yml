@@ -1,0 +1,31 @@
+name: operator-report
+
+services:
+  operator-report-rpc:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-report-rpc:${VERSION:-1.0.0}
+    container_name: operator-report-rpc-node01
+    restart: always
+    ports:
+      - "39009:39009"
+    volumes:
+      - ./etc/report/rpc/operator_report.yaml:/app/etc/operator_report.yaml:ro
+    networks:
+      - p9-operator-node01-network
+
+  operator-report-api:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/operator-report-api:${VERSION:-1.0.0}
+    container_name: operator-report-api-node01
+    restart: always
+    ports:
+      - "38009:38009"
+    volumes:
+      - ./etc/report/api/operator_report.yaml:/app/etc/operator_report.yaml:ro
+    networks:
+      - p9-operator-node01-network
+
+volumes:
+  postgres_data:
+
+networks:
+  p9-operator-node01-network:
+    driver: bridge

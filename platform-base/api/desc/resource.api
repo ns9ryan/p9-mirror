@@ -1,0 +1,30 @@
+syntax = "v1"
+
+type (
+	// 统一素材上传，multipart 还需唯一的 file 文件；不接受站点或目录参数。
+	UploadResourceRequest {
+		Scene string `form:"scene"` // 必填：vipicon、default_avatar、default_avatar_frame。
+		MinLevel *int64 `form:"min_level,optional"` // 仅 vipicon 必填：0、10…90；其他场景禁止提交。
+	}
+	// 只返回素材，保存配置仍调用原有保存或修改接口。
+	UploadResourceResponse {
+		Url string `json:"url"` // 完整永久公开地址。
+		Key string `json:"key"` // 桶内对象 Key，不含域名和桶前缀。
+		Scene string `json:"scene"` // 实际上传场景。
+		Visibility string `json:"visibility"` // 固定为 public。
+		UrlExpiresIn int64 `json:"url_expires_in"` // 固定为 0，表示永久地址。
+	}
+)
+
+@server (
+	group: resource
+	prefix: /resource
+	middleware: Jwt,ActionLog,Authority
+	maxBytes: 270336
+	timeout: 60s
+)
+service platform_base {
+	// 总站统一上传 VIP 图标、默认头像及头像框，规格按 scene 校验。
+	@handler UploadResource
+	post /upload (UploadResourceRequest) returns (UploadResourceResponse)
+}

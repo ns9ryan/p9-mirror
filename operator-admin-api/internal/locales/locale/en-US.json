@@ -1,0 +1,34 @@
+{
+  "member": {
+    "emailAlreadyBound": "This email is already bound to another member. Use a different email.",
+    "phoneAlreadyBound": "This phone number is already bound to another member. Use a different phone number.",
+    "contactBindingCodeInvalid": "Verification code is invalid, expired, or does not match this change",
+    "contactBindingCodeTooFrequent": "Verification code requested too frequently. Try again shortly.",
+    "contactBindingCodeSendFailed": "Could not send verification code"
+  },
+
+  "resource": {
+    "invalidFile": "Image does not meet the scene requirements",
+    "uploadFailed": "Image upload failed"
+  },
+  "common": {
+    "success": "Success",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "invalid_request": "Invalid request",
+    "data_not_found": "Data not found",
+    "constraint_error": "Data constraint conflict",
+    "validation_error": "Validation failed",
+    "database_error": "Database operation failed",
+    "already_exists": "Data already exists",
+    "internal_error": "Internal server error",
+    "too_many_requests": "Too many requests",
+    "service_unavailable": "Service unavailable",
+    "request_timeout": "Request timeout",
+    "invalidParam": "invalid request parameter",
+    "paramRequired": "required parameter missing: {{.Field}}",
+    "paramTypeMismatch": "parameter type mismatch: {{.Field}}",
+    "paramValueInvalid": "invalid parameter value",
+    "paramValueInvalidField": "invalid parameter value: {{.Field}}"
+  }
+}

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package operator_report;
+
+option go_package = "oa.98ent.com/p9/operator-report/rpc/pb/operator_report";
+
+import "types/statistics.proto";
+import "types/member.proto";
+
+
+service StatisticsService {
+    // // 获取今日会员统计数据
+    // rpc GetTodayMemberStat(operator_report.TodayMemberStatRequest) returns (operator_report.TodayMemberStatResponse);
+    
+    // // 获取日常统计数据
+    // rpc GetDailyStat(operator_report.DailyStatRequest) returns (operator_report.DailyStatResponse);
+    
+    // // 获取日常计数数据
+    // rpc DailyCount(operator_report.DailyCountRequest) returns (operator_report.DailyCountResponse);
+    
+    // // 获取当日统计报表（从 statistics-service 迁移）
+    // rpc GetTodayStats(operator_report.GetTodayStatsRequest) returns (operator_report.GetTodayStatsResponse);
+
+    // 获取会员增长趋势
+    rpc GetDailyGrowthTrend(operator_report.MemberGrowthTrendRequest) returns (operator_report.MemberGrowthTrendResponse);
+    
+    // 查询用户留存数据
+    rpc QueryUserRetention(operator_report.UserRetentionQueryRequest) returns (operator_report.UserRetentionQueryResponse);
+    
+    // 获取会员概览（总数、新增、活跃等）
+    rpc GetMemberSummary(operator_report.MemberSummaryRequest) returns (operator_report.MemberSummaryResponse);
+}

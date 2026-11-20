@@ -1,0 +1,14 @@
+syntax = "v1"
+
+// Ping响应
+type PingResponse {}
+
+@server (
+	group: ping
+)
+service node_dispatch {
+	// Ping
+	@handler Ping
+	get /ping returns (PingResponse)
+}
+

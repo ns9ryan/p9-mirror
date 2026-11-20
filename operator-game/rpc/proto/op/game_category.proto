@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package operator_game;
+
+option go_package = "oa.98ent.com/p9/operator-game/rpc/pb/operator_game";
+
+// GameCategoryInfo 分类信息
+message GameCategoryInfo {
+    int64 id = 1;
+    string category_code = 2;
+    int32 sort_no = 4;
+    int32 status = 5;
+    int64 created_at = 6;
+    int64 updated_at = 7;
+}
+
+// GetGameCategoryListRequest 获取游戏分类列表请求
+message GetGameCategoryListRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+    string category_code = 3;
+    int32 status = 4;
+}
+
+// GetGameCategoryListResp 游戏分类列表响应
+message GetGameCategoryListResp {
+    int32 code = 1;
+    string message = 2;
+    repeated GameCategoryInfo items = 3;
+    int64 total = 4;
+}
+
+// GetGameCategoryRequest 获取单个游戏分类请求
+message GetGameCategoryRequest {
+    int64 id = 1;
+}
+
+// GetGameCategoryResp 获取单个游戏分类响应
+message GetGameCategoryResp {
+    int32 code = 1;
+    string message = 2;
+    GameCategoryInfo data = 3;
+}
+
+// UpdateGameCategoryRequest 更新分类请求
+message UpdateGameCategoryRequest {
+    int64 id = 1;
+    int32 sort_no = 2;
+    int32 status = 3;
+}
+
+// UpdateGameCategoryResp 更新分类响应
+message UpdateGameCategoryResp {
+    int32 code = 1;
+    string message = 2;
+    GameCategoryInfo data = 3;
+}

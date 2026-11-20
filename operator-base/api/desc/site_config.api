@@ -1,0 +1,212 @@
+syntax = "v1"
+
+type (
+	// 本站已保存的基础配置
+	SiteConfig {
+		// 分站唯一业务编码，由后端确认
+		OperatorCode string `json:"operator_code"`
+		// 本站已登记的后台域名，不含协议、端口和路径；未配置时为空
+		DomainName string `json:"domain_name"`
+		// 本站保存的语言勾选编码，保留暂时不可用的语言
+		LanguageCodes []string `json:"language_codes"`
+		// 本站保存的经营地区勾选编码，保留暂时不可用的地区
+		RegionCodes []string `json:"region_codes"`
+		// 结算货币编码
+		SettlementCurrencyCode string `json:"settlement_currency_code"`
+		// IANA 时区编码
+		TimezoneCode string `json:"timezone_code"`
+	}
+	// 本站语言信息
+	LanguageInfo {
+		// 记录ID
+		Id int64 `json:"id"`
+		// 语言编码，例如 zh-CN
+		Lang string `json:"lang"`
+		// 本站 Core 语言状态：0启用，1停用
+		Disabled int32 `json:"disabled"`
+		// 本站勾选状态：1开启，2关闭，不修改基础资料状态
+		Status int64 `json:"status"`
+		// 实际生效状态：1启用，2停用；需本站和基础资料同时启用
+		EffectiveStatus int64 `json:"effective_status"`
+		// 创建时间，Unix 秒时间戳
+		CreatedAt int64 `json:"created_at"`
+		// 更新时间，Unix 秒时间戳
+		UpdatedAt int64 `json:"updated_at"`
+		// 语言名称
+		Name string `json:"name"`
+		// 排序值，数值越小越靠前
+		SortNo int32 `json:"sort_no"`
+		// 语言名称翻译 Key
+		I18NKey string `json:"i18n_key"`
+	}
+	// 总网国家地区信息
+	RegionInfo {
+		// 记录ID
+		Id int64 `json:"id"`
+		// 业务编码
+		Code string `json:"code"`
+		// 国际电话区号
+		CallingCode string `json:"calling_code"`
+		// 名称翻译 Key
+		NameKey string `json:"name_key"`
+		// 状态：1启用，2停用
+		Status int64 `json:"status"`
+		// 排序值，数值越小越靠前
+		SortNo int64 `json:"sort_no"`
+	}
+	// 总网货币信息
+	CurrencyInfo {
+		// 记录ID
+		Id int64 `json:"id"`
+		// 业务编码
+		Code string `json:"code"`
+		// 名称翻译 Key
+		NameKey string `json:"name_key"`
+		// 货币类型：1法定货币，2虚拟货币
+		CurrencyType int64 `json:"currency_type"`
+		// 货币符号
+		Symbol string `json:"symbol"`
+		// 金额换算倍率，例如 USD=100、JPY=1
+		AmountFactor int64 `json:"amount_factor"`
+		// 状态：1启用，2停用
+		Status int64 `json:"status"`
+		// 排序值，数值越小越靠前
+		SortNo int64 `json:"sort_no"`
+	}
+	// 总网时区信息
+	TimezoneInfo {
+		// 记录ID
+		Id int64 `json:"id"`
+		// 业务编码
+		Code string `json:"code"`
+		// 名称翻译 Key
+		NameKey string `json:"name_key"`
+		// 状态：1启用，2停用
+		Status int64 `json:"status"`
+		// 排序值，数值越小越靠前
+		SortNo int64 `json:"sort_no"`
+	}
+	// 本站已分配的经营地区选项
+	SiteRegionOption {
+		// 总网国家地区资料
+		Region RegionInfo `json:"region"`
+		// 本站勾选状态：1开启，2关闭，不修改基础资料状态
+		Status int64 `json:"status"`
+		// 实际生效状态：1启用，2停用；需本站和基础资料同时启用
+		EffectiveStatus int64 `json:"effective_status"`
+	}
+	// 查询本站配置响应
+	GetSiteConfigResponse {
+		// 本站保存的基础配置，保留暂时不可用的勾选
+		SiteConfig SiteConfig `json:"site_config"`
+		// 本站全部已分配语言，包含本站关闭或资料不可用的语言
+		Languages []LanguageInfo `json:"languages"`
+		// 本站全部已分配经营地区及各自状态
+		RegionOptions []SiteRegionOption `json:"region_options"`
+		// 本站开启且总网资料启用的经营地区编码
+		EffectiveRegionCodes []string `json:"effective_region_codes"`
+		// 本站开启且本站 Core 资料启用的语言编码
+		EffectiveLanguageCodes []string `json:"effective_language_codes"`
+		// 结算货币资料，资料缺失时保留编码
+		Currency CurrencyInfo `json:"currency"`
+		// 时区资料，资料缺失时保留编码
+		Timezone TimezoneInfo `json:"timezone"`
+		// 本站标题、Logo、登录注册配置及保存状态
+		SiteSettings SiteSettingsInfo `json:"site_settings"`
+	}
+	// 保存本站经营地区请求
+	UpdateSiteRegionsRequest {
+		// 完整经营地区勾选编码，空数组表示全部关闭
+		RegionCodes []string `json:"region_codes"`
+	}
+	// 保存本站开放语言请求
+	UpdateSiteLanguagesRequest {
+		// 完整语言勾选编码，空数组表示全部关闭
+		LanguageCodes []string `json:"language_codes"`
+	}
+	// 保存本站开放语言响应
+	UpdateSiteLanguagesResponse {
+		// 完整语言勾选编码，空数组表示全部关闭
+		LanguageCodes []string `json:"language_codes"`
+	}
+	// 保存本站经营地区响应
+	UpdateSiteRegionsResponse {
+		// 完整经营地区勾选编码，空数组表示全部关闭
+		RegionCodes []string `json:"region_codes"`
+	}
+	// 完整保存本站八项设置请求
+	SaveSiteSettingsRequest {
+		// 网站标题，必传，去除首尾空白后为 1～100 字节
+		SiteTitle *string `json:"site_title"`
+		// 网站 Logo 地址，必传，空字符串表示清除 Logo
+		SiteLogoUrl *string `json:"site_logo_url"`
+		// 邮箱登录阈值，必传，范围 0～100，0 表示不限制
+		EmailLoginLimit *int64 `json:"email_login_limit"`
+		// 短信登录阈值，必传，范围 0～100，0 表示不限制
+		SmsLoginLimit *int64 `json:"sms_login_limit"`
+		// 会员密码错误次数上限，必传，范围 0～100，0 表示不限制
+		MemberPasswordErrorLimit *int64 `json:"member_password_error_limit"`
+		// 同一 IP 注册会员数上限，必传，范围 0～100，0 表示不限制
+		IpMemberRegisterLimit *int64 `json:"ip_member_register_limit"`
+		// 注册验证方式，必传：0不验证，1拖拽验证，2图形验证
+		RegisterCaptchaMode *int64 `json:"register_captcha_mode"`
+		// 登录验证方式，必传：0不验证，1拖拽验证，2图形验证
+		LoginCaptchaMode *int64 `json:"login_captcha_mode"`
+	}
+	// 保存本站设置响应
+	SaveSiteSettingsResponse {
+		// 本站设置
+		SiteSettingsInfo
+	}
+	// 本站设置及保存状态
+	SiteSettingsInfo {
+		// 分站唯一业务编码，由后端确认
+		OperatorCode string `json:"operator_code"`
+		// 网站标题，去除首尾空白后为 1～100 字节
+		SiteTitle string `json:"site_title"`
+		// 网站 Logo 地址，空字符串表示清除 Logo
+		SiteLogoUrl string `json:"site_logo_url"`
+		// 邮箱登录阈值，范围 0～100，0 表示不限制
+		EmailLoginLimit int64 `json:"email_login_limit"`
+		// 短信登录阈值，范围 0～100，0 表示不限制
+		SmsLoginLimit int64 `json:"sms_login_limit"`
+		// 会员密码错误次数上限，范围 0～100，0 表示不限制
+		MemberPasswordErrorLimit int64 `json:"member_password_error_limit"`
+		// 同一 IP 注册会员数上限，范围 0～100，0 表示不限制
+		IpMemberRegisterLimit int64 `json:"ip_member_register_limit"`
+		// 注册验证方式，0不验证，1拖拽验证，2图形验证
+		RegisterCaptchaMode int64 `json:"register_captcha_mode"`
+		// 登录验证方式，0不验证，1拖拽验证，2图形验证
+		LoginCaptchaMode int64 `json:"login_captcha_mode"`
+		// 最后修改用户ID，后端从登录身份获取；0 表示系统初始化
+		UpdatedBy int64 `json:"updated_by"`
+		// 创建时间，Unix 秒时间戳；未保存时为 0
+		CreatedAt int64 `json:"created_at"`
+		// 更新时间，Unix 秒时间戳；未保存时为 0
+		UpdatedAt int64 `json:"updated_at"`
+		// 是否已有设置记录；false 表示当前返回默认值，查询不会新增记录
+		Configured bool `json:"configured"`
+	}
+)
+
+@server (
+	group:      operator
+	middleware: SiteAuth
+)
+service operator_base {
+	@doc "根据当前登录身份查询站点配置，只读"
+	@handler GetSiteConfig
+	get /operator/info returns (GetSiteConfigResponse)
+
+	@doc "保存本站经营地区完整勾选结果"
+	@handler UpdateSiteRegions
+	put /operator/regions (UpdateSiteRegionsRequest) returns (UpdateSiteRegionsResponse)
+
+	@doc "保存本站开放语言完整勾选结果"
+	@handler UpdateSiteLanguages
+	put /operator/languages (UpdateSiteLanguagesRequest) returns (UpdateSiteLanguagesResponse)
+
+	@doc "保存本站设置，0 表示不限制，仅保存配置"
+	@handler SaveSiteSettings
+	put /operator/settings (SaveSiteSettingsRequest) returns (SaveSiteSettingsResponse)
+}

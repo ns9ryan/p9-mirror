@@ -1,0 +1,2171 @@
+{
+  "basePath": "/",
+  "consumes": [
+    "application/json"
+  ],
+  "info": {
+    "description": "P9 第三方接入：IP/GEO。路径前缀 /p9/integration/ipgeo。成功体为 {code:0,msg,data}；失败无 data，HTTP status=code。全部接口需 Authorization: Bearer。",
+    "title": "integration",
+    "version": "v1"
+  },
+  "paths": {
+    "/p9/integration/ipgeo/ip/search": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "批量查 IP 地理信息；按租户策略选源，缓存 miss 再打三方",
+        "operationId": "ipgeoSearchIp",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "ips": {
+                  "description": "IPs | IPv4/IPv6，最多 100；超过整批失败",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "lang": {
+                  "description": "Lang | 展示语言，空则 en；允许 en/zh-CN/pt-BR/ru/fr/ja/es/de",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ips"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "list": {
+                      "description": "List | 与 ips 等长，不为 null",
+                      "items": {
+                        "properties": {
+                          "as": {
+                            "description": "AS | ASN",
+                            "type": "string"
+                          },
+                          "city": {
+                            "description": "City | 城市",
+                            "type": "string"
+                          },
+                          "continent": {
+                            "description": "Continent | 大洲名（随 lang）",
+                            "type": "string"
+                          },
+                          "continent_code": {
+                            "description": "Continent code | 大洲码，如 AS",
+                            "type": "string"
+                          },
+                          "country": {
+                            "description": "Country | 国家名（随 lang）；私网为「私有IP」",
+                            "type": "string"
+                          },
+                          "country_code": {
+                            "description": "Country code | 国家码，如 CN",
+                            "type": "string"
+                          },
+                          "isp": {
+                            "description": "ISP | 运营商",
+                            "type": "string"
+                          },
+                          "lat": {
+                            "description": "Latitude | 纬度",
+                            "type": "number"
+                          },
+                          "lon": {
+                            "description": "Longitude | 经度",
+                            "type": "number"
+                          },
+                          "org": {
+                            "description": "Org | 组织",
+                            "type": "string"
+                          },
+                          "postal": {
+                            "description": "Postal | 邮编",
+                            "type": "string"
+                          },
+                          "province": {
+                            "description": "Province | 省/州名",
+                            "type": "string"
+                          },
+                          "province_iso_code": {
+                            "description": "Province ISO code | 省/州码",
+                            "type": "string"
+                          },
+                          "query": {
+                            "description": "Query | 请求中的原始 IP",
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "Source | 命中源名称（Provider.Name）；私网为 private",
+                            "type": "string"
+                          },
+                          "timezone": {
+                            "description": "Timezone | 时区，如 Asia/Shanghai",
+                            "type": "string"
+                          },
+                          "zip": {
+                            "description": "Zip | 邮编（与 postal 同源）",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "query",
+                          "continent",
+                          "continent_code",
+                          "country",
+                          "country_code",
+                          "province",
+                          "province_iso_code",
+                          "city",
+                          "zip",
+                          "lat",
+                          "lon",
+                          "timezone",
+                          "isp",
+                          "org",
+                          "as",
+                          "postal",
+                          "source"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "批量查 IP 地理信息；按租户策略选源，缓存 miss 再打三方",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/local/create": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "新增本地 IP",
+        "operationId": "ipgeoCreateLocalIP",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "as": {
+                  "description": "AS | ASN",
+                  "type": "string"
+                },
+                "city": {
+                  "description": "City | 城市",
+                  "type": "string"
+                },
+                "continent": {
+                  "description": "Continent | 大洲名",
+                  "type": "string"
+                },
+                "continent_code": {
+                  "description": "Continent code | 大洲码",
+                  "type": "string"
+                },
+                "country": {
+                  "description": "Country | 国家名",
+                  "type": "string"
+                },
+                "country_code": {
+                  "description": "Country code | 国家码",
+                  "type": "string"
+                },
+                "id": {
+                  "description": "ID | 主键；创建可不传",
+                  "type": "integer"
+                },
+                "ip": {
+                  "description": "IP | 规范化 IPv4/IPv6",
+                  "type": "string"
+                },
+                "isp": {
+                  "description": "ISP | 运营商",
+                  "type": "string"
+                },
+                "lat": {
+                  "description": "Latitude | 纬度",
+                  "type": "number"
+                },
+                "lon": {
+                  "description": "Longitude | 经度",
+                  "type": "number"
+                },
+                "org": {
+                  "description": "Org | 组织",
+                  "type": "string"
+                },
+                "postal": {
+                  "description": "Postal | 邮编",
+                  "type": "string"
+                },
+                "province": {
+                  "description": "Province | 省/州名",
+                  "type": "string"
+                },
+                "province_iso_code": {
+                  "description": "Province ISO code | 省/州码",
+                  "type": "string"
+                },
+                "timezone": {
+                  "description": "Timezone | 时区",
+                  "type": "string"
+                },
+                "zip": {
+                  "description": "Zip | 邮编",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ip"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "as": {
+                      "description": "AS | ASN",
+                      "type": "string"
+                    },
+                    "city": {
+                      "description": "City | 城市",
+                      "type": "string"
+                    },
+                    "continent": {
+                      "description": "Continent | 大洲名",
+                      "type": "string"
+                    },
+                    "continent_code": {
+                      "description": "Continent code | 大洲码",
+                      "type": "string"
+                    },
+                    "country": {
+                      "description": "Country | 国家名",
+                      "type": "string"
+                    },
+                    "country_code": {
+                      "description": "Country code | 国家码",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "ID | 主键；创建可不传",
+                      "type": "integer"
+                    },
+                    "ip": {
+                      "description": "IP | 规范化 IPv4/IPv6",
+                      "type": "string"
+                    },
+                    "isp": {
+                      "description": "ISP | 运营商",
+                      "type": "string"
+                    },
+                    "lat": {
+                      "description": "Latitude | 纬度",
+                      "type": "number"
+                    },
+                    "lon": {
+                      "description": "Longitude | 经度",
+                      "type": "number"
+                    },
+                    "org": {
+                      "description": "Org | 组织",
+                      "type": "string"
+                    },
+                    "postal": {
+                      "description": "Postal | 邮编",
+                      "type": "string"
+                    },
+                    "province": {
+                      "description": "Province | 省/州名",
+                      "type": "string"
+                    },
+                    "province_iso_code": {
+                      "description": "Province ISO code | 省/州码",
+                      "type": "string"
+                    },
+                    "timezone": {
+                      "description": "Timezone | 时区",
+                      "type": "string"
+                    },
+                    "zip": {
+                      "description": "Zip | 邮编",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "新增本地 IP",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/local/delete": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "删除本地 IP",
+        "operationId": "ipgeoDeleteLocalIP",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "result": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "删除本地 IP",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/local/detail": {
+      "get": {
+        "description": "本地 IP 详情",
+        "operationId": "ipgeoGetLocalIP",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "as": {
+                      "description": "AS | ASN",
+                      "type": "string"
+                    },
+                    "city": {
+                      "description": "City | 城市",
+                      "type": "string"
+                    },
+                    "continent": {
+                      "description": "Continent | 大洲名",
+                      "type": "string"
+                    },
+                    "continent_code": {
+                      "description": "Continent code | 大洲码",
+                      "type": "string"
+                    },
+                    "country": {
+                      "description": "Country | 国家名",
+                      "type": "string"
+                    },
+                    "country_code": {
+                      "description": "Country code | 国家码",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "ID | 主键；创建可不传",
+                      "type": "integer"
+                    },
+                    "ip": {
+                      "description": "IP | 规范化 IPv4/IPv6",
+                      "type": "string"
+                    },
+                    "isp": {
+                      "description": "ISP | 运营商",
+                      "type": "string"
+                    },
+                    "lat": {
+                      "description": "Latitude | 纬度",
+                      "type": "number"
+                    },
+                    "lon": {
+                      "description": "Longitude | 经度",
+                      "type": "number"
+                    },
+                    "org": {
+                      "description": "Org | 组织",
+                      "type": "string"
+                    },
+                    "postal": {
+                      "description": "Postal | 邮编",
+                      "type": "string"
+                    },
+                    "province": {
+                      "description": "Province | 省/州名",
+                      "type": "string"
+                    },
+                    "province_iso_code": {
+                      "description": "Province ISO code | 省/州码",
+                      "type": "string"
+                    },
+                    "timezone": {
+                      "description": "Timezone | 时区",
+                      "type": "string"
+                    },
+                    "zip": {
+                      "description": "Zip | 邮编",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "本地 IP 详情",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/local/list": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "本地 IP 表分页列表",
+        "operationId": "ipgeoListLocalIP",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "ip": {
+                  "description": "IP | 模糊筛选",
+                  "type": "string"
+                },
+                "page": {
+                  "default": 1,
+                  "description": "Page | 页码，从 1",
+                  "example": 1,
+                  "type": "integer"
+                },
+                "page_size": {
+                  "default": 20,
+                  "description": "Page size | 每页条数，默认 20",
+                  "example": 20,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "list": {
+                      "description": "List | 记录",
+                      "items": {
+                        "properties": {
+                          "as": {
+                            "description": "AS | ASN",
+                            "type": "string"
+                          },
+                          "city": {
+                            "description": "City | 城市",
+                            "type": "string"
+                          },
+                          "continent": {
+                            "description": "Continent | 大洲名",
+                            "type": "string"
+                          },
+                          "continent_code": {
+                            "description": "Continent code | 大洲码",
+                            "type": "string"
+                          },
+                          "country": {
+                            "description": "Country | 国家名",
+                            "type": "string"
+                          },
+                          "country_code": {
+                            "description": "Country code | 国家码",
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "ID | 主键；创建可不传",
+                            "type": "integer"
+                          },
+                          "ip": {
+                            "description": "IP | 规范化 IPv4/IPv6",
+                            "type": "string"
+                          },
+                          "isp": {
+                            "description": "ISP | 运营商",
+                            "type": "string"
+                          },
+                          "lat": {
+                            "description": "Latitude | 纬度",
+                            "type": "number"
+                          },
+                          "lon": {
+                            "description": "Longitude | 经度",
+                            "type": "number"
+                          },
+                          "org": {
+                            "description": "Org | 组织",
+                            "type": "string"
+                          },
+                          "postal": {
+                            "description": "Postal | 邮编",
+                            "type": "string"
+                          },
+                          "province": {
+                            "description": "Province | 省/州名",
+                            "type": "string"
+                          },
+                          "province_iso_code": {
+                            "description": "Province ISO code | 省/州码",
+                            "type": "string"
+                          },
+                          "timezone": {
+                            "description": "Timezone | 时区",
+                            "type": "string"
+                          },
+                          "zip": {
+                            "description": "Zip | 邮编",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "ip"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "total": {
+                      "description": "Total | 总数",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "本地 IP 表分页列表",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/local/update": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "更新本地 IP（必填 id）",
+        "operationId": "ipgeoUpdateLocalIP",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "as": {
+                  "description": "AS | ASN",
+                  "type": "string"
+                },
+                "city": {
+                  "description": "City | 城市",
+                  "type": "string"
+                },
+                "continent": {
+                  "description": "Continent | 大洲名",
+                  "type": "string"
+                },
+                "continent_code": {
+                  "description": "Continent code | 大洲码",
+                  "type": "string"
+                },
+                "country": {
+                  "description": "Country | 国家名",
+                  "type": "string"
+                },
+                "country_code": {
+                  "description": "Country code | 国家码",
+                  "type": "string"
+                },
+                "id": {
+                  "description": "ID | 主键；创建可不传",
+                  "type": "integer"
+                },
+                "ip": {
+                  "description": "IP | 规范化 IPv4/IPv6",
+                  "type": "string"
+                },
+                "isp": {
+                  "description": "ISP | 运营商",
+                  "type": "string"
+                },
+                "lat": {
+                  "description": "Latitude | 纬度",
+                  "type": "number"
+                },
+                "lon": {
+                  "description": "Longitude | 经度",
+                  "type": "number"
+                },
+                "org": {
+                  "description": "Org | 组织",
+                  "type": "string"
+                },
+                "postal": {
+                  "description": "Postal | 邮编",
+                  "type": "string"
+                },
+                "province": {
+                  "description": "Province | 省/州名",
+                  "type": "string"
+                },
+                "province_iso_code": {
+                  "description": "Province ISO code | 省/州码",
+                  "type": "string"
+                },
+                "timezone": {
+                  "description": "Timezone | 时区",
+                  "type": "string"
+                },
+                "zip": {
+                  "description": "Zip | 邮编",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ip"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "as": {
+                      "description": "AS | ASN",
+                      "type": "string"
+                    },
+                    "city": {
+                      "description": "City | 城市",
+                      "type": "string"
+                    },
+                    "continent": {
+                      "description": "Continent | 大洲名",
+                      "type": "string"
+                    },
+                    "continent_code": {
+                      "description": "Continent code | 大洲码",
+                      "type": "string"
+                    },
+                    "country": {
+                      "description": "Country | 国家名",
+                      "type": "string"
+                    },
+                    "country_code": {
+                      "description": "Country code | 国家码",
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "ID | 主键；创建可不传",
+                      "type": "integer"
+                    },
+                    "ip": {
+                      "description": "IP | 规范化 IPv4/IPv6",
+                      "type": "string"
+                    },
+                    "isp": {
+                      "description": "ISP | 运营商",
+                      "type": "string"
+                    },
+                    "lat": {
+                      "description": "Latitude | 纬度",
+                      "type": "number"
+                    },
+                    "lon": {
+                      "description": "Longitude | 经度",
+                      "type": "number"
+                    },
+                    "org": {
+                      "description": "Org | 组织",
+                      "type": "string"
+                    },
+                    "postal": {
+                      "description": "Postal | 邮编",
+                      "type": "string"
+                    },
+                    "province": {
+                      "description": "Province | 省/州名",
+                      "type": "string"
+                    },
+                    "province_iso_code": {
+                      "description": "Province ISO code | 省/州码",
+                      "type": "string"
+                    },
+                    "timezone": {
+                      "description": "Timezone | 时区",
+                      "type": "string"
+                    },
+                    "zip": {
+                      "description": "Zip | 邮编",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "更新本地 IP（必填 id）",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/policy/default/save": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "保存全局默认启用与优先级（写入 Provider 表）",
+        "operationId": "ipgeoSaveDefaultPolicy",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "list": {
+                  "description": "List | 策略项，最多 100",
+                  "items": {
+                    "properties": {
+                      "is_enabled": {
+                        "description": "Is enabled | 是否启用",
+                        "type": "boolean"
+                      },
+                      "priority": {
+                        "description": "Priority | 优先级，可选",
+                        "type": "integer"
+                      },
+                      "provider_id": {
+                        "description": "Provider ID | 全局服务商主键",
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "provider_id",
+                      "is_enabled"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "list": {
+                      "description": "List | 策略项",
+                      "items": {
+                        "properties": {
+                          "is_enabled": {
+                            "description": "Is enabled | 当前租户是否启用",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "description": "Name | 服务商名称",
+                            "type": "string"
+                          },
+                          "priority": {
+                            "description": "Priority | 优先级，越小越先查",
+                            "type": "integer"
+                          },
+                          "provider_id": {
+                            "description": "Provider ID | 全局服务商主键",
+                            "type": "integer"
+                          },
+                          "tag": {
+                            "description": "Tag | 展示标签：在线 / 本地 / 离线",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "provider_id",
+                          "name",
+                          "is_enabled",
+                          "priority",
+                          "tag"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "total": {
+                      "description": "Total | 总数",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "保存全局默认启用与优先级（写入 Provider 表）",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/policy/list": {
+      "post": {
+        "description": "当前租户策略列表；未配则回 Provider 默认启用/优先级",
+        "operationId": "ipgeoListPolicy",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "list": {
+                      "description": "List | 策略项",
+                      "items": {
+                        "properties": {
+                          "is_enabled": {
+                            "description": "Is enabled | 当前租户是否启用",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "description": "Name | 服务商名称",
+                            "type": "string"
+                          },
+                          "priority": {
+                            "description": "Priority | 优先级，越小越先查",
+                            "type": "integer"
+                          },
+                          "provider_id": {
+                            "description": "Provider ID | 全局服务商主键",
+                            "type": "integer"
+                          },
+                          "tag": {
+                            "description": "Tag | 展示标签：在线 / 本地 / 离线",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "provider_id",
+                          "name",
+                          "is_enabled",
+                          "priority",
+                          "tag"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "total": {
+                      "description": "Total | 总数",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "当前租户策略列表；未配则回 Provider 默认启用/优先级",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    },
+    "/p9/integration/ipgeo/policy/save": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "保存当前租户对服务商的启用与优先级",
+        "operationId": "ipgeoSavePolicy",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "list": {
+                  "description": "List | 策略项，最多 100",
+                  "items": {
+                    "properties": {
+                      "is_enabled": {
+                        "description": "Is enabled | 是否启用",
+                        "type": "boolean"
+                      },
+                      "priority": {
+                        "description": "Priority | 优先级，可选",
+                        "type": "integer"
+                      },
+                      "provider_id": {
+                        "description": "Provider ID | 全局服务商主键",
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "provider_id",
+                      "is_enabled"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "业务码，成功恒为 0",
+                  "example": 0,
+                  "type": "integer"
+                },
+                "data": {
+                  "properties": {
+                    "list": {
+                      "description": "List | 策略项",
+                      "items": {
+                        "properties": {
+                          "is_enabled": {
+                            "description": "Is enabled | 当前租户是否启用",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "description": "Name | 服务商名称",
+                            "type": "string"
+                          },
+                          "priority": {
+                            "description": "Priority | 优先级，越小越先查",
+                            "type": "integer"
+                          },
+                          "provider_id": {
+                            "description": "Provider ID | 全局服务商主键",
+                            "type": "integer"
+                          },
+                          "tag": {
+                            "description": "Tag | 展示标签：在线 / 本地 / 离线",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "provider_id",
+                          "name",
+                          "is_enabled",
+                          "priority",
+                          "tag"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "total": {
+                      "description": "Total | 总数",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "msg": {
+                  "description": "成功为 ok（可随语言）",
+                  "example": "ok",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "未登录 / Token 无效",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "无权限",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "资源不存在",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "服务错误",
+            "schema": {
+              "properties": {
+                "code": {
+                  "description": "与 HTTP status 相同",
+                  "type": "integer"
+                },
+                "msg": {
+                  "description": "错误原因",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "保存当前租户对服务商的启用与优先级",
+        "tags": [
+          "ipgeo"
+        ]
+      }
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "security": [
+    {
+      "Token": []
+    }
+  ],
+  "securityDefinitions": {
+    "Token": {
+      "description": "JWT，格式：Bearer \u003caccess_token\u003e",
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey"
+    }
+  },
+  "swagger": "2.0",
+  "x-date": "2026-09-09 11:24:38",
+  "x-description": "This is a goctls generated swagger file.",
+  "x-github": "https://github.com/suyuan32/simple-admin-core",
+  "x-goctl-version": "v1.14.8",
+  "x-simple-admin-doc": "https://doc.ryansu.tech/zh/"
+}

@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package operator_report;
+
+option go_package = "oa.98ent.com/p9/operator-report/rpc/pb/operator_report";
+
+// 增长趋势条目
+message GrowthTrendStatItem {
+	string date = 1;  // 日期或小时 (YYYY-MM-DD 或 YYYY-MM-DD HH:00)
+	int64 count = 2;  // 统计数量 (根据type字段表示：新增数、登录数、或留存率*100)
+}
+
+// 会员增长趋势
+message MemberGrowthTrendRequest {
+	string start_date = 1;
+	string end_date = 2;
+	string granularity = 3;		// 统计粒度：day、hour 
+	string agent_id = 4;
+	string source = 5;		// 来源 (北美、非北美)，如果是注册维度，就为注册来源，其他维度为具体来源
+	string type = 6;               // 统计类型 （注册数、登录数、留存率）
+	string op_code = 7; // 分站编码
+}
+
+// 会员增长趋势响应
+message MemberGrowthTrendResponse {
+	repeated GrowthTrendStatItem list = 1;
+}
+
+// 会员概览请求（无需入参）
+message MemberSummaryRequest {
+	string op_code = 1; // 分站编码
+	string agent_id = 2; // 代理ID（可选）
+}
+
+// 会员概览
+message MemberSummary {
+	int64 total_members = 1;                    // 会员总数（历史注册总数）
+	double members_growth_rate = 2;             // 较昨日会员增长比例 (%)
+	int64 today_new_members = 3;                // 今日新增（今日注册）
+	int64 last_24h_new_members = 4;             // 过去24小时滚动新增
+	double last_24h_new_growth_rate = 5;        // 过去24小时较前一日新增增长比例 (%)
+	int64 today_deposit_amount = 6;             // 今日充值金额（单位：元，暂填0）
+	double deposit_growth_rate = 7;             // 充值增长比例 (%)（暂填0）
+	int64 active_members = 8;                   // 活跃会员总数（历史登录去重总数）
+	int64 today_active_members = 9;             // 今日活跃会员数
+	int64 last_24h_active_members = 10;         // 过去24小时滚动活跃
+	double last_24h_active_growth_rate = 11;    // 过去24小时较前一日活跃增长比例 (%)
+}
+
+// 会员概览响应
+message MemberSummaryResponse {
+	MemberSummary data = 1;
+}
+

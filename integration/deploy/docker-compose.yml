@@ -1,0 +1,61 @@
+name: demo-integration
+
+services:
+  postgres:
+    image: postgres:18.6
+    container_name: demo-integration-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app123}
+      POSTGRES_DB: ${POSTGRES_DB:-integration}
+      TZ: Asia/Shanghai
+    ports:
+      - "15433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-integration}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - p9-network
+
+  integration-rpc:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/integration-rpc:${VERSION:-1.0.0}
+    container_name: demo-integration-rpc
+    restart: always
+    ports:
+      - "19005:19005"
+    volumes:
+      - ./etc/integration-rpc.yaml:/app/etc/integration.yaml:ro
+      # 可选：挂载离线库
+      # - ../assets:/app/assets:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - p9-network
+
+  integration-api:
+    image: ${DOCKER_REPO:-192.168.0.15:5000/p9}/integration-api:${VERSION:-1.0.0}
+    container_name: demo-integration-api
+    restart: always
+    ports:
+      - "18005:18005"
+    volumes:
+      - ./etc/integration-api.yaml:/app/etc/integration.yaml:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - integration-rpc
+    networks:
+      - p9-network
+
+volumes:
+  postgres_data:
+
+networks:
+  p9-network:
+    driver: bridge

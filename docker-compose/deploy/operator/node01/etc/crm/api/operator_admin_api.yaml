@@ -1,0 +1,50 @@
+Name: operator_admin_api
+Host: 0.0.0.0
+Port: 38010
+Mode: dev
+
+# 国际化配置
+I18n:
+  DefaultLanguage: zh-CN    # 默认语言
+  
+# 分站Core RPC配置
+OperatorCoreRpc:
+  Etcd:
+    Hosts:
+      - 192.168.10.220:2379
+    Key: operator01-core-rpc
+
+# 后台基础服务 RPC配置
+OperatorBaseRpc:
+  Etcd:
+    Hosts:
+      - 192.168.10.220:2379
+    Key: operator-base-rpc-node01
+
+# 后台CRM RPC配置
+CrmRpc:
+  Etcd:
+    Hosts:
+      - 192.168.10.220:2379
+    Key: crm01-rpc
+      
+# 第三方服务集成 RPC配置
+IntegrationRpc:
+  Target: 192.168.10.220:19005
+
+# 活动服务 RPC配置
+ActivityRpc:
+  Etcd:
+    Hosts:
+      - 192.168.10.220:2379
+    Key: operator01-activity-rpc
+
+# 分站VIP图标上传使用现有分站OSS
+OssApiBaseURL: "http://operator-node01-oss-api:18006"
+
+# 分站API查询总站默认VIP图标，不在CRM中跨服务调用。
+PlatformBaseRpc:
+  Endpoints:
+    - 192.168.10.220:19001 # 总站基础RPC地址。
+  NonBlock: true # 总站不可用时不阻止API启动。
+  Timeout: 3000 # RPC请求超时，单位毫秒。

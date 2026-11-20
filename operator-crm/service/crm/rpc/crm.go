@@ -1,0 +1,80 @@
+package main
+
+import (
+	"flag"
+	"fmt"
+	"time"
+
+	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/service"
+	"github.com/zeromicro/go-zero/zrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+
+	_ "oa.98ent.com/p9/operator-crm/ent/runtime"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/config"
+	agentserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/agentservice"
+	authserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/authservice"
+	initServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/init"
+	memberServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/member"
+	memberautolevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberautolevel"
+	memberfixedlevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberfixedlevel"
+	pingServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/ping"
+	vipServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/vip"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/memberexportpb"
+)
+
+var configFile = flag.String("f", "etc/crm.yaml", "the config file")
+
+func main() {
+	flag.Parse()
+
+	var c config.Config
+	conf.MustLoad(*configFile, &c)
+	//验证码时长限制需要放宽
+	c.MethodTimeouts = append(c.MethodTimeouts, zrpc.MethodTimeoutConf{
+		FullMethod: crmrpc.Member_SendMemberContactBindingCode_FullMethodName,
+		Timeout:    30 * time.Second,
+	})
+	zrpc.DontLogContentForMethod(crmrpc.Member_UpdateContact_FullMethodName)
+	zrpc.DontLogContentForMethod(crmrpc.Member_ListMemberContactBindingCodes_FullMethodName)
+	zrpc.DontLogContentForMethod(crmrpc.Member_SendMemberContactBindingCode_FullMethodName)
+	ctx := svc.NewServiceContext(c)
+
+	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+		// 健康检查服务
+		crmrpc.RegisterPingServer(grpcServer, pingServer.NewPingServer(ctx))
+
+		// CRM统一初始化服务
+		crmrpc.RegisterInitServer(grpcServer, initServer.NewInitServer(ctx))
+
+		// 代理服务
+		crmrpc.RegisterAuthServiceServer(grpcServer, authserviceServer.NewAuthServiceServer(ctx))
+		crmrpc.RegisterAgentServiceServer(grpcServer, agentserviceServer.NewAgentServiceServer(ctx))
+
+		memberexportpb.RegisterMemberExportServer(grpcServer, &memberServer.ExportServer{Svc: ctx})
+
+		// 会员管理服务
+		crmrpc.RegisterMemberServer(grpcServer, memberServer.NewMemberServer(ctx))
+
+		// 会员自动层级服务
+		crmrpc.RegisterMemberAutoLevelServer(grpcServer, memberautolevelServer.NewMemberAutoLevelServer(ctx))
+
+		// 会员固定层级服务
+		crmrpc.RegisterMemberFixedLevelServer(grpcServer, memberfixedlevelServer.NewMemberFixedLevelServer(ctx))
+
+		// VIP管理服务
+		crmrpc.RegisterVipServer(grpcServer, vipServer.NewVipServer(ctx))
+
+		// 开发和测试环境额外开启服务反射
+		if c.Mode == service.DevMode || c.Mode == service.TestMode {
+			reflection.Register(grpcServer)
+		}
+	})
+	defer s.Stop()
+
+	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
+	s.Start()
+}

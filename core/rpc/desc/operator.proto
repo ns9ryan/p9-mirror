@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message IssuePreviewTokenReq {
+  string operator_code = 1;
+}
+
+message IssuePreviewTokenResp {
+  string access_token = 1;
+  int64 expire = 2;
+  string operator_code = 3;
+  string home_path = 4;
+}
+
+service Core {
+  // group: operator
+  rpc issuePreviewToken (IssuePreviewTokenReq) returns (IssuePreviewTokenResp);
+}

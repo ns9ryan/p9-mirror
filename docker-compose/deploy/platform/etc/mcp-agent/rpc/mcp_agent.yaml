@@ -1,0 +1,59 @@
+# RPC 服务配置
+Name: mcp-agent-rpc
+ListenOn: 0.0.0.0:29003
+Timeout: 10000
+
+# 日志配置
+Log:
+  Mode: console
+  Level: info
+
+Mcp:
+  Name: p9-mcp-agent
+  Host: 0.0.0.0
+  Port: 29004
+  MessageTimeout: 30s
+
+DatabaseConf:
+  Driver: pgx
+  Host:     192.168.10.220     # 数据库地址
+  Port:     15432          # 数据库端口
+  DBName:   p9_platform   # 数据库名称
+  Username: root          # 数据库用户名
+  Password: root          # 数据库密码
+  SSLMode:  disable       # SSL模式
+
+DorisDatabaseConf:
+  Driver: doris
+  Host: 192.168.10.220
+  Port: 9031
+  DBName: ns9_statistics
+  Username: root
+  Password: ""
+  SSLMode: disable
+
+# 向量数据库配置 (使用同一 PostgreSQL + pgvector)
+VectorStore:
+  Enabled: true
+  Dimension: 1536  # OpenAI 默认向量维度
+
+# AI 模型配置
+AI:
+  Model: "gpt-6"
+  APIKey: "sk-proj-XXX"
+  APIBase: "https://api.openai.com/v1"
+  Temperature: 0.7
+  MaxTokens: 4096
+  Timeout: 30s
+
+Performance:
+  MaxQueryTimeout: 60s  # 最大查询超时
+  MaxScanBytes: 10737418240  # 最大扫描字节 (10GB)
+  MaxRows: 10000  # 最大返回行数
+
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: mcp-agent-rpc
+  Endpoint: 192.168.10.220:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc

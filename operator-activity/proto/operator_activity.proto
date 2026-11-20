@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package operator_activity;
+
+option go_package = "oa.98ent.com/p9/operator-activity/pb/operatoractivityrpc";
+
+import "types/operator_activity_ping.proto";
+import "types/activity.proto";
+import "types/task.proto";
+
+// Ping 服务
+service PingService {
+  // Ping
+  rpc Ping(operator_activity_ping.PingReq) returns (operator_activity_ping.PingResp);
+}
+
+// 活动管理服务
+service ActivityService {
+  // group: activity 新增活动
+  rpc Create(activity.CreateActivityReq) returns (activity.CreateActivityResp);
+  // group: activity 编辑活动（仅草稿）
+  rpc Update(activity.UpdateActivityReq) returns (activity.UpdateActivityResp);
+  // group: activity 活动详情
+  rpc Get(activity.GetActivityReq) returns (activity.GetActivityResp);
+  // group: activity 活动列表
+  rpc List(activity.ListActivitiesReq) returns (activity.ListActivitiesResp);
+  // group: activity 关闭活动
+  rpc Close(activity.CloseActivityReq) returns (activity.CloseActivityResp);
+  // group: activity 发布活动
+  rpc Publish(activity.PublishActivityReq) returns (activity.PublishActivityResp);
+  // group: activity 活动枚举参数（多语言 label）
+  rpc GetEnumParams(activity.GetActivityEnumParamsReq) returns (activity.GetActivityEnumParamsResp);
+  // group: activity_order 活动订单列表
+  rpc ListOrders(activity.ListActivityOrdersReq) returns (activity.ListActivityOrdersResp);
+  // group: activity_order 活动订单审核列表
+  rpc ListAuditOrders(activity.ListActivityOrderAuditsReq) returns (activity.ListActivityOrderAuditsResp);
+  // group: activity_order 活动订单审核（通过或拒绝）
+  rpc AuditOrder(activity.AuditActivityOrderReq) returns (activity.AuditActivityOrderResp);
+}
+
+// 任务配置服务
+service TaskService {
+  // group: task_config 任务配置列表（分页查询，支持排序）
+  rpc TaskConfigList(task.ListTaskConfigReq) returns (task.ListTaskConfigResp);
+  // group: task_config 更新任务配置（仅允许修改 timezone、status、completion_amount、reward_amount、payout_mode、sort）
+  rpc TaskConfigUpdate(task.UpdateTaskConfigReq) returns (task.UpdateTaskConfigResp);
+  // group: member_task_reward 会员任务奖励查询
+  rpc MemberTaskRewardList(task.ListMemberTaskRewardReq) returns (task.ListMemberTaskRewardResp);
+  // group: member_task_reward 更新会员任务奖励状态（只允许从 1 改为 2）
+  rpc MemberTaskRewardUpdateStatus(task.UpdateMemberTaskRewardStatusReq) returns (task.UpdateMemberTaskRewardStatusResp);
+  // group: task_config 获取单个任务配置
+  rpc GetTaskConfig(task.GetTaskConfigReq) returns (task.GetTaskConfigResp);
+}

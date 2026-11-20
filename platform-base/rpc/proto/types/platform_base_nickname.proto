@@ -1,0 +1,16 @@
+syntax = "proto3";
+package platform_base_nickname;
+option go_package = "oa.98ent.com/p9/platform-base/rpc/pb/platformbaserpc/nicknamepb";
+message NicknameInfo { int64 id = 1; string name = 2; }
+message CreateNicknameRequest { string name = 1; }
+message CreateNicknameResponse { NicknameInfo nickname = 1; }
+message UpdateNicknameRequest { int64 id = 1; string name = 2; }
+message UpdateNicknameResponse {}
+message DeleteNicknameRequest { int64 id = 1; }
+message DeleteNicknameResponse {}
+message GetNicknameRequest { int64 id = 1; }
+message GetNicknameResponse { NicknameInfo nickname = 1; }
+message ListNicknamesRequest { int64 page = 1; int64 page_size = 2; string keyword = 3; }
+message ListNicknamesResponse { int64 total = 1; repeated NicknameInfo list = 2; }
+message RandomNicknameRequest {}
+message RandomNicknameResponse { NicknameInfo nickname = 1; }

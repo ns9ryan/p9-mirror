@@ -1,0 +1,316 @@
+syntax = "v1"
+
+import "../common.api"
+
+type (
+	// 奖励阶梯规则
+	ActivityRewardSchema {
+		Id        int64 `json:"id,optional"`
+		Threshold int64 `json:"threshold,optional"`
+		Amount    int64 `json:"amount,optional"`
+		Rate      int32 `json:"rate,optional"`
+		MaxBonus  int64 `json:"max_bonus,optional"`
+		MinBonus  int64 `json:"min_bonus,optional"`
+		Count     int32 `json:"count,optional"`
+	}
+	// 推荐活动配置
+	ActivityReferConfig {
+		MinDepositAmount int64 `json:"min_deposit_amount,optional"`
+		MinBetAmount     int64 `json:"min_bet_amount,optional"`
+		IpLimit          int32 `json:"ip_limit,optional"`
+		DeviceLimit      int32 `json:"device_limit,optional"`
+	}
+	// 幸运转盘配置
+	ActivityLuckWheelConfig {
+		// 1仅投注、2仅充值、3投注|充值
+		WheelTriggerMode int32                   `json:"wheel_trigger_mode,optional"`
+		BetSchemas       []ActivityRewardSchema  `json:"bet_schemas,optional"`
+		DepositSchemas   []ActivityRewardSchema  `json:"deposit_schemas,optional"`
+	}
+	// 活动配置
+	ActivitySettings {
+		DepositRewardType int32                    `json:"deposit_reward_type,optional"`
+		BetClaimMode      int32                    `json:"bet_claim_mode,optional"`
+		BonusMode         int32                    `json:"bonus_mode,optional"`
+		RewardSchemas     []ActivityRewardSchema   `json:"reward_schemas,optional"`
+		ReferConfig       *ActivityReferConfig     `json:"refer_config,optional"`
+		LuckWheel         *ActivityLuckWheelConfig `json:"luck_wheel,optional"`
+	}
+	// 活动国际化
+	ActivityI18nItem {
+		Lang        string `json:"lang"`
+		Name        string `json:"name,optional"`
+		Rule        string `json:"rule,optional"`
+		Image       string `json:"image,optional"`
+		Description string `json:"description,optional"`
+	}
+	// 创建活动请求
+	CreateActivityReq {
+		// 活动类型: 1充值 2洗码 3推荐会员 4幸运转盘 5助力 6盲盒 7新人彩金 8全民代理 9救援金 10幸运注单 11VIP奖金 12红包雨 13图文广告 14签到
+		Type int32 `json:"type" validate:"required,oneof=1 2 3 4 5 6 7 8 9 10 11 12 13 14"`
+		// 活动状态: 0/未传默认草稿, 1草稿 2进行中 3已结束
+		Status int32 `json:"status,optional"`
+		// 参与模式: 1自动 2手动
+		ApplyMode int32 `json:"apply_mode" validate:"required,oneof=1 2"`
+		// 活动所属: 1大厅 2电子 3体育
+		Section int32 `json:"section" validate:"required,oneof=1 2 3"`
+		// 循环模式
+		CycleMode int32 `json:"cycle_mode,optional"`
+		// 允许的固定层级
+		AllowedFixedLevel []int64 `json:"allowed_fixed_level,optional"`
+		// 允许的自动层级
+		AllowedAutoLevel []int64 `json:"allowed_auto_level,optional"`
+		// 允许的客户端类型
+		AllowedClients []int64 `json:"allowed_clients,optional"`
+		// 允许的游戏 ID
+		AllowedGameIds []int64 `json:"allowed_game_ids,optional"`
+		// 允许的代理 ID
+		AllowedAgentIds []int64 `json:"allowed_agent_ids,optional"`
+		// 参与限制
+		ApplyLimit []int64 `json:"apply_limit,optional"`
+		// 领取限制
+		ClaimLimit []int64 `json:"claim_limit,optional"`
+		// 是否永久活动
+		IsPermanent bool `json:"is_permanent,optional"`
+		// 开始时间 unix 秒
+		OpenAtSec *int64 `json:"open_at_sec,optional"`
+		// 结束时间 unix 秒
+		CloseAtSec *int64 `json:"close_at_sec,optional"`
+		// 发布时间 unix 秒
+		ReleaseAtSec *int64 `json:"release_at_sec,optional"`
+		// 是否自动审核
+		AutoAudit bool `json:"auto_audit,optional"`
+		// 自动审核金额上限
+		AutoAuditMaxAmt int64 `json:"auto_audit_max_amt,optional"`
+		// 派发模式
+		PayoutMode int32 `json:"payout_mode,optional"`
+		// 派发时机
+		PayoutTiming int32 `json:"payout_timing,optional"`
+		// 手动领取过期秒数
+		ClaimExpireSec int64 `json:"claim_expire_sec,optional"`
+		// 活动配置
+		Settings *ActivitySettings `json:"settings,optional"`
+		// 洗码倍数
+		WageringMultiplier int32 `json:"wagering_multiplier,optional"`
+		// 洗码基数
+		WageringBase int32 `json:"wagering_base,optional"`
+		// 是否在列表显示
+		ShowInList *bool `json:"show_in_list,optional"`
+		// 是否在侧边栏显示
+		ShowInSidebar *bool `json:"show_in_sidebar,optional"`
+		// 排序权重
+		SortWeight int32 `json:"sort_weight,optional"`
+		// 创建人
+		CreateUid int64 `json:"create_uid,optional"`
+		// 国际化
+		I18n []ActivityI18nItem `json:"i18n,optional"`
+	}
+	// 创建活动响应
+	CreateActivityResp {
+		Id int64 `json:"id"`
+	}
+	// 编辑活动请求（仅草稿可编辑）
+	UpdateActivityReq {
+		Id int64 `json:"id" validate:"required,gt=0"`
+		// 活动类型: 1充值 2洗码 3推荐会员 4幸运转盘 5助力 6盲盒 7新人彩金 8全民代理 9救援金 10幸运注单 11VIP奖金 12红包雨 13图文广告 14签到
+		Type int32 `json:"type" validate:"required,oneof=1 2 3 4 5 6 7 8 9 10 11 12 13 14"`
+		// 参与模式: 1自动 2手动
+		ApplyMode int32 `json:"apply_mode" validate:"required,oneof=1 2"`
+		// 活动所属: 1大厅 2电子 3体育
+		Section int32 `json:"section" validate:"required,oneof=1 2 3"`
+		// 循环模式
+		CycleMode int32 `json:"cycle_mode,optional"`
+		AllowedFixedLevel []int64 `json:"allowed_fixed_level,optional"`
+		AllowedAutoLevel  []int64 `json:"allowed_auto_level,optional"`
+		AllowedClients    []int64 `json:"allowed_clients,optional"`
+		AllowedGameIds    []int64 `json:"allowed_game_ids,optional"`
+		AllowedAgentIds   []int64 `json:"allowed_agent_ids,optional"`
+		ApplyLimit        []int64 `json:"apply_limit,optional"`
+		ClaimLimit        []int64 `json:"claim_limit,optional"`
+		IsPermanent       bool    `json:"is_permanent,optional"`
+		OpenAtSec         *int64  `json:"open_at_sec,optional"`
+		CloseAtSec        *int64  `json:"close_at_sec,optional"`
+		ReleaseAtSec      *int64  `json:"release_at_sec,optional"`
+		AutoAudit         bool    `json:"auto_audit,optional"`
+		AutoAuditMaxAmt   int64   `json:"auto_audit_max_amt,optional"`
+		PayoutMode        int32   `json:"payout_mode,optional"`
+		PayoutTiming      int32   `json:"payout_timing,optional"`
+		ClaimExpireSec    int64   `json:"claim_expire_sec,optional"`
+		Settings          *ActivitySettings `json:"settings,optional"`
+		WageringMultiplier int32 `json:"wagering_multiplier,optional"`
+		WageringBase       int32 `json:"wagering_base,optional"`
+		ShowInList         *bool `json:"show_in_list,optional"`
+		ShowInSidebar      *bool `json:"show_in_sidebar,optional"`
+		SortWeight         int32 `json:"sort_weight,optional"`
+		I18n []ActivityI18nItem `json:"i18n,optional"`
+	}
+	// 编辑活动响应
+	UpdateActivityResp {
+		Id int64 `json:"id"`
+	}
+	// 活动详情
+	ActivityDetail {
+		Id                 int64               `json:"id"`
+		Type               int32               `json:"type"`
+		Status             int32               `json:"status"`
+		ApplyMode          int32               `json:"apply_mode"`
+		Section            int32               `json:"section"`
+		CycleMode          int32               `json:"cycle_mode"`
+		AllowedFixedLevel  []int64             `json:"allowed_fixed_level"`
+		AllowedAutoLevel   []int64             `json:"allowed_auto_level"`
+		AllowedClients     []int64             `json:"allowed_clients"`
+		AllowedGameIds     []int64             `json:"allowed_game_ids"`
+		AllowedAgentIds    []int64             `json:"allowed_agent_ids"`
+		ApplyLimit         []int64             `json:"apply_limit"`
+		ClaimLimit         []int64             `json:"claim_limit"`
+		IsPermanent        bool                `json:"is_permanent"`
+		OpenAtSec          *int64              `json:"open_at_sec,optional"`
+		CloseAtSec         *int64              `json:"close_at_sec,optional"`
+		ReleaseAtSec       *int64              `json:"release_at_sec,optional"`
+		AutoAudit          bool                `json:"auto_audit"`
+		AutoAuditMaxAmt    int64               `json:"auto_audit_max_amt"`
+		PayoutMode         int32               `json:"payout_mode"`
+		PayoutTiming       int32               `json:"payout_timing"`
+		ClaimExpireSec     int64               `json:"claim_expire_sec"`
+		Settings           *ActivitySettings   `json:"settings,optional"`
+		WageringMultiplier int32               `json:"wagering_multiplier"`
+		WageringBase       int32               `json:"wagering_base"`
+		ShowInList         bool                `json:"show_in_list"`
+		ShowInSidebar      bool                `json:"show_in_sidebar"`
+		SortWeight         int32               `json:"sort_weight"`
+		CreateUid          int64               `json:"create_uid"`
+		UpdateUid          int64               `json:"update_uid"`
+		Version            int32               `json:"version"`
+		CreatedAtSec       int64               `json:"created_at_sec"`
+		UpdatedAtSec       int64               `json:"updated_at_sec"`
+		I18n               []ActivityI18nItem  `json:"i18n"`
+	}
+	// 获取活动详情请求
+	GetActivityReq {
+		Id int64 `form:"id" validate:"required,gt=0"`
+	}
+	// 获取活动详情响应
+	GetActivityResp {
+		ActivityDetail
+	}
+	// 活动列表项
+	ActivityListItem {
+		Id                 int64   `json:"id"`
+		Type               int32   `json:"type"`
+		Status             int32   `json:"status"`
+		Name               string  `json:"name"`
+		Image              string  `json:"image"`
+		AllowedClients     []int64 `json:"allowed_clients"`
+		OpenAtSec          *int64  `json:"open_at_sec,optional"`
+		CloseAtSec         *int64  `json:"close_at_sec,optional"`
+		ReleaseAtSec       *int64  `json:"release_at_sec,optional"`
+		SortWeight         int32   `json:"sort_weight"`
+		ShowInList         bool    `json:"show_in_list"`
+		UpdatedAtSec       int64   `json:"updated_at_sec"`
+		AutoAudit          bool    `json:"auto_audit"`
+		AutoAuditMaxAmt    int64   `json:"auto_audit_max_amt"`
+		AllowedFixedLevel  []int64 `json:"allowed_fixed_level"`
+		AllowedAutoLevel   []int64 `json:"allowed_auto_level"`
+		WageringMultiplier int32   `json:"wagering_multiplier"`
+		AllowedGameIds     []int64 `json:"allowed_game_ids"`
+		IsPermanent        bool    `json:"is_permanent"`
+		CreatedAtSec       int64   `json:"created_at_sec"`
+		CreateUid          int64   `json:"create_uid"`
+		UpdateUid          int64   `json:"update_uid"`
+		Section            int32   `json:"section"`
+	}
+	// 活动列表请求
+	ListActivitiesReq {
+		PageRequest
+		// 活动名称
+		Name string `form:"name,optional"`
+		// 活动类型
+		Type *int32 `form:"type,optional"`
+		// 参与客户端
+		Client *int64 `form:"client,optional"`
+		// 活动状态
+		Status *int32 `form:"status,optional"`
+	}
+	// 活动列表响应
+	ListActivitiesResp {
+		Total int64              `json:"total"`
+		List  []ActivityListItem `json:"list"`
+	}
+	// 关闭活动请求
+	CloseActivityReq {
+		Id int64 `json:"id" validate:"required,gt=0"`
+	}
+	// 关闭活动响应
+	CloseActivityResp {
+		Id int64 `json:"id"`
+	}
+	// 发布活动请求
+	PublishActivityReq {
+		Id int64 `json:"id" validate:"required,gt=0"`
+	}
+	// 发布活动响应
+	PublishActivityResp {
+		Id int64 `json:"id"`
+	}
+	// 活动枚举选项
+	ActivityEnumItem {
+		Key   string `json:"key"`
+		Value int32  `json:"value"`
+		Label string `json:"label"`
+	}
+	// 活动枚举参数响应（label 随 X-Lang）
+	GetActivityEnumParamsResp {
+		Type              []ActivityEnumItem `json:"type"`
+		Status            []ActivityEnumItem `json:"status"`
+		ApplyMode         []ActivityEnumItem `json:"apply_mode"`
+		CycleMode         []ActivityEnumItem `json:"cycle_mode"`
+		PayoutMode        []ActivityEnumItem `json:"payout_mode"`
+		PayoutTiming      []ActivityEnumItem `json:"payout_timing"`
+		BonusMode         []ActivityEnumItem `json:"bonus_mode"`
+		BetClaimMode      []ActivityEnumItem `json:"bet_claim_mode"`
+		DepositRewardType []ActivityEnumItem `json:"deposit_reward_type"`
+		WheelTriggerMode  []ActivityEnumItem `json:"wheel_trigger_mode"`
+		WageringBase      []ActivityEnumItem `json:"wagering_base"`
+		ClientType        []ActivityEnumItem `json:"client_type"`
+		ApplyLimitType    []ActivityEnumItem `json:"apply_limit_type"`
+		ClaimLimitType    []ActivityEnumItem `json:"claim_limit_type"`
+		Section           []ActivityEnumItem `json:"section"`
+		Currency 		  string `json:"currency"`
+		Timezone          string `json:"timezone"`
+	}
+)
+
+@server (
+	group:      activity/manage
+	prefix:     /activity
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "创建活动"
+	@handler Create
+	post /create (CreateActivityReq) returns (CreateActivityResp)
+
+	@doc "编辑活动（仅草稿）"
+	@handler Update
+	post /update (UpdateActivityReq) returns (UpdateActivityResp)
+
+	@doc "活动详情"
+	@handler Get
+	get /detail (GetActivityReq) returns (GetActivityResp)
+
+	@doc "活动列表"
+	@handler List
+	get /list (ListActivitiesReq) returns (ListActivitiesResp)
+
+	@doc "关闭活动"
+	@handler Close
+	post /close (CloseActivityReq) returns (CloseActivityResp)
+
+	@doc "发布活动"
+	@handler Publish
+	post /publish (PublishActivityReq) returns (PublishActivityResp)
+
+	@doc "活动枚举参数"
+	@handler GetEnumParams
+	get /enum-params returns (GetActivityEnumParamsResp)
+}

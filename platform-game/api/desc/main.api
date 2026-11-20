@@ -1,0 +1,27 @@
+syntax = "v1"
+
+info (
+	title:   "Platform Game API"
+	desc:    "Platform Game Service API"
+	author:  "Platform Game Team"
+	version: "1.0.0"
+	// host:    "localhost:18003"
+	schemes: "http"
+)
+
+import "ping.api"
+import "category.api"
+import "channel.api"
+import "game.api"
+import "currency.api"
+import "provider.api"
+import "checkpoint.api"
+import "sync.api"
+
+// 通用响应类型
+type Response {
+	Code    int         `json:"code" comment:"错误码"`
+	Message string      `json:"message" comment:"错误消息"`
+	Data    interface{} `json:"data" comment:"响应数据"`
+}
+

@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package platform_game;
+
+option go_package = "oa.98ent.com/p9/platform-game/rpc/pb/platform_game";
+
+// GameCategoryInfo 分类信息
+message GameCategoryInfo {
+    int64 id = 1;
+    int64 source_id = 2;
+    string category_code = 3;
+    string source_category_code = 4;
+    string name_key = 5;
+    int32 sort_no = 6;
+    int32 status = 7;
+    int32 source_status = 8;
+    int32 is_deleted = 9;
+    int64 created_at = 10;
+    int64 updated_at = 11;
+}
+
+// GetGameCategoryListRequest 获取游戏分类列表请求
+message GetGameCategoryListRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+    string category_code = 3;
+    int32 status = 4;
+    int32 is_deleted = 5;
+}
+
+// GetGameCategoryListResp 游戏分类列表响应
+message GetGameCategoryListResp {
+    int32 code = 1;
+    string message = 2;
+    repeated GameCategoryInfo items = 3;
+    int64 total = 4;
+    int32 page = 5;
+    int32 page_size = 6;
+}
+
+// GetGameCategoryRequest 获取单个游戏分类请求
+message GetGameCategoryRequest {
+    int64 id = 1;
+}
+
+// GetGameCategoryResp 获取单个游戏分类响应
+message GetGameCategoryResp {
+    int32 code = 1;
+    string message = 2;
+    GameCategoryInfo data = 3;
+}
+
+// UpdateGameCategoryRequest 更新分类请求
+message UpdateGameCategoryRequest {
+    int64 id = 1;
+    int32 sort_no = 2;
+    int32 status = 3;
+    bool force_logout = 4;
+}
+
+// UpdateGameCategoryResp 更新分类响应
+message UpdateGameCategoryResp {
+    int32 code = 1;
+    string message = 2;
+    GameCategoryInfo data = 3;
+}

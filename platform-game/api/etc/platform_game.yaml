@@ -1,0 +1,24 @@
+# API 服务配置
+Name: platform-game-api
+Host: 0.0.0.0
+Port: 18003
+Mode: dev
+Timeout: 10000
+
+# 国际化配置
+I18n:
+  DefaultLanguage: zh-CN
+
+# Swagger 配置
+Swagger:
+  Protocol: http
+
+CoreRpc:
+  Target: 192.168.0.15:19000
+  Timeout: 10000
+
+PlatformGameRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: platform-game-rpc

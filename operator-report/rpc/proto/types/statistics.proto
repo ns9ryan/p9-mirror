@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package operator_report;
+
+option go_package = "oa.98ent.com/p9/operator-report/rpc/pb/operator_report";
+
+// 用户留存数据查询接口定义
+// ============================================================================
+
+// 用户留存查询请求
+message UserRetentionQueryRequest {
+    message Condition {
+        string retention_type = 1;   // 留存类型: total(新用户总数), today(当日登录), yesterday(次日登录), 7d, 15d, 30d, 60d
+        repeated int64 date_range = 2; // [start_time, end_time] 注册日期范围，毫秒时间戳
+        int32 agent_mode = 3;        // 代理模式 1.现金代理 2.信誉代理
+    }
+    message Credential {
+        int64 aid = 1;               // 代理 ID
+        int32 did = 2;               // 部门 ID
+        int64 pid = 3;               // 分站 ID
+        string token = 4;            // 认证令牌
+        int32 uid = 5;               // 用户 ID
+    }
+    message Header {
+        string page_url = 1;         // 请求页面 URL
+        string version = 2;          // API 版本
+    }
+    message OperCred {
+        string cred = 1;             // 操作员凭证
+        string notes = 2;            // 操作备注
+        int32 type = 3;              // 操作类型
+    }
+    Condition condition = 1;
+    Credential credential = 2;
+    Header header = 3;
+    OperCred oper_cred = 4;
+}
+
+// 用户留存数据项
+message UserRetentionData {
+    string op_code = 1;              // 分站编码
+    int64 agent_id = 2;              // 代理 ID
+    int64 register_date = 3;         // 注册日期，毫秒时间戳
+    
+    // 新用户统计
+    int64 total_new_users = 4;       // 新用户总数
+    
+    // 当日留存
+    int64 today_login_count = 5;     // 注册当日登录用户数
+    float today_login_rate = 6;      // 注册当日登录率(%)
+    
+    // 次日留存
+    int64 yesterday_login_count = 7; // 注册后次日登录用户数
+    
+    // 7日留存
+    int64 range_7d_login_count = 8;  // 7日内登录用户数
+    float range_7d_login_rate = 9;   // 7日内登录率(%)
+    
+    // 15日留存
+    int64 range_15d_login_count = 10; // 15日内登录用户数
+    float range_15d_login_rate = 11;  // 15日内登录率(%)
+    
+    // 30日留存
+    int64 range_30d_login_count = 12; // 30日内登录用户数
+    float range_30d_login_rate = 13;  // 30日内登录率(%)
+    
+    // 60日留存
+    int64 range_60d_login_count = 14; // 60日内登录用户数
+    float range_60d_login_rate = 15;  // 60日内登录率(%)
+    
+    // 元数据
+    int64 created_at = 16;           // 记录创建时间，毫秒时间戳
+    int64 updated_at = 17;           // 记录更新时间，毫秒时间戳
+}
+
+// 用户留存查询响应
+message UserRetentionQueryResponse {
+    repeated UserRetentionData data = 1; // 用户留存数据列表
+    int32 total = 2;                     // 数据总数
+    string message = 3;                  // 响应消息
+    int32 code = 4;                      // 响应码 0=成功
+}
+

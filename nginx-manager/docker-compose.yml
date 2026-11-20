@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: 192.168.0.15:5000/p9/nginx-manager:latest
+    container_name: p9-nginx
+    restart: always
+    networks:
+      - p9-network
+    ports:
+      - "80:80"
+      - "8888:8888"  # ← Reload API 端口
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - /home/alan/headquarter:/var/www/headquarter:ro
+      - /home/alan/outstation:/var/www/outstation:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  p9-network:
+    driver: bridge

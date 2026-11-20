@@ -1,0 +1,37 @@
+# RPC服务配置
+Name:     operator-base-rpc-node01      # RPC服务名称
+ListenOn: 0.0.0.0:39001          # RPC监听地址
+Mode:     dev                    # 运行模式
+
+# 数据库配置
+DatabaseConf:
+  Host:     postgres             # 当前节点数据库地址
+  Port:     5432                 # PostgreSQL容器端口
+  DBName:   p9_operator          # 厅数据库名称
+  Username: root                 # 数据库用户名
+  Password: root                 # 数据库密码
+  SSLMode:  disable              # SSL模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 192.168.10.220:2379       # Etcd地址
+  Key: operator-base-rpc-node01   # 服务注册Key
+
+
+# 当前节点 Core RPC，用于查询本站语言
+OperatorCoreRpc:
+  Endpoints:
+    - operator-node01-core-rpc:39000
+  NonBlock: true
+  Timeout: 10000
+# 总网 Base RPC，用于查询地区、货币和时区
+PlatformBaseRpc:
+  Endpoints:
+    - 192.168.10.220:19001
+  NonBlock: true
+  Timeout: 10000
+# 新分站默认 Logo 图片地址
+DefaultSiteLogoURL: http://192.168.10.220:9200/oss-bucket/defaults/site-logo-761a9ddc0f04862c.png
+
+SiteLogoBaseURL: "http://192.168.10.220:9200/oss-bucket"

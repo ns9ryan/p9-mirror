@@ -1,0 +1,2 @@
+patchedDependencies:
+  vite-plugin-eslint@1.8.1: patches/vite-plugin-eslint@1.8.1.patch

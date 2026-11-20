@@ -1,0 +1,24 @@
+syntax = "v1"
+
+type (
+	// 登录前按后台域名查询站点编码请求
+	GetSiteCodeRequest {
+		// 后台域名，不含协议、端口和路径
+		DomainName string `form:"domain_name"`
+	}
+	// 登录前查询站点编码响应
+	GetSiteCodeResponse {
+		// 分站唯一业务编码，由后端确认
+		OperatorCode string `json:"operator_code"`
+	}
+)
+
+// 登录前公开接口，单独注册，不使用 SiteAuth。
+@server (
+	group: operator
+)
+service operator_base {
+	@doc "公开按后台域名查询站点编码，只读，不要求 token 或接口权限"
+	@handler GetSiteCode
+	get /operator/code (GetSiteCodeRequest) returns (GetSiteCodeResponse)
+}

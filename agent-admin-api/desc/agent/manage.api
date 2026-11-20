@@ -1,0 +1,38 @@
+syntax = "v1"
+
+info (
+	title:   "agent manage api"
+	desc:    "代理管理"
+	author:  "p9"
+	version: "v1"
+)
+
+type AddSubAgentReq {
+	Account    string `json:"account"`
+	Password   string `json:"password"`
+	AgentType  int32  `json:"agent_type"`
+	ShareRate  int32  `json:"share_rate"`
+	RegisterIp string `json:"register_ip,optional"`
+	Remark     string `json:"remark,optional"`
+}
+
+type AddAgentResp {
+	Id        int64  `json:"id"`
+	Account   string `json:"account"`
+	Code      string `json:"code"`
+	ParentId  int64  `json:"parent_id"`
+	TopId     int64  `json:"top_id"`
+	Level     int32  `json:"level"`
+	ShareRate int32  `json:"share_rate"`
+}
+
+@server (
+	group:      agent/manage
+	middleware: Jwt
+)
+service agent_admin_api {
+	@doc "当前代理添加直属下级"
+	@handler addSubAgent
+	post /agent/create (AddSubAgentReq) returns (AddAgentResp)
+}
+

@@ -1,0 +1,199 @@
+syntax = "v1"
+
+info (
+	title:   "ipgeo api"
+	desc:    "IP/GEO 查询、租户策略与本地 IP 表；全部接口需 JWT"
+	author:  "p9"
+	version: "v1"
+)
+
+import "base.api"
+
+// Search IP request | 批量查 IP 地理信息
+type SearchIpReq {
+	// IPs | IPv4/IPv6，最多 100；超过整批失败
+	Ips  []string `json:"ips"`
+	// Lang | 展示语言，空则 en；允许 en/zh-CN/pt-BR/ru/fr/ja/es/de
+	Lang string   `json:"lang,optional"`
+}
+
+// IP geo info | 单条 IP 查询结果（与请求 ips 等长；无效 IP 仅回 query）
+type IpInfo {
+	// Query | 请求中的原始 IP
+	Query           string  `json:"query"`
+	// Continent | 大洲名（随 lang）
+	Continent       string  `json:"continent"`
+	// Continent code | 大洲码，如 AS
+	ContinentCode   string  `json:"continent_code"`
+	// Country | 国家名（随 lang）；私网为「私有IP」
+	Country         string  `json:"country"`
+	// Country code | 国家码，如 CN
+	CountryCode     string  `json:"country_code"`
+	// Province | 省/州名
+	Province        string  `json:"province"`
+	// Province ISO code | 省/州码
+	ProvinceIsoCode string  `json:"province_iso_code"`
+	// City | 城市
+	City            string  `json:"city"`
+	// Zip | 邮编（与 postal 同源）
+	Zip             string  `json:"zip"`
+	// Latitude | 纬度
+	Lat             float64 `json:"lat"`
+	// Longitude | 经度
+	Lon             float64 `json:"lon"`
+	// Timezone | 时区，如 Asia/Shanghai
+	Timezone        string  `json:"timezone"`
+	// ISP | 运营商
+	Isp             string  `json:"isp"`
+	// Org | 组织
+	Org             string  `json:"org"`
+	// AS | ASN
+	As              string  `json:"as"`
+	// Postal | 邮编
+	Postal          string  `json:"postal"`
+	// Source | 命中源名称（Provider.Name）；私网为 private
+	Source          string  `json:"source"`
+}
+
+// Search IP response | 批量查询结果
+type SearchIpResp {
+	// List | 与 ips 等长，不为 null
+	List []IpInfo `json:"list"`
+}
+
+// Policy view | 当前租户可见的服务商策略（未配策略时用 Provider 默认）
+type PolicyView {
+	// Provider ID | 全局服务商主键
+	ProviderId int64  `json:"provider_id"`
+	// Name | 服务商名称
+	Name       string `json:"name"`
+	// Is enabled | 当前租户是否启用
+	IsEnabled  bool   `json:"is_enabled"`
+	// Priority | 优先级，越小越先查
+	Priority   int64  `json:"priority"`
+	// Tag | 展示标签：在线 / 本地 / 离线
+	Tag        string `json:"tag"`
+}
+
+// Policy list data | 策略列表
+type PolicyListData {
+	// List | 策略项
+	List  []PolicyView `json:"list"`
+	// Total | 总数
+	Total int64        `json:"total"`
+}
+
+// Policy item | 保存策略时的单项
+type PolicyItem {
+	// Provider ID | 全局服务商主键
+	ProviderId int64 `json:"provider_id"`
+	// Is enabled | 是否启用
+	IsEnabled  bool  `json:"is_enabled"`
+	// Priority | 优先级，可选
+	Priority   int64 `json:"priority,optional"`
+}
+
+// Save policy request | 批量保存策略（同一 provider_id 不可重复）
+type SavePolicyReq {
+	// List | 策略项，最多 100
+	List []PolicyItem `json:"list"`
+}
+
+// Local IP view | 本地 IP 表记录（driver=local 数据源）
+type LocalIPView {
+	// ID | 主键；创建可不传
+	Id              int64   `json:"id,optional"`
+	// IP | 规范化 IPv4/IPv6
+	Ip              string  `json:"ip"`
+	// Continent | 大洲名
+	Continent       string  `json:"continent,optional"`
+	// Continent code | 大洲码
+	ContinentCode   string  `json:"continent_code,optional"`
+	// Country | 国家名
+	Country         string  `json:"country,optional"`
+	// Country code | 国家码
+	CountryCode     string  `json:"country_code,optional"`
+	// Province | 省/州名
+	Province        string  `json:"province,optional"`
+	// Province ISO code | 省/州码
+	ProvinceIsoCode string  `json:"province_iso_code,optional"`
+	// City | 城市
+	City            string  `json:"city,optional"`
+	// Zip | 邮编
+	Zip             string  `json:"zip,optional"`
+	// Latitude | 纬度
+	Lat             float64 `json:"lat,optional"`
+	// Longitude | 经度
+	Lon             float64 `json:"lon,optional"`
+	// Timezone | 时区
+	Timezone        string  `json:"timezone,optional"`
+	// ISP | 运营商
+	Isp             string  `json:"isp,optional"`
+	// Org | 组织
+	Org             string  `json:"org,optional"`
+	// AS | ASN
+	As              string  `json:"as,optional"`
+	// Postal | 邮编
+	Postal          string  `json:"postal,optional"`
+}
+
+// Local IP list request | 本地 IP 分页列表
+type LocalIPListReq {
+	// Page | 页码，从 1
+	Page     int64  `json:"page,optional,default=1"`
+	// Page size | 每页条数，默认 20
+	PageSize int64  `json:"page_size,optional,default=20"`
+	// IP | 模糊筛选
+	Ip       string `json:"ip,optional"`
+}
+
+// Local IP list data | 本地 IP 列表
+type LocalIPListData {
+	// List | 记录
+	List  []LocalIPView `json:"list"`
+	// Total | 总数
+	Total int64         `json:"total"`
+}
+
+@server (
+	prefix:     /p9/integration/ipgeo
+	group:      ipgeo
+	middleware: Jwt,ActionLog,Authority
+)
+service integration {
+	@doc "批量查 IP 地理信息；按租户策略选源，缓存 miss 再打三方"
+	@handler searchIp
+	post /ip/search (SearchIpReq) returns (SearchIpResp)
+
+	@doc "当前租户策略列表；未配则回 Provider 默认启用/优先级"
+	@handler listPolicy
+	post /policy/list returns (PolicyListData)
+
+	@doc "保存当前租户对服务商的启用与优先级"
+	@handler savePolicy
+	post /policy/save (SavePolicyReq) returns (PolicyListData)
+
+	@doc "保存全局默认启用与优先级（写入 Provider 表）"
+	@handler saveDefaultPolicy
+	post /policy/default/save (SavePolicyReq) returns (PolicyListData)
+
+	@doc "本地 IP 表分页列表"
+	@handler listLocalIP
+	post /local/list (LocalIPListReq) returns (LocalIPListData)
+
+	@doc "新增本地 IP"
+	@handler createLocalIP
+	post /local/create (LocalIPView) returns (LocalIPView)
+
+	@doc "更新本地 IP（必填 id）"
+	@handler updateLocalIP
+	post /local/update (LocalIPView) returns (LocalIPView)
+
+	@doc "删除本地 IP"
+	@handler deleteLocalIP
+	post /local/delete (IDReq) returns (BaseMsgResp)
+
+	@doc "本地 IP 详情"
+	@handler getLocalIP
+	get /local/detail (IDQuery) returns (LocalIPView)
+}

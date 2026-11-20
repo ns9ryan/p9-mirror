@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package crm_vip_config;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipconfigpb";
+
+// VIP基础配置信息
+message VipConfigInfo {
+  // VIP总开关
+  bool vip_enabled = 1;
+  // 晋级奖励开关
+  bool upgrade_reward_enabled = 2;
+  // 保级考核开关
+  bool retention_check_enabled = 3;
+  // 奖励派发模式: 1手动领取, 2自动派发
+  int64 reward_grant_mode = 4;
+  // 晋级奖励洗码倍率, 放大100000倍
+  int64 reward_water_multiplier = 5;
+  // 最近一次开启时间, Unix毫秒时间戳
+  optional int64 last_enabled_at = 6;
+  // 更新时间, Unix毫秒时间戳
+  int64 updated_at = 7;
+}
+
+// 获取VIP基础配置请求
+message GetVipConfigRequest {}
+
+// 获取VIP基础配置响应
+message GetVipConfigResponse {
+  // VIP基础配置
+  VipConfigInfo config = 1;
+}
+
+// 修改VIP基础配置请求
+message UpdateVipConfigRequest {
+  // VIP总开关
+  optional bool vip_enabled = 1;
+  // 晋级奖励开关
+  optional bool upgrade_reward_enabled = 2;
+  // 保级考核开关
+  optional bool retention_check_enabled = 3;
+  // 奖励派发模式: 1手动领取, 2自动派发
+  optional int64 reward_grant_mode = 4;
+  // 晋级奖励洗码倍率, 放大100000倍
+  optional int64 reward_water_multiplier = 5;
+}
+
+// 修改VIP基础配置响应
+message UpdateVipConfigResponse {}

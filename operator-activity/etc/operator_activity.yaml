@@ -1,0 +1,62 @@
+# RPC服务配置
+Name:     operator-activity-rpc   # RPC服务名称
+ListenOn: 0.0.0.0:39006           # RPC监听地址
+Mode:     dev                     # 运行模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 127.0.0.1:12379             # Etcd地址
+  Key: operator-activity-rpc      # 服务注册Key
+
+# 数据库配置
+DatabaseConf:
+  Host:     127.0.0.1             # 当前节点数据库地址
+  Port:     15432                 # node-01 PostgreSQL宿主机端口
+  DBName:   p9_operator01         # 厅数据库名称
+  Username: root                  # 数据库用户名
+  Password: root                  # 数据库密码
+  SSLMode:  disable               # SSL模式
+
+# 后台CRM RPC配置
+CrmRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379
+    Key: crm-rpc
+  
+# 后台基础服务 RPC配置
+OperatorBaseRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379
+    Key: operator-base-rpc
+
+KqBrokers:
+  - 127.0.0.1:19094
+
+RedisAddr: 127.0.0.1:6379
+
+# Temporal配置
+TemporalInfo:
+  Address: "127.0.0.1:7233"
+  Namespace: "default"
+
+# 是否启动活动引擎
+EnableActivityEngine: true
+
+EnableTaskEngine: false
+
+TaskConfig:
+  KqBrokers:
+    - 127.0.0.1:19094
+  RedisConf:
+    Address: 127.0.0.1:16379
+    Password: ""
+    DB: 1
+  EnableTaskTimer: false
+
+OperatorBaseRpc:
+  Endpoints:
+    - 192.168.10.220:39001        # Operator Base RPC地址
+  Timeout: 10000            # 请求超时（毫秒）

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package crm_init;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/initpb";
+
+// CRM初始化请求
+message InitRequest {}
+
+// CRM初始化响应
+message InitResponse {}

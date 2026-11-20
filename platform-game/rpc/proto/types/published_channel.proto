@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package platform_game;
+
+option go_package = "oa.98ent.com/p9/platform-game/rpc/pb/platform_game";
+
+// PublishedGameChannelInfo 已发布的游戏渠道信息
+message PublishedGameChannelInfo {
+    int64 id = 1;
+    string channel_code = 2;
+    int64 sort_no = 3;
+    int64 load_type = 4;
+    int32 status = 5;
+    int64 created_at = 6;
+    int64 updated_at = 7;
+}
+
+// GetPublishedGameChannelListRequest 获取已发布游戏渠道列表请求
+message GetPublishedGameChannelListRequest {
+    string op_code = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+}
+
+// GetPublishedGameChannelListResp 已发布游戏渠道列表响应
+message GetPublishedGameChannelListResp {
+    repeated PublishedGameChannelInfo items = 1;
+    int64 total = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+}

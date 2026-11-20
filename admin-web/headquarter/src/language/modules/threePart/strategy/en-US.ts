@@ -1,0 +1,25 @@
+export default {
+  'menu.threePart.strategy': 'Strategy',
+
+  'strategyManage.tip':
+    'Adjust Enabled and Priority, then save. Lower priority numbers run first.',
+  'strategyManage.search.ip': 'IP:',
+  'strategyManage.search.ipPlaceholder': 'Enter IP, separate multiple with commas',
+  'strategyManage.search.ipRequired': 'Please enter an IP',
+  'strategyManage.result.title': 'IP Search Result',
+  'strategyManage.column.providerId': 'Provider ID',
+  'strategyManage.column.provider': 'Provider',
+  'strategyManage.column.tag': 'Tag',
+  'strategyManage.column.enabled': 'Enabled',
+  'strategyManage.column.priority': 'Priority',
+  'strategyManage.column.query': 'IP',
+  'strategyManage.column.country': 'Country',
+  'strategyManage.column.countryCode': 'Country Code',
+  'strategyManage.column.province': 'Province',
+  'strategyManage.column.city': 'City',
+  'strategyManage.column.isp': 'ISP',
+  'strategyManage.column.org': 'Organization',
+  'strategyManage.column.as': 'AS',
+  'strategyManage.column.source': 'Source',
+  'strategyManage.message.empty': 'No strategies to save',
+};

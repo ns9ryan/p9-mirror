@@ -1,0 +1,945 @@
+// 全局主题：浅色 / 深色两套变量。
+// 用 html body 提高优先级，保证覆盖 Arco 按需注入的 body / body[arco-theme='dark'] 变量。
+
+html body {
+  --border-radius-small: 4px;
+  --border-radius-medium: 8px;
+  --border-radius-large: 12px;
+
+  --gray-1: 247, 249, 252;
+  --gray-2: 241, 244, 249;
+  --gray-3: 228, 233, 242;
+
+  --color-border: #e2e7f0;
+  --color-border-1: #edf0f7;
+  --color-border-2: #e2e7f0;
+  --color-border-3: #c8d0de;
+  --color-fill-1: #f7f9fc;
+  --color-fill-2: #f1f4fa;
+  --color-fill-3: #e7ecf5;
+  --color-fill-4: #dbe2ef;
+
+  --app-bg: #edf1fa;
+  --app-bg-image: radial-gradient(
+      1100px 560px at 85% -10%,
+      rgba(110, 140, 255, 0.34),
+      transparent 62%
+    ),
+    radial-gradient(
+      900px 500px at 10% -15%,
+      rgba(120, 190, 255, 0.3),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 640px at 100% 110%,
+      rgba(150, 120, 255, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 520px at 0% 100%,
+      rgba(80, 160, 255, 0.14),
+      transparent 60%
+    );
+  --app-bg-pattern: radial-gradient(
+    rgba(22, 93, 255, 0.09) 1px,
+    transparent 1.2px
+  );
+  --app-bg-pattern-size: 22px 22px;
+  --app-sider-glow: radial-gradient(
+    ellipse 90% 60% at 50% 100%,
+    rgba(22, 93, 255, 0.1),
+    transparent 70%
+  );
+  --app-sider-bg: rgba(255, 255, 255, 0.72);
+  --app-navbar-bg: rgba(255, 255, 255, 0.6);
+  --app-divider: rgba(31, 64, 152, 0.08);
+  --app-card-bg: #fff;
+  --app-card-border: rgba(255, 255, 255, 0.9);
+  --app-card-shadow: 0 10px 30px rgba(31, 64, 152, 0.08),
+    0 2px 6px rgba(31, 64, 152, 0.05);
+  --app-brand-gradient: linear-gradient(135deg, #a07bff 0%, #6a4bff 50%, #165dff 100%);
+  --app-brand-shadow: 0 6px 16px rgba(106, 75, 255, 0.34);
+  --app-menu-hover-bg: rgba(22, 93, 255, 0.06);
+  --app-menu-active-bg: linear-gradient(90deg, #2f6bff 0%, #4f8bff 100%);
+  --app-menu-active-shadow: 0 6px 16px rgba(22, 93, 255, 0.3);
+  --app-menu-active-color: #fff;
+  --app-table-head-bg: #f3f6fd;
+  --app-banner-bg: linear-gradient(
+    100deg,
+    #ffffff 0%,
+    #f4f7ff 40%,
+    #e4ecff 75%,
+    #dfe4ff 100%
+  );
+  --app-banner-border: rgba(255, 255, 255, 0.95);
+  --app-banner-shadow: 0 10px 30px rgba(31, 64, 152, 0.09),
+    0 2px 6px rgba(31, 64, 152, 0.05);
+  --app-banner-glow: radial-gradient(
+      circle at 82% 50%,
+      rgba(22, 93, 255, 0.2),
+      transparent 32%
+    ),
+    radial-gradient(circle at 62% -40%, rgba(130, 100, 255, 0.22), transparent 40%);
+  --app-banner-line: rgba(22, 93, 255, 0.08);
+  --app-banner-ring: rgba(22, 93, 255, 0.14);
+  --app-scrollbar: rgba(31, 64, 152, 0.18);
+  --app-scrollbar-hover: rgba(31, 64, 152, 0.32);
+}
+
+html body[arco-theme='dark'] {
+  --gray-1: 14, 24, 50;
+  --gray-2: 30, 44, 80;
+  --gray-3: 46, 62, 102;
+  --gray-4: 70, 86, 126;
+  --gray-5: 96, 112, 150;
+  --gray-6: 124, 138, 174;
+  --gray-7: 154, 166, 198;
+  --gray-8: 186, 196, 220;
+  --gray-9: 220, 226, 240;
+  --gray-10: 244, 247, 252;
+
+  --color-bg-1: #070f24;
+  --color-bg-2: #0e1a38;
+  --color-bg-3: #13224a;
+  --color-bg-4: #172952;
+  --color-bg-5: #1b2e5c;
+  --color-bg-popup: #14244d;
+  --color-border: #22345f;
+  --color-border-1: #1b2a50;
+  --color-border-2: #24365f;
+  --color-border-3: #2f4474;
+  --color-border-4: #4a5f92;
+  --color-fill-1: rgba(120, 150, 255, 0.05);
+  --color-fill-2: rgba(120, 150, 255, 0.09);
+  --color-fill-3: rgba(120, 150, 255, 0.13);
+  --color-fill-4: rgba(120, 150, 255, 0.18);
+  --color-tooltip-bg: #1d2f5e;
+  --color-spin-layer-bg: rgba(7, 15, 36, 0.6);
+
+  --app-bg: #060d22;
+  --app-bg-image: radial-gradient(
+      1100px 560px at 78% -14%,
+      rgba(51, 102, 255, 0.3),
+      transparent 62%
+    ),
+    radial-gradient(
+      900px 520px at -6% 108%,
+      rgba(36, 84, 230, 0.2),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 420px at 40% 120%,
+      rgba(90, 60, 255, 0.12),
+      transparent 60%
+    );
+  --app-bg-pattern: linear-gradient(
+      rgba(96, 160, 255, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(96, 160, 255, 0.1) 1px, transparent 1px);
+  --app-bg-pattern-size: 44px 44px;
+  --app-sider-glow: radial-gradient(
+    ellipse 100% 70% at 50% 110%,
+    rgba(60, 126, 255, 0.38),
+    transparent 70%
+  );
+  --app-sider-bg: linear-gradient(
+    180deg,
+    rgba(12, 24, 56, 0.92),
+    rgba(7, 15, 38, 0.92)
+  );
+  --app-navbar-bg: rgba(8, 17, 42, 0.6);
+  --app-divider: rgba(96, 136, 255, 0.14);
+  --app-card-bg: var(--color-bg-2);
+  --app-card-border: rgba(96, 136, 255, 0.16);
+  --app-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --app-neon: 56, 200, 255;
+  --app-brand-gradient: linear-gradient(135deg, #b08cff 0%, #6a4bff 50%, #22c8ff 100%);
+  --app-brand-shadow: 0 0 18px rgba(130, 100, 255, 0.55);
+  --app-menu-hover-bg: rgba(120, 150, 255, 0.08);
+  --app-menu-active-bg: linear-gradient(
+    90deg,
+    rgba(47, 107, 255, 0.7),
+    rgba(34, 200, 255, 0.12)
+  );
+  --app-menu-active-shadow: inset 0 0 0 1px rgba(56, 200, 255, 0.28),
+    0 6px 20px rgba(30, 110, 255, 0.35);
+  --color-secondary: rgba(60, 126, 255, 0.1);
+  --color-secondary-hover: rgba(60, 126, 255, 0.18);
+  --color-secondary-active: rgba(60, 126, 255, 0.26);
+  --app-menu-active-color: #fff;
+  --app-table-head-bg: #13224a;
+  --app-banner-bg: linear-gradient(
+    100deg,
+    rgba(18, 34, 78, 0.95) 0%,
+    rgba(14, 28, 66, 0.92) 45%,
+    rgba(26, 52, 130, 0.9) 100%
+  );
+  --app-banner-border: rgba(96, 136, 255, 0.24);
+  --app-banner-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --app-banner-glow: radial-gradient(
+      circle at 82% 50%,
+      rgba(60, 126, 255, 0.4),
+      transparent 32%
+    ),
+    radial-gradient(circle at 60% -40%, rgba(110, 80, 255, 0.3), transparent 40%);
+  --app-banner-line: rgba(120, 160, 255, 0.1);
+  --app-banner-ring: rgba(120, 160, 255, 0.22);
+  --app-scrollbar: rgba(120, 150, 255, 0.2);
+  --app-scrollbar-hover: rgba(120, 150, 255, 0.36);
+}
+
+// 控件圆角：在元素自身覆盖变量，按钮组 / 输入组的拼接圆角规则依旧生效
+.arco-btn:not(.arco-btn-shape-circle):not(.arco-btn-shape-round),
+.arco-input-wrapper,
+.arco-input-tag,
+.arco-select-view,
+.arco-picker,
+.arco-input-number,
+.arco-textarea-wrapper,
+.arco-cascader-view,
+.arco-tree-select-view,
+.arco-pagination-item,
+.arco-pagination-jumper-input {
+  --border-radius-small: 8px;
+}
+
+.arco-tag {
+  --border-radius-small: 6px;
+}
+
+.arco-btn-primary.arco-btn-status-normal:not(.arco-btn-disabled) {
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0)
+  );
+  box-shadow: 0 4px 12px rgba(var(--primary-6), 0.26);
+}
+
+body .arco-table-th {
+  background-color: var(--app-table-head-bg);
+}
+
+body .arco-pagination-item-active,
+body .arco-pagination-item-active:hover {
+  color: #fff;
+  background-color: rgb(var(--primary-6));
+  box-shadow: 0 4px 10px rgba(var(--primary-6), 0.3);
+}
+
+body .arco-modal {
+  border-radius: 12px;
+}
+
+body {
+  .arco-dropdown,
+  .arco-select-dropdown,
+  .arco-picker-container,
+  .arco-popover-popup-content,
+  .arco-trigger-menu {
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15, 30, 80, 0.12);
+  }
+}
+
+body[arco-theme='dark'] {
+  .arco-dropdown,
+  .arco-select-dropdown,
+  .arco-picker-container,
+  .arco-popover-popup-content,
+  .arco-trigger-menu {
+    border-color: var(--color-border-2);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-color: var(--app-scrollbar);
+  background-clip: padding-box;
+
+  &:hover {
+    background-color: var(--app-scrollbar-hover);
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@neon: rgba(var(--app-neon), 1);
+
+.neon-line(@dir: 90deg) {
+  background: linear-gradient(
+    @dir,
+    transparent,
+    rgba(var(--app-neon), 0.85),
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(var(--app-neon), 0.6);
+}
+
+.hud-corner(@c, @len: 14px, @w: 2px) {
+  background: linear-gradient(@c, @c) top left / @len @w no-repeat,
+    linear-gradient(@c, @c) top left / @w @len no-repeat,
+    linear-gradient(@c, @c) top right / @len @w no-repeat,
+    linear-gradient(@c, @c) top right / @w @len no-repeat,
+    linear-gradient(@c, @c) bottom left / @len @w no-repeat,
+    linear-gradient(@c, @c) bottom left / @w @len no-repeat,
+    linear-gradient(@c, @c) bottom right / @len @w no-repeat,
+    linear-gradient(@c, @c) bottom right / @w @len no-repeat;
+}
+
+// 背景宽 60% 时，-150% ~ 250% 恰好从左侧完全移出到右侧完全移出；后 40% 时间停顿
+@keyframes app-banner-sweep {
+  0% {
+    background-position: -150% 0;
+  }
+  60%,
+  100% {
+    background-position: 250% 0;
+  }
+}
+
+// 背景宽 30% 时，0% ~ 100% 即从左端走到右端
+@keyframes app-edge-flow {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+// 第一层（宽 25%）从左侧完全移出走到右侧完全移出，第二层底线保持不动
+@keyframes app-line-run {
+  from {
+    background-position: -40% 0, 0 0;
+  }
+  to {
+    background-position: 140% 0, 0 0;
+  }
+}
+
+@keyframes app-menu-flow {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes app-glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(var(--app-neon), 0.15),
+      0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(var(--app-neon), 0.4),
+      0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// 粒子层元素高出一个图块，平移恰好一个图块高度，循环无缝
+@keyframes app-particles-rise {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -360px, 0);
+  }
+}
+
+@keyframes app-particles-rise-slow {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -560px, 0);
+  }
+}
+
+// 深色模式科技感：霓虹描边、HUD 角标、发光分割线
+body[arco-theme='dark'] {
+  .general-card {
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: linear-gradient(var(--color-bg-2), var(--color-bg-2))
+        padding-box,
+      linear-gradient(
+          135deg,
+          rgba(var(--app-neon), 0.55),
+          rgba(60, 126, 255, 0.16) 28%,
+          rgba(60, 126, 255, 0.08) 72%,
+          rgba(var(--app-neon), 0.45)
+        )
+        border-box;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4),
+      0 0 24px rgba(var(--app-neon), 0.1),
+      inset 0 0 60px rgba(40, 110, 255, 0.09);
+
+    &::before {
+      position: absolute;
+      inset: -1px;
+      z-index: 2;
+      .hud-corner(rgba(var(--app-neon), 1), 20px);
+      border-radius: inherit;
+      filter: drop-shadow(0 0 4px rgba(var(--app-neon), 0.9));
+      pointer-events: none;
+      content: '';
+    }
+
+    // 沿顶边来回流动的光带
+    &::after {
+      position: absolute;
+      top: -1px;
+      right: 12px;
+      left: 12px;
+      z-index: 2;
+      height: 2px;
+      background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--app-neon), 0.2) 30%,
+          #fff 50%,
+          rgba(var(--app-neon), 0.2) 70%,
+          transparent
+        )
+        no-repeat;
+      background-size: 30% 100%;
+      filter: drop-shadow(0 0 6px @neon);
+      animation: app-edge-flow 5s ease-in-out infinite alternate;
+      pointer-events: none;
+      content: '';
+    }
+  }
+
+  .arco-table-tr:not(.arco-table-tr-empty):hover > .arco-table-td {
+    box-shadow: inset 0 0 0 999px rgba(var(--app-neon), 0.07);
+
+    &:first-child {
+      box-shadow: inset 3px 0 0 @neon, inset 0 0 0 999px rgba(var(--app-neon), 0.07);
+    }
+  }
+
+  .arco-table-th {
+    color: #d6e8ff;
+    background-color: #12244f;
+    background-image: linear-gradient(
+      180deg,
+      rgba(56, 120, 255, 0.22),
+      rgba(56, 120, 255, 0.04)
+    );
+    border-bottom: 1px solid rgba(var(--app-neon), 0.35);
+  }
+
+  .arco-table-td {
+    border-bottom-color: rgba(96, 136, 255, 0.12);
+  }
+
+  .arco-btn-primary.arco-btn-status-normal:not(.arco-btn-disabled) {
+    background-image: linear-gradient(90deg, #2f6bff 0%, #1fb6ff 100%);
+    border-color: transparent;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+      0 0 16px rgba(30, 150, 255, 0.45);
+
+    &:hover {
+      filter: brightness(1.2);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+        0 0 22px rgba(30, 150, 255, 0.7);
+    }
+
+    &:active {
+      filter: brightness(0.9);
+    }
+  }
+
+  .arco-btn-secondary:not(.arco-btn-disabled),
+  .arco-btn-outline:not(.arco-btn-disabled) {
+    border: 1px solid rgba(96, 150, 255, 0.28);
+
+    &:hover {
+      border-color: rgba(var(--app-neon), 0.6);
+      box-shadow: 0 0 10px rgba(var(--app-neon), 0.2);
+    }
+  }
+
+  .arco-input-wrapper,
+  .arco-select-view,
+  .arco-picker,
+  .arco-input-number,
+  .arco-textarea-wrapper,
+  .arco-input-tag {
+    background-color: rgba(6, 16, 42, 0.7);
+    border-color: rgba(96, 136, 255, 0.24);
+
+    &:hover {
+      border-color: rgba(var(--app-neon), 0.45);
+    }
+  }
+
+  .arco-input-focus,
+  .arco-select-view-focus,
+  .arco-picker-focused,
+  .arco-textarea-focus,
+  .arco-input-tag-focus {
+    border-color: @neon;
+    box-shadow: 0 0 0 3px rgba(var(--app-neon), 0.14),
+      0 0 12px rgba(var(--app-neon), 0.25);
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-green {
+    color: #3df5a6;
+    background-color: rgba(20, 200, 120, 0.12);
+    border-color: rgba(61, 245, 166, 0.4);
+    box-shadow: 0 0 8px rgba(61, 245, 166, 0.18);
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-arcoblue,
+  .arco-tag.arco-tag-checked.arco-tag-blue {
+    color: #6fd6ff;
+    background-color: rgba(var(--app-neon), 0.1);
+    border-color: rgba(var(--app-neon), 0.4);
+    box-shadow: 0 0 8px rgba(var(--app-neon), 0.18);
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-red {
+    color: #ff6b81;
+    background-color: rgba(255, 80, 110, 0.12);
+    border-color: rgba(255, 107, 129, 0.4);
+    box-shadow: 0 0 8px rgba(255, 107, 129, 0.18);
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-gray {
+    border-color: rgba(150, 170, 220, 0.3);
+  }
+
+  .arco-alert-info {
+    background-color: rgba(40, 110, 255, 0.1);
+    border: 1px solid rgba(96, 150, 255, 0.25);
+  }
+
+  .arco-pagination-item-active,
+  .arco-pagination-item-active:hover {
+    background: linear-gradient(135deg, #2f6bff, #1fb6ff);
+    box-shadow: 0 0 12px rgba(30, 150, 255, 0.55);
+  }
+
+  .arco-modal {
+    border: 1px solid rgba(96, 150, 255, 0.28);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 0 48px rgba(30, 100, 255, 0.22);
+  }
+
+  .layout-sider::after {
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(var(--app-neon), 0.55) 30%,
+      rgba(60, 126, 255, 0.3) 70%,
+      transparent
+    );
+    box-shadow: 0 0 8px rgba(var(--app-neon), 0.35);
+  }
+
+  .layout-sider .arco-menu-item.arco-menu-selected {
+    background: linear-gradient(
+      90deg,
+      rgba(47, 107, 255, 0.8),
+      rgba(34, 200, 255, 0.35),
+      rgba(47, 107, 255, 0.8)
+    );
+    background-size: 200% 100%;
+    text-shadow: 0 0 10px rgba(var(--app-neon), 0.6);
+    animation: app-menu-flow 4s linear infinite;
+
+    &::before {
+      position: absolute;
+      top: 9px;
+      bottom: 9px;
+      left: 0;
+      width: 3px;
+      background: @neon;
+      border-radius: 0 3px 3px 0;
+      box-shadow: 0 0 10px @neon;
+      content: '';
+    }
+  }
+
+  .navbar {
+    position: relative;
+
+    &::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(var(--app-neon), 0.9) 40%,
+            #fff 50%,
+            rgba(var(--app-neon), 0.9) 60%,
+            transparent
+          )
+          no-repeat,
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--app-neon), 0.35) 20%,
+          rgba(var(--app-neon), 0.35) 80%,
+          transparent
+        );
+      background-size: 25% 100%, 100% 1px;
+      background-position: -40% 0, 0 0;
+      filter: drop-shadow(0 0 4px @neon);
+      animation: app-line-run 7s linear infinite;
+      pointer-events: none;
+      content: '';
+    }
+  }
+
+  .layout-sider {
+    background: linear-gradient(
+      180deg,
+      rgba(12, 24, 56, 0.8),
+      rgba(7, 15, 38, 0.86)
+    );
+  }
+
+  // 两层不同大小、速度的粒子缓慢上浮，营造纵深
+  .layout::after,
+  .layout-content::before {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: -1;
+    pointer-events: none;
+    will-change: transform;
+    content: '';
+  }
+
+  .layout::after {
+    bottom: -360px;
+    background-image: radial-gradient(1.5px 1.5px at 20px 30px, rgba(140, 220, 255, 0.95), transparent),
+      radial-gradient(1px 1px at 120px 80px, rgba(255, 255, 255, 0.85), transparent),
+      radial-gradient(2px 2px at 260px 40px, rgba(56, 200, 255, 0.95), transparent),
+      radial-gradient(1px 1px at 300px 200px, rgba(255, 255, 255, 0.75), transparent),
+      radial-gradient(1.5px 1.5px at 80px 260px, rgba(120, 160, 255, 0.95), transparent),
+      radial-gradient(1px 1px at 200px 320px, rgba(140, 220, 255, 0.85), transparent),
+      radial-gradient(2px 2px at 330px 300px, rgba(56, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 160px 170px, rgba(255, 255, 255, 0.7), transparent);
+    background-size: 360px 360px;
+    animation: app-particles-rise 40s linear infinite;
+  }
+
+  .layout-content::before {
+    bottom: -560px;
+    background-image: radial-gradient(4px 4px at 90px 120px, rgba(56, 200, 255, 0.45), transparent),
+      radial-gradient(3px 3px at 380px 60px, rgba(120, 140, 255, 0.45), transparent),
+      radial-gradient(5px 5px at 260px 400px, rgba(56, 200, 255, 0.3), transparent),
+      radial-gradient(3px 3px at 480px 300px, rgba(160, 120, 255, 0.4), transparent),
+      radial-gradient(4px 4px at 40px 480px, rgba(80, 180, 255, 0.35), transparent);
+    background-size: 560px 560px;
+    animation: app-particles-rise-slow 80s linear infinite;
+  }
+
+  .page-header {
+    border-color: rgba(var(--app-neon), 0.3);
+    animation: app-glow-pulse 4s ease-in-out infinite;
+
+    &::after {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+          100deg,
+          transparent 35%,
+          rgba(var(--app-neon), 0.14) 48%,
+          rgba(255, 255, 255, 0.06) 50%,
+          transparent 62%
+        )
+        no-repeat;
+      background-size: 60% 100%;
+      border-radius: inherit;
+      animation: app-banner-sweep 6s linear infinite;
+      pointer-events: none;
+      content: '';
+    }
+  }
+
+  .page-header-bg {
+    box-shadow: inset 0 -1px 0 rgba(var(--app-neon), 0.35);
+  }
+
+  .page-header-title {
+    color: transparent;
+    background: linear-gradient(90deg, #ffffff 20%, #7fd8ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(var(--app-neon), 0.3));
+  }
+}
+
+@keyframes app-aurora {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 3%, 0) scale(1.08);
+  }
+}
+
+// 亮色模式：柔光、细描边、轻渐变，保持清爽
+body:not([arco-theme='dark']) {
+  // 两层缓慢漂移的柔光斑
+  .layout::after,
+  .layout-content::before {
+    position: fixed;
+    inset: -10%;
+    z-index: -1;
+    pointer-events: none;
+    will-change: transform;
+    content: '';
+  }
+
+  .layout::after {
+    background: radial-gradient(
+        38% 32% at 18% 22%,
+        rgba(110, 165, 255, 0.26),
+        transparent 70%
+      ),
+      radial-gradient(32% 28% at 82% 72%, rgba(165, 135, 255, 0.2), transparent 70%);
+    animation: app-aurora 26s ease-in-out infinite alternate;
+  }
+
+  .layout-content::before {
+    background: radial-gradient(
+        30% 26% at 70% 18%,
+        rgba(90, 200, 255, 0.18),
+        transparent 70%
+      ),
+      radial-gradient(28% 30% at 30% 85%, rgba(120, 140, 255, 0.16), transparent 70%);
+    animation: app-aurora 34s ease-in-out infinite alternate-reverse;
+  }
+
+  .layout-sider {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.86),
+      rgba(243, 247, 255, 0.8)
+    );
+  }
+
+  .navbar {
+    position: relative;
+
+    &::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(22, 93, 255, 0.28) 30%,
+        rgba(124, 92, 255, 0.28) 70%,
+        transparent
+      );
+      pointer-events: none;
+      content: '';
+    }
+  }
+
+  .general-card {
+    position: relative;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 14px 32px -10px rgba(31, 64, 152, 0.16),
+      0 2px 6px rgba(31, 64, 152, 0.04);
+
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 28px;
+      left: 28px;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(22, 93, 255, 0.55) 30%,
+        rgba(124, 92, 255, 0.55) 70%,
+        transparent
+      );
+      border-radius: 0 0 2px 2px;
+      pointer-events: none;
+      content: '';
+    }
+  }
+
+  .arco-table-th {
+    color: #1d2b4f;
+    font-weight: 600;
+    background-color: #f1f5fe;
+    background-image: linear-gradient(180deg, #f8faff, #edf2fd);
+    border-bottom: 1px solid rgba(22, 93, 255, 0.12);
+  }
+
+  .arco-table-tr:not(.arco-table-tr-empty):hover > .arco-table-td {
+    box-shadow: inset 0 0 0 999px rgba(22, 93, 255, 0.045);
+
+    &:first-child {
+      box-shadow: inset 3px 0 0 rgb(var(--primary-6)),
+        inset 0 0 0 999px rgba(22, 93, 255, 0.045);
+    }
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-green {
+    color: #00a35c;
+    background-color: #eafbf2;
+    border-color: #bdecd4;
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-arcoblue,
+  .arco-tag.arco-tag-checked.arco-tag-blue {
+    color: #165dff;
+    background-color: #edf3ff;
+    border-color: #c8daff;
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-red {
+    color: #f53f3f;
+    background-color: #fff1f1;
+    border-color: #ffcfcf;
+  }
+
+  .arco-tag.arco-tag-checked.arco-tag-gray {
+    color: #5c6b82;
+    background-color: #f4f6fa;
+    border-color: #e1e6ef;
+  }
+
+  .arco-btn-primary.arco-btn-status-normal:not(.arco-btn-disabled) {
+    background-image: linear-gradient(90deg, #2a64ff 0%, #4d8cff 100%);
+    border-color: transparent;
+    box-shadow: 0 6px 14px -4px rgba(22, 93, 255, 0.55);
+
+    &:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 8px 18px -4px rgba(22, 93, 255, 0.7);
+    }
+
+    &:active {
+      filter: brightness(0.9);
+    }
+  }
+
+  .arco-btn-secondary:not(.arco-btn-disabled) {
+    color: #3a4a66;
+    background-color: #f5f8ff;
+    border: 1px solid #e0e7f5;
+
+    &:hover {
+      color: rgb(var(--primary-6));
+      background-color: #eef4ff;
+      border-color: #b3caff;
+    }
+  }
+
+  .arco-input-wrapper,
+  .arco-select-view,
+  .arco-picker,
+  .arco-input-number,
+  .arco-textarea-wrapper,
+  .arco-input-tag {
+    background-color: #f7f9fd;
+    border-color: #e4e9f4;
+
+    &:hover {
+      background-color: #f2f6fe;
+      border-color: #cdd8ef;
+    }
+  }
+
+  .arco-input-focus,
+  .arco-select-view-focus,
+  .arco-picker-focused,
+  .arco-textarea-focus,
+  .arco-input-tag-focus {
+    background-color: #fff;
+    border-color: rgb(var(--primary-6));
+    box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.1);
+  }
+
+  .arco-alert-info {
+    background: linear-gradient(90deg, #edf3ff, #f7f9ff);
+    border: 1px solid #dbe6ff;
+    box-shadow: inset 3px 0 0 rgb(var(--primary-6));
+  }
+
+  .arco-pagination-item-active,
+  .arco-pagination-item-active:hover {
+    background: linear-gradient(135deg, #2a64ff, #5a8dff);
+    box-shadow: 0 6px 14px -4px rgba(22, 93, 255, 0.55);
+  }
+
+  .page-header::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        100deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.75) 50%,
+        transparent 65%
+      )
+      no-repeat;
+    background-size: 60% 100%;
+    border-radius: inherit;
+    animation: app-banner-sweep 8s ease-in-out infinite;
+    pointer-events: none;
+    content: '';
+  }
+
+  .page-header-title {
+    color: transparent;
+    background: linear-gradient(90deg, #1d2b4f 30%, #165dff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[arco-theme='dark'] {
+    .page-header,
+    .page-header::after,
+    .general-card::after,
+    .navbar::after,
+    .layout::after,
+    .layout-content::before,
+    .layout-sider .arco-menu-item.arco-menu-selected {
+      animation: none;
+    }
+  }
+
+  body:not([arco-theme='dark']) {
+    .page-header::after,
+    .layout::after,
+    .layout-content::before {
+      animation: none;
+    }
+  }
+}

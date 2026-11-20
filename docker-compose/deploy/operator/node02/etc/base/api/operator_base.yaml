@@ -1,0 +1,12 @@
+# API服务配置
+Name: operator-base-api         # API服务名称
+Host: 0.0.0.0                   # API监听地址
+Port: 38201                     # API监听端口
+Mode: dev                       # 运行模式
+
+# Operator Base RPC配置
+OperatorBaseRpc:
+  Endpoints:
+    - operator-base-rpc:39201   # 当前节点Operator Base RPC地址
+  NonBlock: true                # 非阻塞连接
+  Timeout: 10000                # 请求超时时间, 毫秒

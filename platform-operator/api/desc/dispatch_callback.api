@@ -1,0 +1,23 @@
+syntax = "v1"
+
+type (
+	// 调度任务结果回调请求
+	HandleDispatchTaskResultRequest {
+		// 调度任务编号
+		TaskNo string `json:"task_no" validate:"required,notblank,max=64"`
+	}
+	// 调度任务结果回调响应
+	HandleDispatchTaskResultResponse  {}
+)
+
+@server (
+	group:      dispatch_callback
+	prefix:     /internal/dispatch
+	middleware: CallbackAuth
+)
+service platform_operator {
+	// 处理调度任务结果回调
+	@handler HandleDispatchTaskResult
+	post /task-result (HandleDispatchTaskResultRequest) returns (HandleDispatchTaskResultResponse)
+}
+

@@ -1,0 +1,222 @@
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+    }
+
+    parameters {
+        gitParameter(
+            name: 'GIT_BRANCH',
+            type: 'PT_BRANCH',
+            defaultValue: 'dev-alpha',
+            branchFilter: 'origin/(dev-alpha|dev-beta|release/\\d{8}|hotfix/.*)',
+            sortMode: 'DESCENDING_SMART',
+            selectedValue: 'DEFAULT',
+            quickFilterEnabled: true
+        )
+    }
+
+    environment {
+        GIT_URL        = 'ssh://git@oassh.98ent.com:2023/p9/oss.git'
+        GIT_BRANCH     = 'origin/dev-alpha'
+        GIT_CREDS_ID   = 'jenkins-git-key'
+
+        REGISTRY_DOMAIN = 'harbor.ecosyssoft.com'
+        IMAGE_NAME_API  = 'p9/oss-api'
+        IMAGE_NAME_RPC  = 'p9/oss-rpc'
+        IMAGE_TAG       = "${env.BUILD_NUMBER}"
+
+        SERVICE_CATEGORY = 'backend'
+        SERVICE_NAME = 'oss'
+        ENV_IMAGE_TAG_KEY = 'IMAGE_TAG_OSS'
+
+        DEPLOY_URL = 'https://jenkins.ecosyssoft.com/job/s9-service-deploy/buildWithParameters'
+        DOCKER_CONTEXT_NAME = 's9-dev-alpha-1'
+        DOCKER_HOST_ADDR    = 'tcp://s9-dev-alpha-1:2375'
+    }
+
+    stages {
+
+        stage('Debug') {
+            steps {
+                sh 'id'
+                sh 'which docker'
+                sh 'which curl'
+                sh 'docker version || true'
+                sh 'docker compose version || true'
+                sh 'docker buildx version || true'
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                script {
+                    echo "Selected branch: ${params.GIT_BRANCH}"
+                    def selected = (params.GIT_BRANCH ?: ${GIT_BRANCH}).trim()
+                    def normalized = selected.replaceFirst(/^origin\//, '')
+                    echo "normalized branch: ${normalized}"
+                    currentBuild.displayName = "#${env.BUILD_NUMBER}-${normalized}"
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "origin/${normalized}"]],
+                        userRemoteConfigs: [[
+                            url: "${GIT_URL}",
+                            credentialsId: "${GIT_CREDS_ID}"
+                        ]]
+                    ])
+                    sh "ls -l ${WORKSPACE}/Dockerfile-api ${WORKSPACE}/Dockerfile-rpc"
+                }
+            }
+        }
+
+        stage('Check Deploy Trigger') {
+            steps {
+                script {
+                    def latestCommit = sh(
+                        script: "git rev-parse HEAD",
+                        returnStdout: true
+                    ).trim()
+
+                    def commitMsg = sh(
+                        script: "git log -1 --pretty=%B",
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Latest commit: ${latestCommit}"
+                    echo "Commit message:\n${commitMsg}"
+
+                    if (fileExists('.deploy_commit')) {
+                        def deployedCommit = readFile('.deploy_commit').trim()
+                        if (deployedCommit == latestCommit) {
+                            currentBuild.result = 'NOT_BUILT'
+                            error("Commit already deployed. Skipping.")
+                        }
+                    }
+
+                    env.DEPLOY_COMMIT = latestCommit
+                }
+            }
+        }
+
+        stage('Build & Push (Local Docker)') {
+            steps {
+                sshagent(['jenkins-git-key']) {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'harbor-cred',
+                            usernameVariable: 'HARBOR_USER',
+                            passwordVariable: 'HARBOR_PASS'
+                        )
+                    ]) {
+                        sh '''
+                            set -euo pipefail
+
+                            docker context use default
+
+                            echo "===== Login Harbor ====="
+                            echo "$HARBOR_PASS" | docker login "$REGISTRY_DOMAIN" -u "$HARBOR_USER" --password-stdin
+
+                            # docker ??????????????? builder, ??????? default (?????????????)
+                            docker buildx use default
+                            docker buildx inspect --bootstrap
+
+                            echo "===== Build linux binaries ====="
+                            docker pull "$REGISTRY_DOMAIN/ns9/golang:1.25.0-alpine"
+                            docker run --rm \
+                                -v "$PWD":/src -w /src \
+                                -v "$SSH_AUTH_SOCK":/ssh-agent \
+                                -e SSH_AUTH_SOCK=/ssh-agent \
+                                -e GOPROXY=https://goproxy.cn,direct \
+                                -e GOPRIVATE=oa.98ent.com,git.98ent.com \
+                                -e GONOSUMDB=oa.98ent.com,git.98ent.com \
+                                --add-host git.98ent.com:13.250.16.160 \
+                                "$REGISTRY_DOMAIN/ns9/golang:1.25.0-alpine" \
+                                sh -c 'apk add --no-cache git openssh \
+                                    && mkdir -p /root/.ssh \
+                                    && printf "AddressFamily inet\nHost 13.214.209.46\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null\n" > /root/.ssh/config \
+                                    && git config --global url."ssh://git@13.214.209.46:2022/".insteadOf "ssh://git@git.98ent.com:2022/" \
+                                    && git config --global url."ssh://git@13.214.209.46:2022/".insteadOf "https://git.98ent.com/" \
+                                    && git config --global url."ssh://git@oassh.98ent.com:2023/".insteadOf "https://oa.98ent.com/" \
+                                    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o oss_api ./api \
+                                    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o oss_rpc ./rpc'
+
+                            echo "===== Build API Image ====="
+                            docker build \
+                                --platform=linux/amd64 \
+                                --file Dockerfile-api \
+                                --tag $REGISTRY_DOMAIN/$IMAGE_NAME_API:$IMAGE_TAG \
+                                --tag $REGISTRY_DOMAIN/$IMAGE_NAME_API:latest \
+                                .
+
+                            echo "===== Build RPC Image ====="
+                            docker build \
+                                --platform=linux/amd64 \
+                                --file Dockerfile-rpc \
+                                --tag $REGISTRY_DOMAIN/$IMAGE_NAME_RPC:$IMAGE_TAG \
+                                --tag $REGISTRY_DOMAIN/$IMAGE_NAME_RPC:latest \
+                                .
+
+                            echo "===== Push Images ====="
+                            docker push $REGISTRY_DOMAIN/$IMAGE_NAME_API:$IMAGE_TAG
+                            docker push $REGISTRY_DOMAIN/$IMAGE_NAME_API:latest
+                            docker push $REGISTRY_DOMAIN/$IMAGE_NAME_RPC:$IMAGE_TAG
+                            docker push $REGISTRY_DOMAIN/$IMAGE_NAME_RPC:latest
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Cleanup Docker (Local)') {
+            steps {
+                sh '''
+                    set -euo pipefail
+                    set +x
+
+                    echo "===== Docker Cleanup Start ====="
+
+                    docker system df || true
+                    docker image prune -f || true
+                    docker builder prune -f --filter "until=24h" || true
+
+                    echo "===== Docker Cleanup Done ====="
+                '''
+            }
+        }
+
+        stage('Trigger Deploy Job') {
+            when {
+                expression {
+                    def selected = (params.GIT_BRANCH ?: env.GIT_BRANCH).trim()
+                    def normalized = selected.replaceFirst(/^origin\//, '')
+                    return normalized == 'dev-alpha'
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 's9-deploy-bot-cred',
+                    usernameVariable: 'JENKINS_USER',
+                    passwordVariable: 'JENKINS_TOKEN'
+                )]) {
+                    sh '''
+                        set -euo pipefail
+                        curl -fsS -X POST "$DEPLOY_URL" \
+                            --user "$JENKINS_USER:$JENKINS_TOKEN" \
+                            --data-urlencode "service=$SERVICE_NAME" \
+                            --data-urlencode "version=$BUILD_NUMBER" \
+                            --data-urlencode "category=$SERVICE_CATEGORY"
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                writeFile file: '.deploy_commit', text: env.DEPLOY_COMMIT
+            }
+        }
+    }
+}

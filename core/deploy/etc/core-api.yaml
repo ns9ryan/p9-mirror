@@ -1,0 +1,23 @@
+Name: core-api
+Host: 0.0.0.0
+Port: 18000
+
+Log:
+  Mode: console
+  Level: info
+
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: core-api
+  Endpoint: jaeger:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc
+
+CROSConf:
+  Address: '*'
+
+CoreRpc:
+  Endpoints:
+    - core-rpc:19000
+  NonBlock: true
+  Timeout: 10000

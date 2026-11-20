@@ -1,0 +1,61 @@
+# RPC服务配置
+Name:     crm-rpc         # RPC服务名称
+ListenOn: 0.0.0.0:39002   # RPC监听地址
+
+
+Mode:     dev             # 运行模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 127.0.0.1:12379     # Etcd地址
+  Key: crm-rpc            # 服务注册Key
+
+# 数据库配置
+DatabaseConf:
+  Host:     127.0.0.1       # 数据库地址
+  Port:     15432           # 数据库端口
+  DBName:   p9_operator01     # 数据库名称
+  Username: root            # 数据库用户名
+  Password: root            # 数据库密码
+  SSLMode:  disable         # SSL模式
+
+# 代理后台 JWT配置
+AgentAdminJwt:
+  AccessSecret: operator-agent-jwt-secret
+  AccessExpire: 86400
+  RefreshSecret: operator-agent-jwt-refresh-secret
+  RefreshExpire: 604800
+
+# 令牌黑名单 Redis 配置
+DataRedis:
+  Host: 127.0.0.1:16379
+  Pass: ""
+  DB: 0
+  # 本地测试敏感字段密钥：需持久保留，更换后旧密文和检索摘要将不可用
+FieldCrypto:
+  EncryptionKey: "96e68da6d8397306c545e446b6443b84"
+  LookupKey: "bf5049b3c98fd408a20d7302ac1c697f66fcb37a7d81bb3889cad07f05b2b5bc"
+
+
+# 总站基础服务 RPC：本地启动的 platform-base
+PlatformBaseRpc:
+  Endpoints:
+    - 127.0.0.1:19001
+    
+IntegrationRpc:
+  Target: 127.0.0.1:19005
+  NonBlock: true
+  Timeout: 30000
+
+Kafka:
+  Brokers:
+    - 127.0.0.1:9094
+# 会员导出在 RPC 边界重新验证分站登录令牌和权限。
+OperatorCoreRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379
+    Key: operator-core-rpc
+  NonBlock: true
+  Timeout: 2000

@@ -1,0 +1,37 @@
+syntax = "v1"
+
+info (
+	title:   "agent level api"
+	desc:    "代理等级"
+	author:  "p9"
+	version: "v1"
+)
+
+import "common.api"
+
+type UpdateAgentLevelsReq {
+	List []AgentLevelItem `json:"list"`
+}
+
+type ListAgentLevelsResp {
+	List []AgentLevelItem `json:"list"`
+}
+
+type UpdateAgentLevelsResp {
+	List []AgentLevelItem `json:"list"`
+}
+
+@server (
+	group:      agent/level
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "代理等级列表"
+	@handler listAgentLevels
+	get /agent/level/list returns (ListAgentLevelsResp)
+
+	@doc "批量更新代理等级"
+	@handler updateAgentLevels
+	post /agent/level/update (UpdateAgentLevelsReq) returns (UpdateAgentLevelsResp)
+}
+

@@ -1,0 +1,34 @@
+# alpha 部署用（连内网 etcd、拉 Harbor 镜像）。本地开发请用 docker-compose.yml。
+x-extra-hosts: &extra-hosts
+    host.docker.internal: host-gateway
+    s9-dev-alpha-1: 10.1.6.85
+    s9-dev-alpha-2: 10.1.6.200
+    s9-dev-alpha-3: 10.1.14.50
+
+services:
+
+    oss-api:
+        container_name: p9-oss-api
+        image: harbor.ecosyssoft.com/p9/oss-api:${IMAGE_TAG_OSS:-latest}
+        restart: unless-stopped
+        extra_hosts: *extra-hosts
+        ports:
+            - "0.0.0.0:8020:80"
+        environment:
+            - ETCD_ENDPOINTS=s9-dev-alpha-1:2379
+            - ETCD_CONFIG_KEY=/oss
+            - SERVICE_NAME=oss
+        depends_on:
+            - oss-rpc
+
+    oss-rpc:
+        container_name: p9-oss-rpc
+        image: harbor.ecosyssoft.com/p9/oss-rpc:${IMAGE_TAG_OSS:-latest}
+        restart: unless-stopped
+        extra_hosts: *extra-hosts
+        ports:
+            - "0.0.0.0:8021:8021"
+        environment:
+            - ETCD_ENDPOINTS=s9-dev-alpha-1:2379
+            - ETCD_CONFIG_KEY=/oss
+            - SERVICE_NAME=oss

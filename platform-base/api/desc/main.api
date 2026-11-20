@@ -1,0 +1,11 @@
+syntax = "v1"
+
+import "ping.api"
+import "timezone.api"
+import "currency.api"
+import "region.api"
+import "vip_default_icon.api"
+import "default_avatar.api"
+import "default_avatar_frame.api"
+import "nickname.api"
+import "resource.api"

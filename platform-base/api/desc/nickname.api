@@ -1,0 +1,36 @@
+syntax = "v1"
+type (
+ NicknameInfo { Id int64 `json:"id"`
+ Name string `json:"name"` }
+ CreateNicknameRequest { Name string `json:"name" validate:"required,max=100"` }
+ CreateNicknameResponse { Nickname NicknameInfo `json:"nickname"` }
+ UpdateNicknameRequest { Id int64 `json:"id" validate:"gt=0"`
+ Name string `json:"name" validate:"required,max=100"` }
+ UpdateNicknameResponse {}
+ DeleteNicknameRequest { Id int64 `json:"id" validate:"gt=0"` }
+ DeleteNicknameResponse {}
+ GetNicknameRequest { Id int64 `form:"id" validate:"gt=0"` }
+ GetNicknameResponse { Nickname NicknameInfo `json:"nickname"` }
+ ListNicknamesRequest { Page int64 `form:"page,default=1" validate:"gte=1"`
+ PageSize int64 `form:"page_size,default=20" validate:"gte=1,lte=100"`
+ Keyword string `form:"keyword,optional" validate:"max=100"` }
+ ListNicknamesResponse { Total int64 `json:"total"`
+ List []NicknameInfo `json:"list"` }
+)
+@server (
+ group: nickname
+ prefix: /admin/nickname
+ middleware: Jwt,ActionLog,Authority
+)
+service platform_base {
+ @handler CreateNickname
+ post /create (CreateNicknameRequest) returns (CreateNicknameResponse)
+ @handler UpdateNickname
+ post /update (UpdateNicknameRequest) returns (UpdateNicknameResponse)
+ @handler DeleteNickname
+ post /delete (DeleteNicknameRequest) returns (DeleteNicknameResponse)
+ @handler GetNickname
+ get /get (GetNicknameRequest) returns (GetNicknameResponse)
+ @handler ListNicknames
+ get /list (ListNicknamesRequest) returns (ListNicknamesResponse)
+}

@@ -1,0 +1,31 @@
+syntax = "v1"
+
+info (
+	title:   "init config api"
+	desc:    "初始化配置"
+	author:  "p9"
+	version: "v1"
+)
+
+type LineInitStatus {
+	LineCode    string `json:"line_code"`
+	Initialized bool   `json:"initialized"`
+}
+
+type InitStatusResp {
+	Ready       bool             `json:"ready"`
+	LevelsReady bool             `json:"levels_ready"`
+	LevelCount  int32            `json:"level_count"`
+	Lines       []LineInitStatus `json:"lines"`
+}
+
+@server (
+	group:      public/initialize
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "检测分站代理线与等级是否完成初始化"
+	@handler getInitStatus
+	get /init/status returns (InitStatusResp)
+}
+

@@ -1,0 +1,5 @@
+# docker build 上下文：排除源码无关物；保留根目录 integration_rpc / integration_api 二进制
+logs/
+**/logs/
+.git/
+*.exe

@@ -1,0 +1,23 @@
+# API服务配置
+Name: operator-base-api      # API服务名称
+Host: 0.0.0.0                # API监听地址
+Port: 38001                  # API监听端口
+Mode: dev                    # 运行模式
+Timeout: 15000               # HTTP请求超时, 毫秒，覆盖认证及站点聚合查询
+
+# Operator Base RPC配置
+OperatorBaseRpc:
+  Endpoints:
+    - 127.0.0.1:39001        # Operator Base RPC地址
+  NonBlock: true             # 非阻塞连接
+  Timeout: 10000             # 请求超时时间, 毫秒
+
+# 当前节点 Core，用于校验登录令牌及接口权限。
+CoreRpc:
+  Endpoints:
+    - 127.0.0.1:19100
+  NonBlock: true
+  Timeout: 10000
+
+# Logo 上传使用的 OSS HTTP API。
+OssApiBaseURL: http://127.0.0.1:8020

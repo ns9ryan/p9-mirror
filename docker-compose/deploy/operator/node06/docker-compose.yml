@@ -1,0 +1,31 @@
+name: operator-node06
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: operator-node06-postgres
+    restart: always
+    ports:
+      - "15446:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app123}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      TZ: Asia/Shanghai
+    volumes:
+      - postgres_operator_node06_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - p9-operator-node06-network
+
+volumes:
+  postgres_operator_node06_data:
+
+networks:
+  p9-operator-node06-network:
+    driver: bridge
+

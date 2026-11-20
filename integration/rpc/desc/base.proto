@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package integration;
+
+option go_package = "./integration";
+
+message Empty {}
+
+message IDReq {
+  int64 id = 1; // 主键 id
+}
+
+service Integration {
+  // group: base
+  rpc ping (Empty) returns (Empty);
+  // 发送邮件，返回厂商受理结果；投递状态不确定时不自动重发。
+  // group: message
+  rpc sendEmail (SendEmailReq) returns (SendEmailResp);
+  // 发送国际短信；调用方须检查 error_code 和逐号码 results。
+  // group: message
+  rpc sendSms (SendSmsReq) returns (SendSmsResp);
+}

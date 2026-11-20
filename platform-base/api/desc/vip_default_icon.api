@@ -1,0 +1,40 @@
+syntax = "v1"
+
+type (
+	// 总网默认 VIP 图标组
+	VipDefaultIconGroupInfo {
+		MinLevel int64 `json:"min_level" validate:"gte=0,lte=90"` // VIP 等级下限，固定十组，每组十级
+		MaxLevel int64 `json:"max_level" validate:"gte=9,lte=99"` // VIP 等级上限，必须等于 min_level 加 9
+		IconUrl string `json:"icon_url" validate:"max=1024"` // 查询为完整公开 URL；保存接受本组 Key 或公开 URL，空字符串表示清空该组配置
+	}
+	// 获取固定十组默认 VIP 图标请求
+	ListAllVipDefaultIconsRequest {}
+	// 获取固定十组默认 VIP 图标响应
+	ListAllVipDefaultIconsResponse {
+		List []VipDefaultIconGroupInfo `json:"list"` // 固定十组，按等级下限升序；缺失组仅在响应中补齐，不写数据库
+	}
+	// 保存一至十组默认图标，未提交的等级组保持不变
+	SaveVipDefaultIconsRequest {
+		List []VipDefaultIconGroupInfo `json:"list" validate:"required,min=1,max=10,dive"` // 1 至 10 组，不重复；未提交组不变，原子保存。
+	}
+	// 保存默认 VIP 图标响应
+	SaveVipDefaultIconsResponse {}
+
+)
+
+@server (
+	group:      vipdefaulticon
+	prefix:     "/admin/vip-default-icon"
+	middleware: Jwt,ActionLog,Authority
+	timeout:    60s
+)
+service platform_base {
+	// 获取全部默认 VIP 图标
+	@handler ListAllVipDefaultIcons
+	get /list-all (ListAllVipDefaultIconsRequest) returns (ListAllVipDefaultIconsResponse)
+
+	// 保存默认 VIP 图标
+	@handler SaveVipDefaultIcons
+	post /save (SaveVipDefaultIconsRequest) returns (SaveVipDefaultIconsResponse)
+
+}

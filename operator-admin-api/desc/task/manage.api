@@ -1,0 +1,151 @@
+syntax = "v1"
+
+import "../common.api"
+
+type (
+	// 任务配置
+	TaskConfig {
+		Id               int64  `json:"id"`
+		OperatorCode     string `json:"operator_code"`
+		TaskCode         string `json:"task_code"`
+		Category         string `json:"category"`
+		Name             string `json:"name"`
+		NameI18n         string `json:"name_i18n"`
+		Description      string `json:"description"`
+		DescriptionI18n  string `json:"description_i18n"`
+		Timezone         string `json:"timezone"`
+		Status           int32  `json:"status"`
+		CompletionAmount int32  `json:"completion_amount"`
+		RewardAmount     int64  `json:"reward_amount"`
+		PayoutMode       string `json:"payout_mode"`
+		Sort             int64  `json:"sort"`
+		CreatedAt     int64  `json:"created_at"`
+		UpdatedAt     int64  `json:"updated_at"`
+	}
+
+	// 列表任务配置请求
+	ListTaskConfigReq {
+		PageRequest
+		// 任务分类过滤（可选）
+		Category *string `form:"category,optional"`
+		// 任务状态过滤（可选）
+		Status *int32 `form:"status,optional"`
+	}
+
+	// 列表任务配置响应
+	ListTaskConfigResp {
+		Total    int64        `json:"total"`
+		List     []TaskConfig `json:"list"`
+		Page     int64        `json:"page"`
+		PageSize int64        `json:"page_size"`
+	}
+
+	// 更新任务配置请求
+	UpdateTaskConfigReq {
+		Id               int64   `json:"id" validate:"required,gt=0"`
+		// 时区（可选）
+		Timezone *string `json:"timezone,optional"`
+		// 任务状态（可选）
+		Status *int32 `json:"status,optional"`
+		// 完成条件USD金额（可选）
+		CompletionAmount *int32 `json:"completion_amount,optional"`
+		// 奖励金额（可选）
+		RewardAmount *int64 `json:"reward_amount,optional"`
+		// 派发方式（可选）
+		PayoutMode *string `json:"payout_mode,optional"`
+		// 排序（可选）
+		Sort *int64 `json:"sort,optional"`
+	}
+
+	// 更新任务配置响应
+	UpdateTaskConfigResp {
+		TaskConfig TaskConfig `json:"task_config"`
+	}
+
+	// 会员任务奖励订单
+	MemberTaskReward {
+		Id                  int64  `json:"id"`
+		OperatorCode        string `json:"operator_code"`
+		MemberId            int64  `json:"member_id"`
+		TaskCode            string `json:"task_code"`
+		KafkaId             string `json:"kafka_id"`
+		Category            string `json:"category"`
+		PeriodKey           string `json:"period_key"`
+		PayoutMode          string `json:"payout_mode"`
+		Amount              int64  `json:"amount"`
+		Status              int32  `json:"status"`
+		OrderNo             string `json:"order_no"`
+		WalletTransactionId string `json:"wallet_transaction_id"`
+		DeviceId            string `json:"device_id"`
+		WalletId            string `json:"wallet_id"`
+		ClaimIp             string `json:"claim_ip"`
+		PayoutAt         int64  `json:"payout_at"`
+		CreatedAt        int64  `json:"created_at"`
+		UpdatedAt        int64  `json:"updated_at"`
+	}
+
+	// 查询会员任务奖励订单请求
+	ListMemberTaskRewardReq {
+		PageRequest
+		// 会员ID（可选）
+		MemberId *int64 `form:"member_id,optional"`
+		// 任务编码（可选）
+		TaskCode *string `form:"task_code,optional"`
+		// 任务分类（可选）
+		Category *string `form:"category,optional"`
+		// 订单状态（可选）
+		Status *int32 `form:"status,optional"`
+		// 订单号（可选）
+		OrderNo *string `form:"order_no,optional"`
+		// 创建时间范围 - 开始时间，unix 秒（可选）
+		CreatedAtStart *int64 `form:"created_at_start,optional"`
+		// 创建时间范围 - 结束时间，unix 秒（可选）
+		CreatedAtEnd *int64 `form:"created_at_end,optional"`
+	}
+
+	// 查询会员任务奖励订单响应
+	ListMemberTaskRewardResp {
+		Total    int64                `json:"total"`
+		List     []MemberTaskReward   `json:"list"`
+		Page     int64                `json:"page"`
+		PageSize int64                `json:"page_size"`
+	}
+
+	// 更新会员任务奖励状态请求（只允许从 1 改为 2）
+	UpdateMemberTaskRewardStatusReq {
+		// 操作员代码
+		OperatorCode string `json:"operator_code" validate:"required"`
+		// 奖励订单 ID
+		Id int64 `json:"id" validate:"required,gt=0"`
+		// 新状态（只允许为 2 - 待派发）
+		Status int32 `json:"status" validate:"required"`
+	}
+
+	// 更新会员任务奖励状态响应
+	UpdateMemberTaskRewardStatusResp {
+		MemberTaskReward MemberTaskReward `json:"member_task_reward"`
+	}
+)
+
+@server (
+	group:      task/manage
+	prefix:     /task
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "任务配置列表（分页查询，支持排序）"
+	@handler ListTaskConfig
+	get /config/list (ListTaskConfigReq) returns (ListTaskConfigResp)
+
+	@doc "更新任务配置（仅允许修改 timezone、status、completion_amount、reward_amount、payout_mode、sort）"
+	@handler UpdateTaskConfig
+	post /config/update (UpdateTaskConfigReq) returns (UpdateTaskConfigResp)
+
+	@doc "会员任务奖励订单查询"
+	@handler ListMemberTaskReward
+	get /reward/list (ListMemberTaskRewardReq) returns (ListMemberTaskRewardResp)
+
+	@doc "更新会员任务奖励状态（只允许从 1 改为 2）"
+	@handler UpdateMemberTaskRewardStatus
+	post /reward/update-status (UpdateMemberTaskRewardStatusReq) returns (UpdateMemberTaskRewardStatusResp)
+}

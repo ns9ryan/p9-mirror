@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package node_dispatch_operator_node;
+
+option go_package = "oa.98ent.com/p9/node-dispatch/rpc/pb/nodedispatchrpc/operatornodepb";
+
+import "types/node_dispatch_node.proto";
+
+// 分站部署节点信息
+message OperatorNodeInfo {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 部署节点信息
+  node_dispatch_node.NodeInfo node = 2;
+  // 创建时间, Unix毫秒时间戳
+  int64 created_at = 3;
+  // 更新时间, Unix毫秒时间戳
+  int64 updated_at = 4;
+}
+
+// 保存分站部署节点请求
+message SaveOperatorNodeRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 节点业务编码
+  string node_code = 2;
+}
+
+// 保存分站部署节点响应
+message SaveOperatorNodeResponse {}
+
+// 获取分站部署节点请求
+message GetOperatorNodeRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+}
+
+// 获取分站部署节点响应
+message GetOperatorNodeResponse {
+  // 分站部署节点信息
+  OperatorNodeInfo operator_node = 1;
+}

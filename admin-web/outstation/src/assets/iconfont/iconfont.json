@@ -1,0 +1,37 @@
+{
+  "id": "5243961",
+  "name": "no name",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "29230869",
+      "name": "用户",
+      "font_class": "yonghu1",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "18458422",
+      "name": "客户管理",
+      "font_class": "kehuguanli",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "8522330",
+      "name": "1.6父子关系设置",
+      "font_class": "fuziguanxishezhi",
+      "unicode": "e655",
+      "unicode_decimal": 58965
+    },
+    {
+      "icon_id": "29959884",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    }
+  ]
+}

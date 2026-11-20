@@ -1,0 +1,491 @@
+syntax = "v1"
+
+import "../common.api"
+
+type (
+    UpdateMemberStatusRequest {
+        MemberId int64 `json:"member_id" validate:"required,gt=0"`
+        Status int64 `json:"status" validate:"required,oneof=1 2 3"`
+    }
+    ResetMemberAuthErrorsRequest {
+        MemberId int64 `json:"member_id" validate:"required,gt=0"`
+        Field string `json:"field" validate:"required,oneof=sms_code_error_count email_code_error_count login_password_error_count withdrawal_password_error_count"`
+    }
+    UpdateMemberRemarkRequest {
+        MemberId int64 `json:"member_id" validate:"required,gt=0"`
+        Remark string `json:"remark" validate:"max=200"`
+    }
+    UpdateMemberSwitchRequest {
+        MemberId int64 `json:"member_id" validate:"required,gt=0"`
+        Disabled *bool `json:"disabled" validate:"required"`
+    }
+
+    UpdateMemberAutoLevelRequest {
+        MemberId int64 `json:"member_id" validate:"required,gt=0"`
+        AutoLevelId int64 `json:"auto_level_id" validate:"required,gt=0"`
+    }
+    // 全量替换，传空数组清空固定层级
+    UpdateMemberFixedLevelsRequest {
+        MemberId int64 `json:"member_id" validate:"required,gt=0"`
+        FixedLevelIds []int64 `json:"fixed_level_ids" validate:"max=100,dive,gt=0"`
+    }
+	// 创建会员请求
+	CreateMemberRequest {
+		// 会员登录账号, 4-20位
+		Account string `json:"account" validate:"required,min=4,max=20"`
+		// 初始密码, 8-32位
+		Password string `json:"password" validate:"required,min=8,max=32"`
+		// 会员昵称, 不填写时使用账号
+		Nickname *string `json:"nickname,optional" validate:"omitempty,max=100"`
+		// 所属分层代理ID
+		AgentId int64 `json:"agent_id" validate:"required,gt=0"`
+		// 后台会员备注, 最多200个字符
+		Remark *string `json:"remark,optional" validate:"omitempty,max=200"`
+	}
+	// 创建会员响应
+	CreateMemberResponse {
+		// 会员ID
+		Id int64 `json:"id"`
+		// 会员对外编号, 12位数字
+		Code string `json:"code"`
+	}
+	// 会员列表请求
+	ListMembersRequest {
+		// ==================== 关键字筛选 ====================
+		// 会员账号, 编号或昵称
+		Keyword string `form:"keyword,optional"`
+		// ==================== 时间筛选 ====================
+		// 时间类型: 0不筛选, 1注册时间, 2最后登录时间
+		TimeType int32 `form:"time_type,optional"`
+		// 起始时间, Unix毫秒时间戳, 包含
+		StartAt *int64 `form:"start_at,optional"`
+		// 结束时间, Unix毫秒时间戳, 不包含
+		EndAt *int64 `form:"end_at,optional"`
+		// ==================== 等级与注册信息 ====================
+		// 自动层级ID
+		AutoLevelId *int64 `form:"auto_level_id,optional"`
+		// 固定层级ID
+		FixedLevelId *int64 `form:"fixed_level_id,optional"`
+		// 注册方式
+		RegisterMethod *string `form:"register_method,optional"`
+		// 注册渠道
+		RegisterChannel *string `form:"register_channel,optional"`
+		// ==================== 会员状态与代理归属 ====================
+		// 会员状态: 1正常, 2冻结, 3禁用
+		Status *int64 `form:"status,optional"`
+		// 所属分层代理ID
+		AgentId *int64 `form:"agent_id,optional"`
+		// ==================== 其他筛选条件 ====================
+		// 仅查询禁止投注的会员
+		BettingDisabled bool `form:"betting_disabled,optional"`
+		// 仅查询未绑定手机号的会员
+		NoPhone bool `form:"no_phone,optional"`
+		// 仅查询未绑定邮箱的会员
+		NoEmail bool `form:"no_email,optional"`
+		// 仅查询已充值的会员
+		Deposited bool `form:"deposited,optional"`
+		// 仅查询未充值的会员
+		NotDeposited bool `form:"not_deposited,optional"`
+		// ==================== 排序 ====================
+		// 0注册时间, 1充值金额, 2充值次数, 3提现金额, 4提现次数
+		SortBy int32 `form:"sort_by,optional"`
+		// 0默认降序, 1升序, 2降序
+		SortOrder int32 `form:"sort_order,optional"`
+		// ==================== 分页 ====================
+		// 公共分页参数
+		PageRequest
+	}
+	// 会员列表固定层级信息
+	MemberListFixedLevelInfo {
+		// 固定层级ID
+		Id int64 `json:"id"`
+		// 固定层级名称
+		Name string `json:"name"`
+	}
+	// 会员等级信息
+	MemberLevelInfo {
+		// ==================== 自动层级 ====================
+		// 自动层级ID
+		AutoLevelId int64 `json:"auto_level_id"`
+		// 自动层级名称
+		AutoLevelName string `json:"auto_level_name"`
+		// ==================== 固定层级 ====================
+		// 已分配的固定层级列表
+		FixedLevels []MemberListFixedLevelInfo `json:"fixed_levels"`
+		// ==================== VIP等级 ====================
+		// VIP等级ID
+		VipLevelId int64 `json:"vip_level_id"`
+		// VIP等级编号
+		VipLevel int64 `json:"vip_level"`
+	}
+	// 会员统计信息, 金额使用厅结算币种最小单位
+	MemberStatsInfo {
+		// ==================== 累计资金统计 ====================
+		// 累计充值金额
+		TotalDeposit int64 `json:"total_deposit"`
+		// 累计充值成功次数
+		TotalDepositCount int64 `json:"total_deposit_count"`
+		// 累计提现金额
+		TotalWithdrawal int64 `json:"total_withdrawal"`
+		// 累计提现成功次数
+		TotalWithdrawalCount int64 `json:"total_withdrawal_count"`
+		// 累计存提差额
+		TotalDepositWithdrawalDiff int64 `json:"total_deposit_withdrawal_diff"`
+		// ==================== 累计游戏统计 ====================
+		// 累计投注金额
+		TotalBet int64 `json:"total_bet"`
+		// 累计有效投注金额
+		TotalValidBet int64 `json:"total_valid_bet"`
+		// 累计洗码量
+		TotalWater int64 `json:"total_water"`
+		// 累计会员净输赢
+		TotalWinLoss int64 `json:"total_win_loss"`
+		// ==================== 当前结算周期统计 ====================
+		// 当前周期充值金额
+		CurrentPeriodDeposit int64 `json:"current_period_deposit"`
+		// 当前周期提现金额
+		CurrentPeriodWithdrawal int64 `json:"current_period_withdrawal"`
+		// 当前周期投注金额
+		CurrentPeriodBet int64 `json:"current_period_bet"`
+		// 当前周期有效投注金额
+		CurrentPeriodValidBet int64 `json:"current_period_valid_bet"`
+		// 当前周期洗码量
+		CurrentPeriodWater int64 `json:"current_period_water"`
+		// 当前周期会员净输赢
+		CurrentPeriodWinLoss int64 `json:"current_period_win_loss"`
+		// 当前结算周期开始时间, Unix毫秒时间戳
+		CurrentPeriodStartedAt *int64 `json:"current_period_started_at,optional"`
+	}
+	// 会员列表项
+	MemberListItem {
+		// ==================== 会员基本信息 ====================
+		// 会员ID
+		Id int64 `json:"id"`
+		// 12位会员对外编号
+		Code string `json:"code"`
+		// 会员登录账号
+		Account string `json:"account"`
+		// 会员昵称
+		Nickname string `json:"nickname"`
+		// ==================== 代理归属与等级 ====================
+		// 所属分层代理ID
+		AgentId int64 `json:"agent_id"`
+		// 所属分层代理账号
+		AgentAccount string `json:"agent_account"`
+		// 会员当前等级信息
+		Levels MemberLevelInfo `json:"levels"`
+		// ==================== 状态与注册信息 ====================
+		// 会员状态: 1正常, 2冻结, 3禁用
+		Status int64 `json:"status"`
+		// 是否禁止发言
+		ChatDisabled bool `json:"chat_disabled"`
+		// 是否禁止投注
+		BettingDisabled bool `json:"betting_disabled"`
+		// 是否禁止提款
+		WithdrawalDisabled bool `json:"withdrawal_disabled"`
+		// 注册方式
+		RegisterMethod string `json:"register_method"`
+		// 注册渠道
+		RegisterChannel string `json:"register_channel"`
+		// 注册时间, Unix毫秒时间戳
+		CreatedAt int64 `json:"created_at"`
+		// 最后登录时间, Unix毫秒时间戳
+		LastLoginAt *int64 `json:"last_login_at,optional"`
+		// 最后登录IP
+		LastLoginIp *string `json:"last_login_ip,optional"`
+		// ==================== 联系方式与运营信息 ====================
+		// 已脱敏手机号, 未绑定时不返回
+		Phone *string `json:"phone,optional"`
+		// 已脱敏邮箱, 未绑定时不返回
+		Email *string `json:"email,optional"`
+		// 邀请人会员ID
+		InviterMemberId *int64 `json:"inviter_member_id,optional"`
+		// 后台会员备注
+		Remark *string `json:"remark,optional"`
+		// ==================== 会员统计 ====================
+		// 会员累计及当前结算周期统计
+		Stats MemberStatsInfo `json:"stats"`
+	}
+	// 会员列表响应
+	ListMembersResponse {
+		// 符合条件的会员总数
+		Total int64 `json:"total"`
+		// 当前页会员列表
+		List []MemberListItem `json:"list"`
+	}
+	// 获取会员详情请求
+	GetMemberDetailRequest {
+		// 会员数据库主键
+		MemberId int64 `form:"member_id" validate:"required,gt=0"`
+	}
+	// 获取会员详情响应
+	GetMemberDetailResponse {
+		// ==================== 会员基本信息 ====================
+		// 会员数据库主键
+		Id int64 `json:"id"`
+		// 12位会员对外编号
+		Code string `json:"code"`
+		// 会员登录账号
+		Account *string `json:"account,optional"`
+		// 会员昵称
+		Nickname string `json:"nickname"`
+		// 会员头像 ID
+		AvatarId int64 `json:"avatar_id"`
+		// 会员头像框 ID
+		AvatarFrameId int64 `json:"avatar_frame_id"`
+		// 会员生日, YYYY-MM-DD
+		Birthday *string `json:"birthday,optional"`
+		// 性别: 0未设置, 1男, 2女, 3保密
+		Gender int64 `json:"gender"`
+		// 会员国家或地区编码
+		RegionCode *string `json:"region_code,optional"`
+		// ==================== 代理归属 ====================
+		// 所属分层代理ID
+		AgentId int64 `json:"agent_id"`
+		// 所属分层代理账号
+		AgentAccount string `json:"agent_account"`
+		// 所属代理线路编码
+		AgentLineCode string `json:"agent_line_code"`
+		// ==================== 会员等级 ====================
+		// 会员当前等级信息
+		Levels MemberLevelInfo `json:"levels"`
+		// ==================== 状态与业务限制 ====================
+		// 会员状态: 1正常, 2冻结, 3禁用
+		Status int64 `json:"status"`
+		// 是否禁止发言
+		ChatDisabled bool `json:"chat_disabled"`
+		// 是否禁止投注
+		BettingDisabled bool `json:"betting_disabled"`
+		// 是否禁止提款
+		WithdrawalDisabled bool `json:"withdrawal_disabled"`
+		// ==================== 注册信息 ====================
+		// 注册方式
+		RegisterMethod string `json:"register_method"`
+		// 注册渠道
+		RegisterChannel string `json:"register_channel"`
+		// 注册时间, Unix毫秒时间戳
+		CreatedAt int64 `json:"created_at"`
+		// 注册IP
+		RegisterIp *string `json:"register_ip,optional"`
+		// 注册设备标识
+		RegisterDeviceCode *string `json:"register_device_code,optional"`
+		// 注册域名
+		RegisterDomain *string `json:"register_domain,optional"`
+		// ==================== 最后登录信息 ====================
+		// 最后登录时间, Unix毫秒时间戳
+		LastLoginAt *int64 `json:"last_login_at,optional"`
+		// 最后登录IP
+		LastLoginIp *string `json:"last_login_ip,optional"`
+		// ==================== 运营信息 ====================
+		// 邀请人会员ID
+		InviterMemberId *int64 `json:"inviter_member_id,optional"`
+		// 后台会员备注
+		Remark *string `json:"remark,optional"`
+		// ==================== 统计信息 ====================
+		// 会员统计, 无统计记录时返回零值
+		Stats MemberStatsInfo `json:"stats"`
+	}
+)
+
+@server (
+	group:      member/manage
+	prefix:     /member
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+ @handler ListMemberContactBindingCodes
+ get /contact/binding-codes/list (ListMemberContactBindingCodesRequest) returns (ListMemberContactBindingCodesResponse)
+
+
+ @handler UpdateContact
+ post /contact/update (UpdateMemberContactRequest) returns (EmptyResponse)
+ @handler ListImages
+ get /images returns (ListMemberImagesResponse)
+
+    @handler UpdateStatus
+    post /status/update (UpdateMemberStatusRequest) returns (EmptyResponse)
+
+    @handler ResetAuthErrors
+    post /auth/errors/reset (ResetMemberAuthErrorsRequest) returns (EmptyResponse)
+
+    @handler UpdateRemark
+    post /remark/update (UpdateMemberRemarkRequest) returns (EmptyResponse)
+
+    @handler UpdateChat
+    post /chat/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
+
+    @handler UpdateBetting
+    post /betting/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
+
+    @handler UpdateWithdrawal
+    post /withdrawal/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
+
+
+    @handler UpdateAutoLevel
+    post /level/auto/update (UpdateMemberAutoLevelRequest) returns (EmptyResponse)
+
+    @handler UpdateFixedLevels
+    post /level/fixed/update (UpdateMemberFixedLevelsRequest) returns (EmptyResponse)
+	// 创建会员
+	@handler Create
+	post /create (CreateMemberRequest) returns (CreateMemberResponse)
+
+	// 获取会员列表
+	@handler List
+	get /list (ListMembersRequest) returns (ListMembersResponse)
+
+	// 获取会员详情
+	@handler GetDetail
+	get /detail (GetMemberDetailRequest) returns (GetMemberDetailResponse)
+}
+
+
+type UpdateMemberContactRequest {
+ MemberId int64 `json:"member_id"`
+ AvatarId *int64 `json:"avatar_id,optional"`
+ AvatarFrameId *int64 `json:"avatar_frame_id,optional"`
+ Nickname *string `json:"nickname,optional"`
+ RealName *string `json:"real_name,optional"`
+ Phone *string `json:"phone,optional"`
+ IdentityNumber *string `json:"identity_number,optional"`
+ Email *string `json:"email,optional"`
+ PhoneVerification *ContactBindingCodeProof `json:"phone_verification,optional"`
+ EmailVerification *ContactBindingCodeProof `json:"email_verification,optional"`
+}
+
+type ContactBindingCodeProof {
+ RecordId int64 `json:"record_id"`
+ VerificationCode string `json:"verification_code"`
+}
+type SendMemberContactBindingCodeRequest {
+ MemberId int64 `json:"member_id"`
+ Channel int32 `json:"channel"`
+ Target string `json:"target"`
+}
+type SendMemberContactBindingCodeResponse {
+ RecordId int64 `json:"record_id"`
+ ExpiresAt int64 `json:"expires_at"`
+}
+type MemberImageResource {
+ Id int64 `json:"id"`
+ ImageUrl string `json:"image_url"`
+}
+type ListMemberImagesResponse {
+ Avatars []MemberImageResource `json:"avatars"`
+ AvatarFrames []MemberImageResource `json:"avatar_frames"`
+}
+
+type (
+    BatchCreateMembersRequest {
+        AccountPrefix string `json:"account_prefix,optional"`
+        AccountSuffix string `json:"account_suffix,optional"`
+        Count int32 `json:"count"`
+        AgentId int64 `json:"agent_id"`
+    }
+    BatchCreatedMember {
+        Id int64 `json:"id"`
+        Code string `json:"code"`
+        Account string `json:"account"`
+    }
+    BatchCreateMembersResponse {
+        Members []BatchCreatedMember `json:"members"`
+    }
+)
+
+
+@server (
+    group:      member/manage
+    prefix:     /member
+    middleware: Jwt,ActionLog,Authority
+    timeout:    600s
+)
+service operator_admin_api {
+	// 批量创建会员
+	@handler BatchCreate
+	post /batch/create (BatchCreateMembersRequest) returns (BatchCreateMembersResponse)
+}
+
+type ListMemberContactBindingCodesRequest {
+ Page int64 `form:"page,optional"`
+ PageSize int64 `form:"page_size,optional"`
+ Id int64 `form:"id,optional"`
+ MemberId int64 `form:"member_id,optional"`
+ Channel int32 `form:"channel,optional"`
+ Status *int32 `form:"status,optional"`
+ CreatedFrom int64 `form:"created_from,optional"`
+ CreatedBefore int64 `form:"created_before,optional"`
+ }
+type MemberContactBindingCodeItem {
+ VerificationCode string `json:"verification_code"`
+ Id int64 `json:"id"`
+ MemberId int64 `json:"member_id"`
+ Channel int32 `json:"channel"`
+ Status int32 `json:"status"`
+ FailedAttempts int32 `json:"failed_attempts"`
+ CreatedAt int64 `json:"created_at"`
+ SentAt int64 `json:"sent_at"`
+ ExpiresAt int64 `json:"expires_at"`
+ UsedAt int64 `json:"used_at"`
+}
+type ListMemberContactBindingCodesResponse {
+ Total int64 `json:"total"`
+ List []MemberContactBindingCodeItem `json:"list"`
+}
+
+@server (
+    group: member/manage
+    prefix: /member
+    middleware: Jwt,ActionLog,Authority
+    timeout: 45s
+)
+service operator_admin_api {
+    @handler SendMemberContactBindingCode
+    post /contact/binding-codes/send (SendMemberContactBindingCodeRequest) returns (SendMemberContactBindingCodeResponse)
+}
+
+// 私有csv导出. 未知请求体会被拒绝
+type ExportMembersRequest {
+ Columns []string `json:"columns,optional"` // Omitted or empty: all default columns; otherwise preserve requested order.
+		Keyword string `json:"keyword,optional"`
+		TimeType int32 `json:"time_type,optional"`
+		StartAt *int64 `json:"start_at,optional"`
+		EndAt *int64 `json:"end_at,optional"`
+		AutoLevelId *int64 `json:"auto_level_id,optional"`
+		FixedLevelId *int64 `json:"fixed_level_id,optional"`
+		RegisterMethod *string `json:"register_method,optional"`
+		RegisterChannel *string `json:"register_channel,optional"`
+		Status *int64 `json:"status,optional"`
+		AgentId *int64 `json:"agent_id,optional"`
+		BettingDisabled bool `json:"betting_disabled,optional"`
+		NoPhone bool `json:"no_phone,optional"`
+		NoEmail bool `json:"no_email,optional"`
+		Deposited bool `json:"deposited,optional"`
+		NotDeposited bool `json:"not_deposited,optional"`
+ FilterIp string `json:"filter_ip,optional"`
+ FilterDevice string `json:"filter_device,optional"`
+ PUsername string `json:"p_username,optional"`
+ AgentType int32 `json:"agent_type,optional"`
+ // 是否包含试玩会员；默认 false，仍排除试玩。
+ IncludeDemo bool `json:"include_demo,optional"`
+ RangeTodayDeposit []string `json:"range_today_deposit,optional"`
+ RangeTodayWithdraw []string `json:"range_today_withdraw,optional"`
+}
+type ExportMembersResponse {
+ TaskId string `json:"task_id"`
+ Url string `json:"url"`
+ Key string `json:"key"`
+ Rows int64 `json:"rows"`
+ StartedAt int64 `json:"started_at"`
+ ExpiresAt int64 `json:"expires_at"`
+ Visibility string `json:"visibility"`
+}
+@server (
+ group: member/manage
+ prefix: /member
+ middleware: Jwt,ActionLog,Authority
+ timeout: 45s
+)
+service operator_admin_api {
+ @handler Export
+ post /export/v2 (ExportMembersRequest) returns (ExportMembersResponse)
+}

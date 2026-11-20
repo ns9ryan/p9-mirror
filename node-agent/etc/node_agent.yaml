@@ -1,0 +1,55 @@
+# 节点配置
+NodeCode: NODE_FDD76E3F7C654F5D87BA1965BDC3C664                               # 节点业务编码
+AuthSecret: 6ba1434d45011c4eefed669a5eb234334b7f32d72bcf126b0cde434c16d5280c  # 节点认证密钥
+
+# 调度中心连接配置
+Dispatch:
+  WebSocketURL: ws://127.0.0.1:28002/ws/node                                  # WebSocket连接地址
+
+# Nginx 配置
+Nginx:
+  ConfDirPath: "/app/node01"    # Nginx 配置目录路径（可选，未配置时不生成 nginx 文件）
+  ContainerName: p9-nginx
+  PortMap:
+    Core: 38000
+    Base: 38001
+    Game: 38003
+    Operator: 18002
+    Dispatch: 28001
+
+# 总网分站RPC配置
+PlatformOperatorRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379                                                       # Etcd地址
+    Key: platform-operator-rpc    
+
+# 总网Core RPC配置
+PlatformCoreRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379                                                       # Etcd地址
+    Key: platform-core-rpc 
+
+# 分站Core RPC配置
+OperatorCoreRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379                                                       # Etcd地址
+    Key: operator-core-rpc     
+                                            # 服务注册Key
+# 当前节点分站基础RPC配置
+OperatorBaseRpc:
+  Endpoints:
+    - 127.0.0.1:39001                                                         # 当前节点operator-base RPC地址
+
+OperatorGameRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379                                                       # Etcd地址
+    Key: operator-game-rpc
+
+# 当前节点CRM RPC配置
+OperatorCrmRpc:
+  Endpoints:
+    - 127.0.0.1:39002 # 当前节点CRM RPC地址

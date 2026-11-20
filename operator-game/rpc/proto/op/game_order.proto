@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package operator_game;
+
+option go_package = "oa.98ent.com/p9/operator-game/rpc/pb/operator_game";
+
+// ========== GameOrder Messages ==========
+
+// GameOrderInfo 游戏订单信息
+message GameOrderInfo {
+  int64  id = 1;
+  string operator_code = 2;
+  int64  member_id = 3;
+  int64  settle_at = 4;     // 结算时间(毫秒)
+}
+
+// ========== QueryBetMembers - 查询下注会员 ==========
+
+// QueryBetMembersRequest 查询下注会员请求
+message QueryBetMembersRequest {
+  string operator_code = 1;     // 分站编码【必填】
+  int64 start_time = 2;         // 开始时间(毫秒)【必填】前一天 00:00:00
+  int64 end_time = 3;           // 结束时间(毫秒)【必填】前一天 23:59:59
+}
+
+// QueryBetMembersResponse 查询下注会员响应
+message QueryBetMembersResponse {
+  int32 code = 1;                 // 错误码(0=成功)
+  string message = 2;             // 错误信息
+  repeated int64 member_ids = 3;  // 满足条件的会员ID列表(已去重)
+  int32 total_count = 4;          // 总下注笔数(用于监控)
+}
+
+// ========== WriteGameOrder - 写入游戏订单 ==========
+
+// WriteGameOrderRequest 写入游戏订单请求
+message WriteGameOrderRequest {
+  string operator_code = 1;   // 分站编码【必填】
+  int64  member_id = 2;       // 会员ID【必填】
+  int64  settle_at = 3;       // 结算时间(毫秒)【必填】
+}
+
+// WriteGameOrderResponse 写入游戏订单响应
+message WriteGameOrderResponse {
+  int32 code = 1;          // 错误码(0=成功)
+  string message = 2;      // 错误信息
+  int64 order_id = 3;      // 创建的订单ID
+  GameOrderInfo data = 4;  // 订单详情
+}
+
+// ========== WriteGameOrderBatch - 批量写入游戏订单 ==========
+
+// WriteGameOrderBatchRequest 批量写入游戏订单请求
+message WriteGameOrderBatchRequest {
+  repeated WriteGameOrderRequest orders = 1;  // 订单列表【必填】
+}
+
+// WriteGameOrderBatchResponse 批量写入游戏订单响应
+message WriteGameOrderBatchResponse {
+  int32 code = 1;                    // 错误码(0=成功)
+  string message = 2;                // 错误信息
+  int32 success_count = 3;           // 成功写入笔数
+  int32 failed_count = 4;            // 失败笔数
+  repeated int64 failed_order_ids = 5;  // 失败的订单ID(仅在部分失败时返回)
+}

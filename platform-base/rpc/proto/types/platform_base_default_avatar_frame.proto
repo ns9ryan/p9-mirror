@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package platform_base_defaultavatarframe;
+
+option go_package = "oa.98ent.com/p9/platform-base/rpc/pb/platformbaserpc/defaultavatarframepb";
+
+// 总站默认头像框信息，默认选中哪张由分站管理。
+message DefaultAvatarFrameInfo {
+  // 图片主键，修改时保持不变。
+  int64 id = 1;
+  // 可直接展示的完整公开 URL，由已存 Key 与公开前缀拼接；空字符串表示尚未配置。
+  string image_url = 2;
+}
+
+// 获取全部默认头像框，供总站后台及分站服务读取。
+message ListAllDefaultAvatarFramesRequest {}
+// 全部默认头像框响应，按主键升序；查询不写库。
+message ListAllDefaultAvatarFramesResponse {
+  // 默认头像框列表，空列表返回空集合；固定数量由既有初始化流程补齐。
+  repeated DefaultAvatarFrameInfo list = 1;
+}
+
+// 仅修改已有图片，不新增记录，不接受客户端指定修改人。
+message UpdateDefaultAvatarFrameRequest {
+  // 必须为已有记录的正整数主键，不能通过修改新增素材。
+  int64 id = 1;
+  // 图片完整公开 URL 或本类对象 Key，最长 1024 字节，不允许清空或使用签名地址。
+  string image_url = 2;
+}
+// 修改成功时无额外业务字段；修改人取自认证上下文。
+message UpdateDefaultAvatarFrameResponse {}

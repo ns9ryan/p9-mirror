@@ -1,0 +1,15 @@
+Name: operator-report-rpc-node01
+ListenOn: 0.0.0.0:39009
+Etcd:
+  Hosts:
+  - 192.168.10.220:2379
+  Key: operator-report-rpc-node01
+
+
+DorisDatabaseConf:
+  Host:     192.168.10.220       # 数据库地址
+  Port:     9031            # 数据库端口
+  DBName:   ns9_statistics  # 数据库名称
+  Username: root            # 数据库用户名
+  Password: ""            # 数据库密码
+  SSLMode:  disable         # SSL模式

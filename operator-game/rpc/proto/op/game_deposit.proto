@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package operator_game;
+
+option go_package = "oa.98ent.com/p9/operator-game/rpc/pb/operator_game";
+
+// ========== GameDeposit Messages ==========
+
+// GameDepositInfo 充值记录信息
+message GameDepositInfo {
+  int64  id = 1;
+  string operator_code = 2;
+  int64  member_id = 3;
+  int64  deposit_at = 4;     // 充值时间(毫秒)
+}
+
+// ========== WriteGameDeposit - 写入充值记录 ==========
+
+// WriteGameDepositRequest 写入充值记录请求
+message WriteGameDepositRequest {
+  string operator_code = 1;   // 分站编码【必填】
+  int64  member_id = 2;       // 会员ID【必填】
+  int64  deposit_at = 3;      // 充值时间(毫秒)【必填】
+}
+
+// WriteGameDepositResponse 写入充值记录响应
+message WriteGameDepositResponse {
+  int32 code = 1;          // 错误码(0=成功)
+  string message = 2;      // 错误信息
+  int64 deposit_id = 3;    // 创建的充值记录ID
+  GameDepositInfo data = 4;  // 充值记录详情
+}
+
+// ========== WriteGameDepositBatch - 批量写入充值记录 ==========
+
+// WriteGameDepositBatchRequest 批量写入充值记录请求
+message WriteGameDepositBatchRequest {
+  repeated WriteGameDepositRequest deposits = 1;  // 充值记录列表【必填】
+}
+
+// WriteGameDepositBatchResponse 批量写入充值记录响应
+message WriteGameDepositBatchResponse {
+  int32 code = 1;                    // 错误码(0=成功)
+  string message = 2;                // 错误信息
+  int32 success_count = 3;           // 成功写入笔数
+  int32 failed_count = 4;            // 失败笔数
+  repeated int64 failed_deposit_ids = 5;  // 失败的充值记录ID(仅在部分失败时返回)
+}

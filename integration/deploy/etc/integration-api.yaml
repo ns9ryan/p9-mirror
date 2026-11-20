@@ -1,0 +1,27 @@
+# integration API（compose 内网）
+# 挂载为容器内 etc/integration.yaml
+Name: integration-api
+Host: 0.0.0.0
+Port: 18005
+Timeout: 30000
+Mode: pro # 线上不注册 /swagger
+
+Log:
+  Mode: console
+  Level: info
+
+CROSConf:
+  Address: '*'
+
+IntegrationRpc:
+  Endpoints:
+    - integration-rpc:19005
+  NonBlock: true
+  Timeout: 30000
+
+# JWT：core CheckToken（改这里的 Endpoints，不是 .env）
+CoreRpc:
+  Endpoints:
+    - host.docker.internal:19000
+  NonBlock: true
+  Timeout: 10000

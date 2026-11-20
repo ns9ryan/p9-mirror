@@ -1,0 +1,40 @@
+syntax = "v1"
+
+type (
+    // 默认头像，共 8 张；具体默认选择由分站负责。
+    DefaultAvatarInfo {
+        Id int64 `json:"id"` // 已有图片的数据库主键，修改时用于定位。
+        ImageUrl string `json:"image_url"` // 完整公开地址，由 Key 和配置前缀拼接；空串表示未配置。
+    }
+    // 查询全部默认头像，无需请求参数。
+    ListAllDefaultAvatarsRequest {}
+    // 全部默认头像响应。
+    ListAllDefaultAvatarsResponse {
+        List []DefaultAvatarInfo `json:"list"` // 按主键升序返回，空列表为 []。
+    }
+    // 只修改已有图片，数据库保存 Key，不删除旧 OSS 图片。
+    UpdateDefaultAvatarRequest {
+        Id int64 `json:"id" validate:"gt=0"` // 必填，已有记录的正整数主键。
+        ImageUrl string `json:"image_url" validate:"required,max=1024"` // 必填，本类公开 URL 或 Key；最长 1024 字节，不接受空值或签名 URL。
+    }
+    // 修改成功时无额外业务字段。
+    UpdateDefaultAvatarResponse {}
+
+)
+
+@server (
+    group: defaultavatar
+    prefix: "/admin/default-avatar"
+    middleware: Jwt,ActionLog,Authority
+    timeout: 60s
+)
+service platform_base {
+    // 获取全部默认头像，响应包含可直接展示的公开地址。
+    @handler ListAllDefaultAvatars
+    get /list-all (ListAllDefaultAvatarsRequest) returns (ListAllDefaultAvatarsResponse)
+
+    // 修改已有默认头像，将已知公开前缀下的地址保存为对象 Key。
+    @handler UpdateDefaultAvatar
+    post /update (UpdateDefaultAvatarRequest) returns (UpdateDefaultAvatarResponse)
+
+}

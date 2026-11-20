@@ -1,0 +1,5 @@
+syntax = "v1"
+
+import "ping.api"
+import "site_config.api"
+import "site_code.api"

@@ -1,0 +1,22 @@
+# API服务配置
+Name: operator-base-api         # API服务名称
+Host: 0.0.0.0                   # API监听地址
+Port: 38001                     # API监听端口
+Mode: dev                       # 运行模式
+
+# Operator Base RPC配置
+OperatorBaseRpc:
+  Endpoints:
+    - operator-base-rpc:39001   # 当前节点Operator Base RPC地址
+  NonBlock: true                # 非阻塞连接
+  Timeout: 10000                # 请求超时时间, 毫秒
+
+# 当前节点 Core RPC，用于校验登录和接口权限
+CoreRpc:
+  Endpoints:
+    - operator-node01-core-rpc:39000
+  NonBlock: true
+  Timeout: 10000
+
+# node01 专用 OSS 上传服务地址
+OssApiBaseURL: "http://operator-node01-oss-api:18006"

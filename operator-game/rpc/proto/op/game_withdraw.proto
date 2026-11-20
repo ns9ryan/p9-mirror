@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package operator_game;
+
+option go_package = "oa.98ent.com/p9/operator-game/rpc/pb/operator_game";
+
+// ========== GameWithdraw Messages ==========
+
+// GameWithdrawInfo 提现记录信息
+message GameWithdrawInfo {
+  int64  id = 1;
+  string operator_code = 2;
+  int64  member_id = 3;
+  int64  withdraw_at = 4;     // 提现时间(毫秒)
+}
+
+// ========== WriteGameWithdraw - 写入提现记录 ==========
+
+// WriteGameWithdrawRequest 写入提现记录请求
+message WriteGameWithdrawRequest {
+  string operator_code = 1;   // 分站编码【必填】
+  int64  member_id = 2;       // 会员ID【必填】
+  int64  withdraw_at = 3;     // 提现时间(毫秒)【必填】
+}
+
+// WriteGameWithdrawResponse 写入提现记录响应
+message WriteGameWithdrawResponse {
+  int32 code = 1;          // 错误码(0=成功)
+  string message = 2;      // 错误信息
+  int64 withdraw_id = 3;   // 创建的提现记录ID
+  GameWithdrawInfo data = 4;  // 提现记录详情
+}
+
+// ========== WriteGameWithdrawBatch - 批量写入提现记录 ==========
+
+// WriteGameWithdrawBatchRequest 批量写入提现记录请求
+message WriteGameWithdrawBatchRequest {
+  repeated WriteGameWithdrawRequest withdraws = 1;  // 提现记录列表【必填】
+}
+
+// WriteGameWithdrawBatchResponse 批量写入提现记录响应
+message WriteGameWithdrawBatchResponse {
+  int32 code = 1;                    // 错误码(0=成功)
+  string message = 2;                // 错误信息
+  int32 success_count = 3;           // 成功写入笔数
+  int32 failed_count = 4;            // 失败笔数
+  repeated int64 failed_withdraw_ids = 5;  // 失败的提现记录ID(仅在部分失败时返回)
+}

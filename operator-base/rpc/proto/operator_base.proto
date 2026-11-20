@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package operator_base;
+
+option go_package = "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc";
+
+import "types/operator_base_ping.proto";
+import "types/operator_base_operator.proto";
+
+// Ping 服务
+service PingService {
+  // Ping
+  rpc Ping(operator_base_ping.PingRequest) returns (operator_base_ping.PingResponse);
+}
+
+// 厅 operator 服务
+service OperatorService {
+  // 登录前公开查询：只按后台域名识别站点编码，不要求登录身份。
+  rpc GetSiteCode(operator_base_operator.GetSiteCodeRequest) returns (operator_base_operator.GetSiteCodeResponse);
+
+  // 初始化厅 operator
+  rpc Initialize(operator_base_operator.InitializeOperatorRequest) returns (operator_base_operator.InitializeOperatorResponse);
+
+  // 初始化基础资源分配到指定分站
+  rpc InitializeBasicResources(operator_base_operator.InitializeBasicResourcesRequest) returns (operator_base_operator.InitializeBasicResourcesResponse);
+
+  // 初始化域名到指定分站
+  rpc InitializeDomains(operator_base_operator.InitializeDomainsRequest) returns (operator_base_operator.InitializeDomainsResponse);
+
+  // 删除分站基础资源数据
+  rpc DeleteOperatorBasicResources(operator_base_operator.DeleteOperatorBasicResourcesRequest) returns (operator_base_operator.DeleteOperatorBasicResourcesResponse);
+
+  // 删除分站域名
+  rpc DeleteOperatorDomains(operator_base_operator.DeleteOperatorDomainsRequest) returns (operator_base_operator.DeleteOperatorDomainsResponse);
+
+  // 获取分站已分配代理子线路
+  rpc GetAgentLines(operator_base_operator.GetAgentLinesRequest) returns (operator_base_operator.GetAgentLinesResponse);
+
+  // 查询登录站点配置
+  rpc GetSiteConfig(operator_base_operator.GetSiteConfigRequest) returns (operator_base_operator.GetSiteConfigResponse);
+
+  // 查询登录站点配置详情及名称
+  rpc GetSiteConfigDetails(operator_base_operator.GetSiteConfigDetailsRequest) returns (operator_base_operator.GetSiteConfigDetailsResponse);
+
+  // 保存本站经营地区完整勾选结果
+  rpc UpdateSiteRegions(operator_base_operator.UpdateSiteRegionsRequest) returns (operator_base_operator.UpdateSiteRegionsResponse);
+
+  // 保存本站开放语言完整勾选结果
+  rpc UpdateSiteLanguages(operator_base_operator.UpdateSiteLanguagesRequest) returns (operator_base_operator.UpdateSiteLanguagesResponse);
+
+  // 保存本站设置；身份和站点归属由后端验证，不执行登录限制
+  rpc SaveSiteSettings(operator_base_operator.SaveSiteSettingsRequest) returns (operator_base_operator.SiteSettingsModel);
+
+  // 获取所有分站的编码和时区信息
+  rpc GetAllOperatorTimezoneInfo(operator_base_operator.GetAllOperatorTimezoneInfoRequest) returns (operator_base_operator.GetAllOperatorTimezoneInfoResponse);
+
+  // 获取分站信息
+  rpc GetOperatorInfo(operator_base_operator.GetOperatorInfoRequest) returns (operator_base_operator.GetOperatorInfoResponse);
+}

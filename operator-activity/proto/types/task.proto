@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package task;
+
+option go_package = "oa.98ent.com/p9/operator-activity/pb/operatoractivityrpc/taskpb";
+
+// ==================== Models ====================
+
+// 任务配置
+message TaskConfig {
+  int64 id = 1;
+  string operator_code = 2;
+  string task_code = 3;
+  string category = 4;
+  string name = 5;
+  string name_i18n = 6;
+  string description = 7;
+  string description_i18n = 8;
+  string timezone = 9;
+  int32 status = 10;
+  int32 completion_amount = 11;
+  int64 reward_amount = 12;
+  string payout_mode = 13;
+  int64 sort = 14;
+  int64 created_at = 15;
+  int64 updated_at = 16;
+}
+
+// ==================== List/Query ====================
+
+// 列表任务配置请求
+message ListTaskConfigReq {
+  // 分站代码
+  string operator_code = 1;
+  // 任务分类过滤（可选）
+  optional string category = 2;
+  // 任务状态过滤（可选）
+  optional int32 status = 3;
+  // 分页页码（从1开始，默认1）
+  optional int64 page = 4;
+  // 分页大小（默认20，最大100）
+  optional int64 page_size = 5;
+}
+
+// 列表任务配置响应
+message ListTaskConfigResp {
+  // 列表数据
+  repeated TaskConfig list = 1;
+  // 总记录数
+  int64 total = 2;
+  // 当前页码
+  int64 page = 3;
+  // 分页大小
+  int64 page_size = 4;
+}
+
+// 获取单个任务配置请求
+message GetTaskConfigReq {
+  // 分站代码
+  string operator_code = 1;
+  // 任务编码
+  string task_code = 2;
+}
+
+// 获取单个任务配置响应
+message GetTaskConfigResp {
+  // 任务配置
+  TaskConfig task_config = 1;
+}
+
+// ==================== Update ====================
+
+// 更新任务配置请求
+message UpdateTaskConfigReq {
+  // 任务配置 ID
+  int64 id = 1;
+  // 分站代码
+  string operator_code = 2;
+  // 任务状态（可选）
+  optional int32 status = 4;
+  // 时区（可选）
+  optional string timezone = 5;
+  // 完成数量（可选）
+  optional int32 completion_amount = 6;
+  // 奖励金额（可选）
+  optional int64 reward_amount = 7;
+  // 支付方式（可选）
+  optional string payout_mode = 8;
+  // 排序（可选）
+  optional int64 sort = 9;
+}
+
+// 更新任务配置响应
+message UpdateTaskConfigResp {
+  // 任务配置
+  TaskConfig task_config = 1;
+}
+
+
+// ==================== Models ====================
+
+// 会员任务奖励订单
+message MemberTaskReward {
+  int64 id = 1;
+  string operator_code = 2;
+  int64 member_id = 3;
+  string task_code = 4;
+  string kafka_id = 5;
+  string category = 6;
+  string period_key = 7;
+  string payout_mode = 8;
+  int64 amount = 9;
+  int32 status = 10;
+  string order_no = 11;
+  string wallet_transaction_id = 12;
+  string device_id = 13;
+  string wallet_id = 14;
+  string claim_ip = 15;
+  int64 payout_at = 16;
+  int64 created_at = 17;
+  int64 updated_at = 18;
+}
+
+// ==================== Query ====================
+
+// 查询会员任务奖励订单请求
+message ListMemberTaskRewardReq {
+  // 分站代码
+  string operator_code = 1;
+  // 会员ID（可选）
+  optional int64 member_id = 2;
+  // 任务编码（可选）
+  optional string task_code = 3;
+  // 任务分类（可选）
+  optional string category = 4;
+  // 订单状态（可选）
+  optional int32 status = 5;
+  // 订单号（可选）
+  optional string order_no = 6;
+  // 创建时间范围 - 开始时间，unix 毫秒（可选）
+  optional int64 created_at_start = 7;
+  // 创建时间范围 - 结束时间，unix 毫秒（可选）
+  optional int64 created_at_end = 8;
+  // 分页页码（从1开始，默认1）
+  optional int64 page = 9;
+  // 分页大小（默认20，最大100）
+  optional int64 page_size = 10;
+}
+
+// 查询会员任务奖励订单响应
+message ListMemberTaskRewardResp {
+  // 列表数据
+  repeated MemberTaskReward list = 1;
+  // 总记录数
+  int64 total = 2;
+  // 当前页码
+  int64 page = 3;
+  // 分页大小
+  int64 page_size = 4;
+}
+
+// ==================== Update ====================
+
+// 更新会员任务奖励状态请求（只允许从 1 改为 2）
+message UpdateMemberTaskRewardStatusReq {
+  // 分站代码
+  string operator_code = 1;
+  // 奖励订单 ID
+  int64 id = 2;
+  // 新的状态（只允许改为 2=待派发）
+  int32 status = 3;
+}
+
+// 更新会员任务奖励状态响应
+message UpdateMemberTaskRewardStatusResp {
+  // 更新后的奖励订单
+  MemberTaskReward member_task_reward = 1;
+}

@@ -1,0 +1,433 @@
+syntax = "proto3";
+
+package operator_base_operator;
+
+option go_package = "oa.98ent.com/p9/operator-base/rpc/pb/operatorbaserpc/operatorpb";
+
+// operator 初始化基础信息
+message OperatorInitializationInfo {
+  // operator 全局唯一业务编码
+  string code = 1;
+  // operator 名称
+  string name = 2;
+  // IANA 时区编码
+  string timezone_code = 3;
+  // 结算货币编码
+  string settlement_currency_code = 4;
+  // operator 状态: 1正常, 2暂停, 3关闭
+  int64 status = 5;
+}
+
+// operator 初始化域名信息
+message OperatorDomainInitializationInfo {
+  // 域名, 不包含协议和端口
+  string domain_name = 1;
+  // 域名类型: 1分站后台, 2代理后台, 3会员H5
+  int64 domain_type = 2;
+}
+
+// 初始化 operator 请求
+message InitializeOperatorRequest {
+  // operator 基础信息
+  OperatorInitializationInfo operator = 1;
+  // 当前有效域名
+  repeated OperatorDomainInitializationInfo domains = 2;
+  // 当前有效语言编码
+  repeated string language_codes = 3;
+  // 本站保存的经营地区勾选编码
+  repeated string region_codes = 4;
+  // 当前有效代理子线路编码
+  repeated string agent_line_codes = 5;
+}
+
+// 初始化 operator 响应
+message InitializeOperatorResponse {}
+
+// 资源初始化统计信息
+message ResourceStat {
+  // 总数
+  int64 total = 1;
+  // 成功初始化数量
+  int64 success = 2;
+  // 失败初始化数量
+  int64 failed = 3;
+}
+
+// 初始化基础资源分配请求
+message InitializeBasicResourcesRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 当前分配的语言编码
+  repeated string language_codes = 2;
+  // 当前分配的国家地区编码
+  repeated string region_codes = 3;
+  // 当前分配的代理子线路编码
+  repeated string agent_line_codes = 4;
+}
+
+// 初始化基础资源分配响应
+message InitializeBasicResourcesResponse {
+  // 初始化是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 语言初始化统计
+  ResourceStat language_stat = 3;
+  // 地区初始化统计
+  ResourceStat region_stat = 4;
+  // 代理线路初始化统计
+  ResourceStat agent_line_stat = 5;
+}
+
+// 域名模型
+message DomainModel {
+  // 域名, 不包含协议和端口
+  string domain_name = 1;
+  // 域名类型: 1分站后台, 2代理后台, 3会员H5
+  int64 domain_type = 2;
+}
+
+// 初始化域名请求
+message InitializeDomainsRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 分站域名列表
+  repeated DomainModel domain_list = 2;
+}
+
+// 初始化域名响应
+message InitializeDomainsResponse {
+  // 初始化是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 域名初始化统计
+  ResourceStat domain_stat = 3;
+}
+
+// 删除分站数据请求
+message DeleteOperatorBasicResourcesRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+}
+
+// 删除分站数据响应
+message DeleteOperatorBasicResourcesResponse {
+  // 删除是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 删除的域名数量
+  int64 domain_deleted = 3;
+  // 删除的语言数量
+  int64 language_deleted = 4;
+  // 删除的地区数量
+  int64 region_deleted = 5;
+  // 删除的代理线路数量
+  int64 agent_line_deleted = 6;
+}
+
+// 删除分站域名请求
+message DeleteOperatorDomainsRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+  // 要删除的域名列表
+  repeated string domain_names = 2;
+}
+
+// 删除分站域名响应
+message DeleteOperatorDomainsResponse {
+  // 删除是否成功
+  bool success = 1;
+  // 错误或结果信息
+  string message = 2;
+  // 删除的域名数量
+  int64 domain_deleted = 3;
+}
+
+// 获取分站已分配代理子线路请求
+message GetAgentLinesRequest {
+  // 分站全局唯一业务编码
+  string operator_code = 1;
+}
+
+// 获取分站已分配代理子线路响应
+message GetAgentLinesResponse {
+  // 当前有效代理子线路编码
+  repeated string agent_line_codes = 1;
+}
+
+// 查询登录站点配置请求，站点取自认证上下文
+message GetSiteConfigRequest {
+  // 兼容旧调用方保留，不参与站点查询；无需填写
+  string domain_name = 1;
+  // 兼容旧调用方保留，不参与站点查询；无需填写
+  int64 domain_type = 2;
+}
+
+// 登录前按后台域名查询编码，只读，不返回站点配置。
+message GetSiteCodeRequest {
+  // 纯域名，不含协议、端口和路径；仅匹配分站后台域名。
+  string domain_name = 1;
+}
+
+// 登录前查询站点编码响应
+message GetSiteCodeResponse {
+  // 分站唯一业务编码，由后端确认
+  string operator_code = 1;
+}
+
+// 站点配置模型
+message SiteConfigModel {
+  // operator 全局唯一业务编码
+  string operator_code = 1;
+  // 后台域名
+  string domain_name = 2;
+  // 本站勾选的语言编码，不等于实际生效语言
+  repeated string language_codes = 3;
+  // 本站勾选的经营地区编码，不等于实际生效地区
+  repeated string region_codes = 4;
+  // 结算货币编码
+  string settlement_currency_code = 5;
+  // IANA 时区编码
+  string timezone_code = 6;
+  // 已分配经营地区的本站勾选状态：1开启，2关闭
+  map<string, int64> region_statuses = 7;
+  // 已分配语言的本站勾选状态：1开启，2关闭
+  map<string, int64> language_statuses = 8;
+}
+
+// 查询登录站点配置响应
+message GetSiteConfigResponse {
+  // 站点配置
+  SiteConfigModel site_config = 1;
+}
+
+// 查询站点配置详情请求，不涉及配置保存
+message GetSiteConfigDetailsRequest {
+  // 兼容旧调用方保留，不参与站点查询；无需填写
+  string domain_name = 1;
+  reserved 2;
+  reserved "display_language";
+}
+
+// 本站返回的国家地区资料，由业务代码转换总网 RPC 结果。
+message RegionInfo {
+  // 总网国家地区记录 ID；资料缺失时为 0
+  int64 id = 1;
+  // 国家地区编码，例如 JP
+  string code = 2;
+  // 国际电话区号，不包含加号
+  string calling_code = 3;
+  // 国家地区名称翻译 Key
+  string name_key = 4;
+  // 总网状态：1启用，2停用；资料缺失时为 0
+  int64 status = 5;
+  // 排序值，数值越小越靠前
+  int64 sort_no = 6;
+}
+
+// 本站返回的结算货币资料，由业务代码转换总网 RPC 结果。
+message CurrencyInfo {
+  // 总网货币记录 ID；资料缺失时为 0
+  int64 id = 1;
+  // 货币编码，例如 JPY
+  string code = 2;
+  // 货币名称翻译 Key
+  string name_key = 3;
+  // 货币类型：1法定货币，2虚拟货币；资料缺失时为 0
+  int64 currency_type = 4;
+  // 货币符号
+  string symbol = 5;
+  // 金额换算倍率，例如 USD=100、VND=1
+  int64 amount_factor = 6;
+  // 总网状态：1启用，2停用；资料缺失时为 0
+  int64 status = 7;
+  // 排序值，数值越小越靠前
+  int64 sort_no = 8;
+}
+
+// 本站返回的时区资料，由业务代码转换总网 RPC 结果。
+message TimezoneInfo {
+  // 总网时区记录 ID；资料缺失时为 0
+  int64 id = 1;
+  // IANA 时区编码，例如 Asia/Tokyo
+  string code = 2;
+  // 时区名称翻译 Key
+  string name_key = 3;
+  // 总网状态：1启用，2停用；资料缺失时为 0
+  int64 status = 4;
+  // 排序值，数值越小越靠前
+  int64 sort_no = 5;
+}
+
+// 经营地区选项
+message SiteRegionOption {
+  reserved 1, 2;
+  reserved "selected";
+  // 本站勾选状态：1开启，2关闭
+  int64 status = 3;
+  // 总网国家地区资料
+  RegionInfo region = 4;
+  // 实际生效状态：1启用，2停用；需本站和基础资料同时启用
+  int64 effective_status = 5;
+}
+
+// 本站语言资料，由业务代码转换 Core 查询结果，不依赖 Core 的 Proto 定义。
+message LanguageInfo {
+  // 本站 Core 中的语言记录 ID；资料缺失时为 0
+  int64 id = 1;
+  // 语言编码，例如 zh-CN
+  string lang = 2;
+  // Core 语言停用状态：0启用，1停用；是否实际生效还需结合本站勾选状态
+  int32 disabled = 3;
+  // 保留旧语言结构中未使用的编号，其他字段编号保持兼容。
+  reserved 4;
+  // 创建时间，Unix 秒时间戳；资料缺失时为 0
+  int64 created_at = 5;
+  // 更新时间，Unix 秒时间戳；资料缺失时为 0
+  int64 updated_at = 6;
+  // 语言显示名称；资料缺失时为空
+  string name = 7;
+  // 排序值
+  int32 sort_no = 8;
+  // 语言名称翻译 Key
+  string i18n_key = 9;
+}
+
+// 站点配置详情响应，原始配置与名称同时保留
+message GetSiteConfigDetailsResponse {
+  // 本站保存的基础配置，保留暂时不可用的勾选
+  SiteConfigModel site_config = 1;
+  reserved 2, 3, 4, 5;
+  // 本站全部已分配语言，包含本站关闭或资料不可用的语言
+  repeated LanguageInfo languages = 6;
+  // 本站全部已分配经营地区及各自状态
+  repeated SiteRegionOption region_options = 7;
+  // 结算货币资料，资料缺失时保留编码
+  CurrencyInfo currency = 8;
+  // 时区资料，资料缺失时保留编码
+  TimezoneInfo timezone = 9;
+  // 本站开启且总网资料启用的经营地区编码
+  repeated string effective_region_codes = 10;
+  // 本站标题、Logo、登录阈值及保存状态，仅查询不写入。
+  SiteSettingsModel site_settings = 11;
+  // 本站开启且本站 Core 资料启用的语言编码
+  repeated string effective_language_codes = 12;
+}
+
+// 保存本站开放语言请求，提交完整勾选结果
+message UpdateSiteLanguagesRequest {
+  // 兼容旧调用方保留，不参与站点查询；无需填写
+  string domain_name = 1;
+  // 完整语言勾选编码，空数组表示全部关闭
+  repeated string language_codes = 2;
+}
+
+// 保存本站开放语言响应
+message UpdateSiteLanguagesResponse {
+  // 完整语言勾选编码，空数组表示全部关闭
+  repeated string language_codes = 1;
+}
+
+// 保存本站经营地区请求，提交完整勾选结果
+message UpdateSiteRegionsRequest {
+  // 兼容旧调用方保留，不参与站点查询；无需填写
+  string domain_name = 1;
+  // 完整经营地区勾选编码，空数组表示全部关闭
+  repeated string region_codes = 2;
+}
+
+// 保存本站经营地区响应
+message UpdateSiteRegionsResponse {
+  // 完整经营地区勾选编码，空数组表示全部关闭
+  repeated string region_codes = 1;
+}
+
+// 完整保存本站八项设置请求，所有 optional 字段均需显式提供
+message SaveSiteSettingsRequest {
+  // 兼容旧调用方保留，不参与站点查询；无需填写
+  string domain_name = 1;
+  // 以下八项为完整保存，必须显式提供；空 Logo 表示清除，阈值 0 表示不限制
+  optional string site_title = 2;
+  // 网站 Logo 地址，必传，空字符串表示清除 Logo
+  optional string site_logo_url = 3;
+  // 邮箱登录阈值，必传，范围 0～100，0 表示不限制
+  optional int64 email_login_limit = 4;
+  // 短信登录阈值，必传，范围 0～100，0 表示不限制
+  optional int64 sms_login_limit = 5;
+  // 会员密码错误次数上限，必传，范围 0～100，0 表示不限制
+  optional int64 member_password_error_limit = 6;
+  // 同一 IP 注册会员数上限，必传，范围 0～100，0 表示不限制
+  optional int64 ip_member_register_limit = 7;
+  // 注册验证方式，必传：0不验证，1拖拽验证，2图形验证
+  optional int64 register_captcha_mode = 8;
+  // 登录验证方式，必传：0不验证，1拖拽验证，2图形验证
+  optional int64 login_captcha_mode = 9;
+}
+
+// 本站设置及保存状态
+message SiteSettingsModel {
+  // 后端确认的站点编码，不能作为保存参数
+  string operator_code = 1;
+  // 网站标题，去除首尾空白后为 1～100 字节
+  string site_title = 2;
+  // 网站 Logo 地址，空字符串表示清除 Logo
+  string site_logo_url = 3;
+  // 邮箱登录阈值，范围 0～100，0 表示不限制
+  int64 email_login_limit = 4;
+  // 短信登录阈值，范围 0～100，0 表示不限制
+  int64 sms_login_limit = 5;
+  // 最后修改用户ID，后端从登录身份获取；0 表示系统初始化
+  int64 updated_by = 6;
+  // 创建时间，Unix 秒时间戳；未保存时为 0
+  int64 created_at = 7;
+  // 更新时间，Unix 秒时间戳；未保存时为 0
+  int64 updated_at = 8;
+  // false 表示设置记录不存在，查询不会自动插入配置
+  bool configured = 9;
+  // 会员密码错误次数上限，范围 0～100，0 表示不限制
+  int64 member_password_error_limit = 10;
+  // 同一 IP 注册会员数上限，范围 0～100，0 表示不限制
+  int64 ip_member_register_limit = 11;
+  // 注册验证方式，0不验证，1拖拽验证，2图形验证
+  int64 register_captcha_mode = 12;
+  // 登录验证方式，0不验证，1拖拽验证，2图形验证
+  int64 login_captcha_mode = 13;
+}
+
+// ========== 获取所有分站信息 ==========
+
+// 分站信息项
+message OperatorTimezoneInfoItem {
+  // 分站编码
+  string code = 1;
+  // IANA 时区编码
+  string timezone_code = 2;
+}
+
+// 获取所有分站信息请求（无参数）
+message GetAllOperatorTimezoneInfoRequest {}
+
+// 获取所有分站信息响应
+message GetAllOperatorTimezoneInfoResponse {
+  // 分站信息列表
+  repeated OperatorTimezoneInfoItem operators = 1;
+}
+
+// ========== 获取单个分站信息 ==========
+
+// 获取分站信息请求
+message GetOperatorInfoRequest {}
+
+// 获取分站信息响应
+message GetOperatorInfoResponse {
+  // 分站名称
+  string name = 1;
+  // 分站状态
+  int64 status = 2;
+  // IANA 时区编码
+  string timezone_code = 3;
+  // 结算货币编码
+  string settlement_currency_code = 4;
+}

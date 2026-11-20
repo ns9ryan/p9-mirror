@@ -1,0 +1,37 @@
+export default {
+  'menu.agentManage.related': '关联搜索',
+
+  'relatedSearch.search.loginTime': '登录时间',
+  'relatedSearch.search.today': '今天',
+  'relatedSearch.search.last7': '最近7天',
+  'relatedSearch.search.last30': '最近30天',
+  'relatedSearch.search.start': '开始时间',
+  'relatedSearch.search.end': '结束时间',
+  'relatedSearch.search.agentId': '代理ID',
+  'relatedSearch.search.loginIp': '登录IP',
+  'relatedSearch.search.deviceCode': '设备码',
+  'relatedSearch.search.device': '登录设备',
+  'relatedSearch.search.pleaseSelect': '请选择',
+  'relatedSearch.search.pleaseInput': '请输入',
+
+  'relatedSearch.toolbar.batchDisable': '批量禁用',
+  'relatedSearch.toolbar.download': '下载报表',
+  'relatedSearch.message.noSelection': '请先选择数据',
+  'relatedSearch.message.noData': '暂无数据',
+  'relatedSearch.message.disabled': '已禁用',
+  'relatedSearch.message.invalidAgentId': '代理ID只能是数字',
+
+  'relatedSearch.col.loginTime': '登录时间',
+  'relatedSearch.col.agentId': '代理ID',
+  'relatedSearch.col.loginIp': '登录IP',
+  'relatedSearch.col.sameIp': '同IP代理数',
+  'relatedSearch.col.deviceCode': '设备码',
+  'relatedSearch.col.device': '登录设备',
+  'relatedSearch.col.sameDevice': '同设备代理数',
+
+  'relatedSearch.device.pc': 'PC网页',
+  'relatedSearch.device.h5': 'H5',
+  'relatedSearch.device.android': 'Android',
+  'relatedSearch.device.ios': 'iOS',
+  'relatedSearch.device.pcClient': 'PC客户端',
+};

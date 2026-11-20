@@ -1,0 +1,222 @@
+syntax = "proto3";
+
+package crm;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc";
+
+// 基础服务
+import "types/ping.proto";
+import "types/init.proto";
+
+// 代理服务
+import "types/auth.proto";
+import "types/agent.proto";
+
+// 会员管理
+import "types/member.proto";
+import "types/member_auto_level.proto";
+import "types/member_fixed_level.proto";
+
+// VIP 管理
+import "types/vip_config.proto";
+import "types/vip_level.proto";
+import "types/vip_icon_group.proto";
+
+// CRM 健康检查服务
+service Ping {
+  // 健康检查
+  rpc Ping(crm_ping.PingRequest) returns (crm_ping.PingResponse);
+}
+
+// CRM统一初始化服务
+service Init {
+  // 初始化分站CRM基础数据
+  rpc Init(crm_init.InitRequest) returns (crm_init.InitResponse);
+}
+
+// 代理鉴权服务
+service AuthService {
+  // group: auth
+  rpc login(crm_auth.LoginReq) returns (crm_auth.LoginResp);
+  // group: auth
+  rpc refresh(crm_auth.RefreshReq) returns (crm_auth.LoginResp);
+  // group: auth
+  rpc logout(crm_auth.LogoutReq) returns (crm_auth.Empty);
+  // group: auth
+  rpc logoutAll(crm_auth.Empty) returns (crm_auth.Empty);
+  // group: auth
+  rpc checkToken(crm_auth.CheckTokenReq) returns (crm_auth.CheckTokenResp);
+}
+
+// 代理管理服务
+service AgentService {
+  // group: agent 更新代理层级
+  rpc updateAgentLevels(crm_agent.UpdateAgentLevelsReq) returns (crm_agent.UpdateAgentLevelsResp);
+  // group: agent 更新代理配置
+  rpc updateAgentConfig(crm_agent.UpdateAgentConfigReq) returns (crm_agent.AgentConfigResp);
+  // group: agent 获取代理配置
+  rpc getAgentConfig(crm_agent.GetAgentConfigReq) returns (crm_agent.AgentConfigResp);
+  // group: agent 分站新增代理包括初始化分站各个代理线路
+  rpc addOperatorAgent(crm_agent.AddOperatorAgentReq) returns (crm_agent.AddAgentResp);
+  // group: agent 新增直属代理
+  rpc addSubAgent(crm_agent.AddSubAgentReq) returns (crm_agent.AddAgentResp);
+  // group: agent 分页查询代理
+  rpc listAgents(crm_agent.ListAgentsReq) returns (crm_agent.ListAgentsResp);
+  // group: agent 搜索代理
+  rpc searchAgents(crm_agent.SearchAgentsReq) returns (crm_agent.SearchAgentsResp);
+  // group: agent 按等级查询代理列表
+  rpc listOperatorAgents(crm_agent.ListOperatorAgentsReq) returns (crm_agent.ListOperatorAgentsResp);
+  // group: agent 获取代理层级
+  rpc listAgentLevels(crm_agent.ListAgentLevelsReq) returns (crm_agent.ListAgentLevelsResp);
+  // group: agent 获取代理树
+  rpc treeNodeAgents(crm_agent.TreeNodeAgentsReq) returns (crm_agent.TreeNodeAgentsResp);
+  // group: agent 获取代理祖先
+  rpc treeNodeAncestorAgents(crm_agent.TreeNodeAncestorAgentsReq) returns (crm_agent.TreeNodeAncestorAgentsResp);
+  // group: agent 获取代理祖先
+  rpc ancestorsById(crm_agent.AncestorsByIDReq) returns (crm_agent.AncestorsByIDResp);
+  // group: agent 新增代理申请
+  rpc addAgentApply(crm_agent.AddAgentApplyReq) returns (crm_agent.AgentApplyItem);
+  // group: agent 分页查询代理申请列表
+  rpc listAgentApplies(crm_agent.ListAgentAppliesReq) returns (crm_agent.ListAgentAppliesResp);
+  // group: agent 审批代理申请
+  rpc reviewAgentApply(crm_agent.ReviewAgentApplyReq) returns (crm_agent.ReviewAgentApplyResp);
+  // group: agent 获取代理个人信息
+  rpc getAgentProfile(crm_agent.GetAgentProfileReq) returns (crm_agent.AgentProfile);
+  // group: agent 重置登录密码
+  rpc resetLoginPassword(crm_agent.ResetLoginPasswordReq) returns (crm_agent.ResetLoginPasswordResp);
+  // group: agent 更新登录密码
+  rpc updateLoginPassword(crm_agent.UpdateLoginPasswordReq) returns (crm_agent.Empty);
+  // group: agent 更新提现密码
+  rpc updateWithdrawPassword(crm_agent.UpdateWithdrawPasswordReq) returns (crm_agent.Empty);
+  // group: agent 更新代理占成比例
+  rpc updateAgentShareRate(crm_agent.UpdateAgentShareRateReq) returns (crm_agent.Empty);
+  // group: agent 更新代理提现限制
+  rpc updateAgentPayoutRestricted(crm_agent.UpdateAgentPayoutRestrictedReq) returns (crm_agent.Empty);
+  // group: agent 更新代理状态
+  rpc updateAgentStatus(crm_agent.UpdateAgentStatusReq) returns (crm_agent.Empty);
+  // group: agent 软删除代理
+  rpc deleteAgent(crm_agent.DeleteAgentReq) returns (crm_agent.Empty);
+  // group: agent 更新代理备注
+  rpc updateAgentRemark(crm_agent.UpdateAgentRemarkReq) returns (crm_agent.Empty);
+  // group: agent 更新代理个人信息
+  rpc updateAgentProfile(crm_agent.UpdateAgentProfileReq) returns (crm_agent.AgentProfile);
+  // group: agent 查询代理登录日志
+  rpc listAgentLoginLogs(crm_agent.ListAgentLoginLogsReq) returns (crm_agent.ListAgentLoginLogsResp);
+  // group: agent 查询代理登录关联
+  rpc listAgentLoginAssociations(crm_agent.ListAgentLoginAssociationsReq) returns (crm_agent.ListAgentLoginAssociationsResp);
+  // group: agent 查询代理操作日志
+  rpc listAgentOpLogs(crm_agent.ListAgentOpLogsReq) returns (crm_agent.ListAgentOpLogsResp);
+}
+
+// 会员管理服务
+service Member {
+  rpc BatchCreate(crm_member.BatchCreateMembersRequest) returns (crm_member.BatchCreateMembersResponse);
+  // 查询会员基本信息、自动层级和全部固定层级
+  rpc GetBasicInfo(crm_member.GetMemberContextRequest) returns (crm_member.GetMemberBasicInfoResponse);
+  // 查询上游权限判断使用的验证条件状态，按对应字段是否设置判断
+  rpc GetVerificationStatus(crm_member.GetMemberContextRequest) returns (crm_member.GetMemberVerificationStatusResponse);
+ rpc ListMemberContactBindingCodes(crm_member.ListMemberContactBindingCodesRequest) returns (crm_member.ListMemberContactBindingCodesResponse);
+ rpc SendMemberContactBindingCode(crm_member.SendMemberContactBindingCodeRequest) returns (crm_member.SendMemberContactBindingCodeResponse);
+ rpc UpdateContact(crm_member.UpdateMemberContactRequest) returns (crm_member.MemberOperationResponse);
+ rpc ListImages(crm_member.ListMemberImagesRequest) returns (crm_member.ListMemberImagesResponse);
+  rpc UpdateStatus(crm_member.UpdateMemberStatusRequest) returns (crm_member.MemberOperationResponse);
+  rpc ResetAuthErrors(crm_member.ResetMemberAuthErrorsRequest) returns (crm_member.MemberOperationResponse);
+  rpc UpdateRemark(crm_member.UpdateMemberRemarkRequest) returns (crm_member.MemberOperationResponse);
+  rpc UpdateChat(crm_member.UpdateMemberSwitchRequest) returns (crm_member.MemberOperationResponse);
+  rpc UpdateBetting(crm_member.UpdateMemberSwitchRequest) returns (crm_member.MemberOperationResponse);
+  rpc UpdateWithdrawal(crm_member.UpdateMemberSwitchRequest) returns (crm_member.MemberOperationResponse);
+
+  // 修改会员关联的自动层级
+  rpc UpdateAutoLevel(crm_member.UpdateMemberAutoLevelRequest) returns (crm_member.UpdateMemberLevelsResponse);
+  // 全量替换会员固定层级
+  rpc UpdateFixedLevels(crm_member.UpdateMemberFixedLevelsRequest) returns (crm_member.UpdateMemberLevelsResponse);
+  // ==================== 会员管理 ====================
+
+  // 创建会员
+  rpc Create(crm_member.CreateMemberRequest) returns (crm_member.CreateMemberResponse);
+
+  // 获取会员列表
+  rpc List(crm_member.ListMembersRequest) returns (crm_member.ListMembersResponse);
+
+  // 获取会员详情
+  rpc GetDetail(crm_member.GetMemberDetailRequest) returns (crm_member.GetMemberDetailResponse);
+
+  // 查看会员敏感信息
+  rpc GetSensitiveInfo(crm_member.GetMemberSensitiveInfoRequest) returns (crm_member.GetMemberSensitiveInfoResponse);
+
+  // 获取会员上级代理会员ID
+  rpc GetParentAgentMember(crm_member.GetParentAgentMemberRequest) returns (crm_member.GetParentAgentMemberResponse);
+}
+
+// 会员自动层级服务
+service MemberAutoLevel {
+  // 创建自动层级
+  rpc Create(crm_member_auto_level.CreateMemberAutoLevelRequest) returns (crm_member_auto_level.CreateMemberAutoLevelResponse);
+
+  // 修改自动层级
+  rpc Update(crm_member_auto_level.UpdateMemberAutoLevelRequest) returns (crm_member_auto_level.UpdateMemberAutoLevelResponse);
+
+  // 获取自动层级列表
+  rpc List(crm_member_auto_level.ListMemberAutoLevelsRequest) returns (crm_member_auto_level.ListMemberAutoLevelsResponse);
+
+  // 删除自动层级
+  rpc Delete(crm_member_auto_level.DeleteMemberAutoLevelRequest) returns (crm_member_auto_level.DeleteMemberAutoLevelResponse);
+}
+
+// 会员固定层级服务
+service MemberFixedLevel {
+  // 创建固定层级
+  rpc Create(crm_member_fixed_level.CreateMemberFixedLevelRequest) returns (crm_member_fixed_level.CreateMemberFixedLevelResponse);
+
+  // 修改固定层级
+  rpc Update(crm_member_fixed_level.UpdateMemberFixedLevelRequest) returns (crm_member_fixed_level.UpdateMemberFixedLevelResponse);
+
+  // 获取固定层级列表
+  rpc List(crm_member_fixed_level.ListMemberFixedLevelsRequest) returns (crm_member_fixed_level.ListMemberFixedLevelsResponse);
+
+  // 删除固定层级
+  rpc Delete(crm_member_fixed_level.DeleteMemberFixedLevelRequest) returns (crm_member_fixed_level.DeleteMemberFixedLevelResponse);
+}
+
+// VIP管理服务
+service Vip {
+  // ==================== 基础配置 ====================
+
+  // 获取VIP基础配置
+  rpc GetConfig(crm_vip_config.GetVipConfigRequest) returns (crm_vip_config.GetVipConfigResponse);
+
+  // 修改VIP基础配置
+  rpc UpdateConfig(crm_vip_config.UpdateVipConfigRequest) returns (crm_vip_config.UpdateVipConfigResponse);
+
+  // ==================== 等级管理 ====================
+
+  // 获取VIP等级列表
+  rpc ListLevels(crm_vip_level.ListVipLevelsRequest) returns (crm_vip_level.ListVipLevelsResponse);
+
+  // 获取VIP等级
+  rpc GetLevel(crm_vip_level.GetVipLevelRequest) returns (crm_vip_level.GetVipLevelResponse);
+
+  // 新增VIP等级
+  rpc CreateLevel(crm_vip_level.CreateVipLevelRequest) returns (crm_vip_level.CreateVipLevelResponse);
+
+  // 修改VIP等级
+  rpc UpdateLevel(crm_vip_level.UpdateVipLevelRequest) returns (crm_vip_level.UpdateVipLevelResponse);
+
+  // 删除VIP等级
+  // TODO: 完成会员等级重新计算及变更记录后，实现删除流程
+  rpc DeleteLevel(crm_vip_level.DeleteVipLevelRequest) returns (crm_vip_level.DeleteVipLevelResponse);
+
+  // ==================== 图标管理 ====================
+
+  // 获取VIP图标组列表
+  rpc ListIconGroups(crm_vip_icon_group.ListVipIconGroupsRequest) returns (crm_vip_icon_group.ListVipIconGroupsResponse);
+
+  // 修改VIP图标
+  rpc UpdateIconGroup(crm_vip_icon_group.UpdateVipIconGroupRequest) returns (crm_vip_icon_group.UpdateVipIconGroupResponse);
+
+  // 恢复默认VIP图标
+  rpc ResetIconGroup(crm_vip_icon_group.ResetVipIconGroupRequest) returns (crm_vip_icon_group.ResetVipIconGroupResponse);
+}
+
+// TODO: VIP等级变更记录列表、详情，待会员等级变更业务完善后实现
+// TODO: VIP晋级奖励记录列表、详情及发放，待奖励记录和资金业务完善后实现

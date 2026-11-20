@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package platform_base_vip_default_icon;
+
+option go_package = "oa.98ent.com/p9/platform-base/rpc/pb/platformbaserpc/vipdefaulticonpb";
+
+// 总网默认 VIP 图标组信息
+message VipDefaultIconGroupInfo {
+  // VIP 等级下限，固定为 0、10、20、30、40、50、60、70、80、90
+  int64 min_level = 1;
+  // VIP 等级上限，等于 min_level 加 9
+  int64 max_level = 2;
+  // 查询返回完整公开 URL；保存接受公开 URL 或本组 Key，空字符串表示清空配置。
+  string icon_url = 3;
+}
+
+// 获取固定十组默认 VIP 图标请求，供总网后台及分站服务读取
+message ListAllVipDefaultIconsRequest {}
+
+// 获取固定十组默认 VIP 图标响应
+message ListAllVipDefaultIconsResponse {
+  // 固定十组，按等级下限升序；缺失组仅在响应中补齐，不借查询写库。
+  repeated VipDefaultIconGroupInfo list = 1;
+}
+
+// 保存默认 VIP 图标请求，未提交的等级组保持不变
+message SaveVipDefaultIconsRequest {
+  // 本次保存的一至十组，范围不能重复；未提交的组保持原值，全部修改一起成功或回滚。
+  repeated VipDefaultIconGroupInfo list = 1;
+}
+
+// 保存默认 VIP 图标响应
+message SaveVipDefaultIconsResponse {}

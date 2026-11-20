@@ -1,0 +1,50 @@
+# RPC服务配置
+Name:     operator-activity-rpc   # RPC服务名称
+ListenOn: 0.0.0.0:39006           # RPC监听地址
+Mode:     dev                     # 运行模式
+OperatorCode: OP_617E72
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+    - 127.0.0.1:2379             # Etcd地址
+  Key: operator-activity-rpc      # 服务注册Key
+
+# 数据库配置
+DatabaseConf:
+  Host:     127.0.0.1             # 当前节点数据库地址
+  Port:     5432                 # node-01 PostgreSQL宿主机端口
+  DBName:   p9_operator         # 厅数据库名称
+  Username: root                  # 数据库用户名
+  Password: root                  # 数据库密码
+  SSLMode:  disable               # SSL模式
+
+
+KafkaConf:
+  Brokers:
+    - 127.0.0.1:9094
+  Topics:
+    OP_617E72:
+      - p9.member.events
+      - p9.activity.events
+      # - p9.wallet.events
+      # - p9.game.events
+      # - p9.agent.events
+  ConsumerGroup: operator-activity-rpc
+  Consumers: 1
+  Processors: 1
+  ForceCommit: false
+  Offset: last
+
+# 游戏服务 RPC 配置（用于查询下注会员）
+OperatorGameRpc:
+  Target: 127.0.0.1:39003                          # operator-game-rpc 地址
+  Timeout: 10000                                   # 请求超时（毫秒）
+
+# Temporal工作流配置
+TemporalConf:
+  Enabled: true                                    # 是否启用Temporal
+  Address: 127.0.0.1:7233                          # Temporal Server地址
+  Namespace: default                               # 命名空间
+  TaskQueueName: operator-task-reward-worker
+  ActivityQueueName: operator-activity-activity-worker

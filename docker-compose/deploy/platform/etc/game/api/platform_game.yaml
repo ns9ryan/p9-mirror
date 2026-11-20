@@ -1,0 +1,30 @@
+# API 服务配置
+Name: platform-game-api
+Host: 0.0.0.0
+Port: 18003
+Timeout: 10000
+Mode: test
+
+I18n:
+  DefaultLanguage: zh-CN
+
+CoreRpc:
+  Target: 192.168.10.220:19000
+  Timeout: 10000
+
+# Swagger 配置
+Swagger:
+  Protocol: https
+
+PlatformGameRpc:
+  Hosts:
+    - 192.168.10.220:2379
+  Target: platform-game-rpc:19003
+  Timeout: 10000
+
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: platform-game-api
+  Endpoint: 192.168.10.220:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc

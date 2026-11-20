@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+package oss;
+
+option go_package = "./oss";
+
+// Oss 档案与服务商 RPC。InitTenant 的 operator_code 在请求体；其它写接口从 ctx / metadata x-operator-code 读。
+// 文件字节不走本服务：HTTP 直连 common/oss；这里只记档案、管服务商。
+service Oss {
+  // 多租户初始化：请求带 operator_code，把 init_default_settings.yaml 写入该租户。已有则原样返回。
+  rpc InitTenant(InitTenantReq) returns (Provider);
+  rpc CreateProvider(Provider) returns (Provider);
+  rpc UpdateProvider(Provider) returns (Provider);
+  rpc ListProviders(Empty) returns (ProviderList);
+  rpc GetProvider(IDReq) returns (Provider);
+  rpc DeleteProvider(IDReq) returns (Empty);
+  rpc EnableProvider(IDReq) returns (Provider);
+  rpc GetActiveProvider(Empty) returns (Provider);
+  rpc GetStorageConfig(Empty) returns (Provider);
+
+  rpc ListFiles(FileListReq) returns (FileList);
+  rpc DeleteFile(KeyReq) returns (FileData);
+  rpc RecordFile(FileRecordReq) returns (Empty);
+}
+
+message Empty {}
+
+message InitTenantReq {
+  string operator_code = 1;
+}
+
+message IDReq {
+  uint64 id = 1;
+}
+
+message KeyReq {
+  string key = 1;
+}
+
+message BucketSpec {
+  string mode = 1;
+  int32 sign_ttl = 2;
+}
+
+message SceneList {
+  repeated string values = 1;
+}
+
+// Provider 与 HTTP ProviderView 对齐。Create 不要带 id；Update 必须带 id。
+message Provider {
+  uint64 id = 1;
+  string name = 2;
+  bool is_default = 3;
+  string driver = 4;
+  string endpoint = 5;
+  string file_url = 6;
+  string access_key = 7;
+  string secret_key = 8;
+  bool path_style = 9;
+  string region = 10;
+  map<string, BucketSpec> buckets = 11;
+  string default_scene = 12;
+  map<string, SceneList> scenes = 13;
+  string source = 14;
+}
+
+message ProviderList {
+  repeated Provider list = 1;
+  int64 total = 2;
+}
+
+message FileData {
+  string url = 1;
+  string key = 2;
+  string scene = 3;
+  string visibility = 4;
+  int32 url_expires_in = 5;
+}
+
+message FileInfo {
+  uint64 id = 1;
+  string key = 2;
+  string scene = 3;
+  string bucket = 4;
+  string name = 5;
+  int64 size = 6;
+  string content_type = 7;
+  string url = 8;
+  string visibility = 9;
+  int32 url_expires_in = 10;
+  int64 created_at = 11;
+}
+
+message FileListReq {
+  string scene = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message FileList {
+  repeated FileInfo list = 1;
+  int64 total = 2;
+}
+
+message FileRecordReq {
+  string key = 1;
+  string scene = 2;
+  string bucket = 3;
+  string name = 4;
+  int64 size = 5;
+  string content_type = 6;
+}

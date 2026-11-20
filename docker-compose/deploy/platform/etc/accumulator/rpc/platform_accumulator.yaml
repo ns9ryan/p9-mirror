@@ -1,0 +1,61 @@
+Name: platform-accumulator-rpc
+Host: 0.0.0.0
+Port: 19009
+Log:
+  Mode: console
+  Encoding: plain
+  Level: info
+RpcServer:
+  Name: platform-accumulator-rpc
+  ListenOn: 0.0.0.0:19009
+  
+Etcd:
+  Hosts:
+  - 192.168.10.220:2379
+  Key: platform-accumulator-rpc
+
+Doris:
+  Host:     192.168.10.220  # 数据库地址（宿主机）
+  Port:     9031            # MySQL 协议端口（宿主机映射：9031:9030）
+  HttpPort: 8041            # HTTP 端口（宿主机映射：8041:8030，FE HTTP）
+  Database:   ns9_statistics  # 数据库名称
+  Username: root            # 数据库用户名
+  Password: ""              # 数据库密码
+  Timeout:  30s             # 连接超时时间
+  MaxRetries: 3             # 最大重试次数
+  RetryInterval: 5s         # 重试间隔
+  SSLMode:  disable          # SSL模式
+
+Kafka:
+  Brokers:
+    - 192.168.10.220:9094
+  Topic:
+    - topic_cdc: cdc.node01.public.sync
+      topic_biz: biz.node01
+    - topic_cdc: cdc.node02.public.sync
+      topic_biz: biz.node02
+    - topic_cdc: cdc.node03.public.sync
+      topic_biz: biz.node03
+    - topic_cdc: cdc.node04.public.sync
+      topic_biz: biz.node04
+    - topic_cdc: cdc.node05.public.sync
+      topic_biz: biz.node05
+    - topic_cdc: cdc.node06.public.sync
+      topic_biz: biz.node06
+  ConsumerGroup: platform-accumulator-rpc
+  InitialOffset: earliest
+  SessionTimeout: 10s
+  RebalanceTimeout: 60s
+
+Redis:
+  Addr: 192.168.10.220:6379
+  Password: ""
+  DB: 0
+  TTL: 3600
+
+Queue:
+  Tables:
+    - dwd_member_login_event
+    - dwd_member_register_event
+    - message_trail
+  PollInterval: 1s

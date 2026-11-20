@@ -1,0 +1,24 @@
+syntax = "proto3";
+package crm_member_export;
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/memberexportpb";
+import "types/member.proto";
+
+// Dedicated bounded stream; no UI enrichment or repeated COUNT.
+service MemberExport {
+  rpc Export(ExportRequest) returns (stream ExportChunk);
+}
+message ExportRequest {
+  crm_member.ListMembersRequest filters = 1;
+  string filter_ip = 2;
+  string filter_device = 3;
+  string p_username = 4;
+  int32 agent_type = 5;
+  // 是否包含试玩会员；默认 false 保持原有排除规则。
+  bool include_demo = 6;
+}
+message ExportChunk {
+  bytes csv = 1;
+  int64 rows = 2;
+  bool complete = 3;
+  int64 started_at = 4;
+}

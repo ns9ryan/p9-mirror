@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package member_wallet_ping;
+
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/pingpb";
+
+// Ping 请求
+message PingRequest {}
+
+// Ping 响应
+message PingResponse {}

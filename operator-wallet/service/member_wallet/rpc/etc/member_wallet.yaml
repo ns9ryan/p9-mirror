@@ -1,0 +1,36 @@
+# RPC服务配置
+Name: member-wallet-rpc         # RPC服务名称
+ListenOn: 0.0.0.0:39005         # RPC监听地址
+Mode:     dev                   # 运行模式
+
+# Etcd服务注册配置
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379              # Etcd地址
+  Key: member-wallet-rpc        # 服务注册Key
+
+# 数据库配置
+DatabaseConf:
+  Host:     127.0.0.1           # 数据库地址
+  Port:     15432               # 数据库端口
+  DBName:   p9_operator         # 数据库名称
+  Username: root                # 数据库用户名
+  Password: root                # 数据库密码
+  SSLMode:  disable             # SSL模式
+
+# 钱包运行时配置
+WalletRuntimeConf:
+  # Kafka 配置
+  KafkaBrokers:                 # Kafka Broker 地址
+    - 192.168.10.220:9194
+    - 192.168.10.220:9195
+    - 192.168.10.220:9196
+  KafkaTopic: p9-wallet-events  # 资金事件 Topic
+
+  # 并发配置
+  ShardCount: 32                # Shard 数量, 必须与 Topic Partition 数量一致
+  WorkerCount: 4                # 共享 Worker 数量
+  MailboxCapacity: 64           # 每个 Actor 的 Mailbox 容量
+
+  # Kafka 写入超时
+  PublishTimeout: 10s           # 单次 Kafka 写入超时时间

@@ -1,0 +1,213 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  background-color: var(--color-bg-1);
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+.echarts-tooltip-diy {
+  background: linear-gradient(
+    304.17deg,
+    rgba(253, 254, 255, 0.6) -6.04%,
+    rgba(244, 247, 252, 0.6) 85.2%
+  ) !important;
+  border: none !important;
+  backdrop-filter: blur(10px) !important;
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 6px !important;
+  .content-panel {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 9px;
+    background: rgba(255, 255, 255, 0.8);
+    width: 164px;
+    height: 32px;
+    line-height: 32px;
+    box-shadow: 6px 0px 20px rgba(34, 87, 188, 0.1);
+    border-radius: 4px;
+    margin-bottom: 4px;
+  }
+  .tooltip-title {
+    margin: 0 0 10px 0;
+  }
+  p {
+    margin: 0;
+  }
+  .tooltip-title,
+  .tooltip-value {
+    font-size: 13px;
+    line-height: 15px;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    color: #1d2129;
+    font-weight: bold;
+  }
+  .tooltip-item-icon {
+    display: inline-block;
+    margin-right: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+}
+
+.general-card {
+  border-radius: 4px;
+  border: none;
+  & > .arco-card-header {
+    height: auto;
+    padding: 20px;
+    border: none;
+  }
+  & > .arco-card-body {
+    padding: 0 20px 20px 20px;
+  }
+}
+
+// 列表页铺满内容区（顶栏 60px + 底栏 30px），数据少时不撑出页面滚动条
+.list-page {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: calc(100vh - 90px);
+  padding: 0 20px 20px;
+  overflow: hidden;
+
+  > :not(.table-card) {
+    flex-shrink: 0;
+  }
+
+  > .table-card {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  > .table-card > .arco-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+.split-line {
+  border-color: rgb(var(--gray-2));
+}
+
+.arco-table-cell {
+  .circle {
+    display: inline-block;
+    margin-right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgb(var(--blue-6));
+    &.pass {
+      background-color: rgb(var(--green-6));
+    }
+  }
+}
+
+// macOS 风格弹窗动画（配合 modal-animation-name / mask-animation-name 使用）
+// 开合都用轻微缩放 + 淡入淡出，避免大位移/强弹性导致跳动
+.mac-modal-enter-from,
+.mac-modal-appear-from {
+  transform: scale(0.96);
+  opacity: 0;
+}
+
+.mac-modal-enter-to,
+.mac-modal-appear-to {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.mac-modal-enter-active,
+.mac-modal-appear-active {
+  transition:
+    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.mac-modal-leave-from {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.mac-modal-leave-to {
+  transform: scale(0.98);
+  opacity: 0;
+}
+
+.mac-modal-leave-active {
+  // 关闭略快于打开，观感更跟手
+  transition:
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s cubic-bezier(0.4, 0, 1, 1);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.mac-mask-enter-from,
+.mac-mask-appear-from {
+  opacity: 0;
+}
+
+.mac-mask-enter-to,
+.mac-mask-appear-to {
+  opacity: 1;
+}
+
+.mac-mask-enter-active,
+.mac-mask-appear-active {
+  transition: opacity 0.32s ease;
+}
+
+.mac-mask-leave-from {
+  opacity: 1;
+}
+
+.mac-mask-leave-to {
+  opacity: 0;
+}
+
+.mac-mask-leave-active {
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.mac-modal-panel {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-modal-enter-active,
+  .mac-modal-appear-active,
+  .mac-modal-leave-active,
+  .mac-mask-enter-active,
+  .mac-mask-appear-active,
+  .mac-mask-leave-active {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,18 @@
+Name: operator-report-api
+Host: 0.0.0.0
+Port: 38009
+Mode: dev
+Timeout: 10000
+
+CoreRpc:
+  Target: 192.168.0.15:39000
+  Timeout: 10000
+
+OperatorReportRpc:
+  Host: 127.0.0.1:2379
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: operator-report-rpc
+
+  

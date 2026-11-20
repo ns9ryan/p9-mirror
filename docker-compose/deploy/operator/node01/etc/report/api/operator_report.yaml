@@ -1,0 +1,17 @@
+Name: operator-report-api-node01
+Host: 0.0.0.0
+Port: 38009
+Mode: test
+Timeout: 10000
+
+CoreRpc:
+  Target: 192.168.10.220:39000
+  Timeout: 10000
+
+OperatorReportRpc:
+  Etcd:
+    Hosts:
+      - 192.168.10.220:2379
+    Key: operator-report-rpc-node01
+
+  

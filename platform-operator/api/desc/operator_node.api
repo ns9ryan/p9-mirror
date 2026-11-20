@@ -1,0 +1,54 @@
+syntax = "v1"
+
+type (
+	// 分站部署节点信息
+	OperatorNodeInfo {
+		// 节点业务编码
+		NodeCode string `json:"node_code"`
+		// 节点名称
+		NodeName string `json:"node_name"`
+		// 节点状态: 1启用, 2停用
+		NodeStatus int64 `json:"node_status"`
+		// 节点是否在线
+		NodeOnline bool `json:"node_online"`
+		// 节点最近一次活动时间, Unix毫秒时间戳
+		NodeLastSeenAt *int64 `json:"node_last_seen_at,optional"`
+		// 节点运维备注
+		NodeRemark *string `json:"node_remark,optional"`
+	}
+	// 获取分站部署节点请求
+	GetOperatorNodeRequest {
+		// 分站ID
+		OperatorId int64 `form:"operator_id" validate:"required,gt=0"`
+	}
+	// 获取分站部署节点响应
+	GetOperatorNodeResponse {
+		// 当前部署节点, 尚未选择时为空
+		OperatorNode *OperatorNodeInfo `json:"operator_node"`
+	}
+	// 保存分站部署节点请求
+	SaveOperatorNodeRequest {
+		// 分站ID
+		OperatorId int64 `json:"operator_id" validate:"required,gt=0"`
+		// 节点业务编码
+		NodeCode string `json:"node_code" validate:"required,notblank,max=64"`
+	}
+	// 保存分站部署节点响应
+	SaveOperatorNodeResponse  {}
+)
+
+@server (
+	group:      operator_node
+	prefix:     /admin/operator/node
+	middleware: Jwt,ActionLog,Authority
+)
+service platform_operator {
+	// 获取分站部署节点
+	@handler GetOperatorNode
+	get /get (GetOperatorNodeRequest) returns (GetOperatorNodeResponse)
+
+	// 保存分站部署节点
+	@handler SaveOperatorNode
+	post /save (SaveOperatorNodeRequest) returns (SaveOperatorNodeResponse)
+}
+

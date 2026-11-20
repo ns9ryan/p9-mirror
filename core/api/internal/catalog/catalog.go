@@ -1,0 +1,87 @@
+package catalog
+
+import (
+	"net/http"
+
+	"oa.98ent.com/p9/core/rpc/coreclient"
+)
+
+const (
+	menuTypeDir    int32 = 0
+	menuTypeMenu   int32 = 1
+	menuTypeButton int32 = 2
+)
+
+// CatalogReq 菜单、API目录、多语言数据种子数据
+func catalogReq(code string) *coreclient.RegisterCatalogReq {
+	return &coreclient.RegisterCatalogReq{
+		Menus: []*coreclient.RegisterMenuReq{
+			{Name: "Dashboard", Title: "menu.route.dashboard", Path: "/dashboard", MenuType: menuTypeMenu, Component: "dashboard/index", Sort: 1},
+			{Name: "System", Title: "menu.route.system", Path: "/system", MenuType: menuTypeDir, Sort: 10},
+			{Name: "User", Title: "menu.route.user", Path: "/system/user", MenuType: menuTypeMenu, Component: "system/user/index", ParentName: "System", Sort: 11},
+			{Name: "Role", Title: "menu.route.role", Path: "/system/role", MenuType: menuTypeMenu, Component: "system/role/index", ParentName: "System", Sort: 12},
+			{Name: "Menu", Title: "menu.route.menu", Path: "/system/menu", MenuType: menuTypeMenu, Component: "system/menu/index", ParentName: "System", Sort: 13},
+			{Name: "API", Title: "menu.route.api", Path: "/system/api", MenuType: menuTypeMenu, Component: "system/api/index", ParentName: "System", Sort: 14},
+			{Name: "I18n", Title: "menu.route.i18n", Path: "/system/i18n", MenuType: menuTypeDir, ParentName: "System", Sort: 16},
+			{Name: "I18nEntry", Title: "menu.route.i18nEntry", Path: "/system/i18n/entry", MenuType: menuTypeMenu, Component: "system/i18n/entry/index", ParentName: "I18n", Sort: 161},
+			{Name: "I18nLang", Title: "menu.route.i18nLang", Path: "/system/i18n/lang", MenuType: menuTypeMenu, Component: "system/i18n/lang/index", ParentName: "I18n", Sort: 162},
+			{Name: "Log", Title: "menu.route.log", Path: "/system/log", MenuType: menuTypeDir, ParentName: "System", Sort: 15},
+			{Name: "LoginLog", Title: "menu.route.loginLog", Path: "/system/log/login", MenuType: menuTypeMenu, Component: "system/log/login/index", ParentName: "Log", Sort: 151},
+			{Name: "ActionLog", Title: "menu.route.actionLog", Path: "/system/log/action", MenuType: menuTypeMenu, Component: "system/log/action/index", ParentName: "Log", Sort: 152},
+			{Name: "ErrorLog", Title: "menu.route.errorLog", Path: "/system/log/error", MenuType: menuTypeMenu, Component: "system/log/error/index", ParentName: "Log", Sort: 153},
+			{Name: "UserCreate", Title: "menu.route.userCreate", MenuType: menuTypeButton, Permission: "user:create", ParentName: "User", Sort: 111},
+			{Name: "RoleCreate", Title: "menu.route.roleCreate", MenuType: menuTypeButton, Permission: "role:create", ParentName: "Role", Sort: 121},
+			{Name: "MenuCreate", Title: "menu.route.menuCreate", MenuType: menuTypeButton, Permission: "menu:create", ParentName: "Menu", Sort: 131},
+			{Name: "APICreate", Title: "menu.route.apiCreate", MenuType: menuTypeButton, Permission: "api:create", ParentName: "API", Sort: 141},
+			{Name: "I18nCreate", Title: "menu.route.i18nCreate", MenuType: menuTypeButton, Permission: "i18n:create", ParentName: "I18nEntry", Sort: 1611},
+			{Name: "I18nExport", Title: "menu.route.i18nExport", MenuType: menuTypeButton, Permission: "i18n:export", ParentName: "I18nEntry", Sort: 1612},
+			{Name: "I18nImport", Title: "menu.route.i18nImport", MenuType: menuTypeButton, Permission: "i18n:import", ParentName: "I18nEntry", Sort: 1613},
+			{Name: "I18nLangCreate", Title: "menu.route.i18nLangCreate", MenuType: menuTypeButton, Permission: "i18nLang:create", ParentName: "I18nLang", Sort: 1621},
+		},
+		Apis: []*coreclient.CreateApiReq{
+			{Path: "/core/user/create", Method: http.MethodPost, Description: "api.userCreate", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/user/update", Method: http.MethodPost, Description: "api.userUpdate", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/user/delete", Method: http.MethodPost, Description: "api.userDelete", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/user/list", Method: http.MethodPost, Description: "api.userList", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/user/detail", Method: http.MethodGet, Description: "api.userDetail", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/user/password", Method: http.MethodPost, Description: "api.userPassword", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/user/roles", Method: http.MethodPost, Description: "api.userRoles", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/user/ipWhitelist", Method: http.MethodPost, Description: "api.userIpWhitelist", ApiGroup: "api.group.user", ServiceName: "core-api"},
+			{Path: "/core/role/create", Method: http.MethodPost, Description: "api.roleCreate", ApiGroup: "api.group.role", ServiceName: "core-api"},
+			{Path: "/core/role/update", Method: http.MethodPost, Description: "api.roleUpdate", ApiGroup: "api.group.role", ServiceName: "core-api"},
+			{Path: "/core/role/delete", Method: http.MethodPost, Description: "api.roleDelete", ApiGroup: "api.group.role", ServiceName: "core-api"},
+			{Path: "/core/role/list", Method: http.MethodPost, Description: "api.roleList", ApiGroup: "api.group.role", ServiceName: "core-api"},
+			{Path: "/core/role/detail", Method: http.MethodGet, Description: "api.roleDetail", ApiGroup: "api.group.role", ServiceName: "core-api"},
+			{Path: "/core/menu/create", Method: http.MethodPost, Description: "api.menuCreate", ApiGroup: "api.group.menu", ServiceName: "core-api"},
+			{Path: "/core/menu/update", Method: http.MethodPost, Description: "api.menuUpdate", ApiGroup: "api.group.menu", ServiceName: "core-api"},
+			{Path: "/core/menu/delete", Method: http.MethodPost, Description: "api.menuDelete", ApiGroup: "api.group.menu", ServiceName: "core-api"},
+			{Path: "/core/menu/list", Method: http.MethodPost, Description: "api.menuList", ApiGroup: "api.group.menu", ServiceName: "core-api"},
+			{Path: "/core/api/create", Method: http.MethodPost, Description: "api.apiCreate", ApiGroup: "api.group.api", ServiceName: "core-api"},
+			{Path: "/core/api/update", Method: http.MethodPost, Description: "api.apiUpdate", ApiGroup: "api.group.api", ServiceName: "core-api"},
+			{Path: "/core/api/delete", Method: http.MethodPost, Description: "api.apiDelete", ApiGroup: "api.group.api", ServiceName: "core-api"},
+			{Path: "/core/api/list", Method: http.MethodPost, Description: "api.apiList", ApiGroup: "api.group.api", ServiceName: "core-api"},
+			{Path: "/core/authority/menu/update", Method: http.MethodPost, Description: "api.authorityMenuUpdate", ApiGroup: "api.group.authority", ServiceName: "core-api"},
+			{Path: "/core/authority/menu/role", Method: http.MethodPost, Description: "api.authorityMenuRole", ApiGroup: "api.group.authority", ServiceName: "core-api"},
+			{Path: "/core/authority/api/update", Method: http.MethodPost, Description: "api.authorityApiUpdate", ApiGroup: "api.group.authority", ServiceName: "core-api"},
+			{Path: "/core/authority/api/role", Method: http.MethodPost, Description: "api.authorityApiRole", ApiGroup: "api.group.authority", ServiceName: "core-api"},
+			{Path: "/core/log/login/list", Method: http.MethodPost, Description: "api.loginLogList", ApiGroup: "api.group.log", ServiceName: "core-api"},
+			{Path: "/core/log/action/list", Method: http.MethodPost, Description: "api.actionLogList", ApiGroup: "api.group.log", ServiceName: "core-api"},
+			{Path: "/core/log/error/list", Method: http.MethodPost, Description: "api.errorLogList", ApiGroup: "api.group.log", ServiceName: "core-api"},
+			{Path: "/core/i18n/create", Method: http.MethodPost, Description: "api.i18nCreate", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/update", Method: http.MethodPost, Description: "api.i18nUpdate", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/updateByKey", Method: http.MethodPost, Description: "api.i18nUpdateByKey", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/delete", Method: http.MethodPost, Description: "api.i18nDelete", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/deleteByKey", Method: http.MethodPost, Description: "api.i18nDeleteByKey", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/list", Method: http.MethodPost, Description: "api.i18nList", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/export", Method: http.MethodPost, Description: "api.i18nExport", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/import", Method: http.MethodPost, Description: "api.i18nImport", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/lang/create", Method: http.MethodPost, Description: "api.i18nLangCreate", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/lang/update", Method: http.MethodPost, Description: "api.i18nLangUpdate", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/lang/reorder", Method: http.MethodPost, Description: "api.i18nLangReorder", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/lang/delete", Method: http.MethodPost, Description: "api.i18nLangDelete", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+			{Path: "/core/i18n/lang/list", Method: http.MethodPost, Description: "api.i18nLangList", ApiGroup: "api.group.i18n", ServiceName: "core-api"},
+		},
+		I18NLangs: langSeeds(code),
+		I18N:      i18nSeeds(code),
+	}
+}

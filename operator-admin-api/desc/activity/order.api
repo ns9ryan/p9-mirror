@@ -1,0 +1,101 @@
+syntax = "v1"
+
+import "../common.api"
+
+type (
+	// 活动订单列表项。不下发订单自增 id
+	ActivityOrderListItem {
+		OrderNo          string `json:"order_no"`
+		ActivityId       int64  `json:"activity_id"`
+		ActivityName     string `json:"activity_name"`
+		Type             int32  `json:"type"`
+		MemberId         int64  `json:"member_id"`
+		RewardsTotal     int64  `json:"rewards_total"`
+		ChannelSource    int32  `json:"channel_source"`
+		PayoutMode       int32  `json:"payout_mode"`
+		Status           int32  `json:"status"`
+		ClaimExpireAtSec *int64 `json:"claim_expire_at_sec,optional"`
+		PayoutAtSec      *int64 `json:"payout_at_sec,optional"`
+		AppliedAtSec     *int64 `json:"applied_at_sec,optional"`
+		ApprovedAtSec    *int64 `json:"approved_at_sec,optional"`
+		ApproverUid      int64  `json:"approver_uid"`
+	}
+	// 活动订单列表请求
+	ListActivityOrdersReq {
+		PageRequest
+		OrderNo    string `form:"order_no,optional"`
+		ActivityId *int64 `form:"activity_id,optional"`
+		MemberId   *int64 `form:"member_id,optional"`
+		Type       *int32 `form:"type,optional"`
+		Status     *int32 `form:"status,optional"`
+		// 1领取时间 2申请时间
+		TimeField *int32 `form:"time_field,optional"`
+		StartSec  *int64 `form:"start_sec,optional"`
+		EndSec    *int64 `form:"end_sec,optional"`
+	}
+	// 活动订单列表响应
+	ListActivityOrdersResp {
+		Total int64                   `json:"total"`
+		List  []ActivityOrderListItem `json:"list"`
+	}
+	// 活动订单审核列表项。不下发订单自增 id
+	ActivityOrderAuditListItem {
+		OrderNo       string `json:"order_no"`
+		ActivityId    int64  `json:"activity_id"`
+		ActivityName  string `json:"activity_name"`
+		Type          int32  `json:"type"`
+		MemberId      int64  `json:"member_id"`
+		RewardsTotal  int64  `json:"rewards_total"`
+		ChannelSource int32  `json:"channel_source"`
+		PayoutMode    int32  `json:"payout_mode"`
+		Status        int32  `json:"status"`
+		AppliedAtSec  *int64 `json:"applied_at_sec,optional"`
+	}
+	// 活动订单审核列表请求
+	ListActivityOrderAuditsReq {
+		PageRequest
+		OrderNo     string `form:"order_no,optional"`
+		ActivityId  *int64 `form:"activity_id,optional"`
+		MemberId    *int64 `form:"member_id,optional"`
+		Type        *int32 `form:"type,optional"`
+		AuditStatus *int32 `form:"audit_status,optional"`
+		// 1领取时间 2申请时间
+		TimeField *int32 `form:"time_field,optional"`
+		StartSec  *int64 `form:"start_sec,optional"`
+		EndSec    *int64 `form:"end_sec,optional"`
+	}
+	// 活动订单审核列表响应
+	ListActivityOrderAuditsResp {
+		Total int64                        `json:"total"`
+		List  []ActivityOrderAuditListItem `json:"list"`
+	}
+	// 活动订单审核请求。action: 1通过 2拒绝
+	AuditActivityOrderReq {
+		OrderNo string `json:"order_no" validate:"required"`
+		Action  int32  `json:"action" validate:"required,oneof=1 2"`
+		Remark  string `json:"remark,optional"`
+	}
+	// 活动订单审核响应
+	AuditActivityOrderResp {
+		OrderNo string `json:"order_no"`
+	}
+)
+
+@server (
+	group:      activity/order
+	prefix:     /activity
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "活动订单列表"
+	@handler ListOrders
+	get /order/list (ListActivityOrdersReq) returns (ListActivityOrdersResp)
+
+	@doc "活动订单审核列表"
+	@handler ListAuditOrders
+	get /order/audit/list (ListActivityOrderAuditsReq) returns (ListActivityOrderAuditsResp)
+
+	@doc "活动订单审核（通过或拒绝）"
+	@handler AuditOrder
+	post /order/audit (AuditActivityOrderReq) returns (AuditActivityOrderResp)
+}

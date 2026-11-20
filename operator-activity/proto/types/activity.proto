@@ -1,0 +1,423 @@
+syntax = "proto3";
+
+package activity;
+
+option go_package = "oa.98ent.com/p9/operator-activity/pb/operatoractivityrpc/activitypb";
+
+// ==================== Settings ====================
+
+// 奖励阶梯规则
+message RewardSchema {
+  int64 id = 1;
+  int64 threshold = 2;
+  int64 amount = 3;
+  int32 rate = 4;
+  int64 max_bonus = 5;
+  int64 min_bonus = 6;
+  int32 count = 7;
+}
+
+// 推荐活动配置
+message ReferConfig {
+  int64 min_deposit_amount = 1;
+  int64 min_bet_amount = 2;
+  int32 ip_limit = 3;
+  int32 device_limit = 4;
+}
+
+// 幸运转盘配置
+message LuckWheelConfig {
+  // 1=仅投注、2=仅充值、3=投注|充值
+  int32 wheel_trigger_mode = 1;
+  repeated RewardSchema bet_schemas = 2;
+  repeated RewardSchema deposit_schemas = 3;
+}
+
+// 活动配置 JSON
+message ActivitySettings {
+  int32 deposit_reward_type = 1;
+  int32 bet_claim_mode = 2;
+  int32 bonus_mode = 3;
+  repeated RewardSchema reward_schemas = 4;
+  optional ReferConfig refer_config = 5;
+  optional LuckWheelConfig luck_wheel = 6;
+}
+
+// 活动国际化
+message ActivityI18nItem {
+  string lang = 1;
+  string name = 2;
+  string rule = 3;
+  string image = 4;
+  string description = 5;
+}
+
+// ==================== Create ====================
+
+// 创建活动请求
+message CreateActivityReq {
+  // 活动类型: 1充值 2洗码 3推荐会员 4幸运转盘 5助力 6盲盒 7新人彩金 8全民代理 9救援金 10幸运注单 11VIP奖金 12红包雨 13图文广告 14签到
+  int32 type = 1;
+  // 活动状态: 0/未传默认草稿(1), 1草稿 2进行中 3已结束
+  int32 status = 2;
+  // 参与模式: 1自动 2手动
+  int32 apply_mode = 3;
+  // 循环模式: 1不循环 2每日 3每周 4每月 5无限
+  int32 cycle_mode = 4;
+  // 允许的固定层级
+  repeated int64 allowed_fixed_level = 5;
+  // 允许的自动层级
+  repeated int64 allowed_auto_level = 6;
+  // 允许的客户端类型
+  repeated int64 allowed_clients = 7;
+  // 允许的游戏 ID
+  repeated int64 allowed_game_ids = 8;
+  // 允许的代理 ID
+  repeated int64 allowed_agent_ids = 9;
+  // 参与限制
+  repeated int64 apply_limit = 10;
+  // 领取限制
+  repeated int64 claim_limit = 11;
+  // 是否永久活动
+  bool is_permanent = 12;
+  // 开始时间，unix 秒，未设置可不传
+  optional int64 open_at_sec = 13;
+  // 结束时间，unix 秒
+  optional int64 close_at_sec = 14;
+  // 发布时间，unix 秒
+  optional int64 release_at_sec = 15;
+  // 是否自动审核
+  bool auto_audit = 16;
+  // 自动审核金额上限
+  int64 auto_audit_max_amt = 17;
+  // 派发模式
+  int32 payout_mode = 18;
+  // 派发时机
+  int32 payout_timing = 19;
+  // 手动领取过期秒数
+  int64 claim_expire_sec = 20;
+  // 活动配置
+  ActivitySettings settings = 21;
+
+  // ---- 表结构扩展字段（types.Activity 无）----
+  int32 wagering_multiplier = 22;
+  int32 wagering_base = 23;
+  optional bool show_in_list = 26;
+  optional bool show_in_sidebar = 27;
+  int32 sort_weight = 28;
+  int64 create_uid = 29;
+
+  // 国际化名称/规则
+  repeated ActivityI18nItem i18n = 30;
+  // 活动所属: 1大厅 2电子 3体育
+  int32 section = 31;
+}
+
+// 创建活动响应
+message CreateActivityResp {
+  int64 id = 1;
+}
+
+// ==================== Update ====================
+
+// 编辑活动请求（仅草稿可编辑，status 入参忽略并保持草稿）
+message UpdateActivityReq {
+  int64 id = 1;
+  // 活动类型: 1充值 2洗码 3推荐会员 4幸运转盘 5助力 6盲盒 7新人彩金 8全民代理 9救援金 10幸运注单 11VIP奖金 12红包雨 13图文广告 14签到
+  int32 type = 2;
+  // 参与模式: 1自动 2手动
+  int32 apply_mode = 3;
+  // 循环模式: 1不循环 2每日 3每周 4每月 5无限
+  int32 cycle_mode = 4;
+  repeated int64 allowed_fixed_level = 5;
+  repeated int64 allowed_auto_level = 6;
+  repeated int64 allowed_clients = 7;
+  repeated int64 allowed_game_ids = 8;
+  repeated int64 allowed_agent_ids = 9;
+  repeated int64 apply_limit = 10;
+  repeated int64 claim_limit = 11;
+  bool is_permanent = 12;
+  optional int64 open_at_sec = 13;
+  optional int64 close_at_sec = 14;
+  optional int64 release_at_sec = 15;
+  bool auto_audit = 16;
+  int64 auto_audit_max_amt = 17;
+  int32 payout_mode = 18;
+  int32 payout_timing = 19;
+  int64 claim_expire_sec = 20;
+  ActivitySettings settings = 21;
+  int32 wagering_multiplier = 22;
+  int32 wagering_base = 23;
+  optional bool show_in_list = 26;
+  optional bool show_in_sidebar = 27;
+  int32 sort_weight = 28;
+  repeated ActivityI18nItem i18n = 30;
+  // 活动所属: 1大厅 2电子 3体育
+  int32 section = 31;
+}
+
+// 编辑活动响应
+message UpdateActivityResp {
+  int64 id = 1;
+}
+
+// ==================== Detail ====================
+
+// 活动详情
+message ActivityDetail {
+  int64 id = 1;
+  int32 type = 2;
+  int32 status = 3;
+  int32 apply_mode = 4;
+  int32 cycle_mode = 5;
+  repeated int64 allowed_fixed_level = 6;
+  repeated int64 allowed_auto_level = 7;
+  repeated int64 allowed_clients = 8;
+  repeated int64 allowed_game_ids = 9;
+  repeated int64 allowed_agent_ids = 10;
+  repeated int64 apply_limit = 11;
+  repeated int64 claim_limit = 12;
+  bool is_permanent = 13;
+  optional int64 open_at_sec = 14;
+  optional int64 close_at_sec = 15;
+  optional int64 release_at_sec = 16;
+  bool auto_audit = 17;
+  int64 auto_audit_max_amt = 18;
+  int32 payout_mode = 19;
+  int32 payout_timing = 20;
+  int64 claim_expire_sec = 21;
+  ActivitySettings settings = 22;
+  int32 wagering_multiplier = 23;
+  int32 wagering_base = 24;
+  bool show_in_list = 27;
+  bool show_in_sidebar = 28;
+  int32 sort_weight = 29;
+  int64 create_uid = 30;
+  int64 update_uid = 31;
+  int32 version = 32;
+  int64 created_at_sec = 33;
+  int64 updated_at_sec = 34;
+  repeated ActivityI18nItem i18n = 35;
+  // 活动所属: 1大厅 2电子 3体育
+  int32 section = 36;
+}
+
+// 获取活动详情请求
+message GetActivityReq {
+  int64 id = 1;
+}
+
+// 获取活动详情响应
+message GetActivityResp {
+  ActivityDetail activity = 1;
+}
+
+// ==================== List ====================
+
+// 活动列表项
+message ActivityListItem {
+  int64 id = 1;
+  int32 type = 2;
+  int32 status = 3;
+  string name = 4;
+  repeated int64 allowed_clients = 5;
+  optional int64 open_at_sec = 6;
+  optional int64 close_at_sec = 7;
+  optional int64 release_at_sec = 8;
+  int32 sort_weight = 9;
+  bool show_in_list = 10;
+  int64 updated_at_sec = 11;
+  // 活动条件 / 自动审核配置
+  bool auto_audit = 12;
+  int64 auto_audit_max_amt = 13;
+  // 参与层级
+  repeated int64 allowed_fixed_level = 14;
+  repeated int64 allowed_auto_level = 15;
+  // 洗码倍数
+  int32 wagering_multiplier = 16;
+  // 指定游戏
+  repeated int64 allowed_game_ids = 17;
+  // 活动是否永久
+  bool is_permanent = 18;
+  // 创建时间/人
+  int64 created_at_sec = 19;
+  int64 create_uid = 20;
+  // 更新人
+  int64 update_uid = 21;
+  // 当前语言活动图片
+  string image = 22;
+  // 活动所属: 1大厅 2电子 3体育
+  int32 section = 23;
+}
+
+// 活动列表请求
+message ListActivitiesReq {
+  // 页码，从 1 开始
+  int64 page = 1;
+  // 每页数量
+  int64 page_size = 2;
+  // 活动名称（模糊匹配 i18n.name）
+  string name = 3;
+  // 活动类型
+  optional int32 type = 4;
+  // 参与客户端
+  optional int64 client = 5;
+  // 活动状态
+  optional int32 status = 6;
+  // 名称检索/展示语言，默认 zh-CN
+  string lang = 7;
+}
+
+// 活动列表响应
+message ListActivitiesResp {
+  int64 total = 1;
+  repeated ActivityListItem list = 2;
+}
+
+// ==================== Close ====================
+
+// 关闭活动请求
+message CloseActivityReq {
+  int64 id = 1;
+}
+
+// 关闭活动响应
+message CloseActivityResp {
+  int64 id = 1;
+}
+
+// ==================== Publish ====================
+
+// 发布活动请求
+message PublishActivityReq {
+  int64 id = 1;
+}
+
+// 发布活动响应
+message PublishActivityResp {
+  int64 id = 1;
+}
+
+// ==================== EnumParams ====================
+
+// 枚举选项
+message ActivityEnumItem {
+  string key = 1;
+  int32 value = 2;
+}
+
+// 获取活动枚举参数请求
+message GetActivityEnumParamsReq {
+}
+
+// 获取活动枚举参数响应（表单用，排除 Unspecified=0）
+message GetActivityEnumParamsResp {
+  repeated ActivityEnumItem type = 1;
+  repeated ActivityEnumItem status = 2;
+  repeated ActivityEnumItem apply_mode = 3;
+  repeated ActivityEnumItem cycle_mode = 4;
+  repeated ActivityEnumItem payout_mode = 5;
+  repeated ActivityEnumItem payout_timing = 6;
+  repeated ActivityEnumItem bonus_mode = 7;
+  repeated ActivityEnumItem bet_claim_mode = 8;
+  repeated ActivityEnumItem deposit_reward_type = 9;
+  repeated ActivityEnumItem wheel_trigger_mode = 10;
+  repeated ActivityEnumItem wagering_base = 11;
+  repeated ActivityEnumItem client_type = 12;
+  repeated ActivityEnumItem apply_limit_type = 13;
+  repeated ActivityEnumItem claim_limit_type = 14;
+  repeated ActivityEnumItem section = 15;
+}
+
+// ==================== Order ====================
+
+// 活动订单列表项
+message ActivityOrderListItem {
+  int64 id = 1;
+  string order_no = 2;
+  int64 activity_id = 3;
+  string activity_name = 4;
+  int32 type = 5;
+  int64 member_id = 6;
+  int64 rewards_total = 7;
+  int32 channel_source = 8;
+  int32 payout_mode = 9;
+  int32 status = 10;
+  optional int64 claim_expire_at_sec = 11;
+  optional int64 payout_at_sec = 12;
+  optional int64 applied_at_sec = 13;
+  optional int64 approved_at_sec = 14;
+  int64 approver_uid = 15;
+}
+
+// 活动订单列表请求
+message ListActivityOrdersReq {
+  int64 page = 1;
+  int64 page_size = 2;
+  string lang = 3;
+  string order_no = 4;
+  optional int64 activity_id = 5;
+  optional int64 member_id = 6;
+  optional int32 type = 7;
+  optional int32 status = 8;
+  // 时间字段: 1领取时间 payout_at, 2申请时间 applied_at
+  optional int32 time_field = 9;
+  optional int64 start_sec = 10;
+  optional int64 end_sec = 11;
+}
+
+// 活动订单列表响应
+message ListActivityOrdersResp {
+  int64 total = 1;
+  repeated ActivityOrderListItem list = 2;
+}
+
+// 活动订单审核列表项
+message ActivityOrderAuditListItem {
+  int64 id = 1;
+  string order_no = 2;
+  int64 activity_id = 3;
+  string activity_name = 4;
+  int32 type = 5;
+  int64 member_id = 6;
+  int64 rewards_total = 7;
+  int32 channel_source = 8;
+  int32 payout_mode = 9;
+  int32 status = 10;
+  optional int64 applied_at_sec = 11;
+}
+
+// 活动订单审核列表请求
+message ListActivityOrderAuditsReq {
+  int64 page = 1;
+  int64 page_size = 2;
+  string lang = 3;
+  string order_no = 4;
+  optional int64 activity_id = 5;
+  optional int64 member_id = 6;
+  optional int32 type = 7;
+  // 审核状态: 1人工审核, 2风控拦截
+  optional int32 audit_status = 8;
+  // 时间字段: 1领取时间 payout_at, 2申请时间 applied_at
+  optional int32 time_field = 9;
+  optional int64 start_sec = 10;
+  optional int64 end_sec = 11;
+}
+
+// 活动订单审核列表响应
+message ListActivityOrderAuditsResp {
+  int64 total = 1;
+  repeated ActivityOrderAuditListItem list = 2;
+}
+
+// 活动订单审核请求。action: 1通过 2拒绝
+message AuditActivityOrderReq {
+  string order_no = 1;
+  int32 action = 2;
+  string remark = 3;
+}
+
+// 活动订单审核响应
+message AuditActivityOrderResp {
+  string order_no = 1;
+}

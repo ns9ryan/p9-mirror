@@ -1,0 +1,37 @@
+export default {
+  'menu.agentManage.related': 'Related Search',
+
+  'relatedSearch.search.loginTime': 'Login time',
+  'relatedSearch.search.today': 'Today',
+  'relatedSearch.search.last7': 'Last 7 days',
+  'relatedSearch.search.last30': 'Last 30 days',
+  'relatedSearch.search.start': 'Start',
+  'relatedSearch.search.end': 'End',
+  'relatedSearch.search.agentId': 'Agent ID',
+  'relatedSearch.search.loginIp': 'Login IP',
+  'relatedSearch.search.deviceCode': 'Device code',
+  'relatedSearch.search.device': 'Device',
+  'relatedSearch.search.pleaseSelect': 'Select',
+  'relatedSearch.search.pleaseInput': 'Enter',
+
+  'relatedSearch.toolbar.batchDisable': 'Batch disable',
+  'relatedSearch.toolbar.download': 'Download',
+  'relatedSearch.message.noSelection': 'Select rows first',
+  'relatedSearch.message.noData': 'No data',
+  'relatedSearch.message.disabled': 'Disabled',
+  'relatedSearch.message.invalidAgentId': 'Agent ID must be numeric',
+
+  'relatedSearch.col.loginTime': 'Login time',
+  'relatedSearch.col.agentId': 'Agent ID',
+  'relatedSearch.col.loginIp': 'Login IP',
+  'relatedSearch.col.sameIp': 'Same IP agents',
+  'relatedSearch.col.deviceCode': 'Device code',
+  'relatedSearch.col.device': 'Device',
+  'relatedSearch.col.sameDevice': 'Same device agents',
+
+  'relatedSearch.device.pc': 'PC Web',
+  'relatedSearch.device.h5': 'H5',
+  'relatedSearch.device.android': 'Android',
+  'relatedSearch.device.ios': 'iOS',
+  'relatedSearch.device.pcClient': 'PC Client',
+};

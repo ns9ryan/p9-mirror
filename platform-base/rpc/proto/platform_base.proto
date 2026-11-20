@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package platform_base;
+
+option go_package = "oa.98ent.com/p9/platform-base/rpc/pb/platformbaserpc";
+
+import "types/platform_base_ping.proto";
+import "types/platform_base_timezone.proto";
+import "types/platform_base_currency.proto";
+import "types/platform_base_region.proto";
+import "types/platform_base_vip_default_icon.proto";
+import "types/platform_base_default_avatar.proto";
+import "types/platform_base_default_avatar_frame.proto";
+
+// Ping 服务
+service PingService {
+  // Ping
+  rpc Ping(platform_base_ping.PingRequest) returns (platform_base_ping.PingResponse);
+}
+
+// 时区服务
+service TimezoneService {
+  // 修改时区
+  rpc Update(platform_base_timezone.UpdateTimezoneRequest) returns (platform_base_timezone.UpdateTimezoneResponse);
+
+  // 获取时区
+  rpc Get(platform_base_timezone.GetTimezoneRequest) returns (platform_base_timezone.GetTimezoneResponse);
+
+  // 按编码获取时区
+  rpc GetByCode(platform_base_timezone.GetTimezoneByCodeRequest) returns (platform_base_timezone.GetTimezoneByCodeResponse);
+
+  // 获取时区管理列表
+  rpc List(platform_base_timezone.ListTimezonesRequest) returns (platform_base_timezone.ListTimezonesResponse);
+
+  // 获取全部时区
+  rpc ListAll(platform_base_timezone.ListAllTimezonesRequest) returns (platform_base_timezone.ListAllTimezonesResponse);
+
+  // 调整时区排序
+  rpc Reorder(platform_base_timezone.ReorderTimezoneRequest) returns (platform_base_timezone.ReorderTimezoneResponse);
+}
+
+// 货币服务
+service CurrencyService {
+  // 修改货币
+  rpc Update(platform_base_currency.UpdateCurrencyRequest) returns (platform_base_currency.UpdateCurrencyResponse);
+
+  // 获取货币
+  rpc Get(platform_base_currency.GetCurrencyRequest) returns (platform_base_currency.GetCurrencyResponse);
+
+  // 按编码获取货币
+  rpc GetByCode(platform_base_currency.GetCurrencyByCodeRequest) returns (platform_base_currency.GetCurrencyByCodeResponse);
+
+  // 获取货币管理列表
+  rpc List(platform_base_currency.ListCurrenciesRequest) returns (platform_base_currency.ListCurrenciesResponse);
+
+  // 获取全部货币
+  rpc ListAll(platform_base_currency.ListAllCurrenciesRequest) returns (platform_base_currency.ListAllCurrenciesResponse);
+
+  // 调整货币排序
+  rpc Reorder(platform_base_currency.ReorderCurrencyRequest) returns (platform_base_currency.ReorderCurrencyResponse);
+}
+
+// 国家地区服务
+service RegionService {
+  // 修改国家地区
+  rpc Update(platform_base_region.UpdateRegionRequest) returns (platform_base_region.UpdateRegionResponse);
+
+  // 获取国家地区
+  rpc Get(platform_base_region.GetRegionRequest) returns (platform_base_region.GetRegionResponse);
+
+  // 按编码获取国家地区
+  rpc GetByCode(platform_base_region.GetRegionByCodeRequest) returns (platform_base_region.GetRegionByCodeResponse);
+
+  // 获取国家地区管理列表
+  rpc List(platform_base_region.ListRegionsRequest) returns (platform_base_region.ListRegionsResponse);
+
+  // 获取全部国家地区
+  rpc ListAll(platform_base_region.ListAllRegionsRequest) returns (platform_base_region.ListAllRegionsResponse);
+
+  // 调整国家地区排序
+  rpc Reorder(platform_base_region.ReorderRegionRequest) returns (platform_base_region.ReorderRegionResponse);
+}
+
+// 默认 VIP 图标服务
+service VipDefaultIconService {
+  // 获取全部默认 VIP 图标
+  rpc ListAll(platform_base_vip_default_icon.ListAllVipDefaultIconsRequest) returns (platform_base_vip_default_icon.ListAllVipDefaultIconsResponse);
+
+  // 保存默认 VIP 图标
+  rpc Save(platform_base_vip_default_icon.SaveVipDefaultIconsRequest) returns (platform_base_vip_default_icon.SaveVipDefaultIconsResponse);
+}
+
+// 默认头像服务
+service DefaultAvatarService {
+  // 获取全部默认头像
+  rpc ListAll(platform_base_defaultavatar.ListAllDefaultAvatarsRequest) returns (platform_base_defaultavatar.ListAllDefaultAvatarsResponse);
+
+  // 随机获取一个默认头像
+  rpc Random(platform_base_defaultavatar.RandomDefaultAvatarRequest) returns (platform_base_defaultavatar.RandomDefaultAvatarResponse);
+
+  // 修改默认头像
+  rpc Update(platform_base_defaultavatar.UpdateDefaultAvatarRequest) returns (platform_base_defaultavatar.UpdateDefaultAvatarResponse);
+}
+
+// 默认头像框服务
+service DefaultAvatarFrameService {
+  // 获取全部默认头像框
+  rpc ListAll(platform_base_defaultavatarframe.ListAllDefaultAvatarFramesRequest) returns (platform_base_defaultavatarframe.ListAllDefaultAvatarFramesResponse);
+
+  // 修改默认头像框
+  rpc Update(platform_base_defaultavatarframe.UpdateDefaultAvatarFrameRequest) returns (platform_base_defaultavatarframe.UpdateDefaultAvatarFrameResponse);
+}
+
+import "types/platform_base_nickname.proto";
+// 默认会员昵称管理与随机选择。
+service NicknameService {
+ rpc Create(platform_base_nickname.CreateNicknameRequest) returns (platform_base_nickname.CreateNicknameResponse);
+ rpc Update(platform_base_nickname.UpdateNicknameRequest) returns (platform_base_nickname.UpdateNicknameResponse);
+ rpc Delete(platform_base_nickname.DeleteNicknameRequest) returns (platform_base_nickname.DeleteNicknameResponse);
+ rpc Get(platform_base_nickname.GetNicknameRequest) returns (platform_base_nickname.GetNicknameResponse);
+ rpc List(platform_base_nickname.ListNicknamesRequest) returns (platform_base_nickname.ListNicknamesResponse);
+ rpc Random(platform_base_nickname.RandomNicknameRequest) returns (platform_base_nickname.RandomNicknameResponse);
+}

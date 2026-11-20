@@ -1,0 +1,33 @@
+{
+  "member": {
+    "emailAlreadyBound": "该邮箱已被其他会员绑定，请更换邮箱",
+    "phoneAlreadyBound": "该手机号已被其他会员绑定，请更换手机号",
+    "contactBindingCodeInvalid": "验证码无效、已过期或与本次修改不匹配",
+    "contactBindingCodeTooFrequent": "验证码请求过于频繁，请稍后重试",
+    "contactBindingCodeSendFailed": "验证码发送失败"
+  },
+
+  "resource": {
+    "invalidFile": "图片格式、尺寸或大小不符合场景要求",
+    "uploadFailed": "图片上传失败"
+  },
+  "common": {
+    "success": "成功",
+    "unauthorized": "未授权",
+    "forbidden": "无权限",
+    "invalid_request": "请求参数格式错误",
+    "data_not_found": "数据不存在",
+    "constraint_error": "数据约束冲突",
+    "validation_error": "数据校验失败",
+    "database_error": "数据库操作失败",
+    "already_exists": "数据已存在",
+    "internal_error": "系统内部错误",
+    "too_many_requests": "请求过于频繁",
+    "service_unavailable": "服务暂不可用",
+    "request_timeout": "请求超时",
+    "paramRequired": "缺少必填参数: {{.Field}}",
+    "paramTypeMismatch": "参数类型错误: {{.Field}}",
+    "paramValueInvalid": "参数值错误",
+    "paramValueInvalidField": "参数值错误: {{.Field}}"
+  }
+}

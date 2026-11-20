@@ -1,0 +1,4 @@
+import "base.api"
+import "./oss/upload.api"
+import "./oss/file.api"
+import "./oss/provider.api"

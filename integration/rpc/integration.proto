@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package integration;
+option go_package = "./integration";
+
+message Empty {}
+
+message IDReq {
+  int64 id = 1; // 主键 id
+}
+
+// 单条 IP 查询结果
+message IpInfo {
+  string query = 1;             // 请求中的原始 IP
+  string continent = 2;         // 大洲名（随 lang）
+  string continent_code = 3;    // 大洲代码，如 NA
+  string country = 4;           // 国家名（随 lang）
+  string country_code = 5;      // 国家代码，如 US
+  string province = 6;          // 省/州
+  string province_iso_code = 7; // 省/州 ISO，如 CA
+  string city = 8;              // 城市
+  string zip = 9;               // 邮编（与 postal 同源）
+  double lat = 10;              // 纬度
+  double lon = 11;              // 经度
+  string timezone = 12;         // 时区
+  string isp = 13;              // ISP
+  string org = 14;              // 组织
+  string as = 15;               // ASN 文本
+  string postal = 16;           // 邮编
+  string source = 17;           // 命中服务商 name，或 private
+}
+
+// 本地 IP 表（driver=local）一条记录
+message LocalIP {
+  int64 id = 1;                 // 主键；创建时忽略，更新时必填
+  string ip = 2;                // IPv4/IPv6，全局唯一
+  string continent = 3;         // 大洲名
+  string continent_code = 4;    // 大洲代码
+  string country = 5;           // 国家名
+  string country_code = 6;      // 国家代码
+  string province = 7;          // 省/州
+  string province_iso_code = 8; // 省/州 ISO
+  string city = 9;              // 城市
+  string zip = 10;              // 邮编（与 postal 写入同一列，填其一即可）
+  double lat = 11;              // 纬度
+  double lon = 12;              // 经度
+  string timezone = 13;         // 时区
+  string isp = 14;              // ISP
+  string org = 15;              // 组织
+  string as = 16;               // ASN 文本
+  string postal = 17;           // 邮编
+}
+
+message LocalIPListReq {
+  int32 page = 1;      // 页码，从 1；≤0 用默认
+  int32 page_size = 2; // 每页条数，默认 20、最大 100
+  string ip = 3;       // 按 IP 模糊筛选，可空
+}
+
+message LocalIPListResp {
+  repeated LocalIP list = 1; // 列表，禁止 null
+  int64 total = 2;           // 总数
+}
+
+// 保存策略时的单项（不含 name/tag）
+message PolicyItem {
+  int64 provider_id = 1; // 全局服务商 id
+  bool is_enabled = 2;   // 是否启用
+  int32 priority = 3;    // 优先级，越小越先
+}
+
+message PolicyListResp {
+  repeated PolicyView list = 1; // 全部服务商策略，按 priority、id 升序
+  int64 total = 2;              // 条数
+}
+
+// 租户视角的服务商策略（列表回显）
+message PolicyView {
+  int64 provider_id = 1; // 全局服务商 id，保存时回传
+  string name = 2;       // 服务商名称
+  bool is_enabled = 3;   // 当前租户是否启用；未配策略时为默认
+  int32 priority = 4;    // 当前租户优先级，越小越先
+  string tag = 5;        // 在线 / 本地 / 离线
+}
+
+message SavePolicyReq {
+  repeated PolicyItem list = 1; // 策略列表；savePolicies=租户覆盖，saveDefaultPolicies=写服务商默认
+}
+
+// 查询 IP 地理位置
+message SearchIpReq {
+  repeated string ips = 1; // 待查 IP 列表，最多 100 个
+  string lang = 2;         // 本地化语言，空则 en；允许：en zh-CN pt-BR ru fr ja es de
+}
+
+message SearchIpResp {
+  repeated IpInfo list = 1; // 查询结果列表
+}
+
+// 邮件附件；构建 MIME 时校验文件名、媒体类型和解码后总大小，解码后合计最多 10 MiB。
+message EmailAttachment {
+  string filename = 1; // 必填附件名，支持中文，不能包含头部控制字符
+  string base64 = 2;   // 标准 Base64 文件内容，不带 data URL 前缀；空文件允许空字符串
+  string mime = 3;     // 必填媒体类型，例如 application/pdf；不能包含头部控制字符
+}
+
+// 发送邮件请求；所有地址统一校验和去重，任一地址非法时整封拒绝。
+// 通用限制为去重后最多 100 个收件人，具体通道仍可能有更严格限制。
+message SendEmailReq {
+  repeated string email = 1;               // 主收件人列表；与 cc、bcc 合计至少一个地址
+  string subject = 2;                      // 邮件主题，最多 8 KiB；阿里云通道要求非空
+  string content = 3;                      // 纯文本正文，与 html_content 至少一个非空；二者合计最多 4 MiB
+  repeated EmailAttachment attachment = 4; // 可选附件列表；阿里云 SingleSendMail 不支持附件
+  repeated string cc = 5;                  // 可选抄送地址，显示在邮件头中；阿里云 SingleSendMail 不支持
+  repeated string bcc = 6;                 // 可选密送地址，不写入邮件头；阿里云 SingleSendMail 不支持
+  string html_content = 7;                 // HTML 正文，可与纯文本并存，供收件端选择展示
+  string provider = 8;                     // 可选通道名或类型；先精确匹配名称，再匹配类型；空值按优先级尝试
+}
+
+// 发送邮件响应，仅表示厂商受理；提交失败使用 gRPC status 返回。
+message SendEmailResp {
+  int32 accepted = 1;      // 厂商受理的唯一收件人数，包含主收件人、抄送和密送，不代表已进入收件箱
+  string message = 2;      // 提交成功为 success；不表示用户已读
+  string delivery_id = 3;  // 本服务内存投递记录编号，非厂商编号、幂等键；目前无按此编号查询的 RPC
+  string provider = 4;     // 最终实际使用的发送通道名称
+}
+
+// 发送国际短信请求，整批校验通过后才开始发送；验证码生成、保存和校验由调用方负责。
+message SendSmsReq {
+  repeated string phone = 1; // 必填 1～100 个国际号码，建议带 +国际区号；规范化为 E.164 后去重
+  string content = 2;        // 必填非空 UTF-8 正文，最多 16000 字节；厂商长度和计费限制继续生效
+  string provider = 3;       // 可选 byteplus/submail/gotone/aws/ali（aliyun 别名）；空值使用加权路由
+}
+
+// 单个号码的最终受理结果，不是运营商送达回执。
+message SmsRecipientResult {
+  string phone = 1;      // 规范化、去重后的 E.164 国际号码
+  string provider = 2;   // 最后尝试的厂商；未提交时可能为空
+  string status = 3;     // sent 厂商已受理、failed 明确失败或未提交、unknown 结果不确定且不应自动重发
+  string message_id = 4; // 厂商受理编号，部分通道允许为空；可用于向对应厂商核实结果
+  string message = 5;    // 失败或结果不确定的原因；成功时可为空
+  string data = 6;       // 厂商白名单补充数据，可为空，不透传完整响应
+}
+
+// 批次响应，RPC 无错误时仍须检查业务码和逐号码状态。
+message SendSmsResp {
+  int32 error_code = 1;                    // 0 全部受理、2 失败或部分完成、3 至少一个号码结果不确定
+  string msg = 2;                          // 本批次结果说明，不是最终送达回执
+  string data = 3;                         // results 的 JSON 字符串，保留兼容字段，建议优先读 results
+  repeated string errors = 4;              // 最终 failed/unknown 的号码及原因，不含切换通道后已成功的历史错误
+  int32 accepted = 5;                      // 厂商已受理的唯一号码数，不代表手机已收到
+  string delivery_id = 6;                  // 本次调用的批次编号，不是幂等键或送达查询凭据
+  repeated SmsRecipientResult results = 7; // 逐号码最终结果
+}
+
+service Integration {
+  //  group: base
+  rpc ping(Empty) returns (Empty);
+  //  group: ipgeo
+  rpc searchIp(SearchIpReq) returns (SearchIpResp);
+  //  group: ipgeo
+  //  方法名用 LocalIp 而非 LocalIP，避免 goctl 生成 create_local_i_p_logic.go
+  rpc listLocalIps(LocalIPListReq) returns (LocalIPListResp);
+  //  group: ipgeo
+  rpc getLocalIp(IDReq) returns (LocalIP);
+  //  group: ipgeo
+  rpc createLocalIp(LocalIP) returns (LocalIP);
+  //  group: ipgeo
+  rpc updateLocalIp(LocalIP) returns (LocalIP);
+  //  group: ipgeo
+  rpc deleteLocalIp(IDReq) returns (Empty);
+  //  group: ipgeo
+  rpc listPolicies(Empty) returns (PolicyListResp);
+  //  group: ipgeo
+  rpc savePolicies(SavePolicyReq) returns (PolicyListResp);
+  //  group: ipgeo
+  rpc saveDefaultPolicies(SavePolicyReq) returns (PolicyListResp);
+  // 发送邮件，返回厂商受理结果；投递状态不确定时不自动重发。
+  // group: message
+  rpc sendEmail (SendEmailReq) returns (SendEmailResp);
+  // 发送国际短信；调用方须检查 error_code 和逐号码 results。
+  // group: message
+  rpc sendSms (SendSmsReq) returns (SendSmsResp);
+}

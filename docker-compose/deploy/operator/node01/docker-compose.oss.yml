@@ -1,0 +1,18 @@
+services:
+  operator-oss-api:
+    image: 192.168.10.220:5000/p9/oss-api:1.0.0
+    container_name: operator-node01-oss-api
+    restart: always
+    volumes:
+      - ./etc/oss/oss-api.yaml:/app/etc/oss.yaml:ro
+    networks:
+      - node01
+      - platform
+
+networks:
+  node01:
+    external: true
+    name: operator-node01_p9-operator-node01-network
+  platform:
+    external: true
+    name: p9-platform_p9-platform-network

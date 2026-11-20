@@ -1,0 +1,63 @@
+syntax = "v1"
+
+info (
+	title:   "upload api"
+	desc:    "object upload, presign, resolve url"
+	author:  "p9"
+	version: "v1"
+)
+
+import "../base.api"
+
+type ResolveReq {
+	Key string `form:"key,optional"`
+	URL string `form:"url,optional"`
+}
+
+type PresignRequest {
+	Filename string `json:"filename"`
+	Size     int64  `json:"size"`
+	Scene    string `json:"scene,optional"`
+}
+
+type CompleteRequest {
+	Key   string `json:"key"`
+	Scene string `json:"scene,optional"`
+}
+
+type PresignData {
+	PutURL       string            `json:"put_url"`
+	Method       string            `json:"method"`
+	Headers      map[string]string `json:"headers,optional"`
+	Key          string            `json:"key"`
+	URL          string            `json:"url"`
+	ExpiresIn    int               `json:"expires_in"`
+	Scene        string            `json:"scene"`
+	Visibility   string            `json:"visibility,optional,omitempty"`
+	URLExpiresIn int               `json:"url_expires_in,optional,omitempty"`
+}
+
+// multipart：file + 可选 scene；vipicon 场景必须传 min_level。
+type UploadForm {
+	Scene string `form:"scene,optional"`
+	MinLevel *int64 `form:"min_level,optional"`
+}
+
+@server (
+	prefix:     /p9/oss
+	group:      upload
+	middleware: Jwt,ActionLog,Authority
+)
+service Oss {
+	@handler resolve
+	get /url/detail (ResolveReq) returns (FileData)
+
+	@handler upload
+	post /file/upload (UploadForm) returns (FileData)
+
+	@handler presign
+	post /upload/presign (PresignRequest) returns (PresignData)
+
+	@handler complete
+	post /upload/complete (CompleteRequest) returns (FileData)
+}

@@ -1,0 +1,24 @@
+import { createI18n } from 'vue-i18n';
+import en from './modules/en-US';
+import cn from './modules/zh-CN';
+import hk from './modules/zh-HK';
+
+export const LOCALE_OPTIONS = [
+  { label: '中文', value: 'zh-CN' },
+  { label: 'English', value: 'en-US' },
+];
+const defaultLocale = localStorage.getItem('arco-locale') || 'zh-CN';
+
+const i18n = createI18n({
+  locale: defaultLocale,
+  fallbackLocale: 'en-US',
+  legacy: false,
+  allowComposition: true,
+  messages: {
+    'en-US': en,
+    'zh-CN': cn,
+    'zh-HK': hk,
+  },
+});
+
+export default i18n;

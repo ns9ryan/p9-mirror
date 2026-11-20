@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package crm_vip_icon_group;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/vipicongrouppb";
+
+// VIP图标组信息
+message VipIconGroupInfo {
+  // 图标组ID
+  int64 id = 1;
+  // 图标组编号
+  int64 group_no = 2;
+  // 起始VIP等级
+  int64 start_level = 3;
+  // 结束VIP等级
+  int64 end_level = 4;
+  // 兼容保留字段, CRM始终返回空字符串; 总站默认图由API查询并补充, 不在分站数据库保存。
+  string default_icon_url = 5;
+  // 本站已保存图标的完整公开URL, 由Key拼接; 历史URL兼容返回, 空串由API补总站默认图。
+  string icon_url = 6;
+  // 更新时间, Unix毫秒时间戳
+  int64 updated_at = 7;
+}
+
+// 获取VIP图标组列表请求
+message ListVipIconGroupsRequest {}
+
+// 获取本站VIP图标组列表响应, 固定十组; 不调用总站, 缺失记录仅在响应中补齐。
+message ListVipIconGroupsResponse {
+  // VIP图标组列表
+  repeated VipIconGroupInfo list = 1;
+}
+
+// 修改VIP图标请求
+message UpdateVipIconGroupRequest {
+  // 图标组编号
+  int64 group_no = 1;
+  // 本组图标Key或完整公开URL, 不能为空; 本站素材须属于登录站点。
+  string icon_url = 2;
+}
+
+// 修改VIP图标响应
+message UpdateVipIconGroupResponse {}
+
+// 恢复默认VIP图标请求; 成功时清空本站本组图片配置, 后续查询使用总站实时默认图。
+message ResetVipIconGroupRequest {
+  // 图标组编号
+  int64 group_no = 1;
+}
+
+// 恢复默认VIP图标响应; 清空配置成功后返回, 不查询总站或删除OSS对象。
+message ResetVipIconGroupResponse {}

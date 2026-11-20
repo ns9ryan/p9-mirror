@@ -1,0 +1,33 @@
+# API 服务配置
+Name: mcp-agent-api
+Host: 0.0.0.0
+Port: 28003
+Timeout: 10000
+Mode: test
+
+CoreRpc:
+  Target: 192.168.10.220:19000
+  Timeout: 10000
+
+McpAgentRpc:
+  Host: 192.168.10.220:2379
+  Etcd:
+    Hosts:
+      - 192.168.10.220:2379
+    Key: mcp-agent-rpc
+  Target: 192.168.10.220:29003
+
+AI:
+  Provider: openai
+  APIKey: "ZBMrHiDHCHUPgKz+eM+kp26W9R71A2+FPl7cmQctjO/g5dz4R83GpjvD8c83wO4oW4z+hMBGh2zEcgH0hdOg6n9mQ7i35JvxIGghZdk/MijvDwS23MsQVCzkfkh1mP5oRGlq1k6JaPM6npKTTMO2O1TfCRyzv5wRgQkHjMha6Te/tu5xACrDfIdN8kDDlqoBQP6iEizI8GhOlNDn9yvI5ZJ3sZkMcwfs1kCXFbJLLBlF3cW526eWpHmvFul+P3Cw"
+  SecretKey: "aSWn11sMFlk0tOKHyh0MSqlfY3zLtpNQ" # AES 解密密钥
+  Temperature: 0.7 # 采样温度
+  MaxTokens: 4096 # 最大令牌数
+  Timeout: 30s
+
+# 链路追踪, 生产建议 Sampler 0.01~0.1
+Telemetry:
+  Name: mcp-agent-api
+  Endpoint: 192.168.10.220:4317
+  Sampler: 1.0
+  Batcher: otlpgrpc
