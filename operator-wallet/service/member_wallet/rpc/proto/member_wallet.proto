@@ -12,8 +12,9 @@ import "types/member_wallet_ping.proto";
 // ==================== 会员钱包 ====================
 
 import "types/member_wallet_deposit.proto";
-import "types/member_wallet_game.proto";
 import "types/member_wallet_withdraw.proto";
+import "types/member_wallet_game.proto";
+import "types/member_wallet_reward.proto";
 
 // 会员钱包健康检查服务
 service Ping {
@@ -54,4 +55,34 @@ service MemberWallet {
 
   // 游戏下注取消
   rpc GameBetCancel(member_wallet_game.GameBetCancelRequest) returns (member_wallet_game.GameBetCancelResponse);
+
+  // 游戏结算
+  rpc GameSettlement(member_wallet_game.GameSettlementRequest) returns (member_wallet_game.GameSettlementResponse);
+
+  // 游戏消费打赏
+  rpc GameTip(member_wallet_game.GameTipRequest) returns (member_wallet_game.GameTipResponse);
+
+  // 游戏返水
+  rpc GameRebate(member_wallet_game.GameRebateRequest) returns (member_wallet_game.GameRebateResponse);
+
+  // 游戏结算回滚
+  rpc GameSettlementRollback(member_wallet_game.GameSettlementRollbackRequest) returns (member_wallet_game.GameSettlementRollbackResponse);
+
+
+  // ==================== 奖励 ====================
+
+  // 活动奖励入账
+  rpc ActivityReward(member_wallet_reward.ActivityRewardRequest) returns (member_wallet_reward.ActivityRewardResponse);
+
+  // 任务奖励入账
+  rpc TaskReward(member_wallet_reward.TaskRewardRequest) returns (member_wallet_reward.TaskRewardResponse);
+
+  // 全民代理佣金入账
+  rpc CommissionCredit(member_wallet_reward.CommissionCreditRequest) returns (member_wallet_reward.CommissionCreditResponse);
+
+  // 有奖反馈奖励入账
+  rpc FeedbackReward(member_wallet_reward.FeedbackRewardRequest) returns (member_wallet_reward.FeedbackRewardResponse);
+
+  // VIP 奖励入账
+  rpc VIPReward(member_wallet_reward.VIPRewardRequest) returns (member_wallet_reward.VIPRewardResponse);
 }

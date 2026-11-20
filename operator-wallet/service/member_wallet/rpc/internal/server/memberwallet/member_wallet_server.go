@@ -12,6 +12,8 @@ import (
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/rewardpb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/withdrawpb"
 )
 
 type MemberWalletServer struct {
@@ -31,6 +33,36 @@ func (s *MemberWalletServer) DepositCredit(ctx context.Context, in *depositpb.De
 	return l.DepositCredit(in)
 }
 
+// 存款赠送入账
+func (s *MemberWalletServer) DepositBonus(ctx context.Context, in *depositpb.DepositBonusRequest) (*depositpb.DepositBonusResponse, error) {
+	l := memberwalletlogic.NewDepositBonusLogic(ctx, s.svcCtx)
+	return l.DepositBonus(in)
+}
+
+// 提现冻结
+func (s *MemberWalletServer) WithdrawalFreeze(ctx context.Context, in *withdrawpb.WithdrawalFreezeRequest) (*withdrawpb.WithdrawalFreezeResponse, error) {
+	l := memberwalletlogic.NewWithdrawalFreezeLogic(ctx, s.svcCtx)
+	return l.WithdrawalFreeze(in)
+}
+
+// 提现出款
+func (s *MemberWalletServer) WithdrawalPayout(ctx context.Context, in *withdrawpb.WithdrawalPayoutRequest) (*withdrawpb.WithdrawalPayoutResponse, error) {
+	l := memberwalletlogic.NewWithdrawalPayoutLogic(ctx, s.svcCtx)
+	return l.WithdrawalPayout(in)
+}
+
+// 提现手续费
+func (s *MemberWalletServer) WithdrawalFee(ctx context.Context, in *withdrawpb.WithdrawalFeeRequest) (*withdrawpb.WithdrawalFeeResponse, error) {
+	l := memberwalletlogic.NewWithdrawalFeeLogic(ctx, s.svcCtx)
+	return l.WithdrawalFee(in)
+}
+
+// 提现解冻退回
+func (s *MemberWalletServer) WithdrawalUnfreeze(ctx context.Context, in *withdrawpb.WithdrawalUnfreezeRequest) (*withdrawpb.WithdrawalUnfreezeResponse, error) {
+	l := memberwalletlogic.NewWithdrawalUnfreezeLogic(ctx, s.svcCtx)
+	return l.WithdrawalUnfreeze(in)
+}
+
 // 游戏下注
 func (s *MemberWalletServer) GameBet(ctx context.Context, in *gamepb.GameBetRequest) (*gamepb.GameBetResponse, error) {
 	l := memberwalletlogic.NewGameBetLogic(ctx, s.svcCtx)
@@ -41,4 +73,58 @@ func (s *MemberWalletServer) GameBet(ctx context.Context, in *gamepb.GameBetRequ
 func (s *MemberWalletServer) GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest) (*gamepb.GameBetCancelResponse, error) {
 	l := memberwalletlogic.NewGameBetCancelLogic(ctx, s.svcCtx)
 	return l.GameBetCancel(in)
+}
+
+// 游戏结算
+func (s *MemberWalletServer) GameSettlement(ctx context.Context, in *gamepb.GameSettlementRequest) (*gamepb.GameSettlementResponse, error) {
+	l := memberwalletlogic.NewGameSettlementLogic(ctx, s.svcCtx)
+	return l.GameSettlement(in)
+}
+
+// 游戏消费打赏
+func (s *MemberWalletServer) GameTip(ctx context.Context, in *gamepb.GameTipRequest) (*gamepb.GameTipResponse, error) {
+	l := memberwalletlogic.NewGameTipLogic(ctx, s.svcCtx)
+	return l.GameTip(in)
+}
+
+// 游戏返水
+func (s *MemberWalletServer) GameRebate(ctx context.Context, in *gamepb.GameRebateRequest) (*gamepb.GameRebateResponse, error) {
+	l := memberwalletlogic.NewGameRebateLogic(ctx, s.svcCtx)
+	return l.GameRebate(in)
+}
+
+// 游戏结算回滚
+func (s *MemberWalletServer) GameSettlementRollback(ctx context.Context, in *gamepb.GameSettlementRollbackRequest) (*gamepb.GameSettlementRollbackResponse, error) {
+	l := memberwalletlogic.NewGameSettlementRollbackLogic(ctx, s.svcCtx)
+	return l.GameSettlementRollback(in)
+}
+
+// 活动奖励入账
+func (s *MemberWalletServer) ActivityReward(ctx context.Context, in *rewardpb.ActivityRewardRequest) (*rewardpb.ActivityRewardResponse, error) {
+	l := memberwalletlogic.NewActivityRewardLogic(ctx, s.svcCtx)
+	return l.ActivityReward(in)
+}
+
+// 任务奖励入账
+func (s *MemberWalletServer) TaskReward(ctx context.Context, in *rewardpb.TaskRewardRequest) (*rewardpb.TaskRewardResponse, error) {
+	l := memberwalletlogic.NewTaskRewardLogic(ctx, s.svcCtx)
+	return l.TaskReward(in)
+}
+
+// 全民代理佣金入账
+func (s *MemberWalletServer) CommissionCredit(ctx context.Context, in *rewardpb.CommissionCreditRequest) (*rewardpb.CommissionCreditResponse, error) {
+	l := memberwalletlogic.NewCommissionCreditLogic(ctx, s.svcCtx)
+	return l.CommissionCredit(in)
+}
+
+// 有奖反馈奖励入账
+func (s *MemberWalletServer) FeedbackReward(ctx context.Context, in *rewardpb.FeedbackRewardRequest) (*rewardpb.FeedbackRewardResponse, error) {
+	l := memberwalletlogic.NewFeedbackRewardLogic(ctx, s.svcCtx)
+	return l.FeedbackReward(in)
+}
+
+// VIP 奖励入账
+func (s *MemberWalletServer) VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest) (*rewardpb.VIPRewardResponse, error) {
+	l := memberwalletlogic.NewVIPRewardLogic(ctx, s.svcCtx)
+	return l.VIPReward(in)
 }

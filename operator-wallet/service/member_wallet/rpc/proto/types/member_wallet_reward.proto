@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package member_wallet_reward;
+
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/rewardpb";
+
+// 活动奖励入账请求
+message ActivityRewardRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 活动奖励订单号
+  string activity_order_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 奖励金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 活动奖励入账响应
+message ActivityRewardResponse {}
+
+
+// 任务奖励入账请求
+message TaskRewardRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 任务奖励订单号
+  string task_order_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 奖励金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 任务奖励入账响应
+message TaskRewardResponse {}
+
+
+// 全民代理佣金入账请求
+message CommissionCreditRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 佣金结算订单号
+  string commission_order_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 佣金金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 全民代理佣金入账响应
+message CommissionCreditResponse {}
+
+
+// 有奖反馈奖励入账请求
+message FeedbackRewardRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 有奖反馈订单号
+  string feedback_order_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 奖励金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 有奖反馈奖励入账响应
+message FeedbackRewardResponse {}
+
+
+// VIP 奖励入账请求
+message VIPRewardRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // VIP 奖励订单号
+  string vip_reward_order_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 奖励金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// VIP 奖励入账响应
+message VIPRewardResponse {}

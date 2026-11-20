@@ -11,6 +11,8 @@ import (
 
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/rewardpb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/withdrawpb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -20,10 +22,38 @@ type (
 	MemberWallet interface {
 		// 存款本金入账
 		DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
+		// 存款赠送入账
+		DepositBonus(ctx context.Context, in *depositpb.DepositBonusRequest, opts ...grpc.CallOption) (*depositpb.DepositBonusResponse, error)
+		// 提现冻结
+		WithdrawalFreeze(ctx context.Context, in *withdrawpb.WithdrawalFreezeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalFreezeResponse, error)
+		// 提现出款
+		WithdrawalPayout(ctx context.Context, in *withdrawpb.WithdrawalPayoutRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalPayoutResponse, error)
+		// 提现手续费
+		WithdrawalFee(ctx context.Context, in *withdrawpb.WithdrawalFeeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalFeeResponse, error)
+		// 提现解冻退回
+		WithdrawalUnfreeze(ctx context.Context, in *withdrawpb.WithdrawalUnfreezeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalUnfreezeResponse, error)
 		// 游戏下注
 		GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error)
 		// 游戏下注取消
 		GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest, opts ...grpc.CallOption) (*gamepb.GameBetCancelResponse, error)
+		// 游戏结算
+		GameSettlement(ctx context.Context, in *gamepb.GameSettlementRequest, opts ...grpc.CallOption) (*gamepb.GameSettlementResponse, error)
+		// 游戏消费打赏
+		GameTip(ctx context.Context, in *gamepb.GameTipRequest, opts ...grpc.CallOption) (*gamepb.GameTipResponse, error)
+		// 游戏返水
+		GameRebate(ctx context.Context, in *gamepb.GameRebateRequest, opts ...grpc.CallOption) (*gamepb.GameRebateResponse, error)
+		// 游戏结算回滚
+		GameSettlementRollback(ctx context.Context, in *gamepb.GameSettlementRollbackRequest, opts ...grpc.CallOption) (*gamepb.GameSettlementRollbackResponse, error)
+		// 活动奖励入账
+		ActivityReward(ctx context.Context, in *rewardpb.ActivityRewardRequest, opts ...grpc.CallOption) (*rewardpb.ActivityRewardResponse, error)
+		// 任务奖励入账
+		TaskReward(ctx context.Context, in *rewardpb.TaskRewardRequest, opts ...grpc.CallOption) (*rewardpb.TaskRewardResponse, error)
+		// 全民代理佣金入账
+		CommissionCredit(ctx context.Context, in *rewardpb.CommissionCreditRequest, opts ...grpc.CallOption) (*rewardpb.CommissionCreditResponse, error)
+		// 有奖反馈奖励入账
+		FeedbackReward(ctx context.Context, in *rewardpb.FeedbackRewardRequest, opts ...grpc.CallOption) (*rewardpb.FeedbackRewardResponse, error)
+		// VIP 奖励入账
+		VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest, opts ...grpc.CallOption) (*rewardpb.VIPRewardResponse, error)
 	}
 
 	defaultMemberWallet struct {
@@ -43,6 +73,36 @@ func (m *defaultMemberWallet) DepositCredit(ctx context.Context, in *depositpb.D
 	return client.DepositCredit(ctx, in, opts...)
 }
 
+// 存款赠送入账
+func (m *defaultMemberWallet) DepositBonus(ctx context.Context, in *depositpb.DepositBonusRequest, opts ...grpc.CallOption) (*depositpb.DepositBonusResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.DepositBonus(ctx, in, opts...)
+}
+
+// 提现冻结
+func (m *defaultMemberWallet) WithdrawalFreeze(ctx context.Context, in *withdrawpb.WithdrawalFreezeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalFreezeResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.WithdrawalFreeze(ctx, in, opts...)
+}
+
+// 提现出款
+func (m *defaultMemberWallet) WithdrawalPayout(ctx context.Context, in *withdrawpb.WithdrawalPayoutRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalPayoutResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.WithdrawalPayout(ctx, in, opts...)
+}
+
+// 提现手续费
+func (m *defaultMemberWallet) WithdrawalFee(ctx context.Context, in *withdrawpb.WithdrawalFeeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalFeeResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.WithdrawalFee(ctx, in, opts...)
+}
+
+// 提现解冻退回
+func (m *defaultMemberWallet) WithdrawalUnfreeze(ctx context.Context, in *withdrawpb.WithdrawalUnfreezeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalUnfreezeResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.WithdrawalUnfreeze(ctx, in, opts...)
+}
+
 // 游戏下注
 func (m *defaultMemberWallet) GameBet(ctx context.Context, in *gamepb.GameBetRequest, opts ...grpc.CallOption) (*gamepb.GameBetResponse, error) {
 	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
@@ -53,4 +113,58 @@ func (m *defaultMemberWallet) GameBet(ctx context.Context, in *gamepb.GameBetReq
 func (m *defaultMemberWallet) GameBetCancel(ctx context.Context, in *gamepb.GameBetCancelRequest, opts ...grpc.CallOption) (*gamepb.GameBetCancelResponse, error) {
 	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
 	return client.GameBetCancel(ctx, in, opts...)
+}
+
+// 游戏结算
+func (m *defaultMemberWallet) GameSettlement(ctx context.Context, in *gamepb.GameSettlementRequest, opts ...grpc.CallOption) (*gamepb.GameSettlementResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.GameSettlement(ctx, in, opts...)
+}
+
+// 游戏消费打赏
+func (m *defaultMemberWallet) GameTip(ctx context.Context, in *gamepb.GameTipRequest, opts ...grpc.CallOption) (*gamepb.GameTipResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.GameTip(ctx, in, opts...)
+}
+
+// 游戏返水
+func (m *defaultMemberWallet) GameRebate(ctx context.Context, in *gamepb.GameRebateRequest, opts ...grpc.CallOption) (*gamepb.GameRebateResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.GameRebate(ctx, in, opts...)
+}
+
+// 游戏结算回滚
+func (m *defaultMemberWallet) GameSettlementRollback(ctx context.Context, in *gamepb.GameSettlementRollbackRequest, opts ...grpc.CallOption) (*gamepb.GameSettlementRollbackResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.GameSettlementRollback(ctx, in, opts...)
+}
+
+// 活动奖励入账
+func (m *defaultMemberWallet) ActivityReward(ctx context.Context, in *rewardpb.ActivityRewardRequest, opts ...grpc.CallOption) (*rewardpb.ActivityRewardResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.ActivityReward(ctx, in, opts...)
+}
+
+// 任务奖励入账
+func (m *defaultMemberWallet) TaskReward(ctx context.Context, in *rewardpb.TaskRewardRequest, opts ...grpc.CallOption) (*rewardpb.TaskRewardResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.TaskReward(ctx, in, opts...)
+}
+
+// 全民代理佣金入账
+func (m *defaultMemberWallet) CommissionCredit(ctx context.Context, in *rewardpb.CommissionCreditRequest, opts ...grpc.CallOption) (*rewardpb.CommissionCreditResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.CommissionCredit(ctx, in, opts...)
+}
+
+// 有奖反馈奖励入账
+func (m *defaultMemberWallet) FeedbackReward(ctx context.Context, in *rewardpb.FeedbackRewardRequest, opts ...grpc.CallOption) (*rewardpb.FeedbackRewardResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.FeedbackReward(ctx, in, opts...)
+}
+
+// VIP 奖励入账
+func (m *defaultMemberWallet) VIPReward(ctx context.Context, in *rewardpb.VIPRewardRequest, opts ...grpc.CallOption) (*rewardpb.VIPRewardResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.VIPReward(ctx, in, opts...)
 }

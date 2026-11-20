@@ -13,7 +13,7 @@ message GameBetRequest {
   // 游戏厂商原始下注单号
   string provider_bet_no = 3;
 
-  // 下注信息
+  // 钱包结算币种编码
   string currency_code = 4;
   // 下注金额, 币种最小单位
   int64 bet_amount = 5;
@@ -21,6 +21,7 @@ message GameBetRequest {
 
 // 游戏下注响应
 message GameBetResponse {}
+
 
 // 游戏下注取消请求
 message GameBetCancelRequest {
@@ -30,6 +31,7 @@ message GameBetCancelRequest {
   string operation_id = 2;
   // 原始游戏厂商下注单号
   string provider_bet_no = 3;
+
   // 钱包结算币种编码
   string currency_code = 4;
   // 原始下注金额, 由上游根据原始下注记录传入, 币种最小单位
@@ -38,3 +40,83 @@ message GameBetCancelRequest {
 
 // 游戏下注取消响应
 message GameBetCancelResponse {}
+
+
+// 游戏结算请求
+message GameSettlementRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 游戏厂商原始下注单号
+  string provider_bet_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 原始下注金额, 币种最小单位
+  int64 bet_amount = 5;
+  // 实际派彩金额, 币种最小单位
+  int64 payout_amount = 6;
+}
+
+// 游戏结算响应
+message GameSettlementResponse {}
+
+
+// 游戏消费打赏请求
+message GameTipRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 游戏厂商打赏订单号
+  string provider_order_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 打赏金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 游戏消费打赏响应
+message GameTipResponse {}
+
+
+// 游戏返水请求
+message GameRebateRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 返水业务订单号
+  string rebate_order_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 返水金额, 币种最小单位
+  int64 amount = 5;
+}
+
+// 游戏返水响应
+message GameRebateResponse {}
+
+
+// 游戏结算回滚请求
+message GameSettlementRollbackRequest {
+  // 会员全局唯一标识
+  string member_global_id = 1;
+  // 钱包操作唯一标识, UUID
+  string operation_id = 2;
+  // 原始游戏厂商下注单号
+  string provider_bet_no = 3;
+
+  // 钱包结算币种编码
+  string currency_code = 4;
+  // 原始下注金额, 币种最小单位
+  int64 bet_amount = 5;
+  // 原结算派彩金额, 币种最小单位
+  int64 payout_amount = 6;
+}
+
+// 游戏结算回滚响应
+message GameSettlementRollbackResponse {}
