@@ -34,7 +34,7 @@ message WithdrawalPayoutRequest {
 
   // 钱包结算币种编码
   string currency_code = 4;
-  // 实际出款金额, 币种最小单位
+  // 扣除的冻结金额, 币种最小单位
   int64 amount = 5;
 }
 

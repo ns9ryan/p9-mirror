@@ -151,7 +151,7 @@ type WithdrawalPayoutRequest struct {
 	WithdrawalOrderNo string `protobuf:"bytes,3,opt,name=withdrawal_order_no,json=withdrawalOrderNo,proto3" json:"withdrawal_order_no,omitempty"`
 	// 钱包结算币种编码
 	CurrencyCode string `protobuf:"bytes,4,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
-	// 实际出款金额, 币种最小单位
+	// 扣除的冻结金额, 币种最小单位
 	Amount        int64 `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
