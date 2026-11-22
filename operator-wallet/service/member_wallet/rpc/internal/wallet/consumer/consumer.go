@@ -68,7 +68,8 @@ func New(config Config) (*Consumer, error) {
 		kgo.SeedBrokers(config.Brokers...),
 		kgo.ConsumerGroup(config.GroupID),
 		kgo.ConsumeTopics(config.Topic),
-		kgo.DisableAutoCommit(), // 由数据库事务成功后手动提交 Offset
+		kgo.ConsumeResetOffset(kgo.NewOffset().AtStart()), // Offset 越界时, 从最早可用消息开始恢复消费
+		kgo.DisableAutoCommit(),                           // 由数据库事务成功后手动提交 Offset
 	)
 	if err != nil {
 		return nil, fmt.Errorf("create wallet consumer: %w", err)

@@ -66,6 +66,7 @@ require (
 	github.com/redis/go-redis/v9 v9.21.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/titanous/json5 v1.0.0 // indirect
+	github.com/twmb/franz-go/pkg/kfake v0.0.0-20261121001519-6c9b35e5d612 // indirect
 	github.com/twmb/franz-go/pkg/kmsg v1.15.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
