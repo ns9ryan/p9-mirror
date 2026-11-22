@@ -74,8 +74,8 @@ func (l *GameBetCancelLogic) GameBetCancel(in *gamepb.GameBetCancelRequest) (*ga
 		wallet.RecordParams{
 			// 操作与业务来源
 			OperationID:    params.operationID,               // 钱包操作唯一标识
-			BusinessType:   enum.BusinessTypeGame,            // 一级业务类型
-			BusinessAction: enum.BusinessActionGameBetCancel, // 具体资金操作类型
+			BusinessType:   enum.BusinessTypeGame,            // 一级业务类型: 游戏
+			BusinessAction: enum.BusinessActionGameBetCancel, // 具体资金操作类型: 下注取消
 			BusinessNo:     params.providerBetNo,             // 原始游戏下注单号
 
 			// 本次操作的余额变动集合
