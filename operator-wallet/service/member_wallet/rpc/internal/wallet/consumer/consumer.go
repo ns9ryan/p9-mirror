@@ -68,7 +68,7 @@ func New(config Config) (*Consumer, error) {
 		kgo.SeedBrokers(config.Brokers...),
 		kgo.ConsumerGroup(config.GroupID),
 		kgo.ConsumeTopics(config.Topic),
-		kgo.ConsumeResetOffset(kgo.NewOffset().AtStart()), // Offset 越界时, 从最早可用消息开始恢复消费
+		kgo.ConsumeResetOffset(kgo.NewOffset().AtStart()), // 新 Group 从最早消息开始, Offset 越界时停止消费
 		kgo.DisableAutoCommit(),                           // 由数据库事务成功后手动提交 Offset
 	)
 	if err != nil {

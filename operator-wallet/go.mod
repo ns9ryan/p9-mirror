@@ -7,6 +7,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/twmb/franz-go v1.22.3
+	github.com/twmb/franz-go/pkg/kfake v0.0.0-20261121001519-6c9b35e5d612
 	github.com/zeromicro/go-zero v1.10.3
 	google.golang.org/grpc v1.85.0
 	google.golang.org/protobuf v1.36.12
@@ -66,7 +67,6 @@ require (
 	github.com/redis/go-redis/v9 v9.21.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/titanous/json5 v1.0.0 // indirect
-	github.com/twmb/franz-go/pkg/kfake v0.0.0-20261121001519-6c9b35e5d612 // indirect
 	github.com/twmb/franz-go/pkg/kmsg v1.15.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
