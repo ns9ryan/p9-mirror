@@ -42,25 +42,6 @@ message WithdrawalPayoutRequest {
 message WithdrawalPayoutResponse {}
 
 
-// 提现手续费请求
-message WithdrawalFeeRequest {
-  // 会员全局唯一标识
-  string member_global_id = 1;
-  // 钱包操作唯一标识, UUID
-  string operation_id = 2;
-  // 提现订单号
-  string withdrawal_order_no = 3;
-
-  // 钱包结算币种编码
-  string currency_code = 4;
-  // 手续费金额, 币种最小单位
-  int64 amount = 5;
-}
-
-// 提现手续费响应
-message WithdrawalFeeResponse {}
-
-
 // 提现解冻退回请求
 message WithdrawalUnfreezeRequest {
   // 会员全局唯一标识

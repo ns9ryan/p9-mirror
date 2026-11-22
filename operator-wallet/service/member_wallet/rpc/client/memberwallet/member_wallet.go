@@ -28,8 +28,6 @@ type (
 		WithdrawalFreeze(ctx context.Context, in *withdrawpb.WithdrawalFreezeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalFreezeResponse, error)
 		// 提现出款
 		WithdrawalPayout(ctx context.Context, in *withdrawpb.WithdrawalPayoutRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalPayoutResponse, error)
-		// 提现手续费
-		WithdrawalFee(ctx context.Context, in *withdrawpb.WithdrawalFeeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalFeeResponse, error)
 		// 提现解冻退回
 		WithdrawalUnfreeze(ctx context.Context, in *withdrawpb.WithdrawalUnfreezeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalUnfreezeResponse, error)
 		// 游戏下注
@@ -89,12 +87,6 @@ func (m *defaultMemberWallet) WithdrawalFreeze(ctx context.Context, in *withdraw
 func (m *defaultMemberWallet) WithdrawalPayout(ctx context.Context, in *withdrawpb.WithdrawalPayoutRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalPayoutResponse, error) {
 	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
 	return client.WithdrawalPayout(ctx, in, opts...)
-}
-
-// 提现手续费
-func (m *defaultMemberWallet) WithdrawalFee(ctx context.Context, in *withdrawpb.WithdrawalFeeRequest, opts ...grpc.CallOption) (*withdrawpb.WithdrawalFeeResponse, error) {
-	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
-	return client.WithdrawalFee(ctx, in, opts...)
 }
 
 // 提现解冻退回

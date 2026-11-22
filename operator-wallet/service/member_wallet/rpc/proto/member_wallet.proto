@@ -41,9 +41,6 @@ service MemberWallet {
   // 提现出款
   rpc WithdrawalPayout(member_wallet_withdraw.WithdrawalPayoutRequest) returns (member_wallet_withdraw.WithdrawalPayoutResponse);
 
-  // 提现手续费
-  rpc WithdrawalFee(member_wallet_withdraw.WithdrawalFeeRequest) returns (member_wallet_withdraw.WithdrawalFeeResponse);
-
   // 提现解冻退回
   rpc WithdrawalUnfreeze(member_wallet_withdraw.WithdrawalUnfreezeRequest) returns (member_wallet_withdraw.WithdrawalUnfreezeResponse);
 

@@ -65,8 +65,7 @@ const (
 
 	BusinessActionWithdrawalFreeze   BusinessAction = 2001 // 提现冻结
 	BusinessActionWithdrawalPayout   BusinessAction = 2002 // 提现出款
-	BusinessActionWithdrawalFee      BusinessAction = 2003 // 提现手续费
-	BusinessActionWithdrawalUnfreeze BusinessAction = 2004 // 提现解冻退回
+	BusinessActionWithdrawalUnfreeze BusinessAction = 2003 // 提现解冻退回
 
 	// ---------------------------------------------------------------------
 	// 游戏
@@ -120,7 +119,6 @@ func (a BusinessAction) IsValidFor(businessType BusinessType) bool {
 		switch a {
 		case BusinessActionWithdrawalFreeze,
 			BusinessActionWithdrawalPayout,
-			BusinessActionWithdrawalFee,
 			BusinessActionWithdrawalUnfreeze:
 			return true
 		}

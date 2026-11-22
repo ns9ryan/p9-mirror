@@ -6,14 +6,14 @@ import (
 	"unicode/utf8"
 
 	"github.com/google/uuid"
+	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/enum"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/wallet"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 // DepositBonusLogic 处理会员存款赠送入账

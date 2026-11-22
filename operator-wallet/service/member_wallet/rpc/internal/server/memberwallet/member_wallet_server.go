@@ -51,12 +51,6 @@ func (s *MemberWalletServer) WithdrawalPayout(ctx context.Context, in *withdrawp
 	return l.WithdrawalPayout(in)
 }
 
-// 提现手续费
-func (s *MemberWalletServer) WithdrawalFee(ctx context.Context, in *withdrawpb.WithdrawalFeeRequest) (*withdrawpb.WithdrawalFeeResponse, error) {
-	l := memberwalletlogic.NewWithdrawalFeeLogic(ctx, s.svcCtx)
-	return l.WithdrawalFee(in)
-}
-
 // 提现解冻退回
 func (s *MemberWalletServer) WithdrawalUnfreeze(ctx context.Context, in *withdrawpb.WithdrawalUnfreezeRequest) (*withdrawpb.WithdrawalUnfreezeResponse, error) {
 	l := memberwalletlogic.NewWithdrawalUnfreezeLogic(ctx, s.svcCtx)
