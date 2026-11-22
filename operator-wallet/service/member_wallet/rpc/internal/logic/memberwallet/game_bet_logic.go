@@ -60,7 +60,7 @@ func (l *GameBetLogic) GameBet(in *gamepb.GameBetRequest) (*gamepb.GameBetRespon
 			memberGlobalID: params.memberGlobalID, // 会员全局唯一标识
 			currencyCode:   params.currencyCode,   // 请求币种编码
 		},
-		params.operationID,
+		params.operationID, // 钱包操作唯一标识
 		l.Logger,
 	)
 	if err != nil {
@@ -75,8 +75,8 @@ func (l *GameBetLogic) GameBet(in *gamepb.GameBetRequest) (*gamepb.GameBetRespon
 		wallet.RecordParams{
 			// 操作与业务来源
 			OperationID:    params.operationID,         // 钱包操作唯一标识
-			BusinessType:   enum.BusinessTypeGame,      // 一级业务类型
-			BusinessAction: enum.BusinessActionGameBet, // 具体资金操作类型
+			BusinessType:   enum.BusinessTypeGame,      // 一级业务类型: 游戏
+			BusinessAction: enum.BusinessActionGameBet, // 具体资金操作类型: 游戏下注
 			BusinessNo:     params.providerBetNo,       // 游戏厂商原始下注单号
 
 			// 本次操作的余额变动集合
