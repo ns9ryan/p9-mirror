@@ -90,25 +90,25 @@ func NewServiceContext(c config.Config) (*ServiceContext, error) {
 	}
 
 	// 创建Kafka Consumer
-	walletConsumer, err := consumer.New(consumer.Config{
-		Brokers: walletConf.KafkaBrokers,       // Kafka Broker 地址
-		Topic:   walletConf.KafkaTopic,         // 资金事件 Topic
-		GroupID: walletConf.KafkaConsumerGroup, // Consumer Group ID
-	})
-	if err != nil {
-		_ = walletEngine.Close(context.Background())
-		walletCancel()
-		_ = db.Close()
-		return nil, fmt.Errorf("create member wallet consumer: %w", err)
-	}
+	// walletConsumer, err := consumer.New(consumer.Config{
+	// 	Brokers: walletConf.KafkaBrokers,       // Kafka Broker 地址
+	// 	Topic:   walletConf.KafkaTopic,         // 资金事件 Topic
+	// 	GroupID: walletConf.KafkaConsumerGroup, // Consumer Group ID
+	// })
+	// if err != nil {
+	// 	_ = walletEngine.Close(context.Background())
+	// 	walletCancel()
+	// 	_ = db.Close()
+	// 	return nil, fmt.Errorf("create member wallet consumer: %w", err)
+	// }
 
 	return &ServiceContext{
-		Config:         c,
-		DB:             db,
-		DAO:            dao.New(db),
-		WalletEngine:   walletEngine,
-		WalletConsumer: walletConsumer,
-		walletCancel:   walletCancel,
+		Config:       c,
+		DB:           db,
+		DAO:          dao.New(db),
+		WalletEngine: walletEngine,
+		// WalletConsumer: walletConsumer,
+		walletCancel: walletCancel,
 
 		// 初始化钱包标识缓存
 		walletIndex: make(map[walletIndexKey]walletIndexEntry),

@@ -122,9 +122,7 @@ func TestBuildPartitionOffsets(t *testing.T) {
 				want[partition] = kgo.NewOffset().At(offset)
 			}
 
-			if !reflect.DeepEqual(got, map[string]map[int32]kgo.Offset{
-				topic: want,
-			}) {
+			if !reflect.DeepEqual(got, map[string]map[int32]kgo.Offset{topic: want}) {
 				t.Fatalf("unexpected partition offsets: got=%v", got)
 			}
 		})

@@ -13,7 +13,7 @@ import (
 var (
 	errEmptyBrokers           = errors.New("wallet consumer: empty brokers")
 	errEmptyTopic             = errors.New("wallet consumer: empty topic")
-	errEmptyGroupID           = errors.New("wallet consumer: empty group ID")
+	errEmptyPartitions        = errors.New("wallet consumer: empty partitions")
 	errNilContext             = errors.New("wallet consumer: nil context")
 	errNilHandler             = errors.New("wallet consumer: nil handler")
 	errConsumerAlreadyStarted = errors.New("wallet consumer: already started")
@@ -22,15 +22,15 @@ var (
 
 // Config 配置钱包资金事件消费者
 type Config struct {
-	Brokers []string // Kafka Broker 地址
-	Topic   string   // 资金事件 Topic
-	GroupID string   // Consumer Group ID
+	Brokers    []string             // Kafka Broker 地址
+	Topic      string               // 资金事件 Topic
+	Partitions map[int32]kgo.Offset // 已校验的 Partition 起始 Offset
 }
 
 // Handler 处理单条钱包资金事件
 type Handler func(context.Context, *kgo.Record) error
 
-// Consumer 负责消费钱包资金事件
+// Consumer 负责顺序消费钱包资金事件
 type Consumer struct {
 	client *kgo.Client // Kafka 消费客户端
 
@@ -44,7 +44,7 @@ type Consumer struct {
 	closeOnce sync.Once // 确保客户端只关闭一次
 }
 
-// New 创建钱包资金事件消费者
+// New 创建固定 Partition 的钱包资金事件消费者, Partitions 必须由 Checkpoint 和 Kafka 日志范围校验后提供
 func New(config Config) (*Consumer, error) {
 	if len(config.Brokers) == 0 {
 		return nil, errEmptyBrokers
@@ -52,7 +52,7 @@ func New(config Config) (*Consumer, error) {
 
 	for _, broker := range config.Brokers {
 		if broker == "" || strings.TrimSpace(broker) != broker {
-			return nil, fmt.Errorf("wallet consumer: invalid broker address")
+			return nil, errors.New("wallet consumer: invalid broker address")
 		}
 	}
 
@@ -60,16 +60,26 @@ func New(config Config) (*Consumer, error) {
 		return nil, errEmptyTopic
 	}
 
-	if config.GroupID == "" || strings.TrimSpace(config.GroupID) != config.GroupID {
-		return nil, errEmptyGroupID
+	if len(config.Partitions) == 0 {
+		return nil, errEmptyPartitions
+	}
+
+	// 复制分区配置, 避免外部修改原 Map
+	partitions := make(map[int32]kgo.Offset, len(config.Partitions))
+	for partition, offset := range config.Partitions {
+		if partition < 0 {
+			return nil, fmt.Errorf("%w: partition=%d", errInvalidConsumeOffsets, partition)
+		}
+
+		partitions[partition] = offset
 	}
 
 	client, err := kgo.NewClient(
 		kgo.SeedBrokers(config.Brokers...),
-		kgo.ConsumerGroup(config.GroupID),
-		kgo.ConsumeTopics(config.Topic),
-		kgo.ConsumeResetOffset(kgo.NoResetOffset()), // 新 Group 从最早消息开始, Offset 越界时停止消费
-		kgo.DisableAutoCommit(),                     // 由数据库事务成功后手动提交 Offset
+		kgo.ConsumePartitions(map[string]map[int32]kgo.Offset{
+			config.Topic: partitions,
+		}),
+		kgo.ConsumeResetOffset(kgo.NoResetOffset()), // Offset 越界时禁止自动重置
 	)
 	if err != nil {
 		return nil, fmt.Errorf("create wallet consumer: %w", err)
@@ -138,7 +148,7 @@ func (c *Consumer) run(ctx context.Context, handler Handler) {
 			return
 		}
 
-		// 当前阶段遇到分区拉取错误时停止消费, 避免静默跳过
+		// 拉取失败时停止消费, 避免静默跳过资金事件
 		if fetchErrors := fetches.Errors(); len(fetchErrors) > 0 {
 			runErr = fmt.Errorf(
 				"poll wallet events: topic=%s partition=%d: %w",
@@ -149,11 +159,17 @@ func (c *Consumer) run(ctx context.Context, handler Handler) {
 			return
 		}
 
-		// 当前先串行处理拉取到的记录, 后续再实现分区级并行
+		// 顺序处理资金事件, Handler 失败后停止消费
 		var handlerErr error
 
 		fetches.EachRecord(func(record *kgo.Record) {
 			if handlerErr != nil {
+				return
+			}
+
+			// 服务停止时不再处理后续消息
+			if ctx.Err() != nil {
+				handlerErr = ctx.Err()
 				return
 			}
 
@@ -169,6 +185,10 @@ func (c *Consumer) run(ctx context.Context, handler Handler) {
 		})
 
 		if handlerErr != nil {
+			if ctx.Err() != nil {
+				return
+			}
+
 			runErr = handlerErr
 			return
 		}

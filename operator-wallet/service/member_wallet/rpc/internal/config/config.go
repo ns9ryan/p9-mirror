@@ -22,9 +22,8 @@ type Config struct {
 // WalletRuntimeConf 钱包 Actor 运行时配置
 type WalletRuntimeConf struct {
 	// Kafka 配置
-	KafkaBrokers       []string // Kafka Broker 地址
-	KafkaTopic         string   // 资金事件 Topic
-	KafkaConsumerGroup string   // Consumer Group ID
+	KafkaBrokers []string // Kafka Broker 地址
+	KafkaTopic   string   // 资金事件 Topic
 
 	// 并发配置
 	ShardCount      int // Shard 数量, 必须与 Topic Partition 数量一致

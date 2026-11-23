@@ -26,7 +26,6 @@ WalletRuntimeConf:
     - 192.168.10.220:9195
     - 192.168.10.220:9196
   KafkaTopic: p9-wallet-events              # 资金事件 Topic
-  KafkaConsumerGroup: p9-wallet-persistence # Consumer Group ID
 
   # 并发配置
   ShardCount: 32                # Shard 数量, 必须与 Topic Partition 数量一致

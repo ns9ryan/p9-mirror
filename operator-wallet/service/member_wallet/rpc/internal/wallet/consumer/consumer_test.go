@@ -3,7 +3,6 @@ package consumer
 import (
 	"context"
 	"errors"
-	"fmt"
 	"testing"
 	"time"
 
@@ -29,7 +28,9 @@ func newTestConsumer(t *testing.T) (*Consumer, *kgo.Client, *kfake.Cluster) {
 	c, err := New(Config{
 		Brokers: cluster.ListenAddrs(),
 		Topic:   testTopic,
-		GroupID: fmt.Sprintf("test-%s", t.Name()),
+		Partitions: map[int32]kgo.Offset{
+			0: kgo.NewOffset().At(0),
+		},
 	})
 	if err != nil {
 		t.Fatalf("create consumer: %v", err)
