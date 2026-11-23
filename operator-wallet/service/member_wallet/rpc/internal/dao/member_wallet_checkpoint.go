@@ -56,29 +56,36 @@ func (d *MemberWalletCheckpoint) CreateInitialTx(ctx context.Context, tx *ent.Tx
 }
 
 // AdvanceTx 在当前事务中推进已持久化消息的消费进度, 调用方必须先确认消息有效, 且不存在未处理的资金事件
-func (d *MemberWalletCheckpoint) AdvanceTx(ctx context.Context, tx *ent.Tx, topic string, partition int32, expectedOffset int64) error {
+func (d *MemberWalletCheckpoint) AdvanceTx(
+	ctx context.Context,
+	tx *ent.Tx,
+	topic string,
+	partition int32,
+	expectedNextOffset int64,
+	processedOffset int64,
+) error {
 	if err := validateCheckpoint(topic, partition); err != nil {
 		return err
 	}
-	if expectedOffset < 0 || expectedOffset == math.MaxInt64 {
-		return fmt.Errorf("%w: expected_offset=%d", ErrInvalidCheckpoint, expectedOffset)
+	if expectedNextOffset < 0 || processedOffset < expectedNextOffset || processedOffset == math.MaxInt64 {
+		return fmt.Errorf("%w: expected_next_offset=%d processed_offset=%d", ErrInvalidCheckpoint, expectedNextOffset, processedOffset)
 	}
 
-	// 只允许从当前已知进度推进, 防止并发覆盖
+	// 仅在当前进度匹配时推进, 防止并发覆盖
 	affected, err := tx.MemberWalletCheckpoint.Update().
 		Where(
-			memberwalletcheckpoint.TopicEQ(topic),               // Kafka 资金事件 Topic
-			memberwalletcheckpoint.PartitionEQ(partition),       // Kafka Partition 编号
-			memberwalletcheckpoint.NextOffsetEQ(expectedOffset), // 下一条需要持久化的 Kafka Offset
+			memberwalletcheckpoint.TopicEQ(topic),                   // Kafka 资金事件 Topic
+			memberwalletcheckpoint.PartitionEQ(partition),           // Kafka Partition 编号
+			memberwalletcheckpoint.NextOffsetEQ(expectedNextOffset), // 下一条需要持久化的 Kafka Offset
 		).
-		SetNextOffset(expectedOffset + 1).
+		SetNextOffset(processedOffset + 1).
 		Save(ctx)
 	if err != nil {
-		return fmt.Errorf("advance checkpoint: topic=%s partition=%d offset=%d: %w", topic, partition, expectedOffset, err)
+		return fmt.Errorf("advance checkpoint: topic=%s partition=%d offset=%d: %w", topic, partition, processedOffset, err)
 	}
 
 	if affected != 1 {
-		return fmt.Errorf("%w: topic=%s partition=%d expected_offset=%d", ErrCheckpointNotAdvanced, topic, partition, expectedOffset)
+		return fmt.Errorf("%w: topic=%s partition=%d expected_next_offset=%d", ErrCheckpointNotAdvanced, topic, partition, expectedNextOffset)
 	}
 
 	return nil
