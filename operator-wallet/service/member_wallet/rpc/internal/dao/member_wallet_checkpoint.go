@@ -55,7 +55,7 @@ func (d *MemberWalletCheckpoint) CreateInitialTx(ctx context.Context, tx *ent.Tx
 		Exec(ctx)
 }
 
-// AdvanceTx 在当前事务中推进一条已持久化事件的消费进度, 仅允许从 expectedOffset 推进到 expectedOffset + 1
+// AdvanceTx 在当前事务中推进已持久化消息的消费进度, 调用方必须先确认消息有效, 且不存在未处理的资金事件
 func (d *MemberWalletCheckpoint) AdvanceTx(ctx context.Context, tx *ent.Tx, topic string, partition int32, expectedOffset int64) error {
 	if err := validateCheckpoint(topic, partition); err != nil {
 		return err
@@ -64,7 +64,7 @@ func (d *MemberWalletCheckpoint) AdvanceTx(ctx context.Context, tx *ent.Tx, topi
 		return fmt.Errorf("%w: expected_offset=%d", ErrInvalidCheckpoint, expectedOffset)
 	}
 
-	// 使用条件更新防止错误进度覆盖, 不允许跳过中间 Offset
+	// 只允许从当前已知进度推进, 防止并发覆盖
 	affected, err := tx.MemberWalletCheckpoint.Update().
 		Where(
 			memberwalletcheckpoint.TopicEQ(topic),               // Kafka 资金事件 Topic
