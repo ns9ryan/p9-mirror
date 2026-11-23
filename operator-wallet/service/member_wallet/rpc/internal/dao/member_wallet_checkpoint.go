@@ -120,3 +120,35 @@ func validateCheckpoint(topic string, partition int32) error {
 
 	return nil
 }
+
+// InitializeEmptyTopic 为全新空 Topic 初始化全部 Partition 的消费进度, 调用前必须确认 Kafka 全部分区的日志起点和终点均为 0
+func (d *MemberWalletCheckpoint) InitializeEmptyTopic(ctx context.Context, topic string, partitionCount int) error {
+	if err := validateCheckpoint(topic, 0); err != nil {
+		return err
+	}
+	if partitionCount <= 0 {
+		return fmt.Errorf("%w: partition_count=%d", ErrInvalidCheckpoint, partitionCount)
+	}
+
+	return WithTx(ctx, d.db, func(tx *ent.Tx) error {
+		// 已有任意进度时拒绝重新初始化, 避免覆盖消费历史
+		count, err := tx.MemberWalletCheckpoint.Query().
+			Where(memberwalletcheckpoint.TopicEQ(topic)). // Kafka 资金事件 Topic
+			Count(ctx)
+		if err != nil {
+			return fmt.Errorf("count wallet checkpoints: %w", err)
+		}
+		if count != 0 {
+			return fmt.Errorf("%w: topic=%s already has %d checkpoints", ErrInvalidCheckpoint, topic, count)
+		}
+
+		// 全部分区在同一事务中创建, 任何失败都会回滚
+		for partition := range int32(partitionCount) {
+			if err := d.CreateInitialTx(ctx, tx, topic, partition, 0); err != nil {
+				return fmt.Errorf("initialize wallet checkpoint: partition=%d: %w", partition, err)
+			}
+		}
+
+		return nil
+	})
+}

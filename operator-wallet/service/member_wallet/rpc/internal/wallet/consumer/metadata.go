@@ -72,3 +72,23 @@ func readTopicLogOffsets(ctx context.Context, client *kgo.Client, topic string) 
 
 	return partitionCount, logStarts, logEnds, nil
 }
+
+// validateEmptyTopic 确认全部 Partition 尚未写入过消息, 返回实际分区数量
+func validateEmptyTopic(ctx context.Context, client *kgo.Client, topic string) (int, error) {
+	partitionCount, starts, ends, err := readTopicLogOffsets(ctx, client, topic)
+	if err != nil {
+		return 0, err
+	}
+
+	for partition := range int32(partitionCount) {
+		// 首次初始化只允许从全新空日志的 Offset 0 开始
+		if starts[partition] != 0 || ends[partition] != 0 {
+			return 0, fmt.Errorf(
+				"wallet checkpoint: topic is not empty: topic=%s partition=%d start=%d end=%d",
+				topic, partition, starts[partition], ends[partition],
+			)
+		}
+	}
+
+	return partitionCount, nil
+}
