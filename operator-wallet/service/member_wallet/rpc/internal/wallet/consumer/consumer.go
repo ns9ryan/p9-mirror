@@ -163,13 +163,7 @@ func (c *Consumer) run(ctx context.Context, handler Handler) {
 		var handlerErr error
 
 		fetches.EachRecord(func(record *kgo.Record) {
-			if handlerErr != nil {
-				return
-			}
-
-			// 服务停止时不再处理后续消息
-			if ctx.Err() != nil {
-				handlerErr = ctx.Err()
+			if handlerErr != nil || ctx.Err() != nil {
 				return
 			}
 
@@ -187,6 +181,11 @@ func (c *Consumer) run(ctx context.Context, handler Handler) {
 		// Handler 失败时保留原始错误, 即使此时服务正在停止
 		if handlerErr != nil {
 			runErr = handlerErr
+			return
+		}
+
+		// 正常停止不视为业务处理失败
+		if ctx.Err() != nil {
 			return
 		}
 	}

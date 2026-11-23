@@ -270,3 +270,44 @@ func TestConsumerClose(t *testing.T) {
 		t.Fatalf("expected errConsumerClosed, got %v", err)
 	}
 }
+
+// TestConsumerStopDuringHandler 验证正常停止不会产生虚假的 Handler 错误
+func TestConsumerStopDuringHandler(t *testing.T) {
+	c, producer, _ := newTestConsumer(t)
+
+	produceTestRecord(t, producer, "first")
+	produceTestRecord(t, producer, "second")
+
+	started := make(chan struct{})
+	release := make(chan struct{})
+
+	if err := c.Start(context.Background(), func(_ context.Context, record *kgo.Record) error {
+		if string(record.Value) != "first" {
+			t.Errorf("unexpected record after stop: %s", record.Value)
+			return errors.New("unexpected record")
+		}
+
+		close(started)
+		<-release
+		return nil
+	}); err != nil {
+		t.Fatalf("start consumer: %v", err)
+	}
+
+	waitForSignal(t, started)
+
+	// 先取消消费 Context, 再允许当前 Handler 返回
+	c.mu.Lock()
+	cancel := c.cancel
+	c.mu.Unlock()
+
+	cancel()
+	close(release)
+
+	ctx, stopCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer stopCancel()
+
+	if err := c.Stop(ctx); err != nil {
+		t.Fatalf("expected clean stop, got %v", err)
+	}
+}
