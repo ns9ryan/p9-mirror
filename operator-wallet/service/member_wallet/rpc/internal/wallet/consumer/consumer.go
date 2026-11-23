@@ -184,11 +184,8 @@ func (c *Consumer) run(ctx context.Context, handler Handler) {
 			}
 		})
 
+		// Handler 失败时保留原始错误, 即使此时服务正在停止
 		if handlerErr != nil {
-			if ctx.Err() != nil {
-				return
-			}
-
 			runErr = handlerErr
 			return
 		}
