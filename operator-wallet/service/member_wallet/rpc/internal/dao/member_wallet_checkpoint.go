@@ -91,6 +91,27 @@ func (d *MemberWalletCheckpoint) AdvanceTx(
 	return nil
 }
 
+// ListByTopic 查询指定 Topic 的全部消费进度
+func (d *MemberWalletCheckpoint) ListByTopic(ctx context.Context, topic string) (map[int32]int64, error) {
+	if err := validateCheckpoint(topic, 0); err != nil {
+		return nil, err
+	}
+
+	items, err := d.db.MemberWalletCheckpoint.Query().
+		Where(memberwalletcheckpoint.TopicEQ(topic)). // Kafka 资金事件 Topic
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list wallet checkpoints: topic=%s: %w", topic, err)
+	}
+
+	checkpoints := make(map[int32]int64, len(items))
+	for _, item := range items {
+		checkpoints[item.Partition] = item.NextOffset
+	}
+
+	return checkpoints, nil
+}
+
 // validateCheckpoint 校验 Kafka Topic 和 Partition
 func validateCheckpoint(topic string, partition int32) error {
 	if topic == "" || len(topic) > 249 || partition < 0 {
