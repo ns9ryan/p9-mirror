@@ -73,8 +73,8 @@ func readTopicLogOffsets(ctx context.Context, client *kgo.Client, topic string) 
 	return partitionCount, logStarts, logEnds, nil
 }
 
-// validateEmptyTopic 确认全部 Partition 尚未写入过消息, 返回实际分区数量
-func validateEmptyTopic(ctx context.Context, client *kgo.Client, topic string) (int, error) {
+// ValidateEmptyTopic 确认全部 Partition 的日志起止 Offset 均为 0, 返回实际分区数量
+func ValidateEmptyTopic(ctx context.Context, client *kgo.Client, topic string) (int, error) {
 	partitionCount, starts, ends, err := readTopicLogOffsets(ctx, client, topic)
 	if err != nil {
 		return 0, err
