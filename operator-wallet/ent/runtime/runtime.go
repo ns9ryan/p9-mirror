@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletcheckpoint"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 	"oa.98ent.com/p9/operator-wallet/ent/schema"
 )
@@ -102,6 +103,47 @@ func init() {
 	memberwallet.DefaultVersion = memberwalletDescVersion.Default.(int64)
 	// memberwallet.VersionValidator is a validator for the "version" field. It is called by the builders before save.
 	memberwallet.VersionValidator = memberwalletDescVersion.Validators[0].(func(int64) error)
+	memberwalletcheckpointMixin := schema.MemberWalletCheckpoint{}.Mixin()
+	memberwalletcheckpointMixinFields1 := memberwalletcheckpointMixin[1].Fields()
+	_ = memberwalletcheckpointMixinFields1
+	memberwalletcheckpointFields := schema.MemberWalletCheckpoint{}.Fields()
+	_ = memberwalletcheckpointFields
+	// memberwalletcheckpointDescCreatedAt is the schema descriptor for created_at field.
+	memberwalletcheckpointDescCreatedAt := memberwalletcheckpointMixinFields1[0].Descriptor()
+	// memberwalletcheckpoint.DefaultCreatedAt holds the default value on creation for the created_at field.
+	memberwalletcheckpoint.DefaultCreatedAt = memberwalletcheckpointDescCreatedAt.Default.(func() time.Time)
+	// memberwalletcheckpointDescUpdatedAt is the schema descriptor for updated_at field.
+	memberwalletcheckpointDescUpdatedAt := memberwalletcheckpointMixinFields1[1].Descriptor()
+	// memberwalletcheckpoint.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	memberwalletcheckpoint.DefaultUpdatedAt = memberwalletcheckpointDescUpdatedAt.Default.(func() time.Time)
+	// memberwalletcheckpoint.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	memberwalletcheckpoint.UpdateDefaultUpdatedAt = memberwalletcheckpointDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// memberwalletcheckpointDescTopic is the schema descriptor for topic field.
+	memberwalletcheckpointDescTopic := memberwalletcheckpointFields[0].Descriptor()
+	// memberwalletcheckpoint.TopicValidator is a validator for the "topic" field. It is called by the builders before save.
+	memberwalletcheckpoint.TopicValidator = func() func(string) error {
+		validators := memberwalletcheckpointDescTopic.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(topic string) error {
+			for _, fn := range fns {
+				if err := fn(topic); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// memberwalletcheckpointDescPartition is the schema descriptor for partition field.
+	memberwalletcheckpointDescPartition := memberwalletcheckpointFields[1].Descriptor()
+	// memberwalletcheckpoint.PartitionValidator is a validator for the "partition" field. It is called by the builders before save.
+	memberwalletcheckpoint.PartitionValidator = memberwalletcheckpointDescPartition.Validators[0].(func(int32) error)
+	// memberwalletcheckpointDescNextOffset is the schema descriptor for next_offset field.
+	memberwalletcheckpointDescNextOffset := memberwalletcheckpointFields[2].Descriptor()
+	// memberwalletcheckpoint.NextOffsetValidator is a validator for the "next_offset" field. It is called by the builders before save.
+	memberwalletcheckpoint.NextOffsetValidator = memberwalletcheckpointDescNextOffset.Validators[0].(func(int64) error)
 	memberwalletledgerHooks := schema.MemberWalletLedger{}.Hooks()
 	memberwalletledger.Hooks[0] = memberwalletledgerHooks[0]
 	memberwalletledger.Hooks[1] = memberwalletledgerHooks[1]

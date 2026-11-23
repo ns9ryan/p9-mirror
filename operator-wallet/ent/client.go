@@ -16,6 +16,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletcheckpoint"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 )
 
@@ -26,6 +27,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// MemberWallet is the client for interacting with the MemberWallet builders.
 	MemberWallet *MemberWalletClient
+	// MemberWalletCheckpoint is the client for interacting with the MemberWalletCheckpoint builders.
+	MemberWalletCheckpoint *MemberWalletCheckpointClient
 	// MemberWalletLedger is the client for interacting with the MemberWalletLedger builders.
 	MemberWalletLedger *MemberWalletLedgerClient
 }
@@ -40,6 +43,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.MemberWallet = NewMemberWalletClient(c.config)
+	c.MemberWalletCheckpoint = NewMemberWalletCheckpointClient(c.config)
 	c.MemberWalletLedger = NewMemberWalletLedgerClient(c.config)
 }
 
@@ -131,10 +135,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		MemberWallet:       NewMemberWalletClient(cfg),
-		MemberWalletLedger: NewMemberWalletLedgerClient(cfg),
+		ctx:                    ctx,
+		config:                 cfg,
+		MemberWallet:           NewMemberWalletClient(cfg),
+		MemberWalletCheckpoint: NewMemberWalletCheckpointClient(cfg),
+		MemberWalletLedger:     NewMemberWalletLedgerClient(cfg),
 	}, nil
 }
 
@@ -152,10 +157,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		MemberWallet:       NewMemberWalletClient(cfg),
-		MemberWalletLedger: NewMemberWalletLedgerClient(cfg),
+		ctx:                    ctx,
+		config:                 cfg,
+		MemberWallet:           NewMemberWalletClient(cfg),
+		MemberWalletCheckpoint: NewMemberWalletCheckpointClient(cfg),
+		MemberWalletLedger:     NewMemberWalletLedgerClient(cfg),
 	}, nil
 }
 
@@ -185,6 +191,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.MemberWallet.Use(hooks...)
+	c.MemberWalletCheckpoint.Use(hooks...)
 	c.MemberWalletLedger.Use(hooks...)
 }
 
@@ -192,6 +199,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.MemberWallet.Intercept(interceptors...)
+	c.MemberWalletCheckpoint.Intercept(interceptors...)
 	c.MemberWalletLedger.Intercept(interceptors...)
 }
 
@@ -200,6 +208,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *MemberWalletMutation:
 		return c.MemberWallet.mutate(ctx, m)
+	case *MemberWalletCheckpointMutation:
+		return c.MemberWalletCheckpoint.mutate(ctx, m)
 	case *MemberWalletLedgerMutation:
 		return c.MemberWalletLedger.mutate(ctx, m)
 	default:
@@ -358,6 +368,139 @@ func (c *MemberWalletClient) mutate(ctx context.Context, m *MemberWalletMutation
 	}
 }
 
+// MemberWalletCheckpointClient is a client for the MemberWalletCheckpoint schema.
+type MemberWalletCheckpointClient struct {
+	config
+}
+
+// NewMemberWalletCheckpointClient returns a client for the MemberWalletCheckpoint from the given config.
+func NewMemberWalletCheckpointClient(c config) *MemberWalletCheckpointClient {
+	return &MemberWalletCheckpointClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `memberwalletcheckpoint.Hooks(f(g(h())))`.
+func (c *MemberWalletCheckpointClient) Use(hooks ...Hook) {
+	c.hooks.MemberWalletCheckpoint = append(c.hooks.MemberWalletCheckpoint, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `memberwalletcheckpoint.Intercept(f(g(h())))`.
+func (c *MemberWalletCheckpointClient) Intercept(interceptors ...Interceptor) {
+	c.inters.MemberWalletCheckpoint = append(c.inters.MemberWalletCheckpoint, interceptors...)
+}
+
+// Create returns a builder for creating a MemberWalletCheckpoint entity.
+func (c *MemberWalletCheckpointClient) Create() *MemberWalletCheckpointCreate {
+	mutation := newMemberWalletCheckpointMutation(c.config, OpCreate)
+	return &MemberWalletCheckpointCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of MemberWalletCheckpoint entities.
+func (c *MemberWalletCheckpointClient) CreateBulk(builders ...*MemberWalletCheckpointCreate) *MemberWalletCheckpointCreateBulk {
+	return &MemberWalletCheckpointCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *MemberWalletCheckpointClient) MapCreateBulk(slice any, setFunc func(*MemberWalletCheckpointCreate, int)) *MemberWalletCheckpointCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &MemberWalletCheckpointCreateBulk{err: fmt.Errorf("calling to MemberWalletCheckpointClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*MemberWalletCheckpointCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &MemberWalletCheckpointCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for MemberWalletCheckpoint.
+func (c *MemberWalletCheckpointClient) Update() *MemberWalletCheckpointUpdate {
+	mutation := newMemberWalletCheckpointMutation(c.config, OpUpdate)
+	return &MemberWalletCheckpointUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *MemberWalletCheckpointClient) UpdateOne(_m *MemberWalletCheckpoint) *MemberWalletCheckpointUpdateOne {
+	mutation := newMemberWalletCheckpointMutation(c.config, OpUpdateOne, withMemberWalletCheckpoint(_m))
+	return &MemberWalletCheckpointUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *MemberWalletCheckpointClient) UpdateOneID(id int64) *MemberWalletCheckpointUpdateOne {
+	mutation := newMemberWalletCheckpointMutation(c.config, OpUpdateOne, withMemberWalletCheckpointID(id))
+	return &MemberWalletCheckpointUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for MemberWalletCheckpoint.
+func (c *MemberWalletCheckpointClient) Delete() *MemberWalletCheckpointDelete {
+	mutation := newMemberWalletCheckpointMutation(c.config, OpDelete)
+	return &MemberWalletCheckpointDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *MemberWalletCheckpointClient) DeleteOne(_m *MemberWalletCheckpoint) *MemberWalletCheckpointDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *MemberWalletCheckpointClient) DeleteOneID(id int64) *MemberWalletCheckpointDeleteOne {
+	builder := c.Delete().Where(memberwalletcheckpoint.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &MemberWalletCheckpointDeleteOne{builder}
+}
+
+// Query returns a query builder for MemberWalletCheckpoint.
+func (c *MemberWalletCheckpointClient) Query() *MemberWalletCheckpointQuery {
+	return &MemberWalletCheckpointQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeMemberWalletCheckpoint},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a MemberWalletCheckpoint entity by its id.
+func (c *MemberWalletCheckpointClient) Get(ctx context.Context, id int64) (*MemberWalletCheckpoint, error) {
+	return c.Query().Where(memberwalletcheckpoint.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *MemberWalletCheckpointClient) GetX(ctx context.Context, id int64) *MemberWalletCheckpoint {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *MemberWalletCheckpointClient) Hooks() []Hook {
+	return c.hooks.MemberWalletCheckpoint
+}
+
+// Interceptors returns the client interceptors.
+func (c *MemberWalletCheckpointClient) Interceptors() []Interceptor {
+	return c.inters.MemberWalletCheckpoint
+}
+
+func (c *MemberWalletCheckpointClient) mutate(ctx context.Context, m *MemberWalletCheckpointMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&MemberWalletCheckpointCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&MemberWalletCheckpointUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&MemberWalletCheckpointUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&MemberWalletCheckpointDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown MemberWalletCheckpoint mutation op: %q", m.Op())
+	}
+}
+
 // MemberWalletLedgerClient is a client for the MemberWalletLedger schema.
 type MemberWalletLedgerClient struct {
 	config
@@ -512,9 +655,9 @@ func (c *MemberWalletLedgerClient) mutate(ctx context.Context, m *MemberWalletLe
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		MemberWallet, MemberWalletLedger []ent.Hook
+		MemberWallet, MemberWalletCheckpoint, MemberWalletLedger []ent.Hook
 	}
 	inters struct {
-		MemberWallet, MemberWalletLedger []ent.Interceptor
+		MemberWallet, MemberWalletCheckpoint, MemberWalletLedger []ent.Interceptor
 	}
 )

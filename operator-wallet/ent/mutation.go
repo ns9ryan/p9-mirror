@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletcheckpoint"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 	"oa.98ent.com/p9/operator-wallet/ent/predicate"
 )
@@ -26,8 +27,9 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeMemberWallet       = "MemberWallet"
-	TypeMemberWalletLedger = "MemberWalletLedger"
+	TypeMemberWallet           = "MemberWallet"
+	TypeMemberWalletCheckpoint = "MemberWalletCheckpoint"
+	TypeMemberWalletLedger     = "MemberWalletLedger"
 )
 
 // MemberWalletMutation represents an operation that mutates the MemberWallet nodes in the graph.
@@ -1161,6 +1163,623 @@ func (m *MemberWalletMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown MemberWallet edge %s", name)
+}
+
+// MemberWalletCheckpointMutation represents an operation that mutates the MemberWalletCheckpoint nodes in the graph.
+type MemberWalletCheckpointMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int64
+	created_at     *time.Time
+	updated_at     *time.Time
+	topic          *string
+	partition      *int32
+	addpartition   *int32
+	next_offset    *int64
+	addnext_offset *int64
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*MemberWalletCheckpoint, error)
+	predicates     []predicate.MemberWalletCheckpoint
+}
+
+var _ ent.Mutation = (*MemberWalletCheckpointMutation)(nil)
+
+// memberwalletcheckpointOption allows management of the mutation configuration using functional options.
+type memberwalletcheckpointOption func(*MemberWalletCheckpointMutation)
+
+// newMemberWalletCheckpointMutation creates new mutation for the MemberWalletCheckpoint entity.
+func newMemberWalletCheckpointMutation(c config, op Op, opts ...memberwalletcheckpointOption) *MemberWalletCheckpointMutation {
+	m := &MemberWalletCheckpointMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeMemberWalletCheckpoint,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withMemberWalletCheckpointID sets the ID field of the mutation.
+func withMemberWalletCheckpointID(id int64) memberwalletcheckpointOption {
+	return func(m *MemberWalletCheckpointMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *MemberWalletCheckpoint
+		)
+		m.oldValue = func(ctx context.Context) (*MemberWalletCheckpoint, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().MemberWalletCheckpoint.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withMemberWalletCheckpoint sets the old MemberWalletCheckpoint of the mutation.
+func withMemberWalletCheckpoint(node *MemberWalletCheckpoint) memberwalletcheckpointOption {
+	return func(m *MemberWalletCheckpointMutation) {
+		m.oldValue = func(context.Context) (*MemberWalletCheckpoint, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m MemberWalletCheckpointMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m MemberWalletCheckpointMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of MemberWalletCheckpoint entities.
+func (m *MemberWalletCheckpointMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *MemberWalletCheckpointMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *MemberWalletCheckpointMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().MemberWalletCheckpoint.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *MemberWalletCheckpointMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *MemberWalletCheckpointMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the MemberWalletCheckpoint entity.
+// If the MemberWalletCheckpoint object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberWalletCheckpointMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *MemberWalletCheckpointMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *MemberWalletCheckpointMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *MemberWalletCheckpointMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the MemberWalletCheckpoint entity.
+// If the MemberWalletCheckpoint object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberWalletCheckpointMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *MemberWalletCheckpointMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetTopic sets the "topic" field.
+func (m *MemberWalletCheckpointMutation) SetTopic(s string) {
+	m.topic = &s
+}
+
+// Topic returns the value of the "topic" field in the mutation.
+func (m *MemberWalletCheckpointMutation) Topic() (r string, exists bool) {
+	v := m.topic
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTopic returns the old "topic" field's value of the MemberWalletCheckpoint entity.
+// If the MemberWalletCheckpoint object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberWalletCheckpointMutation) OldTopic(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTopic is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTopic requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTopic: %w", err)
+	}
+	return oldValue.Topic, nil
+}
+
+// ResetTopic resets all changes to the "topic" field.
+func (m *MemberWalletCheckpointMutation) ResetTopic() {
+	m.topic = nil
+}
+
+// SetPartition sets the "partition" field.
+func (m *MemberWalletCheckpointMutation) SetPartition(i int32) {
+	m.partition = &i
+	m.addpartition = nil
+}
+
+// Partition returns the value of the "partition" field in the mutation.
+func (m *MemberWalletCheckpointMutation) Partition() (r int32, exists bool) {
+	v := m.partition
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPartition returns the old "partition" field's value of the MemberWalletCheckpoint entity.
+// If the MemberWalletCheckpoint object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberWalletCheckpointMutation) OldPartition(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPartition is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPartition requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPartition: %w", err)
+	}
+	return oldValue.Partition, nil
+}
+
+// AddPartition adds i to the "partition" field.
+func (m *MemberWalletCheckpointMutation) AddPartition(i int32) {
+	if m.addpartition != nil {
+		*m.addpartition += i
+	} else {
+		m.addpartition = &i
+	}
+}
+
+// AddedPartition returns the value that was added to the "partition" field in this mutation.
+func (m *MemberWalletCheckpointMutation) AddedPartition() (r int32, exists bool) {
+	v := m.addpartition
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPartition resets all changes to the "partition" field.
+func (m *MemberWalletCheckpointMutation) ResetPartition() {
+	m.partition = nil
+	m.addpartition = nil
+}
+
+// SetNextOffset sets the "next_offset" field.
+func (m *MemberWalletCheckpointMutation) SetNextOffset(i int64) {
+	m.next_offset = &i
+	m.addnext_offset = nil
+}
+
+// NextOffset returns the value of the "next_offset" field in the mutation.
+func (m *MemberWalletCheckpointMutation) NextOffset() (r int64, exists bool) {
+	v := m.next_offset
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNextOffset returns the old "next_offset" field's value of the MemberWalletCheckpoint entity.
+// If the MemberWalletCheckpoint object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MemberWalletCheckpointMutation) OldNextOffset(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNextOffset is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNextOffset requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNextOffset: %w", err)
+	}
+	return oldValue.NextOffset, nil
+}
+
+// AddNextOffset adds i to the "next_offset" field.
+func (m *MemberWalletCheckpointMutation) AddNextOffset(i int64) {
+	if m.addnext_offset != nil {
+		*m.addnext_offset += i
+	} else {
+		m.addnext_offset = &i
+	}
+}
+
+// AddedNextOffset returns the value that was added to the "next_offset" field in this mutation.
+func (m *MemberWalletCheckpointMutation) AddedNextOffset() (r int64, exists bool) {
+	v := m.addnext_offset
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetNextOffset resets all changes to the "next_offset" field.
+func (m *MemberWalletCheckpointMutation) ResetNextOffset() {
+	m.next_offset = nil
+	m.addnext_offset = nil
+}
+
+// Where appends a list predicates to the MemberWalletCheckpointMutation builder.
+func (m *MemberWalletCheckpointMutation) Where(ps ...predicate.MemberWalletCheckpoint) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the MemberWalletCheckpointMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *MemberWalletCheckpointMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.MemberWalletCheckpoint, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *MemberWalletCheckpointMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *MemberWalletCheckpointMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (MemberWalletCheckpoint).
+func (m *MemberWalletCheckpointMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *MemberWalletCheckpointMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, memberwalletcheckpoint.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, memberwalletcheckpoint.FieldUpdatedAt)
+	}
+	if m.topic != nil {
+		fields = append(fields, memberwalletcheckpoint.FieldTopic)
+	}
+	if m.partition != nil {
+		fields = append(fields, memberwalletcheckpoint.FieldPartition)
+	}
+	if m.next_offset != nil {
+		fields = append(fields, memberwalletcheckpoint.FieldNextOffset)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *MemberWalletCheckpointMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case memberwalletcheckpoint.FieldCreatedAt:
+		return m.CreatedAt()
+	case memberwalletcheckpoint.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case memberwalletcheckpoint.FieldTopic:
+		return m.Topic()
+	case memberwalletcheckpoint.FieldPartition:
+		return m.Partition()
+	case memberwalletcheckpoint.FieldNextOffset:
+		return m.NextOffset()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *MemberWalletCheckpointMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case memberwalletcheckpoint.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case memberwalletcheckpoint.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case memberwalletcheckpoint.FieldTopic:
+		return m.OldTopic(ctx)
+	case memberwalletcheckpoint.FieldPartition:
+		return m.OldPartition(ctx)
+	case memberwalletcheckpoint.FieldNextOffset:
+		return m.OldNextOffset(ctx)
+	}
+	return nil, fmt.Errorf("unknown MemberWalletCheckpoint field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberWalletCheckpointMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case memberwalletcheckpoint.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case memberwalletcheckpoint.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case memberwalletcheckpoint.FieldTopic:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTopic(v)
+		return nil
+	case memberwalletcheckpoint.FieldPartition:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPartition(v)
+		return nil
+	case memberwalletcheckpoint.FieldNextOffset:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNextOffset(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberWalletCheckpoint field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *MemberWalletCheckpointMutation) AddedFields() []string {
+	var fields []string
+	if m.addpartition != nil {
+		fields = append(fields, memberwalletcheckpoint.FieldPartition)
+	}
+	if m.addnext_offset != nil {
+		fields = append(fields, memberwalletcheckpoint.FieldNextOffset)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *MemberWalletCheckpointMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case memberwalletcheckpoint.FieldPartition:
+		return m.AddedPartition()
+	case memberwalletcheckpoint.FieldNextOffset:
+		return m.AddedNextOffset()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *MemberWalletCheckpointMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case memberwalletcheckpoint.FieldPartition:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPartition(v)
+		return nil
+	case memberwalletcheckpoint.FieldNextOffset:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNextOffset(v)
+		return nil
+	}
+	return fmt.Errorf("unknown MemberWalletCheckpoint numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *MemberWalletCheckpointMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *MemberWalletCheckpointMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *MemberWalletCheckpointMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown MemberWalletCheckpoint nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *MemberWalletCheckpointMutation) ResetField(name string) error {
+	switch name {
+	case memberwalletcheckpoint.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case memberwalletcheckpoint.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case memberwalletcheckpoint.FieldTopic:
+		m.ResetTopic()
+		return nil
+	case memberwalletcheckpoint.FieldPartition:
+		m.ResetPartition()
+		return nil
+	case memberwalletcheckpoint.FieldNextOffset:
+		m.ResetNextOffset()
+		return nil
+	}
+	return fmt.Errorf("unknown MemberWalletCheckpoint field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *MemberWalletCheckpointMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *MemberWalletCheckpointMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *MemberWalletCheckpointMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *MemberWalletCheckpointMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *MemberWalletCheckpointMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *MemberWalletCheckpointMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *MemberWalletCheckpointMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown MemberWalletCheckpoint unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *MemberWalletCheckpointMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown MemberWalletCheckpoint edge %s", name)
 }
 
 // MemberWalletLedgerMutation represents an operation that mutates the MemberWalletLedger nodes in the graph.

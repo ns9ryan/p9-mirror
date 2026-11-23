@@ -21,6 +21,18 @@ func (f MemberWalletFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MemberWalletMutation", m)
 }
 
+// The MemberWalletCheckpointFunc type is an adapter to allow the use of ordinary
+// function as MemberWalletCheckpoint mutator.
+type MemberWalletCheckpointFunc func(context.Context, *ent.MemberWalletCheckpointMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MemberWalletCheckpointFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MemberWalletCheckpointMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MemberWalletCheckpointMutation", m)
+}
+
 // The MemberWalletLedgerFunc type is an adapter to allow the use of ordinary
 // function as MemberWalletLedger mutator.
 type MemberWalletLedgerFunc func(context.Context, *ent.MemberWalletLedgerMutation) (ent.Value, error)

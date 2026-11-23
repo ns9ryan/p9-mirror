@@ -38,6 +38,29 @@ var (
 			},
 		},
 	}
+	// MemberWalletCheckpointColumns holds the columns for the "member_wallet_checkpoint" table.
+	MemberWalletCheckpointColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "topic", Type: field.TypeString, Size: 249, Comment: "Kafka 资金事件 Topic"},
+		{Name: "partition", Type: field.TypeInt32, Comment: "Kafka Partition 编号"},
+		{Name: "next_offset", Type: field.TypeInt64, Comment: "下一条需要持久化的 Kafka Offset"},
+	}
+	// MemberWalletCheckpointTable holds the schema information for the "member_wallet_checkpoint" table.
+	MemberWalletCheckpointTable = &schema.Table{
+		Name:       "member_wallet_checkpoint",
+		Comment:    "会员钱包 Kafka 消费进度表",
+		Columns:    MemberWalletCheckpointColumns,
+		PrimaryKey: []*schema.Column{MemberWalletCheckpointColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "uk_member_wallet_checkpoint_topic_partition",
+				Unique:  true,
+				Columns: []*schema.Column{MemberWalletCheckpointColumns[3], MemberWalletCheckpointColumns[4]},
+			},
+		},
+	}
 	// MemberWalletLedgerColumns holds the columns for the "member_wallet_ledger" table.
 	MemberWalletLedgerColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
@@ -90,6 +113,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		MemberWalletTable,
+		MemberWalletCheckpointTable,
 		MemberWalletLedgerTable,
 	}
 )
@@ -103,6 +127,13 @@ func init() {
 		"ck_member_wallet_frozen_balance":    "frozen_balance >= 0",
 		"ck_member_wallet_unsettled_balance": "unsettled_balance >= 0",
 		"ck_member_wallet_version":           "version >= 0",
+	}
+	MemberWalletCheckpointTable.Annotation = &entsql.Annotation{
+		Table: "member_wallet_checkpoint",
+	}
+	MemberWalletCheckpointTable.Annotation.Checks = map[string]string{
+		"ck_member_wallet_checkpoint_next_offset": "next_offset >= 0",
+		"ck_member_wallet_checkpoint_partition":   "partition >= 0",
 	}
 	MemberWalletLedgerTable.ForeignKeys[0].RefTable = MemberWalletTable
 	MemberWalletLedgerTable.Annotation = &entsql.Annotation{

@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"oa.98ent.com/p9/operator-wallet/ent"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwallet"
+	"oa.98ent.com/p9/operator-wallet/ent/memberwalletcheckpoint"
 	"oa.98ent.com/p9/operator-wallet/ent/memberwalletledger"
 	"oa.98ent.com/p9/operator-wallet/ent/predicate"
 )
@@ -96,6 +97,33 @@ func (f TraverseMemberWallet) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.MemberWalletQuery", q)
 }
 
+// The MemberWalletCheckpointFunc type is an adapter to allow the use of ordinary function as a Querier.
+type MemberWalletCheckpointFunc func(context.Context, *ent.MemberWalletCheckpointQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f MemberWalletCheckpointFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.MemberWalletCheckpointQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.MemberWalletCheckpointQuery", q)
+}
+
+// The TraverseMemberWalletCheckpoint type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseMemberWalletCheckpoint func(context.Context, *ent.MemberWalletCheckpointQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseMemberWalletCheckpoint) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseMemberWalletCheckpoint) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.MemberWalletCheckpointQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.MemberWalletCheckpointQuery", q)
+}
+
 // The MemberWalletLedgerFunc type is an adapter to allow the use of ordinary function as a Querier.
 type MemberWalletLedgerFunc func(context.Context, *ent.MemberWalletLedgerQuery) (ent.Value, error)
 
@@ -128,6 +156,8 @@ func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
 	case *ent.MemberWalletQuery:
 		return &query[*ent.MemberWalletQuery, predicate.MemberWallet, memberwallet.OrderOption]{typ: ent.TypeMemberWallet, tq: q}, nil
+	case *ent.MemberWalletCheckpointQuery:
+		return &query[*ent.MemberWalletCheckpointQuery, predicate.MemberWalletCheckpoint, memberwalletcheckpoint.OrderOption]{typ: ent.TypeMemberWalletCheckpoint, tq: q}, nil
 	case *ent.MemberWalletLedgerQuery:
 		return &query[*ent.MemberWalletLedgerQuery, predicate.MemberWalletLedger, memberwalletledger.OrderOption]{typ: ent.TypeMemberWalletLedger, tq: q}, nil
 	default:

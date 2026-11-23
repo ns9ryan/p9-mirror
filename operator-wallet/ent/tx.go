@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// MemberWallet is the client for interacting with the MemberWallet builders.
 	MemberWallet *MemberWalletClient
+	// MemberWalletCheckpoint is the client for interacting with the MemberWalletCheckpoint builders.
+	MemberWalletCheckpoint *MemberWalletCheckpointClient
 	// MemberWalletLedger is the client for interacting with the MemberWalletLedger builders.
 	MemberWalletLedger *MemberWalletLedgerClient
 
@@ -148,6 +150,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.MemberWallet = NewMemberWalletClient(tx.config)
+	tx.MemberWalletCheckpoint = NewMemberWalletCheckpointClient(tx.config)
 	tx.MemberWalletLedger = NewMemberWalletLedgerClient(tx.config)
 }
 
