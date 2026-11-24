@@ -146,7 +146,7 @@ type (
 	// 获取任务全局配置请求
 	ListTaskGlobalConfigReq {
 		// 分站代码
-		OperatorCode string `json:"operator_code" validate:"required"`
+		OperatorCode string `form:"operator_code" validate:"required"`
 	}
 
 	// 获取任务全局配置响应

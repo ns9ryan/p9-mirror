@@ -946,7 +946,7 @@ type ListTaskConfigResp struct {
 }
 
 type ListTaskGlobalConfigReq struct {
-	OperatorCode string `json:"operator_code" validate:"required"`
+	OperatorCode string `form:"operator_code" validate:"required"`
 }
 
 type ListTaskGlobalConfigResp struct {

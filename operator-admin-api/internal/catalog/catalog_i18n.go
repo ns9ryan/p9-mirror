@@ -225,6 +225,8 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 	add("api.taskConfigUpdate", "更新任务配置", "更新任務配置", "Update task config")
 	add("api.taskRewardList", "任务奖励列表", "任務獎勵列表", "Task reward list")
 	add("api.taskRewardUpdateStatus", "更新任务奖励状态", "更新任務獎勵狀態", "Update task reward status")
+	add("api.taskGlobalConfigList", "全局任务配置列表", "全局任務配置列表", "Global task config list")
+	add("api.taskGlobalConfigUpdate", "更新全局任务配置", "更新全局任務配置", "Update global task config")
 	return out
 }
 
