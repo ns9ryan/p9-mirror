@@ -206,6 +206,20 @@ services:
       - p9-operator-node01-network
       - p9-shared-network
 
+  member-wallet-rpc:
+    image: ${DOCKER_REPO:-192.168.10.220:5000/p9}/member-wallet-rpc:${VERSION:-1.0.0}
+    container_name: operator-node01-member-wallet-rpc
+    restart: always
+    ports:
+      - "39005:39005"
+    volumes:
+      - ./etc/wallet/rpc/member_wallet.yaml:/app/etc/member_wallet.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - p9-operator-node01-network
+
 volumes:
   postgres_operator_node01_data:
   redis_operator_node01_data:
