@@ -87,6 +87,19 @@ func NewServiceContext(c config.Config) (*ServiceContext, error) {
 		return nil, fmt.Errorf("create member wallet consumer: %w", err)
 	}
 
+	// 创建资金事件持久化组件
+	persistence, err := wallet.NewPersistence(
+		db,
+		walletConf.KafkaTopic,
+		walletConf.ShardCount,
+	)
+	if err != nil {
+		walletConsumer.Close()
+		walletCancel()
+		_ = db.Close()
+		return nil, fmt.Errorf("create member wallet persistence: %w", err)
+	}
+
 	// 创建钱包Engine及Kafka Producer
 	walletEngine, err := wallet.NewEngine(walletCtx, wallet.EngineConfig{
 		KafkaBrokers:    walletConf.KafkaBrokers,    // Kafka Broker 地址
@@ -102,6 +115,25 @@ func NewServiceContext(c config.Config) (*ServiceContext, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("create member wallet engine: %w", err)
 	}
+
+	// 启动资金事件消费及数据库持久化
+	if err := walletConsumer.Start(walletCtx, persistence.Handle); err != nil {
+		// RPC 尚未启动, Engine 未接收任何资金操作
+		engineErr := walletEngine.Close(context.Background())
+
+		walletConsumer.Close()
+		walletCancel()
+		dbErr := db.Close()
+
+		return nil, errors.Join(
+			fmt.Errorf("start member wallet consumer: %w", err),
+			engineErr,
+			dbErr,
+		)
+	}
+
+	// 监控 Consumer 退出, 防止持久化停止后继续接收资金操作
+	go watchWalletConsumer(walletConsumer, walletEngine)
 
 	return &ServiceContext{
 		Config: c,

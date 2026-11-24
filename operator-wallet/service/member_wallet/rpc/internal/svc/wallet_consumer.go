@@ -5,9 +5,11 @@ import (
 	"fmt"
 
 	"github.com/twmb/franz-go/pkg/kgo"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/config"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/dao"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/wallet"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/internal/wallet/consumer"
 )
 
@@ -67,4 +69,16 @@ func initializeWalletCheckpoints(ctx context.Context, conf config.WalletRuntimeC
 
 	// 重新读取已提交的消费进度, 以数据库实际记录为准
 	return checkpointDAO.ListByTopic(ctx, conf.KafkaTopic)
+}
+
+// watchWalletConsumer 等待消费循环退出, 停止 Engine 接收新的资金操作
+func watchWalletConsumer(c *consumer.Consumer, engine *wallet.Engine) {
+	err := c.Wait(context.Background())
+
+	// Consumer 退出后不再允许接收新的资金操作
+	engine.StopAccepting()
+
+	if err != nil {
+		logx.Errorf("wallet consumer stopped with error: %v", err)
+	}
 }

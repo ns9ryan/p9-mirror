@@ -118,6 +118,15 @@ func (e *Engine) Submit(ctx context.Context, walletGlobalID uuid.UUID, params Re
 	return e.core.submit(ctx, walletGlobalID, params)
 }
 
+// StopAccepting 停止接收新的资金操作, 已接收的操作继续处理
+func (e *Engine) StopAccepting() {
+	if e == nil || e.core == nil {
+		return
+	}
+
+	e.core.close()
+}
+
 // Close 关闭钱包运行时, 等待 Actor 和 Worker 完全退出后再关闭 Producer
 func (e *Engine) Close(ctx context.Context) error {
 	if e == nil || e.core == nil {
@@ -128,7 +137,7 @@ func (e *Engine) Close(ctx context.Context) error {
 	}
 
 	// 先停止接收新请求, 并关闭全部 Actor
-	e.core.close()
+	e.StopAccepting()
 
 	// 等待已接受的资金操作处理完成
 	waitErr := e.core.wait(ctx)

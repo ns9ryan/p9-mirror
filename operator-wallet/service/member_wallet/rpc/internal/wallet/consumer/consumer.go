@@ -249,7 +249,7 @@ func (c *Consumer) Stop(ctx context.Context) error {
 	return c.Wait(ctx)
 }
 
-// Close 关闭 Kafka 消费客户端, 应在 Stop 成功后调用
+// Close 关闭 Kafka 消费客户端, 应在消费循环完全退出后调用
 func (c *Consumer) Close() {
 	if c == nil {
 		return
