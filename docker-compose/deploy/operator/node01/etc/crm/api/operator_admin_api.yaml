@@ -33,7 +33,7 @@ MemberWalletRpc:
   Etcd:
     Hosts:
       - 192.168.10.220:2379
-    Key: member-wallet-rpc
+    Key: member-wallet01-rpc
       
 # 第三方服务集成 RPC配置
 IntegrationRpc:
