@@ -88,11 +88,11 @@ func (e walletEvent) validate() error {
 
 	// 根据事件流水还原本次资金操作参数
 	params := RecordParams{
-		OperationID:    e.OperationID,    // 钱包操作唯一标识
-		BusinessType:   e.BusinessType,   // 一级业务类型
-		BusinessAction: e.BusinessAction, // 具体资金操作类型
-		BusinessNo:     e.BusinessNo,     // 原始业务单号
-		Changes:        make([]BalanceChange, 0, len(e.Ledgers)),
+		OperationID:    e.OperationID,                            // 钱包操作唯一标识
+		BusinessType:   e.BusinessType,                           // 一级业务类型
+		BusinessAction: e.BusinessAction,                         // 具体资金操作类型
+		BusinessNo:     e.BusinessNo,                             // 原始业务单号
+		Changes:        make([]BalanceChange, 0, len(e.Ledgers)), // 本次操作的余额变动集合
 	}
 
 	// 校验流水标识, 同时提取每种余额的变动金额

@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -18,8 +19,9 @@ type MemberWalletLedger struct {
 
 // CreateLedgerParams 创建资金流水参数
 type CreateLedgerParams struct {
-	WalletID int64 // 所属钱包ID
-	MemberID int64 // CRM会员ID
+	GlobalID uuid.UUID // 流水全局唯一标识
+	WalletID int64     // 所属钱包ID
+	MemberID int64     // CRM会员ID
 
 	// 余额变动
 	BalanceType   int64 // 余额类型, 具体枚举见 enum.BalanceType
@@ -32,6 +34,8 @@ type CreateLedgerParams struct {
 	BusinessType   int64     // 一级业务类型, 具体枚举见 enum.BusinessType
 	BusinessAction int64     // 具体操作类型, 具体枚举见 enum.BusinessAction
 	BusinessNo     string    // 原始业务单号
+
+	CreatedAt time.Time // 资金事件生成时间
 }
 
 // GetByBusinessTx 根据业务类型, 操作类型和业务单号查询流水
@@ -80,6 +84,7 @@ func (d *MemberWalletLedger) ListByOperationTx(ctx context.Context, tx *ent.Tx, 
 // newMemberWalletLedgerCreate 统一构造资金流水创建器
 func newMemberWalletLedgerCreate(tx *ent.Tx, in CreateLedgerParams) *ent.MemberWalletLedgerCreate {
 	return tx.MemberWalletLedger.Create().
+		SetGlobalID(in.GlobalID).             // 流水全局唯一标识
 		SetWalletID(in.WalletID).             // 所属钱包ID
 		SetMemberID(in.MemberID).             // CRM会员ID
 		SetBalanceType(in.BalanceType).       // 余额类型, 具体枚举见 enum.BalanceType
@@ -89,12 +94,17 @@ func newMemberWalletLedgerCreate(tx *ent.Tx, in CreateLedgerParams) *ent.MemberW
 		SetOperationID(in.OperationID).       // 钱包操作唯一标识
 		SetBusinessType(in.BusinessType).     // 一级业务类型, 具体枚举见 enum.BusinessType
 		SetBusinessAction(in.BusinessAction). // 具体资金操作类型, 具体枚举见 enum.BusinessAction
-		SetBusinessNo(in.BusinessNo)          // 原始业务单号
+		SetBusinessNo(in.BusinessNo).         // 原始业务单号
+		SetCreatedAt(in.CreatedAt)            // 原始资金事件生成时间
 }
 
 // CreateTx 在当前事务中创建单条资金流水
 // operator_code 由Ent Hook从可信上下文自动写入
 func (d *MemberWalletLedger) CreateTx(ctx context.Context, tx *ent.Tx, in CreateLedgerParams) (*ent.MemberWalletLedger, error) {
+	if in.GlobalID == uuid.Nil || in.CreatedAt.IsZero() {
+		return nil, errors.New("member wallet ledger contains invalid event fields")
+	}
+
 	return newMemberWalletLedgerCreate(tx, in).Save(ctx)
 }
 
@@ -106,19 +116,25 @@ func (d *MemberWalletLedger) CreateManyTx(ctx context.Context, tx *ent.Tx, items
 
 	// 确保同一批流水属于同一次钱包操作
 	first := items[0]
-	for _, item := range items[1:] {
+	builders := make([]*ent.MemberWalletLedgerCreate, 0, len(items))
+
+	for _, item := range items {
+		// 必须保留原始资金事件中的流水标识和时间
+		if item.GlobalID == uuid.Nil || item.CreatedAt.IsZero() {
+			return errors.New("member wallet ledger contains invalid event fields")
+		}
+
+		// 确保同一批流水属于同一次钱包操作
 		if item.WalletID != first.WalletID ||
 			item.MemberID != first.MemberID ||
 			item.OperationID != first.OperationID ||
 			item.BusinessType != first.BusinessType ||
 			item.BusinessAction != first.BusinessAction ||
-			item.BusinessNo != first.BusinessNo {
+			item.BusinessNo != first.BusinessNo ||
+			!item.CreatedAt.Equal(first.CreatedAt) {
 			return errors.New("member wallet ledger batch contains inconsistent operation fields")
 		}
-	}
 
-	builders := make([]*ent.MemberWalletLedgerCreate, 0, len(items))
-	for _, item := range items {
 		builders = append(builders, newMemberWalletLedgerCreate(tx, item))
 	}
 

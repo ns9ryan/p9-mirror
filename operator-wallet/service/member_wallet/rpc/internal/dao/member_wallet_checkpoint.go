@@ -39,6 +39,21 @@ func (d *MemberWalletCheckpoint) Get(ctx context.Context, topic string, partitio
 		Only(ctx)
 }
 
+// GetForUpdateTx 在当前事务中查询并锁定指定 Partition 的消费进度
+func (d *MemberWalletCheckpoint) GetForUpdateTx(ctx context.Context, tx *ent.Tx, topic string, partition int32) (*ent.MemberWalletCheckpoint, error) {
+	if err := validateCheckpoint(topic, partition); err != nil {
+		return nil, err
+	}
+
+	return tx.MemberWalletCheckpoint.Query().
+		Where(
+			memberwalletcheckpoint.TopicEQ(topic),         // Kafka 资金事件 Topic
+			memberwalletcheckpoint.PartitionEQ(partition), // Kafka Partition 编号
+		).
+		ForUpdate(). // 锁定消费进度, 防止事务期间被并发修改
+		Only(ctx)
+}
+
 // CreateInitialTx 在当前事务中初始化 Partition 的起始消费进度, 调用方必须先验证 Kafka 日志范围, 不得直接假定 Offset 为 0
 func (d *MemberWalletCheckpoint) CreateInitialTx(ctx context.Context, tx *ent.Tx, topic string, partition int32, nextOffset int64) error {
 	if err := validateCheckpoint(topic, partition); err != nil {
