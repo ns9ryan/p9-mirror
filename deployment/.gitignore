@@ -1,29 +1,30 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
-go.work
-go.work.sum
-
-# Editor/IDE
+# Editor / IDE
 .idea/
 .vscode/
 
-# Build binaries
-/operator_base_api
-/operator_base_rpc
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-ryan_operator_base.yaml
+# Environment
+.env
+.env.*
+!.env.example
+
+# Secrets
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Runtime data
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
