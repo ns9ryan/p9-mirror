@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/duke-git/lancet/v2 v2.3.9
 	github.com/zeromicro/go-zero v1.10.3
-	google.golang.org/grpc v1.84.0
+	google.golang.org/grpc v1.85.0
 	oa.98ent.com/p9/common v1.0.19
 	oa.98ent.com/p9/core v1.2.3
 	oa.98ent.com/p9/integration v0.0.0-20261022032859-d992f8bd28ba
@@ -17,11 +17,19 @@ require (
 
 replace oa.98ent.com/p9/operator-crm => ../operator-crm
 
+replace oa.98ent.com/p9/operator-wallet => ../operator-wallet
+
 replace oa.98ent.com/p9/operator-base => ../operator-base
 
 replace oa.98ent.com/p9/operator-activity => ../operator-activity
 
 replace oa.98ent.com/p9/platform-base => ../platform-base
+
+replace oa.98ent.com/p9/common => ../common
+
+replace oa.98ent.com/p9/core => ../core
+
+replace oa.98ent.com/p9/integration => ../integration
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -53,7 +61,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.7 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.18.6 // indirect
+	github.com/klauspost/compress v1.20.3 // indirect
 	github.com/leodido/go-urn v1.5.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
@@ -86,7 +94,7 @@ require (
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.40.0 // indirect
 	go.opentelemetry.io/otel/exporters/zipkin v1.40.0 // indirect
 	go.opentelemetry.io/otel/metric v1.46.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.44.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.45.0 // indirect
 	go.opentelemetry.io/otel/trace v1.46.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.9.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
@@ -103,7 +111,7 @@ require (
 	golang.org/x/term v0.47.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260706201446-f0a921348800 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260817212433-ac3dfec99bb1 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260918162117-cecb64721679 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
@@ -122,6 +130,14 @@ require (
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
 
-require github.com/alicebob/miniredis/v2 v2.39.0
+require (
+	github.com/alicebob/miniredis/v2 v2.39.0
+	oa.98ent.com/p9/operator-wallet v0.0.0-00010101000000-000000000000
+)
 
-require github.com/yuin/gopher-lua v1.1.1 // indirect
+require (
+	github.com/pierrec/lz4/v4 v4.1.33 // indirect
+	github.com/segmentio/kafka-go v0.4.51 // indirect
+	github.com/yuin/gopher-lua v1.1.1 // indirect
+	github.com/zeromicro/go-queue v1.2.2 // indirect
+)

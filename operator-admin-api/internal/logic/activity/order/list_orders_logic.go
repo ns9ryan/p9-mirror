@@ -33,7 +33,7 @@ func (l *ListOrdersLogic) ListOrders(req *types.ListActivityOrdersReq) (resp *ty
 		Lang:       i18n.Lang(l.ctx, nil),
 		OrderNo:    req.OrderNo,
 		ActivityId: req.ActivityId,
-		MemberId:   req.MemberId,
+		MemberCode: req.MemberCode,
 		Type:       req.Type,
 		Status:     req.Status,
 		TimeField:  req.TimeField,

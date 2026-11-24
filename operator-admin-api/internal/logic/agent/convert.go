@@ -2,7 +2,9 @@ package agent
 
 import (
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentdepositorderpb"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentpb"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/turnoverpb"
 )
 
 func ConfigFromPB(in *agentpb.AgentConfigResp) types.AgentConfig {
@@ -226,6 +228,86 @@ func ApplyItemsFromPB(in []*agentpb.AgentApplyItem) []types.AgentApplyItem {
 			continue
 		}
 		out = append(out, ApplyItemFromPB(it))
+	}
+	return out
+}
+
+func DepositOrderListItemFromPB(in *agentdepositorderpb.AgentDepositOrderListItem, selfUID int64) types.AgentDepositOrderListItem {
+	if in == nil {
+		return types.AgentDepositOrderListItem{}
+	}
+	return types.AgentDepositOrderListItem{
+		Id:                   in.Id,
+		OrderNo:              in.GetOrderNo(),
+		MemberId:             in.MemberId,
+		MemberAccount:        in.MemberAccount,
+		MemberLevelName:      in.MemberLevelName,
+		CreateAt:             in.CreateAt,
+		DepositCurrency:      in.DepositCurrency,
+		DepositAmount:        float64(in.DepositAmount) / AmountCentsFactor,
+		SiteCurrency:         in.SiteCurrency,
+		SiteAmount:           float64(in.SiteAmount) / AmountCentsFactor,
+		DepositType:          in.DepositType,
+		ReceivedAmount:       float64(in.ReceivedAmount) / AmountCentsFactor,
+		FeeAmount:            float64(in.FeeAmount) / AmountCentsFactor,
+		ActualReceivedAmount: float64(in.ActualReceivedAmount) / AmountCentsFactor,
+		ThirdPartyOrderNo:    in.GetThirdPartyOrderNo(),
+		PaymentReceiveInfo:   in.GetPaymentReceiveInfo(),
+		PaymentSendInfo:      in.GetPaymentSendInfo(),
+		Status:               in.Status,
+		ReviewerId:           in.ReviewerId,
+		ReviewerUtype:        in.ReviewerUtype,
+		ClaimedAt:            in.ClaimedAt,
+		ClaimedBySelf:        selfUID > 0 && in.ReviewerId == selfUID,
+		AuditorId:            in.AuditorUid,
+		AuditorUsername:      in.AuditorUsername,
+		AuditedAt:            in.AuditedAt,
+	}
+}
+
+func DepositOrderListItemsFromPB(in []*agentdepositorderpb.AgentDepositOrderListItem, selfUID int64) []types.AgentDepositOrderListItem {
+	out := make([]types.AgentDepositOrderListItem, 0, len(in))
+	for _, it := range in {
+		if it == nil {
+			continue
+		}
+		out = append(out, DepositOrderListItemFromPB(it, selfUID))
+	}
+	return out
+}
+
+func TurnoverListItemFromPB(in *turnoverpb.TurnoverListItem) types.TurnoverListItem {
+	if in == nil {
+		return types.TurnoverListItem{}
+	}
+	return types.TurnoverListItem{
+		Id:              in.Id,
+		MemberId:        in.MemberId,
+		MemberAccount:   in.MemberAccount,
+		MemberLevelName: in.MemberLevelName,
+		ConsumeAmount:   float64(in.ConsumeAmount) / AmountCentsFactor,
+		ConsumeCurrency: in.ConsumeCurrency,
+		ConsumeType:     in.ConsumeType,
+		ConsumeAt:       in.ConsumeAt,
+		BalanceBefore:   float64(in.BalanceBefore) / AmountCentsFactor,
+		BalanceAfter:    float64(in.BalanceAfter) / AmountCentsFactor,
+		BalanceCurrency: in.BalanceCurrency,
+		AgentId:         in.AgentId,
+		WalletId:        in.WalletId,
+		Notes:           in.GetNotes(),
+		CreatedAt:       in.CreatedAt,
+		GameId:          in.GetGameId(),
+		OrderNo:         in.GetOrderNo(),
+	}
+}
+
+func TurnoverListItemsFromPB(in []*turnoverpb.TurnoverListItem) []types.TurnoverListItem {
+	out := make([]types.TurnoverListItem, 0, len(in))
+	for _, it := range in {
+		if it == nil {
+			continue
+		}
+		out = append(out, TurnoverListItemFromPB(it))
 	}
 	return out
 }

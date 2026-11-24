@@ -60,7 +60,6 @@ func (l *UpdateTaskConfigLogic) UpdateTaskConfig(req *types.UpdateTaskConfigReq)
 			NameI18n:         item.NameI18N,
 			Description:      item.Description,
 			DescriptionI18n:  item.DescriptionI18N,
-			Timezone:         item.Timezone,
 			Status:           item.Status,
 			CompletionAmount: item.CompletionAmount,
 			RewardAmount:     item.RewardAmount,

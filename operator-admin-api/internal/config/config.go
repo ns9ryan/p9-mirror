@@ -27,6 +27,8 @@ type Config struct {
 	OperatorBaseRpc zrpc.RpcClientConf
 	// 后台CRM RPC配置
 	CrmRpc zrpc.RpcClientConf
+	// 会员钱包RPC配置
+	MemberWalletRpc zrpc.RpcClientConf
 	// 活动服务 RPC配置
 	ActivityRpc zrpc.RpcClientConf
 	// 总站基础RPC配置；VIP默认图标仅在查询请求中调用。
@@ -37,6 +39,10 @@ type Config struct {
 	OssApiBaseURL string `json:",optional"`
 	// 国际化配置
 	I18n i18n.Config
+
+	Kafka struct {
+		Brokers []string `json:",optional"`
+	} `json:",optional"`
 }
 
 // IsDebug 是否为调试模式

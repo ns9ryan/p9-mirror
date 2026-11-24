@@ -33,7 +33,7 @@ func (l *ListAuditOrdersLogic) ListAuditOrders(req *types.ListActivityOrderAudit
 		Lang:        i18n.Lang(l.ctx, nil),
 		OrderNo:     req.OrderNo,
 		ActivityId:  req.ActivityId,
-		MemberId:    req.MemberId,
+		MemberCode:  req.MemberCode,
 		Type:        req.Type,
 		AuditStatus: req.AuditStatus,
 		TimeField:   req.TimeField,

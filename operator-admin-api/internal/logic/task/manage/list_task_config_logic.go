@@ -2,13 +2,14 @@ package manage
 
 import (
 	"context"
+	"encoding/json"
 
+	"github.com/zeromicro/go-zero/core/logx"
 	"oa.98ent.com/p9/common/ctxdata"
+	"oa.98ent.com/p9/common/i18n"
 	"oa.98ent.com/p9/operator-activity/pb/operatoractivityrpc/taskpb"
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ListTaskConfigLogic struct {
@@ -45,20 +46,28 @@ func (l *ListTaskConfigLogic) ListTaskConfig(req *types.ListTaskConfigReq) (resp
 	if err != nil {
 		return nil, err
 	}
+	lang := i18n.Lang(l.ctx, nil)
+	logx.Infof("ListTaskConfig lang: %s", lang)
 
 	// 转换响应
 	list := make([]types.TaskConfig, 0, len(rpcResp.GetList()))
 	for _, item := range rpcResp.GetList() {
+		namei18nObj := make(map[string]string)
+		_ = json.Unmarshal([]byte(item.NameI18N), &namei18nObj)
+		descriptioni18nObj := make(map[string]string)
+		_ = json.Unmarshal([]byte(item.DescriptionI18N), &descriptioni18nObj)
+
+		name := namei18nObj[lang]
+		description := descriptioni18nObj[lang]
 		list = append(list, types.TaskConfig{
 			Id:               item.Id,
 			OperatorCode:     item.OperatorCode,
 			TaskCode:         item.TaskCode,
 			Category:         item.Category,
-			Name:             item.Name,
+			Name:             name,
 			NameI18n:         item.NameI18N,
-			Description:      item.Description,
+			Description:      description,
 			DescriptionI18n:  item.DescriptionI18N,
-			Timezone:         item.Timezone,
 			Status:           item.Status,
 			CompletionAmount: item.CompletionAmount,
 			RewardAmount:     item.RewardAmount,

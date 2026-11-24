@@ -21,15 +21,19 @@ import (
 	"oa.98ent.com/p9/operator-activity/client/activityservice"
 	"oa.98ent.com/p9/operator-activity/client/taskservice"
 	"oa.98ent.com/p9/operator-admin-api/internal/config"
+	"oa.98ent.com/p9/operator-admin-api/internal/kafka"
 	"oa.98ent.com/p9/operator-admin-api/internal/locales"
 	"oa.98ent.com/p9/operator-base/rpc/client/operatorservice"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentdepositorderservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/agentservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/member"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberautolevel"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/memberfixedlevel"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/turnoverservice"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/client/vip"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/memberexportpb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/client/memberwallet"
 	"oa.98ent.com/p9/platform-base/rpc/client/vipdefaulticonservice"
 )
 
@@ -46,11 +50,16 @@ type ServiceContext struct {
 	OperatorBaseRpc operatorservice.OperatorService // 分站基础RPC
 
 	// CRM业务RPC
-	AgentRpc            agentservice.AgentService         // 分层代理RPC
-	MemberRpc           member.Member                     // 会员管理RPC
-	MemberAutoLevelRpc  memberautolevel.MemberAutoLevel   // 会员自动层级RPC
-	MemberFixedLevelRpc memberfixedlevel.MemberFixedLevel // 会员固定层级RPC
-	MemberVipRpc        vip.Vip                           // 会员VIP配置、等级和图标RPC
+	AgentRpc             agentservice.AgentService                         // 分层代理RPC
+	AgentDepositOrderRpc agentdepositorderservice.AgentDepositOrderService // 代理人工存款订单RPC
+	TurnoverRpc          turnoverservice.TurnoverService                   // 代理流水RPC
+	MemberRpc            member.Member                                     // 会员管理RPC
+	MemberAutoLevelRpc   memberautolevel.MemberAutoLevel                   // 会员自动层级RPC
+	MemberFixedLevelRpc  memberfixedlevel.MemberFixedLevel                 // 会员固定层级RPC
+	MemberVipRpc         vip.Vip                                           // 会员VIP配置、等级和图标RPC
+
+	// 钱包业务RPC
+	MemberWalletRpc memberwallet.MemberWallet // 会员钱包RPC
 
 	// 活动服务 RPC
 	ActivityRpc activityservice.ActivityService // 活动管理RPC
@@ -59,6 +68,9 @@ type ServiceContext struct {
 	TaskServiceRpc taskservice.TaskService // 任务配置RPC
 	// 总站素材RPC，仅在VIP列表请求中查询默认图。
 	VipDefaultIconRpc vipdefaulticonservice.VipDefaultIconService
+
+	// Kafka事件处理器
+	KafkaEventHandler *kafka.EventHandler
 
 	// 第三方服务集成 RPC
 	IntegrationRpc integrationclient.Integration
@@ -94,6 +106,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// 创建业务RPC客户端
 	baseClient := zrpc.MustNewClient(c.OperatorBaseRpc)
 	crmClient := zrpc.MustNewClient(c.CrmRpc)
+	walletClient := zrpc.MustNewClient(c.MemberWalletRpc)
 	activityClient := zrpc.MustNewClient(c.ActivityRpc)
 
 	// 创建第三方服务集成客户端
@@ -103,20 +116,37 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if c.MemberExport.RedisAddr != "" {
 		exportRedis = redis.NewClient(&redis.Options{Addr: c.MemberExport.RedisAddr, Password: c.MemberExport.RedisPassword, DB: c.MemberExport.RedisDB, MaxRetries: -1, DialerRetries: 1, ContextTimeoutEnabled: true, PoolTimeout: 2 * time.Second, DialTimeout: 2 * time.Second, ReadTimeout: 2 * time.Second, WriteTimeout: 2 * time.Second})
 	}
+	// 创建 Kafka 生产者
+	var kafkaProducer *kafka.Producer
+	if len(c.Kafka.Brokers) > 0 {
+		kafkaProducer = kafka.NewProducer(c.Kafka.Brokers)
+	}
+	eventHandler := kafka.NewEventHandler(
+		kafkaProducer,
+		member.NewMember(crmClient),
+		agentdepositorderservice.NewAgentDepositOrderService(crmClient),
+		taskservice.NewTaskService(activityClient),
+	)
+
 	return &ServiceContext{
-		MemberExportRpc: memberexportpb.NewMemberExportClient(crmClient.Conn()),
-		ExportRedis:     exportRedis,
-		Config:          c,
-		Trans:           trans,
+		KafkaEventHandler: eventHandler,
+		MemberExportRpc:   memberexportpb.NewMemberExportClient(crmClient.Conn()),
+		ExportRedis:       exportRedis,
+		Config:            c,
+		Trans:             trans,
 
 		OperatorCoreRpc: coreRpc,
 		OperatorBaseRpc: operatorservice.NewOperatorService(baseClient),
 
-		AgentRpc:            agentservice.NewAgentService(crmClient),
-		MemberRpc:           member.NewMember(crmClient),
-		MemberAutoLevelRpc:  memberautolevel.NewMemberAutoLevel(crmClient),
-		MemberFixedLevelRpc: memberfixedlevel.NewMemberFixedLevel(crmClient),
-		MemberVipRpc:        vip.NewVip(crmClient),
+		AgentRpc:             agentservice.NewAgentService(crmClient),
+		AgentDepositOrderRpc: agentdepositorderservice.NewAgentDepositOrderService(crmClient),
+		TurnoverRpc:          turnoverservice.NewTurnoverService(crmClient),
+		MemberRpc:            member.NewMember(crmClient),
+		MemberAutoLevelRpc:   memberautolevel.NewMemberAutoLevel(crmClient),
+		MemberFixedLevelRpc:  memberfixedlevel.NewMemberFixedLevel(crmClient),
+		MemberVipRpc:         vip.NewVip(crmClient),
+
+		MemberWalletRpc: memberwallet.NewMemberWallet(walletClient),
 
 		ActivityRpc:       activityservice.NewActivityService(activityClient),
 		TaskServiceRpc:    taskservice.NewTaskService(activityClient),

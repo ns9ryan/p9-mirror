@@ -13,7 +13,6 @@ type (
 		NameI18n         string `json:"name_i18n"`
 		Description      string `json:"description"`
 		DescriptionI18n  string `json:"description_i18n"`
-		Timezone         string `json:"timezone"`
 		Status           int32  `json:"status"`
 		CompletionAmount int32  `json:"completion_amount"`
 		RewardAmount     int64  `json:"reward_amount"`
@@ -125,6 +124,66 @@ type (
 	UpdateMemberTaskRewardStatusResp {
 		MemberTaskReward MemberTaskReward `json:"member_task_reward"`
 	}
+
+	// 任务全局配置
+	TaskGlobalConfig {
+		Id               int64   `json:"id"`
+		OperatorCode     string  `json:"operator_code"`
+		AutoLevelIds     []int64 `json:"auto_level_ids"`
+		FixedLevelIds    []int64 `json:"fixed_level_ids"`
+		MemberTagIds     []int64 `json:"member_tag_ids"`
+		TurnoverMultiple int32   `json:"turnover_multiple"`
+		ClientTypes      int32   `json:"client_types"`
+		LimitsApply      string  `json:"limits_apply"`
+		CostIncluded     bool    `json:"cost_included"`
+		EffectTime       int64   `json:"effect_time"`
+		Status           bool    `json:"status"`
+		CreatedAt        int64   `json:"created_at"`
+		UpdatedAt        int64   `json:"updated_at"`
+		Active           bool    `json:"active"`
+	}
+
+	// 获取任务全局配置请求
+	ListTaskGlobalConfigReq {
+		// 分站代码
+		OperatorCode string `json:"operator_code" validate:"required"`
+	}
+
+	// 获取任务全局配置响应
+	ListTaskGlobalConfigResp {
+		// 任务全局配置列表（包含当前和待生效）
+		List []TaskGlobalConfig `json:"list"`
+	}
+
+	// 更新任务全局配置请求
+	UpdateTaskGlobalConfigReq {
+		// 分站代码
+		OperatorCode string `json:"operator_code" validate:"required"`
+		// 会员自动层级过滤条件（可选）
+		AutoLevelIds *string `json:"auto_level_ids,optional"`
+		// 会员固定层级过滤条件（可选）
+		FixedLevelIds *string `json:"fixed_level_ids,optional"`
+		// 会员标签过滤条件（可选）
+		MemberTagIds *string `json:"member_tag_ids,optional"`
+		// 完成任务需要的洗码倍数要求（可选）
+		TurnoverMultiple *int32 `json:"turnover_multiple,optional"`
+		// 支持的客户端类型（可选）
+		ClientTypes *int32 `json:"client_types,optional"`
+		// 终端限制（可选）
+		LimitsApply *string `json:"limits_apply,optional"`
+		// 任务奖励是否计入成本（可选）
+		CostIncluded *bool `json:"cost_included,optional"`
+		// 任务生效时间，unix 毫秒（可选）
+		EffectTime *int64 `json:"effect_time,optional"`
+		// 任务开关（可选）
+		Status *bool `json:"status,optional"`
+	}
+
+	// 更新任务全局配置响应
+	UpdateTaskGlobalConfigResp {
+		// 更新后的任务全局配置
+		TaskGlobalConfig TaskGlobalConfig `json:"task_global_config"`
+	}
 )
 
 @server (
@@ -148,4 +207,12 @@ service operator_admin_api {
 	@doc "更新会员任务奖励状态（只允许从 1 改为 2）"
 	@handler UpdateMemberTaskRewardStatus
 	post /reward/update-status (UpdateMemberTaskRewardStatusReq) returns (UpdateMemberTaskRewardStatusResp)
+
+	@doc "获取任务全局配置（包含当前生效和待生效配置）"
+	@handler ListTaskGlobalConfig
+	get /global-config/list (ListTaskGlobalConfigReq) returns (ListTaskGlobalConfigResp)
+
+	@doc "更新任务全局配置（如生效时间>当前时间则延迟生效，否则立即生效）"
+	@handler UpdateTaskGlobalConfig
+	post /global-config/update (UpdateTaskGlobalConfigReq) returns (UpdateTaskGlobalConfigResp)
 }

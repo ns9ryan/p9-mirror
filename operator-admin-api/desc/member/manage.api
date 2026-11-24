@@ -213,6 +213,29 @@ type (
 		// 当前页会员列表
 		List []MemberListItem `json:"list"`
 	}
+	// 按会员编号/账号/昵称模糊搜索请求
+	SearchMembersByCodeRequest {
+		// 搜索关键字
+		Keyword string `form:"keyword,optional"`
+		// 返回条数上限，默认 20，上限 50
+		Limit int32 `form:"limit,optional"`
+	}
+	// 搜索结果项
+	SearchMembersByCodeItem {
+		// 会员ID
+		Id int64 `json:"id"`
+		// 12位会员对外编号
+		Code string `json:"code"`
+		// 会员登录账号
+		Account string `json:"account"`
+		// 会员昵称
+		Nickname string `json:"nickname"`
+	}
+	// 按会员编号/账号/昵称模糊搜索响应
+	SearchMembersByCodeResponse {
+		// 搜索结果列表
+		List []SearchMembersByCodeItem `json:"list"`
+	}
 	// 获取会员详情请求
 	GetMemberDetailRequest {
 		// 会员数据库主键
@@ -337,6 +360,10 @@ service operator_admin_api {
 	// 获取会员详情
 	@handler GetDetail
 	get /detail (GetMemberDetailRequest) returns (GetMemberDetailResponse)
+
+	// 按会员编号/账号/昵称模糊搜索会员（返回 id、编号、账号、昵称）
+	@handler SearchByCode
+	get /search/code (SearchMembersByCodeRequest) returns (SearchMembersByCodeResponse)
 }
 
 

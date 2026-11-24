@@ -1,0 +1,75 @@
+syntax = "v1"
+
+info (
+	title:   "agent turnover api"
+	desc:    "代理流水"
+	author:  "p9"
+	version: "v1"
+)
+
+// 流水列表项 | Turnover list item
+type TurnoverListItem {
+	Id              int64   `json:"id"`
+	MemberId        int64   `json:"member_id"`
+	MemberAccount   string  `json:"member_account"`
+	MemberLevelName string  `json:"member_level_name"`
+	ConsumeAmount   float64 `json:"consume_amount"`
+	ConsumeCurrency string  `json:"consume_currency"`
+	ConsumeType     int32   `json:"consume_type"`
+	ConsumeAt       int64   `json:"consume_at"`
+	BalanceBefore   float64 `json:"balance_before"`
+	BalanceAfter    float64 `json:"balance_after"`
+	BalanceCurrency string  `json:"balance_currency"`
+	AgentId         int64   `json:"agent_id"`
+	WalletId        int64   `json:"wallet_id"`
+	Notes           string  `json:"notes,optional"`
+	CreatedAt       int64   `json:"created_at"`
+	GameId          int64   `json:"game_id,optional"`
+	OrderNo         string  `json:"order_no,optional"`
+}
+
+// 添加流水请求 | Add turnover request
+// consume_amount / balance_before 单位为主币（如 USDT）
+// 货币固定 USDT、类型固定游戏、消费时间取当前时间、消费后余额由服务端自动计算
+// consume_amount 正数表示赢（余额增加），负数表示输（余额减少），0 表示模拟/演示流水
+type AddTurnoverReq {
+	MemberId      int64   `json:"member_id,range=[1:]"`
+	ConsumeAmount float64 `json:"consume_amount"`
+	BalanceBefore float64 `json:"balance_before,range=[0:]"`
+	Notes         string  `json:"notes,optional"`
+	GameId        int64   `json:"game_id,optional,range=[0:]"`
+}
+
+// 添加流水响应 | Add turnover response
+type AddTurnoverResp {
+	Id int64 `json:"id"`
+}
+
+// 流水列表请求 | List turnovers request
+type ListTurnoversReq {
+	Page      int32 `json:"page,optional,default=1,range=[1:]"`
+	PageSize  int32 `json:"page_size,optional,default=20,range=[1:100]"`
+	MemberId  int64 `json:"member_id,optional"`
+	TimeStart int64 `json:"time_start,optional"`
+	TimeEnd   int64 `json:"time_end,optional"`
+}
+
+// 流水列表响应 | List turnovers response
+type ListTurnoversResp {
+	List  []TurnoverListItem `json:"list"`
+	Total int64              `json:"total"`
+}
+
+@server (
+	group:      agent/turnover
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "添加流水"
+	@handler addTurnover
+	post /agent/turnover/add (AddTurnoverReq) returns (AddTurnoverResp)
+
+	@doc "流水列表"
+	@handler listTurnovers
+	post /agent/turnover/list (ListTurnoversReq) returns (ListTurnoversResp)
+}

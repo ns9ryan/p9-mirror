@@ -11,11 +11,13 @@ import (
 	activityorder "oa.98ent.com/p9/operator-admin-api/internal/handler/activity/order"
 	agentapply "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/apply"
 	agentconfig "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/config"
+	agentdeposit_order "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/deposit_order"
 	agentlevel "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/level"
 	agentloginlog "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/loginlog"
 	agentmanage "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/manage"
 	agentprofile "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/profile"
 	agenttree "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/tree"
+	agentturnover "oa.98ent.com/p9/operator-admin-api/internal/handler/agent/turnover"
 	memberauto_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/auto_level"
 	memberfixed_level "oa.98ent.com/p9/operator-admin-api/internal/handler/member/fixed_level"
 	membermanage "oa.98ent.com/p9/operator-admin-api/internal/handler/member/manage"
@@ -150,6 +152,62 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/agent/line/defaults",
 					Handler: agentconfig.GetLineDefaultAgentsHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
+					// 添加人工存款订单
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/add",
+					Handler: agentdeposit_order.AddAgentDepositOrderHandler(serverCtx),
+				},
+				{
+					// 审核通过
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/approve",
+					Handler: agentdeposit_order.ApproveAgentDepositOrderHandler(serverCtx),
+				},
+				{
+					// 领取审核
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/claim",
+					Handler: agentdeposit_order.ClaimAgentDepositOrderHandler(serverCtx),
+				},
+				{
+					// 冻结订单
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/freeze",
+					Handler: agentdeposit_order.FreezeAgentDepositOrderHandler(serverCtx),
+				},
+				{
+					// 人工存款订单列表
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/list",
+					Handler: agentdeposit_order.ListAgentDepositOrdersHandler(serverCtx),
+				},
+				{
+					// 审核拒绝
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/reject",
+					Handler: agentdeposit_order.RejectAgentDepositOrderHandler(serverCtx),
+				},
+				{
+					// 释放审核
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/release",
+					Handler: agentdeposit_order.ReleaseAgentDepositOrderHandler(serverCtx),
+				},
+				{
+					// 解冻订单
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/unfreeze",
+					Handler: agentdeposit_order.UnfreezeAgentDepositOrderHandler(serverCtx),
 				},
 			}...,
 		),
@@ -314,6 +372,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
 			[]rest.Route{
 				{
+					// 添加流水
+					Method:  http.MethodPost,
+					Path:    "/agent/turnover/add",
+					Handler: agentturnover.AddTurnoverHandler(serverCtx),
+				},
+				{
+					// 流水列表
+					Method:  http.MethodPost,
+					Path:    "/agent/turnover/list",
+					Handler: agentturnover.ListTurnoversHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Jwt, serverCtx.ActionLog, serverCtx.Authority},
+			[]rest.Route{
+				{
 					Method:  http.MethodPost,
 					Path:    "/create",
 					Handler: memberauto_level.CreateHandler(serverCtx),
@@ -420,6 +498,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/remark/update",
 					Handler: membermanage.UpdateRemarkHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/search/code",
+					Handler: membermanage.SearchByCodeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -609,6 +692,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/config/update",
 					Handler: taskmanage.UpdateTaskConfigHandler(serverCtx),
+				},
+				{
+					// 获取任务全局配置（包含当前生效和待生效配置）
+					Method:  http.MethodGet,
+					Path:    "/global-config/list",
+					Handler: taskmanage.ListTaskGlobalConfigHandler(serverCtx),
+				},
+				{
+					// 更新任务全局配置（如生效时间>当前时间则延迟生效，否则立即生效）
+					Method:  http.MethodPost,
+					Path:    "/global-config/update",
+					Handler: taskmanage.UpdateTaskGlobalConfigHandler(serverCtx),
 				},
 				{
 					// 会员任务奖励订单查询

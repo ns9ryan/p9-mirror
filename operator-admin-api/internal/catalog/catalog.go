@@ -24,6 +24,9 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "MemberManage", Title: "menu.memberManage", Path: "/member", MenuType: menuTypeDir, Sort: 10},
 			{Name: "MemberManageList", Title: "menu.memberManage.list", Path: "/member/list", MenuType: menuTypeMenu, Component: "memberManage/index", ParentName: "MemberManage", Sort: 11},
 
+			// 会员列表按钮权限
+			{Name: "MemberSearchByCode", Title: "menu.route.memberSearchByCode", MenuType: menuTypeButton, Permission: "member:search:code", ParentName: "MemberManageList", Sort: 111},
+
 			// 层级管理: 自动层级和固定层级在同一页面内切换
 			{Name: "MemberLevel", Title: "menu.route.memberLevel", Path: "/member/level", MenuType: menuTypeMenu, Component: "memberManage/level/index", ParentName: "MemberManage", Sort: 12},
 
@@ -64,6 +67,21 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "AgentLevelUpdate", Title: "menu.route.agentLevelUpdate", MenuType: menuTypeButton, Permission: "agent:level:update", ParentName: "AgentLevel", Sort: 241},
 			{Name: "AgentApplyReview", Title: "menu.route.agentApplyReview", HideMenu: 1, MenuType: menuTypeButton, Permission: "agent:apply:review", ParentName: "AgentApply", Sort: 251},
 
+			// 代理存款订单审核菜单和按钮权限
+			{Name: "AgentDepositOrderAudit", Title: "menu.route.agentDepositOrderAudit", Path: "/agent/deposit-order-audit", MenuType: menuTypeMenu, Component: "agent/depositOrderAudit/index", ParentName: "Agent", Sort: 28},
+			{Name: "AgentDepositOrderClaim", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:claim", ParentName: "AgentDepositOrderAudit", Sort: 281},
+			{Name: "AgentDepositOrderRelease", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:release", ParentName: "AgentDepositOrderAudit", Sort: 282},
+			{Name: "AgentDepositOrderApprove", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:approve", ParentName: "AgentDepositOrderAudit", Sort: 283},
+			{Name: "AgentDepositOrderReject", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:reject", ParentName: "AgentDepositOrderAudit", Sort: 284},
+			{Name: "AgentDepositOrderFreeze", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:freeze", ParentName: "AgentDepositOrderAudit", Sort: 285},
+			{Name: "AgentDepositOrderUnfreeze", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:unfreeze", ParentName: "AgentDepositOrderAudit", Sort: 286},
+
+			// 财务中心
+			{Name: "FinanceCenter", Title: "menu.route.financeCenter", Path: "/finance", MenuType: menuTypeDir, Sort: 40},
+			{Name: "FinanceDepositAudit", Title: "menu.route.financeDepositAudit", Path: "/finance/deposit-audit", MenuType: menuTypeMenu, Component: "finance/depositAudit/index", ParentName: "FinanceCenter", Sort: 41},
+			{Name: "FinanceMemberDepositAuditList", Title: "menu.route.financeMemberDepositAuditList", MenuType: menuTypeButton, Permission: "finance:member-deposit-audit:list", ParentName: "FinanceDepositAudit", Sort: 411},
+			{Name: "FinanceSimulatedTurnoverList", Title: "menu.route.financeSimulatedTurnoverList", MenuType: menuTypeButton, Permission: "finance:simulated-turnover:list", ParentName: "FinanceDepositAudit", Sort: 412},
+
 			// 优惠中心
 			{Name: "PromoCenter", Title: "menu.route.promoCenter", Path: "/promo", MenuType: menuTypeDir, Sort: 30},
 			{Name: "ActivityCenter", Title: "menu.route.activityCenter", Path: "/activity", MenuType: menuTypeMenu, Component: "activity/index", ParentName: "PromoCenter", Sort: 31},
@@ -98,6 +116,18 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/agent/login-log/list", Method: http.MethodPost, Description: "api.agentLoginLogList", ApiGroup: "api.group.agent", ServiceName: serviceName},
 			{Path: "/agent/login-log/associations", Method: http.MethodPost, Description: "api.agentLoginAssociations", ApiGroup: "api.group.agent", ServiceName: serviceName},
 
+			//财务中心
+			{Path: "/agent/deposit-order/add", Method: http.MethodPost, Description: "api.agentDepositOrderAdd", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/list", Method: http.MethodPost, Description: "api.agentDepositOrderList", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/claim", Method: http.MethodPost, Description: "api.agentDepositOrderClaim", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/release", Method: http.MethodPost, Description: "api.agentDepositOrderRelease", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/approve", Method: http.MethodPost, Description: "api.agentDepositOrderApprove", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/reject", Method: http.MethodPost, Description: "api.agentDepositOrderReject", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/freeze", Method: http.MethodPost, Description: "api.agentDepositOrderFreeze", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/unfreeze", Method: http.MethodPost, Description: "api.agentDepositOrderUnfreeze", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/turnover/add", Method: http.MethodPost, Description: "api.agentTurnoverAdd", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/turnover/list", Method: http.MethodPost, Description: "api.agentTurnoverList", ApiGroup: "api.group.finance", ServiceName: serviceName},
+
 			// Independent member CSV export permission.
 			{Path: "/member/export/v2", Method: http.MethodPost, Description: "api.memberExport", ApiGroup: "api.group.member", ServiceName: serviceName},
 			// 会员管理 API
@@ -105,6 +135,7 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/member/create", Method: http.MethodPost, Description: "api.memberCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
 			{Path: "/member/batch/create", Method: http.MethodPost, Description: "api.memberBatchCreate", ApiGroup: "api.group.member", ServiceName: serviceName},
 			{Path: "/member/detail", Method: http.MethodGet, Description: "api.memberDetail", ApiGroup: "api.group.member", ServiceName: serviceName},
+			{Path: "/member/search/code", Method: http.MethodGet, Description: "api.memberSearchByCode", ApiGroup: "api.group.member", ServiceName: serviceName},
 
 			{Path: "/member/level/auto/update", Method: http.MethodPost, Description: "api.memberAutoLevelUpdate", ApiGroup: "api.group.member", ServiceName: serviceName},
 			{Path: "/member/level/fixed/update", Method: http.MethodPost, Description: "api.memberFixedLevelsUpdate", ApiGroup: "api.group.member", ServiceName: serviceName},
@@ -173,6 +204,8 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/task/config/update", Method: http.MethodPost, Description: "api.taskConfigUpdate", ApiGroup: "api.group.task", ServiceName: serviceName},
 			{Path: "/task/reward/list", Method: http.MethodGet, Description: "api.taskRewardList", ApiGroup: "api.group.task", ServiceName: serviceName},
 			{Path: "/task/reward/update-status", Method: http.MethodPost, Description: "api.taskRewardUpdateStatus", ApiGroup: "api.group.task", ServiceName: serviceName},
+			{Path: "/task/global-config/list", Method: http.MethodGet, Description: "api.taskGlobalConfigList", ApiGroup: "api.group.task", ServiceName: serviceName},
+			{Path: "/task/global-config/update", Method: http.MethodPost, Description: "api.taskGlobalConfigUpdate", ApiGroup: "api.group.task", ServiceName: serviceName},
 		},
 		I18N: i18nSeeds(code),
 	}

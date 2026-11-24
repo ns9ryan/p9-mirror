@@ -91,7 +91,7 @@ type ActivityOrderAuditListItem struct {
 	ActivityId    int64  `json:"activity_id"`
 	ActivityName  string `json:"activity_name"`
 	Type          int32  `json:"type"`
-	MemberId      int64  `json:"member_id"`
+	MemberCode    string `json:"member_code"`
 	RewardsTotal  int64  `json:"rewards_total"`
 	ChannelSource int32  `json:"channel_source"`
 	PayoutMode    int32  `json:"payout_mode"`
@@ -104,7 +104,7 @@ type ActivityOrderListItem struct {
 	ActivityId       int64  `json:"activity_id"`
 	ActivityName     string `json:"activity_name"`
 	Type             int32  `json:"type"`
-	MemberId         int64  `json:"member_id"`
+	MemberCode       string `json:"member_code"`
 	RewardsTotal     int64  `json:"rewards_total"`
 	ChannelSource    int32  `json:"channel_source"`
 	PayoutMode       int32  `json:"payout_mode"`
@@ -142,6 +142,17 @@ type ActivitySettings struct {
 	LuckWheel         *ActivityLuckWheelConfig `json:"luck_wheel,optional"`
 }
 
+type AddAgentDepositOrderReq struct {
+	MemberId           int64   `json:"member_id,range=[1:]"`
+	DepositAmount      float64 `json:"deposit_amount,range=[0.01:]"`
+	RolloverMultiplier float64 `json:"rollover_multiplier,range=[0:]"`
+	BonusRate          float64 `json:"bonus_rate,range=[0:100]"`
+}
+
+type AddAgentDepositOrderResp struct {
+	Id int64 `json:"id"`
+}
+
 type AddAgentResp struct {
 	Id        int64  `json:"id"`
 	Account   string `json:"account"`
@@ -156,6 +167,18 @@ type AddOperatorAgentReq struct {
 	Agent    AgentCreateFields `json:"agent"`
 	IsInit   bool              `json:"is_init,optional"`
 	ParentId int64             `json:"parent_id,optional"`
+}
+
+type AddTurnoverReq struct {
+	MemberId      int64   `json:"member_id,range=[1:]"`
+	ConsumeAmount float64 `json:"consume_amount"`
+	BalanceBefore float64 `json:"balance_before,range=[0:]"`
+	Notes         string  `json:"notes,optional"`
+	GameId        int64   `json:"game_id,optional,range=[0:]"`
+}
+
+type AddTurnoverResp struct {
+	Id int64 `json:"id"`
 }
 
 type AgentApplyItem struct {
@@ -200,6 +223,53 @@ type AgentCreateFields struct {
 	PromoCode     string `json:"promo_code,optional"`
 	RegisterIp    string `json:"register_ip,optional"`
 	Remark        string `json:"remark,optional"`
+}
+
+type AgentDepositOrderActionReq struct {
+	OrderId int64 `json:"order_id,range=[1:]"`
+}
+
+type AgentDepositOrderActionResp struct {
+	OrderId int64 `json:"order_id"`
+	Status  int32 `json:"status"`
+}
+
+type AgentDepositOrderAuditReq struct {
+	OrderId int64  `json:"order_id,range=[1:]"`
+	Notes   string `json:"notes,optional"`
+}
+
+type AgentDepositOrderListItem struct {
+	Id                   int64   `json:"id"`
+	OrderNo              string  `json:"order_no,optional"`
+	MemberId             int64   `json:"member_id"`
+	MemberAccount        string  `json:"member_account"`
+	MemberLevelName      string  `json:"member_level_name"`
+	CreateAt             int64   `json:"create_at"`
+	DepositCurrency      string  `json:"deposit_currency"`
+	DepositAmount        float64 `json:"deposit_amount"`
+	SiteCurrency         string  `json:"site_currency"`
+	SiteAmount           float64 `json:"site_amount"`
+	DepositType          int32   `json:"deposit_type"`
+	ReceivedAmount       float64 `json:"received_amount"`
+	FeeAmount            float64 `json:"fee_amount"`
+	ActualReceivedAmount float64 `json:"actual_received_amount"`
+	ThirdPartyOrderNo    string  `json:"third_party_order_no,optional"`
+	PaymentReceiveInfo   string  `json:"payment_receive_info,optional"`
+	PaymentSendInfo      string  `json:"payment_send_info,optional"`
+	Status               int32   `json:"status"`
+	ReviewerId           int64   `json:"reviewer_id"`
+	ReviewerUtype        int32   `json:"reviewer_utype"`
+	ClaimedAt            int64   `json:"claimed_at"`
+	ClaimedBySelf        bool    `json:"claimed_by_self"`
+	AuditorId            int64   `json:"auditor_id"`
+	AuditorUsername      string  `json:"auditor_username"`
+	AuditedAt            int64   `json:"audited_at"`
+}
+
+type AgentDepositOrderRejectReq struct {
+	OrderId int64  `json:"order_id,range=[1:]"`
+	Notes   string `json:"notes"`
 }
 
 type AgentEmpty struct {
@@ -491,7 +561,7 @@ type ExportMembersRequest struct {
 	FilterDevice       string   `json:"filter_device,optional"`
 	PUsername          string   `json:"p_username,optional"`
 	AgentType          int32    `json:"agent_type,optional"`
-	IncludeDemo        bool     `json:"include_demo,optional"` // 是否包含试玩会员，默认排除。
+	IncludeDemo        bool     `json:"include_demo,optional"`
 	RangeTodayDeposit  []string `json:"range_today_deposit,optional"`
 	RangeTodayWithdraw []string `json:"range_today_withdraw,optional"`
 }
@@ -625,14 +695,14 @@ type ListActivitiesResp struct {
 
 type ListActivityOrderAuditsReq struct {
 	PageRequest
-	OrderNo     string `form:"order_no,optional"`
-	ActivityId  *int64 `form:"activity_id,optional"`
-	MemberId    *int64 `form:"member_id,optional"`
-	Type        *int32 `form:"type,optional"`
-	AuditStatus *int32 `form:"audit_status,optional"`
-	TimeField   *int32 `form:"time_field,optional"`
-	StartSec    *int64 `form:"start_sec,optional"`
-	EndSec      *int64 `form:"end_sec,optional"`
+	OrderNo     string  `form:"order_no,optional"`
+	ActivityId  *int64  `form:"activity_id,optional"`
+	MemberCode  *string `form:"member_code,optional"`
+	Type        *int32  `form:"type,optional"`
+	AuditStatus *int32  `form:"audit_status,optional"`
+	TimeField   *int32  `form:"time_field,optional"`
+	StartSec    *int64  `form:"start_sec,optional"`
+	EndSec      *int64  `form:"end_sec,optional"`
 }
 
 type ListActivityOrderAuditsResp struct {
@@ -642,14 +712,14 @@ type ListActivityOrderAuditsResp struct {
 
 type ListActivityOrdersReq struct {
 	PageRequest
-	OrderNo    string `form:"order_no,optional"`
-	ActivityId *int64 `form:"activity_id,optional"`
-	MemberId   *int64 `form:"member_id,optional"`
-	Type       *int32 `form:"type,optional"`
-	Status     *int32 `form:"status,optional"`
-	TimeField  *int32 `form:"time_field,optional"`
-	StartSec   *int64 `form:"start_sec,optional"`
-	EndSec     *int64 `form:"end_sec,optional"`
+	OrderNo    string  `form:"order_no,optional"`
+	ActivityId *int64  `form:"activity_id,optional"`
+	MemberCode *string `form:"member_code,optional"`
+	Type       *int32  `form:"type,optional"`
+	Status     *int32  `form:"status,optional"`
+	TimeField  *int32  `form:"time_field,optional"`
+	StartSec   *int64  `form:"start_sec,optional"`
+	EndSec     *int64  `form:"end_sec,optional"`
 }
 
 type ListActivityOrdersResp struct {
@@ -670,6 +740,26 @@ type ListAgentAppliesReq struct {
 type ListAgentAppliesResp struct {
 	List  []AgentApplyItem `json:"list"`
 	Total int64            `json:"total"`
+}
+
+type ListAgentDepositOrdersReq struct {
+	Page              int32  `json:"page,optional,default=1,range=[1:]"`
+	PageSize          int32  `json:"page_size,optional,default=20,range=[1:100]"`
+	Status            int32  `json:"status,optional,range=[0:12]"`
+	MemberId          int64  `json:"member_id,optional"`
+	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
+	TimeStart         int64  `json:"time_start,optional"`
+	TimeEnd           int64  `json:"time_end,optional"`
+	OrderNo           string `json:"order_no,optional"`
+	MemberAccount     string `json:"member_account,optional"`
+	ThirdPartyOrderNo string `json:"third_party_order_no,optional"`
+	ReviewerId        int64  `json:"reviewer_id,optional"`
+	ClaimStatus       int32  `json:"claim_status,optional,range=[0:2]"`
+}
+
+type ListAgentDepositOrdersResp struct {
+	List  []AgentDepositOrderListItem `json:"list"`
+	Total int64                       `json:"total"`
 }
 
 type ListAgentLevelsResp struct {
@@ -853,6 +943,27 @@ type ListTaskConfigResp struct {
 	List     []TaskConfig `json:"list"`
 	Page     int64        `json:"page"`
 	PageSize int64        `json:"page_size"`
+}
+
+type ListTaskGlobalConfigReq struct {
+	OperatorCode string `json:"operator_code" validate:"required"`
+}
+
+type ListTaskGlobalConfigResp struct {
+	List []TaskGlobalConfig `json:"list"`
+}
+
+type ListTurnoversReq struct {
+	Page      int32 `json:"page,optional,default=1,range=[1:]"`
+	PageSize  int32 `json:"page_size,optional,default=20,range=[1:100]"`
+	MemberId  int64 `json:"member_id,optional"`
+	TimeStart int64 `json:"time_start,optional"`
+	TimeEnd   int64 `json:"time_end,optional"`
+}
+
+type ListTurnoversResp struct {
+	List  []TurnoverListItem `json:"list"`
+	Total int64              `json:"total"`
 }
 
 type ListVipIconGroupsRequest struct {
@@ -1054,6 +1165,22 @@ type SearchAgentsResp struct {
 	List []AgentSearchItem `json:"list"`
 }
 
+type SearchMembersByCodeItem struct {
+	Id       int64  `json:"id"`
+	Code     string `json:"code"`
+	Account  string `json:"account"`
+	Nickname string `json:"nickname"`
+}
+
+type SearchMembersByCodeRequest struct {
+	Keyword string `form:"keyword,optional"`
+	Limit   int32  `form:"limit,optional"`
+}
+
+type SearchMembersByCodeResponse struct {
+	List []SearchMembersByCodeItem `json:"list"`
+}
+
 type SendMemberContactBindingCodeRequest struct {
 	MemberId int64  `json:"member_id"`
 	Channel  int32  `json:"channel"`
@@ -1074,7 +1201,6 @@ type TaskConfig struct {
 	NameI18n         string `json:"name_i18n"`
 	Description      string `json:"description"`
 	DescriptionI18n  string `json:"description_i18n"`
-	Timezone         string `json:"timezone"`
 	Status           int32  `json:"status"`
 	CompletionAmount int32  `json:"completion_amount"`
 	RewardAmount     int64  `json:"reward_amount"`
@@ -1082,6 +1208,23 @@ type TaskConfig struct {
 	Sort             int64  `json:"sort"`
 	CreatedAt        int64  `json:"created_at"`
 	UpdatedAt        int64  `json:"updated_at"`
+}
+
+type TaskGlobalConfig struct {
+	Id               int64   `json:"id"`
+	OperatorCode     string  `json:"operator_code"`
+	AutoLevelIds     []int64 `json:"auto_level_ids"`
+	FixedLevelIds    []int64 `json:"fixed_level_ids"`
+	MemberTagIds     []int64 `json:"member_tag_ids"`
+	TurnoverMultiple int32   `json:"turnover_multiple"`
+	ClientTypes      int32   `json:"client_types"`
+	LimitsApply      string  `json:"limits_apply"`
+	CostIncluded     bool    `json:"cost_included"`
+	EffectTime       int64   `json:"effect_time"`
+	Status           bool    `json:"status"`
+	CreatedAt        int64   `json:"created_at"`
+	UpdatedAt        int64   `json:"updated_at"`
+	Active           bool    `json:"active"`
 }
 
 type TreeNodeAgentItem struct {
@@ -1099,6 +1242,26 @@ type TreeNodeAgentsReq struct {
 
 type TreeNodeAncestorAgentsReq struct {
 	Keyword string `form:"keyword"`
+}
+
+type TurnoverListItem struct {
+	Id              int64   `json:"id"`
+	MemberId        int64   `json:"member_id"`
+	MemberAccount   string  `json:"member_account"`
+	MemberLevelName string  `json:"member_level_name"`
+	ConsumeAmount   float64 `json:"consume_amount"`
+	ConsumeCurrency string  `json:"consume_currency"`
+	ConsumeType     int32   `json:"consume_type"`
+	ConsumeAt       int64   `json:"consume_at"`
+	BalanceBefore   float64 `json:"balance_before"`
+	BalanceAfter    float64 `json:"balance_after"`
+	BalanceCurrency string  `json:"balance_currency"`
+	AgentId         int64   `json:"agent_id"`
+	WalletId        int64   `json:"wallet_id"`
+	Notes           string  `json:"notes,optional"`
+	CreatedAt       int64   `json:"created_at"`
+	GameId          int64   `json:"game_id,optional"`
+	OrderNo         string  `json:"order_no,optional"`
 }
 
 type UpdateActivityReq struct {
@@ -1261,6 +1424,23 @@ type UpdateTaskConfigReq struct {
 
 type UpdateTaskConfigResp struct {
 	TaskConfig TaskConfig `json:"task_config"`
+}
+
+type UpdateTaskGlobalConfigReq struct {
+	OperatorCode     string  `json:"operator_code" validate:"required"`
+	AutoLevelIds     *string `json:"auto_level_ids,optional"`
+	FixedLevelIds    *string `json:"fixed_level_ids,optional"`
+	MemberTagIds     *string `json:"member_tag_ids,optional"`
+	TurnoverMultiple *int32  `json:"turnover_multiple,optional"`
+	ClientTypes      *int32  `json:"client_types,optional"`
+	LimitsApply      *string `json:"limits_apply,optional"`
+	CostIncluded     *bool   `json:"cost_included,optional"`
+	EffectTime       *int64  `json:"effect_time,optional"`
+	Status           *bool   `json:"status,optional"`
+}
+
+type UpdateTaskGlobalConfigResp struct {
+	TaskGlobalConfig TaskGlobalConfig `json:"task_global_config"`
 }
 
 type UpdateVipConfigRequest struct {

@@ -24,6 +24,8 @@ import (
 	"agent/profile.api"
 	"agent/tree.api"
 	"agent/login_log.api"
+	"agent/deposit_order.api"
+	"agent/turnover.api"
 )
 
 // 会员管理

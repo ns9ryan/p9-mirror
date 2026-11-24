@@ -1,0 +1,135 @@
+syntax = "v1"
+
+info (
+	title:   "agent deposit order api"
+	desc:    "代理人工存款订单"
+	author:  "p9"
+	version: "v1"
+)
+
+// 人工存款订单列表项 | Agent deposit order list item
+type AgentDepositOrderListItem {
+	Id                   int64   `json:"id"`
+	OrderNo              string  `json:"order_no,optional"`
+	MemberId             int64   `json:"member_id"`
+	MemberAccount        string  `json:"member_account"`
+	MemberLevelName      string  `json:"member_level_name"`
+	CreateAt             int64   `json:"create_at"`
+	DepositCurrency      string  `json:"deposit_currency"`
+	DepositAmount        float64 `json:"deposit_amount"`
+	SiteCurrency         string  `json:"site_currency"`
+	SiteAmount           float64 `json:"site_amount"`
+	DepositType          int32   `json:"deposit_type"`
+	ReceivedAmount       float64 `json:"received_amount"`
+	FeeAmount            float64 `json:"fee_amount"`
+	ActualReceivedAmount float64 `json:"actual_received_amount"`
+	ThirdPartyOrderNo    string  `json:"third_party_order_no,optional"`
+	PaymentReceiveInfo   string  `json:"payment_receive_info,optional"`
+	PaymentSendInfo      string  `json:"payment_send_info,optional"`
+	Status               int32   `json:"status"`
+	ReviewerId           int64   `json:"reviewer_id"`
+	ReviewerUtype        int32   `json:"reviewer_utype"`
+	ClaimedAt            int64   `json:"claimed_at"`
+	ClaimedBySelf        bool    `json:"claimed_by_self"`
+	AuditorId            int64   `json:"auditor_id"`
+	AuditorUsername      string  `json:"auditor_username"`
+	AuditedAt            int64   `json:"audited_at"`
+}
+
+// 添加人工存款订单请求 | Add agent deposit order request
+// deposit_amount 单位为主币（如 USDT）
+// bonus_rate 为百分比，取值范围 [0, 100]
+type AddAgentDepositOrderReq {
+	MemberId           int64   `json:"member_id,range=[1:]"`
+	DepositAmount      float64 `json:"deposit_amount,range=[0.01:]"`
+	RolloverMultiplier float64 `json:"rollover_multiplier,range=[0:]"`
+	BonusRate          float64 `json:"bonus_rate,range=[0:100]"`
+}
+
+// 添加人工存款订单响应 | Add agent deposit order response
+type AddAgentDepositOrderResp {
+	Id int64 `json:"id"`
+}
+
+// 领取/释放请求 | Claim/release request
+type AgentDepositOrderActionReq {
+	OrderId int64 `json:"order_id,range=[1:]"`
+}
+
+// 审核/冻结/解冻请求 | Approve/freeze/unfreeze request（notes 可选）
+type AgentDepositOrderAuditReq {
+	OrderId int64  `json:"order_id,range=[1:]"`
+	Notes   string `json:"notes,optional"`
+}
+
+// 拒绝请求 | Reject request（notes 必填）
+type AgentDepositOrderRejectReq {
+	OrderId int64  `json:"order_id,range=[1:]"`
+	Notes   string `json:"notes"`
+}
+
+// 审核操作响应 | Audit action response
+type AgentDepositOrderActionResp {
+	OrderId int64 `json:"order_id"`
+	Status   int32 `json:"status"`
+}
+
+// 人工存款订单列表请求 | List agent deposit orders request
+type ListAgentDepositOrdersReq {
+	Page              int32  `json:"page,optional,default=1,range=[1:]"`
+	PageSize          int32  `json:"page_size,optional,default=20,range=[1:100]"`
+	Status            int32  `json:"status,optional,range=[0:12]"`
+	MemberId          int64  `json:"member_id,optional"`
+	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
+	TimeStart         int64  `json:"time_start,optional"`
+	TimeEnd           int64  `json:"time_end,optional"`
+	OrderNo           string `json:"order_no,optional"`
+	MemberAccount     string `json:"member_account,optional"`
+	ThirdPartyOrderNo string `json:"third_party_order_no,optional"`
+	ReviewerId        int64  `json:"reviewer_id,optional"`
+	ClaimStatus       int32  `json:"claim_status,optional,range=[0:2]"`
+}
+
+// 人工存款订单列表响应 | List agent deposit orders response
+type ListAgentDepositOrdersResp {
+	List  []AgentDepositOrderListItem `json:"list"`
+	Total int64                       `json:"total"`
+}
+
+@server (
+	group:      agent/deposit_order
+	middleware: Jwt,ActionLog,Authority
+)
+service operator_admin_api {
+	@doc "添加人工存款订单"
+	@handler addAgentDepositOrder
+	post /agent/deposit-order/add (AddAgentDepositOrderReq) returns (AddAgentDepositOrderResp)
+
+	@doc "人工存款订单列表"
+	@handler listAgentDepositOrders
+	post /agent/deposit-order/list (ListAgentDepositOrdersReq) returns (ListAgentDepositOrdersResp)
+
+	@doc "领取审核"
+	@handler claimAgentDepositOrder
+	post /agent/deposit-order/claim (AgentDepositOrderActionReq) returns (AgentDepositOrderActionResp)
+
+	@doc "释放审核"
+	@handler releaseAgentDepositOrder
+	post /agent/deposit-order/release (AgentDepositOrderActionReq) returns (AgentDepositOrderActionResp)
+
+	@doc "审核通过"
+	@handler approveAgentDepositOrder
+	post /agent/deposit-order/approve (AgentDepositOrderAuditReq) returns (AgentDepositOrderActionResp)
+
+	@doc "审核拒绝"
+	@handler rejectAgentDepositOrder
+	post /agent/deposit-order/reject (AgentDepositOrderRejectReq) returns (AgentDepositOrderActionResp)
+
+	@doc "冻结订单"
+	@handler freezeAgentDepositOrder
+	post /agent/deposit-order/freeze (AgentDepositOrderAuditReq) returns (AgentDepositOrderActionResp)
+
+	@doc "解冻订单"
+	@handler unfreezeAgentDepositOrder
+	post /agent/deposit-order/unfreeze (AgentDepositOrderAuditReq) returns (AgentDepositOrderActionResp)
+}

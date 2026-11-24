@@ -53,6 +53,13 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	add("menu.route.agentOpLogs", "资料变更记录", "資料變更記錄", "Profile change logs")
 	add("menu.route.agentLoginLog", "代理日志", "代理日誌", "Agent login logs")
 	add("menu.route.agentLoginAssociation", "关联检索", "關聯檢索", "Login associations")
+	add("menu.route.agentDepositOrder", "人工存款", "人工存款", "Agent deposit orders")
+	add("menu.route.agentDepositOrderAudit", "存款订单审核", "存款訂單審核", "Deposit Order Audit")
+	add("menu.route.agentTurnover", "流水管理", "流水管理", "Turnover")
+	add("menu.route.agentDepositOrderAdd", "添加人工存款", "添加人工存款", "Add deposit order")
+	add("menu.route.agentDepositOrderList", "人工存款订单列表", "人工存款訂單列表", "Deposit order list")
+	add("menu.route.agentTurnoverAdd", "添加流水", "添加流水", "Add turnover")
+	add("menu.route.agentTurnoverList", "流水列表", "流水列表", "Turnover list")
 
 	// 会员管理
 	add("menu.memberManage", "会员管理", "會員管理", "Member management")
@@ -66,6 +73,15 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	add("menu.route.memberFixedLevelCreate", "创建固定层级", "建立固定層級", "Create fixed level")
 	add("menu.route.memberFixedLevelUpdate", "修改固定层级", "修改固定層級", "Update fixed level")
 	add("menu.route.memberFixedLevelDelete", "删除固定层级", "刪除固定層級", "Delete fixed level")
+	add("menu.route.memberSearchByCode", "搜索会员", "搜索會員", "Search members")
+
+	// 财务中心
+	add("menu.route.financeCenter", "财务中心", "財務中心", "Finance")
+	add("menu.route.financeDepositAudit", "存款审核", "存款審核", "Deposit audit")
+	add("menu.route.financeMemberDepositAudit", "会员存款审核", "會員存款審核", "Member deposit audit")
+	add("menu.route.financeSimulatedTurnover", "模拟流水", "模擬流水", "Simulated turnover")
+	add("menu.route.financeMemberDepositAuditList", "会员存款审核列表", "會員存款審核列表", "Member deposit audit list")
+	add("menu.route.financeSimulatedTurnoverList", "模拟流水列表", "模擬流水列表", "Simulated turnover list")
 
 	// 优惠中心
 	add("menu.route.promoCenter", "优惠中心", "優惠中心", "Promotions")
@@ -116,6 +132,7 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 	add("api.memberCreate", "创建会员", "建立會員", "Create member")
 	add("api.memberBatchCreate", "批量创建会员", "批次建立會員", "Create members in batch")
 	add("api.memberDetail", "会员详情", "會員詳情", "Member detail")
+	add("api.memberSearchByCode", "按编号/账号/昵称搜索会员", "按編號/帳號/暱稱搜索會員", "Search members by code/account/nickname")
 
 	// 会员自动层级 API
 	add("api.memberAutoLevelList", "自动层级列表", "自動層級列表", "Auto level list")
@@ -190,6 +207,19 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 	add("api.agentOpLogs", "代理资料变更操作日志", "代理資料變更操作日誌", "Agent profile op logs")
 	add("api.agentLoginLogList", "代理登录日志列表", "代理登錄日誌列表", "Agent login log list")
 	add("api.agentLoginAssociations", "关联检索登录日志", "關聯檢索登錄日誌", "Login association search")
+	// 财务管理 API
+	add("api.group.finance", "财务管理", "財務管理", "Finance")
+
+	add("api.agentDepositOrderAdd", "添加人工存款订单", "添加人工存款訂單", "Add agent deposit order")
+	add("api.agentDepositOrderList", "人工存款订单列表", "人工存款訂單列表", "Agent deposit order list")
+	add("api.agentDepositOrderClaim", "领取审核", "領取審核", "Claim Review")
+	add("api.agentDepositOrderRelease", "释放审核", "釋放審核", "Release Review")
+	add("api.agentDepositOrderApprove", "审核通过", "審核通過", "Approve")
+	add("api.agentDepositOrderReject", "审核拒绝", "審核拒絕", "Reject")
+	add("api.agentDepositOrderFreeze", "冻结", "凍結", "Freeze")
+	add("api.agentDepositOrderUnfreeze", "解冻", "解凍", "Unfreeze")
+	add("api.agentTurnoverAdd", "添加流水", "添加流水", "Add turnover")
+	add("api.agentTurnoverList", "流水列表", "流水列表", "Turnover list")
 
 	add("api.taskConfigList", "任务配置列表", "任務配置列表", "Task config list")
 	add("api.taskConfigUpdate", "更新任务配置", "更新任務配置", "Update task config")
@@ -374,6 +404,8 @@ func errorI18n(i18nCode string) []*coreclient.I18NItem {
 	add("agent.applyRejectReasonRequired", "拒绝理由不能为空", "拒絕理由不能為空", "Reject reason required")
 	add("agent.applyPendingExists", "该账号已有待审核申请", "該賬號已有待審核申請", "Pending apply already exists")
 	add("agent.applyMemberCodeExists", "该会员已申请过代理", "該會員已申請過代理", "Member already applied")
+	add("agent.applyAccountUsedByOther", "该账号已被其他代理使用", "該賬號已被其他代理使用", "Account already used by another agent")
+	add("agent.depositTypeInvalid", "存款方式无效", "存款方式無效", "Invalid deposit type")
 	add("agent.notFound", "代理不存在", "代理不存在", "Agent not found")
 	add("agent.hasChildren", "代理有下级，无法删除", "代理有下級，無法刪除", "Agent has children, cannot delete")
 	add("agent.cannotDeleteRoot", "根代理无法删除", "根代理無法刪除", "Root agent cannot delete")
@@ -388,5 +420,12 @@ func errorI18n(i18nCode string) []*coreclient.I18NItem {
 	add("activity.invalidId", "活动 ID 无效", "活動 ID 無效", "Invalid activity ID")
 	add("activity.orderNotPending", "订单不在待审核状态", "訂單不在待審核狀態", "Order is not pending audit")
 	add("activity.engineDisabled", "活动引擎未启动，无法通过审核", "活動引擎未啟動，無法通過審核", "Activity engine is disabled")
+	add("agentDepositOrder.notFound", "存款订单不存在", "存款訂單不存在", "Deposit order not found")
+	add("agentDepositOrder.notClaimable", "订单当前状态不可领取", "訂單當前狀態不可領取", "Order is not claimable")
+	add("agentDepositOrder.alreadyClaimed", "订单已被其他审核人领取", "訂單已被其他審核人領取", "Order already claimed by another reviewer")
+	add("agentDepositOrder.notClaimer", "您未领取该订单，无法操作", "您未領取該訂單，無法操作", "You have not claimed this order")
+	add("agentDepositOrder.frozenOnlyUnfreeze", "订单已冻结，仅可解冻", "訂單已凍結，僅可解凍", "Order is frozen, can only be unfrozen")
+	add("agentDepositOrder.notFrozen", "订单不在冻结状态", "訂單不在凍結狀態", "Order is not frozen")
+	add("agentDepositOrder.rejectNotesRequired", "拒绝原因不能为空", "拒絕原因不能為空", "Reject reason is required")
 	return out
 }
