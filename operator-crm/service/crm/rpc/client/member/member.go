@@ -38,6 +38,8 @@ type (
 		UpdateFixedLevels(ctx context.Context, in *memberpb.UpdateMemberFixedLevelsRequest, opts ...grpc.CallOption) (*memberpb.UpdateMemberLevelsResponse, error)
 		// 创建会员
 		Create(ctx context.Context, in *memberpb.CreateMemberRequest, opts ...grpc.CallOption) (*memberpb.CreateMemberResponse, error)
+		// 会员 H5 自助注册。调用方通过 RPC metadata 传递服务端解析的所属厅。
+		Register(ctx context.Context, in *memberpb.RegisterMemberRequest, opts ...grpc.CallOption) (*memberpb.RegisterMemberResponse, error)
 		// 获取会员列表
 		List(ctx context.Context, in *memberpb.ListMembersRequest, opts ...grpc.CallOption) (*memberpb.ListMembersResponse, error)
 		// 获取会员详情
@@ -46,6 +48,10 @@ type (
 		GetSensitiveInfo(ctx context.Context, in *memberpb.GetMemberSensitiveInfoRequest, opts ...grpc.CallOption) (*memberpb.GetMemberSensitiveInfoResponse, error)
 		// 获取会员上级代理会员ID
 		GetParentAgentMember(ctx context.Context, in *memberpb.GetParentAgentMemberRequest, opts ...grpc.CallOption) (*memberpb.GetParentAgentMemberResponse, error)
+		// 按会员编号/账号/昵称模糊搜索会员（返回 id、编号、账号、昵称）
+		SearchByCode(ctx context.Context, in *memberpb.SearchMembersByCodeReq, opts ...grpc.CallOption) (*memberpb.SearchMembersByCodeResp, error)
+		// 检查会员是否符合当前全局任务配置
+		CheckMemberTaskGlobalConfig(ctx context.Context, in *memberpb.CheckMemberTaskGlobalConfigReq, opts ...grpc.CallOption) (*memberpb.CheckMemberTaskGlobalConfigResp, error)
 	}
 
 	defaultMember struct {
@@ -144,6 +150,12 @@ func (m *defaultMember) Create(ctx context.Context, in *memberpb.CreateMemberReq
 	return client.Create(ctx, in, opts...)
 }
 
+// 会员 H5 自助注册。调用方通过 RPC metadata 传递服务端解析的所属厅。
+func (m *defaultMember) Register(ctx context.Context, in *memberpb.RegisterMemberRequest, opts ...grpc.CallOption) (*memberpb.RegisterMemberResponse, error) {
+	client := crmrpc.NewMemberClient(m.cli.Conn())
+	return client.Register(ctx, in, opts...)
+}
+
 // 获取会员列表
 func (m *defaultMember) List(ctx context.Context, in *memberpb.ListMembersRequest, opts ...grpc.CallOption) (*memberpb.ListMembersResponse, error) {
 	client := crmrpc.NewMemberClient(m.cli.Conn())
@@ -166,4 +178,16 @@ func (m *defaultMember) GetSensitiveInfo(ctx context.Context, in *memberpb.GetMe
 func (m *defaultMember) GetParentAgentMember(ctx context.Context, in *memberpb.GetParentAgentMemberRequest, opts ...grpc.CallOption) (*memberpb.GetParentAgentMemberResponse, error) {
 	client := crmrpc.NewMemberClient(m.cli.Conn())
 	return client.GetParentAgentMember(ctx, in, opts...)
+}
+
+// 按会员编号/账号/昵称模糊搜索会员（返回 id、编号、账号、昵称）
+func (m *defaultMember) SearchByCode(ctx context.Context, in *memberpb.SearchMembersByCodeReq, opts ...grpc.CallOption) (*memberpb.SearchMembersByCodeResp, error) {
+	client := crmrpc.NewMemberClient(m.cli.Conn())
+	return client.SearchByCode(ctx, in, opts...)
+}
+
+// 检查会员是否符合当前全局任务配置
+func (m *defaultMember) CheckMemberTaskGlobalConfig(ctx context.Context, in *memberpb.CheckMemberTaskGlobalConfigReq, opts ...grpc.CallOption) (*memberpb.CheckMemberTaskGlobalConfigResp, error) {
+	client := crmrpc.NewMemberClient(m.cli.Conn())
+	return client.CheckMemberTaskGlobalConfig(ctx, in, opts...)
 }

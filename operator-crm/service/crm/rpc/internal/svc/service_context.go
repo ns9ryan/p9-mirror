@@ -125,7 +125,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	// 创建事件处理器
-	eventHandler := kafka.NewEventHandler(kafkaProducer)
+	eventHandler := kafka.NewEventHandler(kafkaProducer, memberServ)
 
 	var integrationRpc integrationclient.Integration
 	if len(c.IntegrationRpc.Endpoints) != 0 || c.IntegrationRpc.Target != "" || c.IntegrationRpc.Etcd.Key != "" {

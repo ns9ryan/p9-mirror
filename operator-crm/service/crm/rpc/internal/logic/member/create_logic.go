@@ -156,8 +156,9 @@ func (l *CreateLogic) Create(in *memberpb.CreateMemberRequest) (*memberpb.Create
 
 	// 返回会员ID和对外编号
 	return &memberpb.CreateMemberResponse{
-		Id:   created.ID,
-		Code: created.Code,
+		Id:             created.ID,                // 会员数据库主键
+		Code:           created.Code,              // 会员对外编号
+		MemberGlobalId: created.GlobalID.String(), // 会员全局唯一标识
 	}, nil
 }
 

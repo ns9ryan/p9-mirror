@@ -48,4 +48,14 @@ const (
 	AgentHasChildren               = "agent.hasChildren"
 	AgentCannotDeleteRoot          = "agent.cannotDeleteRoot"
 	AgentIsDesignated              = "agent.isDesignated"
+
+	DepositTypeInvalid = "agent.depositTypeInvalid"
+
+	AgentDepositOrderNotFound            = "agentDepositOrder.notFound"
+	AgentDepositOrderNotClaimable        = "agentDepositOrder.notClaimable"
+	AgentDepositOrderAlreadyClaimed      = "agentDepositOrder.alreadyClaimed"
+	AgentDepositOrderNotClaimer          = "agentDepositOrder.notClaimer"
+	AgentDepositOrderFrozenOnlyUnfreeze  = "agentDepositOrder.frozenOnlyUnfreeze"
+	AgentDepositOrderNotFrozen           = "agentDepositOrder.notFrozen"
+	AgentDepositOrderRejectNotesRequired = "agentDepositOrder.rejectNotesRequired"
 )

@@ -56,6 +56,8 @@ const (
 	FieldRegisterDeviceCode = "register_device_code"
 	// FieldRegisterDomain holds the string denoting the register_domain field in the database.
 	FieldRegisterDomain = "register_domain"
+	// FieldFirstLoginAt holds the string denoting the first_login_at field in the database.
+	FieldFirstLoginAt = "first_login_at"
 	// FieldLastLoginAt holds the string denoting the last_login_at field in the database.
 	FieldLastLoginAt = "last_login_at"
 	// FieldLastLoginIP holds the string denoting the last_login_ip field in the database.
@@ -209,6 +211,7 @@ var Columns = []string{
 	FieldRegisterIP,
 	FieldRegisterDeviceCode,
 	FieldRegisterDomain,
+	FieldFirstLoginAt,
 	FieldLastLoginAt,
 	FieldLastLoginIP,
 	FieldLastLoginDeviceCode,
@@ -388,6 +391,11 @@ func ByRegisterDeviceCode(opts ...sql.OrderTermOption) OrderOption {
 // ByRegisterDomain orders the results by the register_domain field.
 func ByRegisterDomain(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRegisterDomain, opts...).ToFunc()
+}
+
+// ByFirstLoginAt orders the results by the first_login_at field.
+func ByFirstLoginAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFirstLoginAt, opts...).ToFunc()
 }
 
 // ByLastLoginAt orders the results by the last_login_at field.

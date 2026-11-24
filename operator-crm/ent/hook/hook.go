@@ -45,6 +45,30 @@ func (f AgentConfigFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AgentConfigMutation", m)
 }
 
+// The AgentDepositOrderFunc type is an adapter to allow the use of ordinary
+// function as AgentDepositOrder mutator.
+type AgentDepositOrderFunc func(context.Context, *ent.AgentDepositOrderMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AgentDepositOrderFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AgentDepositOrderMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AgentDepositOrderMutation", m)
+}
+
+// The AgentDepositOrderAuditFunc type is an adapter to allow the use of ordinary
+// function as AgentDepositOrderAudit mutator.
+type AgentDepositOrderAuditFunc func(context.Context, *ent.AgentDepositOrderAuditMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AgentDepositOrderAuditFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AgentDepositOrderAuditMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AgentDepositOrderAuditMutation", m)
+}
+
 // The AgentLevelFunc type is an adapter to allow the use of ordinary
 // function as AgentLevel mutator.
 type AgentLevelFunc func(context.Context, *ent.AgentLevelMutation) (ent.Value, error)
@@ -283,6 +307,18 @@ func (f MemberVipProgressFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MemberVipProgressMutation", m)
+}
+
+// The TurnoverFunc type is an adapter to allow the use of ordinary
+// function as Turnover mutator.
+type TurnoverFunc func(context.Context, *ent.TurnoverMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TurnoverFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TurnoverMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TurnoverMutation", m)
 }
 
 // Condition is a hook condition function.

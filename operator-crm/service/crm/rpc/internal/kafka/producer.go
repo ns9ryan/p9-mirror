@@ -57,6 +57,24 @@ func (p *Producer) Publish(
 	return p.producer.PushWithKey(ctx, topic, event.OperatorCode, string(payloadData))
 }
 
+// PublishData 直接将 data 序列化为 xkafka.Payload.Data 字段后发布。
+// 用于需要精确控制 Data 结构（如 DepositPayload、BetPayload）的场景，
+// name 同时作为 Payload.Name 和 xkafka.Payload 外层 topic 标识。
+func (p *Producer) PublishData(ctx context.Context, topicName string, partitionKey string, data any) error {
+	kp, err := xkafka.NewPayload(topicName, data)
+	if err != nil {
+		logx.Errorf("[kafka生产者] 构造payload失败: topic=%s err=%v", topicName, err)
+		return err
+	}
+	payloadBytes, err := json.Marshal(kp)
+	if err != nil {
+		logx.Errorf("[kafka生产者] 序列化payload失败: topic=%s err=%v", topicName, err)
+		return err
+	}
+	logx.Infof("[kafka生产者] 发送消息: topic=%s key=%s", topicName, partitionKey)
+	return p.producer.PushWithKey(ctx, topicName, partitionKey, string(payloadBytes))
+}
+
 // Close 关闭生产者
 func (p *Producer) Close() error {
 	// xkafka.Producer 不需要显式关闭

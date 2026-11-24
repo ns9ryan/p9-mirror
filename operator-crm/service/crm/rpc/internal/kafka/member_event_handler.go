@@ -20,12 +20,13 @@ func (h *EventHandler) PublishMemberRegisteredEvent(ctx context.Context, member 
 
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.GameUserRegister,        // 事件类型：game-user.register
-		OperatorCode: member.OperatorCode,           // 分站标识
-		MemberID:     member.ID,                     // 会员ID
-		OccurredAt:   member.CreatedAt,              // 事件发生时间（会员创建时间）
-		PublishedAt:  time.Now(),                    // 事件发布时间（当前时间）
-		TraceID:      trace.TraceIDFromContext(ctx), // 链路追踪ID
+		MemberGlobalID: member.GlobalID.String(),      // 会员全局ID
+		EventType:      topic.GameUserRegister,        // 事件类型：game-user.register
+		OperatorCode:   member.OperatorCode,           // 分站标识
+		MemberID:       member.ID,                     // 会员ID
+		OccurredAt:     member.CreatedAt,              // 事件发生时间（会员创建时间）
+		PublishedAt:    time.Now(),                    // 事件发布时间（当前时间）
+		TraceID:        trace.TraceIDFromContext(ctx), // 链路追踪ID
 	}
 
 	// 发送事件到 Kafka
@@ -148,21 +149,27 @@ func (h *EventHandler) PublishMemberAvatarNicknameUpdatedEvent(
 		h.Infof("[会员事件] 会员头像昵称未发生变化，跳过发送事件: member_id=%d, operator_code=%s", memberID, operatorCode)
 		return
 	}
+	memberGlobalID, err := h.memberDao.GetMemberGlobalID(ctx, operatorCode, memberID)
+	if err != nil {
+		h.Errorf("[代理事件] 获取会员全局ID失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
+		return
+	}
 
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.AvatarNicknameUpdated,
-		OperatorCode: operatorCode,
-		MemberID:     memberID,
-		OccurredAt:   updatedAt,
-		PublishedAt:  time.Now(),
-		TraceID:      trace.TraceIDFromContext(ctx), // 链路追踪ID
+		MemberGlobalID: memberGlobalID, // 会员全局ID
+		EventType:      topic.AvatarNicknameUpdated,
+		OperatorCode:   operatorCode,
+		MemberID:       memberID,
+		OccurredAt:     updatedAt,
+		PublishedAt:    time.Now(),
+		TraceID:        trace.TraceIDFromContext(ctx), // 链路追踪ID
 	}
 
 	// 发送事件到 Kafka
-	err := h.producer.Publish(ctx, topic.AvatarNicknameUpdated, event)
+	err = h.producer.Publish(ctx, topic.AvatarNicknameUpdated, event)
 	if err != nil {
-		h.Errorf("[会员事件] 发送会员头像昵称更新事件失败: member_id=%d, err=%v", memberID, err)
+		h.Errorf("[会员事件] 发送会员头像昵称更新事件失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
 		return
 	}
 
@@ -186,21 +193,27 @@ func (h *EventHandler) PublishMemberBirthdayEvent(
 		h.Infof("[会员事件] 会员生日未发生变化，跳过发送事件: member_id=%d, operator_code=%s", memberID, operatorCode)
 		return
 	}
+	memberGlobalID, err := h.memberDao.GetMemberGlobalID(ctx, operatorCode, memberID)
+	if err != nil {
+		h.Errorf("[代理事件] 获取会员全局ID失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
+		return
+	}
 
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.BirthdateUpdated,
-		OperatorCode: operatorCode,
-		MemberID:     memberID,
-		OccurredAt:   updatedAt,
-		PublishedAt:  time.Now(),
-		TraceID:      trace.TraceIDFromContext(ctx), // 链路追踪ID
+		MemberGlobalID: memberGlobalID, // 会员全局ID
+		EventType:      topic.BirthdateUpdated,
+		OperatorCode:   operatorCode,
+		MemberID:       memberID,
+		OccurredAt:     updatedAt,
+		PublishedAt:    time.Now(),
+		TraceID:        trace.TraceIDFromContext(ctx), // 链路追踪ID
 	}
 
 	// 发送事件到 Kafka
-	err := h.producer.Publish(ctx, topic.BirthdateUpdated, event)
+	err = h.producer.Publish(ctx, topic.BirthdateUpdated, event)
 	if err != nil {
-		h.Errorf("[会员事件] 发送会员生日事件失败: member_id=%d, err=%v", memberID, err)
+		h.Errorf("[会员事件] 发送会员生日事件失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
 		return
 	}
 
@@ -228,21 +241,27 @@ func (h *EventHandler) PublishMemberEmailVerifiedEvent(
 		h.Infof("[会员事件] 会员邮箱为空，跳过发送事件: member_id=%d, operator_code=%s", memberID, operatorCode)
 		return
 	}
+	memberGlobalID, err := h.memberDao.GetMemberGlobalID(ctx, operatorCode, memberID)
+	if err != nil {
+		h.Errorf("[代理事件] 获取会员全局ID失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
+		return
+	}
 
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.EmailVerified,
-		OperatorCode: operatorCode,
-		MemberID:     memberID,
-		OccurredAt:   updatedAt,
-		PublishedAt:  time.Now(),
-		TraceID:      trace.TraceIDFromContext(ctx), // 链路追踪ID
+		MemberGlobalID: memberGlobalID, // 会员全局ID
+		EventType:      topic.EmailVerified,
+		OperatorCode:   operatorCode,
+		MemberID:       memberID,
+		OccurredAt:     updatedAt,
+		PublishedAt:    time.Now(),
+		TraceID:        trace.TraceIDFromContext(ctx), // 链路追踪ID
 	}
 
 	// 发送事件到 Kafka
-	err := h.producer.Publish(ctx, topic.EmailVerified, event)
+	err = h.producer.Publish(ctx, topic.EmailVerified, event)
 	if err != nil {
-		h.Errorf("[会员事件] 发送会员邮箱验证事件失败: member_id=%d, err=%v", memberID, err)
+		h.Errorf("[会员事件] 发送会员邮箱验证事件失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
 		return
 	}
 
@@ -271,20 +290,26 @@ func (h *EventHandler) PublishMemberMobileBoundEvent(
 		return
 	}
 
+	memberGlobalID, err := h.memberDao.GetMemberGlobalID(ctx, operatorCode, memberID)
+	if err != nil {
+		h.Errorf("[代理事件] 获取会员全局ID失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
+		return
+	}
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.MobileBound,
-		OperatorCode: operatorCode,
-		MemberID:     memberID,
-		OccurredAt:   updatedAt,
-		PublishedAt:  time.Now(),
-		TraceID:      trace.TraceIDFromContext(ctx), // 链路追踪ID
+		MemberGlobalID: memberGlobalID, // 会员全局ID
+		EventType:      topic.MobileBound,
+		OperatorCode:   operatorCode,
+		MemberID:       memberID,
+		OccurredAt:     updatedAt,
+		PublishedAt:    time.Now(),
+		TraceID:        trace.TraceIDFromContext(ctx), // 链路追踪ID
 	}
 
 	// 发送事件到 Kafka
-	err := h.producer.Publish(ctx, topic.MobileBound, event)
+	err = h.producer.Publish(ctx, topic.MobileBound, event)
 	if err != nil {
-		h.Errorf("[会员事件] 发送会员手机绑定事件失败: member_id=%d, err=%v", memberID, err)
+		h.Errorf("[会员事件] 发送会员手机绑定事件失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
 		return
 	}
 
@@ -312,21 +337,27 @@ func (h *EventHandler) PublishMemberRealnameVerifiedEvent(
 		h.Infof("[会员事件] 会员真实姓名为空，跳过发送事件: member_id=%d, operator_code=%s", memberID, operatorCode)
 		return
 	}
+	memberGlobalID, err := h.memberDao.GetMemberGlobalID(ctx, operatorCode, memberID)
+	if err != nil {
+		h.Errorf("[代理事件] 获取会员全局ID失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
+		return
+	}
 
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.RealnameVerified,
-		OperatorCode: operatorCode,
-		MemberID:     memberID,
-		OccurredAt:   updatedAt,
-		PublishedAt:  time.Now(),
-		TraceID:      trace.TraceIDFromContext(ctx), // 链路追踪ID
+		MemberGlobalID: memberGlobalID, // 会员全局ID
+		EventType:      topic.RealnameVerified,
+		OperatorCode:   operatorCode,
+		MemberID:       memberID,
+		OccurredAt:     updatedAt,
+		PublishedAt:    time.Now(),
+		TraceID:        trace.TraceIDFromContext(ctx), // 链路追踪ID
 	}
 
 	// 发送事件到 Kafka
-	err := h.producer.Publish(ctx, topic.RealnameVerified, event)
+	err = h.producer.Publish(ctx, topic.RealnameVerified, event)
 	if err != nil {
-		h.Errorf("[会员事件] 发送会员实名认证事件失败: member_id=%d, err=%v", memberID, err)
+		h.Errorf("[会员事件] 发送会员实名认证事件失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
 		return
 	}
 
@@ -354,21 +385,27 @@ func (h *EventHandler) PublishMemberIDCPFVerifiedEvent(
 		h.Infof("[会员事件] 会员身份证/护照为空，跳过发送事件: member_id=%d, operator_code=%s", memberID, operatorCode)
 		return
 	}
+	memberGlobalID, err := h.memberDao.GetMemberGlobalID(ctx, operatorCode, memberID)
+	if err != nil {
+		h.Errorf("[代理事件] 获取会员全局ID失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
+		return
+	}
 
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.IDCPFVerified,
-		OperatorCode: operatorCode,
-		MemberID:     memberID,
-		OccurredAt:   updatedAt,
-		PublishedAt:  time.Now(),
-		TraceID:      trace.TraceIDFromContext(ctx), // 链路追踪ID
+		MemberGlobalID: memberGlobalID, // 会员全局ID
+		EventType:      topic.IDCPFVerified,
+		OperatorCode:   operatorCode,
+		MemberID:       memberID,
+		OccurredAt:     updatedAt,
+		PublishedAt:    time.Now(),
+		TraceID:        trace.TraceIDFromContext(ctx), // 链路追踪ID
 	}
 
 	// 发送事件到 Kafka
-	err := h.producer.Publish(ctx, topic.IDCPFVerified, event)
+	err = h.producer.Publish(ctx, topic.IDCPFVerified, event)
 	if err != nil {
-		h.Errorf("[会员事件] 发送会员身份证/护照验证事件失败: member_id=%d, err=%v", memberID, err)
+		h.Errorf("[会员事件] 发送会员身份证/护照验证事件失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
 		return
 	}
 

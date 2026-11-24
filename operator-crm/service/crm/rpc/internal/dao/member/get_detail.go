@@ -44,15 +44,15 @@ func (s *Service) GetDetail(ctx context.Context, memberID int64) (*ent.Member, e
 	// 加载会员个人资料, 不读取敏感资料密文
 	query.WithProfile(func(q *ent.MemberProfileQuery) {
 		q.Select(
-			memberprofile.FieldID,             // 个人资料ID
-			memberprofile.FieldMemberID,       // 所属会员ID
+			memberprofile.FieldID,            // 个人资料ID
+			memberprofile.FieldMemberID,      // 所属会员ID
 			memberprofile.FieldAvatarID,      // 会员头像URL, 使用系统预设资源
 			memberprofile.FieldAvatarFrameID, // 会员头像框URL, 使用系统预设资源
-			memberprofile.FieldNickname,       // 会员昵称
-			memberprofile.FieldBirthday,       // 会员生日
-			memberprofile.FieldGender,         // 性别: 0未设置, 1男, 2女, 3保密
-			memberprofile.FieldRegionCode,     // 会员国家或地区编码
-			memberprofile.FieldRemark,         // 后台会员备注
+			memberprofile.FieldNickname,      // 会员昵称
+			memberprofile.FieldBirthday,      // 会员生日
+			memberprofile.FieldGender,        // 性别: 0未设置, 1男, 2女, 3保密
+			memberprofile.FieldRegionCode,    // 会员国家或地区编码
+			memberprofile.FieldRemark,        // 后台会员备注
 		)
 	})
 
@@ -112,4 +112,18 @@ func (s *Service) GetDetail(ctx context.Context, memberID int64) (*ent.Member, e
 	}
 
 	return m, nil
+}
+
+// GetMemberGlobalID 通过 memberID 查询会员的全局唯一标识
+func (s *Service) GetMemberGlobalID(ctx context.Context, operatorCode string, memberID int64) (string, error) {
+	m, err := s.db.Member.Query().
+		Where(entmember.IDEQ(memberID)).
+		Where(entmember.OperatorCodeEQ(operatorCode)).
+		Select(entmember.FieldGlobalID).
+		Only(ctx)
+	if err != nil {
+		return "", fmt.Errorf("查询会员全局ID失败: member_id=%d, err=%w", memberID, err)
+	}
+
+	return m.GlobalID.String(), nil
 }

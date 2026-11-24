@@ -13,6 +13,7 @@ import (
 
 	_ "oa.98ent.com/p9/operator-crm/ent/runtime"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/config"
+	agentdepositorderserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/agentdepositorderservice"
 	agentserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/agentservice"
 	authserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/authservice"
 	initServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/init"
@@ -20,6 +21,7 @@ import (
 	memberautolevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberautolevel"
 	memberfixedlevelServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/memberfixedlevel"
 	pingServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/ping"
+	turnoverserviceServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/turnoverservice"
 	vipServer "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/server/vip"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
@@ -38,6 +40,7 @@ func main() {
 		FullMethod: crmrpc.Member_SendMemberContactBindingCode_FullMethodName,
 		Timeout:    30 * time.Second,
 	})
+	zrpc.DontLogContentForMethod(crmrpc.Member_Register_FullMethodName)
 	zrpc.DontLogContentForMethod(crmrpc.Member_UpdateContact_FullMethodName)
 	zrpc.DontLogContentForMethod(crmrpc.Member_ListMemberContactBindingCodes_FullMethodName)
 	zrpc.DontLogContentForMethod(crmrpc.Member_SendMemberContactBindingCode_FullMethodName)
@@ -53,6 +56,7 @@ func main() {
 		// 代理服务
 		crmrpc.RegisterAuthServiceServer(grpcServer, authserviceServer.NewAuthServiceServer(ctx))
 		crmrpc.RegisterAgentServiceServer(grpcServer, agentserviceServer.NewAgentServiceServer(ctx))
+		crmrpc.RegisterAgentDepositOrderServiceServer(grpcServer, agentdepositorderserviceServer.NewAgentDepositOrderServiceServer(ctx))
 
 		memberexportpb.RegisterMemberExportServer(grpcServer, &memberServer.ExportServer{Svc: ctx})
 
@@ -67,6 +71,9 @@ func main() {
 
 		// VIP管理服务
 		crmrpc.RegisterVipServer(grpcServer, vipServer.NewVipServer(ctx))
+
+		// 模拟营业额流水服务
+		crmrpc.RegisterTurnoverServiceServer(grpcServer, turnoverserviceServer.NewTurnoverServiceServer(ctx))
 
 		// 开发和测试环境额外开启服务反射
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {

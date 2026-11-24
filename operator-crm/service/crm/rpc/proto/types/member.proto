@@ -1,5 +1,9 @@
 syntax = "proto3";
 
+package crm_member;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb";
+
 message UpdateMemberAutoLevelRequest {
   int64 member_id = 1;
   int64 auto_level_id = 2;
@@ -9,10 +13,6 @@ message UpdateMemberFixedLevelsRequest {
   repeated int64 fixed_level_ids = 2;
 }
 message UpdateMemberLevelsResponse {}
-
-package crm_member;
-
-option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb";
 
 // ==================== 枚举定义 ====================
 
@@ -164,6 +164,24 @@ message CreateMemberRequest {
 
 // 创建会员响应
 message CreateMemberResponse {
+  // 会员数据库主键
+  int64 id = 1;
+  // 12 位会员对外编号
+  string code = 2;
+  // 会员全局唯一标识
+  string member_global_id = 3;
+}
+
+// 会员 H5 账号注册请求
+message RegisterMemberRequest {
+  string account = 1;
+  string password = 2;
+  // H5 API 在服务端解析的所属代理 ID。
+  int64 agent_id = 3;
+}
+
+// 会员 H5 注册响应
+message RegisterMemberResponse {
   // 会员数据库主键
   int64 id = 1;
   // 12 位会员对外编号
@@ -473,6 +491,7 @@ message ListMemberImagesResponse {
 // 内部服务查询会员信息，调用方需透传分站身份。
 message GetMemberContextRequest {
   int64 member_id = 1;
+  string member_code = 2;
 }
 message GetMemberBasicInfoResponse {
   int64 auto_level = 1;
@@ -483,6 +502,9 @@ message GetMemberBasicInfoResponse {
   optional int64 agent_account_id = 6;
   optional int64 inviter_member_id = 7;
   string operator_code = 8;
+  string code = 9;
+  int64 id = 10;
+  string global_id = 11;
 }
 message GetMemberVerificationStatusResponse {
   bool has_email = 1;
@@ -507,6 +529,31 @@ message BatchCreatedMember {
 
 message BatchCreateMembersResponse {
   repeated BatchCreatedMember members = 1;
+}
+
+// SearchMembersByCodeReq 按会员编号模糊搜索请求
+message SearchMembersByCodeReq {
+  // 会员编号关键字（模糊匹配），同时也匹配会员账号和昵称
+  string keyword = 1;
+  // 返回条数上限，默认 20，上限 50
+  int32 limit = 2;
+}
+
+// SearchMembersByCodeItem 搜索结果项
+message SearchMembersByCodeItem {
+  // 会员数据库主键
+  int64 id = 1;
+  // 12 位会员对外编号
+  string code = 2;
+  // 会员登录账号
+  string account = 3;
+  // 会员昵称
+  string nickname = 4;
+}
+
+// SearchMembersByCodeResp 按会员编号模糊搜索响应
+message SearchMembersByCodeResp {
+  repeated SearchMembersByCodeItem list = 1;
 }
 
 message ListMemberContactBindingCodesRequest {
@@ -543,6 +590,8 @@ message ListMemberContactBindingCodesResponse {
 message GetParentAgentMemberRequest {
   // 会员数据库主键
   int64 member_id = 1;
+  // 分站运营商编码
+  string operator_code = 2;
 }
 
 // 获取会员上级代理会员ID响应
@@ -551,4 +600,39 @@ message GetParentAgentMemberResponse {
   int64 parent_agent_member_id = 1;
   // 上级代理 ID
   int64 parent_agent_id = 2;
+  // 上级代理会员全局 ID
+  string parent_agent_member_global_id = 3;
+}
+
+// TaskGlobalConfig 任务全局配置
+message TaskGlobalConfig {
+  repeated int64 auto_level_ids = 1;      // 会员自动层级过滤条件，使用自动层级ID列表
+  repeated int64 fixed_level_ids = 2;     // 会员固定层级过滤条件，使用固定层级ID列表
+  repeated int64 member_tag_ids = 3;     // 会员标签过滤条件，使用标签ID列表
+  int32 turnover_multiple = 4;           // 完成任务需要的洗码倍数要求
+  int32 client_types = 5;                // 支持的客户端类型（位运算）：1=PC_WEB，2=MOBILE_WEB，4=ANDROID_APP，8=IOS_APP
+  string limits_apply = 6;               // 终端限制：NONE=不限制，DEVICE_ID=同设备号限领取一次，BROWSER=同浏览器限领取一次，ALL=全选
+  bool cost_included = 7;                // 任务奖励是否计入成本：true=计入，false=不计入
+}
+
+// CheckMemberTaskGlobalConfigReq 检查会员是否符合全局任务配置的请求
+message CheckMemberTaskGlobalConfigReq {
+  int64 member_id = 1;                   // 会员ID
+  string operator_code = 2;              // 分站业务编码
+  TaskGlobalConfig config = 3;           // 当前生效的全局任务配置
+}
+
+// CheckMemberTaskGlobalConfigResp 检查会员是否符合全局任务配置的响应
+message CheckMemberTaskGlobalConfigResp {
+  bool is_eligible = 1;                  // 是否符合配置要求
+  string reason = 2;                     // 不符合原因（如果不符合时才有值）
+}
+
+// ==================== 服务定义 ====================
+
+// MemberTaskGlobalConfigService 会员任务全局配置服务
+service MemberTaskGlobalConfigService {
+  // 检查会员是否符合当前全局任务配置
+  // group: member_task_global_config
+  rpc checkMemberTaskGlobalConfig(CheckMemberTaskGlobalConfigReq) returns (CheckMemberTaskGlobalConfigResp);
 }

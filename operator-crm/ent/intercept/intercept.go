@@ -11,6 +11,8 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentapply"
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorder"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorderaudit"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
 	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
 	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
@@ -32,6 +34,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevelrecord"
 	"oa.98ent.com/p9/operator-crm/ent/membervipprogress"
 	"oa.98ent.com/p9/operator-crm/ent/predicate"
+	"oa.98ent.com/p9/operator-crm/ent/turnover"
 )
 
 // The Query interface represents an operation that queries a graph.
@@ -169,6 +172,60 @@ func (f TraverseAgentConfig) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.AgentConfigQuery", q)
+}
+
+// The AgentDepositOrderFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AgentDepositOrderFunc func(context.Context, *ent.AgentDepositOrderQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AgentDepositOrderFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AgentDepositOrderQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AgentDepositOrderQuery", q)
+}
+
+// The TraverseAgentDepositOrder type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAgentDepositOrder func(context.Context, *ent.AgentDepositOrderQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAgentDepositOrder) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAgentDepositOrder) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AgentDepositOrderQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AgentDepositOrderQuery", q)
+}
+
+// The AgentDepositOrderAuditFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AgentDepositOrderAuditFunc func(context.Context, *ent.AgentDepositOrderAuditQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AgentDepositOrderAuditFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AgentDepositOrderAuditQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AgentDepositOrderAuditQuery", q)
+}
+
+// The TraverseAgentDepositOrderAudit type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAgentDepositOrderAudit func(context.Context, *ent.AgentDepositOrderAuditQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAgentDepositOrderAudit) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAgentDepositOrderAudit) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AgentDepositOrderAuditQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AgentDepositOrderAuditQuery", q)
 }
 
 // The AgentLevelFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -711,6 +768,33 @@ func (f TraverseMemberVipProgress) Traverse(ctx context.Context, q ent.Query) er
 	return fmt.Errorf("unexpected query type %T. expect *ent.MemberVipProgressQuery", q)
 }
 
+// The TurnoverFunc type is an adapter to allow the use of ordinary function as a Querier.
+type TurnoverFunc func(context.Context, *ent.TurnoverQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f TurnoverFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.TurnoverQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TurnoverQuery", q)
+}
+
+// The TraverseTurnover type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseTurnover func(context.Context, *ent.TurnoverQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseTurnover) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseTurnover) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TurnoverQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.TurnoverQuery", q)
+}
+
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
@@ -720,6 +804,10 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AgentClosureQuery, predicate.AgentClosure, agentclosure.OrderOption]{typ: ent.TypeAgentClosure, tq: q}, nil
 	case *ent.AgentConfigQuery:
 		return &query[*ent.AgentConfigQuery, predicate.AgentConfig, agentconfig.OrderOption]{typ: ent.TypeAgentConfig, tq: q}, nil
+	case *ent.AgentDepositOrderQuery:
+		return &query[*ent.AgentDepositOrderQuery, predicate.AgentDepositOrder, agentdepositorder.OrderOption]{typ: ent.TypeAgentDepositOrder, tq: q}, nil
+	case *ent.AgentDepositOrderAuditQuery:
+		return &query[*ent.AgentDepositOrderAuditQuery, predicate.AgentDepositOrderAudit, agentdepositorderaudit.OrderOption]{typ: ent.TypeAgentDepositOrderAudit, tq: q}, nil
 	case *ent.AgentLevelQuery:
 		return &query[*ent.AgentLevelQuery, predicate.AgentLevel, agentlevel.OrderOption]{typ: ent.TypeAgentLevel, tq: q}, nil
 	case *ent.AgentLoginLogQuery:
@@ -760,6 +848,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.MemberVipLevelRecordQuery, predicate.MemberVipLevelRecord, memberviplevelrecord.OrderOption]{typ: ent.TypeMemberVipLevelRecord, tq: q}, nil
 	case *ent.MemberVipProgressQuery:
 		return &query[*ent.MemberVipProgressQuery, predicate.MemberVipProgress, membervipprogress.OrderOption]{typ: ent.TypeMemberVipProgress, tq: q}, nil
+	case *ent.TurnoverQuery:
+		return &query[*ent.TurnoverQuery, predicate.Turnover, turnover.OrderOption]{typ: ent.TypeTurnover, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

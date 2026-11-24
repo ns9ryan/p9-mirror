@@ -18,6 +18,10 @@ type Tx struct {
 	AgentClosure *AgentClosureClient
 	// AgentConfig is the client for interacting with the AgentConfig builders.
 	AgentConfig *AgentConfigClient
+	// AgentDepositOrder is the client for interacting with the AgentDepositOrder builders.
+	AgentDepositOrder *AgentDepositOrderClient
+	// AgentDepositOrderAudit is the client for interacting with the AgentDepositOrderAudit builders.
+	AgentDepositOrderAudit *AgentDepositOrderAuditClient
 	// AgentLevel is the client for interacting with the AgentLevel builders.
 	AgentLevel *AgentLevelClient
 	// AgentLoginLog is the client for interacting with the AgentLoginLog builders.
@@ -58,6 +62,8 @@ type Tx struct {
 	MemberVipLevelRecord *MemberVipLevelRecordClient
 	// MemberVipProgress is the client for interacting with the MemberVipProgress builders.
 	MemberVipProgress *MemberVipProgressClient
+	// Turnover is the client for interacting with the Turnover builders.
+	Turnover *TurnoverClient
 
 	// lazily loaded.
 	client     *Client
@@ -192,6 +198,8 @@ func (tx *Tx) init() {
 	tx.AgentApply = NewAgentApplyClient(tx.config)
 	tx.AgentClosure = NewAgentClosureClient(tx.config)
 	tx.AgentConfig = NewAgentConfigClient(tx.config)
+	tx.AgentDepositOrder = NewAgentDepositOrderClient(tx.config)
+	tx.AgentDepositOrderAudit = NewAgentDepositOrderAuditClient(tx.config)
 	tx.AgentLevel = NewAgentLevelClient(tx.config)
 	tx.AgentLoginLog = NewAgentLoginLogClient(tx.config)
 	tx.AgentOpLog = NewAgentOpLogClient(tx.config)
@@ -212,6 +220,7 @@ func (tx *Tx) init() {
 	tx.MemberVipLevel = NewMemberVipLevelClient(tx.config)
 	tx.MemberVipLevelRecord = NewMemberVipLevelRecordClient(tx.config)
 	tx.MemberVipProgress = NewMemberVipProgressClient(tx.config)
+	tx.Turnover = NewTurnoverClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

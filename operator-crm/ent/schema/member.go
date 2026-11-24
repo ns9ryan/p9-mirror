@@ -144,7 +144,15 @@ func (Member) Fields() []ent.Field {
 			Immutable().
 			Comment("注册域名"),
 
-		// ==================== 最后登录信息 ====================
+		// ==================== 登录信息 ====================
+
+		field.Time("first_login_at").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{
+				dialect.Postgres: "timestamptz(3)",
+			}).
+			Comment("首次登录时间，NULL表示尚未登录"),
 
 		field.Time("last_login_at").
 			Optional().

@@ -15,6 +15,12 @@ type AgentClosure func(*sql.Selector)
 // AgentConfig is the predicate function for agentconfig builders.
 type AgentConfig func(*sql.Selector)
 
+// AgentDepositOrder is the predicate function for agentdepositorder builders.
+type AgentDepositOrder func(*sql.Selector)
+
+// AgentDepositOrderAudit is the predicate function for agentdepositorderaudit builders.
+type AgentDepositOrderAudit func(*sql.Selector)
+
 // AgentLevel is the predicate function for agentlevel builders.
 type AgentLevel func(*sql.Selector)
 
@@ -74,3 +80,6 @@ type MemberVipLevelRecord func(*sql.Selector)
 
 // MemberVipProgress is the predicate function for membervipprogress builders.
 type MemberVipProgress func(*sql.Selector)
+
+// Turnover is the predicate function for turnover builders.
+type Turnover func(*sql.Selector)

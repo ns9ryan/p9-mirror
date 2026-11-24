@@ -15,6 +15,8 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentapply"
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorder"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorderaudit"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
 	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
 	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
@@ -35,6 +37,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevelrecord"
 	"oa.98ent.com/p9/operator-crm/ent/membervipprogress"
+	"oa.98ent.com/p9/operator-crm/ent/turnover"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -98,6 +101,8 @@ func checkColumn(t, c string) error {
 			agentapply.Table:                 agentapply.ValidColumn,
 			agentclosure.Table:               agentclosure.ValidColumn,
 			agentconfig.Table:                agentconfig.ValidColumn,
+			agentdepositorder.Table:          agentdepositorder.ValidColumn,
+			agentdepositorderaudit.Table:     agentdepositorderaudit.ValidColumn,
 			agentlevel.Table:                 agentlevel.ValidColumn,
 			agentloginlog.Table:              agentloginlog.ValidColumn,
 			agentoplog.Table:                 agentoplog.ValidColumn,
@@ -118,6 +123,7 @@ func checkColumn(t, c string) error {
 			memberviplevel.Table:             memberviplevel.ValidColumn,
 			memberviplevelrecord.Table:       memberviplevelrecord.ValidColumn,
 			membervipprogress.Table:          membervipprogress.ValidColumn,
+			turnover.Table:                   turnover.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

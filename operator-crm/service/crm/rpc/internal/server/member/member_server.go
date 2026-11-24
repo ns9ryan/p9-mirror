@@ -109,6 +109,12 @@ func (s *MemberServer) Create(ctx context.Context, in *memberpb.CreateMemberRequ
 	return l.Create(in)
 }
 
+// 会员 H5 自助注册。调用方通过 RPC metadata 传递服务端解析的所属厅。
+func (s *MemberServer) Register(ctx context.Context, in *memberpb.RegisterMemberRequest) (*memberpb.RegisterMemberResponse, error) {
+	l := memberlogic.NewRegisterLogic(ctx, s.svcCtx)
+	return l.Register(in)
+}
+
 // 获取会员列表
 func (s *MemberServer) List(ctx context.Context, in *memberpb.ListMembersRequest) (*memberpb.ListMembersResponse, error) {
 	l := memberlogic.NewListLogic(ctx, s.svcCtx)
@@ -131,4 +137,16 @@ func (s *MemberServer) GetSensitiveInfo(ctx context.Context, in *memberpb.GetMem
 func (s *MemberServer) GetParentAgentMember(ctx context.Context, in *memberpb.GetParentAgentMemberRequest) (*memberpb.GetParentAgentMemberResponse, error) {
 	l := memberlogic.NewGetParentAgentMemberLogic(ctx, s.svcCtx)
 	return l.GetParentAgentMember(in)
+}
+
+// 按会员编号/账号/昵称模糊搜索会员（返回 id、编号、账号、昵称）
+func (s *MemberServer) SearchByCode(ctx context.Context, in *memberpb.SearchMembersByCodeReq) (*memberpb.SearchMembersByCodeResp, error) {
+	l := memberlogic.NewSearchByCodeLogic(ctx, s.svcCtx)
+	return l.SearchByCode(in)
+}
+
+// 检查会员是否符合当前全局任务配置
+func (s *MemberServer) CheckMemberTaskGlobalConfig(ctx context.Context, in *memberpb.CheckMemberTaskGlobalConfigReq) (*memberpb.CheckMemberTaskGlobalConfigResp, error) {
+	l := memberlogic.NewCheckMemberTaskGlobalConfigLogic(ctx, s.svcCtx)
+	return l.CheckMemberTaskGlobalConfig(in)
 }

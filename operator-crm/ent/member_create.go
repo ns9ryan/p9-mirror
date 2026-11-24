@@ -250,6 +250,20 @@ func (_c *MemberCreate) SetNillableRegisterDomain(v *string) *MemberCreate {
 	return _c
 }
 
+// SetFirstLoginAt sets the "first_login_at" field.
+func (_c *MemberCreate) SetFirstLoginAt(v time.Time) *MemberCreate {
+	_c.mutation.SetFirstLoginAt(v)
+	return _c
+}
+
+// SetNillableFirstLoginAt sets the "first_login_at" field if the given value is not nil.
+func (_c *MemberCreate) SetNillableFirstLoginAt(v *time.Time) *MemberCreate {
+	if v != nil {
+		_c.SetFirstLoginAt(*v)
+	}
+	return _c
+}
+
 // SetLastLoginAt sets the "last_login_at" field.
 func (_c *MemberCreate) SetLastLoginAt(v time.Time) *MemberCreate {
 	_c.mutation.SetLastLoginAt(v)
@@ -794,6 +808,10 @@ func (_c *MemberCreate) createSpec() (*Member, *sqlgraph.CreateSpec) {
 		_spec.SetField(member.FieldRegisterDomain, field.TypeString, value)
 		_node.RegisterDomain = &value
 	}
+	if value, ok := _c.mutation.FirstLoginAt(); ok {
+		_spec.SetField(member.FieldFirstLoginAt, field.TypeTime, value)
+		_node.FirstLoginAt = &value
+	}
 	if value, ok := _c.mutation.LastLoginAt(); ok {
 		_spec.SetField(member.FieldLastLoginAt, field.TypeTime, value)
 		_node.LastLoginAt = &value
@@ -1195,6 +1213,24 @@ func (u *MemberUpsert) UpdateWithdrawalDisabled() *MemberUpsert {
 	return u
 }
 
+// SetFirstLoginAt sets the "first_login_at" field.
+func (u *MemberUpsert) SetFirstLoginAt(v time.Time) *MemberUpsert {
+	u.Set(member.FieldFirstLoginAt, v)
+	return u
+}
+
+// UpdateFirstLoginAt sets the "first_login_at" field to the value that was provided on create.
+func (u *MemberUpsert) UpdateFirstLoginAt() *MemberUpsert {
+	u.SetExcluded(member.FieldFirstLoginAt)
+	return u
+}
+
+// ClearFirstLoginAt clears the value of the "first_login_at" field.
+func (u *MemberUpsert) ClearFirstLoginAt() *MemberUpsert {
+	u.SetNull(member.FieldFirstLoginAt)
+	return u
+}
+
 // SetLastLoginAt sets the "last_login_at" field.
 func (u *MemberUpsert) SetLastLoginAt(v time.Time) *MemberUpsert {
 	u.Set(member.FieldLastLoginAt, v)
@@ -1456,6 +1492,27 @@ func (u *MemberUpsertOne) SetWithdrawalDisabled(v bool) *MemberUpsertOne {
 func (u *MemberUpsertOne) UpdateWithdrawalDisabled() *MemberUpsertOne {
 	return u.Update(func(s *MemberUpsert) {
 		s.UpdateWithdrawalDisabled()
+	})
+}
+
+// SetFirstLoginAt sets the "first_login_at" field.
+func (u *MemberUpsertOne) SetFirstLoginAt(v time.Time) *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetFirstLoginAt(v)
+	})
+}
+
+// UpdateFirstLoginAt sets the "first_login_at" field to the value that was provided on create.
+func (u *MemberUpsertOne) UpdateFirstLoginAt() *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateFirstLoginAt()
+	})
+}
+
+// ClearFirstLoginAt clears the value of the "first_login_at" field.
+func (u *MemberUpsertOne) ClearFirstLoginAt() *MemberUpsertOne {
+	return u.Update(func(s *MemberUpsert) {
+		s.ClearFirstLoginAt()
 	})
 }
 
@@ -1895,6 +1952,27 @@ func (u *MemberUpsertBulk) SetWithdrawalDisabled(v bool) *MemberUpsertBulk {
 func (u *MemberUpsertBulk) UpdateWithdrawalDisabled() *MemberUpsertBulk {
 	return u.Update(func(s *MemberUpsert) {
 		s.UpdateWithdrawalDisabled()
+	})
+}
+
+// SetFirstLoginAt sets the "first_login_at" field.
+func (u *MemberUpsertBulk) SetFirstLoginAt(v time.Time) *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.SetFirstLoginAt(v)
+	})
+}
+
+// UpdateFirstLoginAt sets the "first_login_at" field to the value that was provided on create.
+func (u *MemberUpsertBulk) UpdateFirstLoginAt() *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.UpdateFirstLoginAt()
+	})
+}
+
+// ClearFirstLoginAt clears the value of the "first_login_at" field.
+func (u *MemberUpsertBulk) ClearFirstLoginAt() *MemberUpsertBulk {
+	return u.Update(func(s *MemberUpsert) {
+		s.ClearFirstLoginAt()
 	})
 }
 

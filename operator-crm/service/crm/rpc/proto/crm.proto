@@ -11,6 +11,8 @@ import "types/init.proto";
 // 代理服务
 import "types/auth.proto";
 import "types/agent.proto";
+import "types/agent_deposit_order.proto";
+import "types/turnover.proto";
 
 // 会员管理
 import "types/member.proto";
@@ -135,6 +137,9 @@ service Member {
   // 创建会员
   rpc Create(crm_member.CreateMemberRequest) returns (crm_member.CreateMemberResponse);
 
+  // 会员 H5 自助注册。调用方通过 RPC metadata 传递服务端解析的所属厅。
+  rpc Register(crm_member.RegisterMemberRequest) returns (crm_member.RegisterMemberResponse);
+
   // 获取会员列表
   rpc List(crm_member.ListMembersRequest) returns (crm_member.ListMembersResponse);
 
@@ -146,6 +151,12 @@ service Member {
 
   // 获取会员上级代理会员ID
   rpc GetParentAgentMember(crm_member.GetParentAgentMemberRequest) returns (crm_member.GetParentAgentMemberResponse);
+
+  // 按会员编号/账号/昵称模糊搜索会员（返回 id、编号、账号、昵称）
+  rpc SearchByCode(crm_member.SearchMembersByCodeReq) returns (crm_member.SearchMembersByCodeResp);
+
+  // 检查会员是否符合当前全局任务配置
+  rpc checkMemberTaskGlobalConfig(crm_member.CheckMemberTaskGlobalConfigReq) returns (crm_member.CheckMemberTaskGlobalConfigResp);
 }
 
 // 会员自动层级服务
@@ -216,6 +227,38 @@ service Vip {
 
   // 恢复默认VIP图标
   rpc ResetIconGroup(crm_vip_icon_group.ResetVipIconGroupRequest) returns (crm_vip_icon_group.ResetVipIconGroupResponse);
+}
+
+
+
+// 模拟营业额流水服务
+service TurnoverService {
+  // group: turnover 添加流水
+  rpc AddTurnover(crm_turnover.AddTurnoverReq) returns (crm_turnover.AddTurnoverResp);
+  // group: turnover 流水列表
+  rpc ListTurnovers(crm_turnover.ListTurnoversReq) returns (crm_turnover.ListTurnoversResp);
+}
+
+// 代理存款订单服务
+service AgentDepositOrderService {
+  // group: agent_deposit_order 添加人工存款订单
+  rpc AddAgentDepositOrder(crm_agent_deposit_order.AddAgentDepositOrderReq) returns (crm_agent_deposit_order.AddAgentDepositOrderResp);
+  // group: agent_deposit_order 存款订单列表
+  rpc ListAgentDepositOrders(crm_agent_deposit_order.ListAgentDepositOrdersReq) returns (crm_agent_deposit_order.ListAgentDepositOrdersResp);
+  // group: agent_deposit_order 获取会员今日累计有效充值金额
+  rpc GetMemberTodayDeposit(crm_agent_deposit_order.GetMemberTodayDepositReq) returns (crm_agent_deposit_order.GetMemberTodayDepositResp);
+  // group: agent_deposit_order 领取审核
+  rpc ClaimAgentDepositOrder(crm_agent_deposit_order.ClaimAgentDepositOrderReq) returns (crm_agent_deposit_order.ClaimAgentDepositOrderResp);
+  // group: agent_deposit_order 释放审核
+  rpc ReleaseAgentDepositOrder(crm_agent_deposit_order.ReleaseAgentDepositOrderReq) returns (crm_agent_deposit_order.ReleaseAgentDepositOrderResp);
+  // group: agent_deposit_order 审核通过
+  rpc ApproveAgentDepositOrder(crm_agent_deposit_order.ApproveAgentDepositOrderReq) returns (crm_agent_deposit_order.ApproveAgentDepositOrderResp);
+  // group: agent_deposit_order 审核拒绝
+  rpc RejectAgentDepositOrder(crm_agent_deposit_order.RejectAgentDepositOrderReq) returns (crm_agent_deposit_order.RejectAgentDepositOrderResp);
+  // group: agent_deposit_order 冻结订单
+  rpc FreezeAgentDepositOrder(crm_agent_deposit_order.FreezeAgentDepositOrderReq) returns (crm_agent_deposit_order.FreezeAgentDepositOrderResp);
+  // group: agent_deposit_order 解冻订单
+  rpc UnfreezeAgentDepositOrder(crm_agent_deposit_order.UnfreezeAgentDepositOrderReq) returns (crm_agent_deposit_order.UnfreezeAgentDepositOrderResp);
 }
 
 // TODO: VIP等级变更记录列表、详情，待会员等级变更业务完善后实现

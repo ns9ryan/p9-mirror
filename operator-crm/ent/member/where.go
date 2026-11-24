@@ -156,6 +156,11 @@ func RegisterDomain(v string) predicate.Member {
 	return predicate.Member(sql.FieldEQ(FieldRegisterDomain, v))
 }
 
+// FirstLoginAt applies equality check predicate on the "first_login_at" field. It's identical to FirstLoginAtEQ.
+func FirstLoginAt(v time.Time) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldFirstLoginAt, v))
+}
+
 // LastLoginAt applies equality check predicate on the "last_login_at" field. It's identical to LastLoginAtEQ.
 func LastLoginAt(v time.Time) predicate.Member {
 	return predicate.Member(sql.FieldEQ(FieldLastLoginAt, v))
@@ -1029,6 +1034,56 @@ func RegisterDomainEqualFold(v string) predicate.Member {
 // RegisterDomainContainsFold applies the ContainsFold predicate on the "register_domain" field.
 func RegisterDomainContainsFold(v string) predicate.Member {
 	return predicate.Member(sql.FieldContainsFold(FieldRegisterDomain, v))
+}
+
+// FirstLoginAtEQ applies the EQ predicate on the "first_login_at" field.
+func FirstLoginAtEQ(v time.Time) predicate.Member {
+	return predicate.Member(sql.FieldEQ(FieldFirstLoginAt, v))
+}
+
+// FirstLoginAtNEQ applies the NEQ predicate on the "first_login_at" field.
+func FirstLoginAtNEQ(v time.Time) predicate.Member {
+	return predicate.Member(sql.FieldNEQ(FieldFirstLoginAt, v))
+}
+
+// FirstLoginAtIn applies the In predicate on the "first_login_at" field.
+func FirstLoginAtIn(vs ...time.Time) predicate.Member {
+	return predicate.Member(sql.FieldIn(FieldFirstLoginAt, vs...))
+}
+
+// FirstLoginAtNotIn applies the NotIn predicate on the "first_login_at" field.
+func FirstLoginAtNotIn(vs ...time.Time) predicate.Member {
+	return predicate.Member(sql.FieldNotIn(FieldFirstLoginAt, vs...))
+}
+
+// FirstLoginAtGT applies the GT predicate on the "first_login_at" field.
+func FirstLoginAtGT(v time.Time) predicate.Member {
+	return predicate.Member(sql.FieldGT(FieldFirstLoginAt, v))
+}
+
+// FirstLoginAtGTE applies the GTE predicate on the "first_login_at" field.
+func FirstLoginAtGTE(v time.Time) predicate.Member {
+	return predicate.Member(sql.FieldGTE(FieldFirstLoginAt, v))
+}
+
+// FirstLoginAtLT applies the LT predicate on the "first_login_at" field.
+func FirstLoginAtLT(v time.Time) predicate.Member {
+	return predicate.Member(sql.FieldLT(FieldFirstLoginAt, v))
+}
+
+// FirstLoginAtLTE applies the LTE predicate on the "first_login_at" field.
+func FirstLoginAtLTE(v time.Time) predicate.Member {
+	return predicate.Member(sql.FieldLTE(FieldFirstLoginAt, v))
+}
+
+// FirstLoginAtIsNil applies the IsNil predicate on the "first_login_at" field.
+func FirstLoginAtIsNil() predicate.Member {
+	return predicate.Member(sql.FieldIsNull(FieldFirstLoginAt))
+}
+
+// FirstLoginAtNotNil applies the NotNil predicate on the "first_login_at" field.
+func FirstLoginAtNotNil() predicate.Member {
+	return predicate.Member(sql.FieldNotNull(FieldFirstLoginAt))
 }
 
 // LastLoginAtEQ applies the EQ predicate on the "last_login_at" field.

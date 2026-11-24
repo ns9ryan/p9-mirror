@@ -3,6 +3,7 @@ package member
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"oa.98ent.com/p9/operator-crm/ent"
 	entmember "oa.98ent.com/p9/operator-crm/ent/member"
@@ -62,6 +63,24 @@ func (*Service) UsernameExistsTx(ctx context.Context, tx *ent.Tx, account string
 
 // CreateTx 在事务中创建会员及初始业务记录
 func (s *Service) CreateTx(ctx context.Context, tx *ent.Tx, in CreateParams) (*ent.Member, error) {
+	m, err := s.CreateIdentityTx(ctx, tx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.CreateProfileTx(ctx, tx, in, m.ID); err != nil {
+		return nil, err
+	}
+	if err := s.CreateVipProgressTx(ctx, tx, m.ID); err != nil {
+		return nil, err
+	}
+
+	// 会员统计由统计业务维护, 创建时不生成统计记录
+	return m, nil
+}
+
+// CreateIdentityTx 在调用方事务中创建会员主体及认证信息。
+func (s *Service) CreateIdentityTx(ctx context.Context, tx *ent.Tx, in CreateParams) (*ent.Member, error) {
 	// 获取默认自动层级
 	autoLevel, err := s.autoLevel.GetDefaultTx(ctx, tx)
 	if err != nil {
@@ -85,20 +104,34 @@ func (s *Service) CreateTx(ctx context.Context, tx *ent.Tx, in CreateParams) (*e
 		return nil, fmt.Errorf("创建会员认证信息失败: %w", err)
 	}
 
-	// 创建个人资料
-	if _, err := buildMemberProfile(tx, in, m.ID).Save(ctx); err != nil {
-		return nil, fmt.Errorf("创建会员个人资料失败: %w", err)
-	}
-
-	// 初始化VIP晋级进度
-	if _, err := tx.MemberVipProgress.Create().
-		SetMemberID(m.ID). // 所属会员ID
-		Save(ctx); err != nil {
-		return nil, fmt.Errorf("创建会员VIP晋级进度失败: %w", err)
-	}
-
-	// 会员统计由统计业务维护, 创建时不生成统计记录
 	return m, nil
+}
+
+// CreateProfileTx 在当前事务中创建会员个人资料。
+func (*Service) CreateProfileTx(ctx context.Context, tx *ent.Tx, in CreateParams, memberID int64) error {
+	if err := buildMemberProfile(tx, in, memberID).Exec(ctx); err != nil {
+		return fmt.Errorf("创建会员个人资料失败: %w", err)
+	}
+	return nil
+}
+
+// CreateStatsTx 在当前事务中建立首个统计周期，统计值沿用表定义的默认值。
+func (*Service) CreateStatsTx(ctx context.Context, tx *ent.Tx, memberID int64, periodStartedAt time.Time) error {
+	if err := tx.MemberStats.Create().
+		SetMemberID(memberID).
+		SetPeriodStartedAt(periodStartedAt).
+		Exec(ctx); err != nil {
+		return fmt.Errorf("创建会员统计失败: %w", err)
+	}
+	return nil
+}
+
+// CreateVipProgressTx 在当前事务中初始化会员 VIP 晋级进度。
+func (*Service) CreateVipProgressTx(ctx context.Context, tx *ent.Tx, memberID int64) error {
+	if err := tx.MemberVipProgress.Create().SetMemberID(memberID).Exec(ctx); err != nil {
+		return fmt.Errorf("创建会员VIP晋级进度失败: %w", err)
+	}
+	return nil
 }
 
 func buildMember(tx *ent.Tx, in CreateParams, autoLevelID, vipLevelID int64) *ent.MemberCreate {

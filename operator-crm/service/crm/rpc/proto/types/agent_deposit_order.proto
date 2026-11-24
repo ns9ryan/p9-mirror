@@ -1,0 +1,277 @@
+syntax = "proto3";
+
+package crm_agent_deposit_order;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentdepositorderpb";
+
+// AddAgentDepositOrderReq 添加人工存款订单请求
+message AddAgentDepositOrderReq {
+  // 会员ID
+  int64 member_id = 1;
+  // 存款金额（分）
+  int64 deposit_amount = 2;
+  // 洗码倍数
+  double rollover_multiplier = 3;
+  // 赠送金额比例（百分比 0~100）
+  double bonus_rate = 4;
+  // 存款方式（必填）： 1 加密货币 2 人工入账
+  int32 deposit_type = 5;
+}
+
+// AddAgentDepositOrderResp 添加人工存款订单响应
+message AddAgentDepositOrderResp {
+  // 新建订单ID
+  int64 id = 1;
+}
+
+// ClaimAgentDepositOrderReq 领取审核请求
+message ClaimAgentDepositOrderReq {
+  // 订单ID
+  int64 order_id = 1;
+}
+
+// ClaimAgentDepositOrderResp 领取审核响应
+message ClaimAgentDepositOrderResp {
+  // 订单ID
+  int64 order_id = 1;
+  // 订单状态
+  int32 status = 2;
+  // 领取人ID（即当前用户）
+  int64 reviewer_id = 3;
+}
+
+// ReleaseAgentDepositOrderReq 释放审核请求
+message ReleaseAgentDepositOrderReq {
+  // 订单ID
+  int64 order_id = 1;
+}
+
+// ReleaseAgentDepositOrderResp 释放审核响应
+message ReleaseAgentDepositOrderResp {
+  // 订单ID
+  int64 order_id = 1;
+  // 订单状态
+  int32 status = 2;
+  // 领取人ID（释放后恒为 0）
+  int64 reviewer_id = 3;
+}
+
+// ApproveAgentDepositOrderReq 审核通过请求
+message ApproveAgentDepositOrderReq {
+  // 订单ID
+  int64 order_id = 1;
+  // 审核备注（可选）
+  optional string audit_notes = 2;
+}
+
+// ApproveAgentDepositOrderResp 审核通过响应
+message ApproveAgentDepositOrderResp {
+  // 订单ID
+  int64 order_id = 1;
+  // 订单状态：4=通过（终态）或 12=待二审
+  int32 status = 2;
+  // 会员ID（用于活动事件投递）
+  int64 member_id = 3;
+  // 存款金额（分，用于活动事件投递）
+  int64 deposit_amount = 4;
+  // 审核时间 unix 秒（仅 status=4 时有意义，用于事件 occurred_at）
+  int64 approved_at = 5;
+}
+
+// RejectAgentDepositOrderReq 审核拒绝请求
+message RejectAgentDepositOrderReq {
+  // 订单ID
+  int64 order_id = 1;
+  // 拒绝原因（必填）
+  string audit_notes = 2;
+}
+
+// RejectAgentDepositOrderResp 审核拒绝响应
+message RejectAgentDepositOrderResp {
+  // 订单ID
+  int64 order_id = 1;
+  // 订单状态：5=拒绝（终态）
+  int32 status = 2;
+}
+
+// FreezeAgentDepositOrderReq 冻结订单请求
+message FreezeAgentDepositOrderReq {
+  // 订单ID
+  int64 order_id = 1;
+  // 冻结备注（可选）
+  optional string freeze_notes = 2;
+}
+
+// FreezeAgentDepositOrderResp 冻结订单响应
+message FreezeAgentDepositOrderResp {
+  // 订单ID
+  int64 order_id = 1;
+  // 订单状态：2=冻结
+  int32 status = 2;
+}
+
+// UnfreezeAgentDepositOrderReq 解冻订单请求
+message UnfreezeAgentDepositOrderReq {
+  // 订单ID
+  int64 order_id = 1;
+  // 解冻备注（可选）
+  optional string unfreeze_notes = 2;
+}
+
+// UnfreezeAgentDepositOrderResp 解冻订单响应
+message UnfreezeAgentDepositOrderResp {
+  // 订单ID
+  int64 order_id = 1;
+  // 订单状态：11=待一审 或 12=待二审
+  int32 status = 2;
+}
+
+// AgentDepositOrderListItem 存款订单列表项
+message AgentDepositOrderListItem {
+  // 订单号
+  string order_no = 1;
+  // 会员ID
+  int64 member_id = 2;
+  // 会员账号
+  string member_account = 3;
+  // 会员层级名称（自动层级）
+  string member_level_name = 4;
+  // 存款时间 unix 秒
+  int64 create_at = 5;
+  // 存款货币，如 USDT
+  string deposit_currency = 6;
+  // 存款数量（分，以存款货币计）
+  int64 deposit_amount = 7;
+  // 站点货币
+  string site_currency = 8;
+  // 存款金额（分，以站点货币计；暂与 deposit_amount 相同）
+  int64 site_amount = 9;
+  // 存款方式： 1 加密货币 2 人工入账
+  int32 deposit_type = 10;
+  // 到账金额（分）
+  int64 received_amount = 11;
+  // 手续费（分）
+  int64 fee_amount = 12;
+  // 实际到账金额（分）= 到账金额 - 手续费
+  int64 actual_received_amount = 13;
+  // 三方订单号
+  optional string third_party_order_no = 14;
+  // 存款信息（收款方）
+  optional string payment_receive_info = 15;
+  // 存款信息（付款方）
+  optional string payment_send_info = 16;
+  // 订单状态：1 待审核 2 冻结 3 解冻 4 通过 5 拒绝 11 待一审 12 待二审
+  int32 status = 17;
+  // 订单ID
+  int64 id = 18;
+  // 当前领取审核人用户ID，0=未被领取
+  int64 reviewer_id = 19;
+  // 领取人类型 1:总网 2:分站
+  int32 reviewer_utype = 20;
+  // 领取时间 unix 秒，0=未领取
+  int64 claimed_at = 21;
+  // 最终审核人用户ID，仅 status=4/5 时有值，其余为 0
+  int64 auditor_uid = 22;
+  // 最终审核人用户名，仅 status=4/5 时有值，其余为空串
+  string auditor_username = 23;
+  // 最终审核时间 unix 秒，仅 status=4/5 时有值，其余为 0
+  int64 audited_at = 24;
+}
+
+// ListAgentDepositOrdersReq 存款订单列表请求
+message ListAgentDepositOrdersReq {
+  // 页码，从 1 开始
+  int32 page = 1;
+  // 每页条数，默认 20，上限 100
+  int32 page_size = 2;
+  // 订单状态，0 不限：1 待审核 2 冻结 3 解冻 4 通过 5 拒绝 11 待一审 12 待二审
+  int32 status = 3;
+  // 会员ID，0 不限
+  int64 member_id = 4;
+  // 存款方式，0 不限： 1 加密货币 2 人工入账
+  int32 deposit_type = 5;
+  // 创建时间起始 unix 秒，0 不限（按存款时间搜索）
+  int64 time_start = 6;
+  // 创建时间结束 unix 秒，0 不限（按存款时间搜索）
+  int64 time_end = 7;
+  // 存款货币搜索，空 不限，如 USDT
+  optional string deposit_currency = 8;
+  // 订单号搜索（精确匹配），空 不限
+  optional string order_no = 9;
+  // 会员账号搜索（精确匹配），空 不限
+  optional string member_account = 10;
+  // 三方订单号搜索（精确匹配），空 不限
+  optional string third_party_order_no = 11;
+  // 领取人ID，0 不限；传当前uid可查"我的待审核"
+  optional int64 reviewer_id = 12;
+  // 领取状态，0 不限 1=未领取 2=已领取
+  optional int32 claim_status = 13;
+}
+
+// ListAgentDepositOrdersResp 存款订单列表响应
+message ListAgentDepositOrdersResp {
+  repeated AgentDepositOrderListItem list = 1;
+  int64 total = 2;
+}
+
+// AgentDepositOrderItem 存款订单详情项（用于详情接口）
+message AgentDepositOrderItem {
+  int64 id = 1;
+  int64 member_id = 2;
+  // 代理类型 1 现金 2 信用
+  int32 agent_type = 4;
+  string agent_line_code = 5;
+  int64 agent_id = 8;
+  // 订单状态 1 待审核 2 冻结 3 解冻 4 通过 5 拒绝
+  int32 status = 9;
+  int64 deposit_amount = 10;
+  string deposit_currency = 11;
+  // 审核阶段数
+  int32 audit_stages = 12;
+  double fee_rate = 13;
+  double bonus_rate = 14;
+  // 洗码倍数
+  double rollover_multiplier = 15;
+  int64 fee_amount = 16;
+  int64 bonus_amount = 17;
+  int64 received_amount = 18;
+  // 存款方式： 1 加密货币 2 人工入账
+  int32 deposit_type = 19;
+  // 费率模式
+  int32 fee_mode = 22;
+  // 创建人类型 1:管理员 2:代理
+  int32 creator_utype = 24;
+  // 创建人用户ID
+  int64 creator_uid = 25;
+  // 创建时间 unix 秒
+  int64 created_at = 26;
+  optional string notes = 28;
+  // 订单号
+  string order_no = 29;
+  // 站点货币
+  string site_currency = 30;
+  // 三方订单号
+  optional string third_party_order_no = 31;
+  // 存款信息（收款方）
+  optional string payment_receive_info = 32;
+  // 存款信息（付款方）
+  optional string payment_send_info = 33;
+  // 最后更新人类型 1:管理员 2:代理
+  int32 updater_utype = 34;
+  // 最后更新人用户ID
+  int64 updater_uid = 35;
+}
+
+// GetMemberTodayDepositReq 获取会员今日有效充值金额请求
+message GetMemberTodayDepositReq {
+  // 会员ID
+  int64 member_id = 1;
+}
+
+// GetMemberTodayDepositResp 获取会员今日有效充值金额响应
+message GetMemberTodayDepositResp {
+  // 今日累计有效充值金额（分，以站点货币计；仅统计状态为"通过"的订单）
+  int64 today_deposit_amount = 1;
+  // 今日有效充值订单数
+  int64 today_deposit_count = 2;
+}

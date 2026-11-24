@@ -26,21 +26,27 @@ func (h *EventHandler) PublishAgentApplicationApprovedEvent(
 		h.Infof("[代理事件] 代理申请未通过，跳过发送事件: member_id=%d, operator_code=%s", memberID, operatorCode)
 		return
 	}
+	memberGlobalID, err := h.memberDao.GetMemberGlobalID(ctx, operatorCode, memberID)
+	if err != nil {
+		h.Errorf("[代理事件] 获取会员全局ID失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
+		return
+	}
 
 	// 构造事件对象
 	event := payload.SingleMemberEvent{
-		EventType:    topic.AgentApplicationApproved,
-		OperatorCode: operatorCode,
-		MemberID:     memberID,
-		OccurredAt:   *updatedAt,
-		PublishedAt:  time.Now(),
-		TraceID:      trace.TraceIDFromContext(ctx),
+		EventType:      topic.AgentApplicationApproved,
+		OperatorCode:   operatorCode,
+		MemberID:       memberID,
+		MemberGlobalID: memberGlobalID,
+		OccurredAt:     *updatedAt,
+		PublishedAt:    time.Now(),
+		TraceID:        trace.TraceIDFromContext(ctx),
 	}
 
 	// 发送事件到 Kafka
-	err := h.producer.Publish(ctx, topic.AgentApplicationApproved, event)
+	err = h.producer.Publish(ctx, topic.AgentApplicationApproved, event)
 	if err != nil {
-		h.Errorf("[代理事件] 发送代理申请通过事件失败: member_id=%d, err=%v", memberID, err)
+		h.Errorf("[代理事件] 发送代理申请通过事件失败: member_id=%d, operator_code=%s, err=%v", memberID, operatorCode, err)
 		return
 	}
 

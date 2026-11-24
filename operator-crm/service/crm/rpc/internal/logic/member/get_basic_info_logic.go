@@ -3,8 +3,10 @@ package memberlogic
 import (
 	"context"
 
-	memberdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 	"sort"
+
+	"oa.98ent.com/p9/operator-crm/ent"
+	memberdao "oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/dao/member"
 
 	"oa.98ent.com/p9/common/xerr"
 
@@ -28,18 +30,40 @@ func NewGetBasicInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetB
 	}
 }
 
-// 查询会员当前自动层级及注册来源
+// 查询会员当前自动层级及注册来源, 会员ID或者会员编码二选一，优先会员ID
 func (l *GetBasicInfoLogic) GetBasicInfo(in *memberpb.GetMemberContextRequest) (*memberpb.GetMemberBasicInfoResponse, error) {
-	m, err := l.svcCtx.Member.GetMemberWithContextData(l.ctx, in.GetMemberId(), memberdao.ContextKindBasic)
-	if err != nil {
-		return nil, xerr.RpcErr(err)
+	if in.GetMemberId() <= 0 && in.GetMemberCode() == "" {
+		return nil, xerr.BadRequest("common.invalidParam")
+	}
+
+	var (
+		m   *ent.Member
+		err error
+	)
+	// id > 0 优先使用会员ID查询，否则使用会员编码查询
+	if in.GetMemberId() > 0 {
+		m, err = l.svcCtx.Member.GetMemberWithContextData(l.ctx, in.GetMemberId(), memberdao.ContextKindBasic)
+		if err != nil {
+			return nil, xerr.RpcErr(err)
+		}
+	} else {
+		m, err = l.svcCtx.Member.GetMemberWithContextDataByCode(l.ctx, in.GetMemberCode(), memberdao.ContextKindBasic)
+		if err != nil {
+			return nil, xerr.RpcErr(err)
+		}
 	}
 	resp := &memberpb.GetMemberBasicInfoResponse{
-		AutoLevel:    m.AutoLevelID,
-		OperatorCode: m.OperatorCode,
-		RegisterIp:   m.RegisterIP, RegisterDeviceCode: m.RegisterDeviceCode,
-		AgentId: m.AgentID, AgentAccountId: m.AgentAccountID, InviterMemberId: m.InviterMemberID,
-		FixedLevels: make([]int64, 0),
+		Id:                 m.ID,
+		Code:               m.Code,
+		GlobalId:           m.GlobalID.String(),
+		AutoLevel:          m.AutoLevelID,
+		OperatorCode:       m.OperatorCode,
+		RegisterIp:         m.RegisterIP,
+		RegisterDeviceCode: m.RegisterDeviceCode,
+		AgentId:            m.AgentID,
+		AgentAccountId:     m.AgentAccountID,
+		InviterMemberId:    m.InviterMemberID,
+		FixedLevels:        make([]int64, 0),
 	}
 	for _, assignment := range m.Edges.FixedLevelAssignments {
 		resp.FixedLevels = append(resp.FixedLevels, assignment.FixedLevelID)

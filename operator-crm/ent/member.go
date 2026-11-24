@@ -66,6 +66,8 @@ type Member struct {
 	RegisterDeviceCode *string `json:"register_device_code,omitempty"`
 	// 注册域名
 	RegisterDomain *string `json:"register_domain,omitempty"`
+	// 首次登录时间，NULL表示尚未登录
+	FirstLoginAt *time.Time `json:"first_login_at,omitempty"`
 	// 最后登录时间
 	LastLoginAt *time.Time `json:"last_login_at,omitempty"`
 	// 最后登录IP
@@ -268,7 +270,7 @@ func (*Member) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case member.FieldOperatorCode, member.FieldCode, member.FieldInviteCode, member.FieldRegisterMethod, member.FieldRegisterChannel, member.FieldRegisterIP, member.FieldRegisterDeviceCode, member.FieldRegisterDomain, member.FieldLastLoginIP, member.FieldLastLoginDeviceCode:
 			values[i] = new(sql.NullString)
-		case member.FieldCreatedAt, member.FieldUpdatedAt, member.FieldLastLoginAt:
+		case member.FieldCreatedAt, member.FieldUpdatedAt, member.FieldFirstLoginAt, member.FieldLastLoginAt:
 			values[i] = new(sql.NullTime)
 		case member.FieldGlobalID:
 			values[i] = new(uuid.UUID)
@@ -417,6 +419,13 @@ func (_m *Member) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.RegisterDomain = new(string)
 				*_m.RegisterDomain = value.String
+			}
+		case member.FieldFirstLoginAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field first_login_at", values[i])
+			} else if value.Valid {
+				_m.FirstLoginAt = new(time.Time)
+				*_m.FirstLoginAt = value.Time
 			}
 		case member.FieldLastLoginAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -613,6 +622,11 @@ func (_m *Member) String() string {
 	if v := _m.RegisterDomain; v != nil {
 		builder.WriteString("register_domain=")
 		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.FirstLoginAt; v != nil {
+		builder.WriteString("first_login_at=")
+		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
 	if v := _m.LastLoginAt; v != nil {

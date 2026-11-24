@@ -9,6 +9,8 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentapply"
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorder"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorderaudit"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
 	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
 	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
@@ -30,6 +32,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevelrecord"
 	"oa.98ent.com/p9/operator-crm/ent/membervipprogress"
 	"oa.98ent.com/p9/operator-crm/ent/schema"
+	"oa.98ent.com/p9/operator-crm/ent/turnover"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -342,6 +345,182 @@ func init() {
 	agentconfigDescCashMaxAgentPerIP := agentconfigFields[4].Descriptor()
 	// agentconfig.CashMaxAgentPerIPValidator is a validator for the "cash_max_agent_per_ip" field. It is called by the builders before save.
 	agentconfig.CashMaxAgentPerIPValidator = agentconfigDescCashMaxAgentPerIP.Validators[0].(func(int64) error)
+	agentdepositorderMixin := schema.AgentDepositOrder{}.Mixin()
+	agentdepositorderMixinHooks2 := agentdepositorderMixin[2].Hooks()
+	agentdepositorder.Hooks[0] = agentdepositorderMixinHooks2[0]
+	agentdepositorderMixinInters2 := agentdepositorderMixin[2].Interceptors()
+	agentdepositorderInters := schema.AgentDepositOrder{}.Interceptors()
+	agentdepositorder.Interceptors[0] = agentdepositorderMixinInters2[0]
+	agentdepositorder.Interceptors[1] = agentdepositorderInters[0]
+	agentdepositorderMixinFields1 := agentdepositorderMixin[1].Fields()
+	_ = agentdepositorderMixinFields1
+	agentdepositorderMixinFields2 := agentdepositorderMixin[2].Fields()
+	_ = agentdepositorderMixinFields2
+	agentdepositorderFields := schema.AgentDepositOrder{}.Fields()
+	_ = agentdepositorderFields
+	// agentdepositorderDescCreatedAt is the schema descriptor for created_at field.
+	agentdepositorderDescCreatedAt := agentdepositorderMixinFields1[0].Descriptor()
+	// agentdepositorder.DefaultCreatedAt holds the default value on creation for the created_at field.
+	agentdepositorder.DefaultCreatedAt = agentdepositorderDescCreatedAt.Default.(func() time.Time)
+	// agentdepositorderDescUpdatedAt is the schema descriptor for updated_at field.
+	agentdepositorderDescUpdatedAt := agentdepositorderMixinFields1[1].Descriptor()
+	// agentdepositorder.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	agentdepositorder.DefaultUpdatedAt = agentdepositorderDescUpdatedAt.Default.(func() time.Time)
+	// agentdepositorder.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	agentdepositorder.UpdateDefaultUpdatedAt = agentdepositorderDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// agentdepositorderDescOperatorCode is the schema descriptor for operator_code field.
+	agentdepositorderDescOperatorCode := agentdepositorderMixinFields2[0].Descriptor()
+	// agentdepositorder.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	agentdepositorder.OperatorCodeValidator = func() func(string) error {
+		validators := agentdepositorderDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentdepositorderDescAgentLineCode is the schema descriptor for agent_line_code field.
+	agentdepositorderDescAgentLineCode := agentdepositorderFields[1].Descriptor()
+	// agentdepositorder.AgentLineCodeValidator is a validator for the "agent_line_code" field. It is called by the builders before save.
+	agentdepositorder.AgentLineCodeValidator = func() func(string) error {
+		validators := agentdepositorderDescAgentLineCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(agent_line_code string) error {
+			for _, fn := range fns {
+				if err := fn(agent_line_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentdepositorderDescDepositCurrency is the schema descriptor for deposit_currency field.
+	agentdepositorderDescDepositCurrency := agentdepositorderFields[5].Descriptor()
+	// agentdepositorder.DepositCurrencyValidator is a validator for the "deposit_currency" field. It is called by the builders before save.
+	agentdepositorder.DepositCurrencyValidator = agentdepositorderDescDepositCurrency.Validators[0].(func(string) error)
+	// agentdepositorderDescFeeRate is the schema descriptor for fee_rate field.
+	agentdepositorderDescFeeRate := agentdepositorderFields[7].Descriptor()
+	// agentdepositorder.DefaultFeeRate holds the default value on creation for the fee_rate field.
+	agentdepositorder.DefaultFeeRate = agentdepositorderDescFeeRate.Default.(float64)
+	// agentdepositorderDescFeeAmount is the schema descriptor for fee_amount field.
+	agentdepositorderDescFeeAmount := agentdepositorderFields[9].Descriptor()
+	// agentdepositorder.DefaultFeeAmount holds the default value on creation for the fee_amount field.
+	agentdepositorder.DefaultFeeAmount = agentdepositorderDescFeeAmount.Default.(int64)
+	// agentdepositorderDescBonusAmount is the schema descriptor for bonus_amount field.
+	agentdepositorderDescBonusAmount := agentdepositorderFields[10].Descriptor()
+	// agentdepositorder.DefaultBonusAmount holds the default value on creation for the bonus_amount field.
+	agentdepositorder.DefaultBonusAmount = agentdepositorderDescBonusAmount.Default.(int64)
+	// agentdepositorderDescReceivedAmount is the schema descriptor for received_amount field.
+	agentdepositorderDescReceivedAmount := agentdepositorderFields[11].Descriptor()
+	// agentdepositorder.DefaultReceivedAmount holds the default value on creation for the received_amount field.
+	agentdepositorder.DefaultReceivedAmount = agentdepositorderDescReceivedAmount.Default.(int64)
+	// agentdepositorderDescActualReceivedAmount is the schema descriptor for actual_received_amount field.
+	agentdepositorderDescActualReceivedAmount := agentdepositorderFields[12].Descriptor()
+	// agentdepositorder.DefaultActualReceivedAmount holds the default value on creation for the actual_received_amount field.
+	agentdepositorder.DefaultActualReceivedAmount = agentdepositorderDescActualReceivedAmount.Default.(int64)
+	// agentdepositorderDescFeeMode is the schema descriptor for fee_mode field.
+	agentdepositorderDescFeeMode := agentdepositorderFields[14].Descriptor()
+	// agentdepositorder.DefaultFeeMode holds the default value on creation for the fee_mode field.
+	agentdepositorder.DefaultFeeMode = agentdepositorderDescFeeMode.Default.(int8)
+	// agentdepositorderDescRolloverMultiplier is the schema descriptor for rollover_multiplier field.
+	agentdepositorderDescRolloverMultiplier := agentdepositorderFields[15].Descriptor()
+	// agentdepositorder.DefaultRolloverMultiplier holds the default value on creation for the rollover_multiplier field.
+	agentdepositorder.DefaultRolloverMultiplier = agentdepositorderDescRolloverMultiplier.Default.(float64)
+	// agentdepositorderDescDepositType is the schema descriptor for deposit_type field.
+	agentdepositorderDescDepositType := agentdepositorderFields[16].Descriptor()
+	// agentdepositorder.DefaultDepositType holds the default value on creation for the deposit_type field.
+	agentdepositorder.DefaultDepositType = agentdepositorderDescDepositType.Default.(int8)
+	// agentdepositorderDescOrderNo is the schema descriptor for order_no field.
+	agentdepositorderDescOrderNo := agentdepositorderFields[18].Descriptor()
+	// agentdepositorder.OrderNoValidator is a validator for the "order_no" field. It is called by the builders before save.
+	agentdepositorder.OrderNoValidator = agentdepositorderDescOrderNo.Validators[0].(func(string) error)
+	// agentdepositorderDescSiteCurrency is the schema descriptor for site_currency field.
+	agentdepositorderDescSiteCurrency := agentdepositorderFields[19].Descriptor()
+	// agentdepositorder.SiteCurrencyValidator is a validator for the "site_currency" field. It is called by the builders before save.
+	agentdepositorder.SiteCurrencyValidator = agentdepositorderDescSiteCurrency.Validators[0].(func(string) error)
+	// agentdepositorderDescThirdPartyOrderNo is the schema descriptor for third_party_order_no field.
+	agentdepositorderDescThirdPartyOrderNo := agentdepositorderFields[20].Descriptor()
+	// agentdepositorder.ThirdPartyOrderNoValidator is a validator for the "third_party_order_no" field. It is called by the builders before save.
+	agentdepositorder.ThirdPartyOrderNoValidator = agentdepositorderDescThirdPartyOrderNo.Validators[0].(func(string) error)
+	// agentdepositorderDescCreatorID is the schema descriptor for creator_id field.
+	agentdepositorderDescCreatorID := agentdepositorderFields[23].Descriptor()
+	// agentdepositorder.DefaultCreatorID holds the default value on creation for the creator_id field.
+	agentdepositorder.DefaultCreatorID = agentdepositorderDescCreatorID.Default.(int64)
+	// agentdepositorderDescCreatorType is the schema descriptor for creator_type field.
+	agentdepositorderDescCreatorType := agentdepositorderFields[24].Descriptor()
+	// agentdepositorder.DefaultCreatorType holds the default value on creation for the creator_type field.
+	agentdepositorder.DefaultCreatorType = agentdepositorderDescCreatorType.Default.(int8)
+	// agentdepositorderDescUpdaterID is the schema descriptor for updater_id field.
+	agentdepositorderDescUpdaterID := agentdepositorderFields[25].Descriptor()
+	// agentdepositorder.DefaultUpdaterID holds the default value on creation for the updater_id field.
+	agentdepositorder.DefaultUpdaterID = agentdepositorderDescUpdaterID.Default.(int64)
+	// agentdepositorderDescUpdaterType is the schema descriptor for updater_type field.
+	agentdepositorderDescUpdaterType := agentdepositorderFields[26].Descriptor()
+	// agentdepositorder.DefaultUpdaterType holds the default value on creation for the updater_type field.
+	agentdepositorder.DefaultUpdaterType = agentdepositorderDescUpdaterType.Default.(int8)
+	// agentdepositorderDescReviewerID is the schema descriptor for reviewer_id field.
+	agentdepositorderDescReviewerID := agentdepositorderFields[27].Descriptor()
+	// agentdepositorder.DefaultReviewerID holds the default value on creation for the reviewer_id field.
+	agentdepositorder.DefaultReviewerID = agentdepositorderDescReviewerID.Default.(int64)
+	// agentdepositorderDescReviewerUtype is the schema descriptor for reviewer_utype field.
+	agentdepositorderDescReviewerUtype := agentdepositorderFields[28].Descriptor()
+	// agentdepositorder.DefaultReviewerUtype holds the default value on creation for the reviewer_utype field.
+	agentdepositorder.DefaultReviewerUtype = agentdepositorderDescReviewerUtype.Default.(int8)
+	agentdepositorderauditMixin := schema.AgentDepositOrderAudit{}.Mixin()
+	agentdepositorderauditMixinHooks2 := agentdepositorderauditMixin[2].Hooks()
+	agentdepositorderaudit.Hooks[0] = agentdepositorderauditMixinHooks2[0]
+	agentdepositorderauditMixinInters2 := agentdepositorderauditMixin[2].Interceptors()
+	agentdepositorderauditInters := schema.AgentDepositOrderAudit{}.Interceptors()
+	agentdepositorderaudit.Interceptors[0] = agentdepositorderauditMixinInters2[0]
+	agentdepositorderaudit.Interceptors[1] = agentdepositorderauditInters[0]
+	agentdepositorderauditMixinFields1 := agentdepositorderauditMixin[1].Fields()
+	_ = agentdepositorderauditMixinFields1
+	agentdepositorderauditMixinFields2 := agentdepositorderauditMixin[2].Fields()
+	_ = agentdepositorderauditMixinFields2
+	agentdepositorderauditFields := schema.AgentDepositOrderAudit{}.Fields()
+	_ = agentdepositorderauditFields
+	// agentdepositorderauditDescCreatedAt is the schema descriptor for created_at field.
+	agentdepositorderauditDescCreatedAt := agentdepositorderauditMixinFields1[0].Descriptor()
+	// agentdepositorderaudit.DefaultCreatedAt holds the default value on creation for the created_at field.
+	agentdepositorderaudit.DefaultCreatedAt = agentdepositorderauditDescCreatedAt.Default.(func() time.Time)
+	// agentdepositorderauditDescUpdatedAt is the schema descriptor for updated_at field.
+	agentdepositorderauditDescUpdatedAt := agentdepositorderauditMixinFields1[1].Descriptor()
+	// agentdepositorderaudit.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	agentdepositorderaudit.DefaultUpdatedAt = agentdepositorderauditDescUpdatedAt.Default.(func() time.Time)
+	// agentdepositorderaudit.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	agentdepositorderaudit.UpdateDefaultUpdatedAt = agentdepositorderauditDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// agentdepositorderauditDescOperatorCode is the schema descriptor for operator_code field.
+	agentdepositorderauditDescOperatorCode := agentdepositorderauditMixinFields2[0].Descriptor()
+	// agentdepositorderaudit.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	agentdepositorderaudit.OperatorCodeValidator = func() func(string) error {
+		validators := agentdepositorderauditDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// agentdepositorderauditDescAuditUsername is the schema descriptor for audit_username field.
+	agentdepositorderauditDescAuditUsername := agentdepositorderauditFields[8].Descriptor()
+	// agentdepositorderaudit.AuditUsernameValidator is a validator for the "audit_username" field. It is called by the builders before save.
+	agentdepositorderaudit.AuditUsernameValidator = agentdepositorderauditDescAuditUsername.Validators[0].(func(string) error)
 	agentlevelMixin := schema.AgentLevel{}.Mixin()
 	agentlevelMixinHooks2 := agentlevelMixin[2].Hooks()
 	agentlevel.Hooks[0] = agentlevelMixinHooks2[0]
@@ -1461,11 +1640,11 @@ func init() {
 	// member.RegisterDomainValidator is a validator for the "register_domain" field. It is called by the builders before save.
 	member.RegisterDomainValidator = memberDescRegisterDomain.Validators[0].(func(string) error)
 	// memberDescLastLoginIP is the schema descriptor for last_login_ip field.
-	memberDescLastLoginIP := memberFields[19].Descriptor()
+	memberDescLastLoginIP := memberFields[20].Descriptor()
 	// member.LastLoginIPValidator is a validator for the "last_login_ip" field. It is called by the builders before save.
 	member.LastLoginIPValidator = memberDescLastLoginIP.Validators[0].(func(string) error)
 	// memberDescLastLoginDeviceCode is the schema descriptor for last_login_device_code field.
-	memberDescLastLoginDeviceCode := memberFields[20].Descriptor()
+	memberDescLastLoginDeviceCode := memberFields[21].Descriptor()
 	// member.LastLoginDeviceCodeValidator is a validator for the "last_login_device_code" field. It is called by the builders before save.
 	member.LastLoginDeviceCodeValidator = memberDescLastLoginDeviceCode.Validators[0].(func(string) error)
 	memberauthMixin := schema.MemberAuth{}.Mixin()
@@ -2457,6 +2636,79 @@ func init() {
 	membervipprogressDescProgressStartedAt := membervipprogressFields[4].Descriptor()
 	// membervipprogress.DefaultProgressStartedAt holds the default value on creation for the progress_started_at field.
 	membervipprogress.DefaultProgressStartedAt = membervipprogressDescProgressStartedAt.Default.(func() time.Time)
+	turnoverMixin := schema.Turnover{}.Mixin()
+	turnoverMixinHooks2 := turnoverMixin[2].Hooks()
+	turnover.Hooks[0] = turnoverMixinHooks2[0]
+	turnoverMixinInters2 := turnoverMixin[2].Interceptors()
+	turnoverInters := schema.Turnover{}.Interceptors()
+	turnover.Interceptors[0] = turnoverMixinInters2[0]
+	turnover.Interceptors[1] = turnoverInters[0]
+	turnoverMixinFields1 := turnoverMixin[1].Fields()
+	_ = turnoverMixinFields1
+	turnoverMixinFields2 := turnoverMixin[2].Fields()
+	_ = turnoverMixinFields2
+	turnoverFields := schema.Turnover{}.Fields()
+	_ = turnoverFields
+	// turnoverDescCreatedAt is the schema descriptor for created_at field.
+	turnoverDescCreatedAt := turnoverMixinFields1[0].Descriptor()
+	// turnover.DefaultCreatedAt holds the default value on creation for the created_at field.
+	turnover.DefaultCreatedAt = turnoverDescCreatedAt.Default.(func() time.Time)
+	// turnoverDescUpdatedAt is the schema descriptor for updated_at field.
+	turnoverDescUpdatedAt := turnoverMixinFields1[1].Descriptor()
+	// turnover.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	turnover.DefaultUpdatedAt = turnoverDescUpdatedAt.Default.(func() time.Time)
+	// turnover.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	turnover.UpdateDefaultUpdatedAt = turnoverDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// turnoverDescOperatorCode is the schema descriptor for operator_code field.
+	turnoverDescOperatorCode := turnoverMixinFields2[0].Descriptor()
+	// turnover.OperatorCodeValidator is a validator for the "operator_code" field. It is called by the builders before save.
+	turnover.OperatorCodeValidator = func() func(string) error {
+		validators := turnoverDescOperatorCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(operator_code string) error {
+			for _, fn := range fns {
+				if err := fn(operator_code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// turnoverDescMemberID is the schema descriptor for member_id field.
+	turnoverDescMemberID := turnoverFields[0].Descriptor()
+	// turnover.MemberIDValidator is a validator for the "member_id" field. It is called by the builders before save.
+	turnover.MemberIDValidator = turnoverDescMemberID.Validators[0].(func(int64) error)
+	// turnoverDescOrderNo is the schema descriptor for order_no field.
+	turnoverDescOrderNo := turnoverFields[1].Descriptor()
+	// turnover.OrderNoValidator is a validator for the "order_no" field. It is called by the builders before save.
+	turnover.OrderNoValidator = turnoverDescOrderNo.Validators[0].(func(string) error)
+	// turnoverDescConsumeAmount is the schema descriptor for consume_amount field.
+	turnoverDescConsumeAmount := turnoverFields[2].Descriptor()
+	// turnover.DefaultConsumeAmount holds the default value on creation for the consume_amount field.
+	turnover.DefaultConsumeAmount = turnoverDescConsumeAmount.Default.(int64)
+	// turnoverDescConsumeCurrency is the schema descriptor for consume_currency field.
+	turnoverDescConsumeCurrency := turnoverFields[3].Descriptor()
+	// turnover.ConsumeCurrencyValidator is a validator for the "consume_currency" field. It is called by the builders before save.
+	turnover.ConsumeCurrencyValidator = turnoverDescConsumeCurrency.Validators[0].(func(string) error)
+	// turnoverDescConsumeType is the schema descriptor for consume_type field.
+	turnoverDescConsumeType := turnoverFields[4].Descriptor()
+	// turnover.DefaultConsumeType holds the default value on creation for the consume_type field.
+	turnover.DefaultConsumeType = turnoverDescConsumeType.Default.(int8)
+	// turnoverDescBalanceBefore is the schema descriptor for balance_before field.
+	turnoverDescBalanceBefore := turnoverFields[6].Descriptor()
+	// turnover.DefaultBalanceBefore holds the default value on creation for the balance_before field.
+	turnover.DefaultBalanceBefore = turnoverDescBalanceBefore.Default.(int64)
+	// turnoverDescBalanceAfter is the schema descriptor for balance_after field.
+	turnoverDescBalanceAfter := turnoverFields[7].Descriptor()
+	// turnover.DefaultBalanceAfter holds the default value on creation for the balance_after field.
+	turnover.DefaultBalanceAfter = turnoverDescBalanceAfter.Default.(int64)
+	// turnoverDescBalanceCurrency is the schema descriptor for balance_currency field.
+	turnoverDescBalanceCurrency := turnoverFields[8].Descriptor()
+	// turnover.BalanceCurrencyValidator is a validator for the "balance_currency" field. It is called by the builders before save.
+	turnover.BalanceCurrencyValidator = turnoverDescBalanceCurrency.Validators[0].(func(string) error)
 }
 
 const (

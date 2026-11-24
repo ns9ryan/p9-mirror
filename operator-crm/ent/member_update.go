@@ -156,6 +156,26 @@ func (_u *MemberUpdate) SetNillableWithdrawalDisabled(v *bool) *MemberUpdate {
 	return _u
 }
 
+// SetFirstLoginAt sets the "first_login_at" field.
+func (_u *MemberUpdate) SetFirstLoginAt(v time.Time) *MemberUpdate {
+	_u.mutation.SetFirstLoginAt(v)
+	return _u
+}
+
+// SetNillableFirstLoginAt sets the "first_login_at" field if the given value is not nil.
+func (_u *MemberUpdate) SetNillableFirstLoginAt(v *time.Time) *MemberUpdate {
+	if v != nil {
+		_u.SetFirstLoginAt(*v)
+	}
+	return _u
+}
+
+// ClearFirstLoginAt clears the value of the "first_login_at" field.
+func (_u *MemberUpdate) ClearFirstLoginAt() *MemberUpdate {
+	_u.mutation.ClearFirstLoginAt()
+	return _u
+}
+
 // SetLastLoginAt sets the "last_login_at" field.
 func (_u *MemberUpdate) SetLastLoginAt(v time.Time) *MemberUpdate {
 	_u.mutation.SetLastLoginAt(v)
@@ -658,6 +678,12 @@ func (_u *MemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.RegisterDomainCleared() {
 		_spec.ClearField(member.FieldRegisterDomain, field.TypeString)
+	}
+	if value, ok := _u.mutation.FirstLoginAt(); ok {
+		_spec.SetField(member.FieldFirstLoginAt, field.TypeTime, value)
+	}
+	if _u.mutation.FirstLoginAtCleared() {
+		_spec.ClearField(member.FieldFirstLoginAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.LastLoginAt(); ok {
 		_spec.SetField(member.FieldLastLoginAt, field.TypeTime, value)
@@ -1242,6 +1268,26 @@ func (_u *MemberUpdateOne) SetNillableWithdrawalDisabled(v *bool) *MemberUpdateO
 	return _u
 }
 
+// SetFirstLoginAt sets the "first_login_at" field.
+func (_u *MemberUpdateOne) SetFirstLoginAt(v time.Time) *MemberUpdateOne {
+	_u.mutation.SetFirstLoginAt(v)
+	return _u
+}
+
+// SetNillableFirstLoginAt sets the "first_login_at" field if the given value is not nil.
+func (_u *MemberUpdateOne) SetNillableFirstLoginAt(v *time.Time) *MemberUpdateOne {
+	if v != nil {
+		_u.SetFirstLoginAt(*v)
+	}
+	return _u
+}
+
+// ClearFirstLoginAt clears the value of the "first_login_at" field.
+func (_u *MemberUpdateOne) ClearFirstLoginAt() *MemberUpdateOne {
+	_u.mutation.ClearFirstLoginAt()
+	return _u
+}
+
 // SetLastLoginAt sets the "last_login_at" field.
 func (_u *MemberUpdateOne) SetLastLoginAt(v time.Time) *MemberUpdateOne {
 	_u.mutation.SetLastLoginAt(v)
@@ -1774,6 +1820,12 @@ func (_u *MemberUpdateOne) sqlSave(ctx context.Context) (_node *Member, err erro
 	}
 	if _u.mutation.RegisterDomainCleared() {
 		_spec.ClearField(member.FieldRegisterDomain, field.TypeString)
+	}
+	if value, ok := _u.mutation.FirstLoginAt(); ok {
+		_spec.SetField(member.FieldFirstLoginAt, field.TypeTime, value)
+	}
+	if _u.mutation.FirstLoginAtCleared() {
+		_spec.ClearField(member.FieldFirstLoginAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.LastLoginAt(); ok {
 		_spec.SetField(member.FieldLastLoginAt, field.TypeTime, value)

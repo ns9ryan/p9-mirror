@@ -43,10 +43,15 @@ func (l *GetParentAgentMemberLogic) GetParentAgentMember(in *memberpb.GetParentA
 	if in.GetMemberId() <= 0 {
 		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
 	}
+	// 检查分站
+	if in.GetOperatorCode() == "" {
+		return nil, xerr.RpcErr(xerr.BadRequest(i18n.InvalidParam))
+	}
 
 	// 1. 查询会员及其所属代理信息
 	m, err := l.svcCtx.DB.Member.Query().
 		Where(member.IDEQ(in.GetMemberId())).
+		Where(member.OperatorCode(in.GetOperatorCode())).
 		WithAgent().
 		Only(l.ctx)
 	if err != nil {
@@ -82,16 +87,23 @@ func (l *GetParentAgentMemberLogic) GetParentAgentMember(in *memberpb.GetParentA
 		if ent.IsNotFound(err) {
 			// 上级代理没有在AgentApply表中对应的会员记录
 			return &memberpb.GetParentAgentMemberResponse{
-				ParentAgentMemberId: 0,
-				ParentAgentId:       parentAgentID,
+				ParentAgentMemberId:       0,
+				ParentAgentId:             parentAgentID,
+				ParentAgentMemberGlobalId: "",
 			}, nil
 		}
+		return nil, xerr.RpcErr(err)
+	}
+	// 4. 查询上级代理 member_global_id
+	memberGlobalID, err := l.svcCtx.Member.GetMemberGlobalID(l.ctx, in.GetOperatorCode(), parentAgentApply.MemberID)
+	if err != nil {
 		return nil, xerr.RpcErr(err)
 	}
 
 	// 4. 返回上级代理的ID和对应的会员ID
 	return &memberpb.GetParentAgentMemberResponse{
-		ParentAgentMemberId: parentAgentApply.MemberID,
-		ParentAgentId:       parentAgentID,
+		ParentAgentMemberId:       parentAgentApply.MemberID,
+		ParentAgentId:             parentAgentID,
+		ParentAgentMemberGlobalId: memberGlobalID,
 	}, nil
 }

@@ -18,6 +18,8 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/agentapply"
 	"oa.98ent.com/p9/operator-crm/ent/agentclosure"
 	"oa.98ent.com/p9/operator-crm/ent/agentconfig"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorder"
+	"oa.98ent.com/p9/operator-crm/ent/agentdepositorderaudit"
 	"oa.98ent.com/p9/operator-crm/ent/agentlevel"
 	"oa.98ent.com/p9/operator-crm/ent/agentloginlog"
 	"oa.98ent.com/p9/operator-crm/ent/agentoplog"
@@ -38,6 +40,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevel"
 	"oa.98ent.com/p9/operator-crm/ent/memberviplevelrecord"
 	"oa.98ent.com/p9/operator-crm/ent/membervipprogress"
+	"oa.98ent.com/p9/operator-crm/ent/turnover"
 )
 
 // Client is the client that holds all ent builders.
@@ -51,6 +54,10 @@ type Client struct {
 	AgentClosure *AgentClosureClient
 	// AgentConfig is the client for interacting with the AgentConfig builders.
 	AgentConfig *AgentConfigClient
+	// AgentDepositOrder is the client for interacting with the AgentDepositOrder builders.
+	AgentDepositOrder *AgentDepositOrderClient
+	// AgentDepositOrderAudit is the client for interacting with the AgentDepositOrderAudit builders.
+	AgentDepositOrderAudit *AgentDepositOrderAuditClient
 	// AgentLevel is the client for interacting with the AgentLevel builders.
 	AgentLevel *AgentLevelClient
 	// AgentLoginLog is the client for interacting with the AgentLoginLog builders.
@@ -91,6 +98,8 @@ type Client struct {
 	MemberVipLevelRecord *MemberVipLevelRecordClient
 	// MemberVipProgress is the client for interacting with the MemberVipProgress builders.
 	MemberVipProgress *MemberVipProgressClient
+	// Turnover is the client for interacting with the Turnover builders.
+	Turnover *TurnoverClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -105,6 +114,8 @@ func (c *Client) init() {
 	c.AgentApply = NewAgentApplyClient(c.config)
 	c.AgentClosure = NewAgentClosureClient(c.config)
 	c.AgentConfig = NewAgentConfigClient(c.config)
+	c.AgentDepositOrder = NewAgentDepositOrderClient(c.config)
+	c.AgentDepositOrderAudit = NewAgentDepositOrderAuditClient(c.config)
 	c.AgentLevel = NewAgentLevelClient(c.config)
 	c.AgentLoginLog = NewAgentLoginLogClient(c.config)
 	c.AgentOpLog = NewAgentOpLogClient(c.config)
@@ -125,6 +136,7 @@ func (c *Client) init() {
 	c.MemberVipLevel = NewMemberVipLevelClient(c.config)
 	c.MemberVipLevelRecord = NewMemberVipLevelRecordClient(c.config)
 	c.MemberVipProgress = NewMemberVipProgressClient(c.config)
+	c.Turnover = NewTurnoverClient(c.config)
 }
 
 type (
@@ -220,6 +232,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AgentApply:                 NewAgentApplyClient(cfg),
 		AgentClosure:               NewAgentClosureClient(cfg),
 		AgentConfig:                NewAgentConfigClient(cfg),
+		AgentDepositOrder:          NewAgentDepositOrderClient(cfg),
+		AgentDepositOrderAudit:     NewAgentDepositOrderAuditClient(cfg),
 		AgentLevel:                 NewAgentLevelClient(cfg),
 		AgentLoginLog:              NewAgentLoginLogClient(cfg),
 		AgentOpLog:                 NewAgentOpLogClient(cfg),
@@ -240,6 +254,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		MemberVipLevel:             NewMemberVipLevelClient(cfg),
 		MemberVipLevelRecord:       NewMemberVipLevelRecordClient(cfg),
 		MemberVipProgress:          NewMemberVipProgressClient(cfg),
+		Turnover:                   NewTurnoverClient(cfg),
 	}, nil
 }
 
@@ -262,6 +277,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AgentApply:                 NewAgentApplyClient(cfg),
 		AgentClosure:               NewAgentClosureClient(cfg),
 		AgentConfig:                NewAgentConfigClient(cfg),
+		AgentDepositOrder:          NewAgentDepositOrderClient(cfg),
+		AgentDepositOrderAudit:     NewAgentDepositOrderAuditClient(cfg),
 		AgentLevel:                 NewAgentLevelClient(cfg),
 		AgentLoginLog:              NewAgentLoginLogClient(cfg),
 		AgentOpLog:                 NewAgentOpLogClient(cfg),
@@ -282,6 +299,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		MemberVipLevel:             NewMemberVipLevelClient(cfg),
 		MemberVipLevelRecord:       NewMemberVipLevelRecordClient(cfg),
 		MemberVipProgress:          NewMemberVipProgressClient(cfg),
+		Turnover:                   NewTurnoverClient(cfg),
 	}, nil
 }
 
@@ -311,12 +329,13 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentLevel, c.AgentLoginLog,
-		c.AgentOpLog, c.AgentProfile, c.AgentStats, c.AgentUser, c.Member,
-		c.MemberAuth, c.MemberAutoLevel, c.MemberFixedLevel,
-		c.MemberFixedLevelAssignment, c.MemberOAuthIdentity, c.MemberPeriodStats,
-		c.MemberProfile, c.MemberStats, c.MemberVipConfig, c.MemberVipIconGroup,
-		c.MemberVipLevel, c.MemberVipLevelRecord, c.MemberVipProgress,
+		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentDepositOrder,
+		c.AgentDepositOrderAudit, c.AgentLevel, c.AgentLoginLog, c.AgentOpLog,
+		c.AgentProfile, c.AgentStats, c.AgentUser, c.Member, c.MemberAuth,
+		c.MemberAutoLevel, c.MemberFixedLevel, c.MemberFixedLevelAssignment,
+		c.MemberOAuthIdentity, c.MemberPeriodStats, c.MemberProfile, c.MemberStats,
+		c.MemberVipConfig, c.MemberVipIconGroup, c.MemberVipLevel,
+		c.MemberVipLevelRecord, c.MemberVipProgress, c.Turnover,
 	} {
 		n.Use(hooks...)
 	}
@@ -326,12 +345,13 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentLevel, c.AgentLoginLog,
-		c.AgentOpLog, c.AgentProfile, c.AgentStats, c.AgentUser, c.Member,
-		c.MemberAuth, c.MemberAutoLevel, c.MemberFixedLevel,
-		c.MemberFixedLevelAssignment, c.MemberOAuthIdentity, c.MemberPeriodStats,
-		c.MemberProfile, c.MemberStats, c.MemberVipConfig, c.MemberVipIconGroup,
-		c.MemberVipLevel, c.MemberVipLevelRecord, c.MemberVipProgress,
+		c.AgentApply, c.AgentClosure, c.AgentConfig, c.AgentDepositOrder,
+		c.AgentDepositOrderAudit, c.AgentLevel, c.AgentLoginLog, c.AgentOpLog,
+		c.AgentProfile, c.AgentStats, c.AgentUser, c.Member, c.MemberAuth,
+		c.MemberAutoLevel, c.MemberFixedLevel, c.MemberFixedLevelAssignment,
+		c.MemberOAuthIdentity, c.MemberPeriodStats, c.MemberProfile, c.MemberStats,
+		c.MemberVipConfig, c.MemberVipIconGroup, c.MemberVipLevel,
+		c.MemberVipLevelRecord, c.MemberVipProgress, c.Turnover,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -346,6 +366,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AgentClosure.mutate(ctx, m)
 	case *AgentConfigMutation:
 		return c.AgentConfig.mutate(ctx, m)
+	case *AgentDepositOrderMutation:
+		return c.AgentDepositOrder.mutate(ctx, m)
+	case *AgentDepositOrderAuditMutation:
+		return c.AgentDepositOrderAudit.mutate(ctx, m)
 	case *AgentLevelMutation:
 		return c.AgentLevel.mutate(ctx, m)
 	case *AgentLoginLogMutation:
@@ -386,6 +410,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.MemberVipLevelRecord.mutate(ctx, m)
 	case *MemberVipProgressMutation:
 		return c.MemberVipProgress.mutate(ctx, m)
+	case *TurnoverMutation:
+		return c.Turnover.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -776,6 +802,276 @@ func (c *AgentConfigClient) mutate(ctx context.Context, m *AgentConfigMutation) 
 		return (&AgentConfigDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AgentConfig mutation op: %q", m.Op())
+	}
+}
+
+// AgentDepositOrderClient is a client for the AgentDepositOrder schema.
+type AgentDepositOrderClient struct {
+	config
+}
+
+// NewAgentDepositOrderClient returns a client for the AgentDepositOrder from the given config.
+func NewAgentDepositOrderClient(c config) *AgentDepositOrderClient {
+	return &AgentDepositOrderClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `agentdepositorder.Hooks(f(g(h())))`.
+func (c *AgentDepositOrderClient) Use(hooks ...Hook) {
+	c.hooks.AgentDepositOrder = append(c.hooks.AgentDepositOrder, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `agentdepositorder.Intercept(f(g(h())))`.
+func (c *AgentDepositOrderClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AgentDepositOrder = append(c.inters.AgentDepositOrder, interceptors...)
+}
+
+// Create returns a builder for creating a AgentDepositOrder entity.
+func (c *AgentDepositOrderClient) Create() *AgentDepositOrderCreate {
+	mutation := newAgentDepositOrderMutation(c.config, OpCreate)
+	return &AgentDepositOrderCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AgentDepositOrder entities.
+func (c *AgentDepositOrderClient) CreateBulk(builders ...*AgentDepositOrderCreate) *AgentDepositOrderCreateBulk {
+	return &AgentDepositOrderCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AgentDepositOrderClient) MapCreateBulk(slice any, setFunc func(*AgentDepositOrderCreate, int)) *AgentDepositOrderCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AgentDepositOrderCreateBulk{err: fmt.Errorf("calling to AgentDepositOrderClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AgentDepositOrderCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AgentDepositOrderCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AgentDepositOrder.
+func (c *AgentDepositOrderClient) Update() *AgentDepositOrderUpdate {
+	mutation := newAgentDepositOrderMutation(c.config, OpUpdate)
+	return &AgentDepositOrderUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AgentDepositOrderClient) UpdateOne(_m *AgentDepositOrder) *AgentDepositOrderUpdateOne {
+	mutation := newAgentDepositOrderMutation(c.config, OpUpdateOne, withAgentDepositOrder(_m))
+	return &AgentDepositOrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AgentDepositOrderClient) UpdateOneID(id int64) *AgentDepositOrderUpdateOne {
+	mutation := newAgentDepositOrderMutation(c.config, OpUpdateOne, withAgentDepositOrderID(id))
+	return &AgentDepositOrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AgentDepositOrder.
+func (c *AgentDepositOrderClient) Delete() *AgentDepositOrderDelete {
+	mutation := newAgentDepositOrderMutation(c.config, OpDelete)
+	return &AgentDepositOrderDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AgentDepositOrderClient) DeleteOne(_m *AgentDepositOrder) *AgentDepositOrderDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AgentDepositOrderClient) DeleteOneID(id int64) *AgentDepositOrderDeleteOne {
+	builder := c.Delete().Where(agentdepositorder.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AgentDepositOrderDeleteOne{builder}
+}
+
+// Query returns a query builder for AgentDepositOrder.
+func (c *AgentDepositOrderClient) Query() *AgentDepositOrderQuery {
+	return &AgentDepositOrderQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAgentDepositOrder},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AgentDepositOrder entity by its id.
+func (c *AgentDepositOrderClient) Get(ctx context.Context, id int64) (*AgentDepositOrder, error) {
+	return c.Query().Where(agentdepositorder.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AgentDepositOrderClient) GetX(ctx context.Context, id int64) *AgentDepositOrder {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AgentDepositOrderClient) Hooks() []Hook {
+	hooks := c.hooks.AgentDepositOrder
+	return append(hooks[:len(hooks):len(hooks)], agentdepositorder.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *AgentDepositOrderClient) Interceptors() []Interceptor {
+	inters := c.inters.AgentDepositOrder
+	return append(inters[:len(inters):len(inters)], agentdepositorder.Interceptors[:]...)
+}
+
+func (c *AgentDepositOrderClient) mutate(ctx context.Context, m *AgentDepositOrderMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AgentDepositOrderCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AgentDepositOrderUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AgentDepositOrderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AgentDepositOrderDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AgentDepositOrder mutation op: %q", m.Op())
+	}
+}
+
+// AgentDepositOrderAuditClient is a client for the AgentDepositOrderAudit schema.
+type AgentDepositOrderAuditClient struct {
+	config
+}
+
+// NewAgentDepositOrderAuditClient returns a client for the AgentDepositOrderAudit from the given config.
+func NewAgentDepositOrderAuditClient(c config) *AgentDepositOrderAuditClient {
+	return &AgentDepositOrderAuditClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `agentdepositorderaudit.Hooks(f(g(h())))`.
+func (c *AgentDepositOrderAuditClient) Use(hooks ...Hook) {
+	c.hooks.AgentDepositOrderAudit = append(c.hooks.AgentDepositOrderAudit, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `agentdepositorderaudit.Intercept(f(g(h())))`.
+func (c *AgentDepositOrderAuditClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AgentDepositOrderAudit = append(c.inters.AgentDepositOrderAudit, interceptors...)
+}
+
+// Create returns a builder for creating a AgentDepositOrderAudit entity.
+func (c *AgentDepositOrderAuditClient) Create() *AgentDepositOrderAuditCreate {
+	mutation := newAgentDepositOrderAuditMutation(c.config, OpCreate)
+	return &AgentDepositOrderAuditCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AgentDepositOrderAudit entities.
+func (c *AgentDepositOrderAuditClient) CreateBulk(builders ...*AgentDepositOrderAuditCreate) *AgentDepositOrderAuditCreateBulk {
+	return &AgentDepositOrderAuditCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AgentDepositOrderAuditClient) MapCreateBulk(slice any, setFunc func(*AgentDepositOrderAuditCreate, int)) *AgentDepositOrderAuditCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AgentDepositOrderAuditCreateBulk{err: fmt.Errorf("calling to AgentDepositOrderAuditClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AgentDepositOrderAuditCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AgentDepositOrderAuditCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AgentDepositOrderAudit.
+func (c *AgentDepositOrderAuditClient) Update() *AgentDepositOrderAuditUpdate {
+	mutation := newAgentDepositOrderAuditMutation(c.config, OpUpdate)
+	return &AgentDepositOrderAuditUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AgentDepositOrderAuditClient) UpdateOne(_m *AgentDepositOrderAudit) *AgentDepositOrderAuditUpdateOne {
+	mutation := newAgentDepositOrderAuditMutation(c.config, OpUpdateOne, withAgentDepositOrderAudit(_m))
+	return &AgentDepositOrderAuditUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AgentDepositOrderAuditClient) UpdateOneID(id int64) *AgentDepositOrderAuditUpdateOne {
+	mutation := newAgentDepositOrderAuditMutation(c.config, OpUpdateOne, withAgentDepositOrderAuditID(id))
+	return &AgentDepositOrderAuditUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AgentDepositOrderAudit.
+func (c *AgentDepositOrderAuditClient) Delete() *AgentDepositOrderAuditDelete {
+	mutation := newAgentDepositOrderAuditMutation(c.config, OpDelete)
+	return &AgentDepositOrderAuditDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AgentDepositOrderAuditClient) DeleteOne(_m *AgentDepositOrderAudit) *AgentDepositOrderAuditDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AgentDepositOrderAuditClient) DeleteOneID(id int64) *AgentDepositOrderAuditDeleteOne {
+	builder := c.Delete().Where(agentdepositorderaudit.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AgentDepositOrderAuditDeleteOne{builder}
+}
+
+// Query returns a query builder for AgentDepositOrderAudit.
+func (c *AgentDepositOrderAuditClient) Query() *AgentDepositOrderAuditQuery {
+	return &AgentDepositOrderAuditQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAgentDepositOrderAudit},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AgentDepositOrderAudit entity by its id.
+func (c *AgentDepositOrderAuditClient) Get(ctx context.Context, id int64) (*AgentDepositOrderAudit, error) {
+	return c.Query().Where(agentdepositorderaudit.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AgentDepositOrderAuditClient) GetX(ctx context.Context, id int64) *AgentDepositOrderAudit {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AgentDepositOrderAuditClient) Hooks() []Hook {
+	hooks := c.hooks.AgentDepositOrderAudit
+	return append(hooks[:len(hooks):len(hooks)], agentdepositorderaudit.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *AgentDepositOrderAuditClient) Interceptors() []Interceptor {
+	inters := c.inters.AgentDepositOrderAudit
+	return append(inters[:len(inters):len(inters)], agentdepositorderaudit.Interceptors[:]...)
+}
+
+func (c *AgentDepositOrderAuditClient) mutate(ctx context.Context, m *AgentDepositOrderAuditMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AgentDepositOrderAuditCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AgentDepositOrderAuditUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AgentDepositOrderAuditUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AgentDepositOrderAuditDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AgentDepositOrderAudit mutation op: %q", m.Op())
 	}
 }
 
@@ -4053,22 +4349,158 @@ func (c *MemberVipProgressClient) mutate(ctx context.Context, m *MemberVipProgre
 	}
 }
 
+// TurnoverClient is a client for the Turnover schema.
+type TurnoverClient struct {
+	config
+}
+
+// NewTurnoverClient returns a client for the Turnover from the given config.
+func NewTurnoverClient(c config) *TurnoverClient {
+	return &TurnoverClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `turnover.Hooks(f(g(h())))`.
+func (c *TurnoverClient) Use(hooks ...Hook) {
+	c.hooks.Turnover = append(c.hooks.Turnover, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `turnover.Intercept(f(g(h())))`.
+func (c *TurnoverClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Turnover = append(c.inters.Turnover, interceptors...)
+}
+
+// Create returns a builder for creating a Turnover entity.
+func (c *TurnoverClient) Create() *TurnoverCreate {
+	mutation := newTurnoverMutation(c.config, OpCreate)
+	return &TurnoverCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Turnover entities.
+func (c *TurnoverClient) CreateBulk(builders ...*TurnoverCreate) *TurnoverCreateBulk {
+	return &TurnoverCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TurnoverClient) MapCreateBulk(slice any, setFunc func(*TurnoverCreate, int)) *TurnoverCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TurnoverCreateBulk{err: fmt.Errorf("calling to TurnoverClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TurnoverCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TurnoverCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Turnover.
+func (c *TurnoverClient) Update() *TurnoverUpdate {
+	mutation := newTurnoverMutation(c.config, OpUpdate)
+	return &TurnoverUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TurnoverClient) UpdateOne(_m *Turnover) *TurnoverUpdateOne {
+	mutation := newTurnoverMutation(c.config, OpUpdateOne, withTurnover(_m))
+	return &TurnoverUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TurnoverClient) UpdateOneID(id int64) *TurnoverUpdateOne {
+	mutation := newTurnoverMutation(c.config, OpUpdateOne, withTurnoverID(id))
+	return &TurnoverUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Turnover.
+func (c *TurnoverClient) Delete() *TurnoverDelete {
+	mutation := newTurnoverMutation(c.config, OpDelete)
+	return &TurnoverDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TurnoverClient) DeleteOne(_m *Turnover) *TurnoverDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TurnoverClient) DeleteOneID(id int64) *TurnoverDeleteOne {
+	builder := c.Delete().Where(turnover.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TurnoverDeleteOne{builder}
+}
+
+// Query returns a query builder for Turnover.
+func (c *TurnoverClient) Query() *TurnoverQuery {
+	return &TurnoverQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTurnover},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Turnover entity by its id.
+func (c *TurnoverClient) Get(ctx context.Context, id int64) (*Turnover, error) {
+	return c.Query().Where(turnover.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TurnoverClient) GetX(ctx context.Context, id int64) *Turnover {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TurnoverClient) Hooks() []Hook {
+	hooks := c.hooks.Turnover
+	return append(hooks[:len(hooks):len(hooks)], turnover.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *TurnoverClient) Interceptors() []Interceptor {
+	inters := c.inters.Turnover
+	return append(inters[:len(inters):len(inters)], turnover.Interceptors[:]...)
+}
+
+func (c *TurnoverClient) mutate(ctx context.Context, m *TurnoverMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TurnoverCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TurnoverUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TurnoverUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TurnoverDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Turnover mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentOpLog,
-		AgentProfile, AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel,
-		MemberFixedLevel, MemberFixedLevelAssignment, MemberOAuthIdentity,
-		MemberPeriodStats, MemberProfile, MemberStats, MemberVipConfig,
-		MemberVipIconGroup, MemberVipLevel, MemberVipLevelRecord,
-		MemberVipProgress []ent.Hook
+		AgentApply, AgentClosure, AgentConfig, AgentDepositOrder,
+		AgentDepositOrderAudit, AgentLevel, AgentLoginLog, AgentOpLog, AgentProfile,
+		AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel, MemberFixedLevel,
+		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberPeriodStats,
+		MemberProfile, MemberStats, MemberVipConfig, MemberVipIconGroup,
+		MemberVipLevel, MemberVipLevelRecord, MemberVipProgress, Turnover []ent.Hook
 	}
 	inters struct {
-		AgentApply, AgentClosure, AgentConfig, AgentLevel, AgentLoginLog, AgentOpLog,
-		AgentProfile, AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel,
-		MemberFixedLevel, MemberFixedLevelAssignment, MemberOAuthIdentity,
-		MemberPeriodStats, MemberProfile, MemberStats, MemberVipConfig,
-		MemberVipIconGroup, MemberVipLevel, MemberVipLevelRecord,
-		MemberVipProgress []ent.Interceptor
+		AgentApply, AgentClosure, AgentConfig, AgentDepositOrder,
+		AgentDepositOrderAudit, AgentLevel, AgentLoginLog, AgentOpLog, AgentProfile,
+		AgentStats, AgentUser, Member, MemberAuth, MemberAutoLevel, MemberFixedLevel,
+		MemberFixedLevelAssignment, MemberOAuthIdentity, MemberPeriodStats,
+		MemberProfile, MemberStats, MemberVipConfig, MemberVipIconGroup,
+		MemberVipLevel, MemberVipLevelRecord, MemberVipProgress,
+		Turnover []ent.Interceptor
 	}
 )

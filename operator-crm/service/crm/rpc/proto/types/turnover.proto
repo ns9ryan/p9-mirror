@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package crm_turnover;
+
+option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/turnoverpb";
+
+// AddTurnoverReq 添加流水请求
+// 消费货币固定 USDT，消费类型固定游戏，消费时间自动取当前时间，
+// consume_amount 正数表示赢（余额增加），负数表示输（余额减少），0 表示模拟/演示流水，
+// 消费后余额由 balance_before + consume_amount 自动计算，代理 ID 由会员归属推断。
+message AddTurnoverReq {
+  // 会员ID
+  int64 member_id = 1;
+  // 消费金额（分），正数=赢，负数=输，不可为 0
+  int64 consume_amount = 2;
+  // 消费前余额（分）
+  int64 balance_before = 3;
+  // 备注，可选
+  optional string notes = 4;
+  // 游戏ID，可选
+  optional int64 game_id = 5;
+}
+
+// AddTurnoverResp 添加流水响应
+message AddTurnoverResp {
+  // 新建流水ID
+  int64 id = 1;
+}
+
+// TurnoverListItem 流水列表项
+message TurnoverListItem {
+  int64 id = 1;
+  int64 member_id = 2;
+  // 消费金额（分）
+  int64 consume_amount = 3;
+  string consume_currency = 4;
+  // 消费类型 1:游戏 2:其他
+  int32 consume_type = 5;
+  // 消费时间 unix 秒
+  int64 consume_at = 6;
+  // 消费前余额（分）
+  int64 balance_before = 7;
+  // 消费后余额（分）
+  int64 balance_after = 8;
+  string balance_currency = 9;
+  int64 agent_id = 10;
+  int64 wallet_id = 11;
+  optional string notes = 12;
+  // 创建时间 unix 秒
+  int64 created_at = 13;
+  // 游戏ID，可选
+  optional int64 game_id = 14;
+  // 订单号，可选
+  optional string order_no = 15;
+  // 会员登录账号
+  string member_account = 16;
+  // 会员自动层级名称
+  string member_level_name = 17;
+}
+
+// ListTurnoversReq 流水列表请求
+message ListTurnoversReq {
+  // 页码，从 1 开始
+  int32 page = 1;
+  // 每页条数，默认 20，上限 100
+  int32 page_size = 2;
+  // 会员ID，0 不限
+  int64 member_id = 3;
+  // 消费时间起始 unix 秒，0 不限
+  int64 time_start = 4;
+  // 消费时间结束 unix 秒，0 不限
+  int64 time_end = 5;
+}
+
+// ListTurnoversResp 流水列表响应
+message ListTurnoversResp {
+  repeated TurnoverListItem list = 1;
+  int64 total = 2;
+}

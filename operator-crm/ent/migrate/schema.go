@@ -122,6 +122,102 @@ var (
 			},
 		},
 	}
+	// AgentDepositOrderColumns holds the columns for the "agent_deposit_order" table.
+	AgentDepositOrderColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
+		{Name: "agent_type", Type: field.TypeInt8, Nullable: true, Comment: "代理模式 1.现金 2.信用代理", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "agent_line_code", Type: field.TypeString, Size: 32, Comment: "代理子线路编码"},
+		{Name: "agent_id", Type: field.TypeInt64, Nullable: true, Comment: "代理ID"},
+		{Name: "status", Type: field.TypeInt8, Nullable: true, Comment: "订单状态 1:待审核 2:冻结 3:解冻 4:通过 5:拒绝 11:待一审核 12:待二审 ", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "deposit_amount", Type: field.TypeInt64, Nullable: true, Comment: "存款金额"},
+		{Name: "deposit_currency", Type: field.TypeString, Nullable: true, Size: 10, Comment: "存款货币"},
+		{Name: "audit_stages", Type: field.TypeInt8, Nullable: true, Comment: "需要审核的阶段数", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "fee_rate", Type: field.TypeFloat64, Nullable: true, Comment: "费率", Default: 0},
+		{Name: "bonus_rate", Type: field.TypeFloat64, Nullable: true, Comment: "奖金率"},
+		{Name: "fee_amount", Type: field.TypeInt64, Comment: "手续费金额", Default: 0},
+		{Name: "bonus_amount", Type: field.TypeInt64, Comment: "奖金金额", Default: 0},
+		{Name: "received_amount", Type: field.TypeInt64, Comment: "到账金额 = 存款金额 + 奖金金额", Default: 0},
+		{Name: "actual_received_amount", Type: field.TypeInt64, Comment: "实际到账金额 = 到账金额 - 手续费金额", Default: 0},
+		{Name: "member_id", Type: field.TypeInt64, Nullable: true, Comment: "会员ID"},
+		{Name: "fee_mode", Type: field.TypeInt8, Comment: "费率模式", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "rollover_multiplier", Type: field.TypeFloat64, Comment: "洗码倍数", Default: 0},
+		{Name: "deposit_type", Type: field.TypeInt8, Comment: "存款方式  1:加密货币 2:人工入账", Default: 3, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "notes", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "备注"},
+		{Name: "order_no", Type: field.TypeString, Nullable: true, Size: 64, Comment: "订单号"},
+		{Name: "site_currency", Type: field.TypeString, Nullable: true, Size: 10, Comment: "站点货币，如 USD、USDT"},
+		{Name: "third_party_order_no", Type: field.TypeString, Nullable: true, Size: 128, Comment: "三方订单号"},
+		{Name: "payment_receive_info", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "存款信息（收款方）"},
+		{Name: "payment_send_info", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "存款信息（付款方）"},
+		{Name: "creator_id", Type: field.TypeInt64, Comment: "创建人用户ID", Default: 0},
+		{Name: "creator_type", Type: field.TypeInt8, Comment: "创建人类型 1:总网 2:分站", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "updater_id", Type: field.TypeInt64, Comment: "最后更新人用户ID", Default: 0},
+		{Name: "updater_type", Type: field.TypeInt8, Comment: "最后更新人类型 1:总网 2:分站", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "reviewer_id", Type: field.TypeInt64, Comment: "当前领取审核人用户ID，0=未被领取", Default: 0},
+		{Name: "reviewer_utype", Type: field.TypeInt8, Comment: "领取人类型 1:总网 2:分站", Default: 0, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "claimed_at", Type: field.TypeTime, Nullable: true, Comment: "领取审核时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+	}
+	// AgentDepositOrderTable holds the schema information for the "agent_deposit_order" table.
+	AgentDepositOrderTable = &schema.Table{
+		Name:       "agent_deposit_order",
+		Comment:    "存款订单表",
+		Columns:    AgentDepositOrderColumns,
+		PrimaryKey: []*schema.Column{AgentDepositOrderColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_agent_deposit_order_agent_status",
+				Unique:  false,
+				Columns: []*schema.Column{AgentDepositOrderColumns[6], AgentDepositOrderColumns[7]},
+			},
+			{
+				Name:    "idx_agent_deposit_order_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{AgentDepositOrderColumns[1]},
+			},
+			{
+				Name:    "idx_agent_deposit_order_member",
+				Unique:  false,
+				Columns: []*schema.Column{AgentDepositOrderColumns[17]},
+			},
+			{
+				Name:    "idx_agent_deposit_order_reviewer_status",
+				Unique:  false,
+				Columns: []*schema.Column{AgentDepositOrderColumns[31], AgentDepositOrderColumns[7]},
+			},
+		},
+	}
+	// AgentDepositOrderAuditColumns holds the columns for the "agent_deposit_order_audit" table.
+	AgentDepositOrderAuditColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Created At | 创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Updated At | 更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
+		{Name: "order_id", Type: field.TypeInt64, Comment: "关联的存款订单ID"},
+		{Name: "action", Type: field.TypeInt8, Comment: "操作类型 1=approve 2=reject 3=freeze 4=unfreeze", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "stage", Type: field.TypeInt8, Comment: "审核阶段 1=一审 2=二审 0=非审核操作(冻结/解冻)", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "audit_utype", Type: field.TypeInt8, Nullable: true, Comment: "审核用户类型", SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "audit_uid", Type: field.TypeInt64, Nullable: true, Comment: "审核用户ID"},
+		{Name: "audit_at", Type: field.TypeTime, Nullable: true, Comment: "审核时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "audit_ip", Type: field.TypeString, Nullable: true, Comment: "审核IP", SchemaType: map[string]string{"postgres": "inet"}},
+		{Name: "audit_notes", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "审核备注"},
+		{Name: "audit_username", Type: field.TypeString, Nullable: true, Size: 64, Comment: "审核人用户名，approve/reject 时从 claims 写入"},
+	}
+	// AgentDepositOrderAuditTable holds the schema information for the "agent_deposit_order_audit" table.
+	AgentDepositOrderAuditTable = &schema.Table{
+		Name:       "agent_deposit_order_audit",
+		Comment:    "代理存款订单审核记录表",
+		Columns:    AgentDepositOrderAuditColumns,
+		PrimaryKey: []*schema.Column{AgentDepositOrderAuditColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_agent_deposit_order_audit_order_id",
+				Unique:  false,
+				Columns: []*schema.Column{AgentDepositOrderAuditColumns[4]},
+			},
+		},
+	}
 	// AgentLevelColumns holds the columns for the "agent_level" table.
 	AgentLevelColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
@@ -428,6 +524,7 @@ var (
 		{Name: "register_ip", Type: field.TypeString, Nullable: true, Size: 45, Comment: "注册IP"},
 		{Name: "register_device_code", Type: field.TypeString, Nullable: true, Size: 128, Comment: "注册设备标识"},
 		{Name: "register_domain", Type: field.TypeString, Nullable: true, Size: 255, Comment: "注册域名"},
+		{Name: "first_login_at", Type: field.TypeTime, Nullable: true, Comment: "首次登录时间，NULL表示尚未登录", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "last_login_at", Type: field.TypeTime, Nullable: true, Comment: "最后登录时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
 		{Name: "last_login_ip", Type: field.TypeString, Nullable: true, Size: 45, Comment: "最后登录IP"},
 		{Name: "last_login_device_code", Type: field.TypeString, Nullable: true, Size: 128, Comment: "最后登录设备标识"},
@@ -446,31 +543,31 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "member_agent_user_agent",
-				Columns:    []*schema.Column{MemberColumns[19]},
+				Columns:    []*schema.Column{MemberColumns[20]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "member_agent_user_agent_account",
-				Columns:    []*schema.Column{MemberColumns[20]},
+				Columns:    []*schema.Column{MemberColumns[21]},
 				RefColumns: []*schema.Column{AgentUserColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "member_member_invited_members",
-				Columns:    []*schema.Column{MemberColumns[21]},
+				Columns:    []*schema.Column{MemberColumns[22]},
 				RefColumns: []*schema.Column{MemberColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "member_member_auto_level_auto_level",
-				Columns:    []*schema.Column{MemberColumns[22]},
+				Columns:    []*schema.Column{MemberColumns[23]},
 				RefColumns: []*schema.Column{MemberAutoLevelColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "member_member_vip_level_vip_level",
-				Columns:    []*schema.Column{MemberColumns[23]},
+				Columns:    []*schema.Column{MemberColumns[24]},
 				RefColumns: []*schema.Column{MemberVipLevelColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -489,17 +586,17 @@ var (
 			{
 				Name:    "uk_member_agent_account",
 				Unique:  true,
-				Columns: []*schema.Column{MemberColumns[20]},
+				Columns: []*schema.Column{MemberColumns[21]},
 			},
 			{
 				Name:    "idx_member_operator_agent",
 				Unique:  false,
-				Columns: []*schema.Column{MemberColumns[4], MemberColumns[19]},
+				Columns: []*schema.Column{MemberColumns[4], MemberColumns[20]},
 			},
 			{
 				Name:    "idx_member_operator_inviter",
 				Unique:  false,
-				Columns: []*schema.Column{MemberColumns[4], MemberColumns[21]},
+				Columns: []*schema.Column{MemberColumns[4], MemberColumns[22]},
 			},
 		},
 	}
@@ -973,11 +1070,52 @@ var (
 			},
 		},
 	}
+	// TurnoverColumns holds the columns for the "turnover" table.
+	TurnoverColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary key | 主键ID", SchemaType: map[string]string{"postgres": "bigint"}},
+		{Name: "created_at", Type: field.TypeTime, Comment: "创建时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "更新时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "operator_code", Type: field.TypeString, Size: 64, Comment: "Operator Code | 分站编码"},
+		{Name: "member_id", Type: field.TypeInt64, Comment: "会员ID"},
+		{Name: "order_no", Type: field.TypeString, Nullable: true, Size: 64, Comment: "订单号"},
+		{Name: "consume_amount", Type: field.TypeInt64, Comment: "消费金额（分）", Default: 0},
+		{Name: "consume_currency", Type: field.TypeString, Nullable: true, Size: 10, Comment: "消费货币，如 USD、USDT"},
+		{Name: "consume_type", Type: field.TypeInt8, Comment: "消费类型 1:游戏 2:其他", Default: 1, SchemaType: map[string]string{"postgres": "smallint"}},
+		{Name: "consume_at", Type: field.TypeTime, Nullable: true, Comment: "消费时间", SchemaType: map[string]string{"postgres": "timestamptz(3)"}},
+		{Name: "balance_before", Type: field.TypeInt64, Comment: "消费前余额（分）", Default: 0},
+		{Name: "balance_after", Type: field.TypeInt64, Comment: "消费后余额（分）", Default: 0},
+		{Name: "balance_currency", Type: field.TypeString, Nullable: true, Size: 10, Comment: "余额货币"},
+		{Name: "agent_id", Type: field.TypeInt64, Nullable: true, Comment: "所属代理ID"},
+		{Name: "wallet_id", Type: field.TypeInt64, Nullable: true, Comment: "钱包ID"},
+		{Name: "game_id", Type: field.TypeInt64, Nullable: true, Comment: "游戏ID"},
+		{Name: "notes", Type: field.TypeString, Nullable: true, Size: 2147483647, Comment: "备注"},
+	}
+	// TurnoverTable holds the schema information for the "turnover" table.
+	TurnoverTable = &schema.Table{
+		Name:       "turnover",
+		Comment:    "模拟营业额表",
+		Columns:    TurnoverColumns,
+		PrimaryKey: []*schema.Column{TurnoverColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "idx_turnover_user_consume_at",
+				Unique:  false,
+				Columns: []*schema.Column{TurnoverColumns[4], TurnoverColumns[9]},
+			},
+			{
+				Name:    "idx_turnover_agent_consume_at",
+				Unique:  false,
+				Columns: []*schema.Column{TurnoverColumns[13], TurnoverColumns[9]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		AgentApplyTable,
 		AgentClosureTable,
 		AgentConfigTable,
+		AgentDepositOrderTable,
+		AgentDepositOrderAuditTable,
 		AgentLevelTable,
 		AgentLoginLogTable,
 		AgentOpLogTable,
@@ -998,6 +1136,7 @@ var (
 		MemberVipLevelTable,
 		MemberVipLevelRecordTable,
 		MemberVipProgressTable,
+		TurnoverTable,
 	}
 )
 
@@ -1012,6 +1151,12 @@ func init() {
 	}
 	AgentConfigTable.Annotation = &entsql.Annotation{
 		Table: "agent_config",
+	}
+	AgentDepositOrderTable.Annotation = &entsql.Annotation{
+		Table: "agent_deposit_order",
+	}
+	AgentDepositOrderAuditTable.Annotation = &entsql.Annotation{
+		Table: "agent_deposit_order_audit",
 	}
 	AgentLevelTable.Annotation = &entsql.Annotation{
 		Table: "agent_level",
@@ -1090,5 +1235,8 @@ func init() {
 	MemberVipProgressTable.ForeignKeys[0].RefTable = MemberTable
 	MemberVipProgressTable.Annotation = &entsql.Annotation{
 		Table: "member_vip_progress",
+	}
+	TurnoverTable.Annotation = &entsql.Annotation{
+		Table: "turnover",
 	}
 }
