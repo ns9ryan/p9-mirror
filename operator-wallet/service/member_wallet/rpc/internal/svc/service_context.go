@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 
@@ -70,45 +71,46 @@ func NewServiceContext(c config.Config) (*ServiceContext, error) {
 		return nil, fmt.Errorf("sync member wallet database schema: %w", err)
 	}
 
-	// 创建钱包服务生命周期Context
+	// 创建钱包数据访问及服务生命周期Context
+	walletDAO := dao.New(db)
 	walletCtx, walletCancel := context.WithCancel(context.Background())
+	walletConf := c.WalletRuntimeConf
+
+	// 初始化消费进度并创建 Consumer, 限制启动检查等待时间
+	initCtx, initCancel := context.WithTimeout(walletCtx, 30*time.Second)
+	walletConsumer, err := newWalletConsumer(initCtx, walletConf, dao.NewMemberWalletCheckpoint(db))
+	initCancel()
+
+	if err != nil {
+		walletCancel()
+		_ = db.Close()
+		return nil, fmt.Errorf("create member wallet consumer: %w", err)
+	}
 
 	// 创建钱包Engine及Kafka Producer
-	walletConf := c.WalletRuntimeConf
 	walletEngine, err := wallet.NewEngine(walletCtx, wallet.EngineConfig{
 		KafkaBrokers:    walletConf.KafkaBrokers,    // Kafka Broker 地址
 		KafkaTopic:      walletConf.KafkaTopic,      // 资金事件 Topic
-		ShardCount:      walletConf.ShardCount,      // Shard 数量, 必须与 Topic Partition 数量一致
+		ShardCount:      walletConf.ShardCount,      // Shard 数量
 		WorkerCount:     walletConf.WorkerCount,     // 共享 Worker 数量
-		MailboxCapacity: walletConf.MailboxCapacity, // 每个 Actor 的 Mailbox 容量
+		MailboxCapacity: walletConf.MailboxCapacity, // 每个 Actor 的消息队列容量
 		PublishTimeout:  walletConf.PublishTimeout,  // 单次 Kafka 写入超时时间
 	})
 	if err != nil {
+		walletConsumer.Close()
 		walletCancel()
 		_ = db.Close()
 		return nil, fmt.Errorf("create member wallet engine: %w", err)
 	}
 
-	// 创建Kafka Consumer
-	// walletConsumer, err := consumer.New(consumer.Config{
-	// 	Brokers: walletConf.KafkaBrokers,       // Kafka Broker 地址
-	// 	Topic:   walletConf.KafkaTopic,         // 资金事件 Topic
-	// 	GroupID: walletConf.KafkaConsumerGroup, // Consumer Group ID
-	// })
-	// if err != nil {
-	// 	_ = walletEngine.Close(context.Background())
-	// 	walletCancel()
-	// 	_ = db.Close()
-	// 	return nil, fmt.Errorf("create member wallet consumer: %w", err)
-	// }
-
 	return &ServiceContext{
-		Config:       c,
-		DB:           db,
-		DAO:          dao.New(db),
-		WalletEngine: walletEngine,
-		// WalletConsumer: walletConsumer,
-		walletCancel: walletCancel,
+		Config: c,
+		DB:     db,
+		DAO:    walletDAO,
+
+		WalletEngine:   walletEngine,
+		WalletConsumer: walletConsumer,
+		walletCancel:   walletCancel,
 
 		// 初始化钱包标识缓存
 		walletIndex: make(map[walletIndexKey]walletIndexEntry),
