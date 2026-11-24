@@ -12,6 +12,7 @@ import (
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/managepb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/rewardpb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/withdrawpb"
 )
@@ -25,6 +26,12 @@ func NewMemberWalletServer(svcCtx *svc.ServiceContext) *MemberWalletServer {
 	return &MemberWalletServer{
 		svcCtx: svcCtx,
 	}
+}
+
+// 创建会员钱包
+func (s *MemberWalletServer) CreateWallet(ctx context.Context, in *managepb.CreateWalletRequest) (*managepb.CreateWalletResponse, error) {
+	l := memberwalletlogic.NewCreateWalletLogic(ctx, s.svcCtx)
+	return l.CreateWallet(in)
 }
 
 // 存款本金入账

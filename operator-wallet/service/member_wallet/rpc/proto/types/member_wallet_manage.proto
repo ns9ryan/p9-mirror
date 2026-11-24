@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package member_wallet_manage;
+
+option go_package = "oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/managepb";
+
+// 创建会员钱包请求
+message CreateWalletRequest {
+  // CRM会员ID
+  int64 member_id = 1;
+  // CRM会员全局唯一标识
+  string member_global_id = 2;
+
+  // 钱包结算币种编码
+  string currency_code = 3;
+}
+
+// 创建会员钱包响应
+message CreateWalletResponse {
+  // 钱包全局唯一标识
+  string wallet_global_id = 1;
+}

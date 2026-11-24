@@ -11,6 +11,7 @@ import (
 
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/depositpb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/gamepb"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/managepb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/rewardpb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/withdrawpb"
 
@@ -20,6 +21,8 @@ import (
 
 type (
 	MemberWallet interface {
+		// 创建会员钱包
+		CreateWallet(ctx context.Context, in *managepb.CreateWalletRequest, opts ...grpc.CallOption) (*managepb.CreateWalletResponse, error)
 		// 存款本金入账
 		DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
 		// 存款赠送入账
@@ -63,6 +66,12 @@ func NewMemberWallet(cli zrpc.Client) MemberWallet {
 	return &defaultMemberWallet{
 		cli: cli,
 	}
+}
+
+// 创建会员钱包
+func (m *defaultMemberWallet) CreateWallet(ctx context.Context, in *managepb.CreateWalletRequest, opts ...grpc.CallOption) (*managepb.CreateWalletResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.CreateWallet(ctx, in, opts...)
 }
 
 // 存款本金入账

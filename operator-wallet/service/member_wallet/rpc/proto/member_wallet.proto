@@ -11,6 +11,7 @@ import "types/member_wallet_ping.proto";
 
 // ==================== 会员钱包 ====================
 
+import "types/member_wallet_manage.proto";
 import "types/member_wallet_deposit.proto";
 import "types/member_wallet_withdraw.proto";
 import "types/member_wallet_game.proto";
@@ -24,6 +25,11 @@ service Ping {
 
 // 会员钱包资金服务
 service MemberWallet {
+  // ==================== 钱包管理 ====================
+
+  // 创建会员钱包
+  rpc CreateWallet(member_wallet_manage.CreateWalletRequest) returns (member_wallet_manage.CreateWalletResponse);
+
   // ==================== 存款 ====================
 
   // 存款本金入账
