@@ -34,6 +34,12 @@ func (s *MemberWalletServer) CreateWallet(ctx context.Context, in *managepb.Crea
 	return l.CreateWallet(in)
 }
 
+// 查询会员钱包余额
+func (s *MemberWalletServer) GetBalance(ctx context.Context, in *managepb.GetBalanceRequest) (*managepb.GetBalanceResponse, error) {
+	l := memberwalletlogic.NewGetBalanceLogic(ctx, s.svcCtx)
+	return l.GetBalance(in)
+}
+
 // 存款本金入账
 func (s *MemberWalletServer) DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error) {
 	l := memberwalletlogic.NewDepositCreditLogic(ctx, s.svcCtx)

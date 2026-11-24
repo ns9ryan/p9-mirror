@@ -20,3 +20,27 @@ message CreateWalletResponse {
   // 钱包全局唯一标识
   string wallet_global_id = 1;
 }
+
+// 查询会员钱包余额请求
+message GetBalanceRequest {
+  // CRM会员全局唯一标识
+  string member_global_id = 1;
+}
+
+// 查询会员钱包余额响应
+message GetBalanceResponse {
+  // 钱包全局唯一标识
+  string wallet_global_id = 1;
+  // 钱包结算币种
+  string currency_code = 2;
+
+  // 可用余额
+  int64 balance = 3;
+  // 冻结余额
+  int64 frozen_balance = 4;
+  // 游戏未结算余额
+  int64 unsettled_balance = 5;
+
+  // 钱包状态版本
+  int64 version = 6;
+}

@@ -30,6 +30,9 @@ service MemberWallet {
   // 创建会员钱包
   rpc CreateWallet(member_wallet_manage.CreateWalletRequest) returns (member_wallet_manage.CreateWalletResponse);
 
+  // 查询会员钱包余额
+  rpc GetBalance(member_wallet_manage.GetBalanceRequest) returns (member_wallet_manage.GetBalanceResponse);
+
   // ==================== 存款 ====================
 
   // 存款本金入账

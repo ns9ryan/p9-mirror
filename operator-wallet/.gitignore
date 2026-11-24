@@ -22,4 +22,8 @@ go.work.sum
 .idea/
 .vscode/
 
+
+# Build binaries
+/member_wallet_rpc
+
 ryan_member_wallet.yaml
