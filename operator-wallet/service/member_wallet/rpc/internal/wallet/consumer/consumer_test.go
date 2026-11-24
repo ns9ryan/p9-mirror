@@ -311,3 +311,42 @@ func TestConsumerStopDuringHandler(t *testing.T) {
 		t.Fatalf("expected clean stop, got %v", err)
 	}
 }
+
+// TestConsumerWaitContextCanceled 验证等待取消不会主动停止 Consumer
+func TestConsumerWaitContextCanceled(t *testing.T) {
+	c := &Consumer{
+		started: true,
+		done:    make(chan struct{}),
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	if err := c.Wait(ctx); !errors.Is(err, context.Canceled) {
+		t.Fatalf("expected context.Canceled, got %v", err)
+	}
+
+	// 等待取消不应关闭消费循环退出信号
+	select {
+	case <-c.done:
+		t.Fatal("consumer stopped unexpectedly")
+	default:
+	}
+}
+
+// TestConsumerWaitRunError 验证等待结束后返回原始运行错误
+func TestConsumerWaitRunError(t *testing.T) {
+	expectedErr := errors.New("persist wallet event failed")
+
+	c := &Consumer{
+		started: true,
+		done:    make(chan struct{}),
+		runErr:  expectedErr,
+	}
+
+	close(c.done)
+
+	if err := c.Wait(context.Background()); !errors.Is(err, expectedErr) {
+		t.Fatalf("expected %v, got %v", expectedErr, err)
+	}
+}

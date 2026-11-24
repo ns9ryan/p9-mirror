@@ -117,7 +117,7 @@ func NewServiceContext(c config.Config) (*ServiceContext, error) {
 	}, nil
 }
 
-// Close 按依赖顺序关闭钱包运行时和数据库, Engine 未完全退出时返回等待错误并保留依赖, 调用方可使用新的 Context 再次调用
+// Close 按依赖顺序关闭钱包运行时和数据库, 等待超时时保留依赖供后续重试
 func (s *ServiceContext) Close(ctx context.Context) error {
 	if s == nil {
 		return nil
@@ -127,12 +127,12 @@ func (s *ServiceContext) Close(ctx context.Context) error {
 		return errors.New("close member wallet service context: nil context")
 	}
 
-	// 先等待全部Actor和Worker退出, 再关闭Kafka Producer
+	// 先等待全部 Actor 和 Worker 退出, 再关闭 Kafka Producer
 	var engineErr error
 	if s.WalletEngine != nil {
 		engineErr = s.WalletEngine.Close(ctx)
 
-		// 超时或仍有任务时, 保留服务依赖供后续重试
+		// Engine 尚未完全退出时保留服务依赖
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
@@ -141,7 +141,18 @@ func (s *ServiceContext) Close(ctx context.Context) error {
 		}
 	}
 
-	// Engine退出后才取消服务Context并关闭数据库
+	// 停止消费循环并等待正在执行的持久化 Handler 退出
+	var consumerErr error
+	if s.WalletConsumer != nil {
+		consumerErr = s.WalletConsumer.Stop(ctx)
+
+		// 等待超时时不能关闭 Kafka 客户端和数据库
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+	}
+
+	// 全部后台任务退出后释放服务资源
 	s.closeOnce.Do(func() {
 		if s.WalletConsumer != nil {
 			s.WalletConsumer.Close()
@@ -158,5 +169,5 @@ func (s *ServiceContext) Close(ctx context.Context) error {
 		}
 	})
 
-	return errors.Join(engineErr, s.closeErr)
+	return errors.Join(engineErr, consumerErr, s.closeErr)
 }

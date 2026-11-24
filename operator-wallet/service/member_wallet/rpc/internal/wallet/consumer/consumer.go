@@ -191,6 +191,37 @@ func (c *Consumer) run(ctx context.Context, handler Handler) {
 	}
 }
 
+// Wait 等待消费循环退出, Context 只控制本次等待
+func (c *Consumer) Wait(ctx context.Context) error {
+	if c == nil {
+		return nil
+	}
+	if ctx == nil {
+		return errNilContext
+	}
+
+	c.mu.Lock()
+
+	if !c.started {
+		c.mu.Unlock()
+		return nil
+	}
+
+	done := c.done
+
+	c.mu.Unlock()
+
+	select {
+	case <-done:
+		c.mu.Lock()
+		defer c.mu.Unlock()
+		return c.runErr
+
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
 // Stop 停止消费循环并等待其退出
 func (c *Consumer) Stop(ctx context.Context) error {
 	if c == nil {
@@ -208,7 +239,6 @@ func (c *Consumer) Stop(ctx context.Context) error {
 	}
 
 	cancel := c.cancel
-	done := c.done
 
 	c.mu.Unlock()
 
@@ -216,15 +246,7 @@ func (c *Consumer) Stop(ctx context.Context) error {
 		cancel()
 	}
 
-	select {
-	case <-done:
-		c.mu.Lock()
-		defer c.mu.Unlock()
-		return c.runErr
-
-	case <-ctx.Done():
-		return ctx.Err()
-	}
+	return c.Wait(ctx)
 }
 
 // Close 关闭 Kafka 消费客户端, 应在 Stop 成功后调用
