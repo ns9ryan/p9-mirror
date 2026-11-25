@@ -60,8 +60,9 @@ func memberDetailResponse(m *ent.Member) *memberpb.GetMemberDetailResponse {
 	resp := &memberpb.GetMemberDetailResponse{
 		// ==================== 会员基本信息 ====================
 
-		Id:   m.ID,   // 会员ID
-		Code: m.Code, // 会员编号
+		Id:             m.ID,                // 会员ID
+		MemberGlobalId: m.GlobalID.String(), // 会员全局唯一标识, 供内部业务服务关联使用
+		Code:           m.Code,              // 会员编号
 
 		// 代理归属
 		AgentId: m.AgentID, // 所属分层代理ID
@@ -111,12 +112,12 @@ func memberDetailResponse(m *ent.Member) *memberpb.GetMemberDetailResponse {
 
 	// 会员个人资料
 	if profile := m.Edges.Profile; profile != nil {
-		resp.Nickname = profile.Nickname             // 会员昵称
+		resp.Nickname = profile.Nickname           // 会员昵称
 		resp.AvatarId = profile.AvatarID           // 会员头像ID
 		resp.AvatarFrameId = profile.AvatarFrameID // 会员头像框ID
-		resp.Gender = profile.Gender                 // 性别
-		resp.RegionCode = profile.RegionCode         // 国家或地区编码
-		resp.Remark = profile.Remark                 // 后台会员备注
+		resp.Gender = profile.Gender               // 性别
+		resp.RegionCode = profile.RegionCode       // 国家或地区编码
+		resp.Remark = profile.Remark               // 后台会员备注
 
 		// 会员生日, YYYY-MM-DD
 		if profile.Birthday != nil {

@@ -249,8 +249,9 @@ func listMemberItem(m *ent.Member) *memberpb.MemberListItem {
 
 	item := &memberpb.MemberListItem{
 		// 会员基本信息
-		Id:   m.ID,   // 会员ID
-		Code: m.Code, // 12位会员编号
+		Id:             m.ID,                // 会员ID
+		MemberGlobalId: m.GlobalID.String(), // 会员全局唯一标识, 供内部业务服务关联使用
+		Code:           m.Code,              // 12位会员编号
 
 		// 代理归属
 		AgentId: m.AgentID, // 所属分层代理ID

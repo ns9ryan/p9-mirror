@@ -255,66 +255,66 @@ message MemberListItem {
 
   // 会员数据库主键
   int64 id = 1;
+  // 会员全局唯一标识, 供内部业务服务关联使用
+  string member_global_id = 2;
   // 12 位会员对外编号
-  string code = 2;
+  string code = 3;
   // 会员登录账号
-  string account = 3;
+  string account = 4;
   // 会员昵称
-  string nickname = 4;
+  string nickname = 5;
 
   // ==================== 代理归属 ====================
 
   // 所属分层代理 ID
-  int64 agent_id = 5;
+  int64 agent_id = 6;
   // 所属分层代理账号
-  string agent_account = 6;
+  string agent_account = 7;
 
   // ==================== 等级信息 ====================
 
   // 会员当前等级信息
-  MemberLevelInfo levels = 7;
+  MemberLevelInfo levels = 8;
 
   // ==================== 状态与注册信息 ====================
 
   // 会员状态: 1 正常, 2 冻结, 3 禁用
-  int64 status = 8;
+  int64 status = 9;
   // 是否禁止发言
-  bool chat_disabled = 9;
+  bool chat_disabled = 10;
   // 是否禁止投注
-  bool betting_disabled = 10;
+  bool betting_disabled = 11;
   // 是否禁止提款
-  bool withdrawal_disabled = 11;
+  bool withdrawal_disabled = 12;
   // 注册方式
-  string register_method = 12;
+  string register_method = 13;
   // 注册渠道
-  string register_channel = 13;
+  string register_channel = 14;
   // 注册时间, Unix 毫秒时间戳
-  int64 created_at = 14;
+  int64 created_at = 15;
   // 最后登录时间, Unix 毫秒时间戳
-  optional int64 last_login_at = 15;
+  optional int64 last_login_at = 16;
   // 最后登录 IP
-  optional string last_login_ip = 16;
+  optional string last_login_ip = 17;
 
   // ==================== 联系方式 ====================
 
   // 已脱敏手机号, 未绑定时不设置
-  optional string phone = 17;
+  optional string phone = 18;
   // 已脱敏邮箱, 未绑定时不设置
-  optional string email = 18;
+  optional string email = 19;
 
   // ==================== 运营信息 ====================
 
   // 邀请人会员 ID
-  optional int64 inviter_member_id = 19;
+  optional int64 inviter_member_id = 20;
   // 运营备注
-  optional string remark = 20;
+  optional string remark = 21;
 
   // ==================== 统计信息 ====================
 
   // 会员统计, 无统计记录时统计金额和次数返回 0
-  MemberStatsInfo stats = 21;
-
-  // TODO: 钱包服务接入后, 增加钱包余额字段.
+  MemberStatsInfo stats = 22;
 }
 
 // 会员列表响应
@@ -339,83 +339,83 @@ message GetMemberDetailResponse {
 
   // 会员数据库主键
   int64 id = 1;
+  // 会员全局唯一标识, 供内部业务服务关联使用
+  string member_global_id = 2;
   // 12 位会员对外编号
-  string code = 2;
+  string code = 3;
   // 会员登录账号
-  optional string account = 3;
+  optional string account = 4;
   // 会员昵称
-  string nickname = 4;
+  string nickname = 5;
   // 会员头像 ID
-  int64 avatar_id = 29;
-  reserved 5;
+  int64 avatar_id = 6;
   // 会员头像框 ID
-  int64 avatar_frame_id = 30;
-  reserved 6;
+  int64 avatar_frame_id = 7;
   // 会员生日, YYYY-MM-DD
-  optional string birthday = 7;
+  optional string birthday = 8;
   // 性别: 0 未设置, 1 男, 2 女, 3 保密
-  int64 gender = 8;
+  int64 gender = 9;
   // 会员国家或地区编码
-  optional string region_code = 9;
+  optional string region_code = 10;
 
   // ==================== 代理归属 ====================
 
   // 所属分层代理 ID
-  int64 agent_id = 10;
+  int64 agent_id = 11;
   // 所属分层代理账号
-  string agent_account = 11;
+  string agent_account = 12;
   // 所属代理线路编码
-  string agent_line_code = 12;
+  string agent_line_code = 13;
 
   // ==================== 会员等级 ====================
 
   // 会员当前等级信息
-  MemberLevelInfo levels = 13;
+  MemberLevelInfo levels = 14;
 
   // ==================== 状态与业务限制 ====================
 
   // 会员状态: 1 正常, 2 冻结, 3 禁用
-  int64 status = 14;
+  int64 status = 15;
   // 是否禁止发言
-  bool chat_disabled = 15;
+  bool chat_disabled = 16;
   // 是否禁止投注
-  bool betting_disabled = 16;
+  bool betting_disabled = 17;
   // 是否禁止提款
-  bool withdrawal_disabled = 17;
+  bool withdrawal_disabled = 18;
 
   // ==================== 注册信息 ====================
 
   // 注册方式
-  string register_method = 18;
+  string register_method = 19;
   // 注册渠道
-  string register_channel = 19;
+  string register_channel = 20;
   // 注册时间, Unix 毫秒时间戳
-  int64 created_at = 20;
+  int64 created_at = 21;
   // 注册 IP
-  optional string register_ip = 21;
+  optional string register_ip = 22;
   // 注册设备标识
-  optional string register_device_code = 22;
+  optional string register_device_code = 23;
   // 注册域名
-  optional string register_domain = 23;
+  optional string register_domain = 24;
 
   // ==================== 最后登录信息 ====================
 
   // 最后登录时间, Unix 毫秒时间戳
-  optional int64 last_login_at = 24;
+  optional int64 last_login_at = 25;
   // 最后登录 IP
-  optional string last_login_ip = 25;
+  optional string last_login_ip = 26;
 
   // ==================== 运营信息 ====================
 
   // 邀请人会员 ID
-  optional int64 inviter_member_id = 26;
+  optional int64 inviter_member_id = 27;
   // 后台会员备注
-  optional string remark = 27;
+  optional string remark = 28;
 
   // ==================== 统计信息 ====================
 
   // 会员统计, 无统计记录时返回零值
-  MemberStatsInfo stats = 28;
+  MemberStatsInfo stats = 29;
 }
 
 // ==================== 会员敏感信息 ====================
@@ -435,38 +435,38 @@ message GetMemberSensitiveInfoResponse {
 }
 
 message UpdateMemberStatusRequest {
- int64 member_id = 1;
- int64 status = 2;
+  int64 member_id = 1;
+  int64 status = 2;
 }
 
 message ResetMemberAuthErrorsRequest {
- int64 member_id = 1;
- string field = 2;
+  int64 member_id = 1;
+  string field = 2;
 }
 
 message UpdateMemberRemarkRequest {
- int64 member_id = 1;
- string remark = 2;
+  int64 member_id = 1;
+  string remark = 2;
 }
 
 message UpdateMemberSwitchRequest {
- int64 member_id = 1;
- optional bool disabled = 2;
+  int64 member_id = 1;
+  optional bool disabled = 2;
 }
 
 message MemberOperationResponse {}
 
 message UpdateMemberContactRequest {
- int64 member_id = 1;
- optional int64 avatar_id = 2;
- optional int64 avatar_frame_id = 3;
- optional string nickname = 4;
- optional string real_name = 5;
- optional string phone = 6;
- optional string identity_number = 7;
- optional string email = 8;
- ContactBindingCodeProof phone_verification = 9;
- ContactBindingCodeProof email_verification = 10;
+  int64 member_id = 1;
+  optional int64 avatar_id = 2;
+  optional int64 avatar_frame_id = 3;
+  optional string nickname = 4;
+  optional string real_name = 5;
+  optional string phone = 6;
+  optional string identity_number = 7;
+  optional string email = 8;
+  ContactBindingCodeProof phone_verification = 9;
+  ContactBindingCodeProof email_verification = 10;
 }
 message ContactBindingCodeProof {
   int64 record_id = 1;
@@ -481,11 +481,11 @@ message SendMemberContactBindingCodeResponse {
   int64 record_id = 1;
   int64 expires_at = 2;
 }
-message MemberImageResource { int64 id = 1; string image_url = 2; }
+message MemberImageResource {int64 id = 1; string image_url = 2;}
 message ListMemberImagesRequest {}
 message ListMemberImagesResponse {
- repeated MemberImageResource avatars = 1;
- repeated MemberImageResource avatar_frames = 2;
+  repeated MemberImageResource avatars = 1;
+  repeated MemberImageResource avatar_frames = 2;
 }
 
 // 内部服务查询会员信息，调用方需透传分站身份。
