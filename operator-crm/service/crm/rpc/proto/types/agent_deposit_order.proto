@@ -10,12 +10,17 @@ message AddAgentDepositOrderReq {
   int64 member_id = 1;
   // 存款金额（分）
   int64 deposit_amount = 2;
-  // 洗码倍数
-  double rollover_multiplier = 3;
-  // 赠送金额比例（百分比 0~100）
-  double bonus_rate = 4;
+  // 洗码倍数（×100，如 1.5 倍传 150）
+  int64 rollover_multiplier = 3;
+  // 赠送金额比例（百分比×100，如 10.5% 传 1050）
+  int64 bonus_rate = 4;
   // 存款方式（必填）： 1 加密货币 2 人工入账
   int32 deposit_type = 5;
+  // 存款货币（站点结算货币，由 API 层从分站配置读取后传入，必填，空串将被 logic 层拒绝）
+  string deposit_currency = 6;
+  // 货币换算倍率（由 API 层从货币配置读取后传入，必填，≤0 将被 logic 层拒绝）
+  // 用于计算金额阈值：阈值(分) = 配置显示金额 × currency_factor
+  int64 currency_factor = 7;
 }
 
 // AddAgentDepositOrderResp 添加人工存款订单响应
@@ -76,6 +81,15 @@ message ApproveAgentDepositOrderResp {
   int64 deposit_amount = 4;
   // 审核时间 unix 秒（仅 status=4 时有意义，用于事件 occurred_at）
   int64 approved_at = 5;
+  // 以下字段仅 status=4（最终通过）时有值，供调用方触发钱包入账
+  // 会员全局唯一标识
+  string member_global_id = 6;
+  // 存款订单号
+  string order_no = 7;
+  // 厅结算币种
+  string site_currency = 8;
+  // 实际到账金额（分）= 到账金额 − 手续费，用于钱包入账
+  int64 actual_received_amount = 9;
 }
 
 // RejectAgentDepositOrderReq 审核拒绝请求
@@ -142,10 +156,6 @@ message AgentDepositOrderListItem {
   string deposit_currency = 6;
   // 存款数量（分，以存款货币计）
   int64 deposit_amount = 7;
-  // 站点货币
-  string site_currency = 8;
-  // 存款金额（分，以站点货币计；暂与 deposit_amount 相同）
-  int64 site_amount = 9;
   // 存款方式： 1 加密货币 2 人工入账
   int32 deposit_type = 10;
   // 到账金额（分）
@@ -160,13 +170,13 @@ message AgentDepositOrderListItem {
   optional string payment_receive_info = 15;
   // 存款信息（付款方）
   optional string payment_send_info = 16;
-  // 订单状态：1 待审核 2 冻结 3 解冻 4 通过 5 拒绝 11 待一审 12 待二审
+  // 订单状态：1 待审核 2 冻结 3 解冻 4 通过 5 拒绝 6 支付成功 7 支付失败 8 支付拒绝 11 待一审 12 待二审
   int32 status = 17;
   // 订单ID
   int64 id = 18;
   // 当前领取审核人用户ID，0=未被领取
   int64 reviewer_id = 19;
-  // 领取人类型 1:总网 2:分站
+  // 领取人类型 1:分站管理员 2:代理
   int32 reviewer_utype = 20;
   // 领取时间 unix 秒，0=未领取
   int64 claimed_at = 21;
@@ -176,6 +186,12 @@ message AgentDepositOrderListItem {
   string auditor_username = 23;
   // 最终审核时间 unix 秒，仅 status=4/5 时有值，其余为 0
   int64 audited_at = 24;
+  // 创建时客户端 IP
+  string create_ip = 25;
+  // 奖励比例（百分比，原样从 DB 读取，如 10.5 表示 10.5%）
+  double bonus_ratio = 26;
+  // 奖励金额（分）
+  int64 bonus_amount = 27;
 }
 
 // ListAgentDepositOrdersReq 存款订单列表请求
@@ -206,6 +222,10 @@ message ListAgentDepositOrdersReq {
   optional int64 reviewer_id = 12;
   // 领取状态，0 不限 1=未领取 2=已领取
   optional int32 claim_status = 13;
+  // 时间筛选类型：1=存款时间（默认，兼容现有）2=最终审核时间（按 final_audited_at 过滤）
+  int32 time_type = 14;
+  // 多状态筛选（优先于 status 字段）；空=不限；值范围：1 待审核 2 冻结 3 解冻 4 通过 5 拒绝 6 支付成功 7 支付失败 8 支付拒绝 11 待一审 12 待二审
+  repeated int32 statuses = 15;
 }
 
 // ListAgentDepositOrdersResp 存款订单列表响应
@@ -274,4 +294,104 @@ message GetMemberTodayDepositResp {
   int64 today_deposit_amount = 1;
   // 今日有效充值订单数
   int64 today_deposit_count = 2;
+}
+
+// ExportDepositOrdersReq 存款订单导出请求
+message ExportDepositOrdersReq {
+  // 时间筛选类型：1=存款时间（默认）2=最终审核时间
+  int32 time_type = 1;
+  // 时间范围起始 unix 秒，0 不限
+  int64 time_start = 2;
+  // 时间范围结束 unix 秒，0 不限
+  int64 time_end = 3;
+  // 会员ID，0 不限
+  int64 member_id = 4;
+  // 存款方式，0 不限：1 加密货币 2 人工入账 3 第三方代收
+  int32 deposit_type = 5;
+  // 订单号精确匹配，空不限
+  string order_no = 6;
+  // 会员账号精确匹配，空不限
+  string member_account = 7;
+  // 三方订单号精确匹配，空不限
+  string third_party_order_no = 8;
+  // 多状态筛选（优先于 status 字段）；空=不限；值范围与 List 相同
+  repeated int32 statuses = 9;
+  // 单状态筛选（兼容字段）；statuses 非空时忽略
+  int32 status = 10;
+}
+
+// ExportDepositOrderItem 导出列表单项
+message ExportDepositOrderItem {
+  // 订单号
+  string order_no = 1;
+  // 会员账号
+  string member_account = 2;
+  // 会员层级名称
+  string member_level_name = 3;
+  // 存款时间 unix 秒
+  int64 created_at = 4;
+  // 存款货币
+  string deposit_currency = 5;
+  // 存款金额（分）
+  int64 deposit_amount = 6;
+  // 存款方式：1 加密货币 2 人工入账 3 第三方代收
+  int32 deposit_type = 9;
+  // 到账金额（分）
+  int64 received_amount = 10;
+  // 手续费（分）
+  int64 fee_amount = 11;
+  // 实际到账金额（分）
+  int64 actual_received_amount = 12;
+  // 三方订单号，无则空串
+  string third_party_order_no = 13;
+  // 最终审核人用户名
+  string auditor_username = 14;
+  // 最终审核时间 unix 秒，0 表示无
+  int64 final_audited_at = 15;
+  // 创建时客户端 IP
+  string create_ip = 16;
+  // 订单状态
+  int32 status = 17;
+}
+
+// ExportDepositOrdersResp 存款订单导出响应
+message ExportDepositOrdersResp {
+  repeated ExportDepositOrderItem list = 1;
+  // 实际返回行数（不含表头）
+  int64 rows = 2;
+}
+
+// CreatePaidDepositOrderReq 正式入款（直接写入支付成功终态）请求
+// order_no 由服务端内部生成；幂等 key 为 third_party_order_no。
+message CreatePaidDepositOrderReq {
+  // 归属会员 ID（必填）
+  int64 member_id = 2;
+  // 存款方式：1 加密货币  3 第三方代收（必填）
+  int32 deposit_type = 3;
+  // 存款金额（分，必填）
+  int64 deposit_amount = 4;
+  // 支付网关/链上交易号，幂等 key；相同值重复调用返回已有结果（必填）
+  string third_party_order_no = 7;
+  // 手续费（分），默认 0（可选）
+  optional int64 fee_amount = 8;
+  // 收款方信息（收款地址等），JSON 文本（可选）
+  optional string payment_receive_info = 12;
+  // 付款方信息（TxHash、付款地址等），JSON 文本（可选）
+  optional string payment_send_info = 13;
+  // 支付确认时间 unix 秒，不传取服务器当前时间（可选）
+  optional int64 paid_at = 14;
+  // 存款货币（站点结算货币，由调用方从分站配置读取后传入，必填，空串将被 logic 层拒绝）
+  string deposit_currency = 15;
+}
+
+// CreatePaidDepositOrderResp 正式入款响应
+message CreatePaidDepositOrderResp {
+  // 订单数据库 ID
+  int64 id = 1;
+  // 订单号（原样返回，方便调用方确认）
+  string order_no = 2;
+  // 固定返回 6（支付成功）
+  int32 status = 3;
+  // true=本次新建；false=幂等命中已有记录
+  bool created = 4;
 }

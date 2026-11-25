@@ -259,6 +259,10 @@ service AgentDepositOrderService {
   rpc FreezeAgentDepositOrder(crm_agent_deposit_order.FreezeAgentDepositOrderReq) returns (crm_agent_deposit_order.FreezeAgentDepositOrderResp);
   // group: agent_deposit_order 解冻订单
   rpc UnfreezeAgentDepositOrder(crm_agent_deposit_order.UnfreezeAgentDepositOrderReq) returns (crm_agent_deposit_order.UnfreezeAgentDepositOrderResp);
+  // group: agent_deposit_order 存款订单导出
+  rpc ExportDepositOrders(crm_agent_deposit_order.ExportDepositOrdersReq) returns (crm_agent_deposit_order.ExportDepositOrdersResp);
+  // group: agent_deposit_order 正式入款（直接写入支付成功终态，幂等）
+  rpc CreatePaidDepositOrder(crm_agent_deposit_order.CreatePaidDepositOrderReq) returns (crm_agent_deposit_order.CreatePaidDepositOrderResp);
 }
 
 // TODO: VIP等级变更记录列表、详情，待会员等级变更业务完善后实现

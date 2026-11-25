@@ -66,3 +66,11 @@ func mapEntErr(err error) error {
 	}
 	return err
 }
+
+// secondAuditThreshold 返回触发二审的存款金额阈值（分）。
+// configDisplayAmount 为财务配置的显示金额（主币单位，如 1000 表示 1000 USDT），
+// currencyFactor 为货币最小单位换算倍率（如 USDT factor=100 表示 1 USDT=100 分）。
+// TODO: configDisplayAmount 有财务配置功能后从配置表读取，不再使用常量。
+func secondAuditThreshold(configDisplayAmount, currencyFactor int64) int64 {
+	return configDisplayAmount * currencyFactor
+}

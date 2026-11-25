@@ -77,3 +77,15 @@ func (s *AgentDepositOrderServiceServer) UnfreezeAgentDepositOrder(ctx context.C
 	l := agentdepositorderservicelogic.NewUnfreezeAgentDepositOrderLogic(ctx, s.svcCtx)
 	return l.UnfreezeAgentDepositOrder(in)
 }
+
+// group: agent_deposit_order 存款订单导出
+func (s *AgentDepositOrderServiceServer) ExportDepositOrders(ctx context.Context, in *agentdepositorderpb.ExportDepositOrdersReq) (*agentdepositorderpb.ExportDepositOrdersResp, error) {
+	l := agentdepositorderservicelogic.NewExportDepositOrdersLogic(ctx, s.svcCtx)
+	return l.ExportDepositOrders(in)
+}
+
+// group: agent_deposit_order 正式入款（直接写入支付成功终态，幂等）
+func (s *AgentDepositOrderServiceServer) CreatePaidDepositOrder(ctx context.Context, in *agentdepositorderpb.CreatePaidDepositOrderReq) (*agentdepositorderpb.CreatePaidDepositOrderResp, error) {
+	l := agentdepositorderservicelogic.NewCreatePaidDepositOrderLogic(ctx, s.svcCtx)
+	return l.CreatePaidDepositOrder(in)
+}

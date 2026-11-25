@@ -54,6 +54,10 @@ const (
 	FieldRolloverMultiplier = "rollover_multiplier"
 	// FieldDepositType holds the string denoting the deposit_type field in the database.
 	FieldDepositType = "deposit_type"
+	// FieldFinalAuditedAt holds the string denoting the final_audited_at field in the database.
+	FieldFinalAuditedAt = "final_audited_at"
+	// FieldCreateIP holds the string denoting the create_ip field in the database.
+	FieldCreateIP = "create_ip"
 	// FieldNotes holds the string denoting the notes field in the database.
 	FieldNotes = "notes"
 	// FieldOrderNo holds the string denoting the order_no field in the database.
@@ -80,6 +84,8 @@ const (
 	FieldReviewerUtype = "reviewer_utype"
 	// FieldClaimedAt holds the string denoting the claimed_at field in the database.
 	FieldClaimedAt = "claimed_at"
+	// FieldPaidAt holds the string denoting the paid_at field in the database.
+	FieldPaidAt = "paid_at"
 	// Table holds the table name of the agentdepositorder in the database.
 	Table = "agent_deposit_order"
 )
@@ -107,6 +113,8 @@ var Columns = []string{
 	FieldFeeMode,
 	FieldRolloverMultiplier,
 	FieldDepositType,
+	FieldFinalAuditedAt,
+	FieldCreateIP,
 	FieldNotes,
 	FieldOrderNo,
 	FieldSiteCurrency,
@@ -120,6 +128,7 @@ var Columns = []string{
 	FieldReviewerID,
 	FieldReviewerUtype,
 	FieldClaimedAt,
+	FieldPaidAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -153,7 +162,7 @@ var (
 	// DepositCurrencyValidator is a validator for the "deposit_currency" field. It is called by the builders before save.
 	DepositCurrencyValidator func(string) error
 	// DefaultFeeRate holds the default value on creation for the "fee_rate" field.
-	DefaultFeeRate float64
+	DefaultFeeRate int64
 	// DefaultFeeAmount holds the default value on creation for the "fee_amount" field.
 	DefaultFeeAmount int64
 	// DefaultBonusAmount holds the default value on creation for the "bonus_amount" field.
@@ -165,9 +174,11 @@ var (
 	// DefaultFeeMode holds the default value on creation for the "fee_mode" field.
 	DefaultFeeMode int8
 	// DefaultRolloverMultiplier holds the default value on creation for the "rollover_multiplier" field.
-	DefaultRolloverMultiplier float64
+	DefaultRolloverMultiplier int64
 	// DefaultDepositType holds the default value on creation for the "deposit_type" field.
 	DefaultDepositType int8
+	// CreateIPValidator is a validator for the "create_ip" field. It is called by the builders before save.
+	CreateIPValidator func(string) error
 	// OrderNoValidator is a validator for the "order_no" field. It is called by the builders before save.
 	OrderNoValidator func(string) error
 	// SiteCurrencyValidator is a validator for the "site_currency" field. It is called by the builders before save.
@@ -296,6 +307,16 @@ func ByDepositType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDepositType, opts...).ToFunc()
 }
 
+// ByFinalAuditedAt orders the results by the final_audited_at field.
+func ByFinalAuditedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFinalAuditedAt, opts...).ToFunc()
+}
+
+// ByCreateIP orders the results by the create_ip field.
+func ByCreateIP(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreateIP, opts...).ToFunc()
+}
+
 // ByNotes orders the results by the notes field.
 func ByNotes(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNotes, opts...).ToFunc()
@@ -359,4 +380,9 @@ func ByReviewerUtype(opts ...sql.OrderTermOption) OrderOption {
 // ByClaimedAt orders the results by the claimed_at field.
 func ByClaimedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldClaimedAt, opts...).ToFunc()
+}
+
+// ByPaidAt orders the results by the paid_at field.
+func ByPaidAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPaidAt, opts...).ToFunc()
 }

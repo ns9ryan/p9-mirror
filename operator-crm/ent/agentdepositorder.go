@@ -30,7 +30,7 @@ type AgentDepositOrder struct {
 	AgentLineCode string `json:"agent_line_code,omitempty"`
 	// 代理ID
 	AgentID int64 `json:"agent_id,omitempty"`
-	// 订单状态 1:待审核 2:冻结 3:解冻 4:通过 5:拒绝 11:待一审核 12:待二审
+	// 订单状态 1:待审核 2:冻结 3:解冻 4:通过 5:拒绝 6:支付成功 7:支付失败 8:支付拒绝 11:待一审核 12:待二审
 	Status int8 `json:"status,omitempty"`
 	// 存款金额
 	DepositAmount int64 `json:"deposit_amount,omitempty"`
@@ -38,10 +38,10 @@ type AgentDepositOrder struct {
 	DepositCurrency string `json:"deposit_currency,omitempty"`
 	// 需要审核的阶段数
 	AuditStages int8 `json:"audit_stages,omitempty"`
-	// 费率
-	FeeRate float64 `json:"fee_rate,omitempty"`
-	// 奖金率
-	BonusRate float64 `json:"bonus_rate,omitempty"`
+	// 费率（百分比×100，如 10.5% 存为 1050）
+	FeeRate int64 `json:"fee_rate,omitempty"`
+	// 奖金率（百分比×100，如 10.5% 存为 1050）
+	BonusRate int64 `json:"bonus_rate,omitempty"`
 	// 手续费金额
 	FeeAmount int64 `json:"fee_amount,omitempty"`
 	// 奖金金额
@@ -54,10 +54,14 @@ type AgentDepositOrder struct {
 	MemberID int64 `json:"member_id,omitempty"`
 	// 费率模式
 	FeeMode int8 `json:"fee_mode,omitempty"`
-	// 洗码倍数
-	RolloverMultiplier float64 `json:"rollover_multiplier,omitempty"`
-	// 存款方式  1:加密货币 2:人工入账
+	// 洗码倍数（×100，如 1.5 倍存为 150）
+	RolloverMultiplier int64 `json:"rollover_multiplier,omitempty"`
+	// 存款方式 1:加密货币 2:人工入账 3:第三方代收
 	DepositType int8 `json:"deposit_type,omitempty"`
+	// 最终审核时间（通过或拒绝时写入，用于按审核时间搜索）
+	FinalAuditedAt *time.Time `json:"final_audited_at,omitempty"`
+	// 创建时客户端 IP
+	CreateIP string `json:"create_ip,omitempty"`
 	// 备注
 	Notes string `json:"notes,omitempty"`
 	// 订单号
@@ -72,18 +76,20 @@ type AgentDepositOrder struct {
 	PaymentSendInfo string `json:"payment_send_info,omitempty"`
 	// 创建人用户ID
 	CreatorID int64 `json:"creator_id,omitempty"`
-	// 创建人类型 1:总网 2:分站
+	// 创建人类型 1:分站管理员 2:代理
 	CreatorType int8 `json:"creator_type,omitempty"`
 	// 最后更新人用户ID
 	UpdaterID int64 `json:"updater_id,omitempty"`
-	// 最后更新人类型 1:总网 2:分站
+	// 最后更新人类型 1:分站管理员 2:代理
 	UpdaterType int8 `json:"updater_type,omitempty"`
 	// 当前领取审核人用户ID，0=未被领取
 	ReviewerID int64 `json:"reviewer_id,omitempty"`
-	// 领取人类型 1:总网 2:分站
+	// 领取人类型 1:分站管理员 2:代理
 	ReviewerUtype int8 `json:"reviewer_utype,omitempty"`
 	// 领取审核时间
-	ClaimedAt    *time.Time `json:"claimed_at,omitempty"`
+	ClaimedAt *time.Time `json:"claimed_at,omitempty"`
+	// 支付确认时间（第三方回调/链上确认时写入）
+	PaidAt       *time.Time `json:"paid_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -92,13 +98,11 @@ func (*AgentDepositOrder) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case agentdepositorder.FieldFeeRate, agentdepositorder.FieldBonusRate, agentdepositorder.FieldRolloverMultiplier:
-			values[i] = new(sql.NullFloat64)
-		case agentdepositorder.FieldID, agentdepositorder.FieldAgentType, agentdepositorder.FieldAgentID, agentdepositorder.FieldStatus, agentdepositorder.FieldDepositAmount, agentdepositorder.FieldAuditStages, agentdepositorder.FieldFeeAmount, agentdepositorder.FieldBonusAmount, agentdepositorder.FieldReceivedAmount, agentdepositorder.FieldActualReceivedAmount, agentdepositorder.FieldMemberID, agentdepositorder.FieldFeeMode, agentdepositorder.FieldDepositType, agentdepositorder.FieldCreatorID, agentdepositorder.FieldCreatorType, agentdepositorder.FieldUpdaterID, agentdepositorder.FieldUpdaterType, agentdepositorder.FieldReviewerID, agentdepositorder.FieldReviewerUtype:
+		case agentdepositorder.FieldID, agentdepositorder.FieldAgentType, agentdepositorder.FieldAgentID, agentdepositorder.FieldStatus, agentdepositorder.FieldDepositAmount, agentdepositorder.FieldAuditStages, agentdepositorder.FieldFeeRate, agentdepositorder.FieldBonusRate, agentdepositorder.FieldFeeAmount, agentdepositorder.FieldBonusAmount, agentdepositorder.FieldReceivedAmount, agentdepositorder.FieldActualReceivedAmount, agentdepositorder.FieldMemberID, agentdepositorder.FieldFeeMode, agentdepositorder.FieldRolloverMultiplier, agentdepositorder.FieldDepositType, agentdepositorder.FieldCreatorID, agentdepositorder.FieldCreatorType, agentdepositorder.FieldUpdaterID, agentdepositorder.FieldUpdaterType, agentdepositorder.FieldReviewerID, agentdepositorder.FieldReviewerUtype:
 			values[i] = new(sql.NullInt64)
-		case agentdepositorder.FieldOperatorCode, agentdepositorder.FieldAgentLineCode, agentdepositorder.FieldDepositCurrency, agentdepositorder.FieldNotes, agentdepositorder.FieldOrderNo, agentdepositorder.FieldSiteCurrency, agentdepositorder.FieldThirdPartyOrderNo, agentdepositorder.FieldPaymentReceiveInfo, agentdepositorder.FieldPaymentSendInfo:
+		case agentdepositorder.FieldOperatorCode, agentdepositorder.FieldAgentLineCode, agentdepositorder.FieldDepositCurrency, agentdepositorder.FieldCreateIP, agentdepositorder.FieldNotes, agentdepositorder.FieldOrderNo, agentdepositorder.FieldSiteCurrency, agentdepositorder.FieldThirdPartyOrderNo, agentdepositorder.FieldPaymentReceiveInfo, agentdepositorder.FieldPaymentSendInfo:
 			values[i] = new(sql.NullString)
-		case agentdepositorder.FieldCreatedAt, agentdepositorder.FieldUpdatedAt, agentdepositorder.FieldClaimedAt:
+		case agentdepositorder.FieldCreatedAt, agentdepositorder.FieldUpdatedAt, agentdepositorder.FieldFinalAuditedAt, agentdepositorder.FieldClaimedAt, agentdepositorder.FieldPaidAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -182,16 +186,16 @@ func (_m *AgentDepositOrder) assignValues(columns []string, values []any) error 
 				_m.AuditStages = int8(value.Int64)
 			}
 		case agentdepositorder.FieldFeeRate:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field fee_rate", values[i])
 			} else if value.Valid {
-				_m.FeeRate = value.Float64
+				_m.FeeRate = value.Int64
 			}
 		case agentdepositorder.FieldBonusRate:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bonus_rate", values[i])
 			} else if value.Valid {
-				_m.BonusRate = value.Float64
+				_m.BonusRate = value.Int64
 			}
 		case agentdepositorder.FieldFeeAmount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -230,16 +234,29 @@ func (_m *AgentDepositOrder) assignValues(columns []string, values []any) error 
 				_m.FeeMode = int8(value.Int64)
 			}
 		case agentdepositorder.FieldRolloverMultiplier:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field rollover_multiplier", values[i])
 			} else if value.Valid {
-				_m.RolloverMultiplier = value.Float64
+				_m.RolloverMultiplier = value.Int64
 			}
 		case agentdepositorder.FieldDepositType:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field deposit_type", values[i])
 			} else if value.Valid {
 				_m.DepositType = int8(value.Int64)
+			}
+		case agentdepositorder.FieldFinalAuditedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field final_audited_at", values[i])
+			} else if value.Valid {
+				_m.FinalAuditedAt = new(time.Time)
+				*_m.FinalAuditedAt = value.Time
+			}
+		case agentdepositorder.FieldCreateIP:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field create_ip", values[i])
+			} else if value.Valid {
+				_m.CreateIP = value.String
 			}
 		case agentdepositorder.FieldNotes:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -319,6 +336,13 @@ func (_m *AgentDepositOrder) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				_m.ClaimedAt = new(time.Time)
 				*_m.ClaimedAt = value.Time
+			}
+		case agentdepositorder.FieldPaidAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field paid_at", values[i])
+			} else if value.Valid {
+				_m.PaidAt = new(time.Time)
+				*_m.PaidAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -416,6 +440,14 @@ func (_m *AgentDepositOrder) String() string {
 	builder.WriteString("deposit_type=")
 	builder.WriteString(fmt.Sprintf("%v", _m.DepositType))
 	builder.WriteString(", ")
+	if v := _m.FinalAuditedAt; v != nil {
+		builder.WriteString("final_audited_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("create_ip=")
+	builder.WriteString(_m.CreateIP)
+	builder.WriteString(", ")
 	builder.WriteString("notes=")
 	builder.WriteString(_m.Notes)
 	builder.WriteString(", ")
@@ -454,6 +486,11 @@ func (_m *AgentDepositOrder) String() string {
 	builder.WriteString(", ")
 	if v := _m.ClaimedAt; v != nil {
 		builder.WriteString("claimed_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
+	if v := _m.PaidAt; v != nil {
+		builder.WriteString("paid_at=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteByte(')')

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/ent"
 	"oa.98ent.com/p9/operator-crm/ent/agentdepositorder"
@@ -20,7 +21,9 @@ import (
 )
 
 // AddAgentDepositOrder 创建存款订单。
-// deposit_currency 固定为 USDT；deposit_type 由调用方传入（ 1 加密货币 / 2 人工入账）。
+// deposit_currency/site_currency 由调用方从分站配置读取后通过 in.DepositCurrency 传入；
+// 空串时降级使用 constants.DepositCurrency（向后兼容）。
+// deposit_type 由调用方传入（ 1 加密货币 / 2 人工入账）。
 func (s *Service) AddAgentDepositOrder(ctx context.Context, in *agentdepositorderpb.AddAgentDepositOrderReq, orderNo string) (*agentdepositorderpb.AddAgentDepositOrderResp, error) {
 	ctx, _, err := requireOperator(ctx)
 	if err != nil {
@@ -63,18 +66,20 @@ func (s *Service) AddAgentDepositOrder(ctx context.Context, in *agentdepositorde
 		return nil, aerr
 	}
 
-	// 计算奖励金额：deposit_amount × bonus_rate / 100，向下取整
-	bonusAmount := int64(float64(in.DepositAmount) * in.BonusRate / 100)
+	// 计算奖励金额：deposit_amount × bonus_rate / BonusRateDivisor
+	// bonus_rate 以百分比×100 存储（如 10.5% 存为 1050），BonusRateDivisor=10000
+	bonusAmount := in.DepositAmount * in.BonusRate / constants.BonusRateDivisor
 
 	// 到账金额 = 存款金额 + 奖金金额；实际到账金额 = 到账金额 - 手续费（创建时手续费为 0）
 	receivedAmount := in.DepositAmount + bonusAmount
 	actualReceivedAmount := receivedAmount // fee_amount 默认 0，创建时与 received_amount 相等
 
-	// 计算审核阶段数：存款金额超过财务二审阈值则需二审，否则一审。
-	// TODO: 有财务设置功能后从财务配置表读取【财务二审金额】字段替换 constants.FinanceSecondAuditThreshold。
-	auditStages := int8(1)
-	if in.DepositAmount > constants.FinanceSecondAuditThreshold {
-		auditStages = int8(2)
+	// 计算审核阶段数：存款金额超过二审阈值则需二审，否则一审。
+	// 阈值 = 财务配置显示金额 × 货币倍率；TODO: 有财务配置功能后从配置表读取显示金额替换常量。
+	threshold := secondAuditThreshold(constants.FinanceSecondAuditConfigAmount, in.CurrencyFactor)
+	auditStages := constants.AuditStage1
+	if in.DepositAmount >= threshold {
+		auditStages = constants.AuditStage2
 	}
 	// 创建时初始状态固定为待一审（11）
 	initialStatus := constants.DepositOrderStatusPending1st
@@ -82,12 +87,16 @@ func (s *Service) AddAgentDepositOrder(ctx context.Context, in *agentdepositorde
 	// 从 ctx 中读取操作人身份，填写创建人信息
 	creatorID, creatorType := claimsOperatorIDs(ctx)
 
+	depositCurrency := in.DepositCurrency
+	if depositCurrency == "" {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
 	c := s.DB.AgentDepositOrder.Create().
 		SetMemberID(in.MemberId).
 		SetDepositType(int8(in.DepositType)).
 		SetDepositAmount(in.DepositAmount).
-		SetDepositCurrency(constants.DepositCurrency).
-		SetSiteCurrency(constants.DepositCurrency).
+		SetDepositCurrency(depositCurrency).
+		SetSiteCurrency(depositCurrency).
 		SetRolloverMultiplier(in.RolloverMultiplier).
 		SetBonusRate(in.BonusRate).
 		SetBonusAmount(bonusAmount).
@@ -101,6 +110,11 @@ func (s *Service) AddAgentDepositOrder(ctx context.Context, in *agentdepositorde
 		SetCreatorType(creatorType).
 		SetCreatorID(creatorID)
 
+	// 写入创建时客户端 IP
+	if claims := ctxdata.ClaimsFromCtx(ctx); claims != nil && claims.ClientIP != "" {
+		c.SetCreateIP(claims.ClientIP)
+	}
+
 	if orderNo != "" {
 		c.SetOrderNo(orderNo)
 	}
@@ -112,19 +126,61 @@ func (s *Service) AddAgentDepositOrder(ctx context.Context, in *agentdepositorde
 	return &agentdepositorderpb.AddAgentDepositOrderResp{Id: row.ID}, nil
 }
 
-// GetMemberTodayDeposit 统计指定会员今日累计有效充值金额及笔数。
-// 今日范围：UTC 零点至当前时刻；仅统计 status=4（通过）的订单。
-func (s *Service) GetMemberTodayDeposit(ctx context.Context, memberID int64) (totalAmount int64, count int64, err error) {
+// GetMemberDepositSummary 统计指定会员的有效充值金额及笔数。
+//
+// 有效状态：4（审核通过）或 6（支付成功）。
+// timeStart / timeEnd 为 unix 秒，均为 0 时不限时间范围；
+// 传入时间范围时，满足以下任一条件即计入：
+//   - created_at 在 [timeStart, timeEnd]
+//   - paid_at 在 [timeStart, timeEnd]（status=6 订单的支付确认时间）
+//   - final_audited_at 在 [timeStart, timeEnd]（status=4 订单的审核时间）
+func (s *Service) GetMemberDepositSummary(ctx context.Context, memberID, timeStart, timeEnd int64) (totalAmount int64, count int64, err error) {
 	if memberID <= 0 {
 		return 0, 0, xerr.BadRequest(i18n.InvalidParam)
 	}
-	now := time.Now().UTC()
-	todayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
 
 	preds := []predicate.AgentDepositOrder{
 		agentdepositorder.MemberIDEQ(memberID),
-		agentdepositorder.StatusEQ(constants.DepositOrderStatusApproved),
-		agentdepositorder.CreatedAtGTE(todayStart),
+		agentdepositorder.StatusIn(
+			constants.DepositOrderStatusApproved,   // 4
+			constants.DepositOrderStatusPaySuccess, // 6
+		),
+	}
+
+	if timeStart > 0 || timeEnd > 0 {
+		var orPreds []predicate.AgentDepositOrder
+
+		// created_at 时间窗口
+		var createdPreds []predicate.AgentDepositOrder
+		if timeStart > 0 {
+			createdPreds = append(createdPreds, agentdepositorder.CreatedAtGTE(time.Unix(timeStart, 0)))
+		}
+		if timeEnd > 0 {
+			createdPreds = append(createdPreds, agentdepositorder.CreatedAtLTE(time.Unix(timeEnd, 0)))
+		}
+		orPreds = append(orPreds, agentdepositorder.And(createdPreds...))
+
+		// paid_at 时间窗口（status=6 订单的支付确认时间）
+		var paidPreds []predicate.AgentDepositOrder
+		if timeStart > 0 {
+			paidPreds = append(paidPreds, agentdepositorder.PaidAtGTE(time.Unix(timeStart, 0)))
+		}
+		if timeEnd > 0 {
+			paidPreds = append(paidPreds, agentdepositorder.PaidAtLTE(time.Unix(timeEnd, 0)))
+		}
+		orPreds = append(orPreds, agentdepositorder.And(paidPreds...))
+
+		// final_audited_at 时间窗口（status=4 订单的审核完成时间）
+		var auditedPreds []predicate.AgentDepositOrder
+		if timeStart > 0 {
+			auditedPreds = append(auditedPreds, agentdepositorder.FinalAuditedAtGTE(time.Unix(timeStart, 0)))
+		}
+		if timeEnd > 0 {
+			auditedPreds = append(auditedPreds, agentdepositorder.FinalAuditedAtLTE(time.Unix(timeEnd, 0)))
+		}
+		orPreds = append(orPreds, agentdepositorder.And(auditedPreds...))
+
+		preds = append(preds, agentdepositorder.Or(orPreds...))
 	}
 
 	rows, err := s.DB.AgentDepositOrder.Query().
@@ -138,17 +194,6 @@ func (s *Service) GetMemberTodayDeposit(ctx context.Context, memberID int64) (to
 		totalAmount += row.DepositAmount
 	}
 	return totalAmount, int64(len(rows)), nil
-}
-
-// CountMemberDepositOrders 统计该会员人工存款订单数量，
-// 用于活动侧 DepositPayload.deposit_count（首充/N 充条件判断）。
-func (s *Service) CountMemberDepositOrders(ctx context.Context, memberID int64, status int8) (int, error) {
-	return s.DB.AgentDepositOrder.Query().
-		Where(
-			agentdepositorder.MemberIDEQ(memberID),
-			agentdepositorder.StatusEQ(status),
-		).
-		Count(ctx)
 }
 
 // ListAgentDepositOrders 分页查询存款订单列表，并关联查询会员账号和层级名称。
@@ -172,9 +217,22 @@ func (s *Service) ListAgentDepositOrders(ctx context.Context, in *agentdepositor
 
 	preds := make([]predicate.AgentDepositOrder, 0, 12)
 
-	if in.Status > 0 {
-		valid := (in.Status >= 1 && in.Status <= 5) || in.Status == 11 || in.Status == 12
-		if !valid {
+	// 多状态优先，回落单状态；有效值 {1,2,3,4,5,6,7,8,11,12}
+	validStatus := func(s int32) bool {
+		return (s >= 1 && s <= 8) || s == 11 || s == 12
+	}
+	if len(in.Statuses) > 0 {
+		vals := make([]int8, 0, len(in.Statuses))
+		for _, s := range in.Statuses {
+			if validStatus(s) {
+				vals = append(vals, int8(s))
+			}
+		}
+		if len(vals) > 0 {
+			preds = append(preds, agentdepositorder.StatusIn(vals...))
+		}
+	} else if in.Status > 0 {
+		if !validStatus(in.Status) {
 			return nil, xerr.BadRequest(i18n.InvalidParam)
 		}
 		preds = append(preds, agentdepositorder.StatusEQ(int8(in.Status)))
@@ -189,10 +247,18 @@ func (s *Service) ListAgentDepositOrders(ctx context.Context, in *agentdepositor
 		preds = append(preds, agentdepositorder.DepositTypeEQ(int8(in.DepositType)))
 	}
 	if in.TimeStart > 0 {
-		preds = append(preds, agentdepositorder.CreatedAtGTE(time.Unix(in.TimeStart, 0)))
+		if in.TimeType == 2 {
+			preds = append(preds, agentdepositorder.FinalAuditedAtGTE(time.Unix(in.TimeStart, 0)))
+		} else {
+			preds = append(preds, agentdepositorder.CreatedAtGTE(time.Unix(in.TimeStart, 0)))
+		}
 	}
 	if in.TimeEnd > 0 {
-		preds = append(preds, agentdepositorder.CreatedAtLTE(time.Unix(in.TimeEnd, 0)))
+		if in.TimeType == 2 {
+			preds = append(preds, agentdepositorder.FinalAuditedAtLTE(time.Unix(in.TimeEnd, 0)))
+		} else {
+			preds = append(preds, agentdepositorder.CreatedAtLTE(time.Unix(in.TimeEnd, 0)))
+		}
 	}
 
 	// 存款货币
@@ -428,8 +494,6 @@ func toDepositOrderListItem(row *ent.AgentDepositOrder, accounts map[int64]strin
 		CreateAt:             row.CreatedAt.Unix(),
 		DepositCurrency:      row.DepositCurrency,
 		DepositAmount:        row.DepositAmount,
-		SiteCurrency:         row.SiteCurrency,
-		SiteAmount:           row.DepositAmount, // 暂以存款金额作为站点金额（1:1）
 		DepositType:          int32(row.DepositType),
 		ReceivedAmount:       row.ReceivedAmount,
 		FeeAmount:            row.FeeAmount,
@@ -449,6 +513,9 @@ func toDepositOrderListItem(row *ent.AgentDepositOrder, accounts map[int64]strin
 			item.AuditedAt = a.AuditAt.Unix()
 		}
 	}
+	if row.CreateIP != "" {
+		item.CreateIp = row.CreateIP
+	}
 	if row.ThirdPartyOrderNo != "" {
 		v := row.ThirdPartyOrderNo
 		item.ThirdPartyOrderNo = &v
@@ -461,5 +528,252 @@ func toDepositOrderListItem(row *ent.AgentDepositOrder, accounts map[int64]strin
 		v := row.PaymentSendInfo
 		item.PaymentSendInfo = &v
 	}
+	// 奖励比例：DB 存百分比×100，除以 100 还原为百分比后回传
+	item.BonusRatio = float64(row.BonusRate) / 100
+	item.BonusAmount = row.BonusAmount
 	return item
+}
+
+// ExportDepositOrders 导出存款订单列表（上限 5000 行）。
+func (s *Service) ExportDepositOrders(ctx context.Context, in *agentdepositorderpb.ExportDepositOrdersReq) (*agentdepositorderpb.ExportDepositOrdersResp, error) {
+	ctx, _, err := requireOperator(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if in == nil {
+		in = &agentdepositorderpb.ExportDepositOrdersReq{}
+	}
+
+	preds := make([]predicate.AgentDepositOrder, 0, 10)
+
+	validStatus := func(s int32) bool {
+		return (s >= 1 && s <= 8) || s == 11 || s == 12
+	}
+	if len(in.Statuses) > 0 {
+		vals := make([]int8, 0, len(in.Statuses))
+		for _, s := range in.Statuses {
+			if validStatus(s) {
+				vals = append(vals, int8(s))
+			}
+		}
+		if len(vals) > 0 {
+			preds = append(preds, agentdepositorder.StatusIn(vals...))
+		}
+	} else if in.Status > 0 {
+		if !validStatus(in.Status) {
+			return nil, xerr.BadRequest(i18n.InvalidParam)
+		}
+		preds = append(preds, agentdepositorder.StatusEQ(int8(in.Status)))
+	}
+
+	if in.MemberId > 0 {
+		preds = append(preds, agentdepositorder.MemberIDEQ(in.MemberId))
+	}
+	if in.DepositType > 0 {
+		if in.DepositType < 1 || in.DepositType > 3 {
+			return nil, xerr.BadRequest(i18n.InvalidParam)
+		}
+		preds = append(preds, agentdepositorder.DepositTypeEQ(int8(in.DepositType)))
+	}
+	if in.TimeStart > 0 {
+		if in.TimeType == 2 {
+			preds = append(preds, agentdepositorder.FinalAuditedAtGTE(time.Unix(in.TimeStart, 0)))
+		} else {
+			preds = append(preds, agentdepositorder.CreatedAtGTE(time.Unix(in.TimeStart, 0)))
+		}
+	}
+	if in.TimeEnd > 0 {
+		if in.TimeType == 2 {
+			preds = append(preds, agentdepositorder.FinalAuditedAtLTE(time.Unix(in.TimeEnd, 0)))
+		} else {
+			preds = append(preds, agentdepositorder.CreatedAtLTE(time.Unix(in.TimeEnd, 0)))
+		}
+	}
+	if in.OrderNo != "" {
+		preds = append(preds, agentdepositorder.OrderNoEQ(in.OrderNo))
+	}
+	if in.ThirdPartyOrderNo != "" {
+		preds = append(preds, agentdepositorder.ThirdPartyOrderNoEQ(in.ThirdPartyOrderNo))
+	}
+	if in.MemberAccount != "" {
+		authRow, authErr := s.DB.MemberAuth.Query().
+			Where(memberauth.UsernameEQ(in.MemberAccount)).
+			Select(memberauth.FieldMemberID).
+			First(ctx)
+		if authErr != nil {
+			if ent.IsNotFound(authErr) {
+				return &agentdepositorderpb.ExportDepositOrdersResp{List: nil, Rows: 0}, nil
+			}
+			return nil, mapEntErr(authErr)
+		}
+		preds = append(preds, agentdepositorder.MemberIDEQ(authRow.MemberID))
+	}
+
+	q := s.DB.AgentDepositOrder.Query()
+	if len(preds) > 0 {
+		q = q.Where(preds...)
+	}
+	rows, err := q.
+		Order(agentdepositorder.ByID(sql.OrderDesc())).
+		Limit(constants.DepositExportMaxRows + 1).
+		All(ctx)
+	if err != nil {
+		return nil, mapEntErr(err)
+	}
+	if len(rows) > constants.DepositExportMaxRows {
+		return nil, xerr.BadRequest("export exceeds 5000 orders")
+	}
+
+	memberAccounts, memberLevelNames := s.batchLoadMemberInfo(ctx, rows)
+	auditMap := s.batchLoadAuditInfo(ctx, rows)
+
+	items := make([]*agentdepositorderpb.ExportDepositOrderItem, 0, len(rows))
+	for _, row := range rows {
+		item := &agentdepositorderpb.ExportDepositOrderItem{
+			OrderNo:              row.OrderNo,
+			MemberAccount:        memberAccounts[row.MemberID],
+			MemberLevelName:      memberLevelNames[row.MemberID],
+			CreatedAt:            row.CreatedAt.Unix(),
+			DepositCurrency:      row.DepositCurrency,
+			DepositAmount:        row.DepositAmount,
+			DepositType:          int32(row.DepositType),
+			ReceivedAmount:       row.ReceivedAmount,
+			FeeAmount:            row.FeeAmount,
+			ActualReceivedAmount: row.ActualReceivedAmount,
+			ThirdPartyOrderNo:    row.ThirdPartyOrderNo,
+			CreateIp:             row.CreateIP,
+			Status:               int32(row.Status),
+		}
+		if row.FinalAuditedAt != nil {
+			item.FinalAuditedAt = row.FinalAuditedAt.Unix()
+		}
+		if a, ok := auditMap[row.ID]; ok {
+			item.AuditorUsername = a.AuditUsername
+			if item.FinalAuditedAt == 0 {
+				item.FinalAuditedAt = a.AuditAt.Unix()
+			}
+		}
+		items = append(items, item)
+	}
+	return &agentdepositorderpb.ExportDepositOrdersResp{
+		List: items,
+		Rows: int64(len(items)),
+	}, nil
+}
+
+// CreatePaidDepositOrder 正式入款（直接写入支付成功终态，幂等）。
+//
+// 幂等策略：先 SELECT(operator_code, third_party_order_no)，已存在且 status=6 直接返回；
+// 并发写入唯一索引冲突时捕获 ConstraintError 再 SELECT 兜底。
+// order_no 由 logic 层生成后传入；deposit_currency/site_currency/bonus/received 均内部计算。
+func (s *Service) CreatePaidDepositOrder(ctx context.Context, in *agentdepositorderpb.CreatePaidDepositOrderReq, orderNo string) (*agentdepositorderpb.CreatePaidDepositOrderResp, error) {
+	ctx, _, err := requireOperator(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if in == nil {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
+
+	// SELECT-first：以 third_party_order_no 为幂等 key（operator_code 由 ctx 拦截器自动注入）
+	existing, qErr := s.DB.AgentDepositOrder.Query().
+		Where(agentdepositorder.ThirdPartyOrderNoEQ(in.ThirdPartyOrderNo)).
+		Select(
+			agentdepositorder.FieldID,
+			agentdepositorder.FieldOrderNo,
+			agentdepositorder.FieldStatus,
+		).
+		Only(ctx)
+	if qErr != nil && !ent.IsNotFound(qErr) {
+		return nil, mapEntErr(qErr)
+	}
+	if existing != nil {
+		if existing.Status != constants.DepositOrderStatusPaySuccess {
+			return nil, xerr.BadRequest(i18n.ErrOrderStatusConflict)
+		}
+		return &agentdepositorderpb.CreatePaidDepositOrderResp{
+			Id:      existing.ID,
+			OrderNo: existing.OrderNo,
+			Status:  int32(existing.Status),
+			Created: false,
+		}, nil
+	}
+
+	// 金额计算：bonus 固定为 0；received = deposit_amount；actual = deposit_amount - fee_amount
+	feeAmount := int64(0)
+	if in.FeeAmount != nil {
+		feeAmount = *in.FeeAmount
+	}
+	receivedAmount := in.DepositAmount
+	actualReceivedAmount := in.DepositAmount - feeAmount
+
+	// 支付确认时间：未传取服务器当前时间
+	paidAt := time.Now()
+	if in.PaidAt != nil && *in.PaidAt > 0 {
+		paidAt = time.Unix(*in.PaidAt, 0)
+	}
+
+	paidDepositCurrency := in.DepositCurrency
+	if paidDepositCurrency == "" {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
+	c := s.DB.AgentDepositOrder.Create().
+		SetOrderNo(orderNo).
+		SetMemberID(in.MemberId).
+		SetDepositType(int8(in.DepositType)).
+		SetDepositAmount(in.DepositAmount).
+		SetDepositCurrency(paidDepositCurrency).
+		SetSiteCurrency(paidDepositCurrency).
+		SetFeeAmount(feeAmount).
+		SetBonusAmount(0).
+		SetReceivedAmount(receivedAmount).
+		SetActualReceivedAmount(actualReceivedAmount).
+		SetThirdPartyOrderNo(in.ThirdPartyOrderNo).
+		SetStatus(constants.DepositOrderStatusPaySuccess).
+		SetCreatorType(0).
+		SetCreatorID(0).
+		SetAgentLineCode("-"). // 系统写入，无代理上下文；"-" 满足 NotEmpty 约束
+		SetPaidAt(paidAt)
+
+	if in.PaymentReceiveInfo != nil {
+		c.SetPaymentReceiveInfo(*in.PaymentReceiveInfo)
+	}
+	if in.PaymentSendInfo != nil {
+		c.SetPaymentSendInfo(*in.PaymentSendInfo)
+	}
+
+	row, saveErr := c.Save(ctx)
+	if saveErr != nil {
+		// 并发写入唯一索引冲突：捕获后 SELECT 兜底返回已有记录
+		if ent.IsConstraintError(saveErr) {
+			existing, selErr := s.DB.AgentDepositOrder.Query().
+				Where(agentdepositorder.ThirdPartyOrderNoEQ(in.ThirdPartyOrderNo)).
+				Select(
+					agentdepositorder.FieldID,
+					agentdepositorder.FieldOrderNo,
+					agentdepositorder.FieldStatus,
+				).
+				Only(ctx)
+			if selErr != nil {
+				return nil, mapEntErr(selErr)
+			}
+			if existing.Status != constants.DepositOrderStatusPaySuccess {
+				return nil, xerr.BadRequest(i18n.ErrOrderStatusConflict)
+			}
+			return &agentdepositorderpb.CreatePaidDepositOrderResp{
+				Id:      existing.ID,
+				OrderNo: existing.OrderNo,
+				Status:  int32(existing.Status),
+				Created: false,
+			}, nil
+		}
+		return nil, mapEntErr(saveErr)
+	}
+
+	return &agentdepositorderpb.CreatePaidDepositOrderResp{
+		Id:      row.ID,
+		OrderNo: row.OrderNo,
+		Status:  int32(row.Status),
+		Created: true,
+	}, nil
 }

@@ -147,13 +147,13 @@ func (_c *AgentDepositOrderCreate) SetNillableAuditStages(v *int8) *AgentDeposit
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (_c *AgentDepositOrderCreate) SetFeeRate(v float64) *AgentDepositOrderCreate {
+func (_c *AgentDepositOrderCreate) SetFeeRate(v int64) *AgentDepositOrderCreate {
 	_c.mutation.SetFeeRate(v)
 	return _c
 }
 
 // SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (_c *AgentDepositOrderCreate) SetNillableFeeRate(v *float64) *AgentDepositOrderCreate {
+func (_c *AgentDepositOrderCreate) SetNillableFeeRate(v *int64) *AgentDepositOrderCreate {
 	if v != nil {
 		_c.SetFeeRate(*v)
 	}
@@ -161,13 +161,13 @@ func (_c *AgentDepositOrderCreate) SetNillableFeeRate(v *float64) *AgentDepositO
 }
 
 // SetBonusRate sets the "bonus_rate" field.
-func (_c *AgentDepositOrderCreate) SetBonusRate(v float64) *AgentDepositOrderCreate {
+func (_c *AgentDepositOrderCreate) SetBonusRate(v int64) *AgentDepositOrderCreate {
 	_c.mutation.SetBonusRate(v)
 	return _c
 }
 
 // SetNillableBonusRate sets the "bonus_rate" field if the given value is not nil.
-func (_c *AgentDepositOrderCreate) SetNillableBonusRate(v *float64) *AgentDepositOrderCreate {
+func (_c *AgentDepositOrderCreate) SetNillableBonusRate(v *int64) *AgentDepositOrderCreate {
 	if v != nil {
 		_c.SetBonusRate(*v)
 	}
@@ -259,13 +259,13 @@ func (_c *AgentDepositOrderCreate) SetNillableFeeMode(v *int8) *AgentDepositOrde
 }
 
 // SetRolloverMultiplier sets the "rollover_multiplier" field.
-func (_c *AgentDepositOrderCreate) SetRolloverMultiplier(v float64) *AgentDepositOrderCreate {
+func (_c *AgentDepositOrderCreate) SetRolloverMultiplier(v int64) *AgentDepositOrderCreate {
 	_c.mutation.SetRolloverMultiplier(v)
 	return _c
 }
 
 // SetNillableRolloverMultiplier sets the "rollover_multiplier" field if the given value is not nil.
-func (_c *AgentDepositOrderCreate) SetNillableRolloverMultiplier(v *float64) *AgentDepositOrderCreate {
+func (_c *AgentDepositOrderCreate) SetNillableRolloverMultiplier(v *int64) *AgentDepositOrderCreate {
 	if v != nil {
 		_c.SetRolloverMultiplier(*v)
 	}
@@ -282,6 +282,34 @@ func (_c *AgentDepositOrderCreate) SetDepositType(v int8) *AgentDepositOrderCrea
 func (_c *AgentDepositOrderCreate) SetNillableDepositType(v *int8) *AgentDepositOrderCreate {
 	if v != nil {
 		_c.SetDepositType(*v)
+	}
+	return _c
+}
+
+// SetFinalAuditedAt sets the "final_audited_at" field.
+func (_c *AgentDepositOrderCreate) SetFinalAuditedAt(v time.Time) *AgentDepositOrderCreate {
+	_c.mutation.SetFinalAuditedAt(v)
+	return _c
+}
+
+// SetNillableFinalAuditedAt sets the "final_audited_at" field if the given value is not nil.
+func (_c *AgentDepositOrderCreate) SetNillableFinalAuditedAt(v *time.Time) *AgentDepositOrderCreate {
+	if v != nil {
+		_c.SetFinalAuditedAt(*v)
+	}
+	return _c
+}
+
+// SetCreateIP sets the "create_ip" field.
+func (_c *AgentDepositOrderCreate) SetCreateIP(v string) *AgentDepositOrderCreate {
+	_c.mutation.SetCreateIP(v)
+	return _c
+}
+
+// SetNillableCreateIP sets the "create_ip" field if the given value is not nil.
+func (_c *AgentDepositOrderCreate) SetNillableCreateIP(v *string) *AgentDepositOrderCreate {
+	if v != nil {
+		_c.SetCreateIP(*v)
 	}
 	return _c
 }
@@ -468,6 +496,20 @@ func (_c *AgentDepositOrderCreate) SetNillableClaimedAt(v *time.Time) *AgentDepo
 	return _c
 }
 
+// SetPaidAt sets the "paid_at" field.
+func (_c *AgentDepositOrderCreate) SetPaidAt(v time.Time) *AgentDepositOrderCreate {
+	_c.mutation.SetPaidAt(v)
+	return _c
+}
+
+// SetNillablePaidAt sets the "paid_at" field if the given value is not nil.
+func (_c *AgentDepositOrderCreate) SetNillablePaidAt(v *time.Time) *AgentDepositOrderCreate {
+	if v != nil {
+		_c.SetPaidAt(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *AgentDepositOrderCreate) SetID(v int64) *AgentDepositOrderCreate {
 	_c.mutation.SetID(v)
@@ -634,6 +676,11 @@ func (_c *AgentDepositOrderCreate) check() error {
 	if _, ok := _c.mutation.DepositType(); !ok {
 		return &ValidationError{Name: "deposit_type", err: errors.New(`ent: missing required field "AgentDepositOrder.deposit_type"`)}
 	}
+	if v, ok := _c.mutation.CreateIP(); ok {
+		if err := agentdepositorder.CreateIPValidator(v); err != nil {
+			return &ValidationError{Name: "create_ip", err: fmt.Errorf(`ent: validator failed for field "AgentDepositOrder.create_ip": %w`, err)}
+		}
+	}
 	if v, ok := _c.mutation.OrderNo(); ok {
 		if err := agentdepositorder.OrderNoValidator(v); err != nil {
 			return &ValidationError{Name: "order_no", err: fmt.Errorf(`ent: validator failed for field "AgentDepositOrder.order_no": %w`, err)}
@@ -741,11 +788,11 @@ func (_c *AgentDepositOrderCreate) createSpec() (*AgentDepositOrder, *sqlgraph.C
 		_node.AuditStages = value
 	}
 	if value, ok := _c.mutation.FeeRate(); ok {
-		_spec.SetField(agentdepositorder.FieldFeeRate, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldFeeRate, field.TypeInt64, value)
 		_node.FeeRate = value
 	}
 	if value, ok := _c.mutation.BonusRate(); ok {
-		_spec.SetField(agentdepositorder.FieldBonusRate, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldBonusRate, field.TypeInt64, value)
 		_node.BonusRate = value
 	}
 	if value, ok := _c.mutation.FeeAmount(); ok {
@@ -773,12 +820,20 @@ func (_c *AgentDepositOrderCreate) createSpec() (*AgentDepositOrder, *sqlgraph.C
 		_node.FeeMode = value
 	}
 	if value, ok := _c.mutation.RolloverMultiplier(); ok {
-		_spec.SetField(agentdepositorder.FieldRolloverMultiplier, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldRolloverMultiplier, field.TypeInt64, value)
 		_node.RolloverMultiplier = value
 	}
 	if value, ok := _c.mutation.DepositType(); ok {
 		_spec.SetField(agentdepositorder.FieldDepositType, field.TypeInt8, value)
 		_node.DepositType = value
+	}
+	if value, ok := _c.mutation.FinalAuditedAt(); ok {
+		_spec.SetField(agentdepositorder.FieldFinalAuditedAt, field.TypeTime, value)
+		_node.FinalAuditedAt = &value
+	}
+	if value, ok := _c.mutation.CreateIP(); ok {
+		_spec.SetField(agentdepositorder.FieldCreateIP, field.TypeString, value)
+		_node.CreateIP = value
 	}
 	if value, ok := _c.mutation.Notes(); ok {
 		_spec.SetField(agentdepositorder.FieldNotes, field.TypeString, value)
@@ -831,6 +886,10 @@ func (_c *AgentDepositOrderCreate) createSpec() (*AgentDepositOrder, *sqlgraph.C
 	if value, ok := _c.mutation.ClaimedAt(); ok {
 		_spec.SetField(agentdepositorder.FieldClaimedAt, field.TypeTime, value)
 		_node.ClaimedAt = &value
+	}
+	if value, ok := _c.mutation.PaidAt(); ok {
+		_spec.SetField(agentdepositorder.FieldPaidAt, field.TypeTime, value)
+		_node.PaidAt = &value
 	}
 	return _node, _spec
 }
@@ -1035,7 +1094,7 @@ func (u *AgentDepositOrderUpsert) ClearAuditStages() *AgentDepositOrderUpsert {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (u *AgentDepositOrderUpsert) SetFeeRate(v float64) *AgentDepositOrderUpsert {
+func (u *AgentDepositOrderUpsert) SetFeeRate(v int64) *AgentDepositOrderUpsert {
 	u.Set(agentdepositorder.FieldFeeRate, v)
 	return u
 }
@@ -1047,7 +1106,7 @@ func (u *AgentDepositOrderUpsert) UpdateFeeRate() *AgentDepositOrderUpsert {
 }
 
 // AddFeeRate adds v to the "fee_rate" field.
-func (u *AgentDepositOrderUpsert) AddFeeRate(v float64) *AgentDepositOrderUpsert {
+func (u *AgentDepositOrderUpsert) AddFeeRate(v int64) *AgentDepositOrderUpsert {
 	u.Add(agentdepositorder.FieldFeeRate, v)
 	return u
 }
@@ -1059,7 +1118,7 @@ func (u *AgentDepositOrderUpsert) ClearFeeRate() *AgentDepositOrderUpsert {
 }
 
 // SetBonusRate sets the "bonus_rate" field.
-func (u *AgentDepositOrderUpsert) SetBonusRate(v float64) *AgentDepositOrderUpsert {
+func (u *AgentDepositOrderUpsert) SetBonusRate(v int64) *AgentDepositOrderUpsert {
 	u.Set(agentdepositorder.FieldBonusRate, v)
 	return u
 }
@@ -1071,7 +1130,7 @@ func (u *AgentDepositOrderUpsert) UpdateBonusRate() *AgentDepositOrderUpsert {
 }
 
 // AddBonusRate adds v to the "bonus_rate" field.
-func (u *AgentDepositOrderUpsert) AddBonusRate(v float64) *AgentDepositOrderUpsert {
+func (u *AgentDepositOrderUpsert) AddBonusRate(v int64) *AgentDepositOrderUpsert {
 	u.Add(agentdepositorder.FieldBonusRate, v)
 	return u
 }
@@ -1197,7 +1256,7 @@ func (u *AgentDepositOrderUpsert) AddFeeMode(v int8) *AgentDepositOrderUpsert {
 }
 
 // SetRolloverMultiplier sets the "rollover_multiplier" field.
-func (u *AgentDepositOrderUpsert) SetRolloverMultiplier(v float64) *AgentDepositOrderUpsert {
+func (u *AgentDepositOrderUpsert) SetRolloverMultiplier(v int64) *AgentDepositOrderUpsert {
 	u.Set(agentdepositorder.FieldRolloverMultiplier, v)
 	return u
 }
@@ -1209,7 +1268,7 @@ func (u *AgentDepositOrderUpsert) UpdateRolloverMultiplier() *AgentDepositOrderU
 }
 
 // AddRolloverMultiplier adds v to the "rollover_multiplier" field.
-func (u *AgentDepositOrderUpsert) AddRolloverMultiplier(v float64) *AgentDepositOrderUpsert {
+func (u *AgentDepositOrderUpsert) AddRolloverMultiplier(v int64) *AgentDepositOrderUpsert {
 	u.Add(agentdepositorder.FieldRolloverMultiplier, v)
 	return u
 }
@@ -1229,6 +1288,42 @@ func (u *AgentDepositOrderUpsert) UpdateDepositType() *AgentDepositOrderUpsert {
 // AddDepositType adds v to the "deposit_type" field.
 func (u *AgentDepositOrderUpsert) AddDepositType(v int8) *AgentDepositOrderUpsert {
 	u.Add(agentdepositorder.FieldDepositType, v)
+	return u
+}
+
+// SetFinalAuditedAt sets the "final_audited_at" field.
+func (u *AgentDepositOrderUpsert) SetFinalAuditedAt(v time.Time) *AgentDepositOrderUpsert {
+	u.Set(agentdepositorder.FieldFinalAuditedAt, v)
+	return u
+}
+
+// UpdateFinalAuditedAt sets the "final_audited_at" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsert) UpdateFinalAuditedAt() *AgentDepositOrderUpsert {
+	u.SetExcluded(agentdepositorder.FieldFinalAuditedAt)
+	return u
+}
+
+// ClearFinalAuditedAt clears the value of the "final_audited_at" field.
+func (u *AgentDepositOrderUpsert) ClearFinalAuditedAt() *AgentDepositOrderUpsert {
+	u.SetNull(agentdepositorder.FieldFinalAuditedAt)
+	return u
+}
+
+// SetCreateIP sets the "create_ip" field.
+func (u *AgentDepositOrderUpsert) SetCreateIP(v string) *AgentDepositOrderUpsert {
+	u.Set(agentdepositorder.FieldCreateIP, v)
+	return u
+}
+
+// UpdateCreateIP sets the "create_ip" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsert) UpdateCreateIP() *AgentDepositOrderUpsert {
+	u.SetExcluded(agentdepositorder.FieldCreateIP)
+	return u
+}
+
+// ClearCreateIP clears the value of the "create_ip" field.
+func (u *AgentDepositOrderUpsert) ClearCreateIP() *AgentDepositOrderUpsert {
+	u.SetNull(agentdepositorder.FieldCreateIP)
 	return u
 }
 
@@ -1466,6 +1561,24 @@ func (u *AgentDepositOrderUpsert) ClearClaimedAt() *AgentDepositOrderUpsert {
 	return u
 }
 
+// SetPaidAt sets the "paid_at" field.
+func (u *AgentDepositOrderUpsert) SetPaidAt(v time.Time) *AgentDepositOrderUpsert {
+	u.Set(agentdepositorder.FieldPaidAt, v)
+	return u
+}
+
+// UpdatePaidAt sets the "paid_at" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsert) UpdatePaidAt() *AgentDepositOrderUpsert {
+	u.SetExcluded(agentdepositorder.FieldPaidAt)
+	return u
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (u *AgentDepositOrderUpsert) ClearPaidAt() *AgentDepositOrderUpsert {
+	u.SetNull(agentdepositorder.FieldPaidAt)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -1699,14 +1812,14 @@ func (u *AgentDepositOrderUpsertOne) ClearAuditStages() *AgentDepositOrderUpsert
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (u *AgentDepositOrderUpsertOne) SetFeeRate(v float64) *AgentDepositOrderUpsertOne {
+func (u *AgentDepositOrderUpsertOne) SetFeeRate(v int64) *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.SetFeeRate(v)
 	})
 }
 
 // AddFeeRate adds v to the "fee_rate" field.
-func (u *AgentDepositOrderUpsertOne) AddFeeRate(v float64) *AgentDepositOrderUpsertOne {
+func (u *AgentDepositOrderUpsertOne) AddFeeRate(v int64) *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.AddFeeRate(v)
 	})
@@ -1727,14 +1840,14 @@ func (u *AgentDepositOrderUpsertOne) ClearFeeRate() *AgentDepositOrderUpsertOne 
 }
 
 // SetBonusRate sets the "bonus_rate" field.
-func (u *AgentDepositOrderUpsertOne) SetBonusRate(v float64) *AgentDepositOrderUpsertOne {
+func (u *AgentDepositOrderUpsertOne) SetBonusRate(v int64) *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.SetBonusRate(v)
 	})
 }
 
 // AddBonusRate adds v to the "bonus_rate" field.
-func (u *AgentDepositOrderUpsertOne) AddBonusRate(v float64) *AgentDepositOrderUpsertOne {
+func (u *AgentDepositOrderUpsertOne) AddBonusRate(v int64) *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.AddBonusRate(v)
 	})
@@ -1888,14 +2001,14 @@ func (u *AgentDepositOrderUpsertOne) UpdateFeeMode() *AgentDepositOrderUpsertOne
 }
 
 // SetRolloverMultiplier sets the "rollover_multiplier" field.
-func (u *AgentDepositOrderUpsertOne) SetRolloverMultiplier(v float64) *AgentDepositOrderUpsertOne {
+func (u *AgentDepositOrderUpsertOne) SetRolloverMultiplier(v int64) *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.SetRolloverMultiplier(v)
 	})
 }
 
 // AddRolloverMultiplier adds v to the "rollover_multiplier" field.
-func (u *AgentDepositOrderUpsertOne) AddRolloverMultiplier(v float64) *AgentDepositOrderUpsertOne {
+func (u *AgentDepositOrderUpsertOne) AddRolloverMultiplier(v int64) *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.AddRolloverMultiplier(v)
 	})
@@ -1926,6 +2039,48 @@ func (u *AgentDepositOrderUpsertOne) AddDepositType(v int8) *AgentDepositOrderUp
 func (u *AgentDepositOrderUpsertOne) UpdateDepositType() *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.UpdateDepositType()
+	})
+}
+
+// SetFinalAuditedAt sets the "final_audited_at" field.
+func (u *AgentDepositOrderUpsertOne) SetFinalAuditedAt(v time.Time) *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.SetFinalAuditedAt(v)
+	})
+}
+
+// UpdateFinalAuditedAt sets the "final_audited_at" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsertOne) UpdateFinalAuditedAt() *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.UpdateFinalAuditedAt()
+	})
+}
+
+// ClearFinalAuditedAt clears the value of the "final_audited_at" field.
+func (u *AgentDepositOrderUpsertOne) ClearFinalAuditedAt() *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.ClearFinalAuditedAt()
+	})
+}
+
+// SetCreateIP sets the "create_ip" field.
+func (u *AgentDepositOrderUpsertOne) SetCreateIP(v string) *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.SetCreateIP(v)
+	})
+}
+
+// UpdateCreateIP sets the "create_ip" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsertOne) UpdateCreateIP() *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.UpdateCreateIP()
+	})
+}
+
+// ClearCreateIP clears the value of the "create_ip" field.
+func (u *AgentDepositOrderUpsertOne) ClearCreateIP() *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.ClearCreateIP()
 	})
 }
 
@@ -2199,6 +2354,27 @@ func (u *AgentDepositOrderUpsertOne) UpdateClaimedAt() *AgentDepositOrderUpsertO
 func (u *AgentDepositOrderUpsertOne) ClearClaimedAt() *AgentDepositOrderUpsertOne {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.ClearClaimedAt()
+	})
+}
+
+// SetPaidAt sets the "paid_at" field.
+func (u *AgentDepositOrderUpsertOne) SetPaidAt(v time.Time) *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.SetPaidAt(v)
+	})
+}
+
+// UpdatePaidAt sets the "paid_at" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsertOne) UpdatePaidAt() *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.UpdatePaidAt()
+	})
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (u *AgentDepositOrderUpsertOne) ClearPaidAt() *AgentDepositOrderUpsertOne {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.ClearPaidAt()
 	})
 }
 
@@ -2601,14 +2777,14 @@ func (u *AgentDepositOrderUpsertBulk) ClearAuditStages() *AgentDepositOrderUpser
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (u *AgentDepositOrderUpsertBulk) SetFeeRate(v float64) *AgentDepositOrderUpsertBulk {
+func (u *AgentDepositOrderUpsertBulk) SetFeeRate(v int64) *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.SetFeeRate(v)
 	})
 }
 
 // AddFeeRate adds v to the "fee_rate" field.
-func (u *AgentDepositOrderUpsertBulk) AddFeeRate(v float64) *AgentDepositOrderUpsertBulk {
+func (u *AgentDepositOrderUpsertBulk) AddFeeRate(v int64) *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.AddFeeRate(v)
 	})
@@ -2629,14 +2805,14 @@ func (u *AgentDepositOrderUpsertBulk) ClearFeeRate() *AgentDepositOrderUpsertBul
 }
 
 // SetBonusRate sets the "bonus_rate" field.
-func (u *AgentDepositOrderUpsertBulk) SetBonusRate(v float64) *AgentDepositOrderUpsertBulk {
+func (u *AgentDepositOrderUpsertBulk) SetBonusRate(v int64) *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.SetBonusRate(v)
 	})
 }
 
 // AddBonusRate adds v to the "bonus_rate" field.
-func (u *AgentDepositOrderUpsertBulk) AddBonusRate(v float64) *AgentDepositOrderUpsertBulk {
+func (u *AgentDepositOrderUpsertBulk) AddBonusRate(v int64) *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.AddBonusRate(v)
 	})
@@ -2790,14 +2966,14 @@ func (u *AgentDepositOrderUpsertBulk) UpdateFeeMode() *AgentDepositOrderUpsertBu
 }
 
 // SetRolloverMultiplier sets the "rollover_multiplier" field.
-func (u *AgentDepositOrderUpsertBulk) SetRolloverMultiplier(v float64) *AgentDepositOrderUpsertBulk {
+func (u *AgentDepositOrderUpsertBulk) SetRolloverMultiplier(v int64) *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.SetRolloverMultiplier(v)
 	})
 }
 
 // AddRolloverMultiplier adds v to the "rollover_multiplier" field.
-func (u *AgentDepositOrderUpsertBulk) AddRolloverMultiplier(v float64) *AgentDepositOrderUpsertBulk {
+func (u *AgentDepositOrderUpsertBulk) AddRolloverMultiplier(v int64) *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.AddRolloverMultiplier(v)
 	})
@@ -2828,6 +3004,48 @@ func (u *AgentDepositOrderUpsertBulk) AddDepositType(v int8) *AgentDepositOrderU
 func (u *AgentDepositOrderUpsertBulk) UpdateDepositType() *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.UpdateDepositType()
+	})
+}
+
+// SetFinalAuditedAt sets the "final_audited_at" field.
+func (u *AgentDepositOrderUpsertBulk) SetFinalAuditedAt(v time.Time) *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.SetFinalAuditedAt(v)
+	})
+}
+
+// UpdateFinalAuditedAt sets the "final_audited_at" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsertBulk) UpdateFinalAuditedAt() *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.UpdateFinalAuditedAt()
+	})
+}
+
+// ClearFinalAuditedAt clears the value of the "final_audited_at" field.
+func (u *AgentDepositOrderUpsertBulk) ClearFinalAuditedAt() *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.ClearFinalAuditedAt()
+	})
+}
+
+// SetCreateIP sets the "create_ip" field.
+func (u *AgentDepositOrderUpsertBulk) SetCreateIP(v string) *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.SetCreateIP(v)
+	})
+}
+
+// UpdateCreateIP sets the "create_ip" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsertBulk) UpdateCreateIP() *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.UpdateCreateIP()
+	})
+}
+
+// ClearCreateIP clears the value of the "create_ip" field.
+func (u *AgentDepositOrderUpsertBulk) ClearCreateIP() *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.ClearCreateIP()
 	})
 }
 
@@ -3101,6 +3319,27 @@ func (u *AgentDepositOrderUpsertBulk) UpdateClaimedAt() *AgentDepositOrderUpsert
 func (u *AgentDepositOrderUpsertBulk) ClearClaimedAt() *AgentDepositOrderUpsertBulk {
 	return u.Update(func(s *AgentDepositOrderUpsert) {
 		s.ClearClaimedAt()
+	})
+}
+
+// SetPaidAt sets the "paid_at" field.
+func (u *AgentDepositOrderUpsertBulk) SetPaidAt(v time.Time) *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.SetPaidAt(v)
+	})
+}
+
+// UpdatePaidAt sets the "paid_at" field to the value that was provided on create.
+func (u *AgentDepositOrderUpsertBulk) UpdatePaidAt() *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.UpdatePaidAt()
+	})
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (u *AgentDepositOrderUpsertBulk) ClearPaidAt() *AgentDepositOrderUpsertBulk {
+	return u.Update(func(s *AgentDepositOrderUpsert) {
+		s.ClearPaidAt()
 	})
 }
 

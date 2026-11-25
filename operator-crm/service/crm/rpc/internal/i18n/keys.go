@@ -58,4 +58,5 @@ const (
 	AgentDepositOrderFrozenOnlyUnfreeze  = "agentDepositOrder.frozenOnlyUnfreeze"
 	AgentDepositOrderNotFrozen           = "agentDepositOrder.notFrozen"
 	AgentDepositOrderRejectNotesRequired = "agentDepositOrder.rejectNotesRequired"
+	ErrOrderStatusConflict               = "agentDepositOrder.statusConflict"
 )

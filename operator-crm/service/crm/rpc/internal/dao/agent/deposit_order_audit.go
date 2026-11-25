@@ -219,6 +219,9 @@ func (s *Service) ApproveAgentDepositOrder(ctx context.Context, in *agentdeposit
 		agentdepositorder.FieldAuditStages,
 		agentdepositorder.FieldMemberID,
 		agentdepositorder.FieldDepositAmount,
+		agentdepositorder.FieldOrderNo,
+		agentdepositorder.FieldSiteCurrency,
+		agentdepositorder.FieldActualReceivedAmount,
 	)
 	if err != nil {
 		return nil, err
@@ -266,26 +269,33 @@ func (s *Service) ApproveAgentDepositOrder(ctx context.Context, in *agentdeposit
 			newStatus = constants.DepositOrderStatusApproved
 		}
 
-		_, terr := tx.AgentDepositOrder.Update().
+		upd := tx.AgentDepositOrder.Update().
 			Where(agentdepositorder.IDEQ(in.OrderId)).
 			SetStatus(newStatus).
 			SetReviewerID(0).
 			SetReviewerUtype(0).
 			ClearClaimedAt().
 			SetUpdaterID(uid).
-			SetUpdaterType(utype).
-			Save(ctx)
+			SetUpdaterType(utype)
+		// 仅最终通过（status=4）时写入 final_audited_at
+		if newStatus == constants.DepositOrderStatusApproved {
+			upd = upd.SetFinalAuditedAt(auditAt)
+		}
+		_, terr := upd.Save(ctx)
 		return mapEntErr(terr)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &agentdepositorderpb.ApproveAgentDepositOrderResp{
-		OrderId:       in.OrderId,
-		Status:        int32(newStatus),
-		MemberId:      preRow.MemberID,
-		DepositAmount: preRow.DepositAmount,
-		ApprovedAt:    auditAt.Unix(),
+		OrderId:               in.OrderId,
+		Status:                int32(newStatus),
+		MemberId:              preRow.MemberID,
+		DepositAmount:         preRow.DepositAmount,
+		ApprovedAt:            auditAt.Unix(),
+		OrderNo:               preRow.OrderNo,
+		SiteCurrency:          preRow.SiteCurrency,
+		ActualReceivedAmount:  preRow.ActualReceivedAmount,
 	}, nil
 }
 
@@ -346,9 +356,11 @@ func (s *Service) RejectAgentDepositOrder(ctx context.Context, in *agentdeposito
 			return mapEntErr(terr)
 		}
 
+		rejectAt := time.Now()
 		_, terr := tx.AgentDepositOrder.Update().
 			Where(agentdepositorder.IDEQ(in.OrderId)).
 			SetStatus(rejectedStatus).
+			SetFinalAuditedAt(rejectAt).
 			SetReviewerID(0).
 			SetReviewerUtype(0).
 			ClearClaimedAt().

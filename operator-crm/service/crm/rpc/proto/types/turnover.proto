@@ -5,7 +5,7 @@ package crm_turnover;
 option go_package = "oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/turnoverpb";
 
 // AddTurnoverReq 添加流水请求
-// 消费货币固定 USDT，消费类型固定游戏，消费时间自动取当前时间，
+// 消费类型固定游戏，消费时间自动取当前时间，
 // consume_amount 正数表示赢（余额增加），负数表示输（余额减少），0 表示模拟/演示流水，
 // 消费后余额由 balance_before + consume_amount 自动计算，代理 ID 由会员归属推断。
 message AddTurnoverReq {
@@ -19,6 +19,10 @@ message AddTurnoverReq {
   optional string notes = 4;
   // 游戏ID，可选
   optional int64 game_id = 5;
+  // 货币编码（站点结算货币，由 API 层从分站配置读取后传入，必填，空串将被 logic 层拒绝）
+  string currency = 6;
+  // 客户端类型：1=PC Web 2=移动 Web 3=Android 4=iOS，0=未知
+  int32 client_type = 7;
 }
 
 // AddTurnoverResp 添加流水响应

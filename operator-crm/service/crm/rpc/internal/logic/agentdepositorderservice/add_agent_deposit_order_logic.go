@@ -46,10 +46,17 @@ func (l *AddAgentDepositOrderLogic) AddAgentDepositOrder(in *agentdepositorderpb
 	if in.DepositAmount <= 0 {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
+	if in.DepositCurrency == "" {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
+	if in.CurrencyFactor <= 0 {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
 	if in.RolloverMultiplier < 0 {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
-	if in.BonusRate < 0 || in.BonusRate > 100 {
+	// bonus_rate 单位为百分比×100，0~10000 对应 0%~100%
+	if in.BonusRate < 0 || in.BonusRate > 10000 {
 		return nil, xerr.BadRequest(i18n.InvalidParam)
 	}
 

@@ -35,6 +35,10 @@ type (
 		FreezeAgentDepositOrder(ctx context.Context, in *agentdepositorderpb.FreezeAgentDepositOrderReq, opts ...grpc.CallOption) (*agentdepositorderpb.FreezeAgentDepositOrderResp, error)
 		// group: agent_deposit_order 解冻订单
 		UnfreezeAgentDepositOrder(ctx context.Context, in *agentdepositorderpb.UnfreezeAgentDepositOrderReq, opts ...grpc.CallOption) (*agentdepositorderpb.UnfreezeAgentDepositOrderResp, error)
+		// group: agent_deposit_order 存款订单导出
+		ExportDepositOrders(ctx context.Context, in *agentdepositorderpb.ExportDepositOrdersReq, opts ...grpc.CallOption) (*agentdepositorderpb.ExportDepositOrdersResp, error)
+		// group: agent_deposit_order 正式入款（直接写入支付成功终态，幂等）
+		CreatePaidDepositOrder(ctx context.Context, in *agentdepositorderpb.CreatePaidDepositOrderReq, opts ...grpc.CallOption) (*agentdepositorderpb.CreatePaidDepositOrderResp, error)
 	}
 
 	defaultAgentDepositOrderService struct {
@@ -100,4 +104,16 @@ func (m *defaultAgentDepositOrderService) FreezeAgentDepositOrder(ctx context.Co
 func (m *defaultAgentDepositOrderService) UnfreezeAgentDepositOrder(ctx context.Context, in *agentdepositorderpb.UnfreezeAgentDepositOrderReq, opts ...grpc.CallOption) (*agentdepositorderpb.UnfreezeAgentDepositOrderResp, error) {
 	client := crmrpc.NewAgentDepositOrderServiceClient(m.cli.Conn())
 	return client.UnfreezeAgentDepositOrder(ctx, in, opts...)
+}
+
+// group: agent_deposit_order 存款订单导出
+func (m *defaultAgentDepositOrderService) ExportDepositOrders(ctx context.Context, in *agentdepositorderpb.ExportDepositOrdersReq, opts ...grpc.CallOption) (*agentdepositorderpb.ExportDepositOrdersResp, error) {
+	client := crmrpc.NewAgentDepositOrderServiceClient(m.cli.Conn())
+	return client.ExportDepositOrders(ctx, in, opts...)
+}
+
+// group: agent_deposit_order 正式入款（直接写入支付成功终态，幂等）
+func (m *defaultAgentDepositOrderService) CreatePaidDepositOrder(ctx context.Context, in *agentdepositorderpb.CreatePaidDepositOrderReq, opts ...grpc.CallOption) (*agentdepositorderpb.CreatePaidDepositOrderResp, error) {
+	client := crmrpc.NewAgentDepositOrderServiceClient(m.cli.Conn())
+	return client.CreatePaidDepositOrder(ctx, in, opts...)
 }

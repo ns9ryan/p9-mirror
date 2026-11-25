@@ -411,7 +411,7 @@ func init() {
 	// agentdepositorderDescFeeRate is the schema descriptor for fee_rate field.
 	agentdepositorderDescFeeRate := agentdepositorderFields[7].Descriptor()
 	// agentdepositorder.DefaultFeeRate holds the default value on creation for the fee_rate field.
-	agentdepositorder.DefaultFeeRate = agentdepositorderDescFeeRate.Default.(float64)
+	agentdepositorder.DefaultFeeRate = agentdepositorderDescFeeRate.Default.(int64)
 	// agentdepositorderDescFeeAmount is the schema descriptor for fee_amount field.
 	agentdepositorderDescFeeAmount := agentdepositorderFields[9].Descriptor()
 	// agentdepositorder.DefaultFeeAmount holds the default value on creation for the fee_amount field.
@@ -435,45 +435,49 @@ func init() {
 	// agentdepositorderDescRolloverMultiplier is the schema descriptor for rollover_multiplier field.
 	agentdepositorderDescRolloverMultiplier := agentdepositorderFields[15].Descriptor()
 	// agentdepositorder.DefaultRolloverMultiplier holds the default value on creation for the rollover_multiplier field.
-	agentdepositorder.DefaultRolloverMultiplier = agentdepositorderDescRolloverMultiplier.Default.(float64)
+	agentdepositorder.DefaultRolloverMultiplier = agentdepositorderDescRolloverMultiplier.Default.(int64)
 	// agentdepositorderDescDepositType is the schema descriptor for deposit_type field.
 	agentdepositorderDescDepositType := agentdepositorderFields[16].Descriptor()
 	// agentdepositorder.DefaultDepositType holds the default value on creation for the deposit_type field.
 	agentdepositorder.DefaultDepositType = agentdepositorderDescDepositType.Default.(int8)
+	// agentdepositorderDescCreateIP is the schema descriptor for create_ip field.
+	agentdepositorderDescCreateIP := agentdepositorderFields[18].Descriptor()
+	// agentdepositorder.CreateIPValidator is a validator for the "create_ip" field. It is called by the builders before save.
+	agentdepositorder.CreateIPValidator = agentdepositorderDescCreateIP.Validators[0].(func(string) error)
 	// agentdepositorderDescOrderNo is the schema descriptor for order_no field.
-	agentdepositorderDescOrderNo := agentdepositorderFields[18].Descriptor()
+	agentdepositorderDescOrderNo := agentdepositorderFields[20].Descriptor()
 	// agentdepositorder.OrderNoValidator is a validator for the "order_no" field. It is called by the builders before save.
 	agentdepositorder.OrderNoValidator = agentdepositorderDescOrderNo.Validators[0].(func(string) error)
 	// agentdepositorderDescSiteCurrency is the schema descriptor for site_currency field.
-	agentdepositorderDescSiteCurrency := agentdepositorderFields[19].Descriptor()
+	agentdepositorderDescSiteCurrency := agentdepositorderFields[21].Descriptor()
 	// agentdepositorder.SiteCurrencyValidator is a validator for the "site_currency" field. It is called by the builders before save.
 	agentdepositorder.SiteCurrencyValidator = agentdepositorderDescSiteCurrency.Validators[0].(func(string) error)
 	// agentdepositorderDescThirdPartyOrderNo is the schema descriptor for third_party_order_no field.
-	agentdepositorderDescThirdPartyOrderNo := agentdepositorderFields[20].Descriptor()
+	agentdepositorderDescThirdPartyOrderNo := agentdepositorderFields[22].Descriptor()
 	// agentdepositorder.ThirdPartyOrderNoValidator is a validator for the "third_party_order_no" field. It is called by the builders before save.
 	agentdepositorder.ThirdPartyOrderNoValidator = agentdepositorderDescThirdPartyOrderNo.Validators[0].(func(string) error)
 	// agentdepositorderDescCreatorID is the schema descriptor for creator_id field.
-	agentdepositorderDescCreatorID := agentdepositorderFields[23].Descriptor()
+	agentdepositorderDescCreatorID := agentdepositorderFields[25].Descriptor()
 	// agentdepositorder.DefaultCreatorID holds the default value on creation for the creator_id field.
 	agentdepositorder.DefaultCreatorID = agentdepositorderDescCreatorID.Default.(int64)
 	// agentdepositorderDescCreatorType is the schema descriptor for creator_type field.
-	agentdepositorderDescCreatorType := agentdepositorderFields[24].Descriptor()
+	agentdepositorderDescCreatorType := agentdepositorderFields[26].Descriptor()
 	// agentdepositorder.DefaultCreatorType holds the default value on creation for the creator_type field.
 	agentdepositorder.DefaultCreatorType = agentdepositorderDescCreatorType.Default.(int8)
 	// agentdepositorderDescUpdaterID is the schema descriptor for updater_id field.
-	agentdepositorderDescUpdaterID := agentdepositorderFields[25].Descriptor()
+	agentdepositorderDescUpdaterID := agentdepositorderFields[27].Descriptor()
 	// agentdepositorder.DefaultUpdaterID holds the default value on creation for the updater_id field.
 	agentdepositorder.DefaultUpdaterID = agentdepositorderDescUpdaterID.Default.(int64)
 	// agentdepositorderDescUpdaterType is the schema descriptor for updater_type field.
-	agentdepositorderDescUpdaterType := agentdepositorderFields[26].Descriptor()
+	agentdepositorderDescUpdaterType := agentdepositorderFields[28].Descriptor()
 	// agentdepositorder.DefaultUpdaterType holds the default value on creation for the updater_type field.
 	agentdepositorder.DefaultUpdaterType = agentdepositorderDescUpdaterType.Default.(int8)
 	// agentdepositorderDescReviewerID is the schema descriptor for reviewer_id field.
-	agentdepositorderDescReviewerID := agentdepositorderFields[27].Descriptor()
+	agentdepositorderDescReviewerID := agentdepositorderFields[29].Descriptor()
 	// agentdepositorder.DefaultReviewerID holds the default value on creation for the reviewer_id field.
 	agentdepositorder.DefaultReviewerID = agentdepositorderDescReviewerID.Default.(int64)
 	// agentdepositorderDescReviewerUtype is the schema descriptor for reviewer_utype field.
-	agentdepositorderDescReviewerUtype := agentdepositorderFields[28].Descriptor()
+	agentdepositorderDescReviewerUtype := agentdepositorderFields[30].Descriptor()
 	// agentdepositorder.DefaultReviewerUtype holds the default value on creation for the reviewer_utype field.
 	agentdepositorder.DefaultReviewerUtype = agentdepositorderDescReviewerUtype.Default.(int8)
 	agentdepositorderauditMixin := schema.AgentDepositOrderAudit{}.Mixin()

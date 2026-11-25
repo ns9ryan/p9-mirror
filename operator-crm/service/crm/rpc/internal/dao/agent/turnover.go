@@ -25,9 +25,11 @@ var turnoverOrderNoGen = orderno.NewSnowflake(0)
 const turnoverOrderNoPrefix = "TRN"
 
 // AddTurnover 创建流水记录。
-// 消费货币固定 USDT，消费类型固定游戏（1），消费时间取当前时间，
+// 消费货币/余额货币由调用方从分站配置读取后通过 in.Currency 传入；
+// 空串时降级使用 constants.DepositCurrency（向后兼容）。
+// 消费类型固定游戏（1），消费时间取当前时间，
 // consume_amount 正数表示赢（余额增加），负数表示输（余额减少），不可为 0，
-// 消费后余额 = balance_before + consume_amount，余额货币固定 USDT，
+// 消费后余额 = balance_before + consume_amount，
 // 代理 ID 由会员归属推断，订单号内部自动生成。
 func (s *Service) AddTurnover(ctx context.Context, in *turnoverpb.AddTurnoverReq) (*turnoverpb.AddTurnoverResp, error) {
 	ctx, _, err := requireOperator(ctx)
@@ -60,15 +62,21 @@ func (s *Service) AddTurnover(ctx context.Context, in *turnoverpb.AddTurnoverReq
 	// 订单号内部生成
 	orderNo := turnoverOrderNoGen.GenerateWithPrefix(turnoverOrderNoPrefix)
 
+	// 货币编码：调用方从分站配置读取后传入，空串直接报错
+	currency := in.Currency
+	if currency == "" {
+		return nil, xerr.BadRequest(i18n.InvalidParam)
+	}
+
 	c := s.DB.Turnover.Create().
 		SetMemberID(in.MemberId).
 		SetConsumeAmount(in.ConsumeAmount).
-		SetConsumeCurrency("USDT").
+		SetConsumeCurrency(currency).
 		SetConsumeType(1).
 		SetConsumeAt(time.Now()).
 		SetBalanceBefore(in.BalanceBefore).
 		SetBalanceAfter(balanceAfter).
-		SetBalanceCurrency("USDT").
+		SetBalanceCurrency(currency).
 		SetAgentID(agentID).
 		SetOrderNo(orderNo)
 

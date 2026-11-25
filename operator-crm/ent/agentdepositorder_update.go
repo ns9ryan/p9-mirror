@@ -190,14 +190,14 @@ func (_u *AgentDepositOrderUpdate) ClearAuditStages() *AgentDepositOrderUpdate {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (_u *AgentDepositOrderUpdate) SetFeeRate(v float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) SetFeeRate(v int64) *AgentDepositOrderUpdate {
 	_u.mutation.ResetFeeRate()
 	_u.mutation.SetFeeRate(v)
 	return _u
 }
 
 // SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (_u *AgentDepositOrderUpdate) SetNillableFeeRate(v *float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) SetNillableFeeRate(v *int64) *AgentDepositOrderUpdate {
 	if v != nil {
 		_u.SetFeeRate(*v)
 	}
@@ -205,7 +205,7 @@ func (_u *AgentDepositOrderUpdate) SetNillableFeeRate(v *float64) *AgentDepositO
 }
 
 // AddFeeRate adds value to the "fee_rate" field.
-func (_u *AgentDepositOrderUpdate) AddFeeRate(v float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) AddFeeRate(v int64) *AgentDepositOrderUpdate {
 	_u.mutation.AddFeeRate(v)
 	return _u
 }
@@ -217,14 +217,14 @@ func (_u *AgentDepositOrderUpdate) ClearFeeRate() *AgentDepositOrderUpdate {
 }
 
 // SetBonusRate sets the "bonus_rate" field.
-func (_u *AgentDepositOrderUpdate) SetBonusRate(v float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) SetBonusRate(v int64) *AgentDepositOrderUpdate {
 	_u.mutation.ResetBonusRate()
 	_u.mutation.SetBonusRate(v)
 	return _u
 }
 
 // SetNillableBonusRate sets the "bonus_rate" field if the given value is not nil.
-func (_u *AgentDepositOrderUpdate) SetNillableBonusRate(v *float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) SetNillableBonusRate(v *int64) *AgentDepositOrderUpdate {
 	if v != nil {
 		_u.SetBonusRate(*v)
 	}
@@ -232,7 +232,7 @@ func (_u *AgentDepositOrderUpdate) SetNillableBonusRate(v *float64) *AgentDeposi
 }
 
 // AddBonusRate adds value to the "bonus_rate" field.
-func (_u *AgentDepositOrderUpdate) AddBonusRate(v float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) AddBonusRate(v int64) *AgentDepositOrderUpdate {
 	_u.mutation.AddBonusRate(v)
 	return _u
 }
@@ -376,14 +376,14 @@ func (_u *AgentDepositOrderUpdate) AddFeeMode(v int8) *AgentDepositOrderUpdate {
 }
 
 // SetRolloverMultiplier sets the "rollover_multiplier" field.
-func (_u *AgentDepositOrderUpdate) SetRolloverMultiplier(v float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) SetRolloverMultiplier(v int64) *AgentDepositOrderUpdate {
 	_u.mutation.ResetRolloverMultiplier()
 	_u.mutation.SetRolloverMultiplier(v)
 	return _u
 }
 
 // SetNillableRolloverMultiplier sets the "rollover_multiplier" field if the given value is not nil.
-func (_u *AgentDepositOrderUpdate) SetNillableRolloverMultiplier(v *float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) SetNillableRolloverMultiplier(v *int64) *AgentDepositOrderUpdate {
 	if v != nil {
 		_u.SetRolloverMultiplier(*v)
 	}
@@ -391,7 +391,7 @@ func (_u *AgentDepositOrderUpdate) SetNillableRolloverMultiplier(v *float64) *Ag
 }
 
 // AddRolloverMultiplier adds value to the "rollover_multiplier" field.
-func (_u *AgentDepositOrderUpdate) AddRolloverMultiplier(v float64) *AgentDepositOrderUpdate {
+func (_u *AgentDepositOrderUpdate) AddRolloverMultiplier(v int64) *AgentDepositOrderUpdate {
 	_u.mutation.AddRolloverMultiplier(v)
 	return _u
 }
@@ -414,6 +414,46 @@ func (_u *AgentDepositOrderUpdate) SetNillableDepositType(v *int8) *AgentDeposit
 // AddDepositType adds value to the "deposit_type" field.
 func (_u *AgentDepositOrderUpdate) AddDepositType(v int8) *AgentDepositOrderUpdate {
 	_u.mutation.AddDepositType(v)
+	return _u
+}
+
+// SetFinalAuditedAt sets the "final_audited_at" field.
+func (_u *AgentDepositOrderUpdate) SetFinalAuditedAt(v time.Time) *AgentDepositOrderUpdate {
+	_u.mutation.SetFinalAuditedAt(v)
+	return _u
+}
+
+// SetNillableFinalAuditedAt sets the "final_audited_at" field if the given value is not nil.
+func (_u *AgentDepositOrderUpdate) SetNillableFinalAuditedAt(v *time.Time) *AgentDepositOrderUpdate {
+	if v != nil {
+		_u.SetFinalAuditedAt(*v)
+	}
+	return _u
+}
+
+// ClearFinalAuditedAt clears the value of the "final_audited_at" field.
+func (_u *AgentDepositOrderUpdate) ClearFinalAuditedAt() *AgentDepositOrderUpdate {
+	_u.mutation.ClearFinalAuditedAt()
+	return _u
+}
+
+// SetCreateIP sets the "create_ip" field.
+func (_u *AgentDepositOrderUpdate) SetCreateIP(v string) *AgentDepositOrderUpdate {
+	_u.mutation.SetCreateIP(v)
+	return _u
+}
+
+// SetNillableCreateIP sets the "create_ip" field if the given value is not nil.
+func (_u *AgentDepositOrderUpdate) SetNillableCreateIP(v *string) *AgentDepositOrderUpdate {
+	if v != nil {
+		_u.SetCreateIP(*v)
+	}
+	return _u
+}
+
+// ClearCreateIP clears the value of the "create_ip" field.
+func (_u *AgentDepositOrderUpdate) ClearCreateIP() *AgentDepositOrderUpdate {
+	_u.mutation.ClearCreateIP()
 	return _u
 }
 
@@ -683,6 +723,26 @@ func (_u *AgentDepositOrderUpdate) ClearClaimedAt() *AgentDepositOrderUpdate {
 	return _u
 }
 
+// SetPaidAt sets the "paid_at" field.
+func (_u *AgentDepositOrderUpdate) SetPaidAt(v time.Time) *AgentDepositOrderUpdate {
+	_u.mutation.SetPaidAt(v)
+	return _u
+}
+
+// SetNillablePaidAt sets the "paid_at" field if the given value is not nil.
+func (_u *AgentDepositOrderUpdate) SetNillablePaidAt(v *time.Time) *AgentDepositOrderUpdate {
+	if v != nil {
+		_u.SetPaidAt(*v)
+	}
+	return _u
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (_u *AgentDepositOrderUpdate) ClearPaidAt() *AgentDepositOrderUpdate {
+	_u.mutation.ClearPaidAt()
+	return _u
+}
+
 // Mutation returns the AgentDepositOrderMutation object of the builder.
 func (_u *AgentDepositOrderUpdate) Mutation() *AgentDepositOrderMutation {
 	return _u.mutation
@@ -735,6 +795,11 @@ func (_u *AgentDepositOrderUpdate) check() error {
 	if v, ok := _u.mutation.DepositCurrency(); ok {
 		if err := agentdepositorder.DepositCurrencyValidator(v); err != nil {
 			return &ValidationError{Name: "deposit_currency", err: fmt.Errorf(`ent: validator failed for field "AgentDepositOrder.deposit_currency": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.CreateIP(); ok {
+		if err := agentdepositorder.CreateIPValidator(v); err != nil {
+			return &ValidationError{Name: "create_ip", err: fmt.Errorf(`ent: validator failed for field "AgentDepositOrder.create_ip": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.OrderNo(); ok {
@@ -822,22 +887,22 @@ func (_u *AgentDepositOrderUpdate) sqlSave(ctx context.Context) (_node int, err 
 		_spec.ClearField(agentdepositorder.FieldAuditStages, field.TypeInt8)
 	}
 	if value, ok := _u.mutation.FeeRate(); ok {
-		_spec.SetField(agentdepositorder.FieldFeeRate, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldFeeRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedFeeRate(); ok {
-		_spec.AddField(agentdepositorder.FieldFeeRate, field.TypeFloat64, value)
+		_spec.AddField(agentdepositorder.FieldFeeRate, field.TypeInt64, value)
 	}
 	if _u.mutation.FeeRateCleared() {
-		_spec.ClearField(agentdepositorder.FieldFeeRate, field.TypeFloat64)
+		_spec.ClearField(agentdepositorder.FieldFeeRate, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.BonusRate(); ok {
-		_spec.SetField(agentdepositorder.FieldBonusRate, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldBonusRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedBonusRate(); ok {
-		_spec.AddField(agentdepositorder.FieldBonusRate, field.TypeFloat64, value)
+		_spec.AddField(agentdepositorder.FieldBonusRate, field.TypeInt64, value)
 	}
 	if _u.mutation.BonusRateCleared() {
-		_spec.ClearField(agentdepositorder.FieldBonusRate, field.TypeFloat64)
+		_spec.ClearField(agentdepositorder.FieldBonusRate, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.FeeAmount(); ok {
 		_spec.SetField(agentdepositorder.FieldFeeAmount, field.TypeInt64, value)
@@ -879,16 +944,28 @@ func (_u *AgentDepositOrderUpdate) sqlSave(ctx context.Context) (_node int, err 
 		_spec.AddField(agentdepositorder.FieldFeeMode, field.TypeInt8, value)
 	}
 	if value, ok := _u.mutation.RolloverMultiplier(); ok {
-		_spec.SetField(agentdepositorder.FieldRolloverMultiplier, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldRolloverMultiplier, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRolloverMultiplier(); ok {
-		_spec.AddField(agentdepositorder.FieldRolloverMultiplier, field.TypeFloat64, value)
+		_spec.AddField(agentdepositorder.FieldRolloverMultiplier, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.DepositType(); ok {
 		_spec.SetField(agentdepositorder.FieldDepositType, field.TypeInt8, value)
 	}
 	if value, ok := _u.mutation.AddedDepositType(); ok {
 		_spec.AddField(agentdepositorder.FieldDepositType, field.TypeInt8, value)
+	}
+	if value, ok := _u.mutation.FinalAuditedAt(); ok {
+		_spec.SetField(agentdepositorder.FieldFinalAuditedAt, field.TypeTime, value)
+	}
+	if _u.mutation.FinalAuditedAtCleared() {
+		_spec.ClearField(agentdepositorder.FieldFinalAuditedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.CreateIP(); ok {
+		_spec.SetField(agentdepositorder.FieldCreateIP, field.TypeString, value)
+	}
+	if _u.mutation.CreateIPCleared() {
+		_spec.ClearField(agentdepositorder.FieldCreateIP, field.TypeString)
 	}
 	if value, ok := _u.mutation.Notes(); ok {
 		_spec.SetField(agentdepositorder.FieldNotes, field.TypeString, value)
@@ -967,6 +1044,12 @@ func (_u *AgentDepositOrderUpdate) sqlSave(ctx context.Context) (_node int, err 
 	}
 	if _u.mutation.ClaimedAtCleared() {
 		_spec.ClearField(agentdepositorder.FieldClaimedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.PaidAt(); ok {
+		_spec.SetField(agentdepositorder.FieldPaidAt, field.TypeTime, value)
+	}
+	if _u.mutation.PaidAtCleared() {
+		_spec.ClearField(agentdepositorder.FieldPaidAt, field.TypeTime)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -1150,14 +1233,14 @@ func (_u *AgentDepositOrderUpdateOne) ClearAuditStages() *AgentDepositOrderUpdat
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (_u *AgentDepositOrderUpdateOne) SetFeeRate(v float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) SetFeeRate(v int64) *AgentDepositOrderUpdateOne {
 	_u.mutation.ResetFeeRate()
 	_u.mutation.SetFeeRate(v)
 	return _u
 }
 
 // SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (_u *AgentDepositOrderUpdateOne) SetNillableFeeRate(v *float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) SetNillableFeeRate(v *int64) *AgentDepositOrderUpdateOne {
 	if v != nil {
 		_u.SetFeeRate(*v)
 	}
@@ -1165,7 +1248,7 @@ func (_u *AgentDepositOrderUpdateOne) SetNillableFeeRate(v *float64) *AgentDepos
 }
 
 // AddFeeRate adds value to the "fee_rate" field.
-func (_u *AgentDepositOrderUpdateOne) AddFeeRate(v float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) AddFeeRate(v int64) *AgentDepositOrderUpdateOne {
 	_u.mutation.AddFeeRate(v)
 	return _u
 }
@@ -1177,14 +1260,14 @@ func (_u *AgentDepositOrderUpdateOne) ClearFeeRate() *AgentDepositOrderUpdateOne
 }
 
 // SetBonusRate sets the "bonus_rate" field.
-func (_u *AgentDepositOrderUpdateOne) SetBonusRate(v float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) SetBonusRate(v int64) *AgentDepositOrderUpdateOne {
 	_u.mutation.ResetBonusRate()
 	_u.mutation.SetBonusRate(v)
 	return _u
 }
 
 // SetNillableBonusRate sets the "bonus_rate" field if the given value is not nil.
-func (_u *AgentDepositOrderUpdateOne) SetNillableBonusRate(v *float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) SetNillableBonusRate(v *int64) *AgentDepositOrderUpdateOne {
 	if v != nil {
 		_u.SetBonusRate(*v)
 	}
@@ -1192,7 +1275,7 @@ func (_u *AgentDepositOrderUpdateOne) SetNillableBonusRate(v *float64) *AgentDep
 }
 
 // AddBonusRate adds value to the "bonus_rate" field.
-func (_u *AgentDepositOrderUpdateOne) AddBonusRate(v float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) AddBonusRate(v int64) *AgentDepositOrderUpdateOne {
 	_u.mutation.AddBonusRate(v)
 	return _u
 }
@@ -1336,14 +1419,14 @@ func (_u *AgentDepositOrderUpdateOne) AddFeeMode(v int8) *AgentDepositOrderUpdat
 }
 
 // SetRolloverMultiplier sets the "rollover_multiplier" field.
-func (_u *AgentDepositOrderUpdateOne) SetRolloverMultiplier(v float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) SetRolloverMultiplier(v int64) *AgentDepositOrderUpdateOne {
 	_u.mutation.ResetRolloverMultiplier()
 	_u.mutation.SetRolloverMultiplier(v)
 	return _u
 }
 
 // SetNillableRolloverMultiplier sets the "rollover_multiplier" field if the given value is not nil.
-func (_u *AgentDepositOrderUpdateOne) SetNillableRolloverMultiplier(v *float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) SetNillableRolloverMultiplier(v *int64) *AgentDepositOrderUpdateOne {
 	if v != nil {
 		_u.SetRolloverMultiplier(*v)
 	}
@@ -1351,7 +1434,7 @@ func (_u *AgentDepositOrderUpdateOne) SetNillableRolloverMultiplier(v *float64) 
 }
 
 // AddRolloverMultiplier adds value to the "rollover_multiplier" field.
-func (_u *AgentDepositOrderUpdateOne) AddRolloverMultiplier(v float64) *AgentDepositOrderUpdateOne {
+func (_u *AgentDepositOrderUpdateOne) AddRolloverMultiplier(v int64) *AgentDepositOrderUpdateOne {
 	_u.mutation.AddRolloverMultiplier(v)
 	return _u
 }
@@ -1374,6 +1457,46 @@ func (_u *AgentDepositOrderUpdateOne) SetNillableDepositType(v *int8) *AgentDepo
 // AddDepositType adds value to the "deposit_type" field.
 func (_u *AgentDepositOrderUpdateOne) AddDepositType(v int8) *AgentDepositOrderUpdateOne {
 	_u.mutation.AddDepositType(v)
+	return _u
+}
+
+// SetFinalAuditedAt sets the "final_audited_at" field.
+func (_u *AgentDepositOrderUpdateOne) SetFinalAuditedAt(v time.Time) *AgentDepositOrderUpdateOne {
+	_u.mutation.SetFinalAuditedAt(v)
+	return _u
+}
+
+// SetNillableFinalAuditedAt sets the "final_audited_at" field if the given value is not nil.
+func (_u *AgentDepositOrderUpdateOne) SetNillableFinalAuditedAt(v *time.Time) *AgentDepositOrderUpdateOne {
+	if v != nil {
+		_u.SetFinalAuditedAt(*v)
+	}
+	return _u
+}
+
+// ClearFinalAuditedAt clears the value of the "final_audited_at" field.
+func (_u *AgentDepositOrderUpdateOne) ClearFinalAuditedAt() *AgentDepositOrderUpdateOne {
+	_u.mutation.ClearFinalAuditedAt()
+	return _u
+}
+
+// SetCreateIP sets the "create_ip" field.
+func (_u *AgentDepositOrderUpdateOne) SetCreateIP(v string) *AgentDepositOrderUpdateOne {
+	_u.mutation.SetCreateIP(v)
+	return _u
+}
+
+// SetNillableCreateIP sets the "create_ip" field if the given value is not nil.
+func (_u *AgentDepositOrderUpdateOne) SetNillableCreateIP(v *string) *AgentDepositOrderUpdateOne {
+	if v != nil {
+		_u.SetCreateIP(*v)
+	}
+	return _u
+}
+
+// ClearCreateIP clears the value of the "create_ip" field.
+func (_u *AgentDepositOrderUpdateOne) ClearCreateIP() *AgentDepositOrderUpdateOne {
+	_u.mutation.ClearCreateIP()
 	return _u
 }
 
@@ -1643,6 +1766,26 @@ func (_u *AgentDepositOrderUpdateOne) ClearClaimedAt() *AgentDepositOrderUpdateO
 	return _u
 }
 
+// SetPaidAt sets the "paid_at" field.
+func (_u *AgentDepositOrderUpdateOne) SetPaidAt(v time.Time) *AgentDepositOrderUpdateOne {
+	_u.mutation.SetPaidAt(v)
+	return _u
+}
+
+// SetNillablePaidAt sets the "paid_at" field if the given value is not nil.
+func (_u *AgentDepositOrderUpdateOne) SetNillablePaidAt(v *time.Time) *AgentDepositOrderUpdateOne {
+	if v != nil {
+		_u.SetPaidAt(*v)
+	}
+	return _u
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (_u *AgentDepositOrderUpdateOne) ClearPaidAt() *AgentDepositOrderUpdateOne {
+	_u.mutation.ClearPaidAt()
+	return _u
+}
+
 // Mutation returns the AgentDepositOrderMutation object of the builder.
 func (_u *AgentDepositOrderUpdateOne) Mutation() *AgentDepositOrderMutation {
 	return _u.mutation
@@ -1708,6 +1851,11 @@ func (_u *AgentDepositOrderUpdateOne) check() error {
 	if v, ok := _u.mutation.DepositCurrency(); ok {
 		if err := agentdepositorder.DepositCurrencyValidator(v); err != nil {
 			return &ValidationError{Name: "deposit_currency", err: fmt.Errorf(`ent: validator failed for field "AgentDepositOrder.deposit_currency": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.CreateIP(); ok {
+		if err := agentdepositorder.CreateIPValidator(v); err != nil {
+			return &ValidationError{Name: "create_ip", err: fmt.Errorf(`ent: validator failed for field "AgentDepositOrder.create_ip": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.OrderNo(); ok {
@@ -1812,22 +1960,22 @@ func (_u *AgentDepositOrderUpdateOne) sqlSave(ctx context.Context) (_node *Agent
 		_spec.ClearField(agentdepositorder.FieldAuditStages, field.TypeInt8)
 	}
 	if value, ok := _u.mutation.FeeRate(); ok {
-		_spec.SetField(agentdepositorder.FieldFeeRate, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldFeeRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedFeeRate(); ok {
-		_spec.AddField(agentdepositorder.FieldFeeRate, field.TypeFloat64, value)
+		_spec.AddField(agentdepositorder.FieldFeeRate, field.TypeInt64, value)
 	}
 	if _u.mutation.FeeRateCleared() {
-		_spec.ClearField(agentdepositorder.FieldFeeRate, field.TypeFloat64)
+		_spec.ClearField(agentdepositorder.FieldFeeRate, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.BonusRate(); ok {
-		_spec.SetField(agentdepositorder.FieldBonusRate, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldBonusRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedBonusRate(); ok {
-		_spec.AddField(agentdepositorder.FieldBonusRate, field.TypeFloat64, value)
+		_spec.AddField(agentdepositorder.FieldBonusRate, field.TypeInt64, value)
 	}
 	if _u.mutation.BonusRateCleared() {
-		_spec.ClearField(agentdepositorder.FieldBonusRate, field.TypeFloat64)
+		_spec.ClearField(agentdepositorder.FieldBonusRate, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.FeeAmount(); ok {
 		_spec.SetField(agentdepositorder.FieldFeeAmount, field.TypeInt64, value)
@@ -1869,16 +2017,28 @@ func (_u *AgentDepositOrderUpdateOne) sqlSave(ctx context.Context) (_node *Agent
 		_spec.AddField(agentdepositorder.FieldFeeMode, field.TypeInt8, value)
 	}
 	if value, ok := _u.mutation.RolloverMultiplier(); ok {
-		_spec.SetField(agentdepositorder.FieldRolloverMultiplier, field.TypeFloat64, value)
+		_spec.SetField(agentdepositorder.FieldRolloverMultiplier, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRolloverMultiplier(); ok {
-		_spec.AddField(agentdepositorder.FieldRolloverMultiplier, field.TypeFloat64, value)
+		_spec.AddField(agentdepositorder.FieldRolloverMultiplier, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.DepositType(); ok {
 		_spec.SetField(agentdepositorder.FieldDepositType, field.TypeInt8, value)
 	}
 	if value, ok := _u.mutation.AddedDepositType(); ok {
 		_spec.AddField(agentdepositorder.FieldDepositType, field.TypeInt8, value)
+	}
+	if value, ok := _u.mutation.FinalAuditedAt(); ok {
+		_spec.SetField(agentdepositorder.FieldFinalAuditedAt, field.TypeTime, value)
+	}
+	if _u.mutation.FinalAuditedAtCleared() {
+		_spec.ClearField(agentdepositorder.FieldFinalAuditedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.CreateIP(); ok {
+		_spec.SetField(agentdepositorder.FieldCreateIP, field.TypeString, value)
+	}
+	if _u.mutation.CreateIPCleared() {
+		_spec.ClearField(agentdepositorder.FieldCreateIP, field.TypeString)
 	}
 	if value, ok := _u.mutation.Notes(); ok {
 		_spec.SetField(agentdepositorder.FieldNotes, field.TypeString, value)
@@ -1957,6 +2117,12 @@ func (_u *AgentDepositOrderUpdateOne) sqlSave(ctx context.Context) (_node *Agent
 	}
 	if _u.mutation.ClaimedAtCleared() {
 		_spec.ClearField(agentdepositorder.FieldClaimedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.PaidAt(); ok {
+		_spec.SetField(agentdepositorder.FieldPaidAt, field.TypeTime, value)
+	}
+	if _u.mutation.PaidAtCleared() {
+		_spec.ClearField(agentdepositorder.FieldPaidAt, field.TypeTime)
 	}
 	_node = &AgentDepositOrder{config: _u.config}
 	_spec.Assign = _node.assignValues

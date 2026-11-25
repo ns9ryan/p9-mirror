@@ -46,7 +46,7 @@ func (AgentDepositOrder) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "smallint",
 			}).
-			Comment("订单状态 1:待审核 2:冻结 3:解冻 4:通过 5:拒绝 11:待一审核 12:待二审 "),
+			Comment("订单状态 1:待审核 2:冻结 3:解冻 4:通过 5:拒绝 6:支付成功 7:支付失败 8:支付拒绝 11:待一审核 12:待二审"),
 
 		field.Int64("deposit_amount").
 			Optional().
@@ -64,14 +64,14 @@ func (AgentDepositOrder) Fields() []ent.Field {
 			}).
 			Comment("需要审核的阶段数"),
 
-		field.Float("fee_rate").
+		field.Int64("fee_rate").
 			Optional().
-			Default(0.0).
-			Comment("费率"),
+			Default(0).
+			Comment("费率（百分比×100，如 10.5% 存为 1050）"),
 
-		field.Float("bonus_rate").
+		field.Int64("bonus_rate").
 			Optional().
-			Comment("奖金率"),
+			Comment("奖金率（百分比×100，如 10.5% 存为 1050）"),
 
 		field.Int64("fee_amount").
 			Default(0).
@@ -100,16 +100,29 @@ func (AgentDepositOrder) Fields() []ent.Field {
 			}).
 			Comment("费率模式"),
 
-		field.Float("rollover_multiplier").
+		field.Int64("rollover_multiplier").
 			Default(0).
-			Comment("洗码倍数"),
+			Comment("洗码倍数（×100，如 1.5 倍存为 150）"),
 
 		field.Int8("deposit_type").
 			Default(3).
 			SchemaType(map[string]string{
 				dialect.Postgres: "smallint",
 			}).
-			Comment("存款方式  1:加密货币 2:人工入账"),
+			Comment("存款方式 1:加密货币 2:人工入账 3:第三方代收"),
+
+		field.Time("final_audited_at").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{
+				dialect.Postgres: "timestamptz(3)",
+			}).
+			Comment("最终审核时间（通过或拒绝时写入，用于按审核时间搜索）"),
+
+		field.String("create_ip").
+			Optional().
+			MaxLen(45).
+			Comment("创建时客户端 IP"),
 
 		field.Text("notes").
 			Optional().
@@ -149,7 +162,7 @@ func (AgentDepositOrder) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "smallint",
 			}).
-			Comment("创建人类型 1:总网 2:分站"),
+			Comment("创建人类型 1:分站管理员 2:代理"),
 
 		field.Int64("updater_id").
 			Default(0).
@@ -160,7 +173,7 @@ func (AgentDepositOrder) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "smallint",
 			}).
-			Comment("最后更新人类型 1:总网 2:分站"),
+			Comment("最后更新人类型 1:分站管理员 2:代理"),
 
 		// ==================== 审核领取 ====================
 
@@ -173,7 +186,7 @@ func (AgentDepositOrder) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.Postgres: "smallint",
 			}).
-			Comment("领取人类型 1:总网 2:分站"),
+			Comment("领取人类型 1:分站管理员 2:代理"),
 
 		field.Time("claimed_at").
 			Optional().
@@ -182,6 +195,14 @@ func (AgentDepositOrder) Fields() []ent.Field {
 				dialect.Postgres: "timestamptz(3)",
 			}).
 			Comment("领取审核时间"),
+
+		field.Time("paid_at").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{
+				dialect.Postgres: "timestamptz(3)",
+			}).
+			Comment("支付确认时间（第三方回调/链上确认时写入）"),
 	}
 }
 
@@ -196,6 +217,11 @@ func (AgentDepositOrder) Indexes() []ent.Index {
 			StorageKey("idx_agent_deposit_order_member"),
 		index.Fields("reviewer_id", "status").
 			StorageKey("idx_agent_deposit_order_reviewer_status"),
+		index.Fields("final_audited_at").
+			StorageKey("idx_agent_deposit_order_final_audited_at"),
+		index.Fields("operator_code", "third_party_order_no").
+			Unique().
+			StorageKey("uk_agent_deposit_order_operator_third_party_order_no"),
 	}
 }
 

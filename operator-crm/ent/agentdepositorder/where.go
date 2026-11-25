@@ -105,12 +105,12 @@ func AuditStages(v int8) predicate.AgentDepositOrder {
 }
 
 // FeeRate applies equality check predicate on the "fee_rate" field. It's identical to FeeRateEQ.
-func FeeRate(v float64) predicate.AgentDepositOrder {
+func FeeRate(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldFeeRate, v))
 }
 
 // BonusRate applies equality check predicate on the "bonus_rate" field. It's identical to BonusRateEQ.
-func BonusRate(v float64) predicate.AgentDepositOrder {
+func BonusRate(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldBonusRate, v))
 }
 
@@ -145,13 +145,23 @@ func FeeMode(v int8) predicate.AgentDepositOrder {
 }
 
 // RolloverMultiplier applies equality check predicate on the "rollover_multiplier" field. It's identical to RolloverMultiplierEQ.
-func RolloverMultiplier(v float64) predicate.AgentDepositOrder {
+func RolloverMultiplier(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldRolloverMultiplier, v))
 }
 
 // DepositType applies equality check predicate on the "deposit_type" field. It's identical to DepositTypeEQ.
 func DepositType(v int8) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldDepositType, v))
+}
+
+// FinalAuditedAt applies equality check predicate on the "final_audited_at" field. It's identical to FinalAuditedAtEQ.
+func FinalAuditedAt(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldEQ(FieldFinalAuditedAt, v))
+}
+
+// CreateIP applies equality check predicate on the "create_ip" field. It's identical to CreateIPEQ.
+func CreateIP(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldEQ(FieldCreateIP, v))
 }
 
 // Notes applies equality check predicate on the "notes" field. It's identical to NotesEQ.
@@ -217,6 +227,11 @@ func ReviewerUtype(v int8) predicate.AgentDepositOrder {
 // ClaimedAt applies equality check predicate on the "claimed_at" field. It's identical to ClaimedAtEQ.
 func ClaimedAt(v time.Time) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldClaimedAt, v))
+}
+
+// PaidAt applies equality check predicate on the "paid_at" field. It's identical to PaidAtEQ.
+func PaidAt(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldEQ(FieldPaidAt, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -755,42 +770,42 @@ func AuditStagesNotNil() predicate.AgentDepositOrder {
 }
 
 // FeeRateEQ applies the EQ predicate on the "fee_rate" field.
-func FeeRateEQ(v float64) predicate.AgentDepositOrder {
+func FeeRateEQ(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldFeeRate, v))
 }
 
 // FeeRateNEQ applies the NEQ predicate on the "fee_rate" field.
-func FeeRateNEQ(v float64) predicate.AgentDepositOrder {
+func FeeRateNEQ(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldNEQ(FieldFeeRate, v))
 }
 
 // FeeRateIn applies the In predicate on the "fee_rate" field.
-func FeeRateIn(vs ...float64) predicate.AgentDepositOrder {
+func FeeRateIn(vs ...int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldIn(FieldFeeRate, vs...))
 }
 
 // FeeRateNotIn applies the NotIn predicate on the "fee_rate" field.
-func FeeRateNotIn(vs ...float64) predicate.AgentDepositOrder {
+func FeeRateNotIn(vs ...int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldNotIn(FieldFeeRate, vs...))
 }
 
 // FeeRateGT applies the GT predicate on the "fee_rate" field.
-func FeeRateGT(v float64) predicate.AgentDepositOrder {
+func FeeRateGT(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldGT(FieldFeeRate, v))
 }
 
 // FeeRateGTE applies the GTE predicate on the "fee_rate" field.
-func FeeRateGTE(v float64) predicate.AgentDepositOrder {
+func FeeRateGTE(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldGTE(FieldFeeRate, v))
 }
 
 // FeeRateLT applies the LT predicate on the "fee_rate" field.
-func FeeRateLT(v float64) predicate.AgentDepositOrder {
+func FeeRateLT(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldLT(FieldFeeRate, v))
 }
 
 // FeeRateLTE applies the LTE predicate on the "fee_rate" field.
-func FeeRateLTE(v float64) predicate.AgentDepositOrder {
+func FeeRateLTE(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldLTE(FieldFeeRate, v))
 }
 
@@ -805,42 +820,42 @@ func FeeRateNotNil() predicate.AgentDepositOrder {
 }
 
 // BonusRateEQ applies the EQ predicate on the "bonus_rate" field.
-func BonusRateEQ(v float64) predicate.AgentDepositOrder {
+func BonusRateEQ(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldBonusRate, v))
 }
 
 // BonusRateNEQ applies the NEQ predicate on the "bonus_rate" field.
-func BonusRateNEQ(v float64) predicate.AgentDepositOrder {
+func BonusRateNEQ(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldNEQ(FieldBonusRate, v))
 }
 
 // BonusRateIn applies the In predicate on the "bonus_rate" field.
-func BonusRateIn(vs ...float64) predicate.AgentDepositOrder {
+func BonusRateIn(vs ...int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldIn(FieldBonusRate, vs...))
 }
 
 // BonusRateNotIn applies the NotIn predicate on the "bonus_rate" field.
-func BonusRateNotIn(vs ...float64) predicate.AgentDepositOrder {
+func BonusRateNotIn(vs ...int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldNotIn(FieldBonusRate, vs...))
 }
 
 // BonusRateGT applies the GT predicate on the "bonus_rate" field.
-func BonusRateGT(v float64) predicate.AgentDepositOrder {
+func BonusRateGT(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldGT(FieldBonusRate, v))
 }
 
 // BonusRateGTE applies the GTE predicate on the "bonus_rate" field.
-func BonusRateGTE(v float64) predicate.AgentDepositOrder {
+func BonusRateGTE(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldGTE(FieldBonusRate, v))
 }
 
 // BonusRateLT applies the LT predicate on the "bonus_rate" field.
-func BonusRateLT(v float64) predicate.AgentDepositOrder {
+func BonusRateLT(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldLT(FieldBonusRate, v))
 }
 
 // BonusRateLTE applies the LTE predicate on the "bonus_rate" field.
-func BonusRateLTE(v float64) predicate.AgentDepositOrder {
+func BonusRateLTE(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldLTE(FieldBonusRate, v))
 }
 
@@ -1105,42 +1120,42 @@ func FeeModeLTE(v int8) predicate.AgentDepositOrder {
 }
 
 // RolloverMultiplierEQ applies the EQ predicate on the "rollover_multiplier" field.
-func RolloverMultiplierEQ(v float64) predicate.AgentDepositOrder {
+func RolloverMultiplierEQ(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldEQ(FieldRolloverMultiplier, v))
 }
 
 // RolloverMultiplierNEQ applies the NEQ predicate on the "rollover_multiplier" field.
-func RolloverMultiplierNEQ(v float64) predicate.AgentDepositOrder {
+func RolloverMultiplierNEQ(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldNEQ(FieldRolloverMultiplier, v))
 }
 
 // RolloverMultiplierIn applies the In predicate on the "rollover_multiplier" field.
-func RolloverMultiplierIn(vs ...float64) predicate.AgentDepositOrder {
+func RolloverMultiplierIn(vs ...int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldIn(FieldRolloverMultiplier, vs...))
 }
 
 // RolloverMultiplierNotIn applies the NotIn predicate on the "rollover_multiplier" field.
-func RolloverMultiplierNotIn(vs ...float64) predicate.AgentDepositOrder {
+func RolloverMultiplierNotIn(vs ...int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldNotIn(FieldRolloverMultiplier, vs...))
 }
 
 // RolloverMultiplierGT applies the GT predicate on the "rollover_multiplier" field.
-func RolloverMultiplierGT(v float64) predicate.AgentDepositOrder {
+func RolloverMultiplierGT(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldGT(FieldRolloverMultiplier, v))
 }
 
 // RolloverMultiplierGTE applies the GTE predicate on the "rollover_multiplier" field.
-func RolloverMultiplierGTE(v float64) predicate.AgentDepositOrder {
+func RolloverMultiplierGTE(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldGTE(FieldRolloverMultiplier, v))
 }
 
 // RolloverMultiplierLT applies the LT predicate on the "rollover_multiplier" field.
-func RolloverMultiplierLT(v float64) predicate.AgentDepositOrder {
+func RolloverMultiplierLT(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldLT(FieldRolloverMultiplier, v))
 }
 
 // RolloverMultiplierLTE applies the LTE predicate on the "rollover_multiplier" field.
-func RolloverMultiplierLTE(v float64) predicate.AgentDepositOrder {
+func RolloverMultiplierLTE(v int64) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldLTE(FieldRolloverMultiplier, v))
 }
 
@@ -1182,6 +1197,131 @@ func DepositTypeLT(v int8) predicate.AgentDepositOrder {
 // DepositTypeLTE applies the LTE predicate on the "deposit_type" field.
 func DepositTypeLTE(v int8) predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldLTE(FieldDepositType, v))
+}
+
+// FinalAuditedAtEQ applies the EQ predicate on the "final_audited_at" field.
+func FinalAuditedAtEQ(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldEQ(FieldFinalAuditedAt, v))
+}
+
+// FinalAuditedAtNEQ applies the NEQ predicate on the "final_audited_at" field.
+func FinalAuditedAtNEQ(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNEQ(FieldFinalAuditedAt, v))
+}
+
+// FinalAuditedAtIn applies the In predicate on the "final_audited_at" field.
+func FinalAuditedAtIn(vs ...time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldIn(FieldFinalAuditedAt, vs...))
+}
+
+// FinalAuditedAtNotIn applies the NotIn predicate on the "final_audited_at" field.
+func FinalAuditedAtNotIn(vs ...time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNotIn(FieldFinalAuditedAt, vs...))
+}
+
+// FinalAuditedAtGT applies the GT predicate on the "final_audited_at" field.
+func FinalAuditedAtGT(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldGT(FieldFinalAuditedAt, v))
+}
+
+// FinalAuditedAtGTE applies the GTE predicate on the "final_audited_at" field.
+func FinalAuditedAtGTE(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldGTE(FieldFinalAuditedAt, v))
+}
+
+// FinalAuditedAtLT applies the LT predicate on the "final_audited_at" field.
+func FinalAuditedAtLT(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldLT(FieldFinalAuditedAt, v))
+}
+
+// FinalAuditedAtLTE applies the LTE predicate on the "final_audited_at" field.
+func FinalAuditedAtLTE(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldLTE(FieldFinalAuditedAt, v))
+}
+
+// FinalAuditedAtIsNil applies the IsNil predicate on the "final_audited_at" field.
+func FinalAuditedAtIsNil() predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldIsNull(FieldFinalAuditedAt))
+}
+
+// FinalAuditedAtNotNil applies the NotNil predicate on the "final_audited_at" field.
+func FinalAuditedAtNotNil() predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNotNull(FieldFinalAuditedAt))
+}
+
+// CreateIPEQ applies the EQ predicate on the "create_ip" field.
+func CreateIPEQ(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldEQ(FieldCreateIP, v))
+}
+
+// CreateIPNEQ applies the NEQ predicate on the "create_ip" field.
+func CreateIPNEQ(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNEQ(FieldCreateIP, v))
+}
+
+// CreateIPIn applies the In predicate on the "create_ip" field.
+func CreateIPIn(vs ...string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldIn(FieldCreateIP, vs...))
+}
+
+// CreateIPNotIn applies the NotIn predicate on the "create_ip" field.
+func CreateIPNotIn(vs ...string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNotIn(FieldCreateIP, vs...))
+}
+
+// CreateIPGT applies the GT predicate on the "create_ip" field.
+func CreateIPGT(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldGT(FieldCreateIP, v))
+}
+
+// CreateIPGTE applies the GTE predicate on the "create_ip" field.
+func CreateIPGTE(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldGTE(FieldCreateIP, v))
+}
+
+// CreateIPLT applies the LT predicate on the "create_ip" field.
+func CreateIPLT(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldLT(FieldCreateIP, v))
+}
+
+// CreateIPLTE applies the LTE predicate on the "create_ip" field.
+func CreateIPLTE(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldLTE(FieldCreateIP, v))
+}
+
+// CreateIPContains applies the Contains predicate on the "create_ip" field.
+func CreateIPContains(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldContains(FieldCreateIP, v))
+}
+
+// CreateIPHasPrefix applies the HasPrefix predicate on the "create_ip" field.
+func CreateIPHasPrefix(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldHasPrefix(FieldCreateIP, v))
+}
+
+// CreateIPHasSuffix applies the HasSuffix predicate on the "create_ip" field.
+func CreateIPHasSuffix(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldHasSuffix(FieldCreateIP, v))
+}
+
+// CreateIPIsNil applies the IsNil predicate on the "create_ip" field.
+func CreateIPIsNil() predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldIsNull(FieldCreateIP))
+}
+
+// CreateIPNotNil applies the NotNil predicate on the "create_ip" field.
+func CreateIPNotNil() predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNotNull(FieldCreateIP))
+}
+
+// CreateIPEqualFold applies the EqualFold predicate on the "create_ip" field.
+func CreateIPEqualFold(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldEqualFold(FieldCreateIP, v))
+}
+
+// CreateIPContainsFold applies the ContainsFold predicate on the "create_ip" field.
+func CreateIPContainsFold(v string) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldContainsFold(FieldCreateIP, v))
 }
 
 // NotesEQ applies the EQ predicate on the "notes" field.
@@ -1922,6 +2062,56 @@ func ClaimedAtIsNil() predicate.AgentDepositOrder {
 // ClaimedAtNotNil applies the NotNil predicate on the "claimed_at" field.
 func ClaimedAtNotNil() predicate.AgentDepositOrder {
 	return predicate.AgentDepositOrder(sql.FieldNotNull(FieldClaimedAt))
+}
+
+// PaidAtEQ applies the EQ predicate on the "paid_at" field.
+func PaidAtEQ(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldEQ(FieldPaidAt, v))
+}
+
+// PaidAtNEQ applies the NEQ predicate on the "paid_at" field.
+func PaidAtNEQ(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNEQ(FieldPaidAt, v))
+}
+
+// PaidAtIn applies the In predicate on the "paid_at" field.
+func PaidAtIn(vs ...time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldIn(FieldPaidAt, vs...))
+}
+
+// PaidAtNotIn applies the NotIn predicate on the "paid_at" field.
+func PaidAtNotIn(vs ...time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNotIn(FieldPaidAt, vs...))
+}
+
+// PaidAtGT applies the GT predicate on the "paid_at" field.
+func PaidAtGT(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldGT(FieldPaidAt, v))
+}
+
+// PaidAtGTE applies the GTE predicate on the "paid_at" field.
+func PaidAtGTE(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldGTE(FieldPaidAt, v))
+}
+
+// PaidAtLT applies the LT predicate on the "paid_at" field.
+func PaidAtLT(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldLT(FieldPaidAt, v))
+}
+
+// PaidAtLTE applies the LTE predicate on the "paid_at" field.
+func PaidAtLTE(v time.Time) predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldLTE(FieldPaidAt, v))
+}
+
+// PaidAtIsNil applies the IsNil predicate on the "paid_at" field.
+func PaidAtIsNil() predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldIsNull(FieldPaidAt))
+}
+
+// PaidAtNotNil applies the NotNil predicate on the "paid_at" field.
+func PaidAtNotNil() predicate.AgentDepositOrder {
+	return predicate.AgentDepositOrder(sql.FieldNotNull(FieldPaidAt))
 }
 
 // And groups predicates with the AND operator between them.

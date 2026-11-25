@@ -7,6 +7,7 @@ import (
 	"oa.98ent.com/p9/common/ctxdata"
 	"oa.98ent.com/p9/common/xerr"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/constants"
+	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/kafka"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/internal/svc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentdepositorderpb"
 )
@@ -40,6 +41,17 @@ func (l *ApproveAgentDepositOrderLogic) ApproveAgentDepositOrder(in *agentdeposi
 		return resp, nil
 	}
 
+	// 查询会员 global_id，供调用方触发钱包入账，失败降级为空串（调用方自行处理）
+	claims := ctxdata.ClaimsFromCtx(l.ctx)
+	if claims != nil {
+		globalID, gErr := l.svcCtx.Member.GetMemberGlobalID(l.ctx, claims.OperatorCode, resp.MemberId)
+		if gErr != nil {
+			l.Errorf("[审核通过] 查询会员 global_id 失败，member_id=%d err=%v", resp.MemberId, gErr)
+		} else {
+			resp.MemberGlobalId = globalID
+		}
+	}
+
 	// 异步投递，失败只记日志不影响主流程
 	go func() {
 		asyncCtx := context.WithoutCancel(l.ctx)
@@ -48,19 +60,23 @@ func (l *ApproveAgentDepositOrderLogic) ApproveAgentDepositOrder(in *agentdeposi
 			l.Errorf("[活动事件] claims 为空，跳过事件投递: order_id=%d", in.OrderId)
 			return
 		}
-		// 查询该会员已通过的人工存款订单总数，用于活动侧首充/N充条件判断
-		depositCount, cntErr := l.svcCtx.Agent.CountMemberDepositOrders(asyncCtx, resp.MemberId, constants.DepositOrderStatusApproved)
+		// 查询该会员所有有效存款订单总数（全时间范围，status=4/6），用于活动侧首充/N充条件判断
+		_, depositCount, cntErr := l.svcCtx.Agent.GetMemberDepositSummary(asyncCtx, resp.MemberId, 0, 0)
 		if cntErr != nil {
 			l.Errorf("[活动事件] 查询存款次数失败，deposit_count 置为 0: member_id=%d err=%v", resp.MemberId, cntErr)
 		}
 		l.svcCtx.KafkaEventHandler.PublishDepositOrderApprovedEvent(
 			asyncCtx,
-			claims.OperatorCode,
-			resp.MemberId,
-			in.OrderId,
-			resp.DepositAmount,
-			constants.DepositCurrency,
-			depositCount,
+			kafka.DepositApprovedEventInput{
+				OperatorCode:   claims.OperatorCode,
+				MemberID:       resp.MemberId,
+				OrderID:        in.OrderId,
+				Amount:         resp.DepositAmount,
+				Currency:       constants.DepositCurrency,
+				DepositCount:   int(depositCount),
+				ClientType:     constants.ClientTypePCWeb,
+				MemberGlobalID: resp.MemberGlobalId,
+			},
 		)
 	}()
 
