@@ -44,3 +44,27 @@ message GetBalanceResponse {
   // 钱包状态版本
   int64 version = 6;
 }
+
+// 批量查询会员钱包余额请求
+message BatchGetBalancesRequest {
+  // CRM会员全局唯一标识, 最多100个
+  repeated string member_global_ids = 1;
+}
+
+// 会员钱包余额项
+message MemberWalletBalanceItem {
+  // CRM会员全局唯一标识
+  string member_global_id = 1;
+  // 可用余额
+  int64 balance = 2;
+  // 冻结余额
+  int64 frozen_balance = 3;
+  // 游戏未结算余额
+  int64 unsettled_balance = 4;
+}
+
+// 批量查询会员钱包余额响应
+message BatchGetBalancesResponse {
+  // 已存在钱包的余额列表, 未创建钱包的会员不返回
+  repeated MemberWalletBalanceItem balances = 1;
+}

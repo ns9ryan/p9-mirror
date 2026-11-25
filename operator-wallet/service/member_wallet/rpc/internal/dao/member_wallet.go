@@ -28,6 +28,14 @@ type CreateWalletParams struct {
 	CurrencyCode   string    // 钱包结算币种编码
 }
 
+// MemberWalletBalance 会员钱包余额
+type MemberWalletBalance struct {
+	MemberGlobalID   uuid.UUID // 会员全局唯一标识
+	Balance          int64     // 可用余额
+	FrozenBalance    int64     // 冻结余额
+	UnsettledBalance int64     // 游戏未结算余额
+}
+
 // CreateOrGet 创建会员钱包, 已存在且信息一致时返回原钱包
 func (d *MemberWallet) CreateOrGet(ctx context.Context, in CreateWalletParams) (*ent.MemberWallet, error) {
 	// 首次创建使用 Ent 默认值初始化余额、版本和钱包全局标识
@@ -88,6 +96,33 @@ func (d *MemberWallet) GetByMemberGlobalID(ctx context.Context, memberGlobalID u
 	return d.db.MemberWallet.Query().
 		Where(memberwallet.MemberGlobalIDEQ(memberGlobalID)). // CRM会员全局唯一标识
 		Only(ctx)
+}
+
+// ListBalancesByMemberGlobalIDs 批量查询当前厅会员钱包余额
+func (d *MemberWallet) ListBalancesByMemberGlobalIDs(ctx context.Context, memberGlobalIDs []uuid.UUID) ([]MemberWalletBalance, error) {
+	if len(memberGlobalIDs) == 0 {
+		return []MemberWalletBalance{}, nil
+	}
+
+	// Ent 拦截器根据可信 Context 自动追加厅隔离条件
+	wallets, err := d.db.MemberWallet.Query().
+		Where(memberwallet.MemberGlobalIDIn(memberGlobalIDs...)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list member wallet balances: %w", err)
+	}
+
+	balances := make([]MemberWalletBalance, 0, len(wallets))
+	for _, w := range wallets {
+		balances = append(balances, MemberWalletBalance{
+			MemberGlobalID:   w.MemberGlobalID,   // 会员全局唯一标识
+			Balance:          w.Balance,          // 可用余额
+			FrozenBalance:    w.FrozenBalance,    // 冻结余额
+			UnsettledBalance: w.UnsettledBalance, // 游戏未结算余额
+		})
+	}
+
+	return balances, nil
 }
 
 // GetForUpdateTx 查询并锁定会员钱包

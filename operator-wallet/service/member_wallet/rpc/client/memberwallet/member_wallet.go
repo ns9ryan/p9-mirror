@@ -25,6 +25,8 @@ type (
 		CreateWallet(ctx context.Context, in *managepb.CreateWalletRequest, opts ...grpc.CallOption) (*managepb.CreateWalletResponse, error)
 		// 查询会员钱包余额
 		GetBalance(ctx context.Context, in *managepb.GetBalanceRequest, opts ...grpc.CallOption) (*managepb.GetBalanceResponse, error)
+		// 批量查询会员钱包余额, 只读取数据库
+		BatchGetBalances(ctx context.Context, in *managepb.BatchGetBalancesRequest, opts ...grpc.CallOption) (*managepb.BatchGetBalancesResponse, error)
 		// 存款本金入账
 		DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest, opts ...grpc.CallOption) (*depositpb.DepositCreditResponse, error)
 		// 存款赠送入账
@@ -80,6 +82,12 @@ func (m *defaultMemberWallet) CreateWallet(ctx context.Context, in *managepb.Cre
 func (m *defaultMemberWallet) GetBalance(ctx context.Context, in *managepb.GetBalanceRequest, opts ...grpc.CallOption) (*managepb.GetBalanceResponse, error) {
 	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
 	return client.GetBalance(ctx, in, opts...)
+}
+
+// 批量查询会员钱包余额, 只读取数据库
+func (m *defaultMemberWallet) BatchGetBalances(ctx context.Context, in *managepb.BatchGetBalancesRequest, opts ...grpc.CallOption) (*managepb.BatchGetBalancesResponse, error) {
+	client := memberwalletrpc.NewMemberWalletClient(m.cli.Conn())
+	return client.BatchGetBalances(ctx, in, opts...)
 }
 
 // 存款本金入账

@@ -40,6 +40,12 @@ func (s *MemberWalletServer) GetBalance(ctx context.Context, in *managepb.GetBal
 	return l.GetBalance(in)
 }
 
+// 批量查询会员钱包余额, 只读取数据库
+func (s *MemberWalletServer) BatchGetBalances(ctx context.Context, in *managepb.BatchGetBalancesRequest) (*managepb.BatchGetBalancesResponse, error) {
+	l := memberwalletlogic.NewBatchGetBalancesLogic(ctx, s.svcCtx)
+	return l.BatchGetBalances(in)
+}
+
 // 存款本金入账
 func (s *MemberWalletServer) DepositCredit(ctx context.Context, in *depositpb.DepositCreditRequest) (*depositpb.DepositCreditResponse, error) {
 	l := memberwalletlogic.NewDepositCreditLogic(ctx, s.svcCtx)

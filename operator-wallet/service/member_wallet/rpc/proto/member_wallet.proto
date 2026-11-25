@@ -33,6 +33,9 @@ service MemberWallet {
   // 查询会员钱包余额
   rpc GetBalance(member_wallet_manage.GetBalanceRequest) returns (member_wallet_manage.GetBalanceResponse);
 
+  // 批量查询会员钱包余额, 只读取数据库
+  rpc BatchGetBalances(member_wallet_manage.BatchGetBalancesRequest) returns (member_wallet_manage.BatchGetBalancesResponse);
+
   // ==================== 存款 ====================
 
   // 存款本金入账
