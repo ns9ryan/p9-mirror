@@ -144,6 +144,69 @@ func (e *engine) getOrCreate(state State) (*actor, error) {
 	return e.shards[index].getOrCreate(state)
 }
 
+// getBalance 向指定钱包提交余额查询, 并等待 Actor 返回快照
+func (e *engine) getBalance(ctx context.Context, walletGlobalID uuid.UUID) (BalanceSnapshot, error) {
+	if e == nil {
+		return BalanceSnapshot{}, errNilEngine
+	}
+	if ctx == nil {
+		return BalanceSnapshot{}, errNilEngineContext
+	}
+	if err := ctx.Err(); err != nil {
+		return BalanceSnapshot{}, err
+	}
+
+	// 读锁保护钱包查找和消息入队, 避免与 Engine 关闭交错
+	e.mu.RLock()
+
+	if e.closed {
+		e.mu.RUnlock()
+		return BalanceSnapshot{}, ErrEngineClosed
+	}
+
+	index, err := e.router.route(walletGlobalID)
+	if err != nil {
+		e.mu.RUnlock()
+		return BalanceSnapshot{}, err
+	}
+
+	a, err := e.shards[index].get(walletGlobalID)
+	if err != nil {
+		e.mu.RUnlock()
+		return BalanceSnapshot{}, err
+	}
+	if a == nil {
+		e.mu.RUnlock()
+		return BalanceSnapshot{}, ErrWalletActorNotFound
+	}
+
+	// 余额查询进入钱包 Mailbox, 与资金操作保持串行
+	message := newBalanceQueryMessage()
+	err = a.enqueue(ctx, message)
+
+	e.mu.RUnlock()
+
+	if err != nil {
+		return BalanceSnapshot{}, err
+	}
+
+	// 消息已被 Actor 接管, Context 只控制当前调用方的等待
+	select {
+	case reply := <-message.reply:
+		return reply.result, reply.err
+
+	case <-ctx.Done():
+		// Context 取消时, 优先检查 Actor 是否已经返回结果
+		select {
+		case reply := <-message.reply:
+			return reply.result, reply.err
+
+		default:
+			return BalanceSnapshot{}, ctx.Err()
+		}
+	}
+}
+
 // submit 向指定钱包提交资金操作, 并等待 Actor 返回处理结果
 func (e *engine) submit(ctx context.Context, walletGlobalID uuid.UUID, params RecordParams) (OperationResult, error) {
 	if e == nil {

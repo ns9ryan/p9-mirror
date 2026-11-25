@@ -34,10 +34,26 @@ func newOperationHandler(ctx context.Context, producer eventProducer, publishTim
 	return h.handle, nil
 }
 
-// handle 串行处理一笔资金操作
+// handle 串行处理钱包资金操作和余额查询
 func (h *operationHandler) handle(state *State, message any) {
-	m, ok := message.(operationMessage)
-	if !ok || m.reply == nil {
+	switch m := message.(type) {
+	case operationMessage:
+		h.handleOperation(state, m)
+
+	case balanceQueryMessage:
+		if m.reply == nil {
+			return
+		}
+
+		m.reply <- balanceQueryReply{
+			result: newBalanceSnapshot(*state),
+		}
+	}
+}
+
+// handleOperation 串行处理一笔资金操作
+func (h *operationHandler) handleOperation(state *State, m operationMessage) {
+	if m.reply == nil {
 		return
 	}
 

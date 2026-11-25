@@ -159,3 +159,12 @@ func (e *Engine) Close(ctx context.Context) error {
 
 	return waitErr
 }
+
+// GetBalance 查询指定钱包当前运行时余额
+func (e *Engine) GetBalance(ctx context.Context, walletGlobalID uuid.UUID) (BalanceSnapshot, error) {
+	if e == nil || e.core == nil {
+		return BalanceSnapshot{}, errNilEngine
+	}
+
+	return e.core.getBalance(ctx, walletGlobalID)
+}
