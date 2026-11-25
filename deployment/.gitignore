@@ -1,0 +1,40 @@
+# 环境变量文件
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# 敏感凭据
+secrets/
+*.secret
+*.secrets
+*.secrets.*
+
+# SSH 私钥及证书密钥
+id_rsa
+id_ed25519
+id_ecdsa
+id_dsa
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.ppk
+
+# 运行文件
+*.log
+*.pid
+*.sock
+
+# 编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
