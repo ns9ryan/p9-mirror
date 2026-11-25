@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"oa.98ent.com/p9/member-wallet-loadtest/internal/partition"
 	"oa.98ent.com/p9/member-wallet-loadtest/internal/setup"
 	"oa.98ent.com/p9/member-wallet-loadtest/internal/wallet"
 )
@@ -29,9 +30,11 @@ func run() error {
 	currencyCode := flag.String("currency-code", "USDT", "钱包结算币种")
 	walletCount := flag.Int("wallets", 128, "测试钱包数量")
 	memberIDStart := flag.Int64("member-id-start", 9000000001, "测试会员起始ID")
+	partitionCount := flag.Int("partitions", 32, "Kafka Topic 分区数量")
 
 	flag.Parse()
 
+	// 参数校验
 	if *addr == "" {
 		return fmt.Errorf("missing required argument: -addr")
 	}
@@ -40,6 +43,9 @@ func run() error {
 	}
 	if *mode != "ping" && *mode != "prepare" {
 		return fmt.Errorf("unsupported mode: %s", *mode)
+	}
+	if *partitionCount <= 0 {
+		return fmt.Errorf("partition count must be greater than zero")
 	}
 
 	// 创建会员钱包 RPC 客户端
@@ -93,6 +99,18 @@ func run() error {
 		return err
 	}
 
+	// 提取钱包全局标识
+	walletGlobalIDs := make([]string, len(wallets))
+	for i, w := range wallets {
+		walletGlobalIDs[i] = w.WalletGlobalID
+	}
+
+	// 计算各 Partition 的钱包分布
+	distribution, err := partition.Distribution(walletGlobalIDs, *partitionCount)
+	if err != nil {
+		return fmt.Errorf("统计钱包 Partition 分布失败: %w", err)
+	}
+
 	// 输出测试数据准备结果
 	_, _ = fmt.Printf("\n测试钱包准备完成\n")
 	_, _ = fmt.Printf("所属厅:   %s\n", *operatorCode)
@@ -109,6 +127,28 @@ func run() error {
 	_, _ = fmt.Printf("WalletGlobalID: %s\n", first.WalletGlobalID)
 	_, _ = fmt.Printf("Balance:        %d\n", first.Balance)
 	_, _ = fmt.Printf("Version:        %d\n", first.Version)
+
+	// 输出 Partition 分布
+	covered := 0
+	missing := make([]int, 0)
+
+	_, _ = fmt.Printf("\n目标 Partition 分布:\n")
+
+	for index, count := range distribution {
+		_, _ = fmt.Printf("Partition %02d: %d 个钱包\n", index, count)
+
+		if count > 0 {
+			covered++
+		} else {
+			missing = append(missing, index)
+		}
+	}
+
+	_, _ = fmt.Printf("\n分区覆盖: %d/%d\n", covered, *partitionCount)
+
+	if len(missing) > 0 {
+		_, _ = fmt.Printf("未覆盖分区: %v\n", missing)
+	}
 
 	return nil
 }
