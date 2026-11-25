@@ -43,8 +43,12 @@ func (l *ListTurnoversLogic) ListTurnovers(req *types.ListTurnoversReq) (*types.
 	if err != nil {
 		return nil, err
 	}
+	_, amountFactor, err := agentconv.GetSiteCurrency(l.ctx, l.svcCtx)
+	if err != nil {
+		return nil, err
+	}
 	return &types.ListTurnoversResp{
-		List:  agentconv.TurnoverListItemsFromPB(rpcResp.GetList()),
+		List:  agentconv.TurnoverListItemsFromPB(rpcResp.GetList(), amountFactor),
 		Total: rpcResp.GetTotal(),
 	}, nil
 }

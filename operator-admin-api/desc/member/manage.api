@@ -3,32 +3,31 @@ syntax = "v1"
 import "../common.api"
 
 type (
-    UpdateMemberStatusRequest {
-        MemberId int64 `json:"member_id" validate:"required,gt=0"`
-        Status int64 `json:"status" validate:"required,oneof=1 2 3"`
-    }
-    ResetMemberAuthErrorsRequest {
-        MemberId int64 `json:"member_id" validate:"required,gt=0"`
-        Field string `json:"field" validate:"required,oneof=sms_code_error_count email_code_error_count login_password_error_count withdrawal_password_error_count"`
-    }
-    UpdateMemberRemarkRequest {
-        MemberId int64 `json:"member_id" validate:"required,gt=0"`
-        Remark string `json:"remark" validate:"max=200"`
-    }
-    UpdateMemberSwitchRequest {
-        MemberId int64 `json:"member_id" validate:"required,gt=0"`
-        Disabled *bool `json:"disabled" validate:"required"`
-    }
-
-    UpdateMemberAutoLevelRequest {
-        MemberId int64 `json:"member_id" validate:"required,gt=0"`
-        AutoLevelId int64 `json:"auto_level_id" validate:"required,gt=0"`
-    }
-    // 全量替换，传空数组清空固定层级
-    UpdateMemberFixedLevelsRequest {
-        MemberId int64 `json:"member_id" validate:"required,gt=0"`
-        FixedLevelIds []int64 `json:"fixed_level_ids" validate:"max=100,dive,gt=0"`
-    }
+	UpdateMemberStatusRequest {
+		MemberId int64 `json:"member_id" validate:"required,gt=0"`
+		Status   int64 `json:"status" validate:"required,oneof=1 2 3"`
+	}
+	ResetMemberAuthErrorsRequest {
+		MemberId int64  `json:"member_id" validate:"required,gt=0"`
+		Field    string `json:"field" validate:"required,oneof=sms_code_error_count email_code_error_count login_password_error_count withdrawal_password_error_count"`
+	}
+	UpdateMemberRemarkRequest {
+		MemberId int64  `json:"member_id" validate:"required,gt=0"`
+		Remark   string `json:"remark" validate:"max=200"`
+	}
+	UpdateMemberSwitchRequest {
+		MemberId int64 `json:"member_id" validate:"required,gt=0"`
+		Disabled *bool `json:"disabled" validate:"required"`
+	}
+	UpdateMemberAutoLevelRequest {
+		MemberId    int64 `json:"member_id" validate:"required,gt=0"`
+		AutoLevelId int64 `json:"auto_level_id" validate:"required,gt=0"`
+	}
+	// 全量替换，传空数组清空固定层级
+	UpdateMemberFixedLevelsRequest {
+		MemberId      int64   `json:"member_id" validate:"required,gt=0"`
+		FixedLevelIds []int64 `json:"fixed_level_ids" validate:"max=100,dive,gt=0"`
+	}
 	// 创建会员请求
 	CreateMemberRequest {
 		// 会员登录账号, 4-20位
@@ -205,6 +204,13 @@ type (
 		// ==================== 会员统计 ====================
 		// 会员累计及当前结算周期统计
 		Stats MemberStatsInfo `json:"stats"`
+		// ==================== 钱包余额 ====================
+		// 可用余额, 按币种最小单位
+		Balance *int64 `json:"balance"`
+		// 冻结余额, 按币种最小单位
+		FrozenBalance *int64 `json:"frozen_balance"`
+		// 游戏未结算余额, 按币种最小单位
+		Unsettled *int64 `json:"unsettled"`
 	}
 	// 会员列表响应
 	ListMembersResponse {
@@ -316,39 +322,39 @@ type (
 	middleware: Jwt,ActionLog,Authority
 )
 service operator_admin_api {
- @handler ListMemberContactBindingCodes
- get /contact/binding-codes/list (ListMemberContactBindingCodesRequest) returns (ListMemberContactBindingCodesResponse)
+	@handler ListMemberContactBindingCodes
+	get /contact/binding-codes/list (ListMemberContactBindingCodesRequest) returns (ListMemberContactBindingCodesResponse)
 
+	@handler UpdateContact
+	post /contact/update (UpdateMemberContactRequest) returns (EmptyResponse)
 
- @handler UpdateContact
- post /contact/update (UpdateMemberContactRequest) returns (EmptyResponse)
- @handler ListImages
- get /images returns (ListMemberImagesResponse)
+	@handler ListImages
+	get /images returns (ListMemberImagesResponse)
 
-    @handler UpdateStatus
-    post /status/update (UpdateMemberStatusRequest) returns (EmptyResponse)
+	@handler UpdateStatus
+	post /status/update (UpdateMemberStatusRequest) returns (EmptyResponse)
 
-    @handler ResetAuthErrors
-    post /auth/errors/reset (ResetMemberAuthErrorsRequest) returns (EmptyResponse)
+	@handler ResetAuthErrors
+	post /auth/errors/reset (ResetMemberAuthErrorsRequest) returns (EmptyResponse)
 
-    @handler UpdateRemark
-    post /remark/update (UpdateMemberRemarkRequest) returns (EmptyResponse)
+	@handler UpdateRemark
+	post /remark/update (UpdateMemberRemarkRequest) returns (EmptyResponse)
 
-    @handler UpdateChat
-    post /chat/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
+	@handler UpdateChat
+	post /chat/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
 
-    @handler UpdateBetting
-    post /betting/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
+	@handler UpdateBetting
+	post /betting/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
 
-    @handler UpdateWithdrawal
-    post /withdrawal/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
+	@handler UpdateWithdrawal
+	post /withdrawal/update (UpdateMemberSwitchRequest) returns (EmptyResponse)
 
+	@handler UpdateAutoLevel
+	post /level/auto/update (UpdateMemberAutoLevelRequest) returns (EmptyResponse)
 
-    @handler UpdateAutoLevel
-    post /level/auto/update (UpdateMemberAutoLevelRequest) returns (EmptyResponse)
+	@handler UpdateFixedLevels
+	post /level/fixed/update (UpdateMemberFixedLevelsRequest) returns (EmptyResponse)
 
-    @handler UpdateFixedLevels
-    post /level/fixed/update (UpdateMemberFixedLevelsRequest) returns (EmptyResponse)
 	// 创建会员
 	@handler Create
 	post /create (CreateMemberRequest) returns (CreateMemberResponse)
@@ -366,65 +372,67 @@ service operator_admin_api {
 	get /search/code (SearchMembersByCodeRequest) returns (SearchMembersByCodeResponse)
 }
 
-
 type UpdateMemberContactRequest {
- MemberId int64 `json:"member_id"`
- AvatarId *int64 `json:"avatar_id,optional"`
- AvatarFrameId *int64 `json:"avatar_frame_id,optional"`
- Nickname *string `json:"nickname,optional"`
- RealName *string `json:"real_name,optional"`
- Phone *string `json:"phone,optional"`
- IdentityNumber *string `json:"identity_number,optional"`
- Email *string `json:"email,optional"`
- PhoneVerification *ContactBindingCodeProof `json:"phone_verification,optional"`
- EmailVerification *ContactBindingCodeProof `json:"email_verification,optional"`
+	MemberId          int64                    `json:"member_id"`
+	AvatarId          *int64                   `json:"avatar_id,optional"`
+	AvatarFrameId     *int64                   `json:"avatar_frame_id,optional"`
+	Nickname          *string                  `json:"nickname,optional"`
+	RealName          *string                  `json:"real_name,optional"`
+	Phone             *string                  `json:"phone,optional"`
+	IdentityNumber    *string                  `json:"identity_number,optional"`
+	Email             *string                  `json:"email,optional"`
+	PhoneVerification *ContactBindingCodeProof `json:"phone_verification,optional"`
+	EmailVerification *ContactBindingCodeProof `json:"email_verification,optional"`
 }
 
 type ContactBindingCodeProof {
- RecordId int64 `json:"record_id"`
- VerificationCode string `json:"verification_code"`
+	RecordId         int64  `json:"record_id"`
+	VerificationCode string `json:"verification_code"`
 }
+
 type SendMemberContactBindingCodeRequest {
- MemberId int64 `json:"member_id"`
- Channel int32 `json:"channel"`
- Target string `json:"target"`
+	MemberId int64  `json:"member_id"`
+	Channel  int32  `json:"channel"`
+	Target   string `json:"target"`
 }
+
 type SendMemberContactBindingCodeResponse {
- RecordId int64 `json:"record_id"`
- ExpiresAt int64 `json:"expires_at"`
+	RecordId  int64 `json:"record_id"`
+	ExpiresAt int64 `json:"expires_at"`
 }
+
 type MemberImageResource {
- Id int64 `json:"id"`
- ImageUrl string `json:"image_url"`
+	Id       int64  `json:"id"`
+	ImageUrl string `json:"image_url"`
 }
+
 type ListMemberImagesResponse {
- Avatars []MemberImageResource `json:"avatars"`
- AvatarFrames []MemberImageResource `json:"avatar_frames"`
+	Avatars      []MemberImageResource `json:"avatars"`
+	AvatarFrames []MemberImageResource `json:"avatar_frames"`
 }
 
 type (
-    BatchCreateMembersRequest {
-        AccountPrefix string `json:"account_prefix,optional"`
-        AccountSuffix string `json:"account_suffix,optional"`
-        Count int32 `json:"count"`
-        AgentId int64 `json:"agent_id"`
-    }
-    BatchCreatedMember {
-        Id int64 `json:"id"`
-        Code string `json:"code"`
-        Account string `json:"account"`
-    }
-    BatchCreateMembersResponse {
-        Members []BatchCreatedMember `json:"members"`
-    }
+	BatchCreateMembersRequest {
+		AccountPrefix string `json:"account_prefix,optional"`
+		AccountSuffix string `json:"account_suffix,optional"`
+		Count         int32  `json:"count"`
+		AgentId       int64  `json:"agent_id"`
+	}
+	BatchCreatedMember {
+		Id      int64  `json:"id"`
+		Code    string `json:"code"`
+		Account string `json:"account"`
+	}
+	BatchCreateMembersResponse {
+		Members []BatchCreatedMember `json:"members"`
+	}
 )
 
-
 @server (
-    group:      member/manage
-    prefix:     /member
-    middleware: Jwt,ActionLog,Authority
-    timeout:    600s
+	group:      member/manage
+	prefix:     /member
+	middleware: Jwt,ActionLog,Authority
+	timeout:    600s
 )
 service operator_admin_api {
 	// 批量创建会员
@@ -433,86 +441,91 @@ service operator_admin_api {
 }
 
 type ListMemberContactBindingCodesRequest {
- Page int64 `form:"page,optional"`
- PageSize int64 `form:"page_size,optional"`
- Id int64 `form:"id,optional"`
- MemberId int64 `form:"member_id,optional"`
- Channel int32 `form:"channel,optional"`
- Status *int32 `form:"status,optional"`
- CreatedFrom int64 `form:"created_from,optional"`
- CreatedBefore int64 `form:"created_before,optional"`
- }
-type MemberContactBindingCodeItem {
- VerificationCode string `json:"verification_code"`
- Id int64 `json:"id"`
- MemberId int64 `json:"member_id"`
- Channel int32 `json:"channel"`
- Status int32 `json:"status"`
- FailedAttempts int32 `json:"failed_attempts"`
- CreatedAt int64 `json:"created_at"`
- SentAt int64 `json:"sent_at"`
- ExpiresAt int64 `json:"expires_at"`
- UsedAt int64 `json:"used_at"`
+	Page          int64  `form:"page,optional"`
+	PageSize      int64  `form:"page_size,optional"`
+	Id            int64  `form:"id,optional"`
+	MemberId      int64  `form:"member_id,optional"`
+	Channel       int32  `form:"channel,optional"`
+	Status        *int32 `form:"status,optional"`
+	CreatedFrom   int64  `form:"created_from,optional"`
+	CreatedBefore int64  `form:"created_before,optional"`
 }
+
+type MemberContactBindingCodeItem {
+	VerificationCode string `json:"verification_code"`
+	Id               int64  `json:"id"`
+	MemberId         int64  `json:"member_id"`
+	Channel          int32  `json:"channel"`
+	Status           int32  `json:"status"`
+	FailedAttempts   int32  `json:"failed_attempts"`
+	CreatedAt        int64  `json:"created_at"`
+	SentAt           int64  `json:"sent_at"`
+	ExpiresAt        int64  `json:"expires_at"`
+	UsedAt           int64  `json:"used_at"`
+}
+
 type ListMemberContactBindingCodesResponse {
- Total int64 `json:"total"`
- List []MemberContactBindingCodeItem `json:"list"`
+	Total int64                          `json:"total"`
+	List  []MemberContactBindingCodeItem `json:"list"`
 }
 
 @server (
-    group: member/manage
-    prefix: /member
-    middleware: Jwt,ActionLog,Authority
-    timeout: 45s
+	group:      member/manage
+	prefix:     /member
+	middleware: Jwt,ActionLog,Authority
+	timeout:    45s
 )
 service operator_admin_api {
-    @handler SendMemberContactBindingCode
-    post /contact/binding-codes/send (SendMemberContactBindingCodeRequest) returns (SendMemberContactBindingCodeResponse)
+	@handler SendMemberContactBindingCode
+	post /contact/binding-codes/send (SendMemberContactBindingCodeRequest) returns (SendMemberContactBindingCodeResponse)
 }
 
 // 私有csv导出. 未知请求体会被拒绝
 type ExportMembersRequest {
- Columns []string `json:"columns,optional"` // Omitted or empty: all default columns; otherwise preserve requested order.
-		Keyword string `json:"keyword,optional"`
-		TimeType int32 `json:"time_type,optional"`
-		StartAt *int64 `json:"start_at,optional"`
-		EndAt *int64 `json:"end_at,optional"`
-		AutoLevelId *int64 `json:"auto_level_id,optional"`
-		FixedLevelId *int64 `json:"fixed_level_id,optional"`
-		RegisterMethod *string `json:"register_method,optional"`
-		RegisterChannel *string `json:"register_channel,optional"`
-		Status *int64 `json:"status,optional"`
-		AgentId *int64 `json:"agent_id,optional"`
-		BettingDisabled bool `json:"betting_disabled,optional"`
-		NoPhone bool `json:"no_phone,optional"`
-		NoEmail bool `json:"no_email,optional"`
-		Deposited bool `json:"deposited,optional"`
-		NotDeposited bool `json:"not_deposited,optional"`
- FilterIp string `json:"filter_ip,optional"`
- FilterDevice string `json:"filter_device,optional"`
- PUsername string `json:"p_username,optional"`
- AgentType int32 `json:"agent_type,optional"`
- // 是否包含试玩会员；默认 false，仍排除试玩。
- IncludeDemo bool `json:"include_demo,optional"`
- RangeTodayDeposit []string `json:"range_today_deposit,optional"`
- RangeTodayWithdraw []string `json:"range_today_withdraw,optional"`
+	Columns         []string `json:"columns,optional"` // Omitted or empty: all default columns; otherwise preserve requested order.
+	Keyword         string   `json:"keyword,optional"`
+	TimeType        int32    `json:"time_type,optional"`
+	StartAt         *int64   `json:"start_at,optional"`
+	EndAt           *int64   `json:"end_at,optional"`
+	AutoLevelId     *int64   `json:"auto_level_id,optional"`
+	FixedLevelId    *int64   `json:"fixed_level_id,optional"`
+	RegisterMethod  *string  `json:"register_method,optional"`
+	RegisterChannel *string  `json:"register_channel,optional"`
+	Status          *int64   `json:"status,optional"`
+	AgentId         *int64   `json:"agent_id,optional"`
+	BettingDisabled bool     `json:"betting_disabled,optional"`
+	NoPhone         bool     `json:"no_phone,optional"`
+	NoEmail         bool     `json:"no_email,optional"`
+	Deposited       bool     `json:"deposited,optional"`
+	NotDeposited    bool     `json:"not_deposited,optional"`
+	FilterIp        string   `json:"filter_ip,optional"`
+	FilterDevice    string   `json:"filter_device,optional"`
+	PUsername       string   `json:"p_username,optional"`
+	AgentType       int32    `json:"agent_type,optional"`
+	// 是否包含试玩会员；默认 false，仍排除试玩。
+	IncludeDemo        bool     `json:"include_demo,optional"`
+	RangeTodayDeposit  []string `json:"range_today_deposit,optional"`
+	RangeTodayWithdraw []string `json:"range_today_withdraw,optional"`
 }
+
 type ExportMembersResponse {
- TaskId string `json:"task_id"`
- Url string `json:"url"`
- Key string `json:"key"`
- Rows int64 `json:"rows"`
- StartedAt int64 `json:"started_at"`
- ExpiresAt int64 `json:"expires_at"`
- Visibility string `json:"visibility"`
+	TaskId     string `json:"task_id"`
+	Url        string `json:"url"`
+	Key        string `json:"key"`
+	Rows       int64  `json:"rows"`
+	StartedAt  int64  `json:"started_at"`
+	ExpiresAt  int64  `json:"expires_at"`
+	Visibility string `json:"visibility"`
 }
+
 @server (
- group: member/manage
- prefix: /member
- middleware: Jwt,ActionLog,Authority
- timeout: 45s
+	group:      member/manage
+	prefix:     /member
+	middleware: Jwt,ActionLog,Authority
+	timeout:    45s
 )
 service operator_admin_api {
- @handler Export
- post /export/v2 (ExportMembersRequest) returns (ExportMembersResponse)
+	@handler Export
+	post /export/v2 (ExportMembersRequest) returns (ExportMembersResponse)
 }
+

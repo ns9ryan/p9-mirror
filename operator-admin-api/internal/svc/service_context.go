@@ -34,6 +34,7 @@ import (
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/memberexportpb"
 	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/client/memberwallet"
+	"oa.98ent.com/p9/platform-base/rpc/client/currencyservice"
 	"oa.98ent.com/p9/platform-base/rpc/client/vipdefaulticonservice"
 )
 
@@ -68,6 +69,8 @@ type ServiceContext struct {
 	TaskServiceRpc taskservice.TaskService // 任务配置RPC
 	// 总站素材RPC，仅在VIP列表请求中查询默认图。
 	VipDefaultIconRpc vipdefaulticonservice.VipDefaultIconService
+	// 总站货币RPC，用于查询货币换算倍率（amount_factor）。
+	CurrencyRpc currencyservice.CurrencyService
 
 	// Kafka事件处理器
 	KafkaEventHandler *kafka.EventHandler
@@ -128,6 +131,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		taskservice.NewTaskService(activityClient),
 	)
 
+	// 创建可选的总站基础 RPC 客户端（VIP默认图标、货币倍率共用同一连接）
+	platformBaseClient := newPlatformBaseClient(c.PlatformBaseRpc)
+
+	var vipIconRpc vipdefaulticonservice.VipDefaultIconService
+	var currencyRpc currencyservice.CurrencyService
+	if platformBaseClient != nil {
+		vipIconRpc = vipdefaulticonservice.NewVipDefaultIconService(platformBaseClient)
+		currencyRpc = currencyservice.NewCurrencyService(platformBaseClient)
+	}
+
 	return &ServiceContext{
 		KafkaEventHandler: eventHandler,
 		MemberExportRpc:   memberexportpb.NewMemberExportClient(crmClient.Conn()),
@@ -148,9 +161,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 		MemberWalletRpc: memberwallet.NewMemberWallet(walletClient),
 
-		ActivityRpc:       activityservice.NewActivityService(activityClient),
-		TaskServiceRpc:    taskservice.NewTaskService(activityClient),
-		VipDefaultIconRpc: newVipDefaultIconClient(c.PlatformBaseRpc), // 可选直连，不查询总站。
+		ActivityRpc:    activityservice.NewActivityService(activityClient),
+		TaskServiceRpc: taskservice.NewTaskService(activityClient),
+		VipDefaultIconRpc: vipIconRpc, // 可选直连，不查询总站。
+		CurrencyRpc:       currencyRpc, // 可选直连，查询货币换算倍率。
 
 		IntegrationRpc: integrationclient.NewIntegration(integrationClient),
 
@@ -162,19 +176,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 }
 
-// newVipDefaultIconClient 只创建一次可选直连客户端；缺配置或创建失败仅使VIP查询不可用。
-func newVipDefaultIconClient(conf zrpc.RpcClientConf) vipdefaulticonservice.VipDefaultIconService {
-	// Etcd解析可能同步等待，因此此功能仅接受Endpoints，不增加启动等待或重试。
-	if len(conf.Endpoints) == 0 {
+// newPlatformBaseClient 创建可选的总站基础 RPC 客户端；缺配置或创建失败返回 nil。
+// VIP默认图标、货币倍率等总站基础查询共用此连接。
+func newPlatformBaseClient(conf zrpc.RpcClientConf) zrpc.Client {
+	// 两种连接方式都没配置时跳过，不影响服务启动。
+	if len(conf.Endpoints) == 0 && conf.Etcd.Key == "" {
 		return nil
 	}
 	conf.NonBlock = true // 总站暂时不可达时继续启动，在请求阶段返回错误。
 	client, err := zrpc.NewClient(conf)
 	if err != nil {
-		logx.Errorw("创建总站VIP默认图标RPC客户端失败", logx.Field("error", err))
+		logx.Errorw("创建总站基础RPC客户端失败", logx.Field("error", err))
 		return nil
 	}
-	return vipdefaulticonservice.NewVipDefaultIconService(client)
+	return client
 }
 
 type contactActionRecorder struct {

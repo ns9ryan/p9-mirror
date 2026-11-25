@@ -23,11 +23,11 @@ type (
 	// 活动订单列表请求
 	ListActivityOrdersReq {
 		PageRequest
-		OrderNo    string `form:"order_no,optional"`
-		ActivityId *int64 `form:"activity_id,optional"`
+		OrderNo    string  `form:"order_no,optional"`
+		ActivityId *int64  `form:"activity_id,optional"`
 		MemberCode *string `form:"member_code,optional"`
-		Type       *int32 `form:"type,optional"`
-		Status     *int32 `form:"status,optional"`
+		Type       *int32  `form:"type,optional"`
+		Status     *int32  `form:"status,optional"`
 		// 1领取时间 2申请时间
 		TimeField *int32 `form:"time_field,optional"`
 		StartSec  *int64 `form:"start_sec,optional"`
@@ -54,11 +54,11 @@ type (
 	// 活动订单审核列表请求
 	ListActivityOrderAuditsReq {
 		PageRequest
-		OrderNo     string `form:"order_no,optional"`
-		ActivityId  *int64 `form:"activity_id,optional"`
+		OrderNo     string  `form:"order_no,optional"`
+		ActivityId  *int64  `form:"activity_id,optional"`
 		MemberCode  *string `form:"member_code,optional"`
-		Type        *int32 `form:"type,optional"`
-		AuditStatus *int32 `form:"audit_status,optional"`
+		Type        *int32  `form:"type,optional"`
+		AuditStatus *int32  `form:"audit_status,optional"`
 		// 1领取时间 2申请时间
 		TimeField *int32 `form:"time_field,optional"`
 		StartSec  *int64 `form:"start_sec,optional"`
@@ -99,3 +99,4 @@ service operator_admin_api {
 	@handler AuditOrder
 	post /order/audit (AuditActivityOrderReq) returns (AuditActivityOrderResp)
 }
+

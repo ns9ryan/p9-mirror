@@ -34,6 +34,7 @@ func (l *ListMemberTaskRewardLogic) ListMemberTaskReward(req *types.ListMemberTa
 	// 构建 RPC 请求
 	rpcReq := &taskpb.ListMemberTaskRewardReq{
 		OperatorCode:   operatorCode,
+		MemberGlobalId: req.MemberGlobalId,
 		MemberId:       req.MemberId,
 		TaskCode:       req.TaskCode,
 		Category:       req.Category,
@@ -57,6 +58,7 @@ func (l *ListMemberTaskRewardLogic) ListMemberTaskReward(req *types.ListMemberTa
 		list = append(list, types.MemberTaskReward{
 			Id:                  item.Id,
 			OperatorCode:        item.OperatorCode,
+			MemberGlobalId:      item.MemberGlobalId,
 			MemberId:            item.MemberId,
 			TaskCode:            item.TaskCode,
 			KafkaId:             item.KafkaId,

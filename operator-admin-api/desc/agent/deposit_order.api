@@ -17,8 +17,6 @@ type AgentDepositOrderListItem {
 	CreateAt             int64   `json:"create_at"`
 	DepositCurrency      string  `json:"deposit_currency"`
 	DepositAmount        float64 `json:"deposit_amount"`
-	SiteCurrency         string  `json:"site_currency"`
-	SiteAmount           float64 `json:"site_amount"`
 	DepositType          int32   `json:"deposit_type"`
 	ReceivedAmount       float64 `json:"received_amount"`
 	FeeAmount            float64 `json:"fee_amount"`
@@ -30,10 +28,12 @@ type AgentDepositOrderListItem {
 	ReviewerId           int64   `json:"reviewer_id"`
 	ReviewerUtype        int32   `json:"reviewer_utype"`
 	ClaimedAt            int64   `json:"claimed_at"`
-	ClaimedBySelf        bool    `json:"claimed_by_self"`
-	AuditorId            int64   `json:"auditor_id"`
+	AuditorUid           int64   `json:"auditor_uid"`
 	AuditorUsername      string  `json:"auditor_username"`
 	AuditedAt            int64   `json:"audited_at"`
+	CreateIp             string  `json:"create_ip,optional"`
+	BonusRatio           float64 `json:"bonus_ratio"`
+	BonusAmount          float64 `json:"bonus_amount"`
 }
 
 // 添加人工存款订单请求 | Add agent deposit order request
@@ -71,14 +71,16 @@ type AgentDepositOrderRejectReq {
 // 审核操作响应 | Audit action response
 type AgentDepositOrderActionResp {
 	OrderId int64 `json:"order_id"`
-	Status   int32 `json:"status"`
+	Status  int32 `json:"status"`
 }
 
 // 人工存款订单列表请求 | List agent deposit orders request
 type ListAgentDepositOrdersReq {
 	Page              int32  `json:"page,optional,default=1,range=[1:]"`
 	PageSize          int32  `json:"page_size,optional,default=20,range=[1:100]"`
-	Status            int32  `json:"status,optional,range=[0:12]"`
+	Mode              int32  `json:"mode,optional"`
+	Status            int32  `json:"status,optional,range=[0:]"`
+	TimeType          int32  `json:"time_type,optional"`
 	MemberId          int64  `json:"member_id,optional"`
 	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
 	TimeStart         int64  `json:"time_start,optional"`
@@ -94,6 +96,30 @@ type ListAgentDepositOrdersReq {
 type ListAgentDepositOrdersResp {
 	List  []AgentDepositOrderListItem `json:"list"`
 	Total int64                       `json:"total"`
+}
+
+// 导出存款订单请求 | Export agent deposit orders request
+type ExportAgentDepositOrdersReq {
+	TimeType          int32  `json:"time_type,optional"`
+	TimeStart         int64  `json:"time_start,optional"`
+	TimeEnd           int64  `json:"time_end,optional"`
+	MemberId          int64  `json:"member_id,optional"`
+	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
+	OrderNo           string `json:"order_no,optional"`
+	MemberAccount     string `json:"member_account,optional"`
+	ThirdPartyOrderNo string `json:"third_party_order_no,optional"`
+	Status            int32  `json:"status,optional,range=[0:]"`
+}
+
+// 导出存款订单响应 | Export agent deposit orders response
+type ExportAgentDepositOrdersResp {
+	TaskId     string `json:"task_id"`
+	Status     string `json:"status"`
+	Url        string `json:"url"`
+	Key        string `json:"key"`
+	Rows       int64  `json:"rows"`
+	ExpiresAt  int64  `json:"expires_at"`
+	Visibility string `json:"visibility"`
 }
 
 @server (
@@ -132,4 +158,9 @@ service operator_admin_api {
 	@doc "解冻订单"
 	@handler unfreezeAgentDepositOrder
 	post /agent/deposit-order/unfreeze (AgentDepositOrderAuditReq) returns (AgentDepositOrderActionResp)
+
+	@doc "导出存款订单"
+	@handler exportAgentDepositOrders
+	post /agent/deposit-order/export (ExportAgentDepositOrdersReq) returns (ExportAgentDepositOrdersResp)
 }
+

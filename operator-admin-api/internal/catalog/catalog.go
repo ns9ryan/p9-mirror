@@ -67,20 +67,19 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Name: "AgentLevelUpdate", Title: "menu.route.agentLevelUpdate", MenuType: menuTypeButton, Permission: "agent:level:update", ParentName: "AgentLevel", Sort: 241},
 			{Name: "AgentApplyReview", Title: "menu.route.agentApplyReview", HideMenu: 1, MenuType: menuTypeButton, Permission: "agent:apply:review", ParentName: "AgentApply", Sort: 251},
 
-			// 代理存款订单审核菜单和按钮权限
-			{Name: "AgentDepositOrderAudit", Title: "menu.route.agentDepositOrderAudit", Path: "/agent/deposit-order-audit", MenuType: menuTypeMenu, Component: "agent/depositOrderAudit/index", ParentName: "Agent", Sort: 28},
-			{Name: "AgentDepositOrderClaim", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:claim", ParentName: "AgentDepositOrderAudit", Sort: 281},
-			{Name: "AgentDepositOrderRelease", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:release", ParentName: "AgentDepositOrderAudit", Sort: 282},
-			{Name: "AgentDepositOrderApprove", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:approve", ParentName: "AgentDepositOrderAudit", Sort: 283},
-			{Name: "AgentDepositOrderReject", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:reject", ParentName: "AgentDepositOrderAudit", Sort: 284},
-			{Name: "AgentDepositOrderFreeze", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:freeze", ParentName: "AgentDepositOrderAudit", Sort: 285},
-			{Name: "AgentDepositOrderUnfreeze", Title: "menu.route.agentDepositOrderAudit", MenuType: menuTypeButton, Permission: "agent:deposit-order:unfreeze", ParentName: "AgentDepositOrderAudit", Sort: 286},
-
 			// 财务中心
 			{Name: "FinanceCenter", Title: "menu.route.financeCenter", Path: "/finance", MenuType: menuTypeDir, Sort: 40},
 			{Name: "FinanceDepositAudit", Title: "menu.route.financeDepositAudit", Path: "/finance/deposit-audit", MenuType: menuTypeMenu, Component: "finance/depositAudit/index", ParentName: "FinanceCenter", Sort: 41},
 			{Name: "FinanceMemberDepositAuditList", Title: "menu.route.financeMemberDepositAuditList", MenuType: menuTypeButton, Permission: "finance:member-deposit-audit:list", ParentName: "FinanceDepositAudit", Sort: 411},
 			{Name: "FinanceSimulatedTurnoverList", Title: "menu.route.financeSimulatedTurnoverList", MenuType: menuTypeButton, Permission: "finance:simulated-turnover:list", ParentName: "FinanceDepositAudit", Sort: 412},
+			{Name: "FinanceDepositOrderClaim", Title: "menu.route.FinanceDepositOrderClaim", MenuType: menuTypeButton, Permission: "finance:deposit-order:claim", ParentName: "FinanceDepositAudit", Sort: 413},
+			{Name: "FinanceDepositOrderRelease", Title: "menu.route.FinanceDepositOrderRelease", MenuType: menuTypeButton, Permission: "finance:deposit-order:release", ParentName: "FinanceDepositAudit", Sort: 414},
+			{Name: "FinanceDepositOrderApprove", Title: "menu.route.FinanceDepositOrderApprove", MenuType: menuTypeButton, Permission: "finance:deposit-order:approve", ParentName: "FinanceDepositAudit", Sort: 415},
+			{Name: "FinanceDepositOrderReject", Title: "menu.route.FinanceDepositOrderReject", MenuType: menuTypeButton, Permission: "finance:deposit-order:reject", ParentName: "FinanceDepositAudit", Sort: 416},
+			{Name: "FinanceDepositOrderFreeze", Title: "menu.route.FinanceDepositOrderFreeze", MenuType: menuTypeButton, Permission: "finance:deposit-order:freeze", ParentName: "FinanceDepositAudit", Sort: 417},
+			{Name: "FinanceDepositOrderUnfreeze", Title: "menu.route.FinanceDepositOrderUnfreeze", MenuType: menuTypeButton, Permission: "finance:deposit-order:unfreeze", ParentName: "FinanceDepositAudit", Sort: 418},
+			{Name: "FinanceDepositManage", Title: "menu.route.financeDepositManage", Path: "/finance/deposit-manage", MenuType: menuTypeMenu, Component: "finance/depositManage/index", ParentName: "FinanceCenter", Sort: 42},
+			{Name: "FinanceDepositOrderExport", Title: "menu.route.financeDepositOrderManage", MenuType: menuTypeButton, Permission: "finance:deposit-order:export", ParentName: "FinanceDepositManage", Sort: 422},
 
 			// 优惠中心
 			{Name: "PromoCenter", Title: "menu.route.promoCenter", Path: "/promo", MenuType: menuTypeDir, Sort: 30},
@@ -117,16 +116,17 @@ func catalogReq(code string) *coreclient.RegisterCatalogReq {
 			{Path: "/agent/login-log/associations", Method: http.MethodPost, Description: "api.agentLoginAssociations", ApiGroup: "api.group.agent", ServiceName: serviceName},
 
 			//财务中心
-			{Path: "/agent/deposit-order/add", Method: http.MethodPost, Description: "api.agentDepositOrderAdd", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/deposit-order/list", Method: http.MethodPost, Description: "api.agentDepositOrderList", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/deposit-order/claim", Method: http.MethodPost, Description: "api.agentDepositOrderClaim", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/deposit-order/release", Method: http.MethodPost, Description: "api.agentDepositOrderRelease", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/deposit-order/approve", Method: http.MethodPost, Description: "api.agentDepositOrderApprove", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/deposit-order/reject", Method: http.MethodPost, Description: "api.agentDepositOrderReject", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/deposit-order/freeze", Method: http.MethodPost, Description: "api.agentDepositOrderFreeze", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/deposit-order/unfreeze", Method: http.MethodPost, Description: "api.agentDepositOrderUnfreeze", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/turnover/add", Method: http.MethodPost, Description: "api.agentTurnoverAdd", ApiGroup: "api.group.finance", ServiceName: serviceName},
-			{Path: "/agent/turnover/list", Method: http.MethodPost, Description: "api.agentTurnoverList", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/add", Method: http.MethodPost, Description: "api.financeDepositOrderAdd", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/list", Method: http.MethodPost, Description: "api.financeDepositOrderList", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/claim", Method: http.MethodPost, Description: "api.financeDepositOrderClaim", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/release", Method: http.MethodPost, Description: "api.financeDepositOrderRelease", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/approve", Method: http.MethodPost, Description: "api.financeDepositOrderApprove", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/reject", Method: http.MethodPost, Description: "api.financeDepositOrderReject", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/freeze", Method: http.MethodPost, Description: "api.financeDepositOrderFreeze", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/unfreeze", Method: http.MethodPost, Description: "api.financeDepositOrderUnfreeze", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/deposit-order/export", Method: http.MethodPost, Description: "api.financeDepositOrderExport", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/turnover/add", Method: http.MethodPost, Description: "api.financeTurnoverAdd", ApiGroup: "api.group.finance", ServiceName: serviceName},
+			{Path: "/agent/turnover/list", Method: http.MethodPost, Description: "api.financeTurnoverList", ApiGroup: "api.group.finance", ServiceName: serviceName},
 
 			// Independent member CSV export permission.
 			{Path: "/member/export/v2", Method: http.MethodPost, Description: "api.memberExport", ApiGroup: "api.group.member", ServiceName: serviceName},

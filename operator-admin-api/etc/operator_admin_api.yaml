@@ -42,6 +42,13 @@ ActivityRpc:
       - 127.0.0.1:12379
     Key: operator-activity-rpc
 
+# 总站基础 RPC 配置（货币倍率、VIP默认图标等）
+PlatformBaseRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:12379
+    Key: platform-base-rpc
+
 # 第三方服务集成 RPC配置
 IntegrationRpc:
   Target: 192.168.10.220:19005
@@ -49,3 +56,5 @@ IntegrationRpc:
 Kafka:
   Brokers:
     - 127.0.0.1:9094
+
+OssApiBaseURL: http://192.168.10.220:18006

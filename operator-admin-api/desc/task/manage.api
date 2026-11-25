@@ -18,10 +18,9 @@ type (
 		RewardAmount     int64  `json:"reward_amount"`
 		PayoutMode       string `json:"payout_mode"`
 		Sort             int64  `json:"sort"`
-		CreatedAt     int64  `json:"created_at"`
-		UpdatedAt     int64  `json:"updated_at"`
+		CreatedAt        int64  `json:"created_at"`
+		UpdatedAt        int64  `json:"updated_at"`
 	}
-
 	// 列表任务配置请求
 	ListTaskConfigReq {
 		PageRequest
@@ -30,7 +29,6 @@ type (
 		// 任务状态过滤（可选）
 		Status *int32 `form:"status,optional"`
 	}
-
 	// 列表任务配置响应
 	ListTaskConfigResp {
 		Total    int64        `json:"total"`
@@ -38,10 +36,9 @@ type (
 		Page     int64        `json:"page"`
 		PageSize int64        `json:"page_size"`
 	}
-
 	// 更新任务配置请求
 	UpdateTaskConfigReq {
-		Id               int64   `json:"id" validate:"required,gt=0"`
+		Id int64 `json:"id" validate:"required,gt=0"`
 		// 时区（可选）
 		Timezone *string `json:"timezone,optional"`
 		// 任务状态（可选）
@@ -55,16 +52,15 @@ type (
 		// 排序（可选）
 		Sort *int64 `json:"sort,optional"`
 	}
-
 	// 更新任务配置响应
 	UpdateTaskConfigResp {
 		TaskConfig TaskConfig `json:"task_config"`
 	}
-
 	// 会员任务奖励订单
 	MemberTaskReward {
 		Id                  int64  `json:"id"`
 		OperatorCode        string `json:"operator_code"`
+		MemberGlobalId      string `json:"member_global_id"`
 		MemberId            int64  `json:"member_id"`
 		TaskCode            string `json:"task_code"`
 		KafkaId             string `json:"kafka_id"`
@@ -78,14 +74,15 @@ type (
 		DeviceId            string `json:"device_id"`
 		WalletId            string `json:"wallet_id"`
 		ClaimIp             string `json:"claim_ip"`
-		PayoutAt         int64  `json:"payout_at"`
-		CreatedAt        int64  `json:"created_at"`
-		UpdatedAt        int64  `json:"updated_at"`
+		PayoutAt            int64  `json:"payout_at"`
+		CreatedAt           int64  `json:"created_at"`
+		UpdatedAt           int64  `json:"updated_at"`
 	}
-
 	// 查询会员任务奖励订单请求
 	ListMemberTaskRewardReq {
 		PageRequest
+		// 全局会员ID（可选）
+		MemberGlobalId *string `form:"member_global_id,optional"`
 		// 会员ID（可选）
 		MemberId *int64 `form:"member_id,optional"`
 		// 任务编码（可选）
@@ -101,15 +98,13 @@ type (
 		// 创建时间范围 - 结束时间，unix 秒（可选）
 		CreatedAtEnd *int64 `form:"created_at_end,optional"`
 	}
-
 	// 查询会员任务奖励订单响应
 	ListMemberTaskRewardResp {
-		Total    int64                `json:"total"`
-		List     []MemberTaskReward   `json:"list"`
-		Page     int64                `json:"page"`
-		PageSize int64                `json:"page_size"`
+		Total    int64              `json:"total"`
+		List     []MemberTaskReward `json:"list"`
+		Page     int64              `json:"page"`
+		PageSize int64              `json:"page_size"`
 	}
-
 	// 更新会员任务奖励状态请求（只允许从 1 改为 2）
 	UpdateMemberTaskRewardStatusReq {
 		// 操作员代码
@@ -119,12 +114,10 @@ type (
 		// 新状态（只允许为 2 - 待派发）
 		Status int32 `json:"status" validate:"required"`
 	}
-
 	// 更新会员任务奖励状态响应
 	UpdateMemberTaskRewardStatusResp {
 		MemberTaskReward MemberTaskReward `json:"member_task_reward"`
 	}
-
 	// 任务全局配置
 	TaskGlobalConfig {
 		Id               int64   `json:"id"`
@@ -142,19 +135,16 @@ type (
 		UpdatedAt        int64   `json:"updated_at"`
 		Active           bool    `json:"active"`
 	}
-
 	// 获取任务全局配置请求
 	ListTaskGlobalConfigReq {
 		// 分站代码
 		OperatorCode string `form:"operator_code" validate:"required"`
 	}
-
 	// 获取任务全局配置响应
 	ListTaskGlobalConfigResp {
 		// 任务全局配置列表（包含当前和待生效）
 		List []TaskGlobalConfig `json:"list"`
 	}
-
 	// 更新任务全局配置请求
 	UpdateTaskGlobalConfigReq {
 		// 分站代码
@@ -178,7 +168,6 @@ type (
 		// 任务开关（可选）
 		Status *bool `json:"status,optional"`
 	}
-
 	// 更新任务全局配置响应
 	UpdateTaskGlobalConfigResp {
 		// 更新后的任务全局配置
@@ -216,3 +205,4 @@ service operator_admin_api {
 	@handler UpdateTaskGlobalConfig
 	post /global-config/update (UpdateTaskGlobalConfigReq) returns (UpdateTaskGlobalConfigResp)
 }
+

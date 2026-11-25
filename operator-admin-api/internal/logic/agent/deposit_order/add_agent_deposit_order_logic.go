@@ -7,7 +7,9 @@ import (
 	"context"
 	"math"
 
+	agentconst "oa.98ent.com/p9/operator-admin-api/internal/constants"
 	agentconv "oa.98ent.com/p9/operator-admin-api/internal/logic/agent"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/agentdepositorderpb"
@@ -31,15 +33,21 @@ func NewAddAgentDepositOrderLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *AddAgentDepositOrderLogic) AddAgentDepositOrder(req *types.AddAgentDepositOrderReq) (*types.AddAgentDepositOrderResp, error) {
-	// deposit_amount 前端以主币单位（如 USDT）输入，转换为分后传给 RPC
-	depositAmountCents := int64(math.Round(req.DepositAmount * agentconv.AmountCentsFactor))
+	// 从分站配置读取结算货币编码及换算倍率，向下传递给 RPC。货币未配置时直接报错。
+	depositCurrency, amountFactor, err := agentconv.GetSiteCurrency(l.ctx, l.svcCtx)
+	if err != nil {
+		return nil, err
+	}
+	depositAmountCents := int64(math.Round(req.DepositAmount * float64(amountFactor)))
 
 	rpcResp, err := l.svcCtx.AgentDepositOrderRpc.AddAgentDepositOrder(l.ctx, &agentdepositorderpb.AddAgentDepositOrderReq{
 		MemberId:           req.MemberId,
 		DepositAmount:      depositAmountCents,
-		RolloverMultiplier: req.RolloverMultiplier,
-		BonusRate:          req.BonusRate,
-		DepositType:        agentconv.DepositTypeManual, // 人工入账，API 层固定值
+		RolloverMultiplier: int64(math.Round(req.RolloverMultiplier * 100)),
+		BonusRate:          int64(math.Round(req.BonusRate * 100)),
+		DepositType:        agentconst.DepositTypeManual,
+		DepositCurrency:    depositCurrency,
+		CurrencyFactor:     amountFactor,
 	})
 	if err != nil {
 		return nil, err

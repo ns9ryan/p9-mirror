@@ -55,6 +55,7 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	add("menu.route.agentLoginAssociation", "关联检索", "關聯檢索", "Login associations")
 	add("menu.route.agentDepositOrder", "人工存款", "人工存款", "Agent deposit orders")
 	add("menu.route.agentDepositOrderAudit", "存款订单审核", "存款訂單審核", "Deposit Order Audit")
+	add("menu.route.agentDepositOrderManage", "存款订单管理", "存款訂單管理", "Deposit Order Management")
 	add("menu.route.agentTurnover", "流水管理", "流水管理", "Turnover")
 	add("menu.route.agentDepositOrderAdd", "添加人工存款", "添加人工存款", "Add deposit order")
 	add("menu.route.agentDepositOrderList", "人工存款订单列表", "人工存款訂單列表", "Deposit order list")
@@ -78,10 +79,18 @@ func menuI18n(i18nCode string) []*coreclient.I18NItem {
 	// 财务中心
 	add("menu.route.financeCenter", "财务中心", "財務中心", "Finance")
 	add("menu.route.financeDepositAudit", "存款审核", "存款審核", "Deposit audit")
+	add("menu.route.financeDepositManage", "存款管理", "存款管理", "Deposit manage")
+	add("menu.route.financeDepositOrderManage", "下载报表", "下載報表", "Export report")
 	add("menu.route.financeMemberDepositAudit", "会员存款审核", "會員存款審核", "Member deposit audit")
 	add("menu.route.financeSimulatedTurnover", "模拟流水", "模擬流水", "Simulated turnover")
 	add("menu.route.financeMemberDepositAuditList", "会员存款审核列表", "會員存款審核列表", "Member deposit audit list")
 	add("menu.route.financeSimulatedTurnoverList", "模拟流水列表", "模擬流水列表", "Simulated turnover list")
+	add("menu.route.FinanceDepositOrderClaim", "领取审核", "領取審核", "Claim order")
+	add("menu.route.FinanceDepositOrderRelease", "释放审核", "釋放審核", "Release order")
+	add("menu.route.FinanceDepositOrderApprove", "审核通过", "審核通過", "Approve order")
+	add("menu.route.FinanceDepositOrderReject", "审核拒绝", "審核拒絕", "Reject order")
+	add("menu.route.FinanceDepositOrderFreeze", "冻结订单", "凍結訂單", "Freeze order")
+	add("menu.route.FinanceDepositOrderUnfreeze", "解冻订单", "解凍訂單", "Unfreeze order")
 
 	// 优惠中心
 	add("menu.route.promoCenter", "优惠中心", "優惠中心", "Promotions")
@@ -218,6 +227,7 @@ func apiI18n(i18nCode string) []*coreclient.I18NItem {
 	add("api.agentDepositOrderReject", "审核拒绝", "審核拒絕", "Reject")
 	add("api.agentDepositOrderFreeze", "冻结", "凍結", "Freeze")
 	add("api.agentDepositOrderUnfreeze", "解冻", "解凍", "Unfreeze")
+	add("api.exportAgentDepositOrders", "导出存款订单", "匯出存款訂單", "Export Deposit Orders")
 	add("api.agentTurnoverAdd", "添加流水", "添加流水", "Add turnover")
 	add("api.agentTurnoverList", "流水列表", "流水列表", "Turnover list")
 

@@ -180,6 +180,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: agentdeposit_order.ClaimAgentDepositOrderHandler(serverCtx),
 				},
 				{
+					// 导出存款订单
+					Method:  http.MethodPost,
+					Path:    "/agent/deposit-order/export",
+					Handler: agentdeposit_order.ExportAgentDepositOrdersHandler(serverCtx),
+				},
+				{
 					// 冻结订单
 					Method:  http.MethodPost,
 					Path:    "/agent/deposit-order/freeze",

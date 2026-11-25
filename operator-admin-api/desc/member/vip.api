@@ -145,7 +145,6 @@ type (
 		// VIP图标组列表
 		List []VipIconGroupInfo `json:"list"`
 	}
-
 	// 修改VIP图标请求
 	UpdateVipIconGroupRequest {
 		// 图标组编号

@@ -23,9 +23,9 @@ type (
 	// 幸运转盘配置
 	ActivityLuckWheelConfig {
 		// 1仅投注、2仅充值、3投注|充值
-		WheelTriggerMode int32                   `json:"wheel_trigger_mode,optional"`
-		BetSchemas       []ActivityRewardSchema  `json:"bet_schemas,optional"`
-		DepositSchemas   []ActivityRewardSchema  `json:"deposit_schemas,optional"`
+		WheelTriggerMode int32                  `json:"wheel_trigger_mode,optional"`
+		BetSchemas       []ActivityRewardSchema `json:"bet_schemas,optional"`
+		DepositSchemas   []ActivityRewardSchema `json:"deposit_schemas,optional"`
 	}
 	// 活动配置
 	ActivitySettings {
@@ -119,30 +119,30 @@ type (
 		// 活动所属: 1大厅 2电子 3体育
 		Section int32 `json:"section" validate:"required,oneof=1 2 3"`
 		// 循环模式
-		CycleMode int32 `json:"cycle_mode,optional"`
-		AllowedFixedLevel []int64 `json:"allowed_fixed_level,optional"`
-		AllowedAutoLevel  []int64 `json:"allowed_auto_level,optional"`
-		AllowedClients    []int64 `json:"allowed_clients,optional"`
-		AllowedGameIds    []int64 `json:"allowed_game_ids,optional"`
-		AllowedAgentIds   []int64 `json:"allowed_agent_ids,optional"`
-		ApplyLimit        []int64 `json:"apply_limit,optional"`
-		ClaimLimit        []int64 `json:"claim_limit,optional"`
-		IsPermanent       bool    `json:"is_permanent,optional"`
-		OpenAtSec         *int64  `json:"open_at_sec,optional"`
-		CloseAtSec        *int64  `json:"close_at_sec,optional"`
-		ReleaseAtSec      *int64  `json:"release_at_sec,optional"`
-		AutoAudit         bool    `json:"auto_audit,optional"`
-		AutoAuditMaxAmt   int64   `json:"auto_audit_max_amt,optional"`
-		PayoutMode        int32   `json:"payout_mode,optional"`
-		PayoutTiming      int32   `json:"payout_timing,optional"`
-		ClaimExpireSec    int64   `json:"claim_expire_sec,optional"`
-		Settings          *ActivitySettings `json:"settings,optional"`
-		WageringMultiplier int32 `json:"wagering_multiplier,optional"`
-		WageringBase       int32 `json:"wagering_base,optional"`
-		ShowInList         *bool `json:"show_in_list,optional"`
-		ShowInSidebar      *bool `json:"show_in_sidebar,optional"`
-		SortWeight         int32 `json:"sort_weight,optional"`
-		I18n []ActivityI18nItem `json:"i18n,optional"`
+		CycleMode          int32              `json:"cycle_mode,optional"`
+		AllowedFixedLevel  []int64            `json:"allowed_fixed_level,optional"`
+		AllowedAutoLevel   []int64            `json:"allowed_auto_level,optional"`
+		AllowedClients     []int64            `json:"allowed_clients,optional"`
+		AllowedGameIds     []int64            `json:"allowed_game_ids,optional"`
+		AllowedAgentIds    []int64            `json:"allowed_agent_ids,optional"`
+		ApplyLimit         []int64            `json:"apply_limit,optional"`
+		ClaimLimit         []int64            `json:"claim_limit,optional"`
+		IsPermanent        bool               `json:"is_permanent,optional"`
+		OpenAtSec          *int64             `json:"open_at_sec,optional"`
+		CloseAtSec         *int64             `json:"close_at_sec,optional"`
+		ReleaseAtSec       *int64             `json:"release_at_sec,optional"`
+		AutoAudit          bool               `json:"auto_audit,optional"`
+		AutoAuditMaxAmt    int64              `json:"auto_audit_max_amt,optional"`
+		PayoutMode         int32              `json:"payout_mode,optional"`
+		PayoutTiming       int32              `json:"payout_timing,optional"`
+		ClaimExpireSec     int64              `json:"claim_expire_sec,optional"`
+		Settings           *ActivitySettings  `json:"settings,optional"`
+		WageringMultiplier int32              `json:"wagering_multiplier,optional"`
+		WageringBase       int32              `json:"wagering_base,optional"`
+		ShowInList         *bool              `json:"show_in_list,optional"`
+		ShowInSidebar      *bool              `json:"show_in_sidebar,optional"`
+		SortWeight         int32              `json:"sort_weight,optional"`
+		I18n               []ActivityI18nItem `json:"i18n,optional"`
 	}
 	// 编辑活动响应
 	UpdateActivityResp {
@@ -150,40 +150,40 @@ type (
 	}
 	// 活动详情
 	ActivityDetail {
-		Id                 int64               `json:"id"`
-		Type               int32               `json:"type"`
-		Status             int32               `json:"status"`
-		ApplyMode          int32               `json:"apply_mode"`
-		Section            int32               `json:"section"`
-		CycleMode          int32               `json:"cycle_mode"`
-		AllowedFixedLevel  []int64             `json:"allowed_fixed_level"`
-		AllowedAutoLevel   []int64             `json:"allowed_auto_level"`
-		AllowedClients     []int64             `json:"allowed_clients"`
-		AllowedGameIds     []int64             `json:"allowed_game_ids"`
-		AllowedAgentIds    []int64             `json:"allowed_agent_ids"`
-		ApplyLimit         []int64             `json:"apply_limit"`
-		ClaimLimit         []int64             `json:"claim_limit"`
-		IsPermanent        bool                `json:"is_permanent"`
-		OpenAtSec          *int64              `json:"open_at_sec,optional"`
-		CloseAtSec         *int64              `json:"close_at_sec,optional"`
-		ReleaseAtSec       *int64              `json:"release_at_sec,optional"`
-		AutoAudit          bool                `json:"auto_audit"`
-		AutoAuditMaxAmt    int64               `json:"auto_audit_max_amt"`
-		PayoutMode         int32               `json:"payout_mode"`
-		PayoutTiming       int32               `json:"payout_timing"`
-		ClaimExpireSec     int64               `json:"claim_expire_sec"`
-		Settings           *ActivitySettings   `json:"settings,optional"`
-		WageringMultiplier int32               `json:"wagering_multiplier"`
-		WageringBase       int32               `json:"wagering_base"`
-		ShowInList         bool                `json:"show_in_list"`
-		ShowInSidebar      bool                `json:"show_in_sidebar"`
-		SortWeight         int32               `json:"sort_weight"`
-		CreateUid          int64               `json:"create_uid"`
-		UpdateUid          int64               `json:"update_uid"`
-		Version            int32               `json:"version"`
-		CreatedAtSec       int64               `json:"created_at_sec"`
-		UpdatedAtSec       int64               `json:"updated_at_sec"`
-		I18n               []ActivityI18nItem  `json:"i18n"`
+		Id                 int64              `json:"id"`
+		Type               int32              `json:"type"`
+		Status             int32              `json:"status"`
+		ApplyMode          int32              `json:"apply_mode"`
+		Section            int32              `json:"section"`
+		CycleMode          int32              `json:"cycle_mode"`
+		AllowedFixedLevel  []int64            `json:"allowed_fixed_level"`
+		AllowedAutoLevel   []int64            `json:"allowed_auto_level"`
+		AllowedClients     []int64            `json:"allowed_clients"`
+		AllowedGameIds     []int64            `json:"allowed_game_ids"`
+		AllowedAgentIds    []int64            `json:"allowed_agent_ids"`
+		ApplyLimit         []int64            `json:"apply_limit"`
+		ClaimLimit         []int64            `json:"claim_limit"`
+		IsPermanent        bool               `json:"is_permanent"`
+		OpenAtSec          *int64             `json:"open_at_sec,optional"`
+		CloseAtSec         *int64             `json:"close_at_sec,optional"`
+		ReleaseAtSec       *int64             `json:"release_at_sec,optional"`
+		AutoAudit          bool               `json:"auto_audit"`
+		AutoAuditMaxAmt    int64              `json:"auto_audit_max_amt"`
+		PayoutMode         int32              `json:"payout_mode"`
+		PayoutTiming       int32              `json:"payout_timing"`
+		ClaimExpireSec     int64              `json:"claim_expire_sec"`
+		Settings           *ActivitySettings  `json:"settings,optional"`
+		WageringMultiplier int32              `json:"wagering_multiplier"`
+		WageringBase       int32              `json:"wagering_base"`
+		ShowInList         bool               `json:"show_in_list"`
+		ShowInSidebar      bool               `json:"show_in_sidebar"`
+		SortWeight         int32              `json:"sort_weight"`
+		CreateUid          int64              `json:"create_uid"`
+		UpdateUid          int64              `json:"update_uid"`
+		Version            int32              `json:"version"`
+		CreatedAtSec       int64              `json:"created_at_sec"`
+		UpdatedAtSec       int64              `json:"updated_at_sec"`
+		I18n               []ActivityI18nItem `json:"i18n"`
 	}
 	// 获取活动详情请求
 	GetActivityReq {
@@ -275,8 +275,8 @@ type (
 		ApplyLimitType    []ActivityEnumItem `json:"apply_limit_type"`
 		ClaimLimitType    []ActivityEnumItem `json:"claim_limit_type"`
 		Section           []ActivityEnumItem `json:"section"`
-		Currency 		  string `json:"currency"`
-		Timezone          string `json:"timezone"`
+		Currency          string             `json:"currency"`
+		Timezone          string             `json:"timezone"`
 	}
 )
 
@@ -314,3 +314,4 @@ service operator_admin_api {
 	@handler GetEnumParams
 	get /enum-params returns (GetActivityEnumParamsResp)
 }
+

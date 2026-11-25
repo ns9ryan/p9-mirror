@@ -248,8 +248,6 @@ type AgentDepositOrderListItem struct {
 	CreateAt             int64   `json:"create_at"`
 	DepositCurrency      string  `json:"deposit_currency"`
 	DepositAmount        float64 `json:"deposit_amount"`
-	SiteCurrency         string  `json:"site_currency"`
-	SiteAmount           float64 `json:"site_amount"`
 	DepositType          int32   `json:"deposit_type"`
 	ReceivedAmount       float64 `json:"received_amount"`
 	FeeAmount            float64 `json:"fee_amount"`
@@ -261,10 +259,12 @@ type AgentDepositOrderListItem struct {
 	ReviewerId           int64   `json:"reviewer_id"`
 	ReviewerUtype        int32   `json:"reviewer_utype"`
 	ClaimedAt            int64   `json:"claimed_at"`
-	ClaimedBySelf        bool    `json:"claimed_by_self"`
-	AuditorId            int64   `json:"auditor_id"`
+	AuditorUid           int64   `json:"auditor_uid"`
 	AuditorUsername      string  `json:"auditor_username"`
 	AuditedAt            int64   `json:"audited_at"`
+	CreateIp             string  `json:"create_ip,optional"`
+	BonusRatio           float64 `json:"bonus_ratio"`
+	BonusAmount          float64 `json:"bonus_amount"`
 }
 
 type AgentDepositOrderRejectReq struct {
@@ -540,6 +540,28 @@ type DeleteVipLevelRequest struct {
 type EmptyResponse struct {
 }
 
+type ExportAgentDepositOrdersReq struct {
+	TimeType          int32  `json:"time_type,optional"`
+	TimeStart         int64  `json:"time_start,optional"`
+	TimeEnd           int64  `json:"time_end,optional"`
+	MemberId          int64  `json:"member_id,optional"`
+	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
+	OrderNo           string `json:"order_no,optional"`
+	MemberAccount     string `json:"member_account,optional"`
+	ThirdPartyOrderNo string `json:"third_party_order_no,optional"`
+	Status            int32  `json:"status,optional,range=[0:]"`
+}
+
+type ExportAgentDepositOrdersResp struct {
+	TaskId     string `json:"task_id"`
+	Status     string `json:"status"`
+	Url        string `json:"url"`
+	Key        string `json:"key"`
+	Rows       int64  `json:"rows"`
+	ExpiresAt  int64  `json:"expires_at"`
+	Visibility string `json:"visibility"`
+}
+
 type ExportMembersRequest struct {
 	Columns            []string `json:"columns,optional"` // Omitted or empty: all default columns; otherwise preserve requested order.
 	Keyword            string   `json:"keyword,optional"`
@@ -745,7 +767,9 @@ type ListAgentAppliesResp struct {
 type ListAgentDepositOrdersReq struct {
 	Page              int32  `json:"page,optional,default=1,range=[1:]"`
 	PageSize          int32  `json:"page_size,optional,default=20,range=[1:100]"`
-	Status            int32  `json:"status,optional,range=[0:12]"`
+	Mode              int32  `json:"mode,optional"`
+	Status            int32  `json:"status,optional,range=[0:]"`
+	TimeType          int32  `json:"time_type,optional"`
 	MemberId          int64  `json:"member_id,optional"`
 	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
 	TimeStart         int64  `json:"time_start,optional"`
@@ -878,6 +902,7 @@ type ListMemberImagesResponse struct {
 
 type ListMemberTaskRewardReq struct {
 	PageRequest
+	MemberGlobalId *string `form:"member_global_id,optional"`
 	MemberId       *int64  `form:"member_id,optional"`
 	TaskCode       *string `form:"task_code,optional"`
 	Category       *string `form:"category,optional"`
@@ -1055,6 +1080,9 @@ type MemberListItem struct {
 	InviterMemberId    *int64          `json:"inviter_member_id,optional"`
 	Remark             *string         `json:"remark,optional"`
 	Stats              MemberStatsInfo `json:"stats"`
+	Balance            *int64          `json:"balance"`
+	FrozenBalance      *int64          `json:"frozen_balance"`
+	Unsettled          *int64          `json:"unsettled"`
 }
 
 type MemberStatsInfo struct {
@@ -1079,6 +1107,7 @@ type MemberStatsInfo struct {
 type MemberTaskReward struct {
 	Id                  int64  `json:"id"`
 	OperatorCode        string `json:"operator_code"`
+	MemberGlobalId      string `json:"member_global_id"`
 	MemberId            int64  `json:"member_id"`
 	TaskCode            string `json:"task_code"`
 	KafkaId             string `json:"kafka_id"`

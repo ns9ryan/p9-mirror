@@ -232,10 +232,11 @@ func ApplyItemsFromPB(in []*agentpb.AgentApplyItem) []types.AgentApplyItem {
 	return out
 }
 
-func DepositOrderListItemFromPB(in *agentdepositorderpb.AgentDepositOrderListItem, selfUID int64) types.AgentDepositOrderListItem {
+func DepositOrderListItemFromPB(in *agentdepositorderpb.AgentDepositOrderListItem, selfUID, amountFactor int64) types.AgentDepositOrderListItem {
 	if in == nil {
 		return types.AgentDepositOrderListItem{}
 	}
+	f := float64(amountFactor)
 	return types.AgentDepositOrderListItem{
 		Id:                   in.Id,
 		OrderNo:              in.GetOrderNo(),
@@ -244,13 +245,11 @@ func DepositOrderListItemFromPB(in *agentdepositorderpb.AgentDepositOrderListIte
 		MemberLevelName:      in.MemberLevelName,
 		CreateAt:             in.CreateAt,
 		DepositCurrency:      in.DepositCurrency,
-		DepositAmount:        float64(in.DepositAmount) / AmountCentsFactor,
-		SiteCurrency:         in.SiteCurrency,
-		SiteAmount:           float64(in.SiteAmount) / AmountCentsFactor,
+		DepositAmount:        float64(in.DepositAmount) / f,
 		DepositType:          in.DepositType,
-		ReceivedAmount:       float64(in.ReceivedAmount) / AmountCentsFactor,
-		FeeAmount:            float64(in.FeeAmount) / AmountCentsFactor,
-		ActualReceivedAmount: float64(in.ActualReceivedAmount) / AmountCentsFactor,
+		ReceivedAmount:       float64(in.ReceivedAmount) / f,
+		FeeAmount:            float64(in.FeeAmount) / f,
+		ActualReceivedAmount: float64(in.ActualReceivedAmount) / f,
 		ThirdPartyOrderNo:    in.GetThirdPartyOrderNo(),
 		PaymentReceiveInfo:   in.GetPaymentReceiveInfo(),
 		PaymentSendInfo:      in.GetPaymentSendInfo(),
@@ -258,39 +257,42 @@ func DepositOrderListItemFromPB(in *agentdepositorderpb.AgentDepositOrderListIte
 		ReviewerId:           in.ReviewerId,
 		ReviewerUtype:        in.ReviewerUtype,
 		ClaimedAt:            in.ClaimedAt,
-		ClaimedBySelf:        selfUID > 0 && in.ReviewerId == selfUID,
-		AuditorId:            in.AuditorUid,
+		AuditorUid:           in.AuditorUid,
 		AuditorUsername:      in.AuditorUsername,
 		AuditedAt:            in.AuditedAt,
+		CreateIp:             in.CreateIp,
+		BonusRatio:           in.BonusRatio,
+		BonusAmount:          float64(in.BonusAmount) / f,
 	}
 }
 
-func DepositOrderListItemsFromPB(in []*agentdepositorderpb.AgentDepositOrderListItem, selfUID int64) []types.AgentDepositOrderListItem {
+func DepositOrderListItemsFromPB(in []*agentdepositorderpb.AgentDepositOrderListItem, selfUID, amountFactor int64) []types.AgentDepositOrderListItem {
 	out := make([]types.AgentDepositOrderListItem, 0, len(in))
 	for _, it := range in {
 		if it == nil {
 			continue
 		}
-		out = append(out, DepositOrderListItemFromPB(it, selfUID))
+		out = append(out, DepositOrderListItemFromPB(it, selfUID, amountFactor))
 	}
 	return out
 }
 
-func TurnoverListItemFromPB(in *turnoverpb.TurnoverListItem) types.TurnoverListItem {
+func TurnoverListItemFromPB(in *turnoverpb.TurnoverListItem, amountFactor int64) types.TurnoverListItem {
 	if in == nil {
 		return types.TurnoverListItem{}
 	}
+	f := float64(amountFactor)
 	return types.TurnoverListItem{
 		Id:              in.Id,
 		MemberId:        in.MemberId,
 		MemberAccount:   in.MemberAccount,
 		MemberLevelName: in.MemberLevelName,
-		ConsumeAmount:   float64(in.ConsumeAmount) / AmountCentsFactor,
+		ConsumeAmount:   float64(in.ConsumeAmount) / f,
 		ConsumeCurrency: in.ConsumeCurrency,
 		ConsumeType:     in.ConsumeType,
 		ConsumeAt:       in.ConsumeAt,
-		BalanceBefore:   float64(in.BalanceBefore) / AmountCentsFactor,
-		BalanceAfter:    float64(in.BalanceAfter) / AmountCentsFactor,
+		BalanceBefore:   float64(in.BalanceBefore) / f,
+		BalanceAfter:    float64(in.BalanceAfter) / f,
 		BalanceCurrency: in.BalanceCurrency,
 		AgentId:         in.AgentId,
 		WalletId:        in.WalletId,
@@ -301,13 +303,13 @@ func TurnoverListItemFromPB(in *turnoverpb.TurnoverListItem) types.TurnoverListI
 	}
 }
 
-func TurnoverListItemsFromPB(in []*turnoverpb.TurnoverListItem) []types.TurnoverListItem {
+func TurnoverListItemsFromPB(in []*turnoverpb.TurnoverListItem, amountFactor int64) []types.TurnoverListItem {
 	out := make([]types.TurnoverListItem, 0, len(in))
 	for _, it := range in {
 		if it == nil {
 			continue
 		}
-		out = append(out, TurnoverListItemFromPB(it))
+		out = append(out, TurnoverListItemFromPB(it, amountFactor))
 	}
 	return out
 }
