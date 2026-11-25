@@ -34,7 +34,7 @@ func newOperationHandler(ctx context.Context, producer eventProducer, publishTim
 	return h.handle, nil
 }
 
-// handle 串行处理钱包资金操作和余额查询
+// operationHandler 负责处理钱包资金操作和余额查询
 func (h *operationHandler) handle(state *State, message any) {
 	switch m := message.(type) {
 	case operationMessage:

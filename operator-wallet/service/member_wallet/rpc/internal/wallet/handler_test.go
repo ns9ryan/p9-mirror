@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 
@@ -72,6 +73,25 @@ func handlerTestParams() RecordParams {
 				ChangeAmount: 100,
 			},
 		},
+	}
+}
+
+// waitForPendingMailboxMessage 等待 Actor Mailbox 中出现待处理消息
+func waitForPendingMailboxMessage(t *testing.T, a *actor) {
+	t.Helper()
+
+	ticker := time.NewTicker(time.Millisecond)
+	defer ticker.Stop()
+
+	timeout := time.NewTimer(5 * time.Second)
+	defer timeout.Stop()
+
+	for len(a.mailbox.queue) == 0 {
+		select {
+		case <-ticker.C:
+		case <-timeout.C:
+			t.Fatal("actor mailbox did not receive pending message")
+		}
 	}
 }
 
@@ -221,5 +241,255 @@ func TestOperationHandlerDoesNotFailActorOnDefiniteError(t *testing.T) {
 	_, err = e.submit(context.Background(), initialState.WalletGlobalID, handlerTestParams())
 	if !errors.Is(err, expectedErr) {
 		t.Fatalf("expected producer error on retry, got %v", err)
+	}
+}
+
+// TestOperationHandlerReturnsBalanceSnapshot 验证余额查询直接读取运行时状态
+func TestOperationHandlerReturnsBalanceSnapshot(t *testing.T) {
+	published := make(chan walletEvent, 1)
+
+	producer := &handlerTestProducer{
+		publishFunc: func(_ context.Context, _ int32, event walletEvent) error {
+			published <- event
+			return nil
+		},
+	}
+
+	e, a, initialState := newHandlerTestEngine(t, producer)
+
+	got, err := e.getBalance(context.Background(), initialState.WalletGlobalID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := newBalanceSnapshot(initialState)
+	if got != want {
+		t.Fatalf("unexpected balance snapshot: got %+v, want %+v", got, want)
+	}
+
+	a.close()
+	if err := a.wait(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+
+	// 余额查询不能修改钱包状态
+	if a.state != initialState {
+		t.Fatalf("wallet state changed after query: got %+v, want %+v", a.state, initialState)
+	}
+
+	// 余额查询不应产生 Kafka 事件
+	select {
+	case event := <-published:
+		t.Fatalf("unexpected Kafka event: %+v", event)
+	default:
+	}
+}
+
+// TestOperationHandlerSerializesBalanceQuery 验证余额查询与资金操作严格串行
+func TestOperationHandlerSerializesBalanceQuery(t *testing.T) {
+	publishStarted := make(chan struct{})
+	releasePublish := make(chan struct{})
+
+	producer := &handlerTestProducer{
+		publishFunc: func(_ context.Context, _ int32, _ walletEvent) error {
+			close(publishStarted)
+			<-releasePublish
+			return nil
+		},
+	}
+
+	e, a, initialState := newHandlerTestEngine(t, producer)
+
+	var releaseOnce sync.Once
+	releaseAll := func() {
+		releaseOnce.Do(func() { close(releasePublish) })
+	}
+	t.Cleanup(releaseAll)
+
+	type submitResponse struct {
+		result OperationResult
+		err    error
+	}
+
+	type balanceResponse struct {
+		result BalanceSnapshot
+		err    error
+	}
+
+	submitDone := make(chan submitResponse, 1)
+	balanceDone := make(chan balanceResponse, 1)
+
+	// 先提交资金操作
+	go func() {
+		result, err := e.submit(
+			context.Background(),
+			initialState.WalletGlobalID,
+			handlerTestParams(),
+		)
+
+		submitDone <- submitResponse{
+			result: result,
+			err:    err,
+		}
+	}()
+
+	// 等待 Kafka 写入开始
+	select {
+	case <-publishStarted:
+	case <-time.After(5 * time.Second):
+		t.Fatal("Kafka publish did not start")
+	}
+
+	// Kafka 尚未确认时, 提交余额查询
+	go func() {
+		result, err := e.getBalance(
+			context.Background(),
+			initialState.WalletGlobalID,
+		)
+
+		balanceDone <- balanceResponse{
+			result: result,
+			err:    err,
+		}
+	}()
+
+	// 确认查询已经进入 Mailbox
+	// 此时 Actor 仍被前面的资金操作占用
+	//nolint:revive
+	waitForPendingMailboxMessage(t, a)
+
+	// 资金操作尚未完成, 查询不能提前返回
+	select {
+	case got := <-balanceDone:
+		t.Fatalf("balance query returned before operation finished: %+v", got)
+	default:
+	}
+
+	// 允许 Kafka 写入成功
+	releaseAll()
+
+	// 等待资金操作完成
+	var operation submitResponse
+
+	select {
+	case operation = <-submitDone:
+	case <-time.After(5 * time.Second):
+		t.Fatal("wallet operation did not finish")
+	}
+
+	if operation.err != nil {
+		t.Fatal(operation.err)
+	}
+
+	// 等待余额查询完成
+	var balance balanceResponse
+
+	select {
+	case balance = <-balanceDone:
+	case <-time.After(5 * time.Second):
+		t.Fatal("balance query did not finish")
+	}
+
+	if balance.err != nil {
+		t.Fatal(balance.err)
+	}
+
+	// 查询必须返回资金操作完成后的余额
+	want := newBalanceSnapshot(initialState)
+	want.Balance += 100
+	want.Version++
+
+	if balance.result != want {
+		t.Fatalf("unexpected balance snapshot: got %+v, want %+v", balance.result, want)
+	}
+}
+
+// TestOperationHandlerRejectsPendingBalanceQueryOnFailure 验证钱包故障后拒绝待处理的余额查询
+func TestOperationHandlerRejectsPendingBalanceQueryOnFailure(t *testing.T) {
+	publishStarted := make(chan struct{})
+	releasePublish := make(chan struct{})
+
+	producer := &handlerTestProducer{
+		publishFunc: func(_ context.Context, _ int32, _ walletEvent) error {
+			close(publishStarted)
+			<-releasePublish
+
+			return fmt.Errorf("%w: test timeout", ErrKafkaWriteUncertain)
+		},
+	}
+
+	e, a, initialState := newHandlerTestEngine(t, producer)
+
+	var releaseOnce sync.Once
+	releaseAll := func() {
+		releaseOnce.Do(func() { close(releasePublish) })
+	}
+	t.Cleanup(releaseAll)
+
+	submitDone := make(chan error, 1)
+	balanceDone := make(chan error, 1)
+
+	// 先提交一笔资金操作
+	go func() {
+		_, err := e.submit(
+			context.Background(),
+			initialState.WalletGlobalID,
+			handlerTestParams(),
+		)
+		submitDone <- err
+	}()
+
+	select {
+	case <-publishStarted:
+	case <-time.After(5 * time.Second):
+		t.Fatal("Kafka publish did not start")
+	}
+
+	// 资金操作尚未结束, 提交余额查询
+	go func() {
+		_, err := e.getBalance(
+			context.Background(),
+			initialState.WalletGlobalID,
+		)
+		balanceDone <- err
+	}()
+
+	// 确认查询已经进入 Mailbox
+	waitForPendingMailboxMessage(t, a)
+
+	// 模拟 Kafka 写入结果不明确
+	releaseAll()
+
+	// 当前资金操作应返回原始错误
+	select {
+	case err := <-submitDone:
+		if !errors.Is(err, ErrKafkaWriteUncertain) {
+			t.Fatalf("expected ErrKafkaWriteUncertain, got %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("wallet operation did not return")
+	}
+
+	// 排队中的余额查询应收到 Actor 故障错误
+	select {
+	case err := <-balanceDone:
+		if !errors.Is(err, ErrWalletFailed) {
+			t.Fatalf("expected ErrWalletFailed, got %v", err)
+		}
+		if !errors.Is(err, ErrKafkaWriteUncertain) {
+			t.Fatalf("expected ErrKafkaWriteUncertain, got %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("pending balance query did not receive rejection")
+	}
+
+	// 等待 Actor 完全退出
+	if err := a.wait(context.Background()); !errors.Is(err, ErrWalletFailed) {
+		t.Fatalf("expected ErrWalletFailed, got %v", err)
+	}
+
+	// Kafka 结果不明确时, 正式钱包状态不能提前修改
+	if a.state != initialState {
+		t.Fatalf("wallet state changed after uncertain write: got %+v, want %+v", a.state, initialState)
 	}
 }

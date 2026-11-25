@@ -517,6 +517,166 @@ func TestEngineConcurrentCreateAndClose(t *testing.T) {
 	}
 }
 
+// ---- 余额查询 ----
+
+// TestEngineGetBalanceReturnsSnapshot 验证 Engine 能够返回钱包余额快照
+func TestEngineGetBalanceReturnsSnapshot(t *testing.T) {
+	e := newTestEngine(t, 8, 4, func(state *State, message any) {
+		m, ok := message.(balanceQueryMessage)
+		if !ok || m.reply == nil {
+			return
+		}
+
+		m.reply <- balanceQueryReply{
+			result: newBalanceSnapshot(*state),
+		}
+	})
+
+	state := testWalletState()
+	state.Balance = 500
+	state.FrozenBalance = 20
+	state.UnsettledBalance = 30
+	state.Version = 7
+
+	a, err := e.getOrCreate(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := e.getBalance(context.Background(), state.WalletGlobalID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := newBalanceSnapshot(state)
+	if got != want {
+		t.Fatalf("unexpected balance snapshot: got %+v, want %+v", got, want)
+	}
+
+	// 等待 Actor 退出后, 确认查询没有修改钱包状态
+	a.close()
+	if err := a.wait(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+
+	if a.state != state {
+		t.Fatalf("wallet state changed after balance query: got %+v, want %+v", a.state, state)
+	}
+}
+
+// TestEngineGetBalanceRejectsInvalidRequests 验证 Engine 拒绝无效余额查询请求
+func TestEngineGetBalanceRejectsInvalidRequests(t *testing.T) {
+	var nilEngine *engine
+
+	if _, err := nilEngine.getBalance(context.Background(), uuid.New()); !errors.Is(err, errNilEngine) {
+		t.Fatalf("expected errNilEngine, got %v", err)
+	}
+
+	e := newTestEngine(t, 2, 1, func(_ *State, _ any) {})
+
+	// Context 不能为空
+	if _, err := e.getBalance(nil, uuid.New()); !errors.Is(err, errNilEngineContext) {
+		t.Fatalf("expected errNilEngineContext, got %v", err)
+	}
+
+	// 已取消的 Context 不应进入查询流程
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	if _, err := e.getBalance(ctx, uuid.New()); !errors.Is(err, context.Canceled) {
+		t.Fatalf("expected context.Canceled, got %v", err)
+	}
+
+	// 钱包全局标识不能为空
+	if _, err := e.getBalance(context.Background(), uuid.Nil); !errors.Is(err, ErrInvalidWalletGlobalID) {
+		t.Fatalf("expected ErrInvalidWalletGlobalID, got %v", err)
+	}
+
+	// 尚未初始化的 Actor 不允许查询
+	if _, err := e.getBalance(context.Background(), uuid.New()); !errors.Is(err, ErrWalletActorNotFound) {
+		t.Fatalf("expected ErrWalletActorNotFound, got %v", err)
+	}
+
+	// Engine 关闭后拒绝查询
+	e.close()
+
+	if _, err := e.getBalance(context.Background(), uuid.New()); !errors.Is(err, ErrEngineClosed) {
+		t.Fatalf("expected ErrEngineClosed, got %v", err)
+	}
+}
+
+// TestEngineGetBalanceContextCanceledAfterEnqueue 验证取消等待不会阻止已入队的查询消息
+func TestEngineGetBalanceContextCanceledAfterEnqueue(t *testing.T) {
+	started := make(chan struct{})
+	release := make(chan struct{})
+	processed := make(chan struct{})
+
+	e := newTestEngine(t, 2, 1, func(state *State, message any) {
+		m, ok := message.(balanceQueryMessage)
+		if !ok || m.reply == nil {
+			return
+		}
+
+		close(started)
+		<-release
+
+		m.reply <- balanceQueryReply{
+			result: newBalanceSnapshot(*state),
+		}
+
+		close(processed)
+	})
+
+	var releaseOnce sync.Once
+	releaseAll := func() {
+		releaseOnce.Do(func() { close(release) })
+	}
+	t.Cleanup(releaseAll)
+
+	state := testWalletState()
+	if _, err := e.getOrCreate(state); err != nil {
+		t.Fatal(err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	result := make(chan error, 1)
+
+	go func() {
+		_, err := e.getBalance(ctx, state.WalletGlobalID)
+		result <- err
+	}()
+
+	// 确保查询已经进入 Actor Handler
+	select {
+	case <-started:
+	case <-time.After(5 * time.Second):
+		t.Fatal("balance query handler did not start")
+	}
+
+	// 取消当前调用方的等待
+	cancel()
+
+	select {
+	case err := <-result:
+		if !errors.Is(err, context.Canceled) {
+			t.Fatalf("expected context.Canceled, got %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("balance query did not return after context cancellation")
+	}
+
+	// Actor 仍应正常完成已经接收的查询
+	releaseAll()
+
+	select {
+	case <-processed:
+	case <-time.After(5 * time.Second):
+		t.Fatal("accepted balance query did not finish")
+	}
+}
+
 // ---- 资金操作提交 ----
 
 // testSubmitParams 创建有效的测试资金操作参数
