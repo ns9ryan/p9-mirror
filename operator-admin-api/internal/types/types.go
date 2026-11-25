@@ -1080,9 +1080,9 @@ type MemberListItem struct {
 	InviterMemberId    *int64          `json:"inviter_member_id,optional"`
 	Remark             *string         `json:"remark,optional"`
 	Stats              MemberStatsInfo `json:"stats"`
-	Balance            *int64          `json:"balance"`
-	FrozenBalance      *int64          `json:"frozen_balance"`
-	Unsettled          *int64          `json:"unsettled"`
+	Balance            *int64          `json:"balance,optional"`
+	FrozenBalance      *int64          `json:"frozen_balance,optional"`
+	UnsettledBalance   *int64          `json:"unsettled_balance,optional"`
 }
 
 type MemberStatsInfo struct {

@@ -206,11 +206,11 @@ type (
 		Stats MemberStatsInfo `json:"stats"`
 		// ==================== 钱包余额 ====================
 		// 可用余额, 按币种最小单位
-		Balance *int64 `json:"balance"`
+		Balance *int64 `json:"balance,optional"`
 		// 冻结余额, 按币种最小单位
-		FrozenBalance *int64 `json:"frozen_balance"`
+		FrozenBalance *int64 `json:"frozen_balance,optional"`
 		// 游戏未结算余额, 按币种最小单位
-		Unsettled *int64 `json:"unsettled"`
+		UnsettledBalance *int64 `json:"unsettled_balance,optional"`
 	}
 	// 会员列表响应
 	ListMembersResponse {
