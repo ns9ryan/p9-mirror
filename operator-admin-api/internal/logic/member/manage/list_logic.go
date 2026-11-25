@@ -6,11 +6,12 @@ package manage
 import (
 	"context"
 
+	"github.com/zeromicro/go-zero/core/logx"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb"
-
-	"github.com/zeromicro/go-zero/core/logx"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/managepb"
 )
 
 // ListLogic 会员列表逻辑
@@ -68,16 +69,61 @@ func (l *ListLogic) List(req *types.ListMembersRequest) (resp *types.ListMembers
 		return nil, err
 	}
 
-	// 组装会员列表
-	list := make([]types.MemberListItem, 0, len(rpcResp.GetList()))
-	for _, m := range rpcResp.GetList() {
-		list = append(list, listMemberItem(m))
+	members := rpcResp.GetList()
+	// 批量查询当前页会员的钱包余额
+	balances, err := l.listWalletBalances(members)
+	if err != nil {
+		return nil, err
+	}
+
+	// 组装会员列表及钱包余额
+	list := make([]types.MemberListItem, 0, len(members))
+	for _, m := range members {
+		item := listMemberItem(m)
+
+		// 未创建钱包的会员, 余额字段保持 nil
+		if balance := balances[m.GetMemberGlobalId()]; balance != nil {
+			item.Balance = &balance.Balance
+			item.FrozenBalance = &balance.FrozenBalance
+			item.UnsettledBalance = &balance.UnsettledBalance
+		}
+
+		list = append(list, item)
 	}
 
 	return &types.ListMembersResponse{
 		Total: rpcResp.GetTotal(), // 符合条件的会员总数
 		List:  list,               // 当前页会员列表
 	}, nil
+}
+
+// listWalletBalances 批量查询会员钱包余额, 按会员全局标识建立映射
+func (l *ListLogic) listWalletBalances(members []*memberpb.MemberListItem) (map[string]*managepb.MemberWalletBalanceItem, error) {
+	if len(members) == 0 {
+		return nil, nil
+	}
+
+	// 收集当前页会员全局标识
+	memberGlobalIDs := make([]string, 0, len(members))
+	for _, m := range members {
+		memberGlobalIDs = append(memberGlobalIDs, m.GetMemberGlobalId())
+	}
+
+	// 批量查询数据库中已持久化的钱包余额
+	resp, err := l.svcCtx.MemberWalletRpc.BatchGetBalances(l.ctx, &managepb.BatchGetBalancesRequest{
+		MemberGlobalIds: memberGlobalIDs,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// 按会员全局标识建立余额映射
+	balances := make(map[string]*managepb.MemberWalletBalanceItem, len(resp.GetBalances()))
+	for _, balance := range resp.GetBalances() {
+		balances[balance.GetMemberGlobalId()] = balance
+	}
+
+	return balances, nil
 }
 
 // listMemberItem 转换会员列表项
