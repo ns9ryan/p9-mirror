@@ -3,6 +3,7 @@ module oa.98ent.com/p9/member-wallet-loadtest
 go 1.26.0
 
 require (
+	github.com/google/uuid v1.6.0
 	google.golang.org/grpc v1.85.0
 	oa.98ent.com/p9/operator-wallet v0.0.0-20261125115534-fb88fa4335c6
 )
