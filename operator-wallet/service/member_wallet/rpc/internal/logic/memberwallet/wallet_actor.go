@@ -21,7 +21,7 @@ import (
 // walletActorParams 钱包 Actor 加载参数
 type walletActorParams struct {
 	memberGlobalID uuid.UUID // 会员全局唯一标识
-	currencyCode   string    // 请求币种编码
+	currencyCode   string    // 请求币种编码, 为空时使用钱包自身币种
 }
 
 // validateOperatorCode 校验当前请求的可信厅身份
@@ -52,7 +52,7 @@ func ensureWalletActor(ctx context.Context, svcCtx *svc.ServiceContext, params w
 
 	// 已缓存时直接复用已有 Actor
 	if walletGlobalID, cachedCurrency, ok := svcCtx.CachedWallet(operatorCode, params.memberGlobalID); ok {
-		if cachedCurrency != params.currencyCode {
+		if params.currencyCode != "" && cachedCurrency != params.currencyCode {
 			return uuid.Nil, status.Error(codes.FailedPrecondition, "请求币种与钱包币种不一致")
 		}
 
@@ -90,7 +90,7 @@ func ensureWalletActor(ctx context.Context, svcCtx *svc.ServiceContext, params w
 	}
 
 	// 校验请求币种
-	if memberWallet.CurrencyCode != params.currencyCode {
+	if params.currencyCode != "" && memberWallet.CurrencyCode != params.currencyCode {
 		return uuid.Nil, status.Error(codes.FailedPrecondition, "请求币种与钱包币种不一致")
 	}
 
