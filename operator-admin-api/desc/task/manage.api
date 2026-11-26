@@ -74,6 +74,7 @@ type (
 		DeviceId            string `json:"device_id"`
 		WalletId            string `json:"wallet_id"`
 		ClaimIp             string `json:"claim_ip"`
+        RejectReason        string `json:"reject_reason"`
 		PayoutAt            int64  `json:"payout_at"`
 		CreatedAt           int64  `json:"created_at"`
 		UpdatedAt           int64  `json:"updated_at"`
@@ -205,4 +206,3 @@ service operator_admin_api {
 	@handler UpdateTaskGlobalConfig
 	post /global-config/update (UpdateTaskGlobalConfigReq) returns (UpdateTaskGlobalConfigResp)
 }
-

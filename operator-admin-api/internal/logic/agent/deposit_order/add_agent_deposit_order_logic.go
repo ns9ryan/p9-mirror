@@ -33,12 +33,13 @@ func NewAddAgentDepositOrderLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *AddAgentDepositOrderLogic) AddAgentDepositOrder(req *types.AddAgentDepositOrderReq) (*types.AddAgentDepositOrderResp, error) {
-	// 从分站配置读取结算货币编码及换算倍率，向下传递给 RPC。货币未配置时直接报错。
+	// 读取结算货币编码及换算倍率，传递给 RPC（倍率由 RPC 层用于内部计算，API 层不再换算金额）。
 	depositCurrency, amountFactor, err := agentconv.GetSiteCurrency(l.ctx, l.svcCtx)
 	if err != nil {
 		return nil, err
 	}
-	depositAmountCents := int64(math.Round(req.DepositAmount * float64(amountFactor)))
+	// 前端直接发送已放大后的整数金额（分），API 层不再乘倍率，直接取整传入。
+	depositAmountCents := int64(math.Round(req.DepositAmount))
 
 	rpcResp, err := l.svcCtx.AgentDepositOrderRpc.AddAgentDepositOrder(l.ctx, &agentdepositorderpb.AddAgentDepositOrderReq{
 		MemberId:           req.MemberId,

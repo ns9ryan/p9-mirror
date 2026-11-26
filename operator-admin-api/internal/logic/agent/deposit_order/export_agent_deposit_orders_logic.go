@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -77,8 +78,8 @@ func (l *ExportAgentDepositOrdersLogic) ExportAgentDepositOrders(req *types.Expo
 
 	taskID := uuid.New().String()
 
-	// 导出固定使用 DepositOrderModeManage 的状态范围，不接受外部 Statuses。
-	// Status 由调用方传入（可选）：在允许集合内有效则单状态过滤，否则兜底用 mode 全量状态。
+	// 导出固定使用 DepositOrderModeManage 的状态范围。
+	// Statuses 多选优先于 Status 单选；均受 mode 状态范围约束，越界值静默剔除。
 	allowed := modeAllowedStatuses(constants.DepositOrderModeManage)
 	pbReq := &agentdepositorderpb.ExportDepositOrdersReq{
 		TimeType:          req.TimeType,
@@ -90,7 +91,20 @@ func (l *ExportAgentDepositOrdersLogic) ExportAgentDepositOrders(req *types.Expo
 		MemberAccount:     req.MemberAccount,
 		ThirdPartyOrderNo: req.ThirdPartyOrderNo,
 	}
-	if req.Status != 0 {
+	// member_id 整数转字符串，作为 member.code 模糊搜索条件
+	if req.MemberId > 0 {
+		pbReq.MemberCode = strconv.FormatInt(req.MemberId, 10)
+	}
+	if len(req.Statuses) > 0 {
+		// 多选：裁剪到 mode 允许范围；全部越界则兜底用 mode 全量
+		filtered := filterStatuses(req.Statuses, allowed)
+		if len(filtered) == 0 {
+			pbReq.Statuses = modeAllowedKeys(allowed)
+		} else {
+			pbReq.Statuses = filtered
+		}
+	} else if req.Status != 0 {
+		// 单选：不在 mode 范围内则兜底用 mode 全量
 		filtered := filterStatus(req.Status, allowed)
 		if filtered == 0 {
 			pbReq.Statuses = modeAllowedKeys(allowed)

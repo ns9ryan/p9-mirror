@@ -541,15 +541,16 @@ type EmptyResponse struct {
 }
 
 type ExportAgentDepositOrdersReq struct {
-	TimeType          int32  `json:"time_type,optional"`
-	TimeStart         int64  `json:"time_start,optional"`
-	TimeEnd           int64  `json:"time_end,optional"`
-	MemberId          int64  `json:"member_id,optional"`
-	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
-	OrderNo           string `json:"order_no,optional"`
-	MemberAccount     string `json:"member_account,optional"`
-	ThirdPartyOrderNo string `json:"third_party_order_no,optional"`
-	Status            int32  `json:"status,optional,range=[0:]"`
+	TimeType          int32   `json:"time_type,optional"`
+	TimeStart         int64   `json:"time_start,optional"`
+	TimeEnd           int64   `json:"time_end,optional"`
+	MemberId          int64   `json:"member_id,optional"`
+	DepositType       int32   `json:"deposit_type,optional,range=[0:3]"`
+	OrderNo           string  `json:"order_no,optional"`
+	MemberAccount     string  `json:"member_account,optional"`
+	ThirdPartyOrderNo string  `json:"third_party_order_no,optional"`
+	Status            int32   `json:"status,optional,range=[0:]"`
+	Statuses          []int32 `json:"statuses,optional"`
 }
 
 type ExportAgentDepositOrdersResp struct {
@@ -663,6 +664,9 @@ type GetMemberDetailResponse struct {
 	InviterMemberId    *int64          `json:"inviter_member_id,optional"`
 	Remark             *string         `json:"remark,optional"`
 	Stats              MemberStatsInfo `json:"stats"`
+	Balance            *int64          `json:"balance,optional"`
+	FrozenBalance      *int64          `json:"frozen_balance,optional"`
+	UnsettledBalance   *int64          `json:"unsettled_balance,optional"`
 }
 
 type GetVipConfigRequest struct {
@@ -765,20 +769,21 @@ type ListAgentAppliesResp struct {
 }
 
 type ListAgentDepositOrdersReq struct {
-	Page              int32  `json:"page,optional,default=1,range=[1:]"`
-	PageSize          int32  `json:"page_size,optional,default=20,range=[1:100]"`
-	Mode              int32  `json:"mode,optional"`
-	Status            int32  `json:"status,optional,range=[0:]"`
-	TimeType          int32  `json:"time_type,optional"`
-	MemberId          int64  `json:"member_id,optional"`
-	DepositType       int32  `json:"deposit_type,optional,range=[0:3]"`
-	TimeStart         int64  `json:"time_start,optional"`
-	TimeEnd           int64  `json:"time_end,optional"`
-	OrderNo           string `json:"order_no,optional"`
-	MemberAccount     string `json:"member_account,optional"`
-	ThirdPartyOrderNo string `json:"third_party_order_no,optional"`
-	ReviewerId        int64  `json:"reviewer_id,optional"`
-	ClaimStatus       int32  `json:"claim_status,optional,range=[0:2]"`
+	Page              int32   `json:"page,optional,default=1,range=[1:]"`
+	PageSize          int32   `json:"page_size,optional,default=20,range=[1:100]"`
+	Mode              int32   `json:"mode,optional"`
+	Status            int32   `json:"status,optional,range=[0:]"`
+	Statuses          []int32 `json:"statuses,optional"`
+	TimeType          int32   `json:"time_type,optional"`
+	MemberId          int64   `json:"member_id,optional"`
+	DepositType       int32   `json:"deposit_type,optional,range=[0:3]"`
+	TimeStart         int64   `json:"time_start,optional"`
+	TimeEnd           int64   `json:"time_end,optional"`
+	OrderNo           string  `json:"order_no,optional"`
+	MemberAccount     string  `json:"member_account,optional"`
+	ThirdPartyOrderNo string  `json:"third_party_order_no,optional"`
+	ReviewerId        int64   `json:"reviewer_id,optional"`
+	ClaimStatus       int32   `json:"claim_status,optional,range=[0:2]"`
 }
 
 type ListAgentDepositOrdersResp struct {
@@ -1121,6 +1126,7 @@ type MemberTaskReward struct {
 	DeviceId            string `json:"device_id"`
 	WalletId            string `json:"wallet_id"`
 	ClaimIp             string `json:"claim_ip"`
+	RejectReason        string `json:"reject_reason"`
 	PayoutAt            int64  `json:"payout_at"`
 	CreatedAt           int64  `json:"created_at"`
 	UpdatedAt           int64  `json:"updated_at"`

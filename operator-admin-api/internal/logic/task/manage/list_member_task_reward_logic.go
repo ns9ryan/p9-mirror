@@ -73,6 +73,7 @@ func (l *ListMemberTaskRewardLogic) ListMemberTaskReward(req *types.ListMemberTa
 			WalletId:            item.WalletId,
 			ClaimIp:             item.ClaimIp,
 			PayoutAt:            item.PayoutAt,
+			RejectReason:        item.RejectReason,
 			CreatedAt:           item.CreatedAt,
 			UpdatedAt:           item.UpdatedAt,
 		})
