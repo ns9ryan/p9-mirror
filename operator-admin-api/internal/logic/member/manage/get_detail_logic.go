@@ -108,11 +108,11 @@ func (l *GetDetailLogic) GetDetail(req *types.GetMemberDetailRequest) (resp *typ
 		if status.Code(err) != codes.NotFound {
 			return nil, err
 		}
+	} else {
+		resp.Balance = &walletResp.Balance                   // 可用余额
+		resp.FrozenBalance = &walletResp.FrozenBalance       // 冻结余额
+		resp.UnsettledBalance = &walletResp.UnsettledBalance // 游戏未结算余额
 	}
-
-	resp.Balance = &walletResp.Balance                   // 可用余额
-	resp.FrozenBalance = &walletResp.FrozenBalance       // 冻结余额
-	resp.UnsettledBalance = &walletResp.UnsettledBalance // 游戏未结算余额
 
 	return resp, nil
 }
