@@ -110,8 +110,10 @@ func ConcurrentDeposit(ctx context.Context, client memberwalletrpc.MemberWalletC
 
 	// 单次 RPC 请求结果
 	type requestResult struct {
-		err     error         // 单次请求错误
-		elapsed time.Duration // 单次请求耗时
+		operationID string        // 钱包操作唯一标识
+		orderNo     string        // 存款订单号
+		err         error         // 单次请求错误
+		elapsed     time.Duration // 单次请求耗时
 	}
 
 	results := make([]requestResult, cfg.Concurrency)
@@ -147,8 +149,10 @@ func ConcurrentDeposit(ctx context.Context, client memberwalletrpc.MemberWalletC
 			})
 
 			results[index] = requestResult{
-				err:     err,
-				elapsed: time.Since(requestStartedAt),
+				operationID: operationID,                  // 钱包操作唯一标识
+				orderNo:     orderNo,                      // 存款订单号
+				err:         err,                          // 单次请求错误
+				elapsed:     time.Since(requestStartedAt), // 单次请求耗时
 			}
 		}(i)
 	}
@@ -188,7 +192,13 @@ func ConcurrentDeposit(ctx context.Context, client memberwalletrpc.MemberWalletC
 	for i, item := range results {
 		if item.err != nil {
 			result.FailedRequests++ // 失败请求数
-			result.Errors = append(result.Errors, fmt.Sprintf("request %d: %v", i+1, item.err))
+			result.Errors = append(result.Errors, fmt.Sprintf(
+				"请求 %d: OperationID=%s, OrderNo=%s, 错误=%v",
+				i+1,
+				item.operationID,
+				item.orderNo,
+				item.err,
+			))
 			continue
 		}
 
