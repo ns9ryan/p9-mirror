@@ -6,11 +6,14 @@ package manage
 import (
 	"context"
 
+	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"oa.98ent.com/p9/operator-admin-api/internal/svc"
 	"oa.98ent.com/p9/operator-admin-api/internal/types"
 	"oa.98ent.com/p9/operator-crm/service/crm/rpc/pb/crmrpc/memberpb"
-
-	"github.com/zeromicro/go-zero/core/logx"
+	"oa.98ent.com/p9/operator-wallet/service/member_wallet/rpc/pb/memberwalletrpc/managepb"
 )
 
 // GetDetailLogic 会员详情逻辑
@@ -40,18 +43,18 @@ func (l *GetDetailLogic) GetDetail(req *types.GetMemberDetailRequest) (resp *typ
 	}
 
 	// 组装会员详情响应
-	return &types.GetMemberDetailResponse{
+	resp = &types.GetMemberDetailResponse{
 		// ==================== 会员基本信息 ====================
 
-		Id:             rpcResp.Id,             // 会员ID
-		Code:           rpcResp.Code,           // 会员对外编号
-		Account:        rpcResp.Account,        // 会员登录账号
-		Nickname:       rpcResp.Nickname,       // 会员昵称
+		Id:            rpcResp.Id,            // 会员ID
+		Code:          rpcResp.Code,          // 会员对外编号
+		Account:       rpcResp.Account,       // 会员登录账号
+		Nickname:      rpcResp.Nickname,      // 会员昵称
 		AvatarId:      rpcResp.AvatarId,      // 会员头像ID
 		AvatarFrameId: rpcResp.AvatarFrameId, // 会员头像框ID
-		Birthday:       rpcResp.Birthday,       // 会员生日
-		Gender:         rpcResp.Gender,         // 性别
-		RegionCode:     rpcResp.RegionCode,     // 国家或地区编码
+		Birthday:      rpcResp.Birthday,      // 会员生日
+		Gender:        rpcResp.Gender,        // 性别
+		RegionCode:    rpcResp.RegionCode,    // 国家或地区编码
 
 		// ==================== 代理归属 ====================
 
@@ -92,5 +95,24 @@ func (l *GetDetailLogic) GetDetail(req *types.GetMemberDetailRequest) (resp *typ
 		// ==================== 统计信息 ====================
 
 		Stats: listMemberStats(rpcResp.GetStats()), // 会员累计及当前周期统计
-	}, nil
+	}
+
+	// ==================== 钱包余额 ====================
+
+	// 使用CRM返回的会员全局标识查询钱包实时余额
+	walletResp, err := l.svcCtx.MemberWalletRpc.GetBalance(l.ctx, &managepb.GetBalanceRequest{
+		MemberGlobalId: rpcResp.GetMemberGlobalId(),
+	})
+	if err != nil {
+		// 未创建钱包时不返回余额字段
+		if status.Code(err) != codes.NotFound {
+			return nil, err
+		}
+	}
+
+	resp.Balance = &walletResp.Balance                   // 可用余额
+	resp.FrozenBalance = &walletResp.FrozenBalance       // 冻结余额
+	resp.UnsettledBalance = &walletResp.UnsettledBalance // 游戏未结算余额
+
+	return resp, nil
 }
