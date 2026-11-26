@@ -161,6 +161,11 @@ func run() error {
 	fmt.Printf("钱包数量: %d\n", len(wallets))
 	fmt.Printf("准备耗时: %s\n", time.Since(startedAt))
 
+	// 检查是否成功准备测试钱包
+	if len(wallets) == 0 {
+		return fmt.Errorf("no wallets prepared")
+	}
+
 	// 输出首个钱包信息, 方便手动核对
 	first := wallets[0]
 
