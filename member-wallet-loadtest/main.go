@@ -27,15 +27,16 @@ func run() error {
 	timeout := flag.Duration("timeout", 5*time.Second, "单次 RPC 请求超时时间")
 
 	// 测试配置
-	mode := flag.String("mode", "ping", "执行模式: ping, prepare, deposit")
+	mode := flag.String("mode", "ping", "执行模式: ping, prepare, deposit, concurrent")
 	currencyCode := flag.String("currency-code", "USDT", "钱包结算币种")
 	walletCount := flag.Int("wallets", 128, "测试钱包数量")
 	memberIDStart := flag.Int64("member-id-start", 9000000001, "测试会员起始ID")
 	partitionCount := flag.Int("partitions", 32, "Kafka Topic 分区数量")
 
-	// 单笔资金操作测试
+	// 资金操作测试
 	memberGlobalID := flag.String("member-global-id", "", "测试会员全局唯一标识")
 	amount := flag.Int64("amount", 0, "存款金额, 币种最小单位")
+	concurrency := flag.Int("concurrency", 20, "并发请求数量")
 
 	flag.Parse()
 
@@ -46,20 +47,24 @@ func run() error {
 	if *timeout <= 0 {
 		return fmt.Errorf("timeout must be greater than zero")
 	}
-	if *mode != "ping" && *mode != "prepare" && *mode != "deposit" {
+	if *mode != "ping" && *mode != "prepare" && *mode != "deposit" && *mode != "concurrent" {
 		return fmt.Errorf("unsupported mode: %s", *mode)
 	}
 	if *partitionCount <= 0 {
 		return fmt.Errorf("partition count must be greater than zero")
 	}
 
-	if *mode == "deposit" {
+	if *mode == "deposit" || *mode == "concurrent" {
 		if *memberGlobalID == "" {
 			return fmt.Errorf("missing required argument: -member-global-id")
 		}
 		if *amount <= 0 {
 			return fmt.Errorf("amount must be greater than zero")
 		}
+	}
+
+	if *mode == "concurrent" && *concurrency <= 0 {
+		return fmt.Errorf("concurrency must be greater than zero")
 	}
 
 	// 创建会员钱包 RPC 客户端
@@ -113,13 +118,69 @@ func run() error {
 
 		// 输出单笔存款测试结果
 		fmt.Println("\n单笔存款测试成功")
-		fmt.Printf("OperationID:    %s\n", result.OperationID)
-		fmt.Printf("OrderNo:        %s\n", result.OrderNo)
-		fmt.Printf("BeforeBalance:  %d\n", result.BeforeBalance)
-		fmt.Printf("AfterBalance:   %d\n", result.AfterBalance)
-		fmt.Printf("BeforeVersion:  %d\n", result.BeforeVersion)
-		fmt.Printf("AfterVersion:   %d\n", result.AfterVersion)
-		fmt.Printf("Elapsed:        %s\n", result.Elapsed)
+		fmt.Printf("操作唯一标识:   %s\n", result.OperationID)
+		fmt.Printf("存款订单号:     %s\n", result.OrderNo)
+		fmt.Printf("操作前余额:     %d\n", result.BeforeBalance)
+		fmt.Printf("操作后余额:     %d\n", result.AfterBalance)
+		fmt.Printf("操作前版本:     %d\n", result.BeforeVersion)
+		fmt.Printf("操作后版本:     %d\n", result.AfterVersion)
+		fmt.Printf("本次测试耗时:   %s\n", result.Elapsed)
+
+		return nil
+	}
+
+	// 执行同钱包并发存款测试
+	if *mode == "concurrent" {
+		result, err := operation.ConcurrentDeposit(
+			ctx,
+			client.MemberWallet(),
+			operation.ConcurrentDepositConfig{
+				MemberGlobalID: *memberGlobalID, // 测试会员全局标识
+				CurrencyCode:   *currencyCode,   // 钱包币种
+				Amount:         *amount,         // 单笔入账金额
+				Concurrency:    *concurrency,    // 并发请求数量
+				Timeout:        *timeout,        // 单次 RPC 超时时间
+			},
+		)
+		if err != nil {
+			return err
+		}
+
+		// 输出并发测试结果
+		fmt.Println("\n同钱包并发存款测试结果")
+		fmt.Printf("总请求数:       %d\n", result.TotalRequests)
+		fmt.Printf("成功请求数:     %d\n", result.SuccessRequests)
+		fmt.Printf("失败请求数:     %d\n", result.FailedRequests)
+
+		fmt.Printf("操作前余额:     %d\n", result.BeforeBalance)
+		fmt.Printf("操作后余额:     %d\n", result.AfterBalance)
+		fmt.Printf("操作前版本:     %d\n", result.BeforeVersion)
+		fmt.Printf("操作后版本:     %d\n", result.AfterVersion)
+
+		fmt.Printf("余额校验通过:   %t\n", result.BalanceMatched)
+		fmt.Printf("版本校验通过:   %t\n", result.VersionMatched)
+
+		fmt.Printf("总耗时:         %s\n", result.Elapsed)
+		fmt.Printf("平均请求耗时:   %s\n", result.AvgLatency)
+		fmt.Printf("P95 请求耗时:   %s\n", result.P95Latency)
+		fmt.Printf("最大请求耗时:   %s\n", result.MaxLatency)
+
+		if len(result.Errors) > 0 {
+			fmt.Println("\n失败请求:")
+			for _, requestErr := range result.Errors {
+				fmt.Println(requestErr)
+			}
+		}
+
+		if result.FailedRequests > 0 {
+			return fmt.Errorf(
+				"%d concurrent requests failed; verify their OperationIDs and ledger records",
+				result.FailedRequests,
+			)
+		}
+		if !result.BalanceMatched || !result.VersionMatched {
+			return fmt.Errorf("concurrent deposit result verification failed")
+		}
 
 		return nil
 	}
@@ -142,6 +203,11 @@ func run() error {
 		return err
 	}
 
+	// 检查是否成功准备测试钱包
+	if len(wallets) == 0 {
+		return fmt.Errorf("no wallets prepared")
+	}
+
 	// 提取钱包全局标识
 	walletGlobalIDs := make([]string, len(wallets))
 	for i, w := range wallets {
@@ -161,20 +227,15 @@ func run() error {
 	fmt.Printf("钱包数量: %d\n", len(wallets))
 	fmt.Printf("准备耗时: %s\n", time.Since(startedAt))
 
-	// 检查是否成功准备测试钱包
-	if len(wallets) == 0 {
-		return fmt.Errorf("no wallets prepared")
-	}
-
 	// 输出首个钱包信息, 方便手动核对
 	first := wallets[0]
 
 	fmt.Printf("\n首个测试钱包:\n")
-	fmt.Printf("MemberID:       %d\n", first.MemberID)
-	fmt.Printf("MemberGlobalID: %s\n", first.MemberGlobalID)
-	fmt.Printf("WalletGlobalID: %s\n", first.WalletGlobalID)
-	fmt.Printf("Balance:        %d\n", first.Balance)
-	fmt.Printf("Version:        %d\n", first.Version)
+	fmt.Printf("会员ID:         %d\n", first.MemberID)
+	fmt.Printf("会员全局标识:   %s\n", first.MemberGlobalID)
+	fmt.Printf("钱包全局标识:   %s\n", first.WalletGlobalID)
+	fmt.Printf("钱包余额:       %d\n", first.Balance)
+	fmt.Printf("钱包版本:       %d\n", first.Version)
 
 	// 输出 Partition 分布
 	covered := 0
