@@ -1,7 +1,7 @@
 GO ?= go
 
 # RPC 配置
-ADDR ?=
+ADDR ?= 192.168.10.220:39005
 OPERATOR_CODE ?= OP_034A80
 TIMEOUT ?= 5s
 
