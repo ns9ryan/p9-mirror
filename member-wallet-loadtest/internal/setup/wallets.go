@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -20,6 +21,7 @@ type WalletConfig struct {
 	CurrencyCode  string        // 钱包结算币种
 	MemberIDStart int64         // 测试会员起始ID
 	Count         int           // 测试钱包数量
+	Concurrency   int           // 钱包准备并发数
 	Timeout       time.Duration // 单次RPC请求超时时间
 }
 
@@ -39,25 +41,85 @@ type Wallet struct {
 
 // PrepareWallets 创建测试钱包并预热 Actor
 func PrepareWallets(ctx context.Context, client memberwalletrpc.MemberWalletClient, cfg WalletConfig) ([]Wallet, error) {
+	if ctx == nil {
+		return nil, errors.New("prepare wallets: nil context")
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if client == nil {
+		return nil, errors.New("prepare wallets: nil RPC client")
+	}
 	if err := cfg.validate(); err != nil {
 		return nil, err
 	}
 
-	wallets := make([]Wallet, 0, cfg.Count)
+	concurrency := cfg.Concurrency
+	if concurrency <= 0 {
+		concurrency = 1
+	}
+	if concurrency > cfg.Count {
+		concurrency = cfg.Count
+	}
 
-	for i := 0; i < cfg.Count; i++ {
-		if err := ctx.Err(); err != nil {
-			return nil, err
+	runCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	wallets := make([]Wallet, cfg.Count)
+	jobs := make(chan int)
+
+	var wg sync.WaitGroup
+	var once sync.Once
+	var firstErr error
+
+	// 启动固定数量的 Worker 准备钱包
+	wg.Add(concurrency)
+
+	for i := 0; i < concurrency; i++ {
+		go func() {
+			defer wg.Done()
+
+			for index := range jobs {
+				if runCtx.Err() != nil {
+					return
+				}
+
+				memberID := cfg.MemberIDStart + int64(index)
+
+				w, err := prepareWallet(runCtx, client, cfg, memberID)
+				if err != nil {
+					once.Do(func() {
+						firstErr = fmt.Errorf("准备测试钱包失败, member_id=%d: %w", memberID, err)
+						cancel()
+					})
+					return
+				}
+
+				// 每个Worker写入独立索引, 无需额外加锁
+				wallets[index] = w
+			}
+		}()
+	}
+
+	// 分发钱包准备任务
+	sending := true
+
+	for i := 0; i < cfg.Count && sending; i++ {
+		select {
+		case jobs <- i:
+		case <-runCtx.Done():
+			sending = false
 		}
+	}
 
-		memberID := cfg.MemberIDStart + int64(i)
+	close(jobs)
+	wg.Wait()
 
-		w, err := prepareWallet(ctx, client, cfg, memberID)
-		if err != nil {
-			return nil, fmt.Errorf("准备测试钱包失败, member_id=%d: %w", memberID, err)
-		}
-
-		wallets = append(wallets, w)
+	if firstErr != nil {
+		return nil, firstErr
+	}
+	if err := ctx.Err(); err != nil {
+		return nil, err
 	}
 
 	return wallets, nil
@@ -81,7 +143,7 @@ func prepareWallet(ctx context.Context, client memberwalletrpc.MemberWalletClien
 		return Wallet{}, fmt.Errorf("create wallet: %w", err)
 	}
 
-	// 查询运行时余额, 提前完成 Actor 加载
+	// 查询运行时余额, 提前完成Actor加载
 	balanceCtx, cancel := context.WithTimeout(ctx, cfg.Timeout)
 
 	balance, err := client.GetBalance(balanceCtx, &managepb.GetBalanceRequest{
